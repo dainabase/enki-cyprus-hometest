@@ -26,7 +26,9 @@ export const GoogleMapsProvider: React.FC<GoogleMapsProviderProps> = ({ children
 export const useGoogleMapsContext = () => {
   const context = useContext(GoogleMapsContext);
   if (context === undefined) {
-    throw new Error('useGoogleMapsContext must be used within a GoogleMapsProvider');
+    const fallback: GoogleMapsContextType = { isLoaded: false, loadError: new Error('GoogleMapsProvider is missing'), apiKey: '' };
+    console.error('❌ useGoogleMapsContext used outside of GoogleMapsProvider');
+    return fallback;
   }
   return context;
 };
