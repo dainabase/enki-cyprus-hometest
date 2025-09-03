@@ -31,20 +31,27 @@ const GoogleMapComponent = ({
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
 
+  // Resolve API key: prefer env, fallback to provided dev key for sandbox/local
+  const envKey = (import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string | undefined)?.trim();
+  const devFallbackKey = 'AIzaSyBmFbbR7bD_4PSJGBU-_12ZL1VjGKRXKBU';
+  const apiKey = envKey && envKey.length > 0 ? envKey : devFallbackKey;
+  if (!envKey) {
+    console.warn('⚠️ Using provided dev Google Maps API key. Configure VITE_GOOGLE_MAPS_API_KEY in .env.local for production.');
+  }
+
   // Load Google Maps JS API once, asynchronously
   const { isLoaded, loadError } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string,
+    googleMapsApiKey: apiKey,
     libraries,
   });
 
-  if (!import.meta.env.VITE_GOOGLE_MAPS_API_KEY) {
-    console.error('❌ VITE_GOOGLE_MAPS_API_KEY is not defined');
+  if (!apiKey) {
+    console.error('❌ No Google Maps API key available');
   }
 
   const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
   const clustererRef = useRef<MarkerClusterer | null>(null);
-
   const mapContainerStyle = {
     width: '100%',
     height: height
