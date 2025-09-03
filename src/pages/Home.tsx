@@ -1,12 +1,27 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Hero from '@/components/Hero';
 import PropertyCard from '@/components/ui/PropertyCard';
+import GoogleMapComponent from '@/components/GoogleMap';
+import PropertyModal from '@/components/PropertyModal';
 import { Button } from '@/components/ui/button';
-import { mockProperties } from '@/data/mockData';
+import { mockProperties, Property } from '@/data/mockData';
 import { TrendingUp, Shield, Award, Users } from 'lucide-react';
 
 const Home = () => {
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const featuredProperties = mockProperties.slice(0, 3);
+
+  const handlePropertySelect = (property: Property) => {
+    setSelectedProperty(property);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedProperty(null);
+  };
 
   const features = [
     {
@@ -77,6 +92,41 @@ const Home = () => {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Interactive Map Section */}
+      <section className="py-20 bg-muted/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              Explorez nos propriétés sur la carte
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Découvrez l'emplacement exact de nos propriétés à travers Chypre 
+              et trouvez celle qui correspond parfaitement à vos attentes.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="rounded-xl overflow-hidden shadow-lg"
+          >
+            <GoogleMapComponent 
+              properties={mockProperties}
+              onPropertySelect={handlePropertySelect}
+              height="600px"
+            />
+          </motion.div>
         </div>
       </section>
 
@@ -158,6 +208,13 @@ const Home = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* Property Modal */}
+      <PropertyModal 
+        property={selectedProperty}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 };

@@ -108,8 +108,8 @@ const Hero = () => {
               <MapPin className="w-5 h-5" />
               <span className="font-medium">Carte interactive des propriétés</span>
             </div>
-            <div className="h-32 bg-white/5 rounded-lg border border-white/10 flex items-center justify-center">
-              <span className="text-white/70 text-sm">Intégration Google Maps à venir</span>
+            <div className="h-64 bg-white/5 rounded-lg border border-white/10 overflow-hidden">
+              {/* Google Map integration will be added here */}
             </div>
           </motion.div>
         </motion.div>

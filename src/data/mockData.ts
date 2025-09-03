@@ -11,6 +11,9 @@ export interface Property {
   image: string;
   features: string[];
   status: 'available' | 'sold' | 'reserved';
+  lat: number;
+  lng: number;
+  priceValue: number;
 }
 
 export const mockProperties: Property[] = [

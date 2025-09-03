@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,11 +7,20 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
+import GoogleMapComponent from '@/components/GoogleMap';
+import PropertyModal from '@/components/PropertyModal';
+import { mockProperties, Property } from '@/data/mockData';
 import { Search as SearchIcon, MapPin, Filter, SlidersHorizontal } from 'lucide-react';
 
 const Search = () => {
   const [priceRange, setPriceRange] = useState([100000, 2000000]);
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const [selectedLocation, setSelectedLocation] = useState<string>('');
+  const [selectedType, setSelectedType] = useState<string>('');
+  const [selectedBedrooms, setSelectedBedrooms] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const locations = [
     'Limassol',
@@ -42,12 +51,55 @@ const Search = () => {
     'Accès plage'
   ];
 
+  // Filter properties based on search criteria
+  const filteredProperties = useMemo(() => {
+    return mockProperties.filter(property => {
+      const matchesLocation = !selectedLocation || 
+        property.location.toLowerCase().includes(selectedLocation.toLowerCase());
+      
+      const matchesType = !selectedType || 
+        property.type === selectedType.toLowerCase();
+      
+      const matchesBedrooms = !selectedBedrooms || 
+        (property.bedrooms && property.bedrooms.toString() === selectedBedrooms) ||
+        (selectedBedrooms === '5+' && property.bedrooms && property.bedrooms >= 5);
+      
+      const matchesPrice = property.priceValue >= priceRange[0] && 
+        property.priceValue <= priceRange[1];
+      
+      const matchesFeatures = selectedFilters.length === 0 || 
+        selectedFilters.some(filter => 
+          property.features.some(feature => 
+            feature.toLowerCase().includes(filter.toLowerCase())
+          )
+        );
+      
+      const matchesQuery = !searchQuery || 
+        property.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        property.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        property.description.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      return matchesLocation && matchesType && matchesBedrooms && 
+             matchesPrice && matchesFeatures && matchesQuery;
+    });
+  }, [selectedLocation, selectedType, selectedBedrooms, priceRange, selectedFilters, searchQuery]);
+
   const toggleFilter = (filter: string) => {
     setSelectedFilters(prev => 
       prev.includes(filter) 
         ? prev.filter(f => f !== filter)
         : [...prev, filter]
     );
+  };
+
+  const handlePropertySelect = (property: Property) => {
+    setSelectedProperty(property);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedProperty(null);
   };
 
   return (
@@ -95,11 +147,12 @@ const Search = () => {
                   {/* Location */}
                   <div className="space-y-2">
                     <Label htmlFor="location">Localisation</Label>
-                    <Select>
+                    <Select value={selectedLocation} onValueChange={setSelectedLocation}>
                       <SelectTrigger>
                         <SelectValue placeholder="Choisir une ville" />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value="">Toutes les villes</SelectItem>
                         {locations.map(location => (
                           <SelectItem key={location} value={location.toLowerCase()}>
                             {location}
@@ -112,11 +165,12 @@ const Search = () => {
                   {/* Property Type */}
                   <div className="space-y-2">
                     <Label htmlFor="type">Type de bien</Label>
-                    <Select>
+                    <Select value={selectedType} onValueChange={setSelectedType}>
                       <SelectTrigger>
                         <SelectValue placeholder="Type de propriété" />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value="">Tous les types</SelectItem>
                         {propertyTypes.map(type => (
                           <SelectItem key={type} value={type.toLowerCase()}>
                             {type}
@@ -129,11 +183,12 @@ const Search = () => {
                   {/* Bedrooms */}
                   <div className="space-y-2">
                     <Label htmlFor="bedrooms">Chambres</Label>
-                    <Select>
+                    <Select value={selectedBedrooms} onValueChange={setSelectedBedrooms}>
                       <SelectTrigger>
                         <SelectValue placeholder="Nombre de chambres" />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value="">Toutes</SelectItem>
                         <SelectItem value="1">1 chambre</SelectItem>
                         <SelectItem value="2">2 chambres</SelectItem>
                         <SelectItem value="3">3 chambres</SelectItem>
@@ -203,6 +258,8 @@ const Search = () => {
                       <Input 
                         placeholder="Rechercher par ville, quartier ou nom de projet..."
                         className="h-12 text-lg"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
                       />
                     </div>
                     <Button size="lg" className="btn-premium md:w-auto">
@@ -237,11 +294,30 @@ const Search = () => {
                 </div>
               )}
 
-              {/* Search Results Placeholder */}
-              <Card className="min-h-[500px]">
+              {/* Interactive Map with Filtered Results */}
+              <Card className="mb-6">
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
-                    <span>Résultats de recherche</span>
+                    <span>Carte interactive</span>
+                    <Badge variant="outline" className="text-sm">
+                      {filteredProperties.length} propriété{filteredProperties.length > 1 ? 's' : ''} trouvée{filteredProperties.length > 1 ? 's' : ''}
+                    </Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <GoogleMapComponent 
+                    properties={filteredProperties}
+                    onPropertySelect={handlePropertySelect}
+                    height="500px"
+                  />
+                </CardContent>
+              </Card>
+
+              {/* Search Results Summary */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    <span>Résultats de recherche ({filteredProperties.length})</span>
                     <div className="flex items-center gap-2">
                       <SlidersHorizontal className="w-4 h-4 text-muted-foreground" />
                       <span className="text-sm text-muted-foreground">Trier par</span>
@@ -260,30 +336,85 @@ const Search = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-center py-20">
-                    <MapPin className="w-16 h-16 mx-auto mb-4 text-muted-foreground/50" />
-                    <h3 className="text-xl font-semibold text-foreground mb-2">
-                      Aucun résultat pour l'instant
-                    </h3>
-                    <p className="text-muted-foreground mb-6">
-                      Utilisez les filtres ci-dessus pour rechercher des propriétés ou 
-                      contactez-nous pour une recherche personnalisée.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                      <Button className="btn-premium">
-                        Afficher toutes les propriétés
-                      </Button>
-                      <Button variant="outline">
-                        Contactez un expert
-                      </Button>
+                  {filteredProperties.length > 0 ? (
+                    <div className="space-y-4">
+                      {filteredProperties.map((property) => (
+                        <motion.div
+                          key={property.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
+                          onClick={() => handlePropertySelect(property)}
+                        >
+                          <div className="flex justify-between items-start">
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-foreground mb-1">
+                                {property.title}
+                              </h3>
+                              <div className="flex items-center text-sm text-muted-foreground mb-2">
+                                <MapPin className="w-3 h-3 mr-1" />
+                                {property.location}
+                              </div>
+                              <p className="text-sm text-muted-foreground line-clamp-2">
+                                {property.description}
+                              </p>
+                            </div>
+                            <div className="text-right ml-4">
+                              <div className="text-xl font-bold text-primary mb-2">
+                                {property.price}
+                              </div>
+                              <Badge variant="outline" className="capitalize">
+                                {property.type}
+                              </Badge>
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
                     </div>
-                  </div>
+                  ) : (
+                    <div className="text-center py-20">
+                      <MapPin className="w-16 h-16 mx-auto mb-4 text-muted-foreground/50" />
+                      <h3 className="text-xl font-semibold text-foreground mb-2">
+                        Aucune propriété trouvée
+                      </h3>
+                      <p className="text-muted-foreground mb-6">
+                        Aucune propriété ne correspond à vos critères. 
+                        Essayez d'ajuster vos filtres ou contactez nos experts.
+                      </p>
+                      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <Button 
+                          className="btn-premium"
+                          onClick={() => {
+                            setSelectedLocation('');
+                            setSelectedType('');
+                            setSelectedBedrooms('');
+                            setSelectedFilters([]);
+                            setPriceRange([100000, 2000000]);
+                            setSearchQuery('');
+                          }}
+                        >
+                          Réinitialiser les filtres
+                        </Button>
+                        <Button variant="outline">
+                          Contactez un expert
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </motion.div>
           </div>
         </div>
       </section>
+
+      {/* Property Modal */}
+      <PropertyModal 
+        property={selectedProperty}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 };
