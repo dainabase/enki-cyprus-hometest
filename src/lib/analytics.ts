@@ -84,3 +84,12 @@ export const trackContactClick = (source: string) => {
 export const trackLexaiaCalculation = (result: any) => {
   trackCustomEvent('lexaia_calculated', { result });
 };
+
+export const trackCommissionTriggered = (data: {
+  project_id: string;
+  amount: number;
+  promoter_id: string;
+  conversion_type: string;
+}) => {
+  trackCustomEvent('commission_triggered', data);
+};

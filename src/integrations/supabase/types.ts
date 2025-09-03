@@ -150,6 +150,42 @@ export type Database = {
           },
         ]
       }
+      commissions: {
+        Row: {
+          amount: number
+          created_at: string
+          date: string
+          id: string
+          project_id: string
+          promoter_id: string
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          date?: string
+          id?: string
+          project_id: string
+          promoter_id: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          date?: string
+          id?: string
+          project_id?: string
+          promoter_id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       favorites: {
         Row: {
           created_at: string
@@ -261,6 +297,36 @@ export type Database = {
           type?: string
           updated_at?: string
           virtual_tour?: string | null
+        }
+        Relationships: []
+      }
+      promoters: {
+        Row: {
+          commission_rate: number
+          contact: Json
+          created_at: string
+          id: string
+          name: string
+          projects: string[]
+          updated_at: string
+        }
+        Insert: {
+          commission_rate?: number
+          contact?: Json
+          created_at?: string
+          id?: string
+          name: string
+          projects?: string[]
+          updated_at?: string
+        }
+        Update: {
+          commission_rate?: number
+          contact?: Json
+          created_at?: string
+          id?: string
+          name?: string
+          projects?: string[]
+          updated_at?: string
         }
         Relationships: []
       }

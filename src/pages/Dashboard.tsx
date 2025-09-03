@@ -13,6 +13,8 @@ import {
   Check,
   X
 } from 'lucide-react';
+import { LexaiaCalculator } from '@/components/LexaiaCalculator';
+import { PromotersSection } from '@/components/PromotersSection';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -330,7 +332,7 @@ const Dashboard = () => {
           </div>
 
           <Tabs defaultValue="favorites" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="favorites" className="flex items-center gap-2">
                 <Heart className="w-4 h-4" />
                 Favoris
@@ -346,6 +348,10 @@ const Dashboard = () => {
               <TabsTrigger value="lexaia" className="flex items-center gap-2">
                 <Calculator className="w-4 h-4" />
                 Lexaia
+              </TabsTrigger>
+              <TabsTrigger value="promoters" className="flex items-center gap-2">
+                <Building className="w-4 h-4" />
+                Promoteurs
               </TabsTrigger>
             </TabsList>
 
@@ -706,6 +712,16 @@ const Dashboard = () => {
                   )}
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            {/* Lexaia Tab */}
+            <TabsContent value="lexaia">
+              <LexaiaCalculator />
+            </TabsContent>
+
+            {/* Promoters Tab */}
+            <TabsContent value="promoters">
+              <PromotersSection />
             </TabsContent>
           </Tabs>
         </motion.div>
