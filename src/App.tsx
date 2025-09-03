@@ -42,7 +42,7 @@ const queryClient = new QueryClient({
   },
 });
 
-console.log('🚀 App.tsx: Rendering App component');
+// App component rendering
 
 const AppContent = () => {
   useEffect(() => {
@@ -78,7 +78,7 @@ const AppContent = () => {
 };
 
 const App = () => {
-  console.log('🔄 App.tsx: App function called');
+  // App function called
   return (
     <ErrorBoundary fallback={<div className="p-6 text-center"><p>Une erreur est survenue. Veuillez recharger la page.</p></div>}>
       <HelmetProvider>

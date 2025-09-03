@@ -52,7 +52,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
           table: 'commissions'
         },
         (payload) => {
-          console.log('New commission detected:', payload);
+          // New commission detected
           addToast({
             type: 'success',
             title: 'Commission Créée',
@@ -72,7 +72,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
           table: 'checklists'
         },
         (payload) => {
-          console.log('Checklist updated:', payload);
+          // Checklist updated
           const newItems = payload.new.items || [];
           const completedTasks = newItems.filter((item: any) => item.done).length;
           
