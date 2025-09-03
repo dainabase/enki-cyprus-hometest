@@ -431,9 +431,29 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      audit_log_view: {
+        Row: {
+          action: string | null
+          admin_email: string | null
+          admin_name: string | null
+          admin_user_id: string | null
+          created_at: string | null
+          details: Json | null
+          id: string | null
+          ip_address: unknown | null
+          resource_id: string | null
+          resource_type: string | null
+          seconds_ago: number | null
+          user_agent: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      can_view_audit_logs: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       check_rate_limit: {
         Args: {
           p_limit?: number
