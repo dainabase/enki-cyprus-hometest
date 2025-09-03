@@ -13,10 +13,14 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <TooltipProvider>
+console.log('🚀 App.tsx: Rendering App component');
+
+const App = () => {
+  console.log('🔄 App.tsx: App function called');
+  return (
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <TooltipProvider>
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -30,9 +34,10 @@ const App = () => (
         </Layout>
         <Toaster />
         <Sonner />
-      </TooltipProvider>
-    </BrowserRouter>
-  </QueryClientProvider>
-);
+        </TooltipProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
