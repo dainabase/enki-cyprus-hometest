@@ -23,6 +23,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Property } from '@/lib/supabase';
 import { useSupabaseProperty } from '@/hooks/useSupabaseProperties';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 import { GoogleMapsProvider } from '@/contexts/GoogleMapsContext';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import FloorPlanModal from '@/components/FloorPlanModal';
@@ -87,11 +90,99 @@ const ProjectDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { property, loading, error } = useSupabaseProperty(id);
+  const { user, isAuthenticated } = useAuth();
+  const { toast } = useToast();
   const [isLiked, setIsLiked] = useState(false);
+  const [isCheckingFavorite, setIsCheckingFavorite] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<{ url: string; title: string } | null>(null);
   
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 500], [0, 150]);
+
+  // Check if property is in favorites
+  useEffect(() => {
+    const checkFavoriteStatus = async () => {
+      if (!user || !id) return;
+      
+      try {
+        const { data } = await supabase
+          .from('favorites')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('project_id', id)
+          .single();
+        
+        setIsLiked(!!data);
+      } catch (error) {
+        // Property not in favorites, which is fine
+      }
+    };
+
+    checkFavoriteStatus();
+  }, [user, id]);
+
+  const toggleFavorite = async () => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Connexion requise",
+        description: "Veuillez vous connecter pour ajouter des favoris",
+        action: (
+          <Button size="sm" onClick={() => navigate('/login')}>
+            Se connecter
+          </Button>
+        )
+      });
+      return;
+    }
+
+    if (!id || isCheckingFavorite) return;
+
+    try {
+      setIsCheckingFavorite(true);
+
+      if (isLiked) {
+        // Remove from favorites
+        const { error } = await supabase
+          .from('favorites')
+          .delete()
+          .eq('user_id', user!.id)
+          .eq('project_id', id);
+
+        if (error) throw error;
+
+        setIsLiked(false);
+        toast({
+          title: "Favori supprimé",
+          description: "La propriété a été retirée de vos favoris"
+        });
+      } else {
+        // Add to favorites
+        const { error } = await supabase
+          .from('favorites')
+          .insert({
+            user_id: user!.id,
+            project_id: id
+          });
+
+        if (error) throw error;
+
+        setIsLiked(true);
+        toast({
+          title: "Favori ajouté",
+          description: "La propriété a été ajoutée à vos favoris"
+        });
+      }
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible de modifier le favori"
+      });
+    } finally {
+      setIsCheckingFavorite(false);
+    }
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -185,7 +276,8 @@ const ProjectDetails: React.FC = () => {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setIsLiked(!isLiked)}
+                onClick={toggleFavorite}
+                disabled={isCheckingFavorite}
                 className="bg-white bg-opacity-90 hover:bg-opacity-100 border-0"
               >
                 <Heart className={`w-4 h-4 ${isLiked ? 'fill-red-500 text-red-500' : 'text-gray-800'}`} />

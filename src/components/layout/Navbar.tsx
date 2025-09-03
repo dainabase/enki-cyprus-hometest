@@ -1,22 +1,101 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Menu, X, LogIn } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Menu, 
+  X, 
+  LogIn, 
+  LogOut, 
+  User, 
+  Settings, 
+  UserCog,
+  ChevronDown,
+  Home,
+  Search,
+  Building,
+  Info,
+  Mail
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, profile, isAuthenticated, isAdmin, signOut, loading } = useAuth();
+  const { toast } = useToast();
 
-  const navigation = [
-    { name: 'Accueil', href: '/' },
-    { name: 'Recherche', href: '/search' },
-    { name: 'Projets', href: '/projects' },
-    { name: 'À Propos', href: '/about' },
-    { name: 'Contact', href: '/contact' },
+  // Navigation publique
+  const publicNavigation = [
+    { name: 'Accueil', href: '/', icon: Home },
+    { name: 'Recherche', href: '/search', icon: Search },
+    { name: 'Projets', href: '/projects', icon: Building },
+    { name: 'À Propos', href: '/about', icon: Info },
+    { name: 'Contact', href: '/contact', icon: Mail },
+  ];
+
+  // Navigation utilisateur connecté
+  const userNavigation = [
+    { name: 'Mon Espace', href: '/dashboard', icon: User },
+  ];
+
+  // Navigation admin
+  const adminNavigation = [
+    { name: 'Admin Panel', href: '/admin', icon: UserCog },
   ];
 
   const isActive = (path: string) => location.pathname === path;
+
+  const handleLogout = async () => {
+    try {
+      const { error } = await signOut();
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Erreur de déconnexion",
+          description: error.message
+        });
+      } else {
+        toast({
+          title: "Déconnexion réussie",
+          description: "À bientôt sur ENKI-REALTY!"
+        });
+        navigate('/');
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+    setIsOpen(false);
+  };
+
+  const getUserInitials = () => {
+    if (profile?.profile?.name) {
+      return profile.profile.name
+        .split(' ')
+        .map(n => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2);
+    }
+    return user?.email?.slice(0, 2).toUpperCase() || 'U';
+  };
+
+  const allNavigation = [
+    ...publicNavigation,
+    ...(isAuthenticated ? userNavigation : []),
+    ...(isAdmin ? adminNavigation : [])
+  ];
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
@@ -26,89 +105,309 @@ const Navbar = () => {
           <Link to="/" className="flex items-center space-x-2">
             <motion.div
               whileHover={{ scale: 1.05 }}
-              className="text-2xl font-bold text-gradient"
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"
             >
               ENKI-REALTY
             </motion.div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navigation.map((item) => (
-              <Link
+          <div className="hidden md:flex items-center space-x-1">
+            {publicNavigation.map((item) => (
+              <motion.div
                 key={item.name}
-                to={item.href}
-                className={`relative px-3 py-2 text-sm font-medium transition-colors duration-200 ${
-                  isActive(item.href)
-                    ? 'text-primary'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
               >
-                {item.name}
-                {isActive(item.href) && (
-                  <motion.div
-                    layoutId="activeTab"
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
-                    initial={false}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  />
-                )}
-              </Link>
+                <Link
+                  to={item.href}
+                  className={`relative px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                    isActive(item.href)
+                      ? 'text-primary bg-accent/50'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-accent/30'
+                  }`}
+                >
+                  {item.name}
+                  {isActive(item.href) && (
+                    <motion.div
+                      layoutId="activeTab"
+                      className="absolute bottom-0 left-2 right-2 h-0.5 bg-primary rounded-full"
+                      initial={false}
+                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    />
+                  )}
+                </Link>
+              </motion.div>
             ))}
           </div>
 
-          {/* Login Button */}
-          <div className="hidden md:flex">
-            <Button variant="outline" size="sm" className="btn-outline-premium">
-              <LogIn className="w-4 h-4 mr-2" />
-              Connexion
-            </Button>
+          {/* Desktop Auth Section */}
+          <div className="hidden md:flex items-center space-x-3">
+            {loading ? (
+              <div className="w-8 h-8 animate-pulse bg-muted rounded-full" />
+            ) : isAuthenticated ? (
+              <>
+                {/* Navigation utilisateur connecté */}
+                {userNavigation.map((item) => (
+                  <motion.div
+                    key={item.name}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  >
+                    <Link
+                      to={item.href}
+                      className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                        isActive(item.href)
+                          ? 'text-primary bg-accent/50'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-accent/30'
+                      }`}
+                    >
+                      <item.icon className="w-4 h-4 mr-2" />
+                      {item.name}
+                    </Link>
+                  </motion.div>
+                ))}
+
+                {/* Navigation admin */}
+                {isAdmin && adminNavigation.map((item) => (
+                  <motion.div
+                    key={item.name}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  >
+                    <Link
+                      to={item.href}
+                      className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                        isActive(item.href)
+                          ? 'text-primary bg-accent/50'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-accent/30'
+                      }`}
+                    >
+                      <item.icon className="w-4 h-4 mr-2" />
+                      {item.name}
+                    </Link>
+                  </motion.div>
+                ))}
+
+                {/* User Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="relative h-10 w-10 rounded-full"
+                    >
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback className="bg-primary/10 text-primary font-medium">
+                          {getUserInitials()}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56" align="end" forceMount>
+                    <DropdownMenuLabel className="font-normal">
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium leading-none">
+                          {profile?.profile?.name || 'Utilisateur'}
+                        </p>
+                        <p className="text-xs leading-none text-muted-foreground">
+                          {user?.email}
+                        </p>
+                        {isAdmin && (
+                          <p className="text-xs leading-none text-primary font-medium">
+                            Administrateur
+                          </p>
+                        )}
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:text-red-600">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Déconnexion
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                >
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    asChild
+                    className="border-primary/20 hover:bg-primary/5"
+                  >
+                    <Link to="/login">
+                      <LogIn className="w-4 h-4 mr-2" />
+                      Connexion
+                    </Link>
+                  </Button>
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                >
+                  <Button
+                    size="sm"
+                    asChild
+                    className="bg-gradient-to-r from-primary to-accent hover:opacity-90"
+                  >
+                    <Link to="/register">
+                      Inscription
+                    </Link>
+                  </Button>
+                </motion.div>
+              </div>
+            )}
           </div>
 
           {/* Mobile menu button */}
           <div className="md:hidden">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsOpen(!isOpen)}
+            <motion.div
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
-              {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsOpen(!isOpen)}
+              >
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.div
+                    key={isOpen ? 'close' : 'open'}
+                    initial={{ rotate: -90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: 90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                  </motion.div>
+                </AnimatePresence>
+              </Button>
+            </motion.div>
           </div>
         </div>
 
         {/* Mobile Navigation */}
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-border"
-          >
-            <div className="px-2 pt-2 pb-3 space-y-1">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`block px-3 py-2 text-base font-medium rounded-md transition-colors ${
-                    isActive(item.href)
-                      ? 'text-primary bg-accent'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-accent'
-                  }`}
-                  onClick={() => setIsOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
-              <div className="pt-2">
-                <Button variant="outline" size="sm" className="w-full btn-outline-premium">
-                  <LogIn className="w-4 h-4 mr-2" />
-                  Connexion
-                </Button>
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="md:hidden border-t border-border bg-background/95 backdrop-blur-sm"
+            >
+              <div className="px-2 pt-2 pb-3 space-y-1">
+                {/* Navigation Links */}
+                {allNavigation.map((item, index) => (
+                  <motion.div
+                    key={item.name}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1, duration: 0.3 }}
+                  >
+                    <Link
+                      to={item.href}
+                      className={`flex items-center px-3 py-2 text-base font-medium rounded-md transition-all duration-200 ${
+                        isActive(item.href)
+                          ? 'text-primary bg-accent'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                      }`}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <item.icon className="w-5 h-5 mr-3" />
+                      {item.name}
+                    </Link>
+                  </motion.div>
+                ))}
+
+                {/* Mobile Auth Section */}
+                <div className="pt-3 border-t border-border/50">
+                  {loading ? (
+                    <div className="px-3 py-2">
+                      <div className="animate-pulse bg-muted h-10 rounded-md" />
+                    </div>
+                  ) : isAuthenticated ? (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: allNavigation.length * 0.1, duration: 0.3 }}
+                      className="space-y-2"
+                    >
+                      <div className="px-3 py-2 text-sm text-muted-foreground">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                            <span className="text-xs font-medium text-primary">
+                              {getUserInitials()}
+                            </span>
+                          </div>
+                          <div>
+                            <p className="font-medium text-foreground">
+                              {profile?.profile?.name || 'Utilisateur'}
+                            </p>
+                            <p className="text-xs">{user?.email}</p>
+                            {isAdmin && (
+                              <p className="text-xs text-primary font-medium">Administrateur</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleLogout}
+                        className="w-full justify-start text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                      >
+                        <LogOut className="w-4 h-4 mr-2" />
+                        Déconnexion
+                      </Button>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: allNavigation.length * 0.1, duration: 0.3 }}
+                      className="space-y-2"
+                    >
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        asChild
+                        className="w-full justify-start"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <Link to="/login">
+                          <LogIn className="w-4 h-4 mr-2" />
+                          Connexion
+                        </Link>
+                      </Button>
+                      <Button
+                        size="sm"
+                        asChild
+                        className="w-full bg-gradient-to-r from-primary to-accent"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <Link to="/register">
+                          Inscription
+                        </Link>
+                      </Button>
+                    </motion.div>
+                  )}
+                </div>
               </div>
-            </div>
-          </motion.div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </nav>
   );
