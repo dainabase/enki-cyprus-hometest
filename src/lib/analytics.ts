@@ -30,9 +30,21 @@ export const trackCustomEvent = async (eventName: string, eventData: Record<stri
   // Track in GA4
   ReactGA.event(eventName, eventData);
   
-  // Track in Supabase for admin dashboard
+  // Track in Supabase for admin dashboard with rate limiting
   try {
     const sessionId = getSessionId();
+    
+    // Import rate limiting functions
+    const { checkAnalyticsRateLimit, updateRateLimit } = await import('./security');
+    
+    // Check rate limit (100 events per hour per session)
+    const withinLimit = await checkAnalyticsRateLimit(undefined, sessionId, 100, 60);
+    
+    if (!withinLimit) {
+      console.warn('Analytics rate limit exceeded for session:', sessionId);
+      return;
+    }
+
     await supabase.from('analytics_events').insert({
       event_name: eventName,
       event_data: eventData,
@@ -40,6 +52,9 @@ export const trackCustomEvent = async (eventName: string, eventData: Record<stri
       page_url: window.location.pathname,
       user_agent: navigator.userAgent,
     });
+
+    // Update rate limit counter
+    await updateRateLimit(undefined, sessionId);
   } catch (error) {
     console.error('Error tracking event to Supabase:', error);
   }
