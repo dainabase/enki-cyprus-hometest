@@ -8,9 +8,11 @@ import { Property } from '@/data/mockData';
 interface PropertyCardProps {
   property: Property;
   index?: number;
+  onClick?: () => void;
+  className?: string;
 }
 
-const PropertyCard = ({ property, index = 0 }: PropertyCardProps) => {
+const PropertyCard = ({ property, index = 0, onClick, className = '' }: PropertyCardProps) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'available':
@@ -43,9 +45,10 @@ const PropertyCard = ({ property, index = 0 }: PropertyCardProps) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
       whileHover={{ y: -8 }}
-      className="group"
+      className={`group ${className}`}
+      onClick={onClick}
     >
-      <Card className="overflow-hidden card-hover bg-gradient-card">
+      <Card className="overflow-hidden card-hover bg-gradient-card cursor-pointer">
         {/* Image Container */}
         <div className="relative overflow-hidden">
           <div className="aspect-[4/3] bg-muted bg-gradient-to-br from-muted to-accent">
