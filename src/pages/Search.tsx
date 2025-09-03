@@ -54,13 +54,13 @@ const Search = () => {
   // Filter properties based on search criteria
   const filteredProperties = useMemo(() => {
     return mockProperties.filter(property => {
-      const matchesLocation = !selectedLocation || 
+      const matchesLocation = selectedLocation === 'all' || 
         property.location.toLowerCase().includes(selectedLocation.toLowerCase());
       
-      const matchesType = !selectedType || 
+      const matchesType = selectedType === 'all' || 
         property.type === selectedType.toLowerCase();
       
-      const matchesBedrooms = !selectedBedrooms || 
+      const matchesBedrooms = selectedBedrooms === 'all' || 
         (property.bedrooms && property.bedrooms.toString() === selectedBedrooms) ||
         (selectedBedrooms === '5+' && property.bedrooms && property.bedrooms >= 5);
       
@@ -151,8 +151,8 @@ const Search = () => {
                       <SelectTrigger>
                         <SelectValue placeholder="Choisir une ville" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="">Toutes les villes</SelectItem>
+                      <SelectContent className="bg-popover z-50">
+                        <SelectItem value="all">Toutes les villes</SelectItem>
                         {locations.map(location => (
                           <SelectItem key={location} value={location.toLowerCase()}>
                             {location}
@@ -169,8 +169,8 @@ const Search = () => {
                       <SelectTrigger>
                         <SelectValue placeholder="Type de propriété" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="">Tous les types</SelectItem>
+                      <SelectContent className="bg-popover z-50">
+                        <SelectItem value="all">Tous les types</SelectItem>
                         {propertyTypes.map(type => (
                           <SelectItem key={type} value={type.toLowerCase()}>
                             {type}
@@ -187,8 +187,8 @@ const Search = () => {
                       <SelectTrigger>
                         <SelectValue placeholder="Nombre de chambres" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="">Toutes</SelectItem>
+                      <SelectContent className="bg-popover z-50">
+                        <SelectItem value="all">Toutes</SelectItem>
                         <SelectItem value="1">1 chambre</SelectItem>
                         <SelectItem value="2">2 chambres</SelectItem>
                         <SelectItem value="3">3 chambres</SelectItem>
@@ -386,9 +386,9 @@ const Search = () => {
                         <Button 
                           className="btn-premium"
                           onClick={() => {
-                            setSelectedLocation('');
-                            setSelectedType('');
-                            setSelectedBedrooms('');
+                            setSelectedLocation('all');
+                            setSelectedType('all');
+                            setSelectedBedrooms('all');
                             setSelectedFilters([]);
                             setPriceRange([100000, 2000000]);
                             setSearchQuery('');

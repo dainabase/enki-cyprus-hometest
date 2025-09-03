@@ -108,7 +108,7 @@ const PropertySearch = ({ properties, onFilteredProperties, onPropertySelect }: 
           <SelectTrigger>
             <SelectValue placeholder="Type de bien" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-popover z-50">
             <SelectItem value="all">Tous les types</SelectItem>
             <SelectItem value="villa">Villa</SelectItem>
             <SelectItem value="apartment">Appartement</SelectItem>
@@ -121,7 +121,7 @@ const PropertySearch = ({ properties, onFilteredProperties, onPropertySelect }: 
           <SelectTrigger>
             <SelectValue placeholder="Gamme de prix" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-popover z-50">
             <SelectItem value="all">Tous les prix</SelectItem>
             <SelectItem value="under-500k">Moins de 500k €</SelectItem>
             <SelectItem value="500k-1m">500k - 1M €</SelectItem>
