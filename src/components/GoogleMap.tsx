@@ -168,7 +168,6 @@ const GoogleMapComponent = ({
                 position={{ lat: property.lat, lng: property.lng }}
                 onClick={() => handleMarkerClick(property)}
                 icon={getPropertyIcon(property.type)}
-                animation={google.maps.Animation?.DROP}
               />
             </motion.div>
           ))}
