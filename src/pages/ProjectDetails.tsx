@@ -13,7 +13,10 @@ import {
   Share2,
   Heart,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Image as ImageIcon,
+  Map,
+  Play
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -21,6 +24,8 @@ import { Badge } from '@/components/ui/badge';
 import { mockProperties, Property } from '@/data/mockData';
 import { GoogleMapsProvider } from '@/contexts/GoogleMapsContext';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import FloorPlanModal from '@/components/FloorPlanModal';
+import VirtualTourViewer from '@/components/VirtualTourViewer';
 
 // Lazy loading pour la mini carte
 const MiniMap = lazy(() => import('@/components/MiniMap'));
@@ -83,6 +88,7 @@ const ProjectDetails: React.FC = () => {
   const [property, setProperty] = useState<Property | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLiked, setIsLiked] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<{ url: string; title: string } | null>(null);
   
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 500], [0, 150]);
@@ -389,12 +395,112 @@ const ProjectDetails: React.FC = () => {
             </Card>
           </motion.section>
 
-          {/* Mini Carte */}
+          {/* Section Plans */}
+          <motion.section
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mb-12"
+          >
+            <Card className="overflow-hidden">
+              <CardContent className="p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <Map className="w-6 h-6 text-blue-600" />
+                  <h2 className="text-2xl font-bold text-gray-800">Plans de la propriété</h2>
+                </div>
+                <p className="text-gray-600 mb-8">
+                  Découvrez la disposition détaillée de cette propriété avec nos plans interactifs.
+                </p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {property.plans.map((planUrl, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: index * 0.1 }}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="cursor-pointer group"
+                      onClick={() => setSelectedPlan({ 
+                        url: planUrl, 
+                        title: `Plan ${index + 1} - ${property.title}` 
+                      })}
+                    >
+                      <Card className="overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
+                        <div className="relative">
+                          <img
+                            src={planUrl}
+                            alt={`Plan ${index + 1} - ${property.title}`}
+                            className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
+                            loading="lazy"
+                          />
+                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+                            <motion.div
+                              initial={{ scale: 0 }}
+                              whileHover={{ scale: 1 }}
+                              className="bg-white bg-opacity-90 rounded-full p-3"
+                            >
+                              <ImageIcon className="w-6 h-6 text-blue-600" />
+                            </motion.div>
+                          </div>
+                        </div>
+                        <CardContent className="p-4">
+                          <h3 className="font-semibold text-gray-800 mb-1">
+                            Plan {index + 1}
+                          </h3>
+                          <p className="text-sm text-gray-600">
+                            Cliquez pour agrandir et explorer en détail
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </div>
+                
+                {/* Instructions */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.5 }}
+                  className="mt-6 p-4 bg-blue-50 rounded-lg"
+                >
+                  <p className="text-sm text-blue-800 text-center">
+                    💡 Cliquez sur un plan pour l'ouvrir en mode plein écran avec zoom interactif
+                  </p>
+                </motion.div>
+              </CardContent>
+            </Card>
+          </motion.section>
+
+          {/* Section Visite Virtuelle */}
           <motion.section
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.4 }}
+            className="mb-12"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <Play className="w-6 h-6 text-blue-600" />
+              <h2 className="text-2xl font-bold text-gray-800">Visite Virtuelle</h2>
+            </div>
+            
+            <VirtualTourViewer 
+              tourUrl={property.virtualTour}
+              propertyTitle={property.title}
+            />
+          </motion.section>
+
+          {/* Mini Carte */}
+          <motion.section
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.5 }}
             className="mb-12"
           >
             <Card className="overflow-hidden">
@@ -476,6 +582,14 @@ const ProjectDetails: React.FC = () => {
             </Card>
           </motion.section>
         </div>
+
+        {/* Modal Plans */}
+        <FloorPlanModal
+          isOpen={!!selectedPlan}
+          onClose={() => setSelectedPlan(null)}
+          planUrl={selectedPlan?.url || ''}
+          planTitle={selectedPlan?.title || ''}
+        />
 
         {/* Footer de retour */}
         <motion.footer

@@ -18,6 +18,9 @@ export interface Property {
   detailedDescription: string;
   detailedFeatures: string[];
   photos: string[];
+  // Nouvelles propriétés pour plans et visites virtuelles
+  plans: string[];
+  virtualTour: string;
 }
 
 export const mockProperties: Property[] = [
@@ -61,7 +64,13 @@ export const mockProperties: Property[] = [
       'https://placehold.co/1200x800/1ABC9C/ffffff?text=Jardin+Paysager',
       'https://placehold.co/1200x800/34495E/ffffff?text=Terrasse+Vue+Mer',
       'https://placehold.co/1200x800/E67E22/ffffff?text=Garage+Double'
-    ]
+    ],
+    plans: [
+      'https://placehold.co/800x600/34495E/ffffff?text=Plan+RDC+Villa+320m2',
+      'https://placehold.co/800x600/2C3E50/ffffff?text=Plan+Etage+Villa+Chambres',
+      'https://placehold.co/800x600/1ABC9C/ffffff?text=Plan+Jardin+Piscine+800m2'
+    ],
+    virtualTour: 'https://my.matterport.com/show/?m=villa-limassol-luxury'
   },
   {
     id: '2',
@@ -102,7 +111,12 @@ export const mockProperties: Property[] = [
       'https://placehold.co/1200x800/F39C12/ffffff?text=Suite+Parentale',
       'https://placehold.co/1200x800/1ABC9C/ffffff?text=Vue+Nicosie',
       'https://placehold.co/1200x800/34495E/ffffff?text=Salle+Bain+Marbre'
-    ]
+    ],
+    plans: [
+      'https://placehold.co/800x600/8E44AD/ffffff?text=Plan+Penthouse+180m2+Vue+360',
+      'https://placehold.co/800x600/9B59B6/ffffff?text=Plan+Terrasse+60m2+Panoramique'
+    ],
+    virtualTour: 'https://my.matterport.com/show/?m=penthouse-nicosie-modern'
   },
   {
     id: '3',
@@ -142,7 +156,12 @@ export const mockProperties: Property[] = [
       'https://placehold.co/1200x800/9B59B6/ffffff?text=Chambre+Principale',
       'https://placehold.co/1200x800/F39C12/ffffff?text=Piscine+Commune',
       'https://placehold.co/1200x800/1ABC9C/ffffff?text=Acces+Plage+Prive'
-    ]
+    ],
+    plans: [
+      'https://placehold.co/800x600/E74C3C/ffffff?text=Plan+Appartement+95m2+Vue+Mer',
+      'https://placehold.co/800x600/C0392B/ffffff?text=Plan+Balcon+15m2+Coral+Bay'
+    ],
+    virtualTour: 'https://my.matterport.com/show/?m=coral-bay-apartment'
   },
   {
     id: '9',
@@ -184,7 +203,13 @@ export const mockProperties: Property[] = [
       'https://placehold.co/1200x800/1ABC9C/ffffff?text=Plage+Mersini+50m',
       'https://placehold.co/1200x800/34495E/ffffff?text=Residence+Moderne',
       'https://placehold.co/1200x800/E67E22/ffffff?text=Parking+Prive'
-    ]
+    ],
+    plans: [
+      'https://placehold.co/800x600/16A085/ffffff?text=Plan+Mersini+Beach+80m2+2Ch',
+      'https://placehold.co/800x600/1ABC9C/ffffff?text=Plan+Balcon+Vue+Mer+8m2',
+      'https://placehold.co/800x600/48C9B0/ffffff?text=Plan+Residence+Parking'
+    ],
+    virtualTour: 'https://my.matterport.com/show/?m=mersini-beach-apartment-9'
   },
   {
     id: '4',
@@ -226,7 +251,13 @@ export const mockProperties: Property[] = [
       'https://placehold.co/1200x800/1ABC9C/ffffff?text=Piscine+Infinity',
       'https://placehold.co/1200x800/34495E/ffffff?text=Jardins+Mediterraneens',
       'https://placehold.co/1200x800/E67E22/ffffff?text=Vue+Panoramique+Mer'
-    ]
+    ],
+    plans: [
+      'https://placehold.co/800x600/D35400/ffffff?text=Plan+Villa+Prestige+450m2+5Ch',
+      'https://placehold.co/800x600/E67E22/ffffff?text=Plan+Spa+Cave+Vin+Heliport',
+      'https://placehold.co/800x600/F39C12/ffffff?text=Plan+Jardins+2000m2+Piscine'
+    ],
+    virtualTour: 'https://my.matterport.com/show/?m=villa-ayia-napa-prestige'
   },
   {
     id: '5',
@@ -265,7 +296,12 @@ export const mockProperties: Property[] = [
       'https://placehold.co/1200x800/F39C12/ffffff?text=Terrasse+40m2',
       'https://placehold.co/1200x800/1ABC9C/ffffff?text=Parking+20+Places',
       'https://placehold.co/1200x800/34495E/ffffff?text=Zone+Touristique'
-    ]
+    ],
+    plans: [
+      'https://placehold.co/800x600/E74C3C/ffffff?text=Plan+Commercial+250m2+RDC',
+      'https://placehold.co/800x600/C0392B/ffffff?text=Plan+Terrasse+Parking+20pl'
+    ],
+    virtualTour: 'https://my.matterport.com/show/?m=commercial-larnaca-premium'
   },
   {
     id: '6',
@@ -305,7 +341,12 @@ export const mockProperties: Property[] = [
       'https://placehold.co/1200x800/9B59B6/ffffff?text=Salon+Lumineux',
       'https://placehold.co/1200x800/F39C12/ffffff?text=Cuisine+Moderne',
       'https://placehold.co/1200x800/1ABC9C/ffffff?text=Fig+Tree+Beach+100m'
-    ]
+    ],
+    plans: [
+      'https://placehold.co/800x600/3498DB/ffffff?text=Plan+Appartement+85m2+Vue+Baie',
+      'https://placehold.co/800x600/2980B9/ffffff?text=Plan+Balcon+12m2+Fig+Tree'
+    ],
+    virtualTour: 'https://my.matterport.com/show/?m=fig-tree-bay-apartment'
   },
   {
     id: '7',
@@ -345,7 +386,12 @@ export const mockProperties: Property[] = [
       'https://placehold.co/1200x800/9B59B6/ffffff?text=Jardin+Paysage+600m2',
       'https://placehold.co/1200x800/F39C12/ffffff?text=Piscine+Pool+House',
       'https://placehold.co/1200x800/1ABC9C/ffffff?text=Quartier+Residentiel'
-    ]
+    ],
+    plans: [
+      'https://placehold.co/800x600/27AE60/ffffff?text=Plan+Villa+Familiale+280m2+4Ch',
+      'https://placehold.co/800x600/2ECC71/ffffff?text=Plan+Jardin+600m2+Piscine+8x4'
+    ],
+    virtualTour: 'https://my.matterport.com/show/?m=villa-familiale-limassol'
   },
   {
     id: '8',
@@ -385,7 +431,12 @@ export const mockProperties: Property[] = [
       'https://placehold.co/1200x800/9B59B6/ffffff?text=Salon+Panoramique+60m2',
       'https://placehold.co/1200x800/F39C12/ffffff?text=Cuisine+Ete+Exterieure',
       'https://placehold.co/1200x800/1ABC9C/ffffff?text=Ascenseur+Prive'
-    ]
+    ],
+    plans: [
+      'https://placehold.co/800x600/9B59B6/ffffff?text=Plan+Penthouse+200m2+Terrasse+100',
+      'https://placehold.co/800x600/8E44AD/ffffff?text=Plan+Jacuzzi+Cuisine+Ete'
+    ],
+    virtualTour: 'https://my.matterport.com/show/?m=penthouse-luxury-nicosie'
   },
   {
     id: '10',
@@ -426,7 +477,12 @@ export const mockProperties: Property[] = [
       'https://placehold.co/1200x800/F39C12/ffffff?text=Jardin+Mediterraneen+400m2',
       'https://placehold.co/1200x800/1ABC9C/ffffff?text=Vue+Montagne+Troodos',
       'https://placehold.co/1200x800/34495E/ffffff?text=Village+Pissouri'
-    ]
+    ],
+    plans: [
+      'https://placehold.co/800x600/D68910/ffffff?text=Plan+Maison+Traditionnelle+150m2',
+      'https://placehold.co/800x600/E67E22/ffffff?text=Plan+Jardin+400m2+Vue+Troodos'
+    ],
+    virtualTour: 'https://my.matterport.com/show/?m=maison-traditionnelle-pissouri'
   }
 ];
 
