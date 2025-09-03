@@ -29,7 +29,10 @@ export const mockProperties: Property[] = [
     area: '320 m²',
     image: '/placeholder-villa.jpg',
     features: ['Vue mer', 'Piscine privée', 'Jardin paysager', 'Garage double', 'Climatisation'],
-    status: 'available'
+    status: 'available',
+    lat: 34.7071,
+    lng: 33.0226,
+    priceValue: 1850000
   },
   {
     id: '2',
@@ -43,7 +46,10 @@ export const mockProperties: Property[] = [
     area: '180 m²',
     image: '/placeholder-penthouse.jpg',
     features: ['Terrasse 60m²', 'Vue panoramique', 'Cuisine équipée', 'Parking inclus'],
-    status: 'available'
+    status: 'available',
+    lat: 35.1856,
+    lng: 33.3823,
+    priceValue: 750000
   },
   {
     id: '3',
@@ -57,7 +63,10 @@ export const mockProperties: Property[] = [
     area: '95 m²',
     image: '/placeholder-apartment.jpg',
     features: ['Accès plage', 'Piscine commune', 'Sécurité 24h', 'Balcon vue mer'],
-    status: 'reserved'
+    status: 'reserved',
+    lat: 34.7720,
+    lng: 32.3588,
+    priceValue: 425000
   },
   {
     id: '4',
@@ -71,7 +80,10 @@ export const mockProperties: Property[] = [
     area: '450 m²',
     image: '/placeholder-luxury-villa.jpg',
     features: ['Design contemporain', 'Spa privé', 'Cave à vin', 'Domotique', 'Héliport'],
-    status: 'available'
+    status: 'available',
+    lat: 34.9823,
+    lng: 34.0196,
+    priceValue: 2200000
   },
   {
     id: '5',
@@ -83,7 +95,61 @@ export const mockProperties: Property[] = [
     area: '250 m²',
     image: '/placeholder-commercial.jpg',
     features: ['Emplacement premium', 'Forte affluence', 'Parking clients', 'Climatisation'],
-    status: 'available'
+    status: 'available',
+    lat: 34.9229,
+    lng: 33.6276,
+    priceValue: 890000
+  },
+  {
+    id: '6',
+    title: 'Appartement Moderne Protaras',
+    description: 'Résidence contemporaine avec vue sur la baie de Fig Tree, à quelques pas des plages dorées.',
+    price: '€385,000',
+    location: 'Fig Tree Bay, Protaras',
+    type: 'apartment',
+    bedrooms: 2,
+    bathrooms: 1,
+    area: '85 m²',
+    image: '/placeholder-apartment.jpg',
+    features: ['Vue baie', 'Balcon spacieux', 'Proche plages', 'Parking'],
+    status: 'available',
+    lat: 35.0123,
+    lng: 34.0591,
+    priceValue: 385000
+  },
+  {
+    id: '7',
+    title: 'Villa Familiale Limassol',
+    description: 'Villa spacieuse dans quartier résidentiel calme, parfaite pour familles avec enfants.',
+    price: '€1,200,000',
+    location: 'Agios Athanasios, Limassol',
+    type: 'villa',
+    bedrooms: 4,
+    bathrooms: 3,
+    area: '280 m²',
+    image: '/placeholder-villa.jpg',
+    features: ['Jardin privé', 'Piscine', 'Garage', 'Quartier familial'],
+    status: 'available',
+    lat: 34.7142,
+    lng: 33.0039,
+    priceValue: 1200000
+  },
+  {
+    id: '8',
+    title: 'Penthouse Luxury Nicosie',
+    description: 'Penthouse ultra-moderne avec terrasse de 100m² et vue à 360° sur la capitale.',
+    price: '€950,000',
+    location: 'Strovolos, Nicosie',
+    type: 'penthouse',
+    bedrooms: 3,
+    bathrooms: 2,
+    area: '200 m²',
+    image: '/placeholder-penthouse.jpg',
+    features: ['Terrasse 100m²', 'Vue 360°', 'Ascenseur privé', 'Domotique'],
+    status: 'available',
+    lat: 35.1448,
+    lng: 33.3617,
+    priceValue: 950000
   }
 ];
 
