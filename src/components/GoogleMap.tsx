@@ -60,10 +60,16 @@ const GoogleMapComponent = ({
       commercial: '🏪'
     };
     
-    return {
-      url: `data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='${iconSize}' height='${iconSize}' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='18' fill='%234A90E2' stroke='white' stroke-width='2'/%3E%3Ctext x='20' y='26' text-anchor='middle' font-size='16'%3E${icons[type]}%3C/text%3E%3C/svg%3E`,
-      scaledSize: new google.maps.Size(iconSize, iconSize),
-    };
+    // Only create Google Maps objects if the API is loaded
+    if (typeof google !== 'undefined' && google.maps) {
+      return {
+        url: `data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='${iconSize}' height='${iconSize}' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='18' fill='%234A90E2' stroke='white' stroke-width='2'/%3E%3Ctext x='20' y='26' text-anchor='middle' font-size='16'%3E${icons[type]}%3C/text%3E%3C/svg%3E`,
+        scaledSize: new google.maps.Size(iconSize, iconSize),
+      };
+    }
+    
+    // Fallback for when Google Maps API is not yet loaded
+    return undefined;
   };
 
   const onLoad = useCallback((map: google.maps.Map) => {
@@ -85,6 +91,7 @@ const GoogleMapComponent = ({
       return marker;
     });
 
+    // Only create clusterer if MarkerClusterer is available
     if (typeof MarkerClusterer !== 'undefined') {
       new MarkerClusterer({
         markers,
@@ -100,12 +107,6 @@ const GoogleMapComponent = ({
                 url: `data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='${size}' height='${size}' viewBox='0 0 ${size} ${size}'%3E%3Ccircle cx='${size/2}' cy='${size/2}' r='${size/2-2}' fill='${color}' stroke='white' stroke-width='2'/%3E%3Ctext x='${size/2}' y='${size/2+6}' text-anchor='middle' font-size='14' fill='white' font-weight='bold'%3E${count}%3C/text%3E%3C/svg%3E`,
                 scaledSize: new google.maps.Size(size, size),
               },
-              label: {
-                text: count.toString(),
-                color: 'white',
-                fontSize: '12px',
-                fontWeight: 'bold'
-              }
             });
           }
         }
@@ -149,8 +150,8 @@ const GoogleMapComponent = ({
           onLoad={onLoad}
           options={mapOptions}
         >
-          {/* Animated Markers */}
-          {properties.map((property, index) => (
+          {/* Only render markers if Google Maps API is loaded */}
+          {typeof google !== 'undefined' && google.maps && properties.map((property, index) => (
             <motion.div
               key={property.id}
               initial={{ scale: 0, opacity: 0 }}
