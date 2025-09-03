@@ -7,7 +7,7 @@ import { GoogleMapsProvider } from '@/contexts/GoogleMapsContext';
 import AdvancedSearchForm from '@/components/AdvancedSearchForm';
 const EnhancedMap = lazy(() => import('@/components/EnhancedMap'));
 import PropertyModal from '@/components/PropertyModal';
-import { mockProperties, Property } from '@/data/mockData';
+import { Property } from '@/lib/supabase';
 import ErrorBoundary from '@/components/ErrorBoundary';
 
 const Search = () => {
@@ -26,7 +26,7 @@ const Search = () => {
 
   return (
     <GoogleMapsProvider>
-      <FilterProvider properties={mockProperties}>
+      <FilterProvider>
         <div className="min-h-screen pt-16 bg-gray-50">
           {/* Header */}
           <section className="bg-gradient-to-r from-blue-600 to-blue-800 py-16">

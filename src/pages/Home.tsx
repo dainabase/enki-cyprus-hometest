@@ -4,19 +4,21 @@ import Hero from '@/components/Hero';
 import PropertyCard from '@/components/ui/PropertyCard';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 import PropertyModal from '@/components/PropertyModal';
-import PropertySearch from '@/components/PropertySearch';
 import { Button } from '@/components/ui/button';
-import { mockProperties, Property } from '@/data/mockData';
+import { Property } from '@/lib/supabase';
+import { useSupabaseProperties } from '@/hooks/useSupabaseProperties';
 import { TrendingUp, Shield, Award, Users } from 'lucide-react';
 import ErrorBoundary from '@/components/ErrorBoundary';
 
 const Home = () => {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [filteredProperties, setFilteredProperties] = useState<Property[]>(mockProperties);
-  const featuredProperties = mockProperties.slice(0, 3);
+  
+  // Load properties from Supabase
+  const { properties, loading, error } = useSupabaseProperties();
+  const featuredProperties = properties.slice(0, 3);
 
-  console.log('🏠 Home component rendered with', mockProperties.length, 'total properties');
+  console.log('🏠 Home component rendered with', properties.length, 'total properties');
 
   const handlePropertySelect = (property: Property) => {
     setSelectedProperty(property);
@@ -119,21 +121,6 @@ const Home = () => {
             </p>
           </motion.div>
 
-          {/* Property Search */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="mb-8"
-          >
-            <PropertySearch 
-              properties={mockProperties}
-              onFilteredProperties={setFilteredProperties}
-              onPropertySelect={handlePropertySelect}
-            />
-          </motion.div>
-
           {/* Interactive Map */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -144,11 +131,25 @@ const Home = () => {
           >
             <ErrorBoundary>
               <Suspense fallback={<div className="w-full h-[600px] flex items-center justify-center bg-muted rounded-xl">Chargement de la carte...</div>}>
-                <GoogleMapComponent 
-                  properties={filteredProperties}
-                  onPropertySelect={handlePropertySelect}
-                  height="600px"
-                />
+                {loading ? (
+                  <div className="w-full h-[600px] flex items-center justify-center bg-muted rounded-xl">
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full"
+                    />
+                  </div>
+                ) : error ? (
+                  <div className="w-full h-[600px] flex items-center justify-center bg-muted rounded-xl text-destructive">
+                    Erreur de chargement: {error}
+                  </div>
+                ) : (
+                  <GoogleMapComponent 
+                    properties={properties}
+                    onPropertySelect={handlePropertySelect}
+                    height="600px"
+                  />
+                )}
               </Suspense>
             </ErrorBoundary>
           </motion.div>

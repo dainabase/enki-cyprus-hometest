@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
 import { debounce } from 'lodash';
-import { Property } from '@/data/mockData';
+import { Property } from '@/lib/supabase';
+import { useSupabaseProperties } from '@/hooks/useSupabaseProperties';
 
 // Types pour les filtres
 export interface SearchFilters {
@@ -98,75 +99,39 @@ const FilterContext = createContext<FilterContextType | undefined>(undefined);
 
 interface FilterProviderProps {
   children: ReactNode;
-  properties: Property[];
 }
 
-export const FilterProvider: React.FC<FilterProviderProps> = ({ children, properties }) => {
-  const [state, dispatch] = useReducer(filterReducer, {
-    ...initialState,
-    allProperties: properties,
-    filteredProperties: properties
+export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
+  const [state, dispatch] = useReducer(filterReducer, initialState);
+  
+  // Hook pour charger les propriétés depuis Supabase
+  const { properties, loading, error } = useSupabaseProperties({
+    propertyType: state.filters.propertyType,
+    budgetMin: state.filters.budgetMin,
+    budgetMax: state.filters.budgetMax,
+    location: state.filters.location
   });
 
-  // Fonction de filtrage avec debounce
-  const debouncedFilter = debounce(() => {
-    console.log('🔍 Applying filters:', state.filters);
-    dispatch({ type: 'SET_LOADING', payload: true });
-
-    let filtered = [...state.allProperties];
-
-    // Filtre par type de bien
-    if (state.filters.propertyType !== 'Tous') {
-      const typeMapping: { [key: string]: string[] } = {
-        'Appartements': ['apartment', 'penthouse'],
-        'Maisons': ['villa', 'maison'],
-        'Commercial': ['commercial']
-      };
-      
-      const validTypes = typeMapping[state.filters.propertyType] || [];
-      if (validTypes.length > 0) {
-        filtered = filtered.filter(property => validTypes.includes(property.type));
-      }
-    }
-
-    // Filtre par budget
-    filtered = filtered.filter(property => 
-      property.priceValue >= state.filters.budgetMin && 
-      property.priceValue <= state.filters.budgetMax
-    );
-
-    // Filtre par localisation
-    if (state.filters.location) {
-      const location = state.filters.location.toLowerCase();
-      filtered = filtered.filter(property =>
-        property.location.toLowerCase().includes(location) ||
-        property.title.toLowerCase().includes(location)
-      );
-    }
-
-    console.log(`📊 Filtered results: ${filtered.length} properties`);
-    dispatch({ type: 'SET_FILTERED_PROPERTIES', payload: filtered });
-  }, 300);
-
+  // Les filtres sont maintenant appliqués directement via le hook useSupabaseProperties
   const applyFilters = () => {
-    debouncedFilter();
+    // Le filtrage est automatique via le hook
+    console.log('🔍 Filters applied via Supabase hook:', state.filters);
   };
 
   const resetFilters = () => {
     dispatch({ type: 'RESET_FILTERS' });
   };
 
-  // Appliquer les filtres quand ils changent
+  // Mettre à jour les propriétés quand elles changent depuis Supabase
   useEffect(() => {
-    applyFilters();
-  }, [state.filters]);
-
-  // Initialiser avec toutes les propriétés
-  useEffect(() => {
+    dispatch({ type: 'SET_LOADING', payload: loading });
     if (properties.length > 0) {
       dispatch({ type: 'SET_ALL_PROPERTIES', payload: properties });
     }
-  }, [properties]);
+    if (error) {
+      console.error('Erreur Supabase:', error);
+    }
+  }, [properties, loading, error]);
 
   const contextValue: FilterContextType = {
     state,

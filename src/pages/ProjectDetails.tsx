@@ -21,7 +21,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { mockProperties, Property } from '@/data/mockData';
+import { Property } from '@/lib/supabase';
+import { useSupabaseProperty } from '@/hooks/useSupabaseProperties';
 import { GoogleMapsProvider } from '@/contexts/GoogleMapsContext';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import FloorPlanModal from '@/components/FloorPlanModal';
@@ -85,8 +86,7 @@ function CustomNextArrow(props: any) {
 const ProjectDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [property, setProperty] = useState<Property | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { property, loading, error } = useSupabaseProperty(id);
   const [isLiked, setIsLiked] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<{ url: string; title: string } | null>(null);
   
@@ -94,15 +94,10 @@ const ProjectDetails: React.FC = () => {
   const heroY = useTransform(scrollY, [0, 500], [0, 150]);
 
   useEffect(() => {
-    const foundProperty = mockProperties.find(p => p.id === id);
-    setProperty(foundProperty || null);
-    setIsLoading(false);
-    
-    // Scroll to top
     window.scrollTo(0, 0);
   }, [id]);
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
@@ -213,8 +208,8 @@ const ProjectDetails: React.FC = () => {
             className="absolute bottom-0 left-0 right-0 p-6 md:p-12 text-white"
           >
             <div className="max-w-4xl">
-              <Badge className={`mb-4 ${getStatusColor(property.status)}`}>
-                {getStatusText(property.status)}
+              <Badge className="mb-4 bg-blue-600 text-white" variant="secondary">
+                {property.type}
               </Badge>
               
               <h1 className="text-4xl md:text-5xl font-bold mb-4">

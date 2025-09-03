@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { GoogleMap, InfoWindow } from '@react-google-maps/api';
 import { MarkerClusterer } from '@googlemaps/markerclusterer';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Property } from '@/data/mockData';
+import { Property } from '@/lib/supabase';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -111,9 +111,9 @@ useEffect(() => {
 
   try {
     const markers = properties.map((property) => {
-      console.log(`📌 Creating marker for: ${property.title} at (${property.lat}, ${property.lng})`);
+      console.log(`📌 Creating marker for: ${property.title} at (${property.coordinates.lat}, ${property.coordinates.lng})`);
       const marker = new google.maps.Marker({
-        position: { lat: property.lat, lng: property.lng },
+        position: { lat: property.coordinates.lat, lng: property.coordinates.lng },
         map,
         title: property.title,
         icon: getPropertyIcon(property.type),
@@ -196,7 +196,7 @@ useEffect(() => {
           {/* Info Window */}
           {selectedProperty && showInfoWindow && (
             <InfoWindow
-              position={{ lat: selectedProperty.lat, lng: selectedProperty.lng }}
+              position={{ lat: selectedProperty.coordinates.lat, lng: selectedProperty.coordinates.lng }}
               onCloseClick={() => setSelectedProperty(null)}
             >
               <AnimatePresence>
@@ -245,13 +245,9 @@ useEffect(() => {
                         </div>
                         
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-muted-foreground">Statut:</span>
-                          <Badge 
-                            variant={selectedProperty.status === 'available' ? 'default' : 'secondary'}
-                            className="text-xs"
-                          >
-                            {selectedProperty.status === 'available' ? 'Disponible' : 
-                             selectedProperty.status === 'reserved' ? 'Réservé' : 'Vendu'}
+                          <span className="text-sm text-muted-foreground">Type:</span>
+                          <Badge variant="secondary" className="text-xs capitalize">
+                            {selectedProperty.type}
                           </Badge>
                         </div>
                       </div>

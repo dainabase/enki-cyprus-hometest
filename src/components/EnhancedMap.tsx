@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { MapPin, Home, Building, Building2, Store } from 'lucide-react';
 import { useGoogleMapsContext } from '@/contexts/GoogleMapsContext';
 import { useFilters } from '@/contexts/FilterContext';
-import { Property } from '@/data/mockData';
+import { Property } from '@/lib/supabase';
 
 interface EnhancedMapProps {
   height?: string;
@@ -101,13 +101,13 @@ const EnhancedMap: React.FC<EnhancedMapProps> = ({
     if (state.filteredProperties.length > 0) {
       try {
         const markers = state.filteredProperties.map((property, index) => {
-          console.log(`📌 Creating marker for: ${property.title} at (${property.lat}, ${property.lng})`);
+          console.log(`📌 Creating marker for: ${property.title} at (${property.coordinates.lat}, ${property.coordinates.lng})`);
           
           const marker = new google.maps.Marker({
-            position: { lat: property.lat, lng: property.lng },
+            position: { lat: property.coordinates.lat, lng: property.coordinates.lng },
             map,
-            title: property.title,
-            icon: getPropertyIcon(property.type),
+            title: `${property.title} - ${property.price}`,
+        icon: getPropertyIcon(property.type),
             animation: google.maps.Animation.DROP, // Animation de drop
           });
 
@@ -193,7 +193,7 @@ const EnhancedMap: React.FC<EnhancedMapProps> = ({
         {/* Info Window avec animation */}
         {selectedProperty && (
           <InfoWindow
-            position={{ lat: selectedProperty.lat, lng: selectedProperty.lng }}
+            position={{ lat: selectedProperty.coordinates.lat, lng: selectedProperty.coordinates.lng }}
             onCloseClick={() => setSelectedProperty(null)}
           >
             <AnimatePresence>

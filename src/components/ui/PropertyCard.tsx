@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { MapPin, Bed, Bath, Square, Eye } from 'lucide-react';
-import { Property } from '@/data/mockData';
+import { Property } from '@/lib/supabase';
 
 interface PropertyCardProps {
   property: Property;
@@ -61,11 +61,11 @@ const PropertyCard = ({ property, index = 0, onClick, className = '' }: Property
             </div>
           </div>
           
-          {/* Status Badge */}
+          {/* Price Badge */}
           <Badge 
-            className={`absolute top-3 left-3 ${getStatusColor(property.status)}`}
+            className="absolute top-3 left-3 bg-primary text-primary-foreground"
           >
-            {getStatusText(property.status)}
+            {property.price}
           </Badge>
 
           {/* Type Badge */}
@@ -122,7 +122,7 @@ const PropertyCard = ({ property, index = 0, onClick, className = '' }: Property
               </div>
               <div className="flex items-center">
                 <Square className="w-4 h-4 mr-1 text-primary" />
-                <span>{property.area}</span>
+                <span>{property.area}m²</span>
               </div>
             </div>
           )}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { GoogleMap } from '@react-google-maps/api';
 import { useGoogleMapsContext } from '@/contexts/GoogleMapsContext';
-import { Property } from '@/data/mockData';
+import { Property } from '@/lib/supabase';
 
 interface MiniMapProps {
   property: Property;
@@ -16,8 +16,8 @@ const MiniMap: React.FC<MiniMapProps> = ({ property }) => {
   };
 
   const center = {
-    lat: property.lat,
-    lng: property.lng
+    lat: property.coordinates.lat,
+    lng: property.coordinates.lng
   };
 
   const mapOptions = {

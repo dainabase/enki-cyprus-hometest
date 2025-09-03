@@ -1,0 +1,115 @@
+import { useState, useEffect } from 'react';
+import { supabase, DatabaseProperty, Property, transformDatabaseProperty } from '@/lib/supabase';
+
+interface UsePropertiesOptions {
+  propertyType?: string;
+  budgetMin?: number;
+  budgetMax?: number;
+  location?: string;
+}
+
+export const useSupabaseProperties = (options: UsePropertiesOptions = {}) => {
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchProperties = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      let query = supabase.from('projects').select('*');
+
+      // Filtrage par type
+      if (options.propertyType && options.propertyType !== 'Tous') {
+        const typeMapping: { [key: string]: string[] } = {
+          'Appartements': ['apartment', 'penthouse'],
+          'Maisons': ['villa', 'maison'],
+          'Commercial': ['commercial']
+        };
+        
+        const validTypes = typeMapping[options.propertyType] || [options.propertyType.toLowerCase()];
+        query = query.in('type', validTypes);
+      }
+
+      // Filtrage par budget
+      if (options.budgetMin !== undefined) {
+        query = query.gte('price', options.budgetMin);
+      }
+      if (options.budgetMax !== undefined) {
+        query = query.lte('price', options.budgetMax);
+      }
+
+      // Filtrage par localisation
+      if (options.location) {
+        query = query.ilike('location->city', `%${options.location}%`);
+      }
+
+      const { data, error: supabaseError } = await query;
+
+      if (supabaseError) {
+        throw supabaseError;
+      }
+
+      const transformedProperties = (data as DatabaseProperty[]).map(transformDatabaseProperty);
+      setProperties(transformedProperties);
+    } catch (err) {
+      console.error('Erreur lors du chargement des propriétés:', err);
+      setError(err instanceof Error ? err.message : 'Erreur inconnue');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProperties();
+  }, [options.propertyType, options.budgetMin, options.budgetMax, options.location]);
+
+  return { properties, loading, error, refetch: fetchProperties };
+};
+
+export const useSupabaseProperty = (id: string | undefined) => {
+  const [property, setProperty] = useState<Property | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!id) {
+      setLoading(false);
+      return;
+    }
+
+    const fetchProperty = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const { data, error: supabaseError } = await supabase
+          .from('projects')
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (supabaseError) {
+          throw supabaseError;
+        }
+
+        if (data) {
+          setProperty(transformDatabaseProperty(data as DatabaseProperty));
+        } else {
+          setProperty(null);
+        }
+      } catch (err) {
+        console.error('Erreur lors du chargement de la propriété:', err);
+        setError(err instanceof Error ? err.message : 'Propriété non trouvée');
+        setProperty(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProperty();
+  }, [id]);
+
+  return { property, loading, error };
+};

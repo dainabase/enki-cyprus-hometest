@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Property } from '@/data/mockData';
+import { Property } from '@/lib/supabase';
 import { 
   MapPin, 
   Home, 
@@ -24,23 +24,7 @@ interface PropertyModalProps {
 const PropertyModal = ({ property, isOpen, onClose }: PropertyModalProps) => {
   if (!property) return null;
 
-  const getStatusColor = (status: Property['status']) => {
-    switch (status) {
-      case 'available': return 'bg-success text-success-foreground';
-      case 'reserved': return 'bg-orange-500 text-white';
-      case 'sold': return 'bg-muted text-muted-foreground';
-      default: return 'bg-muted text-muted-foreground';
-    }
-  };
-
-  const getStatusText = (status: Property['status']) => {
-    switch (status) {
-      case 'available': return 'Disponible';
-      case 'reserved': return 'Réservé';
-      case 'sold': return 'Vendu';
-      default: return 'Non défini';
-    }
-  };
+  // Status functionality removed as it's not in the new Property structure
 
   return (
     <AnimatePresence>
@@ -70,8 +54,8 @@ const PropertyModal = ({ property, isOpen, onClose }: PropertyModalProps) => {
                 <div className="flex items-center gap-2 mb-4">
                   <MapPin className="w-4 h-4 text-muted-foreground" />
                   <span className="text-muted-foreground">{property.location}</span>
-                  <Badge className={getStatusColor(property.status)}>
-                    {getStatusText(property.status)}
+                  <Badge variant="secondary">
+                    {property.type}
                   </Badge>
                 </div>
               </DialogHeader>
@@ -85,11 +69,19 @@ const PropertyModal = ({ property, isOpen, onClose }: PropertyModalProps) => {
                   className="space-y-4"
                 >
                   <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-                    <div className="text-center text-muted-foreground">
-                      <Home className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                      <p>Image de la propriété</p>
-                      <p className="text-sm">{property.image}</p>
-                    </div>
+                    {property.photos && property.photos.length > 0 ? (
+                      <img 
+                        src={property.photos[0]} 
+                        alt={property.title}
+                        className="w-full h-full object-cover rounded-lg"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="text-center text-muted-foreground">
+                        <Home className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                        <p>Image de la propriété</p>
+                      </div>
+                    )}
                   </div>
                   
                   {/* Quick Stats */}
@@ -112,7 +104,7 @@ const PropertyModal = ({ property, isOpen, onClose }: PropertyModalProps) => {
                     
                     <div className="text-center">
                       <Square className="w-5 h-5 mx-auto mb-1 text-primary" />
-                      <p className="text-sm font-medium">{property.area}</p>
+                      <p className="text-sm font-medium">{property.area}m²</p>
                       <p className="text-xs text-muted-foreground">Surface</p>
                     </div>
                   </div>
