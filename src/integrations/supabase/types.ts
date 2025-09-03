@@ -222,6 +222,39 @@ export type Database = {
           },
         ]
       }
+      notification_preferences: {
+        Row: {
+          analytics_tracking: boolean | null
+          created_at: string
+          email_notifications: boolean | null
+          functional_cookies: boolean | null
+          id: string
+          marketing_emails: boolean | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          analytics_tracking?: boolean | null
+          created_at?: string
+          email_notifications?: boolean | null
+          functional_cookies?: boolean | null
+          id?: string
+          marketing_emails?: boolean | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          analytics_tracking?: boolean | null
+          created_at?: string
+          email_notifications?: boolean | null
+          functional_cookies?: boolean | null
+          id?: string
+          marketing_emails?: boolean | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string

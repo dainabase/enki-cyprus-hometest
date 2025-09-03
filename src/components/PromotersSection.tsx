@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Users, TrendingUp, Euro, Calendar, Search, Download, Phone, Mail, Globe } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/components/ToastProvider';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
 interface Promoter {
@@ -47,7 +47,7 @@ export function PromotersSection() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState('30');
-  const { toast } = useToast();
+  const { addToast } = useToast();
 
   useEffect(() => {
     fetchData();
@@ -104,10 +104,10 @@ export function PromotersSection() {
       setStats(calculatedStats);
     } catch (error) {
       console.error('Error fetching promoters data:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de charger les données des promoteurs.",
-        variant: "destructive",
+      addToast({
+        type: 'error',
+        title: 'Erreur',
+        message: 'Impossible de charger les données des promoteurs.'
       });
     } finally {
       setLoading(false);

@@ -10,7 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { Calculator, TrendingUp, FileText, Globe, Lightbulb } from 'lucide-react';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/components/ToastProvider';
 import { trackLexaiaCalculation } from '@/lib/analytics';
 
 interface LexaiaResult {
@@ -48,16 +48,16 @@ export function LexaiaCalculator() {
   });
   const [result, setResult] = useState<LexaiaResult | null>(null);
   const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
+  const { addToast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.country || !formData.budget) {
-      toast({
-        title: "Erreur",
-        description: "Veuillez remplir tous les champs obligatoires.",
-        variant: "destructive",
+      addToast({
+        type: 'error',
+        title: 'Erreur',
+        message: 'Veuillez remplir tous les champs obligatoires.'
       });
       return;
     }
@@ -89,10 +89,10 @@ export function LexaiaCalculator() {
       }
     } catch (error) {
       console.error('Lexaia calculation error:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de calculer l'optimisation fiscale. Veuillez réessayer.",
-        variant: "destructive",
+      addToast({
+        type: 'error',
+        title: 'Erreur',
+        message: 'Impossible de calculer l\'optimisation fiscale. Veuillez réessayer.'
       });
     } finally {
       setLoading(false);
