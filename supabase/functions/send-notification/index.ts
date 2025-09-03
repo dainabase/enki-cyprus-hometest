@@ -124,44 +124,41 @@ serve(async (req) => {
 });
 
 function generateEmailContent(template: string, data: any) {
-  const baseStyles = `
-    <style>
-      body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; margin: 0; padding: 0; background-color: #f8fafc; }
-      .container { max-width: 600px; margin: 0 auto; background-color: white; }
-      .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2rem; text-align: center; }
-      .header h1 { color: white; margin: 0; font-size: 1.5rem; }
-      .content { padding: 2rem; }
-      .footer { background-color: #f1f5f9; padding: 1rem; text-align: center; color: #64748b; font-size: 0.875rem; }
-      .button { display: inline-block; background-color: #667eea; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 1rem 0; }
-      .highlight { background-color: #e0f2fe; padding: 1rem; border-radius: 6px; border-left: 4px solid #0284c7; margin: 1rem 0; }
-    </style>
-  `;
+  // Simple inline styles for basic responsive emails
+  const styles = {
+    container: 'max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; background-color: #ffffff;',
+    header: 'background: linear-gradient(135deg, #3b82f6, #1d4ed8); padding: 32px; text-align: center;',
+    headerTitle: 'color: white; margin: 0; font-size: 24px; font-weight: bold;',
+    content: 'padding: 32px; color: #374151;',
+    highlight: 'background-color: #eff6ff; padding: 16px; border-radius: 8px; border-left: 4px solid #3b82f6; margin: 16px 0;',
+    button: 'display: inline-block; background-color: #3b82f6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 16px 0;',
+    footer: 'background-color: #f9fafb; padding: 16px; text-align: center; color: #6b7280; font-size: 14px;'
+  };
 
   switch (template) {
     case 'commission':
       return {
-        subject: `Nouvelle commission - ${data.project}`,
+        subject: `Commission confirmée - ${data.project}`,
         html: `
-          ${baseStyles}
-          <div class="container">
-            <div class="header">
-              <h1>💰 Nouvelle Commission</h1>
+          <div style="${styles.container}">
+            <div style="${styles.header}">
+              <h1 style="${styles.headerTitle}">💰 Commission Confirmée</h1>
             </div>
-            <div class="content">
+            <div style="${styles.content}">
               <h2>Félicitations ${data.promoter || data.name}!</h2>
-              <p>Une nouvelle commission a été générée pour votre promotion du projet <strong>${data.project}</strong>.</p>
+              <p>Une nouvelle commission de <strong>5%</strong> a été confirmée pour votre promotion du projet <strong>${data.project}</strong>.</p>
               
-              <div class="highlight">
-                <h3>Détails de la commission :</h3>
+              <div style="${styles.highlight}">
+                <h3>Détails :</h3>
                 <p><strong>Montant :</strong> ${data.amount?.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}</p>
-                <p><strong>Taux :</strong> ${(data.commission_rate || 0.05) * 100}%</p>
                 <p><strong>Projet :</strong> ${data.project}</p>
+                <p><strong>Date :</strong> ${new Date().toLocaleDateString('fr-FR')}</p>
               </div>
               
-              <p>Vous pouvez consulter tous les détails dans votre dashboard promoteur.</p>
-              <a href="${Deno.env.get('SITE_URL') || 'https://enki-realty.com'}/admin" class="button">Voir le Dashboard</a>
+              <p>Consultez votre dashboard pour plus de détails.</p>
+              <a href="${Deno.env.get('SITE_URL') || 'https://enki-realty.com'}/admin" style="${styles.button}">Voir Dashboard</a>
             </div>
-            <div class="footer">
+            <div style="${styles.footer}">
               <p>ENKI Realty - Immobilier Premium à Chypre</p>
             </div>
           </div>
@@ -170,29 +167,28 @@ function generateEmailContent(template: string, data: any) {
 
     case 'checklist':
       return {
-        subject: `Checklist mise à jour - ${data.checklist_title}`,
+        subject: `Checklist mise à jour - Achat à Chypre`,
         html: `
-          ${baseStyles}
-          <div class="container">
-            <div class="header">
-              <h1>📋 Checklist Mise à Jour</h1>
+          <div style="${styles.container}">
+            <div style="${styles.header}">
+              <h1 style="${styles.headerTitle}">📋 Checklist Mise à Jour</h1>
             </div>
-            <div class="content">
+            <div style="${styles.content}">
               <h2>Bonjour ${data.name}!</h2>
-              <p>Votre checklist <strong>${data.checklist_title}</strong> a été mise à jour.</p>
+              <p>Votre checklist pour votre achat immobilier à Chypre a été mise à jour.</p>
               
-              <div class="highlight">
+              <div style="${styles.highlight}">
                 <h3>Progression :</h3>
                 <p><strong>${data.tasks_completed}/${data.total_tasks}</strong> tâches complétées</p>
-                <div style="background-color: #e2e8f0; border-radius: 10px; height: 8px; margin: 1rem 0;">
+                <div style="background-color: #e5e7eb; border-radius: 10px; height: 8px; margin: 16px 0;">
                   <div style="background-color: #10b981; height: 8px; border-radius: 10px; width: ${((data.tasks_completed || 0) / (data.total_tasks || 1)) * 100}%;"></div>
                 </div>
               </div>
               
-              <p>Continuez votre excellent travail vers l'acquisition de votre propriété de rêve!</p>
-              <a href="${Deno.env.get('SITE_URL') || 'https://enki-realty.com'}/dashboard" class="button">Voir la Checklist</a>
+              <p>Continuez votre excellent travail vers l'acquisition de votre propriété de rêve à Chypre!</p>
+              <a href="${Deno.env.get('SITE_URL') || 'https://enki-realty.com'}/dashboard" style="${styles.button}">Voir Checklist</a>
             </div>
-            <div class="footer">
+            <div style="${styles.footer}">
               <p>ENKI Realty - Votre partenaire immobilier</p>
             </div>
           </div>

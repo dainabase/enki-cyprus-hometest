@@ -1,4 +1,4 @@
-import { Toaster } from "@/components/ui/toaster";
+import { ToastProvider } from '@/components/ToastProvider';
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -12,6 +12,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { PrivateRoute } from "./components/auth/PrivateRoute";
 import LoadingSpinner from "./components/LoadingSpinner";
 import { CookieConsentBanner } from "./components/CookieConsent";
+import { NotificationProvider } from "./components/NotificationProvider";
 import { initGA, trackPageView } from "./lib/analytics";
 
 // Lazy load pages for code splitting  
@@ -70,7 +71,9 @@ const AppContent = () => {
           </Suspense>
         </Layout>
         <CookieConsentBanner />
-        <Toaster />
+        <ToastProvider>
+          <div></div>
+        </ToastProvider>
         <Sonner />
       </TooltipProvider>
     </BrowserRouter>
@@ -84,9 +87,9 @@ const App = () => {
       <HelmetProvider>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <FilterProvider>
+            <NotificationProvider>
               <AppContent />
-            </FilterProvider>
+            </NotificationProvider>
           </AuthProvider>
         </QueryClientProvider>
       </HelmetProvider>
