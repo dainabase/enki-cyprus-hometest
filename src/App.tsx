@@ -11,18 +11,18 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { PrivateRoute } from "./components/auth/PrivateRoute";
 import LoadingSpinner from "./components/LoadingSpinner";
 
-// Lazy load pages for code splitting
-const Home = lazy(() => import("./pages/Home"));
-const Search = lazy(() => import("./pages/Search"));
-const Projects = lazy(() => import("./pages/Projects"));
-const ProjectDetails = lazy(() => import("./pages/ProjectDetails"));
-const About = lazy(() => import("./pages/About"));
-const Contact = lazy(() => import("./pages/Contact"));
-const Login = lazy(() => import("./pages/Login"));
-const Register = lazy(() => import("./pages/Register"));
-const Dashboard = lazy(() => import("./pages/Dashboard"));
-const Admin = lazy(() => import("./pages/Admin"));
-const NotFound = lazy(() => import("./pages/NotFound"));
+// Lazy load pages for code splitting  
+const Home = lazy(() => import("./pages/Home").then(module => ({ default: module.default })));
+const Search = lazy(() => import("./pages/Search").then(module => ({ default: module.default })));
+const Projects = lazy(() => import("./pages/Projects").then(module => ({ default: module.default })));
+const ProjectDetails = lazy(() => import("./pages/ProjectDetails").then(module => ({ default: module.default })));
+const About = lazy(() => import("./pages/About").then(module => ({ default: module.default })));
+const Contact = lazy(() => import("./pages/Contact").then(module => ({ default: module.default })));
+const Login = lazy(() => import("./pages/Login").then(module => ({ default: module.default })));
+const Register = lazy(() => import("./pages/Register").then(module => ({ default: module.default })));
+const Dashboard = lazy(() => import("./pages/Dashboard").then(module => ({ default: module.default })));
+const Admin = lazy(() => import("./pages/Admin").then(module => ({ default: module.default })));
+const NotFound = lazy(() => import("./pages/NotFound").then(module => ({ default: module.default })));
 
 const queryClient = new QueryClient({
   defaultOptions: {

@@ -1,10 +1,9 @@
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Slick Carousel CSS */
-@import "slick-carousel/slick/slick.css";
-@import "slick-carousel/slick/slick-theme.css";
 
 /* ENKI-REALTY Design System - Professional Real Estate Platform
 Inspired by Cyprus Mediterranean elegance with modern minimalism
