@@ -28,6 +28,12 @@ const GoogleMapComponent = ({
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
 
+  const { isLoaded, loadError } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'your-api-key-here',
+    libraries: ['places'],
+  });
+
   const mapContainerStyle = {
     width: '100%',
     height: height
@@ -141,127 +147,135 @@ const GoogleMapComponent = ({
     }
   };
 
+  if (loadError) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-muted">
+        <div className="text-center">
+          <p className="text-muted-foreground">Erreur de chargement de Google Maps.</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isLoaded) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-muted">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+          <p className="text-muted-foreground">Chargement de la carte...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative">
-      <LoadScript 
-        googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'your-api-key-here'}
-        libraries={['places']}
-        loadingElement={
-          <div className="w-full h-full flex items-center justify-center bg-muted">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
-              <p className="text-muted-foreground">Chargement de la carte...</p>
-            </div>
-          </div>
-        }
+      <GoogleMap
+        mapContainerStyle={mapContainerStyle}
+        center={center}
+        zoom={zoom}
+        onLoad={onLoad}
+        options={mapOptions}
       >
-        <GoogleMap
-          mapContainerStyle={mapContainerStyle}
-          center={center}
-          zoom={zoom}
-          onLoad={onLoad}
-          options={mapOptions}
-        >
-          {/* Only render markers if Google Maps API is loaded */}
-          {typeof google !== 'undefined' && google.maps && properties.map((property, index) => (
-            <motion.div
-              key={property.id}
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ 
-                duration: 0.3, 
-                delay: index * 0.1,
-                type: "spring",
-                stiffness: 260,
-                damping: 20
-              }}
-            >
-              <Marker
-                position={{ lat: property.lat, lng: property.lng }}
-                onClick={() => handleMarkerClick(property)}
-                icon={getPropertyIcon(property.type)}
-              />
-            </motion.div>
-          ))}
+        {/* Only render markers if Google Maps API is loaded */}
+        {typeof google !== 'undefined' && google.maps && properties.map((property, index) => (
+          <motion.div
+            key={property.id}
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ 
+              duration: 0.3, 
+              delay: index * 0.1,
+              type: "spring",
+              stiffness: 260,
+              damping: 20
+            }}
+          >
+            <Marker
+              position={{ lat: property.lat, lng: property.lng }}
+              onClick={() => handleMarkerClick(property)}
+              icon={getPropertyIcon(property.type)}
+            />
+          </motion.div>
+        ))}
 
-          {/* Info Window */}
-          {selectedProperty && showInfoWindow && (
-            <InfoWindow
-              position={{ lat: selectedProperty.lat, lng: selectedProperty.lng }}
-              onCloseClick={() => setSelectedProperty(null)}
-            >
-              <AnimatePresence>
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.2 }}
-                  className="max-w-sm"
-                >
-                  <Card className="border-0 shadow-none">
-                    <CardContent className="p-4">
-                      <div className="flex items-start justify-between mb-3">
-                        <div>
-                          <h3 className="font-semibold text-foreground mb-1">
-                            {selectedProperty.title}
-                          </h3>
-                          <div className="flex items-center text-sm text-muted-foreground mb-2">
-                            <MapPin className="w-3 h-3 mr-1" />
-                            {selectedProperty.location}
-                          </div>
+        {/* Info Window */}
+        {selectedProperty && showInfoWindow && (
+          <InfoWindow
+            position={{ lat: selectedProperty.lat, lng: selectedProperty.lng }}
+            onCloseClick={() => setSelectedProperty(null)}
+          >
+            <AnimatePresence>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.2 }}
+                className="max-w-sm"
+              >
+                <Card className="border-0 shadow-none">
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <h3 className="font-semibold text-foreground mb-1">
+                          {selectedProperty.title}
+                        </h3>
+                        <div className="flex items-center text-sm text-muted-foreground mb-2">
+                          <MapPin className="w-3 h-3 mr-1" />
+                          {selectedProperty.location}
                         </div>
-                        <Badge variant="secondary" className="ml-2">
-                          {selectedProperty.type}
-                        </Badge>
+                      </div>
+                      <Badge variant="secondary" className="ml-2">
+                        {selectedProperty.type}
+                      </Badge>
+                    </div>
+                    
+                    <div className="space-y-2 mb-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">Prix:</span>
+                        <span className="font-semibold text-primary">
+                          {selectedProperty.price}
+                        </span>
                       </div>
                       
-                      <div className="space-y-2 mb-4">
+                      {selectedProperty.bedrooms && (
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-muted-foreground">Prix:</span>
-                          <span className="font-semibold text-primary">
-                            {selectedProperty.price}
-                          </span>
+                          <span className="text-sm text-muted-foreground">Chambres:</span>
+                          <span className="text-sm">{selectedProperty.bedrooms}</span>
                         </div>
-                        
-                        {selectedProperty.bedrooms && (
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm text-muted-foreground">Chambres:</span>
-                            <span className="text-sm">{selectedProperty.bedrooms}</span>
-                          </div>
-                        )}
-                        
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-muted-foreground">Surface:</span>
-                          <span className="text-sm">{selectedProperty.area}</span>
-                        </div>
-                        
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-muted-foreground">Statut:</span>
-                          <Badge 
-                            variant={selectedProperty.status === 'available' ? 'default' : 'secondary'}
-                            className="text-xs"
-                          >
-                            {selectedProperty.status === 'available' ? 'Disponible' : 
-                             selectedProperty.status === 'reserved' ? 'Réservé' : 'Vendu'}
-                          </Badge>
-                        </div>
+                      )}
+                      
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">Surface:</span>
+                        <span className="text-sm">{selectedProperty.area}</span>
                       </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">Statut:</span>
+                        <Badge 
+                          variant={selectedProperty.status === 'available' ? 'default' : 'secondary'}
+                          className="text-xs"
+                        >
+                          {selectedProperty.status === 'available' ? 'Disponible' : 
+                           selectedProperty.status === 'reserved' ? 'Réservé' : 'Vendu'}
+                        </Badge>
+                      </div>
+                    </div>
 
-                      <Button 
-                        size="sm" 
-                        className="w-full btn-premium"
-                        onClick={() => onPropertySelect?.(selectedProperty)}
-                      >
-                        Voir les détails
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              </AnimatePresence>
-            </InfoWindow>
-          )}
-        </GoogleMap>
-      </LoadScript>
+                    <Button 
+                      size="sm" 
+                      className="w-full btn-premium"
+                      onClick={() => onPropertySelect?.(selectedProperty)}
+                    >
+                      Voir les détails
+                    </Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </AnimatePresence>
+          </InfoWindow>
+        )}
+      </GoogleMap>
     </div>
   );
 };
