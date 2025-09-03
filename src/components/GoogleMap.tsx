@@ -74,6 +74,13 @@ const GoogleMapComponent = ({
 
   const onLoad = useCallback((map: google.maps.Map) => {
     console.log('🗺️ Google Map loaded, centering on Cyprus...');
+    
+    // Check if Google Maps API is properly loaded
+    if (!window.google) {
+      console.error('❌ Google Maps API not loaded properly');
+      return;
+    }
+    
     setMap(map);
     
     // Center on Cyprus by default
@@ -84,45 +91,57 @@ const GoogleMapComponent = ({
     // Add marker clustering
     const markers = properties.map(property => {
       console.log(`📌 Creating marker for: ${property.title} at (${property.lat}, ${property.lng})`);
-      const marker = new google.maps.Marker({
-        position: { lat: property.lat, lng: property.lng },
-        icon: getPropertyIcon(property.type),
-        title: property.title,
-      });
+      
+      try {
+        const marker = new google.maps.Marker({
+          position: { lat: property.lat, lng: property.lng },
+          icon: getPropertyIcon(property.type),
+          title: property.title,
+        });
 
-      marker.addListener('click', () => {
-        console.log(`🏠 Property clicked: ${property.title}`);
-        setSelectedProperty(property);
-        onPropertySelect?.(property);
-      });
+        marker.addListener('click', () => {
+          console.log(`🏠 Property clicked: ${property.title}`);
+          setSelectedProperty(property);
+          onPropertySelect?.(property);
+        });
 
-      return marker;
-    });
+        return marker;
+      } catch (error) {
+        console.error(`❌ Error creating marker for ${property.title}:`, error);
+        return null;
+      }
+    }).filter(Boolean);
 
     console.log(`📊 Total markers created: ${markers.length}`);
 
     // Only create clusterer if MarkerClusterer is available
-    if (typeof MarkerClusterer !== 'undefined') {
-      const clusterer = new MarkerClusterer({
-        markers,
-        map,
-        renderer: {
-          render: ({ count, position }) => {
-            const color = '#4A90E2';
-            const size = count < 10 ? 40 : count < 100 ? 50 : 60;
-            console.log(`🔗 Creating cluster with ${count} markers at position:`, position);
-            
-            return new google.maps.Marker({
-              position,
-              icon: {
-                url: `data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='${size}' height='${size}' viewBox='0 0 ${size} ${size}'%3E%3Ccircle cx='${size/2}' cy='${size/2}' r='${size/2-2}' fill='${color}' stroke='white' stroke-width='2'/%3E%3Ctext x='${size/2}' y='${size/2+6}' text-anchor='middle' font-size='14' fill='white' font-weight='bold'%3E${count}%3C/text%3E%3C/svg%3E`,
-                scaledSize: new google.maps.Size(size, size),
-              },
-            });
+    if (typeof MarkerClusterer !== 'undefined' && markers.length > 0) {
+      try {
+        const clusterer = new MarkerClusterer({
+          markers,
+          map,
+          renderer: {
+            render: ({ count, position }) => {
+              const color = '#4A90E2';
+              const size = count < 10 ? 40 : count < 100 ? 50 : 60;
+              console.log(`🔗 Creating cluster with ${count} markers at position:`, position);
+              
+              return new google.maps.Marker({
+                position,
+                icon: {
+                  url: `data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='${size}' height='${size}' viewBox='0 0 ${size} ${size}'%3E%3Ccircle cx='${size/2}' cy='${size/2}' r='${size/2-2}' fill='${color}' stroke='white' stroke-width='2'/%3E%3Ctext x='${size/2}' y='${size/2+6}' text-anchor='middle' font-size='14' fill='white' font-weight='bold'%3E${count}%3C/text%3E%3C/svg%3E`,
+                  scaledSize: new google.maps.Size(size, size),
+                },
+              });
+            }
           }
-        }
-      });
-      console.log('🎯 Marker clustering initialized');
+        });
+        console.log('🎯 Marker clustering initialized successfully');
+      } catch (error) {
+        console.error('❌ Error initializing marker clustering:', error);
+      }
+    } else {
+      console.warn('⚠️ MarkerClusterer not available or no markers to cluster');
     }
   }, [properties, onPropertySelect]);
 

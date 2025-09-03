@@ -49,22 +49,44 @@ npm run dev
 
 ⚠️ **IMPORTANT** : Une clé API Google Maps valide est requise pour le fonctionnement de la carte.
 
-1. Obtenir une clé API sur [Google Cloud Console](https://console.cloud.google.com/google/maps-apis)
-2. Activer les APIs suivantes :
+### 📋 Étapes de Configuration
+
+1. **Obtenir une clé API** sur [Google Cloud Console](https://console.cloud.google.com/google/maps-apis)
+2. **Activer les APIs** suivantes :
    - Maps JavaScript API
    - Places API
    - Geocoding API
-3. Ajouter la clé dans `.env.local` :
+3. **Configurer les restrictions de domaine** :
+   - Ajouter `*.sandbox.lovable.dev/*` pour le développement Lovable
+   - Ajouter `localhost:*` pour le développement local
+   - Ajouter votre domaine de production
+4. **Ajouter la clé** dans `.env.local` :
    ```
    VITE_GOOGLE_MAPS_API_KEY=votre_cle_api_ici
    ```
 
-### 🚨 Erreurs Communes
+### 🚨 Erreurs Communes et Solutions
 
-Si vous voyez l'erreur `InvalidKeyMapError` dans la console :
-- Vérifiez que votre clé API est correcte dans `.env.local`
-- Assurez-vous que l'API Maps JavaScript est activée
-- Redémarrez le serveur de développement après modification de `.env.local`
+#### `InvalidKeyMapError`
+- **Cause** : Clé API invalide ou non configurée
+- **Solution** : Vérifiez votre clé API dans `.env.local`
+
+#### `RefererNotAllowedMapError`
+- **Cause** : Domaine non autorisé dans les restrictions
+- **Solution** : Ajoutez `*.sandbox.lovable.dev/*` dans les restrictions de votre clé API
+
+#### Carte qui ne charge pas
+- **Solution** : Ouvrez la console du navigateur pour voir les erreurs détaillées
+- **Debug** : Consultez les logs avec les emojis (🗺️, 📍, ❌) pour identifier le problème
+
+### 🔍 Console de Debug
+
+Le projet inclut des logs détaillés pour diagnostiquer les problèmes :
+- `🗺️` : Chargement de Google Maps
+- `📍` : Centrage sur Chypre 
+- `📌` : Création des marqueurs
+- `❌` : Erreurs API ou de chargement
+- `⚠️` : Avertissements
 
 ## 🧪 Tests Recommandés
 
