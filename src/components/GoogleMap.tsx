@@ -1,6 +1,5 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
-import { GoogleMap, InfoWindow, useJsApiLoader } from '@react-google-maps/api';
-import type { Libraries } from '@react-google-maps/api';
+import { GoogleMap, InfoWindow } from '@react-google-maps/api';
 import { MarkerClusterer } from '@googlemaps/markerclusterer';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Property } from '@/data/mockData';
@@ -8,9 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MapPin, Home, Building, Building2, Store } from 'lucide-react';
-
-// Static libraries to avoid reload warnings
-const libraries: Libraries = ['places', 'marker'];
+import { useGoogleMapsContext } from '@/contexts/GoogleMapsContext';
 interface GoogleMapComponentProps {
   properties: Property[];
   onPropertySelect?: (property: Property) => void;
@@ -31,24 +28,8 @@ const GoogleMapComponent = ({
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
 
-  // Resolve API key: prefer env, fallback to provided dev key for sandbox/local
-  const envKey = (import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string | undefined)?.trim();
-  const devFallbackKey = 'AIzaSyBmFbbR7bD_4PSJGBU-_12ZL1VjGKRXKBU';
-  const apiKey = envKey && envKey.length > 0 ? envKey : devFallbackKey;
-  if (!envKey) {
-    console.warn('⚠️ Using provided dev Google Maps API key. Configure VITE_GOOGLE_MAPS_API_KEY in .env.local for production.');
-  }
-
-  // Load Google Maps JS API once, asynchronously
-  const { isLoaded, loadError } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: apiKey,
-    libraries,
-  });
-
-  if (!apiKey) {
-    console.error('❌ No Google Maps API key available');
-  }
+  // Use global Google Maps context instead of local useJsApiLoader
+  const { isLoaded, loadError } = useGoogleMapsContext();
 
   const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
   const clustererRef = useRef<MarkerClusterer | null>(null);
