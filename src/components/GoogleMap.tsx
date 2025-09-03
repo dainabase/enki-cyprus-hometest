@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
-import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
+import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from '@react-google-maps/api';
 import { MarkerClusterer } from '@googlemaps/markerclusterer';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Property } from '@/data/mockData';
