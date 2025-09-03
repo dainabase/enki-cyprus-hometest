@@ -431,23 +431,7 @@ export type Database = {
       }
     }
     Views: {
-      audit_log_view: {
-        Row: {
-          action: string | null
-          admin_email: string | null
-          admin_name: string | null
-          admin_user_id: string | null
-          created_at: string | null
-          details: Json | null
-          id: string | null
-          ip_address: unknown | null
-          resource_id: string | null
-          resource_type: string | null
-          seconds_ago: number | null
-          user_agent: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       can_view_audit_logs: {

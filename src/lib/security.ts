@@ -106,6 +106,29 @@ export const isValidUUID = (uuid: string): boolean => {
   return uuidRegex.test(uuid);
 };
 
+// Admin audit log retrieval
+export const getAuditLogs = async (
+  limit: number = 100,
+  offset: number = 0
+): Promise<any[]> => {
+  try {
+    const { data, error } = await supabase.rpc('get_audit_logs', {
+      p_limit: limit,
+      p_offset: offset
+    });
+
+    if (error) {
+      console.error('Failed to retrieve audit logs:', error);
+      throw new Error('Access denied or failed to retrieve audit logs');
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error('Audit log retrieval error:', error);
+    throw error;
+  }
+};
+
 // Security headers for API requests
 export const getSecurityHeaders = (): Record<string, string> => {
   return {
