@@ -1,1 +1,4 @@
 project_id = "ccsakftsslurjgnjwdci"
+
+[functions.lexaia-mock]
+verify_jwt = false
