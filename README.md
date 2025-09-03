@@ -47,6 +47,8 @@ npm run dev
 
 ## 🔑 Configuration Google Maps API
 
+⚠️ **IMPORTANT** : Une clé API Google Maps valide est requise pour le fonctionnement de la carte.
+
 1. Obtenir une clé API sur [Google Cloud Console](https://console.cloud.google.com/google/maps-apis)
 2. Activer les APIs suivantes :
    - Maps JavaScript API
@@ -56,6 +58,13 @@ npm run dev
    ```
    VITE_GOOGLE_MAPS_API_KEY=votre_cle_api_ici
    ```
+
+### 🚨 Erreurs Communes
+
+Si vous voyez l'erreur `InvalidKeyMapError` dans la console :
+- Vérifiez que votre clé API est correcte dans `.env.local`
+- Assurez-vous que l'API Maps JavaScript est activée
+- Redémarrez le serveur de développement après modification de `.env.local`
 
 ## 🧪 Tests Recommandés
 
