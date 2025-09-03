@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,10 +7,11 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
-import GoogleMapComponent from '@/components/GoogleMap';
+const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 import PropertyModal from '@/components/PropertyModal';
 import { mockProperties, Property } from '@/data/mockData';
 import { Search as SearchIcon, MapPin, Filter, SlidersHorizontal } from 'lucide-react';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 const Search = () => {
   const [priceRange, setPriceRange] = useState([100000, 2000000]);
@@ -305,11 +306,15 @@ const Search = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-0">
-                  <GoogleMapComponent 
-                    properties={filteredProperties}
-                    onPropertySelect={handlePropertySelect}
-                    height="500px"
-                  />
+                  <ErrorBoundary>
+                    <Suspense fallback={<div className="w-full h-[500px] flex items-center justify-center bg-muted rounded-b-lg">Chargement de la carte...</div>}>
+                      <GoogleMapComponent 
+                        properties={filteredProperties}
+                        onPropertySelect={handlePropertySelect}
+                        height="500px"
+                      />
+                    </Suspense>
+                  </ErrorBoundary>
                 </CardContent>
               </Card>
 

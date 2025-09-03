@@ -65,6 +65,8 @@ npm run dev
    VITE_GOOGLE_MAPS_API_KEY=votre_cle_api_ici
    ```
 
+   Note: Le projet charge Google Maps via useJsApiLoader et utilise import.meta.env.VITE_GOOGLE_MAPS_API_KEY sans aucun fallback. Les libraries sont définies de manière statique (['places','marker']) pour éviter les rechargements inutiles et garantir un chargement asynchrone optimal.
+
 ### 🚨 Erreurs Communes et Solutions
 
 #### `InvalidKeyMapError`

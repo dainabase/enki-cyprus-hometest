@@ -1,5 +1,6 @@
-import { useState, useCallback, useMemo } from 'react';
-import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
+import { GoogleMap, InfoWindow, useJsApiLoader } from '@react-google-maps/api';
+import type { Libraries } from '@react-google-maps/api';
 import { MarkerClusterer } from '@googlemaps/markerclusterer';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Property } from '@/data/mockData';
@@ -8,6 +9,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MapPin, Home, Building, Building2, Store } from 'lucide-react';
 
+// Static libraries to avoid reload warnings
+const libraries: Libraries = ['places', 'marker'];
 interface GoogleMapComponentProps {
   properties: Property[];
   onPropertySelect?: (property: Property) => void;
@@ -27,6 +30,20 @@ const GoogleMapComponent = ({
 }: GoogleMapComponentProps) => {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
+
+  // Load Google Maps JS API once, asynchronously
+  const { isLoaded, loadError } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string,
+    libraries,
+  });
+
+  if (!import.meta.env.VITE_GOOGLE_MAPS_API_KEY) {
+    console.error('❌ VITE_GOOGLE_MAPS_API_KEY is not defined');
+  }
+
+  const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
+  const clustererRef = useRef<MarkerClusterer | null>(null);
 
   const mapContainerStyle = {
     width: '100%',
@@ -72,78 +89,78 @@ const GoogleMapComponent = ({
     return undefined;
   };
 
-  const onLoad = useCallback((map: google.maps.Map) => {
-    console.log('🗺️ Google Map loaded, centering on Cyprus...');
-    
-    // Check if Google Maps API is properly loaded
-    if (!window.google) {
-      console.error('❌ Google Maps API not loaded properly');
-      return;
-    }
-    
-    setMap(map);
-    
-    // Center on Cyprus by default
-    map.setCenter({ lat: 35.1264, lng: 33.4299 });
-    map.setZoom(9);
-    console.log('📍 Map centered on Cyprus (35.1264, 33.4299) with zoom 9');
-    
-    // Add marker clustering
-    const markers = properties.map(property => {
-      console.log(`📌 Creating marker for: ${property.title} at (${property.lat}, ${property.lng})`);
-      
-      try {
-        const marker = new google.maps.Marker({
-          position: { lat: property.lat, lng: property.lng },
-          icon: getPropertyIcon(property.type),
-          title: property.title,
-        });
+const onLoad = useCallback((map: google.maps.Map) => {
+  console.log('🗺️ Google Map loaded, centering on Cyprus...');
+  if (!window.google) {
+    console.error('❌ Google Maps API not loaded properly');
+    return;
+  }
+  setMap(map);
+  map.setCenter({ lat: 35.1264, lng: 33.4299 });
+  map.setZoom(9);
+  console.log('📍 Map centered on Cyprus (35.1264, 33.4299) with zoom 9');
+}, []);
 
-        marker.addListener('click', () => {
-          console.log(`🏠 Property clicked: ${property.title}`);
-          setSelectedProperty(property);
-          onPropertySelect?.(property);
-        });
+// Create Advanced Markers and cluster when map and API are ready
+useEffect(() => {
+  if (!isLoaded) return;
+  if (!window.google) {
+    console.error('❌ API not loaded');
+    return;
+  }
+  if (!map) return;
 
-        return marker;
-      } catch (error) {
-        console.error(`❌ Error creating marker for ${property.title}:`, error);
-        return null;
-      }
-    }).filter(Boolean);
+  // Cleanup previous markers/clusterer
+  try {
+    clustererRef.current?.clearMarkers();
+  } catch {}
+  try {
+    markersRef.current.forEach((m) => {
+      // detach marker from map safely
+      (m as unknown as { map: google.maps.Map | null }).map = null;
+    });
+  } catch {}
+  markersRef.current = [];
 
-    console.log(`📊 Total markers created: ${markers.length}`);
+  try {
+    const advMarkers = properties.map((property) => {
+      console.log(`📌 Creating advanced marker for: ${property.title} at (${property.lat}, ${property.lng})`);
+      const marker = new google.maps.marker.AdvancedMarkerElement({
+        position: { lat: property.lat, lng: property.lng },
+        map,
+        title: property.title,
+      });
+      marker.addListener('gmp-click', () => {
+        console.log(`🏠 Property clicked: ${property.title}`);
+        setSelectedProperty(property);
+        onPropertySelect?.(property);
+      });
+      return marker;
+    });
 
-    // Only create clusterer if MarkerClusterer is available
-    if (typeof MarkerClusterer !== 'undefined' && markers.length > 0) {
-      try {
-        const clusterer = new MarkerClusterer({
-          markers,
-          map,
-          renderer: {
-            render: ({ count, position }) => {
-              const color = '#4A90E2';
-              const size = count < 10 ? 40 : count < 100 ? 50 : 60;
-              console.log(`🔗 Creating cluster with ${count} markers at position:`, position);
-              
-              return new google.maps.Marker({
-                position,
-                icon: {
-                  url: `data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='${size}' height='${size}' viewBox='0 0 ${size} ${size}'%3E%3Ccircle cx='${size/2}' cy='${size/2}' r='${size/2-2}' fill='${color}' stroke='white' stroke-width='2'/%3E%3Ctext x='${size/2}' y='${size/2+6}' text-anchor='middle' font-size='14' fill='white' font-weight='bold'%3E${count}%3C/text%3E%3C/svg%3E`,
-                  scaledSize: new google.maps.Size(size, size),
-                },
-              });
-            }
-          }
-        });
-        console.log('🎯 Marker clustering initialized successfully');
-      } catch (error) {
-        console.error('❌ Error initializing marker clustering:', error);
-      }
+    markersRef.current = advMarkers;
+
+    if (advMarkers.length > 0) {
+      clustererRef.current = new MarkerClusterer({ markers: advMarkers, map });
+      console.log('🎯 Marker clustering initialized successfully');
     } else {
-      console.warn('⚠️ MarkerClusterer not available or no markers to cluster');
+      console.warn('⚠️ No markers to cluster');
     }
-  }, [properties, onPropertySelect]);
+  } catch (error) {
+    console.error('❌ Error initializing advanced markers/clusterer:', error);
+  }
+
+  return () => {
+    try { clustererRef.current?.clearMarkers(); } catch {}
+    try {
+      markersRef.current.forEach((m) => {
+        (m as unknown as { map: google.maps.Map | null }).map = null;
+      });
+    } catch {}
+    clustererRef.current = null;
+    markersRef.current = [];
+  };
+}, [isLoaded, map, properties, onPropertySelect]);
 
   const handleMarkerClick = (property: Property) => {
     setSelectedProperty(property);
@@ -162,21 +179,25 @@ const GoogleMapComponent = ({
 
   return (
     <div className="relative">
-      <LoadScript 
-        googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'your-api-key-here'}
-        libraries={['places']}
-        loadingElement={
-          <div className="w-full h-full flex items-center justify-center bg-muted rounded-lg" style={{ height }}>
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
-              <p className="text-muted-foreground">Chargement de Google Maps...</p>
-            </div>
+      {!isLoaded && !loadError && (
+        <div className="w-full h-full flex items-center justify-center bg-muted rounded-lg" style={{ height }}>
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+            <p className="text-muted-foreground">Chargement de Google Maps...</p>
           </div>
-        }
-        onError={(error) => {
-          console.error('❌ Google Maps LoadScript Error:', error);
-        }}
-      >
+        </div>
+      )}
+
+      {loadError && (
+        <div className="w-full h-full flex items-center justify-center bg-destructive/10 rounded-lg" style={{ height }}>
+          <div className="text-center">
+            <p className="text-destructive font-medium">Erreur de chargement Google Maps</p>
+            <p className="text-sm text-muted-foreground">Vérifiez VITE_GOOGLE_MAPS_API_KEY et les restrictions de domaine.</p>
+          </div>
+        </div>
+      )}
+
+      {isLoaded && (
         <GoogleMap
           mapContainerStyle={mapContainerStyle}
           center={center}
@@ -184,28 +205,6 @@ const GoogleMapComponent = ({
           onLoad={onLoad}
           options={mapOptions}
         >
-          {/* Only render markers if Google Maps API is loaded */}
-          {typeof google !== 'undefined' && google.maps && properties.map((property, index) => (
-            <motion.div
-              key={property.id}
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ 
-                duration: 0.3, 
-                delay: index * 0.1,
-                type: "spring",
-                stiffness: 260,
-                damping: 20
-              }}
-            >
-              <Marker
-                position={{ lat: property.lat, lng: property.lng }}
-                onClick={() => handleMarkerClick(property)}
-                icon={getPropertyIcon(property.type)}
-              />
-            </motion.div>
-          ))}
-
           {/* Info Window */}
           {selectedProperty && showInfoWindow && (
             <InfoWindow
@@ -283,7 +282,7 @@ const GoogleMapComponent = ({
             </InfoWindow>
           )}
         </GoogleMap>
-      </LoadScript>
+      )}
     </div>
   );
 };

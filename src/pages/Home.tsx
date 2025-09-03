@@ -1,13 +1,14 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import Hero from '@/components/Hero';
 import PropertyCard from '@/components/ui/PropertyCard';
-import GoogleMapComponent from '@/components/GoogleMap';
+const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 import PropertyModal from '@/components/PropertyModal';
 import PropertySearch from '@/components/PropertySearch';
 import { Button } from '@/components/ui/button';
 import { mockProperties, Property } from '@/data/mockData';
 import { TrendingUp, Shield, Award, Users } from 'lucide-react';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 const Home = () => {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
@@ -141,11 +142,15 @@ const Home = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="rounded-xl overflow-hidden shadow-lg"
           >
-            <GoogleMapComponent 
-              properties={filteredProperties}
-              onPropertySelect={handlePropertySelect}
-              height="600px"
-            />
+            <ErrorBoundary>
+              <Suspense fallback={<div className="w-full h-[600px] flex items-center justify-center bg-muted rounded-xl">Chargement de la carte...</div>}>
+                <GoogleMapComponent 
+                  properties={filteredProperties}
+                  onPropertySelect={handlePropertySelect}
+                  height="600px"
+                />
+              </Suspense>
+            </ErrorBoundary>
           </motion.div>
         </div>
       </section>
