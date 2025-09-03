@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { supabase, DatabaseProperty, Property, transformDatabaseProperty } from '@/lib/supabase';
 
 interface UsePropertiesOptions {
@@ -13,7 +13,13 @@ export const useSupabaseProperties = (options: UsePropertiesOptions = {}) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchProperties = async () => {
+  // Memoize the query key to prevent unnecessary re-fetches
+  const queryKey = useMemo(() => 
+    JSON.stringify(options), 
+    [options.propertyType, options.budgetMin, options.budgetMax, options.location]
+  );
+
+  const fetchProperties = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -59,11 +65,11 @@ export const useSupabaseProperties = (options: UsePropertiesOptions = {}) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [queryKey]);
 
   useEffect(() => {
     fetchProperties();
-  }, [options.propertyType, options.budgetMin, options.budgetMax, options.location]);
+  }, [queryKey, fetchProperties]);
 
   return { properties, loading, error, refetch: fetchProperties };
 };

@@ -1,3 +1,4 @@
+import React, { memo } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
@@ -13,7 +14,7 @@ interface PropertyCardProps {
   className?: string;
 }
 
-const PropertyCard = ({ property, index = 0, onClick, className = '' }: PropertyCardProps) => {
+const PropertyCard = memo(({ property, index = 0, onClick, className = '' }: PropertyCardProps) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'available':
@@ -151,6 +152,8 @@ const PropertyCard = ({ property, index = 0, onClick, className = '' }: Property
       </Card>
     </motion.div>
   );
-};
+});
+
+PropertyCard.displayName = 'PropertyCard';
 
 export default PropertyCard;
