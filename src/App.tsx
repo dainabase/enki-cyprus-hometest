@@ -71,9 +71,6 @@ const AppContent = () => {
           </Suspense>
         </Layout>
         <CookieConsentBanner />
-        <ToastProvider>
-          <div></div>
-        </ToastProvider>
         <Sonner />
       </TooltipProvider>
     </BrowserRouter>
@@ -87,9 +84,11 @@ const App = () => {
       <HelmetProvider>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <NotificationProvider>
-              <AppContent />
-            </NotificationProvider>
+            <ToastProvider>
+              <NotificationProvider>
+                <AppContent />
+              </NotificationProvider>
+            </ToastProvider>
           </AuthProvider>
         </QueryClientProvider>
       </HelmetProvider>
