@@ -123,6 +123,11 @@ const EnhancedMap: React.FC<EnhancedMapProps> = ({
             console.log(`🏠 Property selected: ${property.title}`);
             setSelectedProperty(property);
             onPropertySelect?.(property);
+            
+            // Navigation vers la page de détails
+            if (window.location.pathname !== '/project/' + property.id) {
+              window.open(`/project/${property.id}`, '_blank');
+            }
           });
 
           return marker;

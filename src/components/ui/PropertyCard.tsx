@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -77,9 +78,11 @@ const PropertyCard = ({ property, index = 0, onClick, className = '' }: Property
             className="absolute inset-0 bg-primary/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
             initial={false}
           >
-            <Button className="btn-premium">
-              <Eye className="w-4 h-4 mr-2" />
-              Voir Détails
+            <Button className="btn-premium" asChild>
+              <Link to={`/project/${property.id}`}>
+                <Eye className="w-4 h-4 mr-2" />
+                Voir Détails
+              </Link>
             </Button>
           </motion.div>
         </div>
@@ -139,8 +142,10 @@ const PropertyCard = ({ property, index = 0, onClick, className = '' }: Property
           </div>
 
           {/* CTA Button */}
-          <Button className="w-full btn-outline-premium">
-            En savoir plus
+          <Button className="w-full btn-outline-premium" asChild>
+            <Link to={`/project/${property.id}`}>
+              En savoir plus
+            </Link>
           </Button>
         </CardContent>
       </Card>
