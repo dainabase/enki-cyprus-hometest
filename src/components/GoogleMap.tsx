@@ -31,7 +31,7 @@ const GoogleMapComponent = ({
   // Use global Google Maps context instead of local useJsApiLoader
   const { isLoaded, loadError } = useGoogleMapsContext();
 
-  const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
+  const markersRef = useRef<google.maps.Marker[]>([]);
   const clustererRef = useRef<MarkerClusterer | null>(null);
   const mapContainerStyle = {
     width: '100%',
@@ -104,21 +104,21 @@ useEffect(() => {
   } catch {}
   try {
     markersRef.current.forEach((m) => {
-      // detach marker from map safely
-      (m as unknown as { map: google.maps.Map | null }).map = null;
+      m.setMap(null);
     });
   } catch {}
   markersRef.current = [];
 
   try {
-    const advMarkers = properties.map((property) => {
-      console.log(`📌 Creating advanced marker for: ${property.title} at (${property.lat}, ${property.lng})`);
-      const marker = new google.maps.marker.AdvancedMarkerElement({
+    const markers = properties.map((property) => {
+      console.log(`📌 Creating marker for: ${property.title} at (${property.lat}, ${property.lng})`);
+      const marker = new google.maps.Marker({
         position: { lat: property.lat, lng: property.lng },
         map,
         title: property.title,
+        icon: getPropertyIcon(property.type),
       });
-      marker.addListener('gmp-click', () => {
+      marker.addListener('click', () => {
         console.log(`🏠 Property clicked: ${property.title}`);
         setSelectedProperty(property);
         onPropertySelect?.(property);
@@ -126,10 +126,10 @@ useEffect(() => {
       return marker;
     });
 
-    markersRef.current = advMarkers;
+    markersRef.current = markers as any;
 
-    if (advMarkers.length > 0) {
-      clustererRef.current = new MarkerClusterer({ markers: advMarkers, map });
+    if (markers.length > 0) {
+      clustererRef.current = new MarkerClusterer({ markers, map });
       console.log('🎯 Marker clustering initialized successfully');
     } else {
       console.warn('⚠️ No markers to cluster');
@@ -142,7 +142,7 @@ useEffect(() => {
     try { clustererRef.current?.clearMarkers(); } catch {}
     try {
       markersRef.current.forEach((m) => {
-        (m as unknown as { map: google.maps.Map | null }).map = null;
+        m.setMap(null);
       });
     } catch {}
     clustererRef.current = null;
