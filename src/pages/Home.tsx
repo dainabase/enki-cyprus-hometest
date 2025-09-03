@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense } from 'react';
+import { useState, lazy, Suspense, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Hero from '@/components/Hero';
 import PropertyCard from '@/components/ui/PropertyCard';
@@ -9,6 +9,8 @@ import { Property } from '@/lib/supabase';
 import { useSupabaseProperties } from '@/hooks/useSupabaseProperties';
 import { TrendingUp, Shield, Award, Users } from 'lucide-react';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import { SEOHead } from '@/components/SEOHead';
+import { trackPageView } from '@/lib/analytics';
 
 const Home = () => {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
@@ -17,6 +19,10 @@ const Home = () => {
   // Load properties from Supabase
   const { properties, loading, error } = useSupabaseProperties();
   const featuredProperties = properties.slice(0, 3);
+
+  useEffect(() => {
+    trackPageView('/', 'Accueil - ENKI-REALTY Immobilier Premium Chypre');
+  }, []);
 
   console.log('🏠 Home component rendered with', properties.length, 'total properties');
 
@@ -54,9 +60,16 @@ const Home = () => {
   ];
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <Hero />
+    <>
+      <SEOHead 
+        title="ENKI-REALTY - Immobilier Premium à Chypre"
+        description="Découvrez les meilleurs projets immobiliers à Chypre avec ENKI-REALTY. Appartements, villas et penthouses premium dans les meilleures localités."
+        keywords="immobilier chypre, appartement chypre, villa chypre, penthouse chypre, investissement immobilier, immobilier premium"
+        url="https://enki-realty.com/"
+      />
+      <div className="min-h-screen">
+        {/* Hero Section */}
+        <Hero />
 
       {/* Features Section */}
       <section className="py-20 bg-muted/30">
@@ -235,13 +248,14 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Property Modal */}
-      <PropertyModal 
-        property={selectedProperty}
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-      />
-    </div>
+        {/* Property Modal */}
+        <PropertyModal 
+          property={selectedProperty}
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+        />
+      </div>
+    </>
   );
 };
 

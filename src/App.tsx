@@ -3,13 +3,16 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { ErrorBoundary } from "@sentry/react";
+import { HelmetProvider } from "react-helmet-async";
 import Layout from "./components/layout/Layout";
 import { FilterProvider } from "./contexts/FilterContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { PrivateRoute } from "./components/auth/PrivateRoute";
 import LoadingSpinner from "./components/LoadingSpinner";
+import { CookieConsentBanner } from "./components/CookieConsent";
+import { initGA, trackPageView } from "./lib/analytics";
 
 // Lazy load pages for code splitting  
 const Home = lazy(() => import("./pages/Home").then(module => ({ default: module.default })));
@@ -20,6 +23,7 @@ const About = lazy(() => import("./pages/About").then(module => ({ default: modu
 const Contact = lazy(() => import("./pages/Contact").then(module => ({ default: module.default })));
 const Login = lazy(() => import("./pages/Login").then(module => ({ default: module.default })));
 const Register = lazy(() => import("./pages/Register").then(module => ({ default: module.default })));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy").then(module => ({ default: module.default })));
 const Dashboard = lazy(() => import("./pages/Dashboard").then(module => ({ default: module.default })));
 const Admin = lazy(() => import("./pages/Admin").then(module => ({ default: module.default })));
 const NotFound = lazy(() => import("./pages/NotFound").then(module => ({ default: module.default })));
@@ -39,39 +43,53 @@ const queryClient = new QueryClient({
 
 console.log('🚀 App.tsx: Rendering App component');
 
+const AppContent = () => {
+  useEffect(() => {
+    initGA();
+  }, []);
+
+  return (
+    <BrowserRouter>
+      <TooltipProvider>
+        <Layout>
+          <Suspense fallback={<LoadingSpinner />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/search" element={<Search />} />
+              <Route path="/projects" element={<Projects />} />
+              <Route path="/project/:id" element={<ProjectDetails />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+              <Route path="/admin" element={<PrivateRoute adminOnly><Admin /></PrivateRoute>} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </Layout>
+        <CookieConsentBanner />
+        <Toaster />
+        <Sonner />
+      </TooltipProvider>
+    </BrowserRouter>
+  );
+};
+
 const App = () => {
   console.log('🔄 App.tsx: App function called');
   return (
     <ErrorBoundary fallback={<div className="p-6 text-center"><p>Une erreur est survenue. Veuillez recharger la page.</p></div>}>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <FilterProvider>
-            <BrowserRouter>
-              <TooltipProvider>
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <Routes>
-                      <Route path="/" element={<Home />} />
-                      <Route path="/search" element={<Search />} />
-                      <Route path="/projects" element={<Projects />} />
-                      <Route path="/project/:id" element={<ProjectDetails />} />
-                      <Route path="/about" element={<About />} />
-                      <Route path="/contact" element={<Contact />} />
-                      <Route path="/login" element={<Login />} />
-                      <Route path="/register" element={<Register />} />
-                      <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-                      <Route path="/admin" element={<PrivateRoute adminOnly><Admin /></PrivateRoute>} />
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </Suspense>
-                </Layout>
-                <Toaster />
-                <Sonner />
-              </TooltipProvider>
-            </BrowserRouter>
-          </FilterProvider>
-        </AuthProvider>
-      </QueryClientProvider>
+      <HelmetProvider>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <FilterProvider>
+              <AppContent />
+            </FilterProvider>
+          </AuthProvider>
+        </QueryClientProvider>
+      </HelmetProvider>
     </ErrorBoundary>
   );
 };

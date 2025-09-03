@@ -14,6 +14,107 @@ export type Database = {
   }
   public: {
     Tables: {
+      ab_test_assignments: {
+        Row: {
+          assigned_at: string
+          id: string
+          test_id: string
+          user_id: string | null
+          user_session: string
+          variant: string
+        }
+        Insert: {
+          assigned_at?: string
+          id?: string
+          test_id: string
+          user_id?: string | null
+          user_session: string
+          variant: string
+        }
+        Update: {
+          assigned_at?: string
+          id?: string
+          test_id?: string
+          user_id?: string | null
+          user_session?: string
+          variant?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ab_test_assignments_test_id_fkey"
+            columns: ["test_id"]
+            isOneToOne: false
+            referencedRelation: "ab_tests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ab_tests: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string | null
+          id: string
+          test_name: string
+          updated_at: string
+          variant_a: string
+          variant_b: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          test_name: string
+          updated_at?: string
+          variant_a?: string
+          variant_b?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          test_name?: string
+          updated_at?: string
+          variant_a?: string
+          variant_b?: string
+        }
+        Relationships: []
+      }
+      analytics_events: {
+        Row: {
+          created_at: string
+          event_data: Json
+          event_name: string
+          id: string
+          page_url: string
+          session_id: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_data?: Json
+          event_name: string
+          id?: string
+          page_url: string
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_data?: Json
+          event_name?: string
+          id?: string
+          page_url?: string
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       checklists: {
         Row: {
           created_at: string

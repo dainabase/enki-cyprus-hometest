@@ -2,8 +2,23 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Search, MapPin, TrendingUp } from 'lucide-react';
 import cyprusHero from '@/assets/cyprus-hero.jpg';
+import { useABTestVariant } from '@/hooks/useABTest';
+import { trackCustomEvent } from '@/lib/analytics';
 
 const Hero = () => {
+  const { value: ctaText, variant } = useABTestVariant(
+    'hero_cta_button',
+    'Découvrez Projets',
+    'Trouvez Votre Bien'
+  );
+
+  const handleCTAClick = () => {
+    trackCustomEvent('hero_cta_clicked', {
+      variant: variant,
+      button_text: ctaText
+    });
+  };
+
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Parallax Effect */}
@@ -83,9 +98,10 @@ const Hero = () => {
             <Button 
               size="lg" 
               className="bg-white text-primary hover:bg-blue-50 px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+              onClick={handleCTAClick}
             >
               <Search className="w-5 h-5 mr-2" />
-              Rechercher un bien
+              {ctaText}
             </Button>
             
             <Button 
