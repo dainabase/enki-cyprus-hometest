@@ -150,6 +150,23 @@ export const mockProperties: Property[] = [
     lat: 35.1448,
     lng: 33.3617,
     priceValue: 950000
+  },
+  {
+    id: '9',
+    title: 'Mersini Beach Apartment',
+    description: 'Appartement moderne avec vue mer à quelques pas de la plage de Mersini, dans le quartier recherché de Paphos.',
+    price: '€250,000',
+    location: 'Mersini Beach, Paphos',
+    type: 'apartment',
+    bedrooms: 2,
+    bathrooms: 1,
+    area: '80 m²',
+    image: '/placeholder-apartment.jpg',
+    features: ['Vue mer', 'Proche plage', 'Balcon', 'Parking', 'Cuisine équipée'],
+    status: 'available',
+    lat: 34.7768,
+    lng: 32.4245,
+    priceValue: 250000
   }
 ];
 

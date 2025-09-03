@@ -1,194 +1,143 @@
-# ENKI-REALTY - Plateforme Immobilière Premium à Chypre
+# ENKI-REALTY Cyprus Real Estate Platform
 
-Une Single Page Application (SPA) moderne et élégante pour la découverte et l'acquisition de propriétés d'exception à Chypre.
+Une plateforme immobilière moderne pour explorer et découvrir les propriétés premium à Chypre, construite avec React, Vite, TypeScript, Tailwind CSS, et Framer Motion.
 
-## 🌟 Fonctionnalités
+## 🏠 Fonctionnalités Principales
 
-### Pages Principales
-- **Accueil** : Hero section avec intégration future Google Maps, propriétés en vedette
-- **Recherche** : Filtres avancés par type, budget, localisation et équipements
-- **Projets** : Galerie complète des propriétés avec système de catégories
-- **À Propos** : Présentation d'ENKI-REALTY et partenaires développeurs top 10
-- **Contact** : Formulaire de contact avancé et informations de localisation
+- **Carte Interactive Google Maps** : Explorez les propriétés avec clustering intelligent et animations
+- **Recherche Avancée** : Filtrez par localisation, type, et gamme de prix
+- **Propriétés Premium** : Collection de villas, appartements, penthouses et locaux commerciaux
+- **Interface Responsive** : Optimisée pour desktop, tablet et mobile
+- **Animations Fluides** : Interface utilisateur avec Framer Motion
+- **Design Moderne** : System de design cohérent avec Tailwind CSS
 
-### Composants Réutilisables
-- **Navbar** : Navigation responsive avec logo ENKI-REALTY et bouton connexion
-- **Footer** : Liens utiles, réseaux sociaux, mentions légales et RGPD
-- **Hero** : Section d'accueil avec image de Chypre et CTA
-- **PropertyCard** : Cards animées pour les propriétés avec hover effects
+## 🗺️ Configuration de la Carte
 
-## 🎨 Design & UX
+La carte Google Maps est configurée pour :
+- **Centre par défaut** : Chypre (35.1264, 33.4299) avec zoom niveau 9
+- **Clustering** : Regroupement automatique des marqueurs selon le zoom
+- **Marqueurs personnalisés** : Icônes différenciées par type de propriété
+- **Info Windows** : Aperçu rapide avec détails de la propriété
 
-### Thème Visual
-- **Couleurs** : Palette neutre (blancs/gris) avec accents bleus méditerranéens
-- **Typographie** : Police Inter moderne et lisible
-- **Images** : Visuels générés représentant les paysages de Chypre
-- **Responsive** : Design mobile-first avec breakpoints optimisés
+## 🧪 Test de la Propriété Mersini Beach
 
-### Animations
-- **Framer Motion** : Transitions fluides et animations d'apparition
-- **Hover Effects** : Interactions sur les cards et boutons
-- **Stagger Animations** : Apparition progressive des grilles de propriétés
-- **Parallax Léger** : Effet sur le hero background
+Une propriété de test spéciale a été ajoutée pour validation :
+- **Nom** : "Mersini Beach Apartment"
+- **Localisation** : Paphos (34.7768, 32.4245)
+- **Caractéristiques** : 2 chambres, 80 m², 250,000 €
+- **Test** : Rechercher "Mersini" ou "Paphos" pour isoler cette propriété
 
-## 🚀 Technologies Utilisées
+## 🚀 Installation et Lancement
 
-### Core Stack
-- **React 18** : Framework frontend moderne
-- **TypeScript** : Typage statique pour une meilleure robustesse
-- **Vite** : Build tool ultra-rapide pour le développement
-- **Tailwind CSS** : Framework CSS utility-first pour un styling efficient
-
-### Librairies & Outils
-- **Framer Motion** : Animations et transitions fluides
-- **React Router DOM** : Navigation SPA sans rechargement
-- **Shadcn/UI** : Composants UI modernes et accessibles
-- **Lucide React** : Icônes SVG optimisées
-- **ESLint & Prettier** : Qualité et formatage du code
-
-### Design System
-- **Tokens sémantiques** : Couleurs, espaces et typographie centralisés
-- **Composants variants** : Boutons premium, cards hover, gradients
-- **Mode sombre** : Support complet dark/light mode
-- **Responsive breakpoints** : Mobile, tablet, desktop
-
-## 📦 Installation & Développement
-
-### Prérequis
-- Node.js 18+ et npm/yarn
-- Git pour le versioning
-
-### Installation
 ```bash
-# Cloner le repository
-git clone <YOUR_GIT_URL>
+# Cloner le projet
+git clone [url-du-repo]
 cd enki-realty
 
 # Installer les dépendances
 npm install
 
-# Lancer le serveur de développement
-npm run dev
+# Configurer la clé API Google Maps
+cp .env.example .env.local
+# Éditer .env.local et remplacer 'your_google_maps_api_key_here' par votre clé API
 
-# Build pour la production
+# Lancer en développement
+npm run dev
+```
+
+## 🔑 Configuration Google Maps API
+
+1. Obtenir une clé API sur [Google Cloud Console](https://console.cloud.google.com/google/maps-apis)
+2. Activer les APIs suivantes :
+   - Maps JavaScript API
+   - Places API
+   - Geocoding API
+3. Ajouter la clé dans `.env.local` :
+   ```
+   VITE_GOOGLE_MAPS_API_KEY=votre_cle_api_ici
+   ```
+
+## 🧪 Tests Recommandés
+
+### Test de la Carte
+1. Lancer `npm run dev`
+2. Naviguer vers la page d'accueil
+3. Vérifier que la carte se centre sur Chypre au chargement
+4. Observer les console logs pour le debug
+
+### Test de Recherche
+1. Utiliser la barre de recherche avec "Paphos"
+2. Vérifier que seuls les biens à Paphos s'affichent
+3. Tester le bouton "Mersini Beach (Test)" pour isoler l'appartement test
+4. Essayer différents filtres de type et prix
+
+### Test de Clustering
+1. Zoomer/dézoomer sur la carte
+2. Observer le regroupement automatique des marqueurs
+3. Cliquer sur les clusters pour zoom automatique
+
+### Test des Animations
+1. Cliquer sur un marqueur pour ouvrir l'InfoWindow
+2. Vérifier l'animation fade-in du modal de propriété
+3. Tester les animations hover sur les marqueurs
+
+## 📱 Structure du Projet
+
+```
+src/
+├── components/
+│   ├── GoogleMap.tsx           # Composant carte principal
+│   ├── PropertySearch.tsx      # Recherche et filtres
+│   ├── PropertyModal.tsx       # Modal détails propriété
+│   └── ui/                     # Composants UI réutilisables
+├── data/
+│   └── mockData.ts            # Données de test (incluant Mersini Beach)
+├── pages/
+│   └── Home.tsx               # Page d'accueil principale
+└── lib/
+    └── utils.ts               # Utilitaires
+```
+
+## 🐛 Debug et Console Logs
+
+Le projet inclut des console logs détaillés pour le debug :
+- `🗺️` : Événements de la carte Google Maps
+- `📍` : Centrage et positionnement
+- `📌` : Création des marqueurs
+- `🏠` : Interaction avec les propriétés
+- `🔍` : Fonctions de recherche et filtrage
+- `📊` : Statistiques et compteurs
+
+## 🚀 Production
+
+```bash
+# Build pour production
 npm run build
 
-# Preview du build de production
+# Preview du build
 npm run preview
 ```
 
-### Scripts Disponibles
-```bash
-npm run dev          # Serveur de développement (localhost:8080)
-npm run build        # Build optimisé pour la production
-npm run preview      # Aperçu du build de production
-npm run lint         # Vérification ESLint
-npm run lint:fix     # Correction automatique ESLint
-```
+## 🛠️ Technologies Utilisées
 
-## 📊 Données & Contenu
+- **React 18** : Framework frontend
+- **Vite** : Build tool moderne
+- **TypeScript** : Typage statique
+- **Tailwind CSS** : Framework CSS utility-first
+- **Framer Motion** : Animations et transitions
+- **Google Maps API** : Cartes interactives
+- **React Router** : Navigation SPA
+- **Radix UI** : Composants accessibles
 
-### Données Mockées
-- **5 propriétés exemples** : Villas, appartements, penthouses à Chypre
-- **Partenaires développeurs** : Top 10 promoteurs de l'île
-- **Localisations** : Limassol, Paphos, Nicosie, Ayia Napa, Larnaca
+## 🎯 Prochaines Étapes
 
-### Structure des Données
-```typescript
-interface Property {
-  id: string;
-  title: string;
-  description: string;
-  price: string;
-  location: string;
-  type: 'villa' | 'apartment' | 'penthouse' | 'commercial';
-  bedrooms?: number;
-  bathrooms?: number;
-  area: string;
-  image: string;
-  features: string[];
-  status: 'available' | 'sold' | 'reserved';
-}
-```
-
-## 🔒 Sécurité & Performances
-
-### Sécurité
-- **HTTPS Ready** : Configuration SSL/TLS
-- **Headers sécurisés** : Protection XSS, CSRF
-- **Sanitisation** : Validation des inputs utilisateur
-- **Auth Placeholder** : Structure prête pour l'authentification
-
-### Performances
-- **Code Splitting** : React.lazy pour les composants
-- **Lazy Loading** : Images et composants chargés à la demande
-- **Tree Shaking** : Élimination du code mort
-- **Bundle Optimization** : Vite optimizations
-
-## 🌍 Déploiement
-
-### Vercel (Recommandé)
-```bash
-# Connecter le repository à Vercel
-vercel --prod
-
-# Ou via l'interface Vercel
-# 1. Importer le projet GitHub
-# 2. Configuration automatique détectée
-# 3. Déploiement en un clic
-```
-
-### Autres Options
-- **Netlify** : Déploiement continu via Git
-- **AWS S3 + CloudFront** : Distribution mondiale
-- **GitHub Pages** : Hébergement gratuit pour projets publics
-
-### Variables d'Environnement
-```bash
-# .env.local (pour développement)
-VITE_APP_TITLE="ENKI-REALTY"
-VITE_GOOGLE_MAPS_API_KEY="your_api_key"
-VITE_CONTACT_EMAIL="contact@enki-realty.com"
-```
-
-## 🔮 Extensions Futures
-
-### API Integration
-- **Backend Node.js** : API REST pour les propriétés
-- **Base de données** : PostgreSQL avec Prisma ORM
-- **CMS Headless** : Strapi ou Sanity pour la gestion de contenu
-
-### Fonctionnalités Avancées
-- **Authentification** : JWT avec refresh tokens
-- **Favoris utilisateur** : Sauvegarde des propriétés
-- **Notifications** : Alertes email pour nouvelles propriétés
-- **Visite virtuelle** : Intégration 360° tours
-- **Chat en direct** : Support client temps réel
-
-### Intégrations
-- **Google Maps** : Carte interactive des propriétés
-- **Payment Gateway** : Stripe pour les réservations
-- **CRM Integration** : Salesforce ou HubSpot
-- **Analytics** : Google Analytics 4, Hotjar
-
-## 📞 Support & Contribution
-
-### Contact
-- **Email** : contact@enki-realty.com
-- **Documentation** : [docs.enki-realty.com](https://docs.enki-realty.com)
-- **Issues** : GitHub Issues pour les bugs et suggestions
-
-### Contribution
-1. Fork le projet
-2. Créer une branche feature (`git checkout -b feature/amazing-feature`)
-3. Commit les changements (`git commit -m 'Add amazing feature'`)
-4. Push vers la branche (`git push origin feature/amazing-feature`)
-5. Ouvrir une Pull Request
-
-## 📄 Licence
-
-Copyright © 2024 ENKI-REALTY. Tous droits réservés.
+- [ ] Intégration avec une vraie API backend
+- [ ] Authentification utilisateur
+- [ ] Système de favoris
+- [ ] Visite virtuelle 360°
+- [ ] Calculateur de financement
+- [ ] Notifications en temps réel
 
 ---
 
-**ENKI-REALTY** - *Votre partenaire de confiance pour l'immobilier premium à Chypre* 🏝️
+**ENKI-REALTY** - Votre passerelle vers l'immobilier de luxe à Chypre 🏝️

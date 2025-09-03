@@ -73,10 +73,17 @@ const GoogleMapComponent = ({
   };
 
   const onLoad = useCallback((map: google.maps.Map) => {
+    console.log('🗺️ Google Map loaded, centering on Cyprus...');
     setMap(map);
+    
+    // Center on Cyprus by default
+    map.setCenter({ lat: 35.1264, lng: 33.4299 });
+    map.setZoom(9);
+    console.log('📍 Map centered on Cyprus (35.1264, 33.4299) with zoom 9');
     
     // Add marker clustering
     const markers = properties.map(property => {
+      console.log(`📌 Creating marker for: ${property.title} at (${property.lat}, ${property.lng})`);
       const marker = new google.maps.Marker({
         position: { lat: property.lat, lng: property.lng },
         icon: getPropertyIcon(property.type),
@@ -84,6 +91,7 @@ const GoogleMapComponent = ({
       });
 
       marker.addListener('click', () => {
+        console.log(`🏠 Property clicked: ${property.title}`);
         setSelectedProperty(property);
         onPropertySelect?.(property);
       });
@@ -91,15 +99,18 @@ const GoogleMapComponent = ({
       return marker;
     });
 
+    console.log(`📊 Total markers created: ${markers.length}`);
+
     // Only create clusterer if MarkerClusterer is available
     if (typeof MarkerClusterer !== 'undefined') {
-      new MarkerClusterer({
+      const clusterer = new MarkerClusterer({
         markers,
         map,
         renderer: {
           render: ({ count, position }) => {
             const color = '#4A90E2';
             const size = count < 10 ? 40 : count < 100 ? 50 : 60;
+            console.log(`🔗 Creating cluster with ${count} markers at position:`, position);
             
             return new google.maps.Marker({
               position,
@@ -111,6 +122,7 @@ const GoogleMapComponent = ({
           }
         }
       });
+      console.log('🎯 Marker clustering initialized');
     }
   }, [properties, onPropertySelect]);
 
