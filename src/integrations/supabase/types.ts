@@ -443,6 +443,23 @@ export type Database = {
         }
         Returns: boolean
       }
+      get_audit_logs: {
+        Args: { p_limit?: number; p_offset?: number }
+        Returns: {
+          action: string
+          admin_email: string
+          admin_name: string
+          admin_user_id: string
+          created_at: string
+          details: Json
+          id: string
+          ip_address: unknown
+          resource_id: string
+          resource_type: string
+          seconds_ago: number
+          user_agent: string
+        }[]
+      }
       get_current_user_role: {
         Args: Record<PropertyKey, never>
         Returns: string
