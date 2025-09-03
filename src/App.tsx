@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./components/layout/Layout";
+import { FilterProvider } from "./contexts/FilterContext";
 import Home from "./pages/Home";
 import Search from "./pages/Search";
 import Projects from "./pages/Projects";
@@ -20,9 +21,10 @@ const App = () => {
   console.log('🔄 App.tsx: App function called');
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <TooltipProvider>
-        <Layout>
+      <FilterProvider>
+        <BrowserRouter>
+          <TooltipProvider>
+          <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/search" element={<Search />} />
@@ -33,11 +35,12 @@ const App = () => {
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </Layout>
-        <Toaster />
-        <Sonner />
-        </TooltipProvider>
-      </BrowserRouter>
+          </Layout>
+          <Toaster />
+          <Sonner />
+          </TooltipProvider>
+        </BrowserRouter>
+      </FilterProvider>
     </QueryClientProvider>
   );
 };

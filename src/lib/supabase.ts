@@ -1,14 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
-
-// Configuration Supabase - Ces valeurs seront fournies par l'intégration Lovable
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Configuration Supabase manquante. Assurez-vous que l\'intégration Supabase est activée.');
-}
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Import the official Supabase client
+export { supabase } from '@/integrations/supabase/client';
 
 // Types pour TypeScript
 export interface DatabaseProperty {

@@ -3,16 +3,19 @@ import PropertyCard from '@/components/ui/PropertyCard';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { mockProperties } from '@/data/mockData';
+import { useFilters } from '@/contexts/FilterContext';
 import { Building2, MapPin, Filter } from 'lucide-react';
 
 const Projects = () => {
+  const { state } = useFilters();
+  const { filteredProperties: properties } = state;
+  
   const categories = [
-    { name: 'Tous', count: mockProperties.length, active: true },
-    { name: 'Villas', count: mockProperties.filter(p => p.type === 'villa').length, active: false },
-    { name: 'Appartements', count: mockProperties.filter(p => p.type === 'apartment').length, active: false },
-    { name: 'Penthouses', count: mockProperties.filter(p => p.type === 'penthouse').length, active: false },
-    { name: 'Commercial', count: mockProperties.filter(p => p.type === 'commercial').length, active: false },
+    { name: 'Tous', count: properties.length, active: true },
+    { name: 'Villas', count: properties.filter(p => p.type === 'villa').length, active: false },
+    { name: 'Appartements', count: properties.filter(p => p.type === 'apartment').length, active: false },
+    { name: 'Penthouses', count: properties.filter(p => p.type === 'penthouse').length, active: false },
+    { name: 'Commercial', count: properties.filter(p => p.type === 'commercial').length, active: false },
   ];
 
   const stats = [
@@ -110,7 +113,7 @@ const Projects = () => {
 
           {/* Properties Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {mockProperties.map((property, index) => (
+            {properties.map((property, index) => (
               <PropertyCard 
                 key={property.id} 
                 property={property} 

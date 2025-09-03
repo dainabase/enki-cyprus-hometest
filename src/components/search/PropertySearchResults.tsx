@@ -4,7 +4,7 @@ import { Grid, List, MapPin, Search, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { useSearch } from '@/contexts/SearchContext';
+import { useFilters } from '@/contexts/FilterContext';
 import PropertyCard from '@/components/ui/PropertyCard';
 import { cn } from '@/lib/utils';
 
@@ -21,8 +21,8 @@ const PropertySearchResults: React.FC<PropertySearchResultsProps> = ({
   onViewModeChange,
   showViewToggle = true
 }) => {
-  const { state, selectProperty, resetFilters } = useSearch();
-  const { filteredProperties, isLoading, selectedProperty } = state;
+  const { state, resetFilters } = useFilters();
+  const { filteredProperties, isLoading } = state;
 
   const staggerVariants = {
     hidden: { opacity: 0 },
@@ -45,7 +45,7 @@ const PropertySearchResults: React.FC<PropertySearchResultsProps> = ({
 
   const handlePropertyClick = (property: any) => {
     console.log(`🏠 Property selected from results: ${property.title}`);
-    selectProperty(property);
+    // Handle property click - could navigate to details page
   };
 
   const EmptyState = () => (
@@ -172,7 +172,6 @@ const PropertySearchResults: React.FC<PropertySearchResultsProps> = ({
                 onClick={() => handlePropertyClick(property)}
                 className={cn(
                   "transition-all duration-200",
-                  selectedProperty?.id === property.id && "ring-2 ring-primary",
                   viewMode === 'list' && "grid grid-cols-1 md:grid-cols-3 gap-4"
                 )}
               />
