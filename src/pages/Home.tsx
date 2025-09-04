@@ -999,14 +999,14 @@ const Home = () => {
               >
                 {/* Glow effect on hover */}
                 <motion.div
-                  className="absolute -inset-2 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  className="absolute -inset-2 z-0 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                   initial={{ scale: 0.8 }}
                   whileHover={{ scale: 1.1 }}
                 />
                 
                 
                 <motion.div
-                  className="relative bg-white rounded-2xl shadow-2xl border border-gray-200/50 overflow-hidden"
+                  className="relative z-10 bg-white rounded-2xl shadow-2xl overflow-hidden ring-2 ring-ring ring-offset-2 ring-offset-background"
                   initial={{ y: 20, opacity: 0 }}
                   whileInView={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.5 }}
@@ -1017,7 +1017,7 @@ const Home = () => {
                       value={agenticQuery}
                       onChange={(e) => setAgenticQuery(e.target.value)}
                       placeholder="Décrivez votre projet : ex. 'Français, budget 500k €, appartement près de la mer à Chypre – options fiscales pour optimisation rentabilité ?'"
-                      className="w-full border-0 bg-transparent resize-none ring-2 ring-primary ring-offset-2 focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:outline-none min-h-[120px] text-gray-800 placeholder:text-gray-500 text-lg leading-relaxed"
+                      className="w-full border-0 bg-transparent resize-none focus-visible:outline-none min-h-[120px] text-gray-800 placeholder:text-gray-500 text-lg leading-relaxed"
                       sanitize={false}
                     />
                     
