@@ -607,28 +607,28 @@ const Home = () => {
       title: 'Commissions 5%',
       description: 'Commissions transparentes et compétitives pour tous nos services immobiliers premium',
       badge: 'Transparent',
-      gradient: 'from-blue-500 to-cyan-500'
+      gradient: 'from-primary to-primary-hover'
     },
     {
       icon: Brain,
       title: 'Optimisation fiscale AI magnifique',
       description: 'Intelligence artificielle avancée Lexaia pour maximiser vos avantages fiscaux',
       badge: 'AI Powered',
-      gradient: 'from-purple-500 to-pink-500'
+      gradient: 'from-primary to-primary-hover'
     },
     {
       icon: Shield,
       title: 'Expertise locale',
       description: 'Connaissance approfondie du marché immobilier chypriote depuis plus de 15 ans',
       badge: 'Expert',
-      gradient: 'from-green-500 to-emerald-500'
+      gradient: 'from-primary to-primary-hover'
     },
     {
       icon: Award,
       title: 'Service premium',
       description: 'Accompagnement VIP personnalisé de A à Z dans votre projet d\'investissement exclusif',
       badge: 'Premium',
-      gradient: 'from-orange-500 to-red-500'
+      gradient: 'from-primary to-primary-hover'
     }
   ];
 
