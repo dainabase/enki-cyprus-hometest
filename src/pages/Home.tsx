@@ -893,7 +893,7 @@ const Home = () => {
                   </motion.div>
                   
                   {/* Titre */}
-                  <h3 className="font-bold text-2xl lg:text-3xl text-foreground mb-6 leading-tight text-center lg:text-left">
+                  <h3 className="font-bold text-xl lg:text-2xl text-foreground mb-6 leading-tight text-center lg:text-left whitespace-nowrap">
                     {item.title}
                   </h3>
                   
