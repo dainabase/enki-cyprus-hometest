@@ -422,6 +422,7 @@ const Home = () => {
   const parallaxBg3Ref = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const whiteSectionRef = useRef<HTMLDivElement>(null);
   
   // Advanced Parallax transforms
   const heroY = useTransform(scrollY, [0, 1000], [0, -300]);
@@ -484,29 +485,105 @@ const Home = () => {
     trackCustomEvent('home_viewed', { user_authenticated: !!isAuthenticated });
 
     // GSAP Advanced Animations
-    const tl = gsap.timeline();
-    
-    // Stagger animation for feature cards
-    tl.fromTo('.feature-card', 
-      { y: 100, opacity: 0, scale: 0.8 },
-      { 
-        y: 0, 
-        opacity: 1, 
-        scale: 1,
-        duration: 0.8,
-        stagger: 0.2,
-        ease: "back.out(1.7)",
-        scrollTrigger: {
-          trigger: '.features-section',
-          start: 'top 80%',
-          end: 'bottom 20%',
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline();
+      
+      // Stagger animation for feature cards
+      tl.fromTo('.feature-card', 
+        { y: 100, opacity: 0, scale: 0.8 },
+        { 
+          y: 0, 
+          opacity: 1, 
+          scale: 1,
+          duration: 0.8,
+          stagger: 0.2,
+          ease: 'back.out(1.7)',
+          scrollTrigger: {
+            trigger: '.features-section',
+            start: 'top 80%',
+            end: 'bottom 20%',
+          }
+        }
+      );
+
+      // Parallax background layers (slow/medium/fast)
+      if (heroRef.current) {
+        if (parallaxBg1Ref.current) {
+          gsap.to(parallaxBg1Ref.current, {
+            yPercent: -10,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: heroRef.current,
+              start: 'top top',
+              end: 'bottom top',
+              scrub: true
+            }
+          });
+        }
+        if (parallaxBg2Ref.current) {
+          gsap.to(parallaxBg2Ref.current, {
+            yPercent: -20,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: heroRef.current,
+              start: 'top top',
+              end: 'bottom top',
+              scrub: true
+            }
+          });
+        }
+        if (parallaxBg3Ref.current) {
+          gsap.to(parallaxBg3Ref.current, {
+            yPercent: -30,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: heroRef.current,
+              start: 'top top',
+              end: 'bottom top',
+              scrub: true
+            }
+          });
         }
       }
-    );
 
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill());
-    };
+      // Search box: descend faster and dock into the white section below the hero
+      if (searchBoxRef.current && heroRef.current && whiteSectionRef.current) {
+        gsap.fromTo(
+          searchBoxRef.current,
+          { y: 0, scale: 1, zIndex: 50 },
+          {
+            y: () => {
+              const heroRect = heroRef.current!.getBoundingClientRect();
+              const containerTop = window.scrollY + (heroRect.top || 0);
+              const targetTop = whiteSectionRef.current!.offsetTop;
+              const viewportCenter = window.innerHeight * 0.5;
+              // Move so the box centers inside the white section
+              return targetTop - containerTop - viewportCenter + 120;
+            },
+            scale: 1.05,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: heroRef.current,
+              start: 'top top',
+              endTrigger: whiteSectionRef.current,
+              end: 'top top',
+              scrub: true
+            }
+          }
+        );
+
+        // Pin briefly in the white section for user input
+        ScrollTrigger.create({
+          trigger: whiteSectionRef.current,
+          start: 'top top',
+          end: '+=200',
+          pin: searchBoxRef.current,
+          pinSpacing: false
+        });
+      }
+    }, containerRef);
+
+    return () => ctx.revert();
   }, [isAuthenticated]);
 
   // Agentic Search Mutation
@@ -764,7 +841,7 @@ const Home = () => {
         {/* Advanced Agentic Search Form - GSAP Controlled */}
         <div 
           ref={searchBoxRef}
-          className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-5xl px-4"
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-5xl px-4"
           style={{ willChange: 'transform' }}
         >
           <motion.div 
