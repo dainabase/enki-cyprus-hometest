@@ -414,10 +414,10 @@ const Home = () => {
   const isClient = useIsClient();
   const enable3D = false; // temporary: disable 3D to fix blank page
   
-  // Advanced Parallax transforms
-  const heroY = useTransform(scrollY, [0, 1000], [0, -300]);
-  const heroOpacity = useTransform(scrollY, [0, 400], [1, 0.7]);
-  const heroScale = useTransform(scrollY, [0, 400], [1, 1.1]);
+  // Advanced Parallax transforms (reduce shift, increase scale to prevent background gap)
+  const heroY = useTransform(scrollY, [0, 600], [0, -120]);
+  const heroOpacity = useTransform(scrollY, [0, 400], [1, 0.85]);
+  const heroScale = useTransform(scrollY, [0, 600], [1.1, 1.2]);
   
   // Debounce search query for performance
   const debouncedQuery = useDebounce(agenticQuery, 300);
