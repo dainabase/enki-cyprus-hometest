@@ -1,12 +1,10 @@
 import { useState, lazy, Suspense, useEffect, useMemo, useCallback, useRef } from 'react';
-import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Sphere, MeshDistortMaterial, Float } from '@react-three/drei';
 import { useSpring as useReactSpring, animated, config } from '@react-spring/web';
-import { useDrag } from '@use-gesture/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -34,34 +32,21 @@ import PropertyCard from '@/components/ui/PropertyCard';
 import PropertyModal from '@/components/PropertyModal';
 import { useIsClient } from '@/hooks/useIsClient';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 
-// useIsClient moved to '@/hooks/useIsClient'
-// 3D Background Sphere Component
-const BackgroundSphere = () => (
-  <Float speed={1.4} rotationIntensity={1} floatIntensity={2}>
-    <Sphere args={[1, 100, 200]} scale={2.4}>
-      <MeshDistortMaterial
-        color="#1E3A8A"
-        attach="material"
-        distort={0.3}
-        speed={1.5}
-        roughness={0}
-      />
-    </Sphere>
-  </Float>
-);
+// Interface for project interests
+interface ProjectInterest {
+  name: string;
+  link: string;
+  desc: string;
+}
 
-// Physics-based 3D Carousel Component
+// Advanced 3D Carousel with Physics
 const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const carouselRef = useRef<HTMLDivElement>(null);
-  
-  const x = useMotionValue(0);
-  const background = useTransform(x, [-100, 0, 100], ['#ff008c', '#7700ff', '#1E3A8A']);
   
   const [springProps, springApi] = useReactSpring(() => ({
     rotation: 0,
@@ -77,20 +62,6 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
     return () => clearInterval(interval);
   }, [properties.length, isAutoPlaying]);
 
-  const isClient = useIsClient();
-
-  const bind = useDrag(({ down, movement: [mx], direction: [xDir], distance, cancel }) => {
-    const distanceValue = Array.isArray(distance) ? Math.abs(distance[0]) : Math.abs(distance);
-    if (distanceValue > 100) {
-      setCurrentIndex(prev => 
-        xDir > 0 ? (prev - 1 + properties.length) % properties.length 
-                 : (prev + 1) % properties.length
-      );
-      cancel && cancel();
-    }
-    x.set(down ? mx : 0);
-  });
-
   const handleSlideChange = (index: number) => {
     setCurrentIndex(index);
     springApi.start({ 
@@ -105,32 +76,14 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
 
   return (
     <motion.div 
-      className="relative w-full h-[80vh] overflow-hidden perspective-2000"
-      style={{ background }}
+      className="relative w-full h-[80vh] overflow-hidden"
       onMouseEnter={() => setIsAutoPlaying(false)}
       onMouseLeave={() => setIsAutoPlaying(true)}
     >
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/20" />
       
-      {/* 3D Canvas Background */}
-      <div className="absolute inset-0 opacity-30">
-        <ErrorBoundary fallback={null}>
-          {isClient && (
-            <Canvas camera={{ position: [0, 0, 5] }}>
-              <ambientLight intensity={0.4} />
-              <pointLight position={[10, 10, 10]} />
-              <BackgroundSphere />
-              <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
-            </Canvas>
-          )}
-        </ErrorBoundary>
-      </div>
-
       {/* Main Carousel Container */}
-      <div 
-        ref={carouselRef}
-        className="relative w-full h-full flex items-center justify-center transform-gpu preserve-3d"
-      >
+      <div className="relative w-full h-full flex items-center justify-center">
         {properties.map((property: Property, index: number) => {
           const offset = (index - currentIndex + properties.length) % properties.length;
           const isActive = index === currentIndex;
@@ -151,7 +104,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
           return (
             <motion.div
               key={property.id}
-              className="absolute inset-0 cursor-grab active:cursor-grabbing"
+              className="absolute inset-0"
               initial={{ opacity: 0, scale: 0.5, rotateY: 90 }}
               animate={{ 
                 opacity,
@@ -173,7 +126,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
             >
               <Card className="mx-auto max-w-7xl h-[70vh] shadow-2xl overflow-hidden bg-gradient-to-br from-background/95 to-background/85 backdrop-blur-xl border border-white/20">
                 <CardContent className="p-0 h-full flex flex-col lg:flex-row">
-                  {/* Property Image with Parallax */}
+                  {/* Property Image */}
                   <motion.div 
                     className="lg:w-2/3 relative overflow-hidden"
                     whileHover={{ scale: 1.05 }}
@@ -189,7 +142,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
                       transition={{ duration: 1.2, ease: "easeOut" }}
                     />
                     
-                    {/* Animated Overlay Layers */}
+                    {/* Overlay */}
                     <motion.div 
                       className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"
                       initial={{ opacity: 0 }}
@@ -197,7 +150,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
                       transition={{ delay: 0.3, duration: 0.8 }}
                     />
                     
-                    {/* Floating Property Info */}
+                    {/* Property Info */}
                     <motion.div
                       className="absolute bottom-8 left-8 text-white"
                       initial={{ opacity: 0, y: 50 }}
@@ -247,7 +200,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
                       </motion.div>
                     </motion.div>
 
-                    {/* Floating Action Buttons */}
+                    {/* Action Buttons */}
                     <motion.div
                       className="absolute top-6 right-6 flex gap-3"
                       initial={{ opacity: 0, scale: 0 }}
@@ -271,7 +224,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
                     </motion.div>
                   </motion.div>
 
-                  {/* Interactive Interests Sidebar */}
+                  {/* Interests Sidebar */}
                   <motion.div 
                     className="lg:w-1/3 p-8 bg-gradient-to-br from-background via-muted/20 to-background backdrop-blur-xl border-l border-white/10"
                     initial={{ opacity: 0, x: 50 }}
@@ -393,13 +346,6 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
   );
 };
 
-// Interface for project interests
-interface ProjectInterest {
-  name: string;
-  link: string;
-  desc: string;
-}
-
 const Home = () => {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -410,14 +356,14 @@ const Home = () => {
   
   const { isAuthenticated, user } = useAuth();
   const { toast } = useToast();
-  const { scrollY } = useScroll();
   const isClient = useIsClient();
-  const enable3D = false; // temporary: disable 3D to fix blank page
   
-  // Advanced Parallax transforms
-  const heroY = useTransform(scrollY, [0, 1000], [0, -300]);
-  const heroOpacity = useTransform(scrollY, [0, 400], [1, 0.7]);
-  const heroScale = useTransform(scrollY, [0, 400], [1, 1.1]);
+  // Refs for GSAP animations
+  const heroRef = useRef<HTMLDivElement>(null);
+  const searchBoxRef = useRef<HTMLDivElement>(null);
+  const backgroundRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
+  const featuresRef = useRef<HTMLDivElement>(null);
   
   // Debounce search query for performance
   const debouncedQuery = useDebounce(agenticQuery, 300);
@@ -470,33 +416,189 @@ const Home = () => {
     ]
   };
 
+  // GSAP ScrollTrigger Animation Setup
+  useGSAP(() => {
+    if (!heroRef.current || !searchBoxRef.current || !backgroundRef.current) return;
+
+    // Clear existing ScrollTriggers
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+
+    // Media query setup for responsive
+    const mm = gsap.matchMedia();
+    
+    // Mobile breakpoint
+    mm.add("(max-width: 768px)", () => {
+      // Mobile timeline
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: "top top",
+          end: "+=150vh", // Shorter on mobile
+          scrub: 1,
+          pin: false,
+          anticipatePin: 1,
+          onUpdate: (self) => {
+            const progress = self.progress;
+            trackCustomEvent('scroll_interactions', { 
+              progress: Math.round(progress * 100),
+              device: 'mobile'
+            });
+          }
+        }
+      });
+
+      // Background parallax (slower on mobile)
+      tl.to(backgroundRef.current, {
+        y: "30%",
+        scale: 1.1,
+        duration: 1
+      }, 0);
+
+      // Search box animation sequence
+      tl.to(searchBoxRef.current, {
+        y: "15vh",
+        scale: 1.02,
+        boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
+        duration: 0.3
+      }, 0.1)
+      .to(searchBoxRef.current, {
+        y: "35vh",
+        duration: 0.3
+      }, 0.3)
+      .to(searchBoxRef.current, {
+        y: "50vh",
+        opacity: 0.7,
+        scale: 0.98,
+        duration: 0.4
+      }, 0.7);
+
+      // Features reveal (mobile)
+      if (featuresRef.current) {
+        gsap.fromTo(".feature-card", 
+          { y: 50, opacity: 0, scale: 0.9 },
+          { 
+            y: 0, 
+            opacity: 1, 
+            scale: 1,
+            duration: 0.6,
+            stagger: 0.15,
+            ease: "back.out(1.4)",
+            scrollTrigger: {
+              trigger: featuresRef.current,
+              start: 'top 85%',
+              end: 'bottom 30%',
+            }
+          }
+        );
+      }
+    });
+
+    // Desktop breakpoint
+    mm.add("(min-width: 769px)", () => {
+      // Desktop timeline
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: "top top",
+          end: "+=200vh", // Longer pause on desktop
+          scrub: 1,
+          pin: false,
+          anticipatePin: 1,
+          onUpdate: (self) => {
+            const progress = self.progress;
+            trackCustomEvent('scroll_interactions', { 
+              progress: Math.round(progress * 100),
+              device: 'desktop'
+            });
+          }
+        }
+      });
+
+      // Background parallax
+      tl.to(backgroundRef.current, {
+        y: "50%",
+        scale: 1.2,
+        duration: 1
+      }, 0);
+
+      // Search box sophisticated animation
+      tl.to(searchBoxRef.current, {
+        y: "20%",
+        scale: 1.05,
+        boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
+        duration: 0.3,
+        ease: "power2.out"
+      }, 0.1)
+      .to(searchBoxRef.current, {
+        y: "50vh",
+        duration: 0.2
+      }, 0.3)
+      .to(searchBoxRef.current, {
+        // Pause phase with pinning effect
+        duration: 0.3
+      }, 0.5)
+      .to(searchBoxRef.current, {
+        y: "100vh",
+        opacity: 0,
+        scale: 0.95,
+        duration: 0.2,
+        ease: "power2.in"
+      }, 0.8);
+
+      // Features reveal with stagger
+      if (featuresRef.current) {
+        gsap.fromTo(".feature-card", 
+          { y: 100, opacity: 0, scale: 0.8 },
+          { 
+            y: 0, 
+            opacity: 1, 
+            scale: 1,
+            duration: 0.8,
+            stagger: 0.2,
+            ease: "back.out(1.7)",
+            scrollTrigger: {
+              trigger: featuresRef.current,
+              start: 'top 80%',
+              end: 'bottom 20%',
+            }
+          }
+        );
+      }
+    });
+
+    // Refresh on resize
+    const handleResize = () => {
+      ScrollTrigger.refresh();
+    };
+
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      mm.revert();
+    };
+  }, { dependencies: [isClient], scope: heroRef });
+
   useEffect(() => {
     trackPageView('/', 'Accueil - ENKI-REALTY Immobilier Premium Chypre');
     trackCustomEvent('home_viewed', { user_authenticated: !!isAuthenticated });
 
-    // GSAP Advanced Animations
-    const tl = gsap.timeline();
-    
-    // Stagger animation for feature cards
-    tl.fromTo('.feature-card', 
-      { y: 100, opacity: 0, scale: 0.8 },
-      { 
-        y: 0, 
-        opacity: 1, 
-        scale: 1,
-        duration: 0.8,
-        stagger: 0.2,
-        ease: "back.out(1.7)",
-        scrollTrigger: {
-          trigger: '.features-section',
-          start: 'top 80%',
-          end: 'bottom 20%',
-        }
-      }
-    );
+    // Optimize for mobile performance
+    if (searchBoxRef.current) {
+      searchBoxRef.current.style.willChange = 'transform';
+    }
+    if (backgroundRef.current) {
+      backgroundRef.current.style.willChange = 'transform';
+    }
 
     return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill());
+      // Clean up will-change
+      if (searchBoxRef.current) {
+        searchBoxRef.current.style.willChange = 'auto';
+      }
+      if (backgroundRef.current) {
+        backgroundRef.current.style.willChange = 'auto';
+      }
     };
   }, [isAuthenticated]);
 
@@ -644,61 +746,37 @@ const Home = () => {
       />
       
       <div className="min-h-screen overflow-x-hidden">
-        {/* Advanced Multi-Layer Parallax Hero */}
-        <section className="relative h-screen flex items-center justify-center overflow-hidden">
-          {/* Background Layers */}
-          <motion.div 
-            style={{ y: heroY, opacity: heroOpacity, scale: heroScale }}
+        {/* Hero Section with Advanced Parallax */}
+        <section 
+          ref={heroRef}
+          className="relative h-screen flex items-center justify-center overflow-hidden"
+        >
+          {/* Multi-layer Background */}
+          <div 
+            ref={backgroundRef}
             className="absolute inset-0 z-0"
           >
             <div 
-              className="w-full h-full bg-cover bg-center bg-no-repeat filter"
+              className="w-full h-full bg-cover bg-center bg-no-repeat"
               style={{ backgroundImage: `url(${cyprusHero})` }}
             />
             <div className="absolute inset-0 bg-gradient-to-br from-primary/80 via-primary/50 to-accent/60" />
-          </motion.div>
-
-          {/* 3D Particles Background */}
-          {enable3D && (
-            <div className="absolute inset-0 opacity-20">
-            <ErrorBoundary fallback={null}>
-              {isClient && (
-                <Canvas camera={{ position: [0, 0, 5] }}>
-                  <ambientLight intensity={0.4} />
-                  <pointLight position={[10, 10, 10]} />
-                  <Float speed={2} rotationIntensity={1} floatIntensity={2}>
-                    <Sphere args={[0.1, 16, 16]} position={[-4, -2, -1]}>
-                      <MeshDistortMaterial color="#ffffff" distort={0.2} speed={2} />
-                    </Sphere>
-                  </Float>
-                  <Float speed={1.5} rotationIntensity={2} floatIntensity={1}>
-                    <Sphere args={[0.15, 16, 16]} position={[4, 2, -2]}>
-                      <MeshDistortMaterial color="#60A5FA" distort={0.3} speed={1.5} />
-                    </Sphere>
-                  </Float>
-                  <Float speed={1.8} rotationIntensity={1.5} floatIntensity={3}>
-                    <Sphere args={[0.08, 16, 16]} position={[0, 3, -1]}>
-                      <MeshDistortMaterial color="#34D399" distort={0.4} speed={2.5} />
-                    </Sphere>
-                  </Float>
-                </Canvas>
-              )}
-            </ErrorBoundary>
           </div>
-          )}
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            {/* Hero Title */}
             <motion.div
+              ref={titleRef}
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, delay: 0.2, ease: "easeOut" }}
+              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
               className="space-y-8"
             >
               <motion.h1 
-                className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-8 leading-tight"
+                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-8 leading-tight"
                 initial={{ opacity: 0, y: 50, scale: 0.8 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
+                animate={{ opacity: 1, y: 0, scale: 1.05 }}
+                transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
               >
                 <motion.span
                   initial={{ opacity: 0, x: -50 }}
@@ -728,7 +806,7 @@ const Home = () => {
               </motion.h1>
 
               <motion.p 
-                className="text-xl md:text-2xl lg:text-3xl text-blue-100 max-w-4xl mx-auto leading-relaxed font-light"
+                className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-blue-100 max-w-4xl mx-auto leading-relaxed font-light"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 1.2 }}
@@ -736,288 +814,250 @@ const Home = () => {
                 Votre partenaire de confiance pour investir dans l'immobilier premium 
                 au cœur de la Méditerranée
               </motion.p>
-
-              {/* Advanced Agentic Search Form */}
-              <motion.div 
-                className="mt-16 p-8 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 max-w-5xl mx-auto shadow-2xl"
-                initial={{ opacity: 0, y: 50, scale: 0.9 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 1, delay: 1.4, ease: "easeOut" }}
-                whileHover={{ scale: 1.02, y: -5 }}
-              >
-                <motion.div 
-                  className="flex items-center justify-center space-x-3 text-white mb-8"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.6, duration: 0.8 }}
-                >
-                  <motion.div
-                    animate={{ 
-                      rotate: 360,
-                      scale: [1, 1.2, 1]
-                    }}
-                    transition={{ 
-                      rotate: { duration: 3, repeat: Infinity, ease: "linear" },
-                      scale: { duration: 2, repeat: Infinity, ease: "easeInOut" }
-                    }}
-                  >
-                    <Brain className="w-8 h-8 text-blue-200" />
-                  </motion.div>
-                  <span className="font-semibold text-2xl">Recherche Agentique Immobilière</span>
-                  <Sparkles className="w-6 h-6 text-yellow-300" />
-                </motion.div>
-                
-                <div className="space-y-8">
-                  <div className="space-y-3">
-                    <Label htmlFor="agenticQuery" className="text-white text-lg font-medium text-left block">
-                      Décrivez votre projet immobilier en détail
-                    </Label>
-                    <motion.div
-                      whileFocus={{ scale: 1.02 }}
-                      transition={{ type: "spring", stiffness: 300 }}
-                    >
-                      <Textarea
-                        id="agenticQuery"
-                        value={agenticQuery}
-                        onChange={(e) => setAgenticQuery(e.target.value)}
-                        placeholder="Ex: 'Suisse, 500K CHF de budget, investissement Chypre a Limassol et alentour environ 10km, options fiscales optimisées et scénarios possibles'"
-                        className="min-h-[140px] w-full bg-white/95 text-gray-900 border-white/30 placeholder-gray-500 resize-none focus:ring-4 focus:ring-primary/30 focus:border-primary/50 rounded-2xl text-lg p-6 shadow-inner"
-                        rows={4}
-                      />
-                    </motion.div>
-                  </div>
-
-                  <motion.div 
-                    className="flex items-start space-x-4"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 1.8 }}
-                  >
-                    <motion.div
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                    >
-                      <Checkbox
-                        id="consent"
-                        checked={consent}
-                        onCheckedChange={(checked) => setConsent(!!checked)}
-                        className="mt-1 border-white/40 data-[state=checked]:bg-primary data-[state=checked]:border-primary w-6 h-6"
-                      />
-                    </motion.div>
-                    <Label 
-                      htmlFor="consent" 
-                      className="text-sm text-blue-100 leading-relaxed cursor-pointer flex-1"
-                    >
-                      J'accepte le traitement de mes données personnelles pour recevoir une recherche personnalisée 
-                      et des recommandations immobilières adaptées (conforme RGPD)
-                    </Label>
-                  </motion.div>
-
-                  <motion.div
-                    className="flex justify-center"
-                    whileHover={{ scale: agenticQuery.trim() && consent ? 1.05 : 1 }}
-                    whileTap={{ scale: agenticQuery.trim() && consent ? 0.95 : 1 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                  >
-                    <Button
-                      onClick={handleAgenticSearch}
-                      disabled={!agenticQuery.trim() || !consent || agenticSearchMutation.isPending}
-                      size="lg"
-                      className="px-16 py-6 text-xl font-semibold bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 text-white shadow-2xl hover:shadow-primary/30 transition-all duration-300 disabled:opacity-50 rounded-2xl border border-white/20"
-                    >
-                      {agenticSearchMutation.isPending ? (
-                        <>
-                          <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                            className="w-6 h-6 border-3 border-white border-t-transparent rounded-full mr-3"
-                          />
-                          Analyse en cours...
-                        </>
-                      ) : (
-                        <>
-                          <Search className="w-6 h-6 mr-3" />
-                          Rechercher
-                        </>
-                      )}
-                    </Button>
-                  </motion.div>
-                </div>
-              </motion.div>
             </motion.div>
-          </div>
 
-          {/* Scroll Indicator */}
-          <motion.div 
-            className="absolute bottom-12 left-1/2 transform -translate-x-1/2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 2 }}
-          >
+            {/* Agentic Search Box */}
             <motion.div 
-              className="w-8 h-14 border-3 border-white/50 rounded-full flex justify-center backdrop-blur-sm"
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
+              ref={searchBoxRef}
+              className="mt-16 p-6 sm:p-8 bg-white/90 backdrop-blur-xl rounded-xl sm:rounded-3xl border border-white/20 w-full sm:max-w-md lg:max-w-5xl mx-auto shadow-2xl"
+              initial={{ opacity: 0, y: 50, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 1, delay: 1.4, ease: "easeOut" }}
             >
               <motion.div 
-                className="w-2 h-3 bg-white rounded-full mt-3"
-                animate={{ y: [0, 8, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
+                className="flex items-center justify-center space-x-3 text-gray-800 mb-6 sm:mb-8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.6, duration: 0.8 }}
+              >
+                <motion.div
+                  animate={{ 
+                    rotate: 360,
+                    scale: [1, 1.2, 1]
+                  }}
+                  transition={{ 
+                    rotate: { duration: 3, repeat: Infinity, ease: "linear" },
+                    scale: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+                  }}
+                >
+                  <Brain className="w-6 sm:w-8 h-6 sm:h-8 text-primary" />
+                </motion.div>
+                <span className="font-semibold text-lg sm:text-2xl">Recherche Agentique Immobilière</span>
+                <Sparkles className="w-5 sm:w-6 h-5 sm:h-6 text-yellow-500" />
+              </motion.div>
+              
+              <div className="space-y-6 sm:space-y-8">
+                <div className="space-y-3">
+                  <Label htmlFor="agenticQuery" className="text-gray-800 text-base sm:text-lg font-medium text-left block">
+                    Décrivez votre projet immobilier en détail
+                  </Label>
+                  <motion.div
+                    whileFocus={{ scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    <Textarea
+                      id="agenticQuery"
+                      value={agenticQuery}
+                      onChange={(e) => setAgenticQuery(e.target.value)}
+                      placeholder="Ex: 'Suisse, 500K CHF de budget, investissement Chypre a Limassol et alentour environ 10km, options fiscales optimisées et scénarios possibles'"
+                      className="min-h-[100px] sm:min-h-[140px] w-full bg-white text-gray-900 border-gray-300 placeholder-gray-500 resize-none focus:ring-4 focus:ring-primary/30 focus:border-primary/50 rounded-xl sm:rounded-2xl text-sm sm:text-lg p-4 sm:p-6 shadow-inner"
+                      rows={3}
+                    />
+                  </motion.div>
+                </div>
+
+                <motion.div 
+                  className="flex items-start space-x-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 1.8 }}
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <Checkbox
+                      id="consent"
+                      checked={consent}
+                      onCheckedChange={(checked) => setConsent(!!checked)}
+                      className="border-gray-400 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                    />
+                  </motion.div>
+                  <Label 
+                    htmlFor="consent" 
+                    className="text-xs sm:text-sm text-gray-700 cursor-pointer leading-relaxed"
+                  >
+                    J'accepte le traitement de mes données pour cette recherche immobilière personnalisée et la génération de recommandations fiscales via IA
+                  </Label>
+                </motion.div>
+
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 400 }}
+                >
+                  <Button
+                    onClick={handleAgenticSearch}
+                    disabled={agenticSearchMutation.isPending}
+                    className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 sm:py-4 px-6 sm:px-8 rounded-xl sm:rounded-2xl text-base sm:text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+                  >
+                    {agenticSearchMutation.isPending ? (
+                      <div className="flex items-center space-x-2">
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <span>Recherche en cours...</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center space-x-2">
+                        <Search className="w-5 h-5" />
+                        <span>Rechercher</span>
+                      </div>
+                    )}
+                  </Button>
+                </motion.div>
+              </div>
             </motion.div>
-          </motion.div>
+          </div>
         </section>
 
-        {/* Advanced Features Section */}
-        <section className="py-32 bg-gradient-to-br from-background via-muted/20 to-background features-section">
+        {/* Why Choose Us Section */}
+        <section 
+          ref={featuresRef}
+          className="py-16 sm:py-20 bg-background"
+        >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="text-center mb-20"
+              className="text-center mb-12 sm:mb-16"
             >
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
-                Pourquoi Choisir ENKI-REALTY ?
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6">
+                Pourquoi Choisir ENKI-REALTY
               </h2>
-              <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                Excellence, innovation et expertise locale pour votre réussite immobilière à Chypre
+              <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
+                Notre expertise unique au service de votre réussite immobilière
               </p>
             </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {features.map((feature, index) => (
-                <motion.div
-                  key={index}
-                  className="feature-card group relative"
-                  whileHover={{ 
-                    y: -10,
-                    rotateY: 5,
-                    scale: 1.05
-                  }}
-                  transition={{ 
-                    type: "spring", 
-                    stiffness: 300,
-                    damping: 20 
-                  }}
-                >
-                  <Card className="h-full overflow-hidden border-0 shadow-2xl bg-gradient-to-br from-background to-muted/30 backdrop-blur-xl group-hover:shadow-primary/20 transition-all duration-500">
-                    <CardContent className="p-8 h-full flex flex-col">
-                      <motion.div
-                        className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${feature.gradient} mb-6 flex items-center justify-center shadow-lg`}
-                        whileHover={{ 
-                          scale: 1.1,
-                          rotate: 10,
-                          transition: { type: "spring", stiffness: 400 }
-                        }}
-                      >
-                        <feature.icon className="w-10 h-10 text-white" />
-                      </motion.div>
-                      
-                      <motion.div 
-                        className="mb-4"
-                        initial={{ opacity: 0, x: -20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 + 0.3 }}
-                      >
-                        <div className={`inline-flex px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r ${feature.gradient} text-white mb-3`}>
-                          {feature.badge}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+              {features.map((feature, index) => {
+                const Icon = feature.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    className="feature-card"
+                    whileHover={{ 
+                      scale: 1.05, 
+                      rotateY: 5,
+                      transition: { type: "spring", stiffness: 300 }
+                    }}
+                  >
+                    <Card className="h-full bg-gradient-to-br from-background to-muted/20 border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10">
+                      <CardContent className="p-6 sm:p-8 text-center">
+                        <motion.div
+                          className={`w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-6 rounded-full bg-gradient-to-r ${feature.gradient} flex items-center justify-center`}
+                          whileHover={{ 
+                            rotate: 360,
+                            transition: { duration: 0.6 }
+                          }}
+                        >
+                          <Icon className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+                        </motion.div>
+                        
+                        <div className="mb-4">
+                          <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full mb-3">
+                            {feature.badge}
+                          </span>
+                          <h3 className="text-lg sm:text-xl font-bold text-foreground mb-3">
+                            {feature.title}
+                          </h3>
                         </div>
-                        <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">
-                          {feature.title}
-                        </h3>
-                      </motion.div>
-                      
-                      <motion.p 
-                        className="text-muted-foreground leading-relaxed flex-1"
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 + 0.5 }}
-                      >
-                        {feature.description}
-                      </motion.p>
-                      
-                      <motion.div
-                        className="mt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                        whileHover={{ x: 5 }}
-                      >
-                        <ArrowRight className="w-5 h-5 text-primary" />
-                      </motion.div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
+                        
+                        <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                          {feature.description}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         </section>
 
-        {/* Advanced 3D Carousel Section */}
-        <section className="py-20 bg-gradient-to-br from-muted/30 to-background">
+        {/* Featured Properties Section */}
+        <section className="py-16 sm:py-20 bg-gradient-to-br from-muted/30 to-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="text-center mb-16"
+              className="text-center mb-12 sm:mb-16"
             >
-              <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6">
                 Projets Vedette
               </h2>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
                 Découvrez notre sélection exclusive de propriétés d'exception à Chypre
               </p>
             </motion.div>
 
-            {enable3D && featuredProperties.length > 0 ? (
+            {featuredProperties.length > 0 ? (
               <Advanced3DCarousel 
                 properties={featuredProperties}
                 interests={cyprusInterests}
                 onInterestClick={handleInterestClick}
               />
             ) : (
-              featuredProperties.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {featuredProperties.map((p, i) => (
-                    <PropertyCard key={p.id} property={p} index={i} />
-                  ))}
-                </div>
-              )
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {featuredProperties.map((property, index) => (
+                  <PropertyCard 
+                    key={property.id} 
+                    property={property} 
+                    index={index}
+                    onClick={() => {
+                      setSelectedProperty(property);
+                      setIsModalOpen(true);
+                    }}
+                  />
+                ))}
+              </div>
             )}
           </div>
         </section>
 
         {/* Latest Properties Section */}
-        <section className="py-20 bg-background">
+        <section className="py-16 sm:py-20 bg-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="text-center mb-16"
+              transition={{ duration: 0.8 }}
+              className="text-center mb-12 sm:mb-16"
             >
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6">
                 Dernières Nouveautés
               </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Les dernières propriétés ajoutées à notre catalogue premium
+              <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
+                Les dernières opportunités immobilières ajoutées à notre portefeuille
               </p>
             </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {latestProperties.map((property, index) => (
                 <motion.div
                   key={property.id}
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
-                  whileHover={{ y: -5, scale: 1.02 }}
                 >
                   <PropertyCard 
-                    property={property}
+                    property={property} 
+                    index={index}
                     onClick={() => {
                       setSelectedProperty(property);
                       setIsModalOpen(true);
@@ -1028,71 +1068,68 @@ const Home = () => {
             </div>
 
             <motion.div
-              className="text-center mt-12"
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="text-center mt-12"
             >
-              <Button 
-                asChild 
-                size="lg"
-                className="bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 text-white shadow-lg hover:shadow-xl transition-all duration-300"
-              >
-                <Link to="/search">
-                  <Eye className="w-5 h-5 mr-2" />
-                  Voir Toutes les Propriétés
+              <Button asChild className="btn-premium">
+                <Link to="/projects">
+                  <ArrowRight className="w-5 h-5 mr-2" />
+                  Voir Tous les Projets
                 </Link>
               </Button>
             </motion.div>
           </div>
         </section>
 
-        {/* Google Maps Section */}
-        <section className="py-20 bg-muted/30">
+        {/* Explore Map Section */}
+        <section className="py-16 sm:py-20 bg-muted/20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="text-center mb-12"
+              transition={{ duration: 0.8 }}
+              className="text-center mb-12 sm:mb-16"
             >
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6">
                 Explorer la Carte
               </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Découvrez l'emplacement de nos propriétés exclusives à travers Chypre
+              <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
+                Découvrez la localisation de nos propriétés à travers Chypre
               </p>
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
+              initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="rounded-3xl overflow-hidden shadow-2xl border border-white/20"
+              className="h-96 sm:h-[500px] rounded-2xl overflow-hidden shadow-2xl"
             >
-              <ErrorBoundary>
+              <ErrorBoundary fallback={
+                <div className="w-full h-full bg-muted flex items-center justify-center">
+                  <p className="text-muted-foreground">Carte non disponible</p>
+                </div>
+              }>
                 <Suspense fallback={
-                  <div className="h-96 bg-muted flex items-center justify-center">
-                    <div className="text-center">
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                        className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"
-                      />
-                      <p className="text-muted-foreground">Chargement de la carte...</p>
-                    </div>
+                  <div className="w-full h-full bg-muted animate-pulse flex items-center justify-center">
+                    <p className="text-muted-foreground">Chargement de la carte...</p>
                   </div>
                 }>
-                  <GoogleMapComponent 
-                    properties={properties}
-                    onPropertySelect={(property) => {
-                      setSelectedProperty(property);
-                      setIsModalOpen(true);
-                    }}
-                  />
+                  {isClient && (
+                    <GoogleMapComponent
+                      center={{ lat: 35.1264, lng: 33.4299 }}
+                      zoom={9}
+                      properties={properties}
+                      onPropertySelect={(property) => {
+                        setSelectedProperty(property);
+                        setIsModalOpen(true);
+                      }}
+                    />
+                  )}
                 </Suspense>
               </ErrorBoundary>
             </motion.div>
@@ -1113,59 +1150,85 @@ const Home = () => {
           )}
         </AnimatePresence>
 
-        {/* Search Results Modal */}
+        {/* Agentic Search Results Modal */}
         <AnimatePresence>
           {showResultsModal && searchResults && (
             <Dialog open={showResultsModal} onOpenChange={setShowResultsModal}>
-              <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+              <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
                 <DialogHeader>
-                  <DialogTitle className="text-2xl font-bold">Résultats de Recherche Agentique</DialogTitle>
+                  <DialogTitle className="flex items-center gap-2">
+                    <Brain className="w-6 h-6 text-primary" />
+                    Résultats de la Recherche Agentique
+                  </DialogTitle>
                   <DialogDescription>
                     Analyse personnalisée basée sur votre demande
                   </DialogDescription>
                 </DialogHeader>
-                
+
                 <div className="space-y-6">
-                  {searchResults.properties && (
+                  {/* Properties found */}
+                  {searchResults.properties && searchResults.properties.length > 0 && (
                     <div>
-                      <h3 className="text-lg font-semibold mb-4">Propriétés Recommandées</h3>
+                      <h3 className="text-lg font-semibold mb-4">
+                        Propriétés Recommandées ({searchResults.properties.length})
+                      </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {searchResults.properties.map((property: Property) => (
+                        {searchResults.properties.slice(0, 4).map((property: Property) => (
                           <PropertyCard 
                             key={property.id} 
                             property={property}
-                            onClick={() => {}} 
+                            className="h-full"
                           />
                         ))}
                       </div>
                     </div>
                   )}
-                  
-                  {searchResults.analysis && (
-                    <div>
-                      <h3 className="text-lg font-semibold mb-4">Analyse Fiscale</h3>
-                      <div className="p-4 bg-muted rounded-lg">
-                        <pre className="whitespace-pre-wrap text-sm">
-                          {JSON.stringify(searchResults.analysis, null, 2)}
-                        </pre>
+
+                  {/* Lexaia Analysis */}
+                  {searchResults.lexaia_analysis && (
+                    <div className="bg-muted/50 rounded-lg p-6">
+                      <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <Sparkles className="w-5 h-5 text-primary" />
+                        Analyse Fiscale AI
+                      </h3>
+                      <div className="prose prose-sm max-w-none">
+                        <p className="text-muted-foreground">
+                          {searchResults.lexaia_analysis}
+                        </p>
                       </div>
                     </div>
                   )}
-                  
-                  <div className="flex gap-4">
-                    <Button onClick={handleDownloadPDF} disabled={!searchResults.pdf_url}>
-                      <Download className="w-4 h-4 mr-2" />
-                      Télécharger PDF
-                    </Button>
+
+                  {/* Action buttons */}
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    {searchResults.pdf_url && (
+                      <Button onClick={handleDownloadPDF} className="flex-1">
+                        <Download className="w-4 h-4 mr-2" />
+                        Télécharger le PDF
+                      </Button>
+                    )}
+                    
                     <Button 
                       variant="outline" 
                       onClick={handleSaveDossier}
-                      disabled={!isAuthenticated}
+                      disabled={!isAuthenticated || saveDossierMutation.isPending}
+                      className="flex-1"
                     >
                       <Save className="w-4 h-4 mr-2" />
-                      Sauvegarder Dossier
+                      {saveDossierMutation.isPending ? 'Sauvegarde...' : 'Sauvegarder'}
                     </Button>
                   </div>
+
+                  {!isAuthenticated && (
+                    <div className="bg-muted/50 rounded-lg p-4 text-center">
+                      <p className="text-sm text-muted-foreground mb-2">
+                        Connectez-vous pour sauvegarder vos recherches
+                      </p>
+                      <Button variant="outline" size="sm" asChild>
+                        <Link to="/login">Se Connecter</Link>
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </DialogContent>
             </Dialog>
