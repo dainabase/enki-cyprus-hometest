@@ -166,6 +166,11 @@ All colors MUST be HSL.
   }
   
   .swaarg-section-title {
+    @apply font-inter text-5xl md:text-6xl lg:text-7xl font-light tracking-tight;
+    letter-spacing: -0.015em;
+  }
+  
+  .swaarg-large-title {
     @apply font-inter text-4xl md:text-5xl lg:text-6xl font-light tracking-tight;
     letter-spacing: -0.015em;
   }

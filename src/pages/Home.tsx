@@ -794,10 +794,10 @@ const Home = () => {
             viewport={{ once: false }}
           />
           
-          <div className="max-w-5xl mx-auto relative z-10">
+          <div className="max-w-7xl mx-auto relative z-10">
             {/* Titre section avec stagger word-by-word */}
             <motion.h2 
-              className="font-inter font-bold text-3xl md:text-4xl text-primary text-center mb-8"
+              className="swaarg-large-title text-primary text-left mb-8"
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
@@ -826,7 +826,7 @@ const Home = () => {
 
             {/* Texte intro avec fade-in-up spring */}
             <motion.p 
-              className="font-inter text-lg text-muted-foreground text-center max-w-xl md:max-w-3xl mx-auto mb-16 leading-loose"
+              className="swaarg-body-large text-muted-foreground text-left max-w-3xl mb-16"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ 
@@ -942,10 +942,10 @@ const Home = () => {
             }}
           />
           
-          <div className="max-w-4xl mx-auto relative z-10">
+          <div className="max-w-7xl mx-auto relative z-10">
             {/* Titre section avec parallax tilt */}
             <motion.h2 
-              className="font-inter font-bold text-3xl md:text-4xl text-primary text-center mb-10"
+              className="swaarg-large-title text-primary text-left mb-10"
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
@@ -977,7 +977,7 @@ const Home = () => {
                     hidden: { opacity: 0, y: 30, rotateX: -90 },
                     visible: { 
                       opacity: 1, 
-                      y: 0, 
+                      y: 0,
                       rotateX: 0,
                       transition: {
                         type: "spring",
