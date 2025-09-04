@@ -832,7 +832,7 @@ const Home = () => {
               ].map((item, index) => (
                 <motion.div
                   key={index}
-                  className="relative group bg-secondary border border-border/50 rounded-3xl p-8 lg:p-10 hover:border-primary/30 transition-all duration-500"
+                  className="relative group bg-secondary border border-border/50 rounded-3xl p-8 lg:p-10 hover:border-primary/30 transition-all duration-500 overflow-hidden"
                   initial={{ 
                     opacity: 0, 
                     y: 60,
@@ -859,12 +859,32 @@ const Home = () => {
                     }
                   }}
                 >
+                  {/* Premium background overlays pour les blocs */}
+                  <motion.div 
+                    className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/15"
+                    initial={{ opacity: 0, scale: 1.1 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 2 }}
+                    viewport={{ once: true }}
+                  />
+                  <motion.div 
+                    className="absolute top-1/4 right-1/4 w-32 h-32 bg-primary/5 rounded-full blur-2xl"
+                    animate={{ 
+                      x: [0, 20, -20, 0],
+                      y: [0, -10, 10, 0],
+                    }}
+                    transition={{ 
+                      duration: 15,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  />
                   {/* Effet de brillance au survol */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl z-10"></div>
                   
                   {/* Icône premium */}
                   <motion.div 
-                    className="mb-8 flex justify-center lg:justify-start"
+                    className="mb-8 flex justify-center lg:justify-start relative z-20"
                     whileHover={{ 
                       scale: 1.1,
                       rotate: 5,
@@ -878,12 +898,12 @@ const Home = () => {
                   </motion.div>
                   
                   {/* Titre */}
-                  <h3 className="font-bold text-lg lg:text-xl xl:text-2xl text-foreground mb-6 leading-tight text-center lg:text-left whitespace-nowrap">
+                  <h3 className="font-bold text-lg lg:text-xl xl:text-2xl text-foreground mb-6 leading-tight text-center lg:text-left whitespace-nowrap relative z-20">
                     {item.title}
                   </h3>
                   
                   {/* Description */}
-                  <p className="text-lg text-muted-foreground leading-relaxed text-center lg:text-left font-light">
+                  <p className="text-lg text-muted-foreground leading-relaxed text-center lg:text-left font-light relative z-20">
                     {item.description}
                   </p>
                   
@@ -903,7 +923,7 @@ const Home = () => {
         {/* Section "Commencer l'Expérience" */}
         <motion.section 
           id="start-experience"
-          className="py-32 md:py-40 px-4 md:px-8 relative overflow-hidden" style={{backgroundColor: 'hsl(210 20% 96%)'}}
+          className="bg-secondary py-32 md:py-40 px-4 md:px-8 relative overflow-hidden"
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, ease: 'easeInOut' }}
