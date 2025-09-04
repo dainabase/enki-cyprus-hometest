@@ -1,17 +1,25 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useEffect, lazy, Suspense, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Sphere, MeshDistortMaterial, Float, Text } from '@react-three/drei';
 import Slider from 'react-slick';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Atropos from 'atropos/react';
+import 'atropos/css';
 import { 
   MapPin, ArrowLeft, Bed, Bath, Square, Phone, Mail, Share2, Heart,
-  ChevronLeft, ChevronRight, Image as ImageIcon, Map, Play, ZoomIn, ZoomOut,
-  RotateCcw, Eye, Calendar, Trophy, Star, ChevronDown
+  ChevronLeft, ChevronRight, Image as ImageIcon, Play, ZoomIn, ZoomOut,
+  RotateCcw, Eye, Calendar, Trophy, Star, ChevronDown, Building,
+  Wifi, Car, Dumbbell, Shield, Waves, TreePine, Camera, Download
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Property } from '@/lib/supabase';
 import { useSupabaseProperty } from '@/hooks/useSupabaseProperties';
 import { useAuth } from '@/contexts/AuthContext';
@@ -23,6 +31,8 @@ import { trackPageView, trackCustomEvent } from '@/lib/analytics';
 import ZoomablePlans from '@/components/ui/ZoomablePlans';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const MiniMap = lazy(() => import('@/components/MiniMap'));
 
@@ -36,17 +46,55 @@ interface Unit {
   bathrooms?: number;
 }
 
-// Configuration pour react-slick
+// 3D Unit Visualization Component
+const Unit3DVisualization = ({ unit, isVisible }: { unit: Unit; isVisible: boolean }) => {
+  return (
+    <div className={`h-64 w-full transition-opacity duration-500 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+      {isVisible && (
+        <Canvas camera={{ position: [0, 0, 5] }}>
+          <ambientLight intensity={0.4} />
+          <directionalLight position={[10, 10, 5]} intensity={1} />
+          <Float speed={1.5} rotationIntensity={1} floatIntensity={2}>
+            <Sphere args={[1.5, 32, 32]} position={[0, 0, 0]}>
+              <MeshDistortMaterial
+                color={unit.status === 'available' ? '#22C55E' : '#EF4444'}
+                attach="material"
+                distort={0.2}
+                speed={2}
+                roughness={0.4}
+              />
+            </Sphere>
+          </Float>
+          <Text
+            position={[0, -2.5, 0]}
+            fontSize={0.5}
+            color="#ffffff"
+            anchorX="center"
+            anchorY="middle"
+          >
+            {unit.type.toUpperCase()}
+          </Text>
+          <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={2} />
+        </Canvas>
+      )}
+    </div>
+  );
+};
+
+// Advanced slider configuration
 const sliderSettings = {
   dots: true,
   infinite: true,
-  speed: 500,
+  speed: 600,
   slidesToShow: 1,
   slidesToScroll: 1,
-  autoplay: false,
+  autoplay: true,
+  autoplaySpeed: 4000,
   pauseOnHover: true,
   prevArrow: <CustomPrevArrow />,
   nextArrow: <CustomNextArrow />,
+  fade: true,
+  cssEase: 'cubic-bezier(0.7, 0, 0.3, 1)',
   responsive: [
     {
       breakpoint: 768,
@@ -58,17 +106,16 @@ const sliderSettings = {
   ]
 };
 
-// Flèches personnalisées pour le slider
 function CustomPrevArrow(props: any) {
   const { onClick } = props;
   return (
     <motion.button
-      whileHover={{ scale: 1.1 }}
+      whileHover={{ scale: 1.1, x: -5 }}
       whileTap={{ scale: 0.9 }}
-      className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-3 shadow-lg transition-all"
+      className="absolute left-6 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white rounded-full p-4 shadow-2xl transition-all backdrop-blur-sm border border-white/20"
       onClick={onClick}
     >
-      <ChevronLeft className="w-6 h-6 text-gray-800" />
+      <ChevronLeft className="w-8 h-8 text-gray-800" />
     </motion.button>
   );
 }
@@ -77,12 +124,12 @@ function CustomNextArrow(props: any) {
   const { onClick } = props;
   return (
     <motion.button
-      whileHover={{ scale: 1.1 }}
+      whileHover={{ scale: 1.1, x: 5 }}
       whileTap={{ scale: 0.9 }}
-      className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-3 shadow-lg transition-all"
+      className="absolute right-6 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white rounded-full p-4 shadow-2xl transition-all backdrop-blur-sm border border-white/20"
       onClick={onClick}
     >
-      <ChevronRight className="w-6 h-6 text-gray-800" />
+      <ChevronRight className="w-8 h-8 text-gray-800" />
     </motion.button>
   );
 }
@@ -97,17 +144,24 @@ const ProjectDetail: React.FC = () => {
   const [isCheckingFavorite, setIsCheckingFavorite] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<{ url: string; title: string } | null>(null);
   const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null);
+  const [activeTab, setActiveTab] = useState('overview');
   
   const { scrollY } = useScroll();
-  const heroY = useTransform(scrollY, [0, 500], [0, 150]);
+  const heroY = useTransform(scrollY, [0, 600], [0, 200]);
+  const heroOpacity = useTransform(scrollY, [0, 300], [1, 0.8]);
+  const heroScale = useTransform(scrollY, [0, 600], [1, 1.1]);
 
-  // Mock units data (in real app would come from DB)
+  const headerRef = useRef<HTMLDivElement>(null);
+  const galleryRef = useRef<HTMLDivElement>(null);
+  const unitsRef = useRef<HTMLDivElement>(null);
+
+  // Mock units data with enhanced properties
   const mockUnits: Unit[] = [
     {
       type: 'appart',
       status: 'available',
       price: '€450,000',
-      details: 'Appartement 3 chambres avec vue mer',
+      details: 'Appartement 3 chambres avec vue mer panoramique',
       surface: '120m²',
       bedrooms: 3,
       bathrooms: 2
@@ -125,7 +179,7 @@ const ProjectDetail: React.FC = () => {
       type: 'villa',
       status: 'available', 
       price: '€750,000',
-      details: 'Villa individuelle avec piscine privée',
+      details: 'Villa individuelle avec piscine privée et jardin',
       surface: '200m²',
       bedrooms: 4,
       bathrooms: 3
@@ -134,11 +188,20 @@ const ProjectDetail: React.FC = () => {
       type: 'appart',
       status: 'available',
       price: '€380,000', 
-      details: 'Studio premium avec terrasse',
+      details: 'Studio premium avec terrasse et vue mer',
       surface: '65m²',
       bedrooms: 1,
       bathrooms: 1
     }
+  ];
+
+  const propertyFeatures = [
+    { icon: Wifi, label: 'WiFi Haut Débit', available: true },
+    { icon: Car, label: 'Parking Privé', available: true },
+    { icon: Dumbbell, label: 'Salle de Sport', available: true },
+    { icon: Shield, label: 'Sécurité 24/7', available: true },
+    { icon: Waves, label: 'Piscine', available: true },
+    { icon: TreePine, label: 'Jardin Paysager', available: false },
   ];
 
   useEffect(() => {
@@ -150,7 +213,56 @@ const ProjectDetail: React.FC = () => {
         project_type: property.type,
         project_price: property.price
       });
+
+      // Advanced GSAP Animations
+      const tl = gsap.timeline();
+      
+      // Animated entrance for content sections
+      tl.fromTo(headerRef.current, 
+        { y: 100, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1, ease: "power3.out" }
+      )
+      .fromTo('.detail-card', 
+        { y: 60, opacity: 0, scale: 0.9 },
+        { 
+          y: 0, 
+          opacity: 1, 
+          scale: 1,
+          duration: 0.8,
+          stagger: 0.2,
+          ease: "back.out(1.7)",
+          scrollTrigger: {
+            trigger: '.details-container',
+            start: 'top 80%',
+            end: 'bottom 20%',
+          }
+        }
+      )
+      .fromTo('.unit-card', 
+        { 
+          rotationY: 90, 
+          opacity: 0, 
+          scale: 0.8 
+        },
+        { 
+          rotationY: 0, 
+          opacity: 1, 
+          scale: 1,
+          duration: 1,
+          stagger: 0.15,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: unitsRef.current,
+            start: 'top 70%',
+            end: 'bottom 30%',
+          }
+        }
+      );
     }
+
+    return () => {
+      ScrollTrigger.getAll().forEach(t => t.kill());
+    };
   }, [property, id]);
 
   // Check if property is in favorites
@@ -254,31 +366,44 @@ const ProjectDetail: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-muted/30">
-        <div className="text-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted/30">
+        <motion.div 
+          className="text-center"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+        >
           <motion.div 
-            className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"
+            className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full mx-auto mb-6"
             animate={{ rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
           />
-          <p className="text-muted-foreground">Chargement des détails...</p>
-        </div>
+          <h2 className="text-2xl font-bold text-foreground mb-2">Chargement des détails...</h2>
+          <p className="text-muted-foreground">Préparation de votre visite virtuelle</p>
+        </motion.div>
       </div>
     );
   }
 
   if (!property) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-muted/30">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted/30">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center"
+          className="text-center max-w-md mx-auto p-8"
         >
-          <h1 className="text-2xl font-bold text-foreground mb-4">Propriété non trouvée</h1>
-          <p className="text-muted-foreground mb-6">Cette propriété n'existe pas ou a été supprimée.</p>
-          <Button onClick={() => navigate('/search')} className="btn-premium">
-            <ArrowLeft className="w-4 h-4 mr-2" />
+          <motion.div
+            animate={{ rotate: [0, 10, -10, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="text-6xl mb-6"
+          >
+            🏠
+          </motion.div>
+          <h1 className="text-3xl font-bold text-foreground mb-4">Propriété non trouvée</h1>
+          <p className="text-muted-foreground mb-8">Cette propriété n'existe pas ou a été supprimée.</p>
+          <Button onClick={() => navigate('/search')} size="lg" className="bg-gradient-to-r from-primary to-blue-600 text-white">
+            <ArrowLeft className="w-5 h-5 mr-2" />
             Retour à la recherche
           </Button>
         </motion.div>
@@ -288,547 +413,634 @@ const ProjectDetail: React.FC = () => {
 
   return (
     <GoogleMapsProvider>
-      <div className="min-h-screen bg-muted/30">
-        {/* Hero Section avec Parallax */}
-        <section className="relative h-[70vh] overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
+        {/* Advanced Multi-Layer Parallax Hero */}
+        <section className="relative h-screen overflow-hidden">
           <motion.div
-            style={{ y: heroY }}
+            style={{ y: heroY, opacity: heroOpacity, scale: heroScale }}
             className="absolute inset-0"
           >
             <img
-              src={property.photos?.[0] || `https://picsum.photos/1200x600?random=${property.id}`}
+              src={property.photos?.[0] || `https://picsum.photos/1920x1080?random=${property.id}`}
               alt={property.title}
               className="w-full h-full object-cover"
               loading="lazy"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
           </motion.div>
 
+          {/* 3D Floating Elements */}
+          <div className="absolute inset-0 opacity-30">
+            <Canvas camera={{ position: [0, 0, 8] }}>
+              <ambientLight intensity={0.3} />
+              <pointLight position={[10, 10, 10]} />
+              <Float speed={1.5} rotationIntensity={2} floatIntensity={3}>
+                <Sphere args={[0.3, 16, 16]} position={[-6, 2, -2]}>
+                  <MeshDistortMaterial color="#60A5FA" distort={0.3} speed={1.5} />
+                </Sphere>
+              </Float>
+              <Float speed={2} rotationIntensity={1} floatIntensity={2}>
+                <Sphere args={[0.2, 16, 16]} position={[6, -2, -3]}>
+                  <MeshDistortMaterial color="#34D399" distort={0.4} speed={2} />
+                </Sphere>
+              </Float>
+            </Canvas>
+          </div>
+
           {/* Navigation et actions */}
-          <div className="absolute top-6 left-6 right-6 flex justify-between items-center z-10">
+          <div className="absolute top-8 left-8 right-8 flex justify-between items-center z-20">
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
             >
               <Button
                 variant="outline"
                 onClick={() => navigate('/search')}
-                className="bg-white bg-opacity-90 hover:bg-opacity-100 border-0 text-foreground"
+                className="bg-white/20 backdrop-blur-xl hover:bg-white/30 border-white/30 text-white shadow-2xl"
+                size="lg"
               >
-                <ArrowLeft className="w-4 h-4 mr-2" />
+                <ArrowLeft className="w-5 h-5 mr-2" />
                 Retour
               </Button>
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="flex gap-3"
+              transition={{ delay: 0.3, duration: 0.6 }}
+              className="flex gap-4"
             >
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={toggleFavorite}
-                disabled={isCheckingFavorite}
-                className="bg-white bg-opacity-90 hover:bg-opacity-100 border-0"
-              >
-                <Heart className={`w-4 h-4 ${isLiked ? 'fill-red-500 text-red-500' : 'text-foreground'}`} />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="bg-white bg-opacity-90 hover:bg-opacity-100 border-0 text-foreground"
-              >
-                <Share2 className="w-4 h-4" />
-              </Button>
+              <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={toggleFavorite}
+                  disabled={isCheckingFavorite}
+                  className="bg-white/20 backdrop-blur-xl hover:bg-white/30 border-white/30 shadow-2xl"
+                >
+                  <Heart className={`w-5 h-5 ${isLiked ? 'fill-red-500 text-red-500' : 'text-white'}`} />
+                </Button>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="bg-white/20 backdrop-blur-xl hover:bg-white/30 border-white/30 text-white shadow-2xl"
+                >
+                  <Share2 className="w-5 h-5" />
+                </Button>
+              </motion.div>
             </motion.div>
           </div>
 
-          {/* Contenu Hero */}
+          {/* Hero Content */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            ref={headerRef}
+            className="absolute bottom-0 left-0 right-0 p-8 md:p-16 text-white"
+            initial={{ opacity: 0, y: 100 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="absolute bottom-0 left-0 right-0 p-6 md:p-12 text-white"
+            transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
           >
-            <div className="max-w-4xl">
-              <Badge className="mb-4 bg-primary text-white" variant="secondary">
-                {property.type}
-              </Badge>
+            <div className="max-w-6xl mx-auto">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.7, duration: 0.6 }}
+                className="mb-6"
+              >
+                <Badge className="px-6 py-3 bg-primary/90 backdrop-blur-sm text-white text-lg font-semibold border border-white/20">
+                  {property.type}
+                </Badge>
+              </motion.div>
               
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                {property.title}
-              </h1>
+              <motion.h1 
+                className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.9, duration: 0.8 }}
+              >
+                <span className="bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
+                  {property.title}
+                </span>
+              </motion.h1>
               
-              <div className="flex items-center gap-2 mb-4">
-                <MapPin className="w-5 h-5" />
-                <span className="text-lg">{typeof property.location === 'string' ? property.location : (property.location as any)?.city || property.location}</span>
-              </div>
+              <motion.div 
+                className="flex items-center gap-4 mb-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.1, duration: 0.6 }}
+              >
+                <MapPin className="w-8 h-8 text-blue-300" />
+                <span className="text-2xl text-blue-100">
+                  {typeof property.location === 'string' 
+                    ? property.location 
+                    : (property.location as any)?.city || property.location}
+                </span>
+              </motion.div>
               
-              <div className="text-3xl md:text-4xl font-bold text-primary-foreground">
+              <motion.div 
+                className="text-4xl md:text-5xl font-bold text-yellow-400"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1.3, duration: 0.6, type: "spring" }}
+              >
                 {property.price}
-              </div>
+              </motion.div>
             </div>
+          </motion.div>
+
+          {/* Scroll Indicator */}
+          <motion.div 
+            className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.5, duration: 0.8 }}
+          >
+            <motion.div 
+              className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center backdrop-blur-sm"
+              animate={{ y: [0, 10, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <motion.div 
+                className="w-1 h-2 bg-white rounded-full mt-2"
+                animate={{ y: [0, 8, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+            </motion.div>
           </motion.div>
         </section>
 
-        {/* Contenu Principal */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 details-container">
           
-          {/* Section Description */}
-          <motion.section
-            initial={{ opacity: 0, y: 50 }}
+          {/* Tabs Navigation */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
             className="mb-12"
           >
-            <Card className="overflow-hidden shadow-lg">
-              <CardContent className="p-8">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <TabsList className="grid w-full grid-cols-5 bg-muted/50 backdrop-blur-sm rounded-2xl p-1">
+                <TabsTrigger value="overview" className="rounded-xl">Vue d'ensemble</TabsTrigger>
+                <TabsTrigger value="gallery" className="rounded-xl">Galerie</TabsTrigger>
+                <TabsTrigger value="plans" className="rounded-xl">Plans</TabsTrigger>
+                <TabsTrigger value="units" className="rounded-xl">Unités</TabsTrigger>
+                <TabsTrigger value="location" className="rounded-xl">Localisation</TabsTrigger>
+              </TabsList>
+
+              {/* Overview Tab */}
+              <TabsContent value="overview" className="mt-8 space-y-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                  
-                  {/* Description principale */}
+                  {/* Description */}
                   <div className="lg:col-span-2">
-                    <h2 className="text-2xl font-bold text-foreground mb-6">À propos de cette propriété</h2>
-                    <p className="text-muted-foreground leading-relaxed mb-8 text-lg">
-                      {(property as any).detailed_description || property.description}
-                    </p>
-                    
-                    {/* Caractéristiques détaillées */}
-                    <h3 className="text-xl font-semibold text-foreground mb-4">Caractéristiques</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {((property as any).detailed_features || property.features || []).map((feature, index) => (
-                        <motion.div
-                          key={index}
-                          initial={{ opacity: 0, x: -20 }}
-                          whileInView={{ opacity: 1, x: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ delay: index * 0.05 }}
-                          className="flex items-center gap-3"
-                        >
-                          <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0" />
-                          <span className="text-muted-foreground">{feature}</span>
-                        </motion.div>
-                      ))}
-                    </div>
+                    <Atropos className="detail-card">
+                      <Card className="shadow-2xl bg-gradient-to-br from-background to-muted/30 backdrop-blur-xl border border-white/20">
+                        <CardHeader>
+                          <CardTitle className="text-3xl font-bold">À propos de cette propriété</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                          <p className="text-muted-foreground leading-relaxed text-lg">
+                            {(property as any).detailed_description || property.description}
+                          </p>
+                          
+                          <div>
+                            <h3 className="text-xl font-semibold mb-4">Caractéristiques Premium</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              {((property as any).detailed_features || property.features || []).map((feature: string, index: number) => (
+                                <motion.div
+                                  key={index}
+                                  initial={{ opacity: 0, x: -20 }}
+                                  whileInView={{ opacity: 1, x: 0 }}
+                                  viewport={{ once: true }}
+                                  transition={{ delay: index * 0.05 }}
+                                  className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 backdrop-blur-sm"
+                                >
+                                  <div className="w-3 h-3 bg-gradient-to-r from-primary to-blue-600 rounded-full flex-shrink-0" />
+                                  <span>{feature}</span>
+                                </motion.div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div>
+                            <h3 className="text-xl font-semibold mb-4">Services & Équipements</h3>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                              {propertyFeatures.map((feature, index) => (
+                                <motion.div
+                                  key={index}
+                                  className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
+                                    feature.available 
+                                      ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200' 
+                                      : 'bg-gray-100 dark:bg-gray-800/20 text-gray-500'
+                                  }`}
+                                  initial={{ opacity: 0, scale: 0.8 }}
+                                  whileInView={{ opacity: 1, scale: 1 }}
+                                  viewport={{ once: true }}
+                                  transition={{ delay: index * 0.1 }}
+                                  whileHover={{ scale: 1.05 }}
+                                >
+                                  <feature.icon className="w-5 h-5" />
+                                  <span className="text-sm font-medium">{feature.label}</span>
+                                </motion.div>
+                              ))}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </Atropos>
                   </div>
 
-                  {/* Informations clés */}
+                  {/* Sidebar Info */}
                   <div className="space-y-6">
-                    <div className="bg-muted/50 rounded-lg p-6">
-                      <h3 className="text-lg font-semibold text-foreground mb-4">Informations clés</h3>
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <Square className="w-5 h-5 text-primary" />
-                            <span className="text-muted-foreground">Type</span>
+                    <Atropos className="detail-card">
+                      <Card className="shadow-xl bg-gradient-to-br from-background to-muted/20">
+                        <CardHeader>
+                          <CardTitle>Informations Clés</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                            <div className="flex items-center gap-2">
+                              <Building className="w-5 h-5 text-primary" />
+                              <span>Type</span>
+                            </div>
+                            <Badge variant="outline" className="capitalize bg-primary/10">
+                              {property.type}
+                            </Badge>
                           </div>
-                          <Badge variant="outline" className="capitalize">
-                            {property.type}
-                          </Badge>
-                        </div>
+                          
+                          <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                            <div className="flex items-center gap-2">
+                              <MapPin className="w-5 h-5 text-primary" />
+                              <span>Localisation</span>
+                            </div>
+                            <span className="font-medium text-sm">
+                              {typeof property.location === 'string' 
+                                ? property.location 
+                                : (property.location as any)?.city || property.location}
+                            </span>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </Atropos>
+
+                    <Atropos className="detail-card">
+                      <Card className="shadow-xl bg-gradient-to-br from-primary/10 to-blue-600/10">
+                        <CardHeader>
+                          <CardTitle>Contact Premium</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                            <Button className="w-full bg-gradient-to-r from-primary to-blue-600 text-white shadow-lg" size="lg" asChild>
+                              <Link to="/contact">
+                                <Phone className="w-5 h-5 mr-2" />
+                                Appeler maintenant
+                              </Link>
+                            </Button>
+                          </motion.div>
+                          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                            <Button variant="outline" className="w-full" size="lg" asChild>
+                              <Link to="/contact">
+                                <Mail className="w-5 h-5 mr-2" />
+                                Envoyer un email
+                              </Link>
+                            </Button>
+                          </motion.div>
+                        </CardContent>
+                      </Card>
+                    </Atropos>
+                  </div>
+                </div>
+              </TabsContent>
+
+              {/* Gallery Tab */}
+              <TabsContent value="gallery" className="mt-8">
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <Card className="overflow-hidden shadow-2xl detail-card">
+                    <CardHeader>
+                      <CardTitle className="text-2xl">Galerie Photos Premium</CardTitle>
+                      <p className="text-muted-foreground">Découvrez cette propriété d'exception en images haute définition</p>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <div className="relative h-[70vh]">
+                        <style>{`
+                          .slick-dots {
+                            bottom: 30px;
+                          }
+                          .slick-dots li button:before {
+                            color: white;
+                            font-size: 14px;
+                            opacity: 0.7;
+                          }
+                          .slick-dots li.slick-active button:before {
+                            color: hsl(var(--primary));
+                            opacity: 1;
+                          }
+                        `}</style>
                         
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <MapPin className="w-5 h-5 text-primary" />
-                            <span className="text-muted-foreground">Localisation</span>
-                          </div>
-                          <span className="font-medium text-sm">{typeof property.location === 'string' ? property.location : (property.location as any)?.city || property.location}</span>
-                        </div>
+                        <Slider {...sliderSettings}>
+                          {(property.photos && property.photos.length > 0 ? property.photos : [
+                            `https://picsum.photos/1200x800?random=${property.id}-1`,
+                            `https://picsum.photos/1200x800?random=${property.id}-2`,
+                            `https://picsum.photos/1200x800?random=${property.id}-3`
+                          ]).map((photo, index) => (
+                            <div key={index} className="relative h-[70vh]">
+                              <motion.img
+                                src={photo}
+                                alt={`${property.title} - Photo ${index + 1}`}
+                                className="w-full h-full object-cover"
+                                loading="lazy"
+                                initial={{ scale: 1.1 }}
+                                animate={{ scale: 1 }}
+                                transition={{ duration: 1.5 }}
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                              
+                              {/* Photo Counter */}
+                              <motion.div 
+                                className="absolute top-6 right-6 bg-black/50 backdrop-blur-sm rounded-full px-4 py-2 text-white text-sm"
+                                initial={{ opacity: 0, scale: 0 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: 0.5 }}
+                              >
+                                {index + 1} / {property.photos?.length || 3}
+                              </motion.div>
+                            </div>
+                          ))}
+                        </Slider>
                       </div>
-                    </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </TabsContent>
 
-                    {/* Contact rapide */}
-                    <div className="bg-primary/10 rounded-lg p-6">
-                      <h3 className="text-lg font-semibold text-foreground mb-4">Contact rapide</h3>
-                      <div className="space-y-3">
-                        <Button className="w-full btn-premium" asChild>
-                          <Link to="/contact">
-                            <Phone className="w-4 h-4 mr-2" />
-                            Appeler maintenant
-                          </Link>
-                        </Button>
-                        <Button variant="outline" className="w-full" asChild>
-                          <Link to="/contact">
-                            <Mail className="w-4 h-4 mr-2" />
-                            Envoyer un email
-                          </Link>
-                        </Button>
+              {/* Plans Tab */}
+              <TabsContent value="plans" className="mt-8">
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                  className="detail-card"
+                >
+                  <ZoomablePlans 
+                    plans={[
+                      {
+                        url: `https://picsum.photos/1200x900?random=${property.id}-plan1`,
+                        title: "Plan d'étage principal",
+                        type: 'floor_plan'
+                      },
+                      {
+                        url: `https://picsum.photos/1200x900?random=${property.id}-plan2`,
+                        title: "Plan d'aménagement paysager",
+                        type: 'site_plan'
+                      },
+                      {
+                        url: `https://picsum.photos/1200x900?random=${property.id}-plan3`,
+                        title: "Vue 3D architecturale",
+                        type: '3d_view'
+                      }
+                    ]}
+                  />
+                </motion.div>
+              </TabsContent>
+
+              {/* Units Tab */}
+              <TabsContent value="units" className="mt-8">
+                <motion.div
+                  ref={unitsRef}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <Card className="shadow-2xl detail-card">
+                    <CardHeader>
+                      <CardTitle className="text-2xl">Unités Disponibles</CardTitle>
+                      <p className="text-muted-foreground">Explorez les différents types d'unités avec visualisation 3D</p>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {mockUnits.map((unit, index) => (
+                          <Atropos key={index} className="unit-card">
+                            <motion.div
+                              onClick={() => handleUnitClick(unit)}
+                              className={`relative cursor-pointer transition-all duration-300 ${
+                                unit.status === 'sold' 
+                                  ? 'opacity-60 cursor-not-allowed' 
+                                  : 'hover:shadow-xl hover:scale-[1.02]'
+                              }`}
+                              whileHover={unit.status === 'available' ? { y: -5 } : {}}
+                              data-atropos-offset="5"
+                            >
+                              <Card className={`overflow-hidden border-2 transition-all ${
+                                unit.status === 'available' 
+                                  ? 'border-green-200 hover:border-green-400 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20' 
+                                  : 'border-red-200 bg-gradient-to-br from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20'
+                              }`}>
+                                {/* 3D Visualization */}
+                                <div className="relative h-48 overflow-hidden" data-atropos-offset="10">
+                                  <Unit3DVisualization unit={unit} isVisible={true} />
+                                  
+                                  {unit.status === 'sold' && (
+                                    <motion.div 
+                                      className="absolute inset-0 bg-red-500/20 backdrop-blur-sm flex items-center justify-center"
+                                      initial={{ opacity: 0 }}
+                                      animate={{ opacity: 1 }}
+                                      transition={{ duration: 0.5 }}
+                                    >
+                                      <div className="bg-red-500 text-white px-6 py-3 rounded-full font-bold text-lg shadow-lg">
+                                        VENDU
+                                      </div>
+                                    </motion.div>
+                                  )}
+                                </div>
+
+                                <CardContent className="p-6" data-atropos-offset="3">
+                                  <div className="flex items-center justify-between mb-4">
+                                    <Badge 
+                                      variant={unit.status === 'available' ? 'default' : 'destructive'}
+                                      className="text-xs font-semibold"
+                                    >
+                                      {unit.status === 'available' ? 'DISPONIBLE' : 'VENDU'}
+                                    </Badge>
+                                    <span className="text-xs text-muted-foreground uppercase tracking-wide">
+                                      {unit.type}
+                                    </span>
+                                  </div>
+                                  
+                                  <h3 className={`text-xl font-bold mb-2 ${
+                                    unit.status === 'sold' ? 'text-muted-foreground' : 'text-foreground'
+                                  }`}>
+                                    {unit.price}
+                                  </h3>
+                                  
+                                  <p className={`text-sm mb-4 ${
+                                    unit.status === 'sold' ? 'text-muted-foreground' : 'text-muted-foreground'
+                                  }`}>
+                                    {unit.details}
+                                  </p>
+                                  
+                                  {unit.status === 'available' && (
+                                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                                      <div className="flex items-center gap-1">
+                                        <Square className="w-3 h-3" />
+                                        {unit.surface}
+                                      </div>
+                                      <div className="flex items-center gap-1">
+                                        <Bed className="w-3 h-3" />
+                                        {unit.bedrooms}
+                                      </div>
+                                      <div className="flex items-center gap-1">
+                                        <Bath className="w-3 h-3" />
+                                        {unit.bathrooms}
+                                      </div>
+                                    </div>
+                                  )}
+                                </CardContent>
+                              </Card>
+                            </motion.div>
+                          </Atropos>
+                        ))}
                       </div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.section>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </TabsContent>
 
-          {/* Galerie Photos */}
-          <motion.section
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="mb-12"
-          >
-            <Card className="overflow-hidden shadow-lg">
-              <CardContent className="p-0">
-                <div className="p-8 pb-4">
-                  <h2 className="text-2xl font-bold text-foreground mb-2">Galerie Photos</h2>
-                  <p className="text-muted-foreground">Découvrez cette propriété en images</p>
-                </div>
-                
-                <div className="relative">
-                  <style>{`
-                    .slick-dots {
-                      bottom: 20px;
-                    }
-                    .slick-dots li button:before {
-                      color: white;
-                      font-size: 12px;
-                    }
-                    .slick-dots li.slick-active button:before {
-                      color: hsl(var(--primary));
-                    }
-                  `}</style>
-                  
-                  <Slider {...sliderSettings}>
-                    {(property.photos || []).map((photo, index) => (
-                      <div key={index} className="relative">
-                        <motion.div
-                          whileHover={{ scale: 1.05 }}
-                          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                          className="overflow-hidden"
-                        >
-                          <img
-                            src={photo}
-                            alt={`${property.title} - Photo ${index + 1}`}
-                            className="w-full h-[500px] object-cover cursor-pointer"
-                            loading="lazy"
+              {/* Location Tab */}
+              <TabsContent value="location" className="mt-8">
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                  className="space-y-8"
+                >
+                  {/* Virtual Tour */}
+                  {(property as any).virtual_tour && (
+                    <Card className="shadow-2xl detail-card">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-3">
+                          <Play className="w-6 h-6 text-primary" />
+                          Visite Virtuelle 360°
+                        </CardTitle>
+                        <p className="text-muted-foreground">Explorez la propriété depuis chez vous</p>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="relative rounded-2xl overflow-hidden">
+                          <iframe
+                            src={(property as any).virtual_tour}
+                            className="w-full h-96"
+                            allowFullScreen
+                            title="Visite virtuelle"
                           />
-                        </motion.div>
-                      </div>
-                    ))}
-                  </Slider>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.section>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
 
-          {/* Section Plans avec zoom */}
-          {property.plans && property.plans.length > 0 && (
-            <motion.section
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="mb-12"
-            >
-              <Card className="overflow-hidden shadow-lg">
-                <CardContent className="p-8">
-                  <h2 className="text-2xl font-bold text-foreground mb-6">Plans et Layouts</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {property.plans.map((plan, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: index * 0.1 }}
-                        whileHover={{ scale: 1.05 }}
-                        className="relative group cursor-pointer"
-                        onClick={() => setSelectedPlan({ 
-                          url: plan, 
-                          title: `Plan ${index + 1} - ${property.title}` 
-                        })}
-                      >
-                        <div className="relative overflow-hidden rounded-lg border border-border">
-                          <img
-                            src={plan}
-                            alt={`Plan ${index + 1}`}
-                            className="w-full h-48 object-cover"
-                            loading="lazy"
-                          />
-                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center">
-                            <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                          </div>
-                        </div>
-                        <p className="text-sm text-muted-foreground mt-2 text-center">
-                          Plan {index + 1}
-                        </p>
-                      </motion.div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.section>
-          )}
-
-          {/* Visite Virtuelle Matterport */}
-          {(property as any).virtual_tour && (
-            <motion.section
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="mb-12"
-            >
-              <Card className="overflow-hidden shadow-lg">
-                <CardContent className="p-8">
-                  <div className="flex items-center justify-between mb-6">
-                    <div>
-                      <h2 className="text-2xl font-bold text-foreground mb-2">Visite Virtuelle</h2>
-                      <p className="text-muted-foreground">Explorez cette propriété en immersion 360°</p>
-                    </div>
-                    <Play className="w-8 h-8 text-primary" />
-                  </div>
-                  
-                  <div className="relative rounded-lg overflow-hidden">
-                    <iframe
-                      src={(property as any).virtual_tour}
-                      className="w-full h-96"
-                      allowFullScreen
-                      title="Visite virtuelle"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.section>
-          )}
-
-          {/* Section Units avec grille */}
-          <motion.section
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="mb-12"
-          >
-            <Card className="overflow-hidden shadow-lg">
-              <CardContent className="p-8">
-                <h2 className="text-2xl font-bold text-foreground mb-6">Unités Disponibles</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {mockUnits.map((unit, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: index * 0.1 }}
-                      whileHover={{ 
-                        scale: unit.status === 'sold' ? 1 : 1.05,
-                        transition: { type: "spring", stiffness: 300 }
-                      }}
-                      className={`relative border border-border rounded-lg p-4 transition-all duration-300 ${
-                        unit.status === 'sold' 
-                          ? 'opacity-50 cursor-not-allowed' 
-                          : 'cursor-pointer hover:shadow-lg'
-                      }`}
-                      onClick={() => handleUnitClick(unit)}
-                    >
-                      {unit.status === 'sold' && (
-                        <div className="absolute inset-0 bg-red-500/10 rounded-lg flex items-center justify-center">
-                          <div className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                            Vendu
-                          </div>
-                        </div>
-                      )}
-                      
-                      <div className="mb-3">
-                        <Badge variant={unit.type === 'villa' ? 'default' : 'secondary'} className="mb-2">
-                          {unit.type === 'villa' ? 'Villa' : 'Appartement'}
-                        </Badge>
-                        <Badge 
-                          variant={unit.status === 'available' ? 'default' : 'destructive'}
-                          className="ml-2"
-                        >
-                          {unit.status === 'available' ? 'Disponible' : 'Vendu'}
-                        </Badge>
+                  {/* Map */}
+                  <Card className="shadow-2xl detail-card">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-3">
+                        <MapPin className="w-6 h-6 text-primary" />
+                        Localisation Premium
+                      </CardTitle>
+                      <p className="text-muted-foreground">Découvrez l'environnement exceptionnel</p>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="rounded-2xl overflow-hidden">
+                        <ErrorBoundary>
+                          <Suspense fallback={
+                            <div className="h-64 bg-muted flex items-center justify-center">
+                              <div className="text-center">
+                                <motion.div
+                                  animate={{ rotate: 360 }}
+                                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                                  className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-2"
+                                />
+                                <p className="text-muted-foreground">Chargement de la carte...</p>
+                              </div>
+                            </div>
+                          }>
+                            <MiniMap property={property} />
+                          </Suspense>
+                        </ErrorBoundary>
                       </div>
-                      
-                      <h3 className="font-semibold text-lg text-primary mb-2">{unit.price}</h3>
-                      <p className="text-sm text-muted-foreground mb-3">{unit.details}</p>
-                      
-                      <div className="space-y-2 text-xs">
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Surface:</span>
-                          <span className="font-medium">{unit.surface}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Chambres:</span>
-                          <span className="font-medium">{unit.bedrooms}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">SDB:</span>
-                          <span className="font-medium">{unit.bathrooms}</span>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </motion.section>
-
-          {/* Mini Carte */}
-          <motion.section
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="mb-12"
-          >
-            <Card className="overflow-hidden shadow-lg">
-              <CardContent className="p-8">
-                <h2 className="text-2xl font-bold text-foreground mb-6">Localisation</h2>
-                <div className="rounded-lg overflow-hidden">
-                  <ErrorBoundary>
-                    <Suspense fallback={
-                      <div className="h-64 bg-muted flex items-center justify-center">
-                        <div className="text-center">
-                          <Map className="w-8 h-8 mx-auto mb-2 text-primary" />
-                          <p className="text-muted-foreground">Chargement de la carte...</p>
-                        </div>
-                      </div>
-                    }>
-                      <MiniMap 
-                        property={property}
-                        
-                      />
-                    </Suspense>
-                  </ErrorBoundary>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.section>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </TabsContent>
+            </Tabs>
+          </motion.div>
         </div>
 
-        {/* Plan Modal avec zoom */}
-        <Dialog open={!!selectedPlan} onOpenChange={() => setSelectedPlan(null)}>
-          <DialogContent className="max-w-6xl max-h-[95vh] p-0">
-            <DialogHeader className="p-6 pb-0">
-              <DialogTitle>{selectedPlan?.title}</DialogTitle>
-              <DialogDescription>
-                Utilisez les contrôles pour zoomer et explorer le plan en détail
-              </DialogDescription>
-            </DialogHeader>
-            
-            {selectedPlan && (
-              <div className="h-[70vh] bg-muted/50">
-                <TransformWrapper
-                  initialScale={1}
-                  minScale={0.5}
-                  maxScale={3}
-                  wheel={{ step: 0.1 }}
-                  pinch={{ step: 5 }}
-                  doubleClick={{ step: 0.7 }}
-                >
-                  {({ zoomIn, zoomOut, resetTransform }) => (
-                    <>
-                      {/* Contrôles de zoom */}
-                      <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => zoomIn()}
-                          className="bg-white"
-                        >
-                          <ZoomIn className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => zoomOut()}
-                          className="bg-white"
-                        >
-                          <ZoomOut className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => resetTransform()}
-                          className="bg-white"
-                        >
-                          <RotateCcw className="w-4 h-4" />
-                        </Button>
-                      </div>
-                      
-                      <TransformComponent wrapperClass="w-full h-full">
-                        <img
-                          src={selectedPlan.url}
-                          alt={selectedPlan.title}
-                          className="w-full h-full object-contain"
-                        />
-                      </TransformComponent>
-                    </>
-                  )}
-                </TransformWrapper>
-              </div>
-            )}
-          </DialogContent>
-        </Dialog>
-
         {/* Unit Details Modal */}
-        <Dialog open={!!selectedUnit} onOpenChange={() => setSelectedUnit(null)}>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle>
-                {selectedUnit?.type === 'villa' ? 'Villa' : 'Appartement'} - Détails
-              </DialogTitle>
-              <DialogDescription>
-                Informations complètes sur cette unité
-              </DialogDescription>
-            </DialogHeader>
-            
-            {selectedUnit && (
-              <div className="space-y-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary mb-2">
-                    {selectedUnit.price}
-                  </div>
-                  <Badge variant={selectedUnit.status === 'available' ? 'default' : 'destructive'}>
-                    {selectedUnit.status === 'available' ? 'Disponible' : 'Vendu'}
-                  </Badge>
-                </div>
+        <AnimatePresence>
+          {selectedUnit && (
+            <Dialog open={!!selectedUnit} onOpenChange={() => setSelectedUnit(null)}>
+              <DialogContent className="max-w-4xl">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl">Détails de l'Unité</DialogTitle>
+                  <DialogDescription>
+                    {selectedUnit.type.charAt(0).toUpperCase() + selectedUnit.type.slice(1)} - {selectedUnit.surface}
+                  </DialogDescription>
+                </DialogHeader>
                 
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center py-2 border-b border-border">
-                    <span className="text-muted-foreground">Surface:</span>
-                    <span className="font-medium">{selectedUnit.surface}</span>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div>
+                    <Unit3DVisualization unit={selectedUnit} isVisible={true} />
                   </div>
-                  <div className="flex justify-between items-center py-2 border-b border-border">
-                    <span className="text-muted-foreground">Chambres:</span>
-                    <span className="font-medium">{selectedUnit.bedrooms}</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b border-border">
-                    <span className="text-muted-foreground">Salles de bain:</span>
-                    <span className="font-medium">{selectedUnit.bathrooms}</span>
+                  
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">Prix</h3>
+                      <p className="text-3xl font-bold text-primary">{selectedUnit.price}</p>
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">Description</h3>
+                      <p className="text-muted-foreground">{selectedUnit.details}</p>
+                    </div>
+                    
+                    <div className="grid grid-cols-3 gap-4 text-center">
+                      <div className="p-4 bg-muted rounded-lg">
+                        <Square className="w-6 h-6 mx-auto mb-2 text-primary" />
+                        <p className="text-sm text-muted-foreground">Surface</p>
+                        <p className="font-semibold">{selectedUnit.surface}</p>
+                      </div>
+                      <div className="p-4 bg-muted rounded-lg">
+                        <Bed className="w-6 h-6 mx-auto mb-2 text-primary" />
+                        <p className="text-sm text-muted-foreground">Chambres</p>
+                        <p className="font-semibold">{selectedUnit.bedrooms}</p>
+                      </div>
+                      <div className="p-4 bg-muted rounded-lg">
+                        <Bath className="w-6 h-6 mx-auto mb-2 text-primary" />
+                        <p className="text-sm text-muted-foreground">Salles de bain</p>
+                        <p className="font-semibold">{selectedUnit.bathrooms}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex gap-4">
+                      <Button className="flex-1 bg-gradient-to-r from-primary to-blue-600">
+                        <Phone className="w-4 h-4 mr-2" />
+                        Contacter
+                      </Button>
+                      <Button variant="outline" className="flex-1">
+                        <Download className="w-4 h-4 mr-2" />
+                        Brochure
+                      </Button>
+                    </div>
                   </div>
                 </div>
-                
-                <p className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">
-                  {selectedUnit.details}
-                </p>
-                
-                <div className="flex gap-3">
-                  <Button className="flex-1 btn-premium" asChild>
-                    <Link to="/contact">
-                      <Phone className="w-4 h-4 mr-2" />
-                      Contacter
-                    </Link>
-                  </Button>
-                  <Button variant="outline" className="flex-1" asChild>
-                    <Link to="/contact">
-                      <Calendar className="w-4 h-4 mr-2" />
-                      Visiter
-                    </Link>
-                  </Button>
-                </div>
-              </div>
-            )}
-          </DialogContent>
-        </Dialog>
+              </DialogContent>
+            </Dialog>
+          )}
+        </AnimatePresence>
       </div>
     </GoogleMapsProvider>
   );
