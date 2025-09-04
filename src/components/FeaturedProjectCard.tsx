@@ -22,7 +22,7 @@ const FeaturedProjectCard = ({ project, index }: FeaturedProjectCardProps) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'disponible':
-        return 'bg-gold/10 text-gold border-gold-accent';
+        return 'bg-green-500/10 text-green-700 border-green-200';
       case 'en_construction':
         return 'bg-orange-500/10 text-orange-700 border-orange-200';
       case 'livre':
@@ -54,22 +54,19 @@ const FeaturedProjectCard = ({ project, index }: FeaturedProjectCardProps) => {
       whileHover={{ y: -8 }}
       className="h-full"
     >
-      <Card className="h-full overflow-hidden card-luxury group glow-gold">
+      <Card className="h-full overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 group">
         {/* Image */}
         <motion.div 
           className="relative h-64 overflow-hidden"
-          whileHover={{ 
-            scale: 1.02,
-            boxShadow: "0 20px 60px hsl(var(--gold) / 0.3)"
-          }}
-          transition={{ duration: 0.4 }}
+          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 0.3 }}
         >
           <img
             src={project.image}
             alt={project.title}
-            className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
           
           {/* Status Badge */}
           <Badge className={`absolute top-4 left-4 ${getStatusColor(project.status)}`}>
@@ -110,7 +107,7 @@ const FeaturedProjectCard = ({ project, index }: FeaturedProjectCardProps) => {
 
           {/* Nombre de biens */}
           <div className="flex items-center gap-2">
-            <Home className="w-4 h-4 text-gold" />
+            <Home className="w-4 h-4 text-primary" />
             <span className="text-sm font-medium">
               {project.nombre_biens} biens
             </span>
@@ -140,8 +137,8 @@ const FeaturedProjectCard = ({ project, index }: FeaturedProjectCardProps) => {
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
             <Button 
-              className="w-full mt-4 bg-gradient-to-r from-primary to-gold text-white hover:from-gold hover:to-primary transition-all duration-500 shadow-lg transform hover:scale-105"
-              variant="default"
+              className="w-full mt-4"
+              variant="outline"
             >
               <Eye className="w-4 h-4 mr-2" />
               Voir le programme

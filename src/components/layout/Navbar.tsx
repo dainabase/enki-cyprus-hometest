@@ -109,10 +109,10 @@ const Navbar = () => {
               transition={{ duration: 0.6, ease: "easeOut" }}
               whileHover={{ 
                 scale: 1.05,
-                filter: "drop-shadow(0 0 15px hsl(var(--gold) / 0.3))"
+                filter: "drop-shadow(0 0 8px hsl(200 100% 45% / 0.4))"
               }}
               whileTap={{ scale: 0.98 }}
-              className="text-2xl font-bold text-luxury"
+              className="text-2xl font-bold text-primary hover:text-primary-hover transition-colors duration-300"
             >
               ENKI-REALTY
             </motion.div>
@@ -129,17 +129,17 @@ const Navbar = () => {
               >
                 <Link
                   to={item.href}
-                  className={`relative px-4 py-2 text-sm font-medium rounded-md transition-all duration-300 ${
+                  className={`relative px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
                     isActive(item.href)
-                      ? 'text-primary bg-gold-accent/10 shadow-md'
-                      : 'text-muted-foreground hover:text-gold hover:bg-gold-accent/5'
+                      ? 'text-primary bg-accent/50'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-accent/30'
                   }`}
                 >
                   {item.name}
                   {isActive(item.href) && (
                     <motion.div
                       layoutId="activeTab"
-                      className="absolute bottom-0 left-2 right-2 h-0.5 bg-gradient-to-r from-primary to-gold rounded-full"
+                      className="absolute bottom-0 left-2 right-2 h-0.5 bg-primary rounded-full"
                       initial={false}
                       transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     />

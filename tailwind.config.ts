@@ -59,12 +59,6 @@ export default {
 				card: {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
-				},
-				gold: {
-					DEFAULT: 'hsl(var(--gold))',
-					hover: 'hsl(var(--gold-hover))',
-					foreground: 'hsl(var(--gold-foreground))',
-					accent: 'hsl(var(--gold-accent))'
 				}
 			},
 			boxShadow: {
@@ -75,7 +69,6 @@ export default {
 				'gradient-hero': 'var(--gradient-hero)',
 				'gradient-card': 'var(--gradient-card)',
 				'gradient-premium': 'var(--gradient-premium)',
-				'gradient-premium-gold': 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--gold)) 100%)',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

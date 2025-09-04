@@ -882,7 +882,7 @@ const Home = () => {
               transition={{ duration: 0.8 }}
               className="text-center mb-20"
             >
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-luxury mb-6">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 bg-gradient-to-r from-primary to-primary-hover bg-clip-text text-transparent">
                 Pourquoi Choisir ENKI-REALTY ?
               </h2>
               <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
@@ -906,18 +906,17 @@ const Home = () => {
                     damping: 20 
                   }}
                 >
-                  <Card className="h-full overflow-hidden card-luxury group shimmer-gold glow-gold">
+                  <Card className="h-full overflow-hidden border-0 shadow-2xl bg-gradient-to-br from-background to-muted/30 backdrop-blur-xl group-hover:shadow-primary/20 transition-all duration-500">
                     <CardContent className="p-8 h-full flex flex-col">
                       <motion.div
-                        className="w-20 h-20 rounded-2xl bg-gradient-to-br from-gold via-gold-hover to-primary mb-6 flex items-center justify-center shadow-lg group-hover:shadow-gold/50"
+                        className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${feature.gradient} mb-6 flex items-center justify-center shadow-lg`}
                         whileHover={{ 
-                          scale: 1.15,
-                          rotate: 5,
-                          boxShadow: "0 20px 40px hsl(var(--gold) / 0.5)",
-                          transition: { type: "spring", stiffness: 400, damping: 15 }
+                          scale: 1.1,
+                          rotate: 10,
+                          transition: { type: "spring", stiffness: 400 }
                         }}
                       >
-                        <feature.icon className="w-10 h-10 text-white drop-shadow-lg" />
+                        <feature.icon className="w-10 h-10 text-white" />
                       </motion.div>
                       
                       <motion.div 
@@ -926,10 +925,10 @@ const Home = () => {
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 + 0.3 }}
                       >
-                        <div className="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-gold to-gold-hover text-gold-foreground mb-3 shadow-md">
+                        <div className={`inline-flex px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r ${feature.gradient} text-white mb-3`}>
                           {feature.badge}
                         </div>
-                        <h3 className="text-xl font-bold text-luxury mb-3 group-hover:scale-105 transition-transform duration-300">
+                        <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">
                           {feature.title}
                         </h3>
                       </motion.div>
@@ -947,7 +946,7 @@ const Home = () => {
                         className="mt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                         whileHover={{ x: 5 }}
                       >
-                        <ArrowRight className="w-5 h-5 text-gold" />
+                        <ArrowRight className="w-5 h-5 text-primary" />
                       </motion.div>
                     </CardContent>
                   </Card>
@@ -1158,18 +1157,12 @@ const Home = () => {
                   )}
                   
                   <div className="flex gap-4">
-                    <Button 
-                      variant="gold" 
-                      className="shimmer-gold glow-gold"
-                      onClick={handleDownloadPDF} 
-                      disabled={!searchResults.pdf_url}
-                    >
+                    <Button onClick={handleDownloadPDF} disabled={!searchResults.pdf_url}>
                       <Download className="w-4 h-4 mr-2" />
                       Télécharger PDF
                     </Button>
                     <Button 
-                      variant="gold" 
-                      className="shimmer-gold glow-gold"
+                      variant="outline" 
                       onClick={handleSaveDossier}
                       disabled={!isAuthenticated}
                     >

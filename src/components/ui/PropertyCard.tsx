@@ -19,7 +19,7 @@ const PropertyCard = memo(({ property, index = 0, onClick, className = '' }: Pro
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'available':
-        return 'bg-gold text-gold-foreground';
+        return 'bg-success text-success-foreground';
       case 'reserved':
         return 'bg-primary text-primary-foreground';
       case 'sold':
@@ -51,7 +51,7 @@ const PropertyCard = memo(({ property, index = 0, onClick, className = '' }: Pro
       className={`group ${className}`}
       onClick={onClick}
     >
-      <Card className="overflow-hidden card-luxury cursor-pointer group glow-gold shimmer-gold">
+      <Card className="overflow-hidden card-hover bg-gradient-card cursor-pointer">
         {/* Image Container */}
       <div className="relative overflow-hidden">
         <OptimizedImage
@@ -78,10 +78,10 @@ const PropertyCard = memo(({ property, index = 0, onClick, className = '' }: Pro
 
           {/* Hover Overlay */}
           <motion.div 
-            className="absolute inset-0 bg-gradient-to-br from-primary/80 to-gold/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+            className="absolute inset-0 bg-primary/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
             initial={false}
           >
-            <Button className="bg-white/95 text-primary hover:bg-white hover:scale-105 transition-all duration-300 shadow-xl" asChild>
+            <Button className="btn-premium" asChild>
               <Link to={`/project/${property.id}`}>
                 <Eye className="w-4 h-4 mr-2" />
                 Voir Détails
@@ -92,7 +92,7 @@ const PropertyCard = memo(({ property, index = 0, onClick, className = '' }: Pro
 
         <CardContent className="p-6">
           {/* Price */}
-          <div className="text-2xl font-bold text-luxury mb-2">
+          <div className="text-2xl font-bold text-primary mb-2">
             {property.price}
           </div>
 
@@ -116,15 +116,15 @@ const PropertyCard = memo(({ property, index = 0, onClick, className = '' }: Pro
           {property.bedrooms && (
             <div className="flex items-center space-x-4 text-sm text-muted-foreground mb-4">
               <div className="flex items-center">
-            <Bed className="w-4 h-4 mr-1 text-gold" />
+                <Bed className="w-4 h-4 mr-1 text-primary" />
                 <span>{property.bedrooms} chambres</span>
               </div>
               <div className="flex items-center">
-                <Bath className="w-4 h-4 mr-1 text-gold" />
+                <Bath className="w-4 h-4 mr-1 text-primary" />
                 <span>{property.bathrooms} sdb</span>
               </div>
               <div className="flex items-center">
-                <Square className="w-4 h-4 mr-1 text-gold" />
+                <Square className="w-4 h-4 mr-1 text-primary" />
                 <span>{property.area}m²</span>
               </div>
             </div>
@@ -145,7 +145,7 @@ const PropertyCard = memo(({ property, index = 0, onClick, className = '' }: Pro
           </div>
 
           {/* CTA Button */}
-          <Button className="w-full bg-gradient-to-r from-primary to-gold text-white hover:from-gold hover:to-primary transition-all duration-500 transform hover:scale-105 shadow-lg" asChild>
+          <Button className="w-full btn-outline-premium" asChild>
             <Link to={`/project/${property.id}`}>
               En savoir plus
             </Link>
