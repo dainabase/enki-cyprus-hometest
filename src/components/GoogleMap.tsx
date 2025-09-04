@@ -112,11 +112,11 @@ useEffect(() => {
   try {
     const markers = properties.map((property) => {
       console.log(`📌 Creating marker for: ${property.title} at (${property.coordinates.lat}, ${property.coordinates.lng})`);
-      const marker = new google.maps.Marker({
+      // Use AdvancedMarkerElement instead of deprecated Marker
+      const marker = new google.maps.marker.AdvancedMarkerElement({
         position: { lat: property.coordinates.lat, lng: property.coordinates.lng },
         map,
         title: property.title,
-        icon: getPropertyIcon(property.type),
       });
       marker.addListener('click', () => {
         console.log(`🏠 Property clicked: ${property.title}`);

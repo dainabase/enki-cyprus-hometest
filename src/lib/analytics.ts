@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 // Initialize Google Analytics
 export const initGA = () => {
-  const GA4_ID = 'G-XXXXXXXXXX'; // Replace with your GA4 ID
+  const GA4_ID = 'G-4V9HXQE8CY'; // ENKI Realty GA4 ID
   if (GA4_ID && GA4_ID !== 'G-XXXXXXXXXX') {
     ReactGA.initialize(GA4_ID);
     console.log('📊 Google Analytics initialized');
