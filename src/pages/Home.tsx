@@ -692,7 +692,7 @@ const Home = () => {
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2, delay: 0.2, ease: "easeOut" }}
-              className="space-y-8"
+              className="space-y-12"
             >
               <motion.h1 
                 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-8 leading-tight"
