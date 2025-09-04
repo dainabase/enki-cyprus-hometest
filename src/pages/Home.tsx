@@ -644,7 +644,7 @@ const Home = () => {
       />
       
       <div className="min-h-screen overflow-x-hidden">
-        {/* Advanced Multi-Layer Parallax Hero */}
+        {/* Hero Section - Updated selon spécifications */}
         <section className="relative h-screen flex items-center justify-center overflow-hidden">
           {/* Background Layers */}
           <motion.div 
@@ -694,6 +694,7 @@ const Home = () => {
               transition={{ duration: 1.2, delay: 0.2, ease: "easeOut" }}
               className="space-y-12"
             >
+              {/* Titre principal - NE PAS TOUCHER */}
               <motion.h1 
                 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-8 leading-tight"
                 initial={{ opacity: 0, y: 50, scale: 0.8 }}
@@ -726,114 +727,29 @@ const Home = () => {
                 </motion.span>
               </motion.h1>
 
+              {/* Nouveau sous-titre selon spécifications */}
               <motion.p 
-                className="text-xl md:text-2xl lg:text-3xl text-blue-100 max-w-4xl mx-auto leading-relaxed font-light"
+                className="font-inter font-medium text-xl md:text-2xl text-white/90 max-w-4xl mx-auto leading-relaxed"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 1.2 }}
+                transition={{ duration: 1, delay: 0.8, ease: "easeOut" }}
               >
-                Votre partenaire de confiance pour investir dans l'immobilier premium 
-                au cœur de la Méditerranée
+                La nouvelle expérience de l'investissement immobilier
               </motion.p>
 
-              {/* Advanced Agentic Search Form */}
+              {/* CTA subtil pour scroll vers section suivante */}
               <motion.div 
-                className="mt-24 p-8 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 max-w-5xl mx-auto shadow-2xl relative z-20"
-                initial={{ opacity: 0, y: 50, scale: 0.9 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 1, delay: 1.4, ease: "easeOut" }}
-                whileHover={{ scale: 1.02, y: -5 }}
-                style={{ 
-                  position: 'relative',
-                  transform: 'translateZ(0)',
-                  willChange: 'auto'
-                }}
+                className="flex justify-center items-center mt-16"
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 1.6, ease: "easeOut" }}
               >
-                <motion.div 
-                  className="flex items-center justify-center text-white mb-8"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.6, duration: 0.8 }}
+                <Button
+                  className="bg-primary hover:bg-primary-hover text-primary-foreground px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                  onClick={() => document.getElementById('why-enki')?.scrollIntoView({ behavior: 'smooth' })}
                 >
-                  <span className="font-semibold text-2xl">Recherche Agentique Immobilière</span>
-                </motion.div>
-                
-                <div className="space-y-8">
-                  <div className="space-y-3">
-                    <Label htmlFor="agenticQuery" className="text-white text-lg font-medium text-left block">
-                      Décrivez votre projet immobilier en détail
-                    </Label>
-                    <motion.div
-                      whileFocus={{ scale: 1.02 }}
-                      transition={{ type: "spring", stiffness: 300 }}
-                    >
-                      <Textarea
-                        id="agenticQuery"
-                        value={agenticQuery}
-                        onChange={(e) => setAgenticQuery(e.target.value)}
-                        placeholder="Ex: 'Suisse, 500K CHF de budget, investissement Chypre a Limassol et alentour environ 10km, options fiscales optimisées et scénarios possibles'"
-                        className="min-h-[140px] w-full bg-white/95 text-gray-900 border-white/30 placeholder-gray-500 resize-none focus:ring-4 focus:ring-primary/30 focus:border-primary/50 rounded-2xl text-lg p-6 shadow-inner"
-                        rows={4}
-                      />
-                    </motion.div>
-                  </div>
-
-                  <motion.div 
-                    className="flex items-start space-x-4"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 1.8 }}
-                  >
-                    <motion.div
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                    >
-                      <Checkbox
-                        id="consent"
-                        checked={consent}
-                        onCheckedChange={(checked) => setConsent(!!checked)}
-                        className="mt-1 border-white/40 data-[state=checked]:bg-primary data-[state=checked]:border-primary w-6 h-6"
-                      />
-                    </motion.div>
-                    <Label 
-                      htmlFor="consent" 
-                      className="text-sm text-blue-100 leading-relaxed cursor-pointer flex-1"
-                    >
-                      J'accepte le traitement de mes données personnelles pour recevoir une recherche personnalisée 
-                      et des recommandations immobilières adaptées (conforme RGPD)
-                    </Label>
-                  </motion.div>
-
-                  <motion.div
-                    className="flex justify-center"
-                    whileHover={{ scale: agenticQuery.trim() && consent ? 1.05 : 1 }}
-                    whileTap={{ scale: agenticQuery.trim() && consent ? 0.95 : 1 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                  >
-                    <Button
-                      onClick={handleAgenticSearch}
-                      disabled={!agenticQuery.trim() || !consent || agenticSearchMutation.isPending}
-                      size="lg"
-                      className="px-16 py-6 text-xl font-semibold bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 text-white shadow-2xl hover:shadow-primary/30 transition-all duration-300 disabled:opacity-50 rounded-2xl border border-white/20"
-                    >
-                      {agenticSearchMutation.isPending ? (
-                        <>
-                          <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                            className="w-6 h-6 border-3 border-white border-t-transparent rounded-full mr-3"
-                          />
-                          Analyse en cours...
-                        </>
-                      ) : (
-                        <>
-                          <Search className="w-6 h-6 mr-3" />
-                          Rechercher
-                        </>
-                      )}
-                    </Button>
-                  </motion.div>
-                </div>
+                  Découvrez Pourquoi Nous Choisir
+                </Button>
               </motion.div>
             </motion.div>
           </div>
@@ -859,89 +775,182 @@ const Home = () => {
           </motion.div>
         </section>
 
-        {/* Advanced Features Section */}
-        <section className="py-32 bg-gradient-to-br from-background via-muted/20 to-background features-section">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
+        {/* Nouvelle Section "Pourquoi Choisir ENKI Realty ?" */}
+        <motion.section 
+          id="why-enki"
+          className="bg-background py-16 px-4 md:px-8"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <div className="max-w-7xl mx-auto">
+            {/* Titre section */}
+            <motion.h2 
+              className="font-inter font-bold text-3xl md:text-4xl text-primary text-center mb-8"
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, damping: 20 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="text-center mb-20"
             >
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 bg-gradient-to-r from-primary to-primary-hover bg-clip-text text-transparent">
-                Pourquoi Choisir ENKI-REALTY ?
-              </h2>
-              <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                Excellence, innovation et expertise locale pour votre réussite immobilière à Chypre
-              </p>
-            </motion.div>
+              Pourquoi choisir ENKI Realty ?
+            </motion.h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {features.map((feature, index) => (
+            {/* Texte intro */}
+            <motion.p 
+              className="font-inter text-lg text-muted-foreground text-center max-w-prose mx-auto mb-12"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2, damping: 20 }}
+              viewport={{ once: true }}
+            >
+              ENKI Realty vous ouvre un accès privilégié aux projets les plus solides de l'île, avec une approche innovante qui simplifie la recherche et optimise immédiatement vos choix d'investissement.
+            </motion.p>
+
+            {/* Grille des trois blocs */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+              {[
+                {
+                  icon: (
+                    <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0v-11a2 2 0 012-2h4a2 2 0 012 2z" />
+                    </svg>
+                  ),
+                  title: "Sélection rigoureuse",
+                  description: "Tous les projets des promoteurs les plus fiables réunis en un seul endroit, soigneusement sélectionnés pour leur qualité et leur sérieux."
+                },
+                {
+                  icon: (
+                    <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  ),
+                  title: "Recherche intelligente",
+                  description: "Une IA qui comprend vos besoins et vous propose les biens les plus adaptés, sans perte de temps ni recherche complexe."
+                },
+                {
+                  icon: (
+                    <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                  ),
+                  title: "Optimisation fiscale instantanée",
+                  description: "En un clic, obtenez des scénarios personnalisés pour maximiser votre rentabilité et protéger votre patrimoine, avec des réponses immédiates et concrètes."
+                }
+              ].map((item, index) => (
                 <motion.div
                   key={index}
-                  className="feature-card group relative"
-                  whileHover={{ 
-                    y: -10,
-                    rotateY: 5,
-                    scale: 1.05
-                  }}
-                  transition={{ 
-                    type: "spring", 
-                    stiffness: 300,
-                    damping: 20 
-                  }}
+                  className="bg-card p-6 rounded-lg border border-border shadow-sm hover:shadow-md transition-shadow hover:bg-accent"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1, damping: 20 }}
+                  viewport={{ once: true }}
                 >
-                  <Card className="h-full overflow-hidden border-0 shadow-2xl bg-gradient-to-br from-background to-muted/30 backdrop-blur-xl group-hover:shadow-primary/20 transition-all duration-500">
-                    <CardContent className="p-8 h-full flex flex-col">
-                      <motion.div
-                        className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${feature.gradient} mb-6 flex items-center justify-center shadow-lg`}
-                        whileHover={{ 
-                          scale: 1.1,
-                          rotate: 10,
-                          transition: { type: "spring", stiffness: 400 }
-                        }}
-                      >
-                        <feature.icon className="w-10 h-10 text-white" />
-                      </motion.div>
-                      
-                      <motion.div 
-                        className="mb-4"
-                        initial={{ opacity: 0, x: -20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 + 0.3 }}
-                      >
-                        <div className={`inline-flex px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r ${feature.gradient} text-white mb-3`}>
-                          {feature.badge}
-                        </div>
-                        <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">
-                          {feature.title}
-                        </h3>
-                      </motion.div>
-                      
-                      <motion.p 
-                        className="text-muted-foreground leading-relaxed flex-1"
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 + 0.5 }}
-                      >
-                        {feature.description}
-                      </motion.p>
-                      
-                      <motion.div
-                        className="mt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                        whileHover={{ x: 5 }}
-                      >
-                        <ArrowRight className="w-5 h-5 text-primary" />
-                      </motion.div>
-                    </CardContent>
-                  </Card>
+                  <div className="mb-4">
+                    {item.icon}
+                  </div>
+                  <h3 className="font-bold text-lg text-foreground mb-3">
+                    {item.title}
+                  </h3>
+                  <p className="text-base text-muted-foreground">
+                    {item.description}
+                  </p>
                 </motion.div>
               ))}
             </div>
           </div>
-        </section>
+        </motion.section>
+
+        {/* Nouvelle Section "Commencer l'Expérience" */}
+        <motion.section 
+          id="start-experience"
+          className="bg-secondary py-16 px-4 md:px-8"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <div className="max-w-7xl mx-auto">
+            {/* Titre section */}
+            <motion.h2 
+              className="font-inter font-bold text-3xl md:text-4xl text-primary text-center mb-8"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, damping: 20 }}
+              viewport={{ once: true }}
+            >
+              Commencer l'Expérience
+            </motion.h2>
+
+            {/* Texte intro */}
+            <motion.p 
+              className="text-muted-foreground text-center mb-8"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2, damping: 20 }}
+              viewport={{ once: true }}
+            >
+              Démarrez votre recherche personnalisée assistée par IA.
+            </motion.p>
+
+            {/* Recherche agentique déplacée du hero */}
+            <motion.div 
+              className="max-w-2xl mx-auto"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4, damping: 20 }}
+              viewport={{ once: true }}
+            >
+              <div className="space-y-6">
+                <Textarea
+                  value={agenticQuery}
+                  onChange={(e) => setAgenticQuery(e.target.value)}
+                  placeholder="Décrivez votre projet : ex. 'Français, budget 500k €, appartement près de la mer à Chypre – options fiscales pour optimisation rentabilité ?'"
+                  className="min-h-[120px] bg-input border border-border rounded-md p-4 w-full focus:ring-ring focus:border-ring"
+                  sanitize={false}
+                />
+                
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="consent-new"
+                    checked={consent}
+                    onCheckedChange={(checked) => setConsent(!!checked)}
+                    className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                  />
+                  <label 
+                    htmlFor="consent-new" 
+                    className="text-muted-foreground text-sm cursor-pointer"
+                  >
+                    J'accepte que mes données soient utilisées pour générer des recommandations personnalisées
+                  </label>
+                </div>
+
+                <Button
+                  onClick={handleAgenticSearch}
+                  disabled={!agenticQuery.trim() || !consent || agenticSearchMutation.isPending}
+                  className="w-full bg-primary hover:bg-primary-hover text-primary-foreground px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                >
+                  {agenticSearchMutation.isPending ? (
+                    <>
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        className="w-6 h-6 border-3 border-white border-t-transparent rounded-full mr-3"
+                      />
+                      Recherche en cours...
+                    </>
+                  ) : (
+                    <>
+                      <Search className="w-6 h-6 mr-3" />
+                      Lancer la Recherche
+                    </>
+                  )}
+                </Button>
+              </div>
+            </motion.div>
+          </div>
+        </motion.section>
+
 
         {/* Advanced 3D Carousel Section */}
         <section className="py-20 bg-gradient-to-br from-muted/30 to-background">
