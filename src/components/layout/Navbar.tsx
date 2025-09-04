@@ -129,17 +129,17 @@ const Navbar = () => {
               >
                 <Link
                   to={item.href}
-                  className={`relative px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                  className={`relative px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 text-white ${
                     isActive(item.href)
-                      ? 'text-blue-400 bg-white/10'
-                      : 'text-white hover:text-blue-300 hover:bg-white/10'
+                      ? ''
+                      : 'hover:border hover:border-white/30'
                   }`}
                 >
                   {item.name}
                   {isActive(item.href) && (
                     <motion.div
                       layoutId="activeTab"
-                      className="absolute bottom-0 left-2 right-2 h-0.5 bg-blue-400 rounded-full"
+                      className="absolute bottom-0 left-2 right-2 h-0.5 bg-white rounded-full"
                       initial={false}
                       transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     />
@@ -165,14 +165,17 @@ const Navbar = () => {
                   >
                     <Link
                       to={item.href}
-                      className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                      className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 text-white ${
                         isActive(item.href)
-                          ? 'text-blue-400 bg-white/10'
-                          : 'text-white hover:text-blue-300 hover:bg-white/10'
+                          ? ''
+                          : 'hover:border hover:border-white/30'
                       }`}
                     >
                       <item.icon className="w-4 h-4 mr-2" />
                       {item.name}
+                      {isActive(item.href) && (
+                        <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-white rounded-full" />
+                      )}
                     </Link>
                   </motion.div>
                 ))}
@@ -187,14 +190,17 @@ const Navbar = () => {
                   >
                     <Link
                       to={item.href}
-                      className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                      className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 text-white ${
                         isActive(item.href)
-                          ? 'text-blue-400 bg-white/10'
-                          : 'text-white hover:text-blue-300 hover:bg-white/10'
+                          ? ''
+                          : 'hover:border hover:border-white/30'
                       }`}
                     >
                       <item.icon className="w-4 h-4 mr-2" />
                       {item.name}
+                      {isActive(item.href) && (
+                        <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-white rounded-full" />
+                      )}
                     </Link>
                   </motion.div>
                 ))}
