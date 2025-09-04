@@ -1,21 +1,14 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Download, 
-  MapPin, 
-  Euro, 
-  TrendingUp, 
-  Building, 
-  Shield, 
-  FileText,
-  ExternalLink,
-  Brain,
-  Calculator
-} from 'lucide-react';
+import { Download, ExternalLink, MapPin, Save, TrendingUp, Building, FileText, Users, Coins, Brain, Euro, Calculator, Shield } from 'lucide-react';
 
 interface AgenticSearchModalProps {
   isOpen: boolean;
@@ -24,6 +17,49 @@ interface AgenticSearchModalProps {
 }
 
 const AgenticSearchModal = ({ isOpen, onClose, results }: AgenticSearchModalProps) => {
+  const { user } = useAuth();
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSaveDossier = async () => {
+    if (!user || !results) {
+      toast({
+        title: "Connexion requise",
+        description: "Vous devez être connecté pour sauvegarder un dossier.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const { error } = await supabase
+        .from('dossiers')
+        .insert({
+          user_id: user.id,
+          title: `Recherche ${results.parsed_query.localisation_preferee} - ${new Date().toLocaleDateString()}`,
+          query: JSON.stringify(results.parsed_query),
+          biens: results.properties.map(p => p.id),
+          lexaia_outputs: results.lexaia_analysis,
+          pdf_url: results.pdf_url
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Dossier sauvegardé",
+        description: "Votre dossier immobilier a été ajouté à votre tableau de bord.",
+      });
+    } catch (error) {
+      console.error('Erreur sauvegarde:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de sauvegarder le dossier.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
   if (!results) return null;
 
   const { parsed_query, properties, lexaia_analysis, pdf_url } = results;
@@ -284,15 +320,27 @@ const AgenticSearchModal = ({ isOpen, onClose, results }: AgenticSearchModalProp
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 pt-4"
+            className="flex flex-col sm:flex-row gap-3"
           >
-            <Button onClick={handleDownloadPDF} className="flex-1" size="lg">
-              <Download className="w-5 h-5 mr-2" />
-              Télécharger le dossier complet (PDF)
+            <Button 
+              onClick={() => window.open(results.pdf_url, '_blank')}
+              className="flex items-center gap-2 btn-premium flex-1"
+            >
+              <Download className="w-4 h-4" />
+              Télécharger PDF
             </Button>
-            <Button variant="outline" onClick={onClose} className="flex-1" size="lg">
-              Fermer
-            </Button>
+            
+            {user && (
+              <Button 
+                onClick={handleSaveDossier}
+                disabled={isSaving}
+                variant="outline"
+                className="flex items-center gap-2 btn-outline-premium flex-1"
+              >
+                <Save className="w-4 h-4" />
+                {isSaving ? 'Sauvegarde...' : 'Sauvegarder Dossier'}
+              </Button>
+            )}
           </motion.div>
         </div>
       </DialogContent>

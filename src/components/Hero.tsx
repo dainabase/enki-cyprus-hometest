@@ -95,7 +95,7 @@ const Hero = () => {
     });
   };
 
-  const examplePlaceholder = "Exemple : 'Je suis un homme habitant en Suisse avec un budget de 500 000 CHF pour un bien d'investissement à Chypre. Proposez-moi des options optimisées fiscalement avec règles d'achat et création société si nécessaire.'";
+  const examplePlaceholder = "Ex: 'Suisse, 500k CHF budget investissement Chypre – options fiscales optimisées ?'";
 
   const isFormValid = agenticQuery.trim() && consent;
 

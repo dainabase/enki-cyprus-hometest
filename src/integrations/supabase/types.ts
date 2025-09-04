@@ -252,6 +252,42 @@ export type Database = {
         }
         Relationships: []
       }
+      dossiers: {
+        Row: {
+          biens: string[]
+          created_at: string
+          id: string
+          lexaia_outputs: Json
+          pdf_url: string | null
+          query: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          biens?: string[]
+          created_at?: string
+          id?: string
+          lexaia_outputs?: Json
+          pdf_url?: string | null
+          query: string
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          biens?: string[]
+          created_at?: string
+          id?: string
+          lexaia_outputs?: Json
+          pdf_url?: string | null
+          query?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       favorites: {
         Row: {
           created_at: string
@@ -475,6 +511,10 @@ export type Database = {
           p_resource_id?: string
           p_resource_type: string
         }
+        Returns: undefined
+      }
+      upsert_ab_test_assignment: {
+        Args: { p_test_id: string; p_user_session: string; p_variant: string }
         Returns: undefined
       }
     }

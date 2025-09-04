@@ -38,13 +38,13 @@ export const useABTest = (testName: string) => {
           return;
         }
 
-        // Check if user already has an assignment
-        const { data: existingAssignment, error: assignmentError } = await supabase
+        // Try to get existing assignment first
+        const { data: existingAssignment } = await supabase
           .from('ab_test_assignments')
           .select('variant')
           .eq('test_id', test.id)
           .eq('user_session', sessionId)
-          .single();
+          .maybeSingle();
 
         if (existingAssignment) {
           setVariant(existingAssignment.variant);
@@ -52,21 +52,17 @@ export const useABTest = (testName: string) => {
           return;
         }
 
-        // If no assignment exists, create one with random variant
+        // Create new assignment using upsert function
         const randomVariant = Math.random() < 0.5 ? 'A' : 'B';
         
-        const { error: insertError } = await supabase
-          .from('ab_test_assignments')
-          .insert({
-            test_id: test.id,
-            user_session: sessionId,
-            variant: randomVariant,
-          });
+        await supabase.rpc('upsert_ab_test_assignment', {
+          p_test_id: test.id,
+          p_user_session: sessionId,
+          p_variant: randomVariant
+        });
 
-        if (!insertError) {
-          setVariant(randomVariant);
-          console.log(`🧪 A/B Test '${testName}': Assigned variant ${randomVariant}`);
-        }
+        setVariant(randomVariant);
+        console.log(`🧪 A/B Test '${testName}': Assigned variant ${randomVariant}`);
       } catch (error) {
         console.error('Error in A/B test assignment:', error);
       } finally {
