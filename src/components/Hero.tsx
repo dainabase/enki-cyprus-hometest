@@ -4,7 +4,7 @@ import { Search, MapPin, TrendingUp } from 'lucide-react';
 import cyprusHero from '@/assets/cyprus-hero.jpg';
 import { useABTestVariant } from '@/hooks/useABTest';
 import { trackCustomEvent } from '@/lib/analytics';
-import AgenticSearchForm from '@/components/AgenticSearchForm';
+
 
 const Hero = () => {
   const { value: ctaText, variant } = useABTestVariant(
@@ -116,12 +116,39 @@ const Hero = () => {
 
           {/* Formulaire de Recherche Agentique */}
           <motion.div 
-            className="mt-12"
-            initial={{ opacity: 0, y: 30 }}
+            className="mt-12 p-6 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20"
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.2 }}
           >
-            <AgenticSearchForm />
+            <div className="flex items-center justify-center space-x-2 text-white mb-4">
+              <Search className="w-5 h-5" />
+              <span className="font-medium">Faire une recherche agentique de mon bien immobilier</span>
+            </div>
+            
+            <div className="bg-white/5 rounded-lg border border-white/10 p-6">
+              <div className="space-y-4">
+                <textarea
+                  placeholder="Décrivez votre bien immobilier idéal à Chypre... (ex: Je cherche une villa avec piscine à Paphos, budget 500k€, proche de la mer)"
+                  className="w-full h-24 px-4 py-3 bg-white/90 text-gray-900 rounded-lg border border-white/20 placeholder-gray-500 resize-none focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent"
+                  rows={4}
+                />
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  className="text-center"
+                >
+                  <Button
+                    size="lg"
+                    className="bg-primary hover:bg-primary-hover text-white px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                  >
+                    <Search className="w-5 h-5 mr-2" />
+                    Rechercher
+                  </Button>
+                </motion.div>
+              </div>
+            </div>
           </motion.div>
         </motion.div>
       </div>
