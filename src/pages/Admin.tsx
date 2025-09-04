@@ -75,6 +75,25 @@ const Admin = () => {
     }
   }, [profile]);
 
+  const [isBackfilling, setIsBackfilling] = useState(false);
+
+  const handleBackfillPhotos = async () => {
+    try {
+      setIsBackfilling(true);
+      const { data, error } = await supabase.functions.invoke('backfill-project-images', {
+        body: { minPhotos: 3, onlyMissing: true },
+      });
+      if (error) throw error;
+      toast({ title: 'Photos uploadées', description: `${data?.processed || 0} projets traités` });
+      await loadAdminData();
+    } catch (e: any) {
+      console.error('Backfill error', e);
+      toast({ variant: 'destructive', title: 'Erreur', description: e?.message || 'Échec de l\'upload des photos' });
+    } finally {
+      setIsBackfilling(false);
+    }
+  };
+
   const loadAdminData = async () => {
     try {
       setIsLoading(true);
@@ -247,10 +266,16 @@ const Admin = () => {
               <h1 className="text-3xl font-bold text-foreground">Administration ENKI-REALTY</h1>
               <p className="text-muted-foreground mt-2">Gestion des projets et des utilisateurs</p>
             </div>
-            <Button onClick={openCreateModal} className="btn-premium">
-              <Plus className="w-4 h-4 mr-2" />
-              Nouveau Projet
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button onClick={handleBackfillPhotos} variant="outline">
+                <Upload className="w-4 h-4 mr-2" />
+                Uploader les photos (3+/bien)
+              </Button>
+              <Button onClick={openCreateModal} className="btn-premium">
+                <Plus className="w-4 h-4 mr-2" />
+                Nouveau Projet
+              </Button>
+            </div>
           </div>
 
           {/* Stats Cards */}
@@ -348,6 +373,7 @@ const Admin = () => {
                                 variant="outline"
                                 size="sm"
                                 onClick={() => openEditModal(project)}
+                                disabled={isBackfilling}
                               >
                                 <Edit className="w-3 h-3" />
                               </Button>
@@ -355,6 +381,7 @@ const Admin = () => {
                                 variant="outline"
                                 size="sm"
                                 onClick={() => handleDeleteProject(project.id)}
+                                disabled={isBackfilling}
                               >
                                 <Trash2 className="w-3 h-3" />
                               </Button>
