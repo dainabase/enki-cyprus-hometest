@@ -456,13 +456,13 @@ const Home = () => {
 
   // Featured and latest properties
   const featuredProperties = useMemo(() => 
-    properties.filter(p => p.featured).slice(0, 6), 
+    properties.filter(p => p.id).slice(0, 6), 
     [properties]
   );
   
   const latestProperties = useMemo(() => 
     properties
-      .sort((a, b) => new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime())
+      .sort((a, b) => new Date(b.id || '').getTime() - new Date(a.id || '').getTime())
       .slice(0, 6), 
     [properties]
   );
@@ -620,8 +620,8 @@ const Home = () => {
               }}
             >
               {[
-                { text: "Investissement", className: "block" },
-                { text: "Premium", className: "block bg-gradient-to-r from-white via-blue-100 to-primary-foreground bg-clip-text text-transparent" },
+                { text: "Découvrez les meilleurs", className: "block" },
+                { text: "projets immobiliers", className: "block bg-gradient-to-r from-white via-blue-100 to-primary-foreground bg-clip-text text-transparent" },
                 { text: "à Chypre", className: "block" }
               ].map((line, lineIndex) => (
                 <motion.span
@@ -661,7 +661,7 @@ const Home = () => {
                 }
               }}
             >
-              {["Découvrez", "des", "propriétés", "d'exception", "avec", "une", "approche", "innovante", "qui", "transforme", "votre", "vision", "en", "réalité."].map((word, index) => (
+              {["Votre", "partenaire", "de", "confiance", "pour", "investir", "dans", "l'immobilier", "premier", "au", "cœur", "de", "la", "Méditerranée."].map((word, index) => (
                 <motion.span
                   key={index}
                   variants={{
@@ -694,7 +694,7 @@ const Home = () => {
                 whileTap={{ scale: 0.95 }}
               >
                 <Link 
-                  to="#exceptional-living"
+                  to="#why-enki"
                   className="inline-block px-8 py-4 bg-white text-primary font-semibold text-lg rounded-lg shadow-xl hover:shadow-2xl transition-all duration-300 relative overflow-hidden group"
                 >
                   <motion.div
@@ -703,7 +703,7 @@ const Home = () => {
                     whileHover={{ x: "100%" }}
                     transition={{ duration: 0.6 }}
                   />
-                  <span className="relative z-10">Découvrir l'Excellence</span>
+                  <span className="relative z-10">Découvrez Pourquoi Nous Choisir</span>
                   <ArrowRight className="inline-block ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </motion.div>
@@ -728,7 +728,7 @@ const Home = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 2.5, duration: 0.8 }}
-            onClick={() => document.getElementById('exceptional-living')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={() => document.getElementById('why-enki')?.scrollIntoView({ behavior: 'smooth' })}
           >
             <motion.div 
               className="w-8 h-14 border-3 border-white/50 rounded-full flex justify-center backdrop-blur-sm"
