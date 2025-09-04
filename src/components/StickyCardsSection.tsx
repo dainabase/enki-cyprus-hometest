@@ -66,15 +66,13 @@ export const StickyCardsSection: React.FC<StickyCardsSectionProps> = ({ cards })
 
   return (
     <div className="relative">
-      {/* Spacer to create scroll distance */}
-      <div className="h-[2000px]" />
-      
-      {/* Sticky container */}
+      {/* Sticky container with controlled height */}
       <motion.section 
         ref={sectionRef}
-        className="sticky top-0 bg-background py-32 md:py-40 px-4 md:px-8 overflow-hidden min-h-screen flex items-center"
+        className="sticky top-0 bg-background py-32 md:py-40 px-4 md:px-8 overflow-hidden min-h-screen flex items-center z-40"
         style={{
           perspective: '1000px',
+          height: '2000px', // Give the section enough height to stay sticky
         }}
       >
         {/* Background overlays */}
