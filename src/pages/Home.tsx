@@ -716,7 +716,6 @@ const Home = () => {
                 >
                   Meilleurs Projets
                 </motion.span>
-                <br />
                 <motion.span
                   className="block text-transparent bg-gradient-to-r from-cyan-300 via-blue-300 to-white bg-clip-text"
                   initial={{ opacity: 0, y: 50 }}
