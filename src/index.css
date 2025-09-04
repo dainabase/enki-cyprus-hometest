@@ -201,11 +201,75 @@ All colors MUST be HSL.
     ring-color: hsl(var(--gold));
   }
   
-  .hover-gold-underline {
-    @apply relative after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-gold-accent after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left;
+  /* Luxury shimmer effect */
+  .shimmer-gold {
+    position: relative;
+    overflow: hidden;
   }
   
-  .hr-gold-accent {
-    @apply h-px bg-gold-accent border-0;
+  .shimmer-gold::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, hsl(var(--gold) / 0.3), transparent);
+    animation: shimmer 3s ease-in-out infinite;
+  }
+  
+  @keyframes shimmer {
+    0% { left: -100%; }
+    50% { left: 100%; }
+    100% { left: 100%; }
+  }
+  
+  /* Premium glow effects */
+  .glow-gold {
+    box-shadow: 0 0 20px hsl(var(--gold) / 0.2);
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .glow-gold:hover {
+    box-shadow: 0 0 40px hsl(var(--gold) / 0.4);
+  }
+  
+  /* Elegant dividers */
+  .divider-gold {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, hsl(var(--gold-accent)), transparent);
+    margin: 3rem 0;
+  }
+  
+  /* Premium card styles */
+  .card-luxury {
+    background: linear-gradient(145deg, hsl(var(--card)) 0%, hsl(var(--card)) 70%, hsl(var(--gold-accent) / 0.1) 100%);
+    border: 1px solid hsl(var(--border));
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .card-luxury::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--gold)));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .card-luxury:hover::before {
+    opacity: 1;
+  }
+  
+  /* Luxury typography */
+  .text-luxury {
+    background: linear-gradient(135deg, hsl(var(--foreground)) 0%, hsl(var(--gold)) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 }
