@@ -476,27 +476,6 @@ const Home = () => {
     trackPageView('/', 'Accueil - ENKI-REALTY Immobilier Premium Chypre');
     trackCustomEvent('home_viewed', { user_authenticated: !!isAuthenticated });
 
-    // GSAP Advanced Animations
-    const tl = gsap.timeline();
-    
-    // Stagger animation for feature cards
-    tl.fromTo('.feature-card', 
-      { y: 100, opacity: 0, scale: 0.8 },
-      { 
-        y: 0, 
-        opacity: 1, 
-        scale: 1,
-        duration: 0.8,
-        stagger: 0.2,
-        ease: "back.out(1.7)",
-        scrollTrigger: {
-          trigger: '.features-section',
-          start: 'top 80%',
-          end: 'bottom 20%',
-        }
-      }
-    );
-
     return () => {
       ScrollTrigger.getAll().forEach(t => t.kill());
     };
