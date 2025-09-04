@@ -893,7 +893,7 @@ const Home = () => {
           <div className="max-w-7xl mx-auto relative z-10">
             {/* Titre section avec effet d'écriture au scroll */}
             <ScrollRevealText 
-              text="Comment c'est l'expérience ?"
+              text="Commencer l'Expérience"
               className="swaarg-large-title text-primary mb-10"
             />
 
@@ -1048,6 +1048,118 @@ const Home = () => {
           </div>
         </motion.section>
 
+        {/* Section KPIs Marché Immobilier */}
+        <motion.section 
+          id="market-kpis"
+          className="bg-background py-24 md:py-32 px-4 md:px-8"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <div className="max-w-7xl mx-auto">
+            <motion.div 
+              className="text-center mb-16"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-3xl md:text-4xl font-bold text-primary mb-6">
+                Tendances du Marché Immobilier à Chypre
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Découvrez les indicateurs clés pour investir intelligemment.
+              </p>
+            </motion.div>
+
+            <motion.div 
+              className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 max-w-5xl mx-auto"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.8, staggerChildren: 0.3 }}
+              viewport={{ once: true }}
+            >
+              {[
+                {
+                  title: "Croissance Annuelle des Prix",
+                  value: "+5%",
+                  description: "Moyenne tout confondu projetée pour 2025.",
+                  source: "Global Property Guide (2025)",
+                  sourceUrl: "https://www.globalpropertyguide.com/europe/cyprus/price-history"
+                },
+                {
+                  title: "Volume des Transactions",
+                  value: "+17 500",
+                  description: "Moyenne annuelle projetée.",
+                  source: "Données du marché (2025)",
+                  sourceUrl: "#"
+                },
+                {
+                  title: "Rendement Locatif Moyen",
+                  value: "4,5%",
+                  description: "Moyenne tout confondu.",
+                  source: "Analyse du marché (2025)",
+                  sourceUrl: "#"
+                },
+                {
+                  title: "Valeur Totale du Marché Locations",
+                  value: "95,89 Md USD",
+                  description: "Marché résidentiel global.",
+                  source: "Projections marché (2025)",
+                  sourceUrl: "#"
+                }
+              ].map((kpi, index) => (
+                <motion.div
+                  key={index}
+                  className="bg-card p-8 rounded-xl border border-border shadow-sm hover:shadow-md hover:bg-accent transition-all duration-300"
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ 
+                    duration: 0.6, 
+                    delay: index * 0.3,
+                    type: "spring",
+                    damping: 20
+                  }}
+                  viewport={{ once: true }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div className="text-center">
+                    <motion.div
+                      className="text-4xl font-bold text-primary mb-4"
+                      initial={{ scale: 0 }}
+                      whileInView={{ scale: 1 }}
+                      transition={{ 
+                        duration: 2,
+                        delay: index * 0.3 + 0.5,
+                        ease: "easeOut"
+                      }}
+                      viewport={{ once: true }}
+                    >
+                      {kpi.value}
+                    </motion.div>
+                    <h3 className="text-lg font-semibold text-foreground mb-3">
+                      {kpi.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      {kpi.description}
+                    </p>
+                    <div className="text-xs text-muted-foreground">
+                      Source: <a 
+                        href={kpi.sourceUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-muted-foreground hover:underline hover:text-primary transition-colors"
+                      >
+                        {kpi.source}
+                      </a>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </motion.section>
 
         {/* Advanced 3D Carousel Section */}
         <section className="py-20 bg-gradient-to-br from-muted/30 to-background">
