@@ -69,10 +69,13 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.agentic-search]
- verify_jwt = false
- 
- [functions.image-proxy]
- verify_jwt = false
- 
- [functions.backfill-project-images]
- verify_jwt = true
+verify_jwt = false
+
+[functions.image-proxy]
+verify_jwt = false
+
+[functions.backfill-project-images]
+verify_jwt = true
+
+[functions.ensure-project-photos]
+verify_jwt = true

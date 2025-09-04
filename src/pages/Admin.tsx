@@ -77,6 +77,7 @@ const Admin = () => {
   }, [profile]);
 
   const [isBackfilling, setIsBackfilling] = useState(false);
+  const [isEnsuring, setIsEnsuring] = useState(false);
 
   const handleBackfillPhotos = async () => {
     try {
@@ -89,9 +90,26 @@ const Admin = () => {
       await loadAdminData();
     } catch (e: any) {
       console.error('Backfill error', e);
-      toast({ variant: 'destructive', title: 'Erreur', description: e?.message || 'Échec de l\'upload des photos' });
+      toast({ variant: 'destructive', title: 'Erreur', description: e?.message || "Échec de l'upload des photos" });
     } finally {
       setIsBackfilling(false);
+    }
+  };
+
+  const handleEnsurePhotos = async () => {
+    try {
+      setIsEnsuring(true);
+      const { data, error } = await supabase.functions.invoke('ensure-project-photos', {
+        body: { minPhotos: 4 },
+      });
+      if (error) throw error;
+      toast({ title: 'Photos assurées', description: `${data?.updated || 0} projet(s) mis à jour` });
+      await loadAdminData();
+    } catch (e: any) {
+      console.error('Ensure photos error', e);
+      toast({ variant: 'destructive', title: 'Erreur', description: e?.message || "Échec de l'opération" });
+    } finally {
+      setIsEnsuring(false);
     }
   };
 
@@ -275,6 +293,16 @@ const Admin = () => {
                   <>
                     <Upload className="w-4 h-4 mr-2" />
                     Uploader les photos (3+/bien)
+                  </>
+                )}
+              </Button>
+              <Button onClick={handleEnsurePhotos} variant="outline" disabled={isEnsuring}>
+                {isEnsuring ? (
+                  <>Traitement…</>
+                ) : (
+                  <>
+                    <Upload className="w-4 h-4 mr-2" />
+                    Assurer 4 photos/bien
                   </>
                 )}
               </Button>
