@@ -13,7 +13,7 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { 
   Search, MapPin, TrendingUp, Brain, UserPlus, Shield, Award, Users, 
   Star, Download, Save, Eye, Heart, ArrowRight, Building, Home as HomeIcon,
-  Trophy, Briefcase, Target, ExternalLink, Clock, Sparkles
+  Trophy, Briefcase, Target, ExternalLink, Clock, Sparkles, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -25,6 +25,7 @@ import { SEOHead } from '@/components/SEOHead';
 import { trackPageView, trackCustomEvent } from '@/lib/analytics';
 import PropertyCard from '@/components/ui/PropertyCard';
 import PropertyModal from '@/components/PropertyModal';
+import Carousel3D from '@/components/ui/Carousel3D';
 
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 

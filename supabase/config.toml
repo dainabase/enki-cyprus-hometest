@@ -79,3 +79,6 @@ verify_jwt = true
 
 [functions.ensure-project-photos]
 verify_jwt = true
+
+[functions.fetch-interests]
+verify_jwt = false

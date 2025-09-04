@@ -20,6 +20,7 @@ import { useToast } from '@/hooks/use-toast';
 import { GoogleMapsProvider } from '@/contexts/GoogleMapsContext';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { trackPageView, trackCustomEvent } from '@/lib/analytics';
+import ZoomablePlans from '@/components/ui/ZoomablePlans';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
