@@ -1208,7 +1208,7 @@ const Home = () => {
         {/* Premium Video Section */}
         <motion.section 
           id="premium-video" 
-          className="py-0 bg-secondary w-full h-[100vh] relative overflow-hidden"
+          className="py-0 bg-secondary w-full h-[60vh] relative overflow-hidden"
           initial={{ opacity: 0, scale: 1.1 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
