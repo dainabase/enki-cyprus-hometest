@@ -656,7 +656,7 @@ const Home = () => {
               className="w-full h-full bg-cover bg-center bg-no-repeat filter"
               style={{ backgroundImage: `url(${cyprusHero})` }}
             />
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/65 via-primary/35 to-accent/45" />
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/50 via-primary/20 to-accent/30" />
           </motion.div>
 
           {/* 3D Particles Background */}
