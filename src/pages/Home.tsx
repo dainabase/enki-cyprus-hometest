@@ -1006,7 +1006,7 @@ const Home = () => {
                 
                 
                 <motion.div
-                  className="relative bg-white rounded-2xl shadow-2xl border-2 border-primary/30 overflow-hidden"
+                  className="relative bg-white rounded-2xl shadow-2xl border border-gray-200/50 overflow-hidden"
                   initial={{ y: 20, opacity: 0 }}
                   whileInView={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.5 }}
@@ -1017,7 +1017,7 @@ const Home = () => {
                       value={agenticQuery}
                       onChange={(e) => setAgenticQuery(e.target.value)}
                       placeholder="Décrivez votre projet : ex. 'Français, budget 500k €, appartement près de la mer à Chypre – options fiscales pour optimisation rentabilité ?'"
-                      className="w-full border-0 bg-transparent resize-none focus:ring-0 focus:outline-none min-h-[120px] text-gray-800 placeholder:text-gray-500 text-lg leading-relaxed"
+                      className="w-full border-0 bg-transparent resize-none ring-2 ring-primary ring-offset-2 focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:outline-none min-h-[120px] text-gray-800 placeholder:text-gray-500 text-lg leading-relaxed"
                       sanitize={false}
                     />
                     
