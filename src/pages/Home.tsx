@@ -893,7 +893,7 @@ const Home = () => {
           <div className="max-w-7xl mx-auto relative z-10">
             {/* Titre section avec effet d'écriture au scroll */}
             <ScrollRevealText 
-              text="Commencer l'Expérience"
+              text="Comment c'est l'expérience ?"
               className="swaarg-large-title text-primary mb-10"
             />
 
@@ -1097,12 +1097,14 @@ const Home = () => {
               transition={{ duration: 0.6 }}
               className="text-center mb-16"
             >
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                Dernières Nouveautés
-              </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Les dernières propriétés ajoutées à notre catalogue premium
-              </p>
+              <ScrollRevealText 
+                text="Dernières Nouveautés"
+                className="swaarg-large-title text-primary mb-6"
+              />
+              <ScrollRevealParagraph 
+                text="Les dernières propriétés ajoutées à notre catalogue premium"
+                className="swaarg-body-large text-muted-foreground max-w-3xl"
+              />
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -1157,12 +1159,14 @@ const Home = () => {
               transition={{ duration: 0.6 }}
               className="text-center mb-12"
             >
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                Explorer la Carte
-              </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Découvrez l'emplacement de nos propriétés exclusives à travers Chypre
-              </p>
+              <ScrollRevealText 
+                text="Explorer la Carte"
+                className="swaarg-large-title text-primary mb-6"
+              />
+              <ScrollRevealParagraph 
+                text="Découvrez l'emplacement de nos propriétés exclusives à travers Chypre"
+                className="swaarg-body-large text-muted-foreground max-w-3xl"
+              />
             </motion.div>
 
             <motion.div
