@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { MapPin, Bed, Bath, Square, Eye } from 'lucide-react';
 import { Property } from '@/lib/supabase';
+import OptimizedImage from '@/components/OptimizedImage';
 
 interface PropertyCardProps {
   property: Property;
@@ -52,17 +53,16 @@ const PropertyCard = memo(({ property, index = 0, onClick, className = '' }: Pro
     >
       <Card className="overflow-hidden card-hover bg-gradient-card cursor-pointer">
         {/* Image Container */}
-        <div className="relative overflow-hidden">
-          <div className="aspect-[4/3] bg-muted bg-gradient-to-br from-muted to-accent">
-            <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-              <div className="text-center">
-                <Square className="w-12 h-12 mx-auto mb-2 opacity-40" />
-                <p className="text-sm opacity-60">Image à venir</p>
-              </div>
-            </div>
-          </div>
-          
-          {/* Price Badge */}
+      <div className="relative overflow-hidden">
+        <OptimizedImage
+          src={property.photos?.[0] || '/placeholder.svg'}
+          alt={`Photo du bien: ${property.title} - ${property.location}`}
+          aspectRatio="4/3"
+          className=""
+          loading="lazy"
+        />
+        
+        {/* Price Badge */}
           <Badge 
             className="absolute top-3 left-3 bg-primary text-primary-foreground"
           >
