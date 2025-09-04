@@ -4,6 +4,7 @@ import { Search, MapPin, TrendingUp } from 'lucide-react';
 import cyprusHero from '@/assets/cyprus-hero.jpg';
 import { useABTestVariant } from '@/hooks/useABTest';
 import { trackCustomEvent } from '@/lib/analytics';
+import AgenticSearchForm from '@/components/AgenticSearchForm';
 
 const Hero = () => {
   const { value: ctaText, variant } = useABTestVariant(
@@ -113,20 +114,14 @@ const Hero = () => {
             </Button>
           </motion.div>
 
-          {/* Interactive Map Placeholder */}
+          {/* Formulaire de Recherche Agentique */}
           <motion.div 
-            className="mt-12 p-6 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20"
-            initial={{ opacity: 0, y: 20 }}
+            className="mt-12"
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.2 }}
           >
-            <div className="flex items-center justify-center space-x-2 text-white mb-3">
-              <MapPin className="w-5 h-5" />
-              <span className="font-medium">Carte interactive des propriétés</span>
-            </div>
-            <div className="h-64 bg-white/5 rounded-lg border border-white/10 overflow-hidden">
-              {/* Google Map integration will be added here */}
-            </div>
+            <AgenticSearchForm />
           </motion.div>
         </motion.div>
       </div>

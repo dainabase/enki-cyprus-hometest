@@ -23,6 +23,178 @@ export interface Property {
   virtualTour: string;
 }
 
+// Interface pour les programmes/projets en vedette
+export interface FeaturedProject {
+  id: string;
+  title: string;
+  description: string;
+  location: string;
+  prix_moyen: number;
+  nombre_biens: number;
+  types_biens: string[];
+  image: string;
+  features: string[];
+  status: 'disponible' | 'en_construction' | 'livre';
+  biens: Property[];
+}
+
+// Projets en vedette
+export const featuredProjects: FeaturedProject[] = [
+  {
+    id: 'vedette1',
+    title: 'Programme Mersini Luxe',
+    description: '20 appartements premium + 3 maisons vue mer dans le quartier prisé de Paphos',
+    location: 'Mersini Beach, Paphos',
+    prix_moyen: 300000,
+    nombre_biens: 23,
+    types_biens: ['Appartements 2-3 pièces', 'Maisons 4 pièces', 'Penthouses'],
+    image: 'https://placehold.co/1200x800/4A90E2/ffffff?text=Programme+Mersini+Luxe',
+    features: ['Vue mer', 'Piscine commune', 'Plage privée', 'Sécurité 24h', 'Parking'],
+    status: 'en_construction',
+    biens: [] // Sera rempli avec les propriétés du programme
+  },
+  {
+    id: 'vedette2', 
+    title: 'Résidence Coral Heights',
+    description: '15 villas familiales avec jardins privés et accès direct aux plages de Coral Bay',
+    location: 'Coral Bay, Paphos',
+    prix_moyen: 850000,
+    nombre_biens: 15,
+    types_biens: ['Villas 3 chambres', 'Villas 4 chambres', 'Villas 5 chambres'],
+    image: 'https://placehold.co/1200x800/2ECC71/ffffff?text=Coral+Heights+Villas',
+    features: ['Jardin privé', 'Piscine individuelle', 'Garage double', 'Vue panoramique'],
+    status: 'disponible',
+    biens: []
+  },
+  {
+    id: 'vedette3',
+    title: 'Marina Prestige Tower',
+    description: '12 penthouses d\'exception avec services de conciergerie dans le complexe Marina de Limassol',
+    location: 'Limassol Marina',
+    prix_moyen: 1200000,
+    nombre_biens: 12,
+    types_biens: ['Penthouses 3 chambres', 'Penthouses 4 chambres', 'Duplex premium'],
+    image: 'https://placehold.co/1200x800/9B59B6/ffffff?text=Marina+Prestige+Tower',
+    features: ['Service conciergerie', 'Marina privée', 'Spa & Fitness', 'Restaurants'],
+    status: 'livre',
+    biens: []
+  }
+];
+
+// Nouvelles propriétés récentes
+export const recentProperties: Property[] = [
+  {
+    id: 'recent1',
+    title: 'Penthouse Marina Vista',
+    description: 'Nouveau penthouse avec terrasse panoramique et accès direct à la marina',
+    price: '€950,000', 
+    location: 'Limassol Marina',
+    type: 'penthouse',
+    bedrooms: 3,
+    bathrooms: 2,
+    area: '150 m²',
+    image: 'https://placehold.co/1200x800/E74C3C/ffffff?text=Penthouse+Marina+Vista',
+    features: ['Terrasse 50m²', 'Vue marina', 'Concierge', 'Parking'],
+    status: 'available',
+    lat: 34.7071,
+    lng: 33.0226,
+    priceValue: 950000,
+    detailedDescription: 'Penthouse d\'exception avec vue imprenable sur la marina.',
+    detailedFeatures: ['Terrasse panoramique 50m²', 'Vue marina à 360°', 'Service concierge'],
+    photos: ['https://placehold.co/1200x800/E74C3C/ffffff?text=Marina+Vista+Penthouse'],
+    plans: ['https://placehold.co/800x600/E74C3C/ffffff?text=Plan+Penthouse+150m2'],
+    virtualTour: 'https://my.matterport.com/show/?m=marina-vista-penthouse'
+  },
+  {
+    id: 'recent2',
+    title: 'Villa Contemporaine Paphos',
+    description: 'Villa moderne avec design architectural unique et équipements intelligents',
+    price: '€720,000',
+    location: 'Kato Paphos',
+    type: 'villa',
+    bedrooms: 4,
+    bathrooms: 3,
+    area: '220 m²',
+    image: 'https://placehold.co/1200x800/F39C12/ffffff?text=Villa+Contemporaine',
+    features: ['Design unique', 'Domotique', 'Piscine', 'Jardin paysager'],
+    status: 'available',
+    lat: 34.7720,
+    lng: 32.3588,
+    priceValue: 720000,
+    detailedDescription: 'Villa au design architectural contemporain avec technologies intelligentes.',
+    detailedFeatures: ['Architecture contemporaine', 'Système domotique complet', 'Jardin paysager'],
+    photos: ['https://placehold.co/1200x800/F39C12/ffffff?text=Villa+Contemporaine+Paphos'],
+    plans: ['https://placehold.co/800x600/F39C12/ffffff?text=Plan+Villa+220m2'],
+    virtualTour: 'https://my.matterport.com/show/?m=villa-contemporaine-paphos'
+  },
+  {
+    id: 'recent3',
+    title: 'Appartement Luxury Bay',
+    description: 'Appartement premium dans une nouvelle résidence face à la baie de Larnaca',
+    price: '€380,000',
+    location: 'Larnaca Bay',
+    type: 'apartment',
+    bedrooms: 2,
+    bathrooms: 2,
+    area: '90 m²',
+    image: 'https://placehold.co/1200x800/1ABC9C/ffffff?text=Luxury+Bay+Apartment',
+    features: ['Vue baie', 'Résidence neuve', 'Piscine commune', 'Fitness'],
+    status: 'available',
+    lat: 34.9229,
+    lng: 33.6276,
+    priceValue: 380000,
+    detailedDescription: 'Appartement dans une nouvelle résidence premium face à la baie.',
+    detailedFeatures: ['Vue panoramique sur la baie', 'Résidence avec services', 'Finitions haut de gamme'],
+    photos: ['https://placehold.co/1200x800/1ABC9C/ffffff?text=Luxury+Bay+Larnaca'],
+    plans: ['https://placehold.co/800x600/1ABC9C/ffffff?text=Plan+Appartement+90m2'],
+    virtualTour: 'https://my.matterport.com/show/?m=luxury-bay-apartment'
+  },
+  {
+    id: 'recent4',
+    title: 'Studio Premium Ayia Napa',
+    description: 'Studio moderne avec balcon vue mer dans le centre touristique d\'Ayia Napa',
+    price: '€180,000',
+    location: 'Centre Ayia Napa',
+    type: 'apartment',
+    bedrooms: 1,
+    bathrooms: 1,
+    area: '45 m²',
+    image: 'https://placehold.co/1200x800/34495E/ffffff?text=Studio+Premium+Ayia+Napa',
+    features: ['Vue mer', 'Centre-ville', 'Balcon', 'Investissement'],
+    status: 'available',
+    lat: 34.9823,
+    lng: 34.0196,
+    priceValue: 180000,
+    detailedDescription: 'Studio premium idéalement situé au cœur d\'Ayia Napa.',
+    detailedFeatures: ['Studio optimisé 45m²', 'Balcon vue mer', 'Centre touristique'],
+    photos: ['https://placehold.co/1200x800/34495E/ffffff?text=Studio+Ayia+Napa'],
+    plans: ['https://placehold.co/800x600/34495E/ffffff?text=Plan+Studio+45m2'],
+    virtualTour: 'https://my.matterport.com/show/?m=studio-ayia-napa'
+  },
+  {
+    id: 'recent5',
+    title: 'Maison de Village Traditionnelle',
+    description: 'Maison chypriote rénovée avec charme authentique dans un village pittoresque',
+    price: '€275,000',
+    location: 'Village de Omodos',
+    type: 'maison',
+    bedrooms: 3,
+    bathrooms: 2,
+    area: '120 m²',
+    image: 'https://placehold.co/1200x800/8E44AD/ffffff?text=Maison+Village+Traditionnelle',
+    features: ['Charme authentique', 'Rénovation complète', 'Cour privée', 'Village pittoresque'],
+    status: 'available',
+    lat: 34.8421,
+    lng: 32.8074,
+    priceValue: 275000,
+    detailedDescription: 'Maison traditionnelle chypriote entièrement rénovée avec respect de l\'authenticité.',
+    detailedFeatures: ['Architecture traditionnelle', 'Rénovation moderne', 'Cour intérieure'],
+    photos: ['https://placehold.co/1200x800/8E44AD/ffffff?text=Maison+Village+Omodos'],
+    plans: ['https://placehold.co/800x600/8E44AD/ffffff?text=Plan+Maison+120m2'],
+    virtualTour: 'https://my.matterport.com/show/?m=maison-village-omodos'
+  }
+];
+
 export const mockProperties: Property[] = [
   {
     id: '1',
