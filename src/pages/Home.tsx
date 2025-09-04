@@ -1,5 +1,5 @@
 import { useState, lazy, Suspense, useEffect, useMemo, useCallback, useRef } from 'react';
-import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring, useInView } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Sphere, MeshDistortMaterial, Float } from '@react-three/drei';
@@ -20,7 +20,8 @@ import {
   Search, MapPin, TrendingUp, Brain, Shield, Award, 
   Star, Download, Save, Eye, Heart, ArrowRight, Building,
   Trophy, Briefcase, Target, ExternalLink, Clock, Sparkles, 
-  ChevronLeft, ChevronRight, Play, Zap, Compass, Globe
+  ChevronLeft, ChevronRight, Play, Zap, Compass, Globe,
+  FolderOpen, Cpu, ShieldCheck, Lightbulb, BarChart3
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -864,71 +865,128 @@ const Home = () => {
         {/* Nouvelle Section "Commencer l'Expérience" */}
         <motion.section 
           id="start-experience"
-          className="bg-secondary py-16 px-4 md:px-8"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
+          className="bg-secondary py-24 md:py-32 px-4 md:px-8 relative overflow-hidden"
+          initial={{ opacity: 0, y: 100 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false }}
+          transition={{ duration: 1, ease: 'easeInOut' }}
         >
-          <div className="max-w-7xl mx-auto">
-            {/* Titre section */}
+          {/* Premium background overlay */}
+          <motion.div 
+            className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/10"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 1.5 }}
+          />
+          
+          <div className="max-w-3xl mx-auto relative z-10">
+            {/* Titre section avec parallax tilt */}
             <motion.h2 
               className="font-inter font-bold text-3xl md:text-4xl text-primary text-center mb-8"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, damping: 20 }}
               viewport={{ once: true }}
+              whileHover={{ 
+                rotateX: 2,
+                rotateY: 2,
+                transition: { duration: 0.3 }
+              }}
             >
               Commencer l'Expérience
             </motion.h2>
 
-            {/* Texte intro */}
+            {/* Texte intro avec révélation word-by-word */}
             <motion.p 
-              className="text-muted-foreground text-center mb-8"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2, damping: 20 }}
+              className="text-lg md:text-xl text-muted-foreground text-center mb-8"
+              initial="hidden"
+              whileInView="visible"
               viewport={{ once: true }}
+              variants={{
+                hidden: {},
+                visible: {
+                  transition: {
+                    staggerChildren: 0.1
+                  }
+                }
+              }}
             >
-              Démarrez votre recherche personnalisée assistée par IA.
+              {["Démarrez", "votre", "recherche", "personnalisée", "assistée", "par", "IA."].map((word, index) => (
+                <motion.span
+                  key={index}
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0 }
+                  }}
+                  className="inline-block mr-2"
+                >
+                  {word}
+                </motion.span>
+              ))}
             </motion.p>
 
-            {/* Recherche agentique déplacée du hero */}
+            {/* Recherche agentique avec animations innovantes */}
             <motion.div 
-              className="max-w-2xl mx-auto"
-              initial={{ opacity: 0, y: 30 }}
+              className="space-y-6"
+              initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4, damping: 20 }}
+              transition={{ duration: 0.8, delay: 0.4, damping: 20 }}
               viewport={{ once: true }}
             >
-              <div className="space-y-6">
+              <motion.div
+                drag
+                dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                dragElastic={0.1}
+                whileDrag={{ scale: 1.02 }}
+                whileHover={{ 
+                  scale: 1.02,
+                  transition: { 
+                    type: "spring", 
+                    damping: 15 
+                  }
+                }}
+                className="shadow-lg hover:shadow-xl transition-shadow duration-300"
+                style={{ 
+                  filter: 'drop-shadow(0 10px 30px rgba(0, 163, 224, 0.1))'
+                }}
+              >
                 <Textarea
                   value={agenticQuery}
                   onChange={(e) => setAgenticQuery(e.target.value)}
                   placeholder="Décrivez votre projet : ex. 'Français, budget 500k €, appartement près de la mer à Chypre – options fiscales pour optimisation rentabilité ?'"
-                  className="min-h-[120px] bg-input border border-border rounded-md p-4 w-full focus:ring-ring focus:border-ring"
+                  className="w-full max-w-xl md:max-w-2xl p-6 rounded-xl bg-input border border-border focus:border-primary focus:ring-ring focus:ring-2 min-h-[120px] transition-all duration-300 italic text-muted-foreground"
                   sanitize={false}
                 />
-                
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="consent-new"
-                    checked={consent}
-                    onCheckedChange={(checked) => setConsent(!!checked)}
-                    className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-                  />
-                  <label 
-                    htmlFor="consent-new" 
-                    className="text-muted-foreground text-sm cursor-pointer"
-                  >
-                    J'accepte que mes données soient utilisées pour générer des recommandations personnalisées
-                  </label>
-                </div>
+              </motion.div>
+              
+              <div className="flex items-center space-x-2 justify-center">
+                <Checkbox
+                  id="consent-new"
+                  checked={consent}
+                  onCheckedChange={(checked) => setConsent(!!checked)}
+                  className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                />
+                <label 
+                  htmlFor="consent-new" 
+                  className="text-muted-foreground text-sm cursor-pointer"
+                >
+                  J'accepte que mes données soient utilisées pour générer des recommandations personnalisées
+                </label>
+              </div>
 
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 <Button
                   onClick={handleAgenticSearch}
                   disabled={!agenticQuery.trim() || !consent || agenticSearchMutation.isPending}
-                  className="w-full bg-primary hover:bg-primary-hover text-primary-foreground px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  className="w-full md:w-auto px-8 py-3 bg-primary hover:bg-primary-hover text-primary-foreground rounded-md font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden"
+                  style={{
+                    background: agenticQuery.trim() && consent ? 
+                      'linear-gradient(135deg, hsl(200 100% 45%) 0%, hsl(210 85% 40%) 50%, hsl(190 80% 45%) 100%)' :
+                      undefined
+                  }}
                 >
                   {agenticSearchMutation.isPending ? (
                     <>
@@ -943,10 +1001,19 @@ const Home = () => {
                     <>
                       <Search className="w-6 h-6 mr-3" />
                       Lancer la Recherche
+                      <motion.div
+                        className="absolute inset-0 bg-white/20 rounded-md"
+                        initial={{ scale: 0, opacity: 0 }}
+                        whileHover={{ 
+                          scale: 1, 
+                          opacity: [0, 0.5, 0],
+                          transition: { duration: 0.6, repeat: Infinity }
+                        }}
+                      />
                     </>
                   )}
                 </Button>
-              </div>
+              </motion.div>
             </motion.div>
           </div>
         </motion.section>
