@@ -22,6 +22,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Property } from '@/lib/supabase';
+import ImageUploader from '@/components/admin/ImageUploader';
 
 interface AdminStats {
   totalProjects: number;
@@ -494,14 +495,21 @@ const Admin = () => {
                   />
                 </div>
 
-                <div>
-                  <label className="text-sm font-medium">Photos (URLs séparées par des virgules)</label>
-                  <Textarea
-                    value={Array.isArray(formData.photos) ? formData.photos.join(', ') : formData.photos}
-                    onChange={(e) => setFormData(prev => ({ ...prev, photos: e.target.value.split(',').map(f => f.trim()) }))}
-                    placeholder="URL des photos..."
-                    rows={2}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Photos</label>
+                  <ImageUploader
+                    value={Array.isArray(formData.photos) ? formData.photos : []}
+                    onChange={(urls) => setFormData((prev) => ({ ...prev, photos: urls }))}
                   />
+                  <div className="space-y-1">
+                    <label className="text-xs text-muted-foreground">Ou collez des URLs (séparées par des virgules)</label>
+                    <Textarea
+                      value={Array.isArray(formData.photos) ? formData.photos.join(', ') : formData.photos}
+                      onChange={(e) => setFormData(prev => ({ ...prev, photos: e.target.value.split(',').map(f => f.trim()).filter(Boolean) }))}
+                      placeholder="https://.../image1.jpg, https://.../image2.jpg"
+                      rows={2}
+                    />
+                  </div>
                 </div>
 
                 <div>
