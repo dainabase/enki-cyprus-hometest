@@ -26,15 +26,19 @@ export const useSupabaseProperties = (options: UsePropertiesOptions = {}) => {
 
       let query = supabase.from('projects').select('*');
 
-      // Filtrage par type
+      // Filtrage par type avec log pour debug
+      console.log('🔍 Filter options:', options);
       if (options.propertyType && options.propertyType !== 'Tous') {
         const typeMapping: { [key: string]: string[] } = {
-          'Appartements': ['apartment', 'penthouse'],
-          'Maisons': ['villa', 'maison'],
+          'Villas': ['villa'],
+          'Appartements': ['apartment'],
+          'Penthouses': ['penthouse'],
+          'Maisons': ['maison'],
           'Commercial': ['commercial']
         };
         
         const validTypes = typeMapping[options.propertyType] || [options.propertyType.toLowerCase()];
+        console.log('🎯 Filtering by types:', validTypes);
         query = query.in('type', validTypes);
       }
 
@@ -57,10 +61,12 @@ export const useSupabaseProperties = (options: UsePropertiesOptions = {}) => {
         throw supabaseError;
       }
 
+      console.log('📊 Raw data from Supabase:', data?.length, 'properties');
       const transformedProperties = (data as DatabaseProperty[]).map(transformDatabaseProperty);
+      console.log('✨ Transformed properties:', transformedProperties.length);
       setProperties(transformedProperties);
     } catch (err) {
-      console.error('Erreur lors du chargement des propriétés:', err);
+      console.error('❌ Erreur lors du chargement des propriétés:', err);
       setError(err instanceof Error ? err.message : 'Erreur inconnue');
     } finally {
       setLoading(false);

@@ -15,7 +15,7 @@ const Projects = () => {
     { name: 'Villas', count: properties.filter(p => p.type === 'villa').length, active: false },
     { name: 'Appartements', count: properties.filter(p => p.type === 'apartment').length, active: false },
     { name: 'Penthouses', count: properties.filter(p => p.type === 'penthouse').length, active: false },
-    { name: 'Commercial', count: properties.filter(p => p.type === 'commercial').length, active: false },
+    { name: 'Maisons', count: properties.filter(p => p.type === 'maison').length, active: false },
   ];
 
   const stats = [

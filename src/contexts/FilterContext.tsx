@@ -105,8 +105,9 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(filterReducer, initialState);
   
   // Hook pour charger les propriétés depuis Supabase
+  // On force propertyType à undefined si c'est "Tous" pour éviter le filtrage
   const { properties, loading, error } = useSupabaseProperties({
-    propertyType: state.filters.propertyType,
+    propertyType: state.filters.propertyType === 'Tous' ? undefined : state.filters.propertyType,
     budgetMin: state.filters.budgetMin,
     budgetMax: state.filters.budgetMax,
     location: state.filters.location
@@ -124,12 +125,13 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
 
   // Mettre à jour les propriétés quand elles changent depuis Supabase
   useEffect(() => {
+    console.log('🔄 FilterContext: properties update', properties.length, 'loading:', loading, 'error:', error);
     dispatch({ type: 'SET_LOADING', payload: loading });
-    if (properties.length > 0) {
+    if (properties.length >= 0) { // Change > 0 to >= 0 pour accepter un tableau vide
       dispatch({ type: 'SET_ALL_PROPERTIES', payload: properties });
     }
     if (error) {
-      console.error('Erreur Supabase:', error);
+      console.error('❌ Erreur Supabase:', error);
     }
   }, [properties, loading, error]);
 
