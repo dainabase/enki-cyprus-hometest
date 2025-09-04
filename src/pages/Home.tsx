@@ -903,7 +903,7 @@ const Home = () => {
         {/* Section "Commencer l'Expérience" */}
         <motion.section 
           id="start-experience"
-          className="bg-secondary py-32 md:py-40 px-4 md:px-8 relative overflow-hidden"
+          className="py-32 md:py-40 px-4 md:px-8 relative overflow-hidden" style={{backgroundColor: 'hsl(210 20% 96%)'}}
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, ease: 'easeInOut' }}
