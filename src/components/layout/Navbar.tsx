@@ -112,7 +112,7 @@ const Navbar = () => {
                 filter: "drop-shadow(0 0 8px hsl(200 100% 45% / 0.4))"
               }}
               whileTap={{ scale: 0.98 }}
-              className="text-2xl font-bold text-primary hover:text-primary-hover transition-colors duration-300"
+              className="text-2xl font-bold text-[#1E3A8A] hover:text-primary transition-colors duration-300"
             >
               ENKI-REALTY
             </motion.div>
