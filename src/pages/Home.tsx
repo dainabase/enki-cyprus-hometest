@@ -840,7 +840,7 @@ const Home = () => {
                       </div>
                     </div>
                   ),
-                  title: "Optimisation fiscale instantanée",
+                  title: "Optimisation fiscale",
                   description: "En un clic, obtenez des scénarios personnalisés pour maximiser votre rentabilité et protéger votre patrimoine, avec des réponses immédiates et concrètes.",
                   gradient: "from-emerald-500/10 to-teal-500/10"
                 }
