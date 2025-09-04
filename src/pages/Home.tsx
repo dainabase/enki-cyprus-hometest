@@ -951,9 +951,9 @@ const Home = () => {
           />
           
           <div className="max-w-7xl mx-auto relative z-10">
-            {/* Titre section unique */}
+            {/* Titre section unique - même taille que "Pourquoi choisir ENKI Realty" */}
             <motion.h2 
-              className="text-3xl md:text-4xl font-bold text-primary text-center mb-10"
+              className="text-5xl md:text-7xl font-bold text-primary text-center mb-10"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
@@ -1004,20 +1004,54 @@ const Home = () => {
                   whileHover={{ scale: 1.1 }}
                 />
                 
+                
                 <motion.div
-                  drag
-                  dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-                  dragElastic={0.1}
-                  whileDrag={{ scale: 0.98 }}
-                  className="relative"
+                  className="relative bg-white rounded-2xl shadow-2xl border border-gray-200/50 overflow-hidden"
+                  initial={{ y: 20, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.5 }}
                 >
-                  <Textarea
-                    value={agenticQuery}
-                    onChange={(e) => setAgenticQuery(e.target.value)}
-                    placeholder="Décrivez votre projet : ex. 'Français, budget 500k €, appartement près de la mer à Chypre – options fiscales pour optimisation rentabilité ?'"
-                    className="w-full max-w-3xl mx-auto p-8 rounded-2xl bg-input border border-border focus:border-primary focus:ring-ring focus:ring-2 min-h-[140px] transition-all duration-300 italic text-muted-foreground leading-loose shadow-lg hover:shadow-xl"
-                    sanitize={false}
-                  />
+                  {/* Header style chat LLM */}
+                  <div className="bg-gray-50 border-b border-gray-200/50 px-6 py-3 flex items-center space-x-3">
+                    <div className="flex space-x-2">
+                      <div className="w-3 h-3 rounded-full bg-red-400"></div>
+                      <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
+                      <div className="w-3 h-3 rounded-full bg-green-400"></div>
+                    </div>
+                    <span className="text-sm font-medium text-gray-600">Assistant IA Immobilier</span>
+                  </div>
+                  
+                  {/* Zone de saisie style chat */}
+                  <div className="p-6">
+                    <Textarea
+                      value={agenticQuery}
+                      onChange={(e) => setAgenticQuery(e.target.value)}
+                      placeholder="Décrivez votre projet : ex. 'Français, budget 500k €, appartement près de la mer à Chypre – options fiscales pour optimisation rentabilité ?'"
+                      className="w-full border-0 bg-transparent resize-none focus:ring-0 focus:outline-none min-h-[120px] text-gray-800 placeholder:text-gray-500 text-lg leading-relaxed"
+                      sanitize={false}
+                    />
+                    
+                    {/* Barre d'actions en bas */}
+                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+                      <div className="flex items-center space-x-2 text-sm text-gray-500">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        <span>IA activée</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xs text-gray-400">{agenticQuery.length}/1000</span>
+                        <motion.button
+                          className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          disabled={!agenticQuery.trim() || !consent}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          Envoyer
+                        </motion.button>
+                      </div>
+                    </div>
+                  </div>
                 </motion.div>
               </motion.div>
               
