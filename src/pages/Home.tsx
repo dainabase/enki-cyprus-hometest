@@ -775,80 +775,114 @@ const Home = () => {
           />
           
           <div className="max-w-7xl mx-auto relative z-10">
-            {/* Titre section unique */}
+            {/* Titre section amélioré */}
             <motion.h2 
-              className="text-3xl md:text-4xl font-bold text-primary text-center mb-8"
-              initial={{ opacity: 0, y: 30 }}
+              className="text-5xl md:text-7xl font-bold text-primary text-center mb-6"
+              initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
               viewport={{ once: true }}
             >
               Pourquoi choisir ENKI Realty ?
             </motion.h2>
 
-            {/* Texte intro unique */}
+            {/* Texte intro premium */}
             <motion.p 
-              className="text-lg text-muted-foreground max-w-3xl mx-auto text-center mb-16 leading-loose"
+              className="text-xl text-muted-foreground max-w-4xl mx-auto text-center mb-20 leading-relaxed font-light"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              ENKI Realty vous ouvre un accès privilégié aux projets les plus solides de l'île, avec une approche innovante qui simplifie la recherche et optimise immédiatement vos choix d'investissement.
+              Une expérience d'investissement immobilier redéfinie, alliant expertise, technologie de pointe et service d'excellence pour des résultats exceptionnels.
             </motion.p>
 
-            {/* Grille des trois blocs avec animations séquentielles */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 max-w-5xl mx-auto">
+            {/* Grille premium des trois blocs */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 max-w-7xl mx-auto">
               {[
                 {
-                  icon: <Globe className="w-12 h-12 text-primary" />,
-                  title: "Sélection rigoureuse",
-                  description: "Tous les projets des promoteurs les plus fiables réunis en un seul endroit, soigneusement sélectionnés pour leur qualité et leur sérieux.",
-                  animation: { initial: { x: -100, opacity: 0 }, delay: 0 }
+                  icon: (
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-primary/20 rounded-2xl blur-xl"></div>
+                      <div className="relative bg-gradient-to-br from-primary to-primary/80 p-4 rounded-2xl">
+                        <svg className="w-8 h-8 text-primary-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                    </div>
+                  ),
+                  title: "Sélection d'Excellence",
+                  description: "Accès exclusif aux projets immobiliers les plus prestigieux de Chypre, rigoureusement sélectionnés par nos experts pour leur qualité architecturale et leur potentiel de valorisation.",
+                  gradient: "from-blue-500/10 to-indigo-500/10"
                 },
                 {
-                  icon: <Lightbulb className="w-12 h-12 text-primary" />,
-                  title: "Recherche intelligente",
-                  description: "Une IA qui comprend vos besoins et vous propose les biens les plus adaptés, sans perte de temps ni recherche complexe.",
-                  animation: { initial: { y: 100, opacity: 0 }, delay: 0.3 }
+                  icon: (
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-accent/20 rounded-2xl blur-xl"></div>
+                      <div className="relative bg-gradient-to-br from-accent to-accent/80 p-4 rounded-2xl">
+                        <svg className="w-8 h-8 text-accent-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                      </div>
+                    </div>
+                  ),
+                  title: "Intelligence Artificielle",
+                  description: "Notre IA révolutionnaire analyse vos critères et préférences pour vous proposer instantanément les opportunités d'investissement les mieux adaptées à votre profil et vos objectifs.",
+                  gradient: "from-purple-500/10 to-pink-500/10"
                 },
                 {
-                  icon: <BarChart3 className="w-12 h-12 text-primary" />,
-                  title: "Optimisation fiscale instantanée",
-                  description: "En un clic, obtenez des scénarios personnalisés pour maximiser votre rentabilité et protéger votre patrimoine, avec des réponses immédiates et concrètes.",
-                  animation: { initial: { x: 100, opacity: 0 }, delay: 0.6 }
+                  icon: (
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-secondary/20 rounded-2xl blur-xl"></div>
+                      <div className="relative bg-gradient-to-br from-emerald-500 to-emerald-600 p-4 rounded-2xl">
+                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                        </svg>
+                      </div>
+                    </div>
+                  ),
+                  title: "Optimisation Patrimoniale",
+                  description: "Simulation financière avancée et stratégies d'optimisation fiscale personnalisées pour maximiser votre rentabilité et construire un patrimoine durable et performant.",
+                  gradient: "from-emerald-500/10 to-teal-500/10"
                 }
               ].map((item, index) => (
                 <motion.div
                   key={index}
-                  className="bg-card p-10 md:p-12 rounded-xl border border-border shadow-sm hover:shadow-lg hover:bg-accent transition-all duration-300 cursor-pointer"
-                  initial={item.animation.initial}
+                  className={`relative group bg-gradient-to-br ${item.gradient} backdrop-blur-sm border border-border/50 rounded-3xl p-8 lg:p-10 hover:border-primary/30 transition-all duration-500`}
+                  initial={{ 
+                    opacity: 0, 
+                    y: 60,
+                    scale: 0.95 
+                  }}
                   whileInView={{ 
-                    x: 0, 
-                    y: 0, 
-                    opacity: 1,
+                    opacity: 1, 
+                    y: 0,
+                    scale: 1,
                     transition: {
-                      duration: 0.8,
-                      delay: item.animation.delay,
-                      ease: 'easeOut'
+                      duration: 0.7,
+                      delay: index * 0.2,
+                      ease: [0.21, 0.47, 0.32, 0.98]
                     }
                   }}
                   viewport={{ once: true }}
                   whileHover={{ 
-                    scale: 1.03,
+                    y: -8,
+                    scale: 1.02,
                     transition: { 
                       type: "spring", 
-                      damping: 15 
+                      damping: 20,
+                      stiffness: 300
                     }
                   }}
-                  drag
-                  dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-                  dragElastic={0.1}
-                  whileDrag={{ scale: 0.98 }}
                 >
+                  {/* Effet de brillance au survol */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
+                  
+                  {/* Icône premium */}
                   <motion.div 
-                    className="mb-6"
+                    className="mb-8 flex justify-center lg:justify-start"
                     whileHover={{ 
+                      scale: 1.1,
                       rotate: 5,
                       transition: { 
                         type: "spring", 
@@ -858,12 +892,24 @@ const Home = () => {
                   >
                     {item.icon}
                   </motion.div>
-                  <h3 className="font-bold text-2xl text-foreground mb-4 leading-relaxed">
+                  
+                  {/* Titre */}
+                  <h3 className="font-bold text-2xl lg:text-3xl text-foreground mb-6 leading-tight text-center lg:text-left">
                     {item.title}
                   </h3>
-                  <p className="text-lg text-muted-foreground leading-loose mb-4">
+                  
+                  {/* Description */}
+                  <p className="text-lg text-muted-foreground leading-relaxed text-center lg:text-left font-light">
                     {item.description}
                   </p>
+                  
+                  {/* Ligne décorative */}
+                  <motion.div 
+                    className="absolute bottom-0 left-8 right-8 h-0.5 bg-gradient-to-r from-primary/20 via-primary/60 to-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    initial={{ scaleX: 0 }}
+                    whileInView={{ scaleX: 1 }}
+                    transition={{ duration: 0.8, delay: 0.5 + index * 0.1 }}
+                  ></motion.div>
                 </motion.div>
               ))}
             </div>
