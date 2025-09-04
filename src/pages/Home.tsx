@@ -1157,12 +1157,16 @@ const Home = () => {
                   )}
                   
                   <div className="flex gap-4">
-                    <Button onClick={handleDownloadPDF} disabled={!searchResults.pdf_url}>
+                    <Button 
+                      variant="premium" 
+                      onClick={handleDownloadPDF} 
+                      disabled={!searchResults.pdf_url}
+                    >
                       <Download className="w-4 h-4 mr-2" />
                       Télécharger PDF
                     </Button>
                     <Button 
-                      variant="outline" 
+                      variant="premium" 
                       onClick={handleSaveDossier}
                       disabled={!isAuthenticated}
                     >

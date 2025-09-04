@@ -52,6 +52,12 @@ All colors MUST be HSL.
     --input: 210 20% 94%;
     --ring: 200 100% 45%;
     
+    /* Premium gold palette */
+    --gold: 40 80% 60%;
+    --gold-hover: 40 80% 55%;
+    --gold-foreground: 0 0% 10%;
+    --gold-accent: 40 50% 90%;
+    
     /* Cyprus luxury gradients */
     --gradient-hero: linear-gradient(135deg, hsl(200 100% 45%) 0%, hsl(190 85% 50%) 100%);
     --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(210 15% 98%) 100%);
@@ -123,6 +129,12 @@ All colors MUST be HSL.
     --input: 215 20% 15%;
     --ring: 200 100% 55%;
     
+    /* Premium gold palette - Dark mode */
+    --gold: 40 85% 65%;
+    --gold-hover: 40 85% 70%;
+    --gold-foreground: 215 30% 8%;
+    --gold-accent: 40 30% 20%;
+    
     --gradient-hero: linear-gradient(135deg, hsl(200 100% 55%) 0%, hsl(190 85% 60%) 100%);
     --gradient-card: linear-gradient(145deg, hsl(215 25% 10%) 0%, hsl(215 20% 12%) 100%);
     --gradient-premium: linear-gradient(135deg, hsl(200 100% 55%) 0%, hsl(210 85% 50%) 50%, hsl(190 80% 55%) 100%);
@@ -178,5 +190,22 @@ All colors MUST be HSL.
   /* Text gradients */
   .text-gradient {
     @apply bg-gradient-to-r from-primary to-accent-foreground bg-clip-text text-transparent;
+  }
+  
+  /* Premium gold utilities */
+  .border-gold-accent {
+    border: 1px solid hsl(var(--gold-accent));
+  }
+  
+  .ring-gold {
+    ring-color: hsl(var(--gold));
+  }
+  
+  .hover-gold-underline {
+    @apply relative after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-gold-accent after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left;
+  }
+  
+  .hr-gold-accent {
+    @apply h-px bg-gold-accent border-0;
   }
 }

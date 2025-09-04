@@ -19,7 +19,7 @@ const PropertyCard = memo(({ property, index = 0, onClick, className = '' }: Pro
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'available':
-        return 'bg-success text-success-foreground';
+        return 'bg-gold text-gold-foreground';
       case 'reserved':
         return 'bg-primary text-primary-foreground';
       case 'sold':
@@ -51,7 +51,7 @@ const PropertyCard = memo(({ property, index = 0, onClick, className = '' }: Pro
       className={`group ${className}`}
       onClick={onClick}
     >
-      <Card className="overflow-hidden card-hover bg-gradient-card cursor-pointer">
+      <Card className="overflow-hidden card-hover bg-gradient-card cursor-pointer hover:border-gold-accent">
         {/* Image Container */}
       <div className="relative overflow-hidden">
         <OptimizedImage
@@ -116,15 +116,15 @@ const PropertyCard = memo(({ property, index = 0, onClick, className = '' }: Pro
           {property.bedrooms && (
             <div className="flex items-center space-x-4 text-sm text-muted-foreground mb-4">
               <div className="flex items-center">
-                <Bed className="w-4 h-4 mr-1 text-primary" />
+            <Bed className="w-4 h-4 mr-1 text-gold" />
                 <span>{property.bedrooms} chambres</span>
               </div>
               <div className="flex items-center">
-                <Bath className="w-4 h-4 mr-1 text-primary" />
+                <Bath className="w-4 h-4 mr-1 text-gold" />
                 <span>{property.bathrooms} sdb</span>
               </div>
               <div className="flex items-center">
-                <Square className="w-4 h-4 mr-1 text-primary" />
+                <Square className="w-4 h-4 mr-1 text-gold" />
                 <span>{property.area}m²</span>
               </div>
             </div>
@@ -145,7 +145,7 @@ const PropertyCard = memo(({ property, index = 0, onClick, className = '' }: Pro
           </div>
 
           {/* CTA Button */}
-          <Button className="w-full btn-outline-premium" asChild>
+          <Button className="w-full btn-outline-premium hover:bg-gradient-premium-gold hover:text-gold-foreground" asChild>
             <Link to={`/project/${property.id}`}>
               En savoir plus
             </Link>

@@ -109,7 +109,7 @@ const Navbar = () => {
               transition={{ duration: 0.6, ease: "easeOut" }}
               whileHover={{ 
                 scale: 1.05,
-                filter: "drop-shadow(0 0 8px hsl(200 100% 45% / 0.4))"
+                filter: "drop-shadow(0 0 8px hsl(var(--gold) / 0.4))"
               }}
               whileTap={{ scale: 0.98 }}
               className="text-2xl font-bold text-primary hover:text-primary-hover transition-colors duration-300"
@@ -129,7 +129,7 @@ const Navbar = () => {
               >
                 <Link
                   to={item.href}
-                  className={`relative px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                  className={`relative px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 hover-gold-underline ${
                     isActive(item.href)
                       ? 'text-primary bg-accent/50'
                       : 'text-muted-foreground hover:text-foreground hover:bg-accent/30'

@@ -22,7 +22,7 @@ const FeaturedProjectCard = ({ project, index }: FeaturedProjectCardProps) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'disponible':
-        return 'bg-green-500/10 text-green-700 border-green-200';
+        return 'bg-gold/10 text-gold border-gold-accent';
       case 'en_construction':
         return 'bg-orange-500/10 text-orange-700 border-orange-200';
       case 'livre':
@@ -54,7 +54,7 @@ const FeaturedProjectCard = ({ project, index }: FeaturedProjectCardProps) => {
       whileHover={{ y: -8 }}
       className="h-full"
     >
-      <Card className="h-full overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 group">
+      <Card className="h-full overflow-hidden shadow-lg hover:shadow-xl hover:border-gold-accent transition-all duration-300 group">
         {/* Image */}
         <motion.div 
           className="relative h-64 overflow-hidden"
@@ -107,7 +107,7 @@ const FeaturedProjectCard = ({ project, index }: FeaturedProjectCardProps) => {
 
           {/* Nombre de biens */}
           <div className="flex items-center gap-2">
-            <Home className="w-4 h-4 text-primary" />
+            <Home className="w-4 h-4 text-gold" />
             <span className="text-sm font-medium">
               {project.nombre_biens} biens
             </span>
@@ -137,7 +137,7 @@ const FeaturedProjectCard = ({ project, index }: FeaturedProjectCardProps) => {
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
             <Button 
-              className="w-full mt-4"
+              className="w-full mt-4 hover:bg-gradient-premium-gold hover:text-gold-foreground"
               variant="outline"
             >
               <Eye className="w-4 h-4 mr-2" />
