@@ -1220,7 +1220,7 @@ const Home = () => {
             muted 
             loop
             playsInline
-            poster="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1920&h=1080&fit=crop&crop=center"
+            poster="https://images.unsplash.com/photo-1601919051950-bb9f3ffb3fee?w=1920&h=1080&fit=crop&crop=center"
             onLoadStart={() => {
               trackCustomEvent('video_viewed', { 
                 section: 'premium-video',
@@ -1228,7 +1228,8 @@ const Home = () => {
               });
             }}
           >
-            <source src="https://player.vimeo.com/external/434045526.sd.mp4?s=c27eecc69a27dbc4ff2b87d38afc35f1c9a9c7c4&profile_id=164&oauth2_token_id=57447761" type="video/mp4" />
+            <source src="https://videos.pexels.com/video-files/4786283/4786283-uhd_2560_1440_30fps.mp4" type="video/mp4" />
+            <source src="https://videos.pexels.com/video-files/2169880/2169880-uhd_2560_1440_30fps.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
           
