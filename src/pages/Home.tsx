@@ -16,6 +16,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Property } from '@/lib/supabase';
 import { useSupabaseProperties } from '@/hooks/useSupabaseProperties';
 import { useDebounce } from '@/hooks/useDebounce';
+import { ScrollRevealText } from '@/components/ui/ScrollRevealText';
 import { 
   Search, MapPin, TrendingUp, Brain, Shield, Award, 
   Star, Download, Save, Eye, Heart, ArrowRight, Building,
@@ -795,34 +796,12 @@ const Home = () => {
           />
           
           <div className="max-w-7xl mx-auto relative z-10">
-            {/* Titre section avec stagger word-by-word */}
-            <motion.h2 
+            {/* Titre section avec effet d'écriture au scroll */}
+            <ScrollRevealText 
+              text="Pourquoi choisir ENKI Realty ?"
               className="swaarg-large-title text-primary text-left mb-8"
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={{
-                hidden: {},
-                visible: {
-                  transition: {
-                    staggerChildren: 0.1
-                  }
-                }
-              }}
-            >
-              {["Pourquoi", "choisir", "ENKI", "Realty", "?"].map((word, index) => (
-                <motion.span
-                  key={index}
-                  variants={{
-                    hidden: { opacity: 0, y: 20 },
-                    visible: { opacity: 1, y: 0 }
-                  }}
-                  className="inline-block mr-2"
-                >
-                  {word}
-                </motion.span>
-              ))}
-            </motion.h2>
+              containerClassName="mb-8"
+            />
 
             {/* Texte intro avec fade-in-up spring */}
             <motion.p 
