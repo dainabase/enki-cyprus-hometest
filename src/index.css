@@ -144,6 +144,8 @@ All colors MUST be HSL.
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     font-feature-settings: "cv05", "cv11", "ss01";
     font-variation-settings: "opsz" 14;
+    line-height: 1.6;
+    letter-spacing: -0.01em;
   }
 
   html {
@@ -152,6 +154,45 @@ All colors MUST be HSL.
 }
 
 @layer components {
+  /* Swaarg-inspired Typography System */
+  .swaarg-hero-title {
+    @apply font-inter text-6xl md:text-7xl lg:text-8xl font-light tracking-tight leading-none;
+    letter-spacing: -0.02em;
+  }
+  
+  .swaarg-hero-subtitle {
+    @apply font-inter text-lg md:text-xl lg:text-2xl font-normal leading-relaxed;
+    letter-spacing: -0.005em;
+  }
+  
+  .swaarg-section-title {
+    @apply font-inter text-4xl md:text-5xl lg:text-6xl font-light tracking-tight;
+    letter-spacing: -0.015em;
+  }
+  
+  .swaarg-card-title {
+    @apply font-inter text-2xl md:text-3xl font-medium tracking-tight;
+    letter-spacing: -0.01em;
+  }
+  
+  .swaarg-body-large {
+    @apply font-inter text-lg md:text-xl font-normal leading-relaxed;
+    letter-spacing: -0.005em;
+  }
+  
+  .swaarg-body {
+    @apply font-inter text-base font-normal leading-relaxed;
+    letter-spacing: -0.003em;
+  }
+  
+  .swaarg-button {
+    @apply font-inter text-base font-medium tracking-normal;
+  }
+  
+  .swaarg-nav {
+    @apply font-inter text-base font-medium;
+  }
+
   /* Professional button variants */
   .btn-premium {
     @apply bg-gradient-to-r from-primary to-primary-hover text-primary-foreground px-8 py-3 rounded-lg font-semibold shadow-lg hover:shadow-premium transition-all duration-300 transform hover:scale-105;

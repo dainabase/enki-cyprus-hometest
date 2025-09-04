@@ -125,7 +125,7 @@ const Hero = () => {
         >
           {/* Main Heading */}
           <motion.h1 
-            className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6"
+            className="swaarg-hero-title text-white mb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
@@ -138,7 +138,7 @@ const Hero = () => {
 
           {/* Subtitle */}
           <motion.p 
-            className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto leading-relaxed"
+            className="swaarg-hero-subtitle text-blue-100 max-w-3xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
@@ -156,15 +156,15 @@ const Hero = () => {
           >
             <div className="flex items-center space-x-2 text-white">
               <MapPin className="w-5 h-5 text-blue-200" />
-              <span className="text-lg font-medium">5+ villes couvertes</span>
+              <span className="swaarg-body">5+ villes couvertes</span>
             </div>
             <div className="flex items-center space-x-2 text-white">
               <TrendingUp className="w-5 h-5 text-blue-200" />
-              <span className="text-lg font-medium">500+ propriétés</span>
+              <span className="swaarg-body">500+ propriétés</span>
             </div>
             <div className="flex items-center space-x-2 text-white">
               <Search className="w-5 h-5 text-blue-200" />
-              <span className="text-lg font-medium">Recherche intelligente</span>
+              <span className="swaarg-body">Recherche intelligente</span>
             </div>
           </motion.div>
 
@@ -177,7 +177,7 @@ const Hero = () => {
           >
             <Button 
               size="lg" 
-              className="bg-white text-primary hover:bg-blue-50 px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+              className="swaarg-button bg-white text-primary hover:bg-blue-50 px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
               onClick={handleCTAClick}
             >
               <Search className="w-5 h-5 mr-2" />
@@ -187,7 +187,7 @@ const Hero = () => {
             <Button 
               size="lg" 
               variant="outline" 
-              className="border-2 border-white text-white bg-transparent hover:bg-white hover:text-primary px-8 py-4 text-lg font-semibold transition-all duration-300"
+              className="swaarg-button border-2 border-white text-white bg-transparent hover:bg-white hover:text-primary px-8 py-4 transition-all duration-300"
             >
               Découvrir nos projets
             </Button>
