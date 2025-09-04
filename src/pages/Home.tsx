@@ -1208,39 +1208,53 @@ const Home = () => {
         {/* Premium Video Section */}
         <motion.section 
           id="premium-video" 
-          className="py-0 bg-secondary w-full h-[50vh] relative overflow-hidden"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+          className="py-0 bg-secondary w-full h-[100vh] relative overflow-hidden"
+          initial={{ opacity: 0, scale: 1.1 }}
+          whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
         >
-           <video 
-             className="w-full h-full object-cover absolute inset-0"
-             autoPlay 
-             muted 
-             loop
-             playsInline
-             poster="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&h=1080&fit=crop&auto=format"
-             onLoadStart={() => {
-               trackCustomEvent('video_viewed', { 
-                 section: 'premium-video',
-                 type: 'hero'
-               });
-             }}
-           >
-             <source src="https://videos.pexels.com/video-files/2507016/2507016-uhd_2560_1440_25fps.mp4" type="video/mp4" />
-             <source src="https://videos.pexels.com/video-files/3571264/3571264-uhd_2560_1440_30fps.mp4" type="video/mp4" />
-             Your browser does not support the video tag.
-           </video>
-          
-          <div className="absolute inset-0 bg-black/40" />
-          
+          <motion.div
+            className="w-full h-full relative"
+            initial={{ y: 100, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
+          >
+            <video 
+              className="w-full h-full object-cover absolute inset-0"
+              autoPlay 
+              muted 
+              loop
+              playsInline
+              poster="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&h=1080&fit=crop&auto=format"
+              onLoadStart={() => {
+                trackCustomEvent('video_viewed', { 
+                  section: 'premium-video',
+                  type: 'hero'
+                });
+              }}
+            >
+              <source src="https://videos.pexels.com/video-files/2507016/2507016-uhd_2560_1440_25fps.mp4" type="video/mp4" />
+              <source src="https://videos.pexels.com/video-files/3571264/3571264-uhd_2560_1440_30fps.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </motion.div>
+           
           <motion.div 
-            className="absolute inset-0 flex items-center justify-center text-primary-foreground text-3xl md:text-4xl font-bold text-center px-6"
+            className="absolute inset-0 bg-black/40"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+          />
+           
+          <motion.div 
+            className="absolute inset-0 flex items-center justify-center text-primary-foreground text-4xl md:text-6xl font-bold text-center px-6"
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.7, ease: "easeOut" }}
             style={{ 
               textShadow: '2px 2px 4px rgba(0,0,0,0.8)' 
             }}
