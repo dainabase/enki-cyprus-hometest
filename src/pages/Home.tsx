@@ -738,11 +738,16 @@ const Home = () => {
 
               {/* Advanced Agentic Search Form */}
               <motion.div 
-                className="mt-16 p-8 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 max-w-5xl mx-auto shadow-2xl"
+                className="mt-24 p-8 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 max-w-5xl mx-auto shadow-2xl relative z-20"
                 initial={{ opacity: 0, y: 50, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 1, delay: 1.4, ease: "easeOut" }}
                 whileHover={{ scale: 1.02, y: -5 }}
+                style={{ 
+                  position: 'relative',
+                  transform: 'translateZ(0)',
+                  willChange: 'auto'
+                }}
               >
                 <motion.div 
                   className="flex items-center justify-center space-x-3 text-white mb-8"
