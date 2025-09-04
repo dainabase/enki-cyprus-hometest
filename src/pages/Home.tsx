@@ -32,7 +32,7 @@ import PropertyCard from '@/components/ui/PropertyCard';
 import PropertyModal from '@/components/PropertyModal';
 import { useIsClient } from '@/hooks/useIsClient';
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+gsap.registerPlugin(ScrollTrigger);
 
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 
