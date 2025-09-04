@@ -2,23 +2,28 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { Search, MapPin, TrendingUp, Home, Euro, UserPlus } from 'lucide-react';
+import { Search, MapPin, TrendingUp, Brain, UserPlus } from 'lucide-react';
 import cyprusHero from '@/assets/cyprus-hero.jpg';
 import { useABTestVariant } from '@/hooks/useABTest';
 import { trackCustomEvent } from '@/lib/analytics';
 import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import AgenticSearchModal from '@/components/AgenticSearchModal';
 
 
 const Hero = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-  const [formData, setFormData] = useState({
-    propertyType: '',
-    budget: '',
-    location: ''
-  });
+  const { toast } = useToast();
+  const [agenticQuery, setAgenticQuery] = useState('');
+  const [consent, setConsent] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchResults, setSearchResults] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const { value: ctaText, variant } = useABTestVariant(
     'hero_cta_button',
@@ -26,54 +31,61 @@ const Hero = () => {
     'Trouvez Votre Bien'
   );
 
-  const propertyTypes = [
-    { value: 'apartment', label: 'Appartement' },
-    { value: 'villa', label: 'Villa' },
-    { value: 'penthouse', label: 'Penthouse' },
-    { value: 'maison', label: 'Maison' },
-    { value: 'commercial', label: 'Commercial' }
-  ];
+  const handleAgenticSearch = async () => {
+    if (!agenticQuery.trim()) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez décrire votre projet immobilier",
+        variant: "destructive"
+      });
+      return;
+    }
 
-  const budgetRanges = [
-    { value: '0-200000', label: 'Jusqu\'à 200 000€' },
-    { value: '200000-500000', label: '200 000€ - 500 000€' },
-    { value: '500000-1000000', label: '500 000€ - 1 000 000€' },
-    { value: '1000000-2000000', label: '1 000 000€ - 2 000 000€' },
-    { value: '2000000+', label: 'Plus de 2 000 000€' }
-  ];
+    if (!consent) {
+      toast({
+        title: "Consentement requis",
+        description: "Veuillez accepter le traitement de vos données",
+        variant: "destructive"
+      });
+      return;
+    }
 
-  const locations = [
-    { value: 'paphos', label: 'Paphos' },
-    { value: 'limassol', label: 'Limassol' },
-    { value: 'larnaca', label: 'Larnaca' },
-    { value: 'nicosie', label: 'Nicosie' },
-    { value: 'ayia-napa', label: 'Ayia Napa' },
-    { value: 'protaras', label: 'Protaras' },
-    { value: 'coral-bay', label: 'Coral Bay' }
-  ];
-
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
-  const handleSearch = () => {
-    // Construire l'URL avec les paramètres de recherche
-    const searchParams = new URLSearchParams();
-    if (formData.propertyType) searchParams.append('type', formData.propertyType);
-    if (formData.budget) searchParams.append('budget', formData.budget);
-    if (formData.location) searchParams.append('location', formData.location);
+    setIsLoading(true);
     
-    navigate(`/search?${searchParams.toString()}`);
-    
-    trackCustomEvent('hero_search_clicked', {
-      variant: variant,
-      property_type: formData.propertyType,
-      budget: formData.budget,
-      location: formData.location
-    });
+    try {
+      const { data, error } = await supabase.functions.invoke('agentic-search', {
+        body: { 
+          query: agenticQuery, 
+          consent: consent 
+        }
+      });
+
+      if (error) throw error;
+
+      setSearchResults(data);
+      setShowModal(true);
+      
+      toast({
+        title: "Recherche complétée",
+        description: `${data.total_properties} propriétés trouvées avec analyse fiscale`,
+      });
+
+      trackCustomEvent('agentic_search_completed', {
+        query_length: agenticQuery.length,
+        properties_found: data.total_properties,
+        has_auth: isAuthenticated
+      });
+
+    } catch (error) {
+      console.error('Erreur recherche agentique:', error);
+      toast({
+        title: "Erreur",
+        description: "Erreur lors de la recherche. Veuillez réessayer.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCTAClick = () => {
@@ -83,7 +95,9 @@ const Hero = () => {
     });
   };
 
-  const isFormValid = formData.propertyType && formData.budget && formData.location;
+  const examplePlaceholder = "Exemple : 'Je suis un homme habitant en Suisse avec un budget de 500 000 CHF pour un bien d'investissement à Chypre. Proposez-moi des options optimisées fiscalement avec règles d'achat et création société si nécessaire.'";
+
+  const isFormValid = agenticQuery.trim() && consent;
 
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden">
@@ -187,160 +201,130 @@ const Hero = () => {
             transition={{ duration: 0.8, delay: 1.2 }}
           >
             <div className="flex items-center justify-center space-x-2 text-white mb-6">
-              <Search className="w-5 h-5" />
-              <span className="font-medium text-lg">Faire une recherche agentique de mon bien immobilier</span>
+              <Brain className="w-6 h-6 text-blue-200" />
+              <span className="font-medium text-lg">Faire une recherche agentique pour mon projet immobilier</span>
             </div>
             
             <div className="bg-white/5 rounded-lg border border-white/10 p-6">
-              {/* Form Fields */}
               <motion.div 
-                className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6"
-                variants={{
-                  hidden: { opacity: 0 },
-                  show: {
-                    opacity: 1,
-                    transition: {
-                      staggerChildren: 0.1
-                    }
-                  }
-                }}
-                initial="hidden"
-                animate="show"
-              >
-                {/* Type de bien */}
-                <motion.div 
-                  className="space-y-2"
-                  variants={{
-                    hidden: { opacity: 0, y: 20 },
-                    show: { opacity: 1, y: 0 }
-                  }}
-                >
-                  <Label htmlFor="propertyType" className="flex items-center gap-2 text-sm font-medium text-white">
-                    <Home className="w-4 h-4 text-blue-200" />
-                    Type de bien
-                  </Label>
-                  <Select onValueChange={(value) => handleInputChange('propertyType', value)}>
-                    <SelectTrigger className="h-12 bg-white/90 text-gray-900 border-white/20">
-                      <SelectValue placeholder="Choisir un type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {propertyTypes.map((type) => (
-                        <SelectItem key={type.value} value={type.value}>
-                          {type.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </motion.div>
-
-                {/* Budget */}
-                <motion.div 
-                  className="space-y-2"
-                  variants={{
-                    hidden: { opacity: 0, y: 20 },
-                    show: { opacity: 1, y: 0 }
-                  }}
-                >
-                  <Label htmlFor="budget" className="flex items-center gap-2 text-sm font-medium text-white">
-                    <Euro className="w-4 h-4 text-blue-200" />
-                    Budget
-                  </Label>
-                  <Select onValueChange={(value) => handleInputChange('budget', value)}>
-                    <SelectTrigger className="h-12 bg-white/90 text-gray-900 border-white/20">
-                      <SelectValue placeholder="Fourchette de prix" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {budgetRanges.map((budget) => (
-                        <SelectItem key={budget.value} value={budget.value}>
-                          {budget.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </motion.div>
-
-                {/* Localisation */}
-                <motion.div 
-                  className="space-y-2"
-                  variants={{
-                    hidden: { opacity: 0, y: 20 },
-                    show: { opacity: 1, y: 0 }
-                  }}
-                >
-                  <Label htmlFor="location" className="flex items-center gap-2 text-sm font-medium text-white">
-                    <MapPin className="w-4 h-4 text-blue-200" />
-                    Localisation à Chypre
-                  </Label>
-                  <Select onValueChange={(value) => handleInputChange('location', value)}>
-                    <SelectTrigger className="h-12 bg-white/90 text-gray-900 border-white/20">
-                      <SelectValue placeholder="Choisir une ville" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {locations.map((location) => (
-                        <SelectItem key={location.value} value={location.value}>
-                          {location.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </motion.div>
-              </motion.div>
-
-              {/* Search Button */}
-              <motion.div 
-                className="text-center space-y-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                className="space-y-6"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
               >
-                <motion.div
-                  whileHover={{ scale: isFormValid ? 1.05 : 1 }}
-                  whileTap={{ scale: isFormValid ? 0.98 : 1 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                {/* Textarea principale */}
+                <div className="space-y-2">
+                  <Label htmlFor="agenticQuery" className="text-white text-sm font-medium">
+                    Décrivez votre projet immobilier en détail
+                  </Label>
+                  <Textarea
+                    id="agenticQuery"
+                    value={agenticQuery}
+                    onChange={(e) => setAgenticQuery(e.target.value)}
+                    placeholder={examplePlaceholder}
+                    className="min-h-[120px] bg-white/90 text-gray-900 border-white/20 placeholder-gray-500 resize-none focus:ring-2 focus:ring-primary/50 focus:border-transparent"
+                    rows={5}
+                  />
+                </div>
+
+                {/* Consent checkbox */}
+                <motion.div 
+                  className="flex items-start space-x-3"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.5 }}
                 >
-                  <Button
-                    onClick={handleSearch}
-                    disabled={!isFormValid}
-                    size="lg"
-                    className="px-12 py-4 text-lg font-semibold bg-primary hover:bg-primary-hover text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                  <Checkbox
+                    id="consent"
+                    checked={consent}
+                    onCheckedChange={(checked) => setConsent(!!checked)}
+                    className="mt-1 border-white/30 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                  />
+                  <Label 
+                    htmlFor="consent" 
+                    className="text-sm text-blue-100 leading-relaxed cursor-pointer"
                   >
-                    <Search className="w-5 h-5 mr-2" />
-                    Lancer la recherche agentique
-                  </Button>
+                    J'accepte le traitement de mes données personnelles pour recevoir une recherche personnalisée 
+                    et des recommandations immobilières adaptées (conforme RGPD)
+                  </Label>
                 </motion.div>
 
-                {/* CTA Inscription */}
-                {!isAuthenticated && (
+                {/* Search Button */}
+                <motion.div 
+                  className="text-center space-y-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.7 }}
+                >
                   <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.5 }}
-                    className="pt-4 border-t border-white/20"
+                    whileHover={{ scale: isFormValid ? 1.05 : 1 }}
+                    whileTap={{ scale: isFormValid ? 0.98 : 1 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
                   >
-                    <p className="text-sm text-blue-100 mb-3">
-                      Personnalisez votre recherche et recevez des alertes
-                    </p>
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.98 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                    <Button
+                      onClick={handleAgenticSearch}
+                      disabled={!isFormValid || isLoading}
+                      size="lg"
+                      className="px-12 py-4 text-lg font-semibold bg-primary hover:bg-primary-hover text-white shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50"
                     >
-                      <Button
-                        variant="outline"
-                        asChild
-                        className="border-white/30 text-white bg-white/10 hover:bg-white/20"
-                      >
-                        <Link to="/register">
-                          <UserPlus className="w-4 h-4 mr-2" />
-                          S'inscrire pour personnaliser
-                        </Link>
-                      </Button>
-                    </motion.div>
+                      {isLoading ? (
+                        <>
+                          <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                            className="w-5 h-5 border-2 border-white border-t-transparent rounded-full mr-2"
+                          />
+                          Analyse en cours...
+                        </>
+                      ) : (
+                        <>
+                          <Brain className="w-5 h-5 mr-2" />
+                          Lancer Recherche Agentique
+                        </>
+                      )}
+                    </Button>
                   </motion.div>
-                )}
+
+                  {/* CTA Inscription */}
+                  {!isAuthenticated && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: 0.9 }}
+                      className="pt-4 border-t border-white/20"
+                    >
+                      <p className="text-sm text-blue-100 mb-3">
+                        Créez un compte pour sauvegarder vos recherches et recevoir des alertes
+                      </p>
+                      <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.98 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                      >
+                        <Button
+                          variant="outline"
+                          asChild
+                          className="border-white/30 text-white bg-white/10 hover:bg-white/20"
+                        >
+                          <Link to="/register">
+                            <UserPlus className="w-4 h-4 mr-2" />
+                            S'inscrire pour personnaliser
+                          </Link>
+                        </Button>
+                      </motion.div>
+                    </motion.div>
+                  )}
+                </motion.div>
               </motion.div>
             </div>
           </motion.div>
+
+          {/* Modal des résultats */}
+          <AgenticSearchModal 
+            isOpen={showModal}
+            onClose={() => setShowModal(false)}
+            results={searchResults}
+          />
         </motion.div>
       </div>
 
