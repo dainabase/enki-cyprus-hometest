@@ -267,9 +267,15 @@ const Admin = () => {
               <p className="text-muted-foreground mt-2">Gestion des projets et des utilisateurs</p>
             </div>
             <div className="flex items-center gap-2">
-              <Button onClick={handleBackfillPhotos} variant="outline">
-                <Upload className="w-4 h-4 mr-2" />
-                Uploader les photos (3+/bien)
+              <Button onClick={handleBackfillPhotos} variant="outline" disabled={isBackfilling}>
+                {isBackfilling ? (
+                  <>Upload en cours…</>
+                ) : (
+                  <>
+                    <Upload className="w-4 h-4 mr-2" />
+                    Uploader les photos (3+/bien)
+                  </>
+                )}
               </Button>
               <Button onClick={openCreateModal} className="btn-premium">
                 <Plus className="w-4 h-4 mr-2" />

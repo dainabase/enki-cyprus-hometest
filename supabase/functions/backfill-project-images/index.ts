@@ -2,6 +2,12 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.0";
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
+
 interface BackfillOptions {
   minPhotos?: number; // ensure at least this many
   onlyMissing?: boolean; // if true, skip projects that already meet min
@@ -82,28 +88,40 @@ async function fetchAndUploadImage(
 }
 
 serve(async (req) => {
+  // Handle CORS preflight
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
 
     const admin = createClient(supabaseUrl, serviceKey);
+    // Client bound to caller's JWT to know who is calling
     const authed = createClient(supabaseUrl, anonKey, {
       global: { headers: { Authorization: req.headers.get('Authorization') || '' } },
     });
 
-    // Verify requester is admin
+    // Verify requester is authenticated and admin
     const { data: userData, error: userErr } = await authed.auth.getUser();
     if (userErr || !userData.user) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
-    const { data: profile } = await admin
+
+    const { data: profile, error: profErr } = await admin
       .from('profiles')
       .select('role')
       .eq('id', userData.user.id)
       .maybeSingle();
+    if (profErr) {
+      console.error('Profile fetch error', profErr.message);
+      return new Response(JSON.stringify({ error: 'Profile fetch failed' }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
     if (profile?.role !== 'admin') {
-      return new Response(JSON.stringify({ error: 'Forbidden' }), { status: 403 });
+      return new Response(JSON.stringify({ error: 'Forbidden' }), { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
     const body: BackfillOptions = req.method === 'POST' ? await req.json().catch(() => ({})) : {};
@@ -168,13 +186,13 @@ serve(async (req) => {
 
     return new Response(
       JSON.stringify({ ok: true, processed, results }),
-      { headers: { 'Content-Type': 'application/json' }, status: 200 },
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 },
     );
-  } catch (e) {
-    console.error('Backfill error', e);
+  } catch (e: any) {
+    console.error('Backfill error', e?.message || e);
     return new Response(
       JSON.stringify({ ok: false, error: e?.message || String(e) }),
-      { headers: { 'Content-Type': 'application/json' }, status: 500 },
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 },
     );
   }
 });
