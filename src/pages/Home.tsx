@@ -832,7 +832,7 @@ const Home = () => {
               ].map((item, index) => (
                 <motion.div
                   key={index}
-                  className={`relative group bg-secondary backdrop-blur-sm border border-border/50 rounded-3xl p-8 lg:p-10 hover:border-primary/30 transition-all duration-500`}
+                  className="relative group bg-secondary border border-border/50 rounded-3xl p-8 lg:p-10 hover:border-primary/30 transition-all duration-500"
                   initial={{ 
                     opacity: 0, 
                     y: 60,
