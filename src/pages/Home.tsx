@@ -789,7 +789,7 @@ const Home = () => {
             />
 
             {/* Grille des trois blocs avec animations séquentielles */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 max-w-5xl mx-auto">
               {[
                 {
                   icon: <Globe className="w-12 h-12 text-primary" />,
@@ -852,7 +852,7 @@ const Home = () => {
                   <h3 className="font-bold text-2xl text-foreground mb-4 leading-relaxed">
                     {item.title}
                   </h3>
-                  <p className="text-lg text-muted-foreground leading-relaxed mb-4">
+                  <p className="text-lg text-muted-foreground leading-loose mb-4">
                     {item.description}
                   </p>
                 </motion.div>
@@ -898,7 +898,7 @@ const Home = () => {
             />
 
             <ScrollRevealParagraph 
-              text="Démarrez votre recherche personnalisée assistée par IA."
+              text="Démarrez votre recherche personnalisée assistée par IA et découvrez les propriétés qui correspondent parfaitement à vos critères et vos rêves."
               className="swaarg-body-large text-muted-foreground max-w-3xl mb-12"
             />
 
@@ -1051,7 +1051,7 @@ const Home = () => {
         {/* Section KPIs Marché Immobilier */}
         <motion.section 
           id="market-kpis"
-          className="bg-background py-24 md:py-32 px-4 md:px-8"
+          className="bg-background py-32 md:py-40 px-4 md:px-8"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
@@ -1068,13 +1068,13 @@ const Home = () => {
               <h2 className="text-3xl md:text-4xl font-bold text-primary mb-6">
                 Tendances du Marché Immobilier à Chypre
               </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-loose">
                 Découvrez les indicateurs clés pour investir intelligemment.
               </p>
             </motion.div>
 
             <motion.div 
-              className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 max-w-5xl mx-auto"
+              className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-16 max-w-5xl mx-auto"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ duration: 0.8, staggerChildren: 0.3 }}
@@ -1162,7 +1162,7 @@ const Home = () => {
         </motion.section>
 
         {/* Advanced 3D Carousel Section */}
-        <section className="py-20 bg-gradient-to-br from-muted/30 to-background">
+        <section className="py-32 md:py-40 bg-gradient-to-br from-muted/30 to-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 50 }}
@@ -1176,7 +1176,7 @@ const Home = () => {
                 className="swaarg-large-title text-primary mb-6"
               />
               <ScrollRevealParagraph 
-                text="Découvrez notre sélection exclusive de propriétés d'exception à Chypre"
+                text="Découvrez notre sélection exclusive de propriétés d'exception, choisies pour leur emplacement privilégié, leur architecture remarquable et leur potentiel d'investissement."
                 className="swaarg-body-large text-muted-foreground max-w-3xl"
               />
             </motion.div>
@@ -1200,7 +1200,7 @@ const Home = () => {
         </section>
 
         {/* Latest Properties Section */}
-        <section className="py-20 bg-background">
+        <section className="py-32 md:py-40 bg-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -1214,7 +1214,7 @@ const Home = () => {
                 className="swaarg-large-title text-primary mb-6"
               />
               <ScrollRevealParagraph 
-                text="Les dernières propriétés ajoutées à notre catalogue premium"
+                text="Restez informé des dernières tendances du marché immobilier chypriote, des nouvelles réglementations et des opportunités d'investissement émergentes."
                 className="swaarg-body-large text-muted-foreground max-w-3xl"
               />
             </motion.div>
@@ -1262,7 +1262,7 @@ const Home = () => {
         </section>
 
         {/* Google Maps Section */}
-        <section className="py-20 bg-muted/30">
+        <section className="py-32 md:py-40 bg-muted/30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -1276,7 +1276,7 @@ const Home = () => {
                 className="swaarg-large-title text-primary mb-6"
               />
               <ScrollRevealParagraph 
-                text="Découvrez l'emplacement de nos propriétés exclusives à travers Chypre"
+                text="Explorez visuellement les propriétés disponibles à travers Chypre avec notre carte interactive intuitive. Filtrez par zone, prix et type de bien pour trouver votre futur investissement."
                 className="swaarg-body-large text-muted-foreground max-w-3xl"
               />
             </motion.div>
