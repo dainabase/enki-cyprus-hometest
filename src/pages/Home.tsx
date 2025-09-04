@@ -779,126 +779,25 @@ const Home = () => {
         {/* Nouvelle Section "Pourquoi Choisir ENKI Realty ?" */}
         <motion.section 
           id="why-enki"
-          className="bg-background py-16 px-4 md:px-8"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
-          <div className="max-w-7xl mx-auto">
-            {/* Titre section */}
-            <motion.h2 
-              className="font-inter font-bold text-3xl md:text-4xl text-primary text-center mb-8"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, damping: 20 }}
-              viewport={{ once: true }}
-            >
-              Pourquoi choisir ENKI Realty ?
-            </motion.h2>
-
-            {/* Texte intro */}
-            <motion.p 
-              className="font-inter text-lg text-muted-foreground text-center max-w-prose mx-auto mb-12"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2, damping: 20 }}
-              viewport={{ once: true }}
-            >
-              ENKI Realty vous ouvre un accès privilégié aux projets les plus solides de l'île, avec une approche innovante qui simplifie la recherche et optimise immédiatement vos choix d'investissement.
-            </motion.p>
-
-            {/* Grille des trois blocs */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-              {[
-                {
-                  icon: (
-                    <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0v-11a2 2 0 012-2h4a2 2 0 012 2z" />
-                    </svg>
-                  ),
-                  title: "Sélection rigoureuse",
-                  description: "Tous les projets des promoteurs les plus fiables réunis en un seul endroit, soigneusement sélectionnés pour leur qualité et leur sérieux."
-                },
-                {
-                  icon: (
-                    <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                  ),
-                  title: "Recherche intelligente",
-                  description: "Une IA qui comprend vos besoins et vous propose les biens les plus adaptés, sans perte de temps ni recherche complexe."
-                },
-                {
-                  icon: (
-                    <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                  ),
-                  title: "Optimisation fiscale instantanée",
-                  description: "En un clic, obtenez des scénarios personnalisés pour maximiser votre rentabilité et protéger votre patrimoine, avec des réponses immédiates et concrètes."
-                }
-              ].map((item, index) => (
-                <motion.div
-                  key={index}
-                  className="bg-card p-6 rounded-lg border border-border shadow-sm hover:shadow-md transition-shadow hover:bg-accent"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1, damping: 20 }}
-                  viewport={{ once: true }}
-                >
-                  <div className="mb-4">
-                    {item.icon}
-                  </div>
-                  <h3 className="font-bold text-lg text-foreground mb-3">
-                    {item.title}
-                  </h3>
-                  <p className="text-base text-muted-foreground">
-                    {item.description}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </motion.section>
-
-        {/* Nouvelle Section "Commencer l'Expérience" */}
-        <motion.section 
-          id="start-experience"
-          className="bg-secondary py-24 md:py-32 px-4 md:px-8 relative overflow-hidden"
-          initial={{ opacity: 0, y: 100 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          className="bg-background py-32 md:py-40 px-4 md:px-8 relative overflow-hidden"
+          initial={{ y: 100, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          transition={{ duration: 1, ease: 'easeOut' }}
           viewport={{ once: false }}
-          transition={{ duration: 1, ease: 'easeInOut' }}
         >
-          {/* Premium background overlay */}
+          {/* Parallax background overlay */}
           <motion.div 
-            className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/10"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 1.5 }}
+            className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5"
+            initial={{ y: -50, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            transition={{ duration: 1.5, ease: 'easeOut' }}
+            viewport={{ once: false }}
           />
           
-          <div className="max-w-3xl mx-auto relative z-10">
-            {/* Titre section avec parallax tilt */}
+          <div className="max-w-5xl mx-auto relative z-10">
+            {/* Titre section avec stagger word-by-word */}
             <motion.h2 
               className="font-inter font-bold text-3xl md:text-4xl text-primary text-center mb-8"
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, damping: 20 }}
-              viewport={{ once: true }}
-              whileHover={{ 
-                rotateX: 2,
-                rotateY: 2,
-                transition: { duration: 0.3 }
-              }}
-            >
-              Commencer l'Expérience
-            </motion.h2>
-
-            {/* Texte intro avec révélation word-by-word */}
-            <motion.p 
-              className="text-lg md:text-xl text-muted-foreground text-center mb-8"
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
@@ -911,7 +810,7 @@ const Home = () => {
                 }
               }}
             >
-              {["Démarrez", "votre", "recherche", "personnalisée", "assistée", "par", "IA."].map((word, index) => (
+              {["Pourquoi", "choisir", "ENKI", "Realty", "?"].map((word, index) => (
                 <motion.span
                   key={index}
                   variants={{
@@ -923,43 +822,267 @@ const Home = () => {
                   {word}
                 </motion.span>
               ))}
-            </motion.p>
+            </motion.h2>
 
-            {/* Recherche agentique avec animations innovantes */}
-            <motion.div 
-              className="space-y-6"
-              initial={{ opacity: 0, y: 50 }}
+            {/* Texte intro avec fade-in-up spring */}
+            <motion.p 
+              className="font-inter text-lg text-muted-foreground text-center max-w-xl md:max-w-3xl mx-auto mb-16 leading-loose"
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4, damping: 20 }}
+              transition={{ 
+                duration: 0.8, 
+                delay: 0.3, 
+                type: "spring", 
+                damping: 15 
+              }}
               viewport={{ once: true }}
             >
+              ENKI Realty vous ouvre un accès privilégié aux projets les plus solides de l'île, avec une approche innovante qui simplifie la recherche et optimise immédiatement vos choix d'investissement.
+            </motion.p>
+
+            {/* Grille des trois blocs avec animations séquentielles */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16">
+              {[
+                {
+                  icon: <Globe className="w-12 h-12 text-primary" />,
+                  title: "Sélection rigoureuse",
+                  description: "Tous les projets des promoteurs les plus fiables réunis en un seul endroit, soigneusement sélectionnés pour leur qualité et leur sérieux.",
+                  animation: { initial: { x: -100, opacity: 0 }, delay: 0 }
+                },
+                {
+                  icon: <Lightbulb className="w-12 h-12 text-primary" />,
+                  title: "Recherche intelligente",
+                  description: "Une IA qui comprend vos besoins et vous propose les biens les plus adaptés, sans perte de temps ni recherche complexe.",
+                  animation: { initial: { y: 100, opacity: 0 }, delay: 0.3 }
+                },
+                {
+                  icon: <BarChart3 className="w-12 h-12 text-primary" />,
+                  title: "Optimisation fiscale instantanée",
+                  description: "En un clic, obtenez des scénarios personnalisés pour maximiser votre rentabilité et protéger votre patrimoine, avec des réponses immédiates et concrètes.",
+                  animation: { initial: { x: 100, opacity: 0 }, delay: 0.6 }
+                }
+              ].map((item, index) => (
+                <motion.div
+                  key={index}
+                  className="bg-card p-10 md:p-12 rounded-xl border border-border shadow-sm hover:shadow-lg hover:bg-accent transition-all duration-300 cursor-pointer"
+                  initial={item.animation.initial}
+                  whileInView={{ 
+                    x: 0, 
+                    y: 0, 
+                    opacity: 1,
+                    transition: {
+                      duration: 0.8,
+                      delay: item.animation.delay,
+                      ease: 'easeOut'
+                    }
+                  }}
+                  viewport={{ once: true }}
+                  whileHover={{ 
+                    scale: 1.03,
+                    transition: { 
+                      type: "spring", 
+                      damping: 15 
+                    }
+                  }}
+                  drag
+                  dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                  dragElastic={0.1}
+                  whileDrag={{ scale: 0.98 }}
+                >
+                  <motion.div 
+                    className="mb-6"
+                    whileHover={{ 
+                      rotate: 5,
+                      transition: { 
+                        type: "spring", 
+                        damping: 15 
+                      }
+                    }}
+                  >
+                    {item.icon}
+                  </motion.div>
+                  <h3 className="font-bold text-2xl text-foreground mb-4 leading-relaxed">
+                    {item.title}
+                  </h3>
+                  <p className="text-lg text-muted-foreground leading-relaxed mb-4">
+                    {item.description}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </motion.section>
+
+        {/* Nouvelle Section "Commencer l'Expérience" */}
+        <motion.section 
+          id="start-experience"
+          className="bg-secondary py-32 md:py-40 px-4 md:px-8 relative overflow-hidden"
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.2, ease: 'easeInOut' }}
+          viewport={{ once: false }}
+        >
+          {/* Premium background overlays */}
+          <motion.div 
+            className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/15"
+            initial={{ opacity: 0, scale: 1.1 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 2 }}
+          />
+          <motion.div 
+            className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"
+            animate={{ 
+              x: [0, 50, -50, 0],
+              y: [0, -30, 30, 0],
+            }}
+            transition={{ 
+              duration: 20,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+          
+          <div className="max-w-4xl mx-auto relative z-10">
+            {/* Titre section avec parallax tilt */}
+            <motion.h2 
+              className="font-inter font-bold text-3xl md:text-4xl text-primary text-center mb-10"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={{
+                hidden: {},
+                visible: {
+                  transition: {
+                    staggerChildren: 0.08
+                  }
+                }
+              }}
+              style={{
+                transformStyle: "preserve-3d",
+              }}
+              whileHover={{
+                rotateX: 2,
+                rotateY: 2,
+                transition: { 
+                  type: "spring",
+                  damping: 20,
+                  duration: 0.4
+                }
+              }}
+            >
+              {["Commencer", "l'Expérience"].map((word, index) => (
+                <motion.span
+                  key={index}
+                  variants={{
+                    hidden: { opacity: 0, y: 30, rotateX: -90 },
+                    visible: { 
+                      opacity: 1, 
+                      y: 0, 
+                      rotateX: 0,
+                      transition: {
+                        type: "spring",
+                        damping: 15
+                      }
+                    }
+                  }}
+                  className="inline-block mr-3"
+                >
+                  {word}
+                </motion.span>
+              ))}
+            </motion.h2>
+
+            {/* Texte intro avec révélation word-by-word */}
+            <motion.p 
+              className="text-lg md:text-xl text-muted-foreground text-center mb-12 leading-loose"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={{
+                hidden: {},
+                visible: {
+                  transition: {
+                    staggerChildren: 0.1,
+                    delayChildren: 0.3
+                  }
+                }
+              }}
+            >
+              {["Démarrez", "votre", "recherche", "personnalisée", "assistée", "par", "IA."].map((word, index) => (
+                <motion.span
+                  key={index}
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { 
+                      opacity: 1, 
+                      y: 0,
+                      transition: {
+                        type: "spring",
+                        damping: 15
+                      }
+                    }
+                  }}
+                  className="inline-block mr-2"
+                >
+                  {word}
+                </motion.span>
+              ))}
+            </motion.p>
+
+            {/* Recherche agentique avec animations époustouflantes */}
+            <motion.div 
+              className="space-y-8"
+              initial={{ opacity: 0, y: 60 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ 
+                duration: 1, 
+                delay: 0.6, 
+                type: "spring",
+                damping: 15 
+              }}
+              viewport={{ once: true }}
+            >
+              {/* Textarea container avec hover glow */}
               <motion.div
-                drag
-                dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-                dragElastic={0.1}
-                whileDrag={{ scale: 1.02 }}
-                whileHover={{ 
+                className="relative group"
+                whileHover={{
                   scale: 1.02,
                   transition: { 
                     type: "spring", 
                     damping: 15 
                   }
                 }}
-                className="shadow-lg hover:shadow-xl transition-shadow duration-300"
-                style={{ 
-                  filter: 'drop-shadow(0 10px 30px rgba(0, 163, 224, 0.1))'
-                }}
               >
-                <Textarea
-                  value={agenticQuery}
-                  onChange={(e) => setAgenticQuery(e.target.value)}
-                  placeholder="Décrivez votre projet : ex. 'Français, budget 500k €, appartement près de la mer à Chypre – options fiscales pour optimisation rentabilité ?'"
-                  className="w-full max-w-xl md:max-w-2xl p-6 rounded-xl bg-input border border-border focus:border-primary focus:ring-ring focus:ring-2 min-h-[120px] transition-all duration-300 italic text-muted-foreground"
-                  sanitize={false}
+                {/* Glow effect on hover */}
+                <motion.div
+                  className="absolute -inset-2 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  initial={{ scale: 0.8 }}
+                  whileHover={{ scale: 1.1 }}
                 />
+                
+                <motion.div
+                  drag
+                  dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                  dragElastic={0.1}
+                  whileDrag={{ scale: 0.98 }}
+                  className="relative"
+                >
+                  <Textarea
+                    value={agenticQuery}
+                    onChange={(e) => setAgenticQuery(e.target.value)}
+                    placeholder="Décrivez votre projet : ex. 'Français, budget 500k €, appartement près de la mer à Chypre – options fiscales pour optimisation rentabilité ?'"
+                    className="w-full max-w-3xl mx-auto p-8 rounded-2xl bg-input border border-border focus:border-primary focus:ring-ring focus:ring-2 min-h-[140px] transition-all duration-300 italic text-muted-foreground leading-loose shadow-lg hover:shadow-xl"
+                    sanitize={false}
+                  />
+                </motion.div>
               </motion.div>
               
-              <div className="flex items-center space-x-2 justify-center">
+              <motion.div 
+                className="flex items-center space-x-3 justify-center"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ delay: 0.8, duration: 0.5 }}
+              >
                 <Checkbox
                   id="consent-new"
                   checked={consent}
@@ -968,51 +1091,85 @@ const Home = () => {
                 />
                 <label 
                   htmlFor="consent-new" 
-                  className="text-muted-foreground text-sm cursor-pointer"
+                  className="text-muted-foreground text-sm cursor-pointer leading-relaxed"
                 >
                   J'accepte que mes données soient utilisées pour générer des recommandations personnalisées
                 </label>
-              </div>
+              </motion.div>
 
+              {/* Bouton submit avec morph effect */}
               <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                className="flex justify-center"
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ 
+                  delay: 1, 
+                  duration: 0.6,
+                  type: "spring",
+                  damping: 15
+                }}
               >
-                <Button
-                  onClick={handleAgenticSearch}
-                  disabled={!agenticQuery.trim() || !consent || agenticSearchMutation.isPending}
-                  className="w-full md:w-auto px-8 py-3 bg-primary hover:bg-primary-hover text-primary-foreground rounded-md font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden"
-                  style={{
-                    background: agenticQuery.trim() && consent ? 
-                      'linear-gradient(135deg, hsl(200 100% 45%) 0%, hsl(210 85% 40%) 50%, hsl(190 80% 45%) 100%)' :
-                      undefined
-                  }}
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="relative group"
                 >
-                  {agenticSearchMutation.isPending ? (
-                    <>
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                        className="w-6 h-6 border-3 border-white border-t-transparent rounded-full mr-3"
-                      />
-                      Recherche en cours...
-                    </>
-                  ) : (
-                    <>
-                      <Search className="w-6 h-6 mr-3" />
-                      Lancer la Recherche
-                      <motion.div
-                        className="absolute inset-0 bg-white/20 rounded-md"
-                        initial={{ scale: 0, opacity: 0 }}
-                        whileHover={{ 
-                          scale: 1, 
-                          opacity: [0, 0.5, 0],
-                          transition: { duration: 0.6, repeat: Infinity }
-                        }}
-                      />
-                    </>
-                  )}
-                </Button>
+                  {/* Pulse glow effect */}
+                  <motion.div
+                    className="absolute -inset-1 bg-gradient-to-r from-primary via-primary/80 to-primary rounded-lg blur opacity-25 group-hover:opacity-50"
+                    animate={{
+                      scale: [1, 1.05, 1],
+                      opacity: [0.25, 0.4, 0.25]
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  />
+                  
+                  <Button
+                    onClick={handleAgenticSearch}
+                    disabled={!agenticQuery.trim() || !consent || agenticSearchMutation.isPending}
+                    className="relative w-full md:w-auto px-10 py-4 bg-primary hover:bg-primary-hover text-primary-foreground font-semibold text-lg shadow-xl transition-all duration-300 overflow-hidden"
+                    style={{
+                      borderRadius: agenticQuery.trim() && consent ? '0.5rem' : '9999px',
+                      background: agenticQuery.trim() && consent ? 
+                        'linear-gradient(135deg, hsl(200 100% 45%) 0%, hsl(210 85% 40%) 50%, hsl(190 80% 45%) 100%)' :
+                        undefined
+                    }}
+                  >
+                    {/* Shimmer effect */}
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                      animate={{
+                        x: [-100, 300],
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        repeatDelay: 3
+                      }}
+                    />
+                    
+                    {agenticSearchMutation.isPending ? (
+                      <>
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                          className="w-6 h-6 border-3 border-white border-t-transparent rounded-full mr-3"
+                        />
+                        Recherche en cours...
+                      </>
+                    ) : (
+                      <>
+                        <Search className="w-6 h-6 mr-3" />
+                        Lancer la Recherche
+                      </>
+                    )}
+                  </Button>
+                </motion.div>
               </motion.div>
             </motion.div>
           </div>
