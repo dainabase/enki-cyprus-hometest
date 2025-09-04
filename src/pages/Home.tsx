@@ -7,7 +7,6 @@ import { useSpring as useReactSpring, animated, config } from '@react-spring/web
 import { useDrag } from '@use-gesture/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useGSAP } from '@gsap/react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -35,7 +34,7 @@ import PropertyCard from '@/components/ui/PropertyCard';
 import PropertyModal from '@/components/PropertyModal';
 import { useIsClient } from '@/hooks/useIsClient';
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+gsap.registerPlugin(ScrollTrigger);
 
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 
@@ -414,16 +413,6 @@ const Home = () => {
   const { scrollY } = useScroll();
   const isClient = useIsClient();
   
-  // Advanced GSAP refs for complex scroll animations
-  const heroRef = useRef<HTMLDivElement>(null);
-  const searchBoxRef = useRef<HTMLDivElement>(null);
-  const parallaxBg1Ref = useRef<HTMLDivElement>(null);
-  const parallaxBg2Ref = useRef<HTMLDivElement>(null);
-  const parallaxBg3Ref = useRef<HTMLDivElement>(null);
-  const featuresRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const whiteSectionRef = useRef<HTMLDivElement>(null);
-  
   // Advanced Parallax transforms
   const heroY = useTransform(scrollY, [0, 1000], [0, -300]);
   const heroOpacity = useTransform(scrollY, [0, 400], [1, 0.7]);
@@ -485,105 +474,29 @@ const Home = () => {
     trackCustomEvent('home_viewed', { user_authenticated: !!isAuthenticated });
 
     // GSAP Advanced Animations
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline();
-      
-      // Stagger animation for feature cards
-      tl.fromTo('.feature-card', 
-        { y: 100, opacity: 0, scale: 0.8 },
-        { 
-          y: 0, 
-          opacity: 1, 
-          scale: 1,
-          duration: 0.8,
-          stagger: 0.2,
-          ease: 'back.out(1.7)',
-          scrollTrigger: {
-            trigger: '.features-section',
-            start: 'top 80%',
-            end: 'bottom 20%',
-          }
-        }
-      );
-
-      // Parallax background layers (slow/medium/fast)
-      if (heroRef.current) {
-        if (parallaxBg1Ref.current) {
-          gsap.to(parallaxBg1Ref.current, {
-            yPercent: -10,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: heroRef.current,
-              start: 'top top',
-              end: 'bottom top',
-              scrub: true
-            }
-          });
-        }
-        if (parallaxBg2Ref.current) {
-          gsap.to(parallaxBg2Ref.current, {
-            yPercent: -20,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: heroRef.current,
-              start: 'top top',
-              end: 'bottom top',
-              scrub: true
-            }
-          });
-        }
-        if (parallaxBg3Ref.current) {
-          gsap.to(parallaxBg3Ref.current, {
-            yPercent: -30,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: heroRef.current,
-              start: 'top top',
-              end: 'bottom top',
-              scrub: true
-            }
-          });
+    const tl = gsap.timeline();
+    
+    // Stagger animation for feature cards
+    tl.fromTo('.feature-card', 
+      { y: 100, opacity: 0, scale: 0.8 },
+      { 
+        y: 0, 
+        opacity: 1, 
+        scale: 1,
+        duration: 0.8,
+        stagger: 0.2,
+        ease: "back.out(1.7)",
+        scrollTrigger: {
+          trigger: '.features-section',
+          start: 'top 80%',
+          end: 'bottom 20%',
         }
       }
+    );
 
-      // Search box: descend faster and dock into the white section below the hero
-      if (searchBoxRef.current && heroRef.current && whiteSectionRef.current) {
-        gsap.fromTo(
-          searchBoxRef.current,
-          { y: 0, scale: 1, zIndex: 50 },
-          {
-            y: () => {
-              const heroRect = heroRef.current!.getBoundingClientRect();
-              const containerTop = window.scrollY + (heroRect.top || 0);
-              const targetTop = whiteSectionRef.current!.offsetTop;
-              const viewportCenter = window.innerHeight * 0.5;
-              // Move so the box centers inside the white section
-              return targetTop - containerTop - viewportCenter + 120;
-            },
-            scale: 1.05,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: heroRef.current,
-              start: 'top top',
-              endTrigger: whiteSectionRef.current,
-              end: 'top top',
-              scrub: true
-            }
-          }
-        );
-
-        // Pin briefly in the white section for user input
-        ScrollTrigger.create({
-          trigger: whiteSectionRef.current,
-          start: 'top top',
-          end: '+=200',
-          pin: searchBoxRef.current,
-          pinSpacing: false
-        });
-      }
-    }, containerRef);
-
-    return () => ctx.revert();
+    return () => {
+      ScrollTrigger.getAll().forEach(t => t.kill());
+    };
   }, [isAuthenticated]);
 
   // Agentic Search Mutation
@@ -659,10 +572,7 @@ const Home = () => {
       return;
     }
 
-    trackCustomEvent('search_submitted', { 
-      query_length: agenticQuery.length,
-      scroll_position: window.scrollY 
-    });
+    trackCustomEvent('search_submitted', { query_length: agenticQuery.length });
     agenticSearchMutation.mutate({ query: agenticQuery, consent });
   };
 
@@ -732,33 +642,23 @@ const Home = () => {
         image="/og-image.jpg"
       />
       
-      <div ref={containerRef} className="min-h-screen overflow-x-hidden">
-        {/* Advanced Multi-Layer Parallax Hero with GSAP ScrollTrigger */}
-        <section ref={heroRef} className="relative h-[200vh] flex items-center justify-center overflow-hidden">
-          {/* Multi-layer parallax backgrounds */}
-          <div className="absolute inset-0">
-            {/* Background Layer 1 - Slowest */}
+      <div className="min-h-screen overflow-x-hidden">
+        {/* Advanced Multi-Layer Parallax Hero */}
+        <section className="relative h-screen flex items-center justify-center overflow-hidden">
+          {/* Background Layers */}
+          <motion.div 
+            style={{ y: heroY, opacity: heroOpacity, scale: heroScale }}
+            className="absolute inset-0 z-0"
+          >
             <div 
-              ref={parallaxBg1Ref}
-              className="absolute inset-0 w-full h-[120%] -top-[10%]"
-              style={{ backgroundImage: `url(${cyprusHero})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+              className="w-full h-full bg-cover bg-center bg-no-repeat filter"
+              style={{ backgroundImage: `url(${cyprusHero})` }}
             />
-            
-            {/* Background Layer 2 - Medium */}
-            <div 
-              ref={parallaxBg2Ref}
-              className="absolute inset-0 w-full h-[110%] -top-[5%] bg-gradient-to-br from-primary/60 via-primary/40 to-accent/50"
-            />
-            
-            {/* Background Layer 3 - Fastest */}
-            <div 
-              ref={parallaxBg3Ref}
-              className="absolute inset-0 w-full h-[105%] -top-[2.5%] bg-gradient-to-br from-black/20 via-transparent to-black/30"
-            />
-          </div>
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/80 via-primary/50 to-accent/60" />
+          </motion.div>
 
           {/* 3D Particles Background */}
-          <div className="absolute inset-0 opacity-20 z-10">
+          <div className="absolute inset-0 opacity-20">
             <ErrorBoundary fallback={null}>
               {isClient && (
                 <Canvas camera={{ position: [0, 0, 5] }}>
@@ -784,13 +684,12 @@ const Home = () => {
             </ErrorBoundary>
           </div>
 
-          {/* Hero Content - positioned for GSAP animations */}
-          <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center h-screen flex items-center">
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <motion.div
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2, delay: 0.2, ease: "easeOut" }}
-              className="space-y-8 w-full"
+              className="space-y-8"
             >
               <motion.h1 
                 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-8 leading-tight"
@@ -834,129 +733,140 @@ const Home = () => {
                 Votre partenaire de confiance pour investir dans l'immobilier premium 
                 au cœur de la Méditerranée
               </motion.p>
+
+              {/* Advanced Agentic Search Form */}
+              <motion.div 
+                className="mt-16 p-8 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 max-w-5xl mx-auto shadow-2xl"
+                initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 1, delay: 1.4, ease: "easeOut" }}
+                whileHover={{ scale: 1.02, y: -5 }}
+              >
+                <motion.div 
+                  className="flex items-center justify-center space-x-3 text-white mb-8"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.6, duration: 0.8 }}
+                >
+                  <motion.div
+                    animate={{ 
+                      rotate: 360,
+                      scale: [1, 1.2, 1]
+                    }}
+                    transition={{ 
+                      rotate: { duration: 3, repeat: Infinity, ease: "linear" },
+                      scale: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+                    }}
+                  >
+                    <Brain className="w-8 h-8 text-blue-200" />
+                  </motion.div>
+                  <span className="font-semibold text-2xl">Recherche Agentique Immobilière</span>
+                  <Sparkles className="w-6 h-6 text-yellow-300" />
+                </motion.div>
+                
+                <div className="space-y-8">
+                  <div className="space-y-3">
+                    <Label htmlFor="agenticQuery" className="text-white text-lg font-medium text-left block">
+                      Décrivez votre projet immobilier en détail
+                    </Label>
+                    <motion.div
+                      whileFocus={{ scale: 1.02 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    >
+                      <Textarea
+                        id="agenticQuery"
+                        value={agenticQuery}
+                        onChange={(e) => setAgenticQuery(e.target.value)}
+                        placeholder="Ex: 'Suisse, 500K CHF de budget, investissement Chypre a Limassol et alentour environ 10km, options fiscales optimisées et scénarios possibles'"
+                        className="min-h-[140px] w-full bg-white/95 text-gray-900 border-white/30 placeholder-gray-500 resize-none focus:ring-4 focus:ring-primary/30 focus:border-primary/50 rounded-2xl text-lg p-6 shadow-inner"
+                        rows={4}
+                      />
+                    </motion.div>
+                  </div>
+
+                  <motion.div 
+                    className="flex items-start space-x-4"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 1.8 }}
+                  >
+                    <motion.div
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                    >
+                      <Checkbox
+                        id="consent"
+                        checked={consent}
+                        onCheckedChange={(checked) => setConsent(!!checked)}
+                        className="mt-1 border-white/40 data-[state=checked]:bg-primary data-[state=checked]:border-primary w-6 h-6"
+                      />
+                    </motion.div>
+                    <Label 
+                      htmlFor="consent" 
+                      className="text-sm text-blue-100 leading-relaxed cursor-pointer flex-1"
+                    >
+                      J'accepte le traitement de mes données personnelles pour recevoir une recherche personnalisée 
+                      et des recommandations immobilières adaptées (conforme RGPD)
+                    </Label>
+                  </motion.div>
+
+                  <motion.div
+                    className="flex justify-center"
+                    whileHover={{ scale: agenticQuery.trim() && consent ? 1.05 : 1 }}
+                    whileTap={{ scale: agenticQuery.trim() && consent ? 0.95 : 1 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  >
+                    <Button
+                      onClick={handleAgenticSearch}
+                      disabled={!agenticQuery.trim() || !consent || agenticSearchMutation.isPending}
+                      size="lg"
+                      className="px-16 py-6 text-xl font-semibold bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 text-white shadow-2xl hover:shadow-primary/30 transition-all duration-300 disabled:opacity-50 rounded-2xl border border-white/20"
+                    >
+                      {agenticSearchMutation.isPending ? (
+                        <>
+                          <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                            className="w-6 h-6 border-3 border-white border-t-transparent rounded-full mr-3"
+                          />
+                          Analyse en cours...
+                        </>
+                      ) : (
+                        <>
+                          <Search className="w-6 h-6 mr-3" />
+                          Rechercher
+                        </>
+                      )}
+                    </Button>
+                  </motion.div>
+                </div>
+              </motion.div>
             </motion.div>
           </div>
-        </section>
 
-        {/* Advanced Agentic Search Form - GSAP Controlled */}
-        <div 
-          ref={searchBoxRef}
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-5xl px-4"
-          style={{ willChange: 'transform' }}
-        >
+          {/* Scroll Indicator */}
           <motion.div 
-            className="p-8 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl"
-            initial={{ opacity: 0, y: 50, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 1, delay: 1.4, ease: "easeOut" }}
-            whileHover={{ scale: 1.02, y: -5 }}
+            className="absolute bottom-12 left-1/2 transform -translate-x-1/2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 2 }}
           >
             <motion.div 
-              className="flex items-center justify-center space-x-3 text-white mb-8"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.6, duration: 0.8 }}
+              className="w-8 h-14 border-3 border-white/50 rounded-full flex justify-center backdrop-blur-sm"
+              animate={{ y: [0, 10, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
             >
-              <motion.div
-                animate={{ 
-                  rotate: 360,
-                  scale: [1, 1.2, 1]
-                }}
-                transition={{ 
-                  rotate: { duration: 3, repeat: Infinity, ease: "linear" },
-                  scale: { duration: 2, repeat: Infinity, ease: "easeInOut" }
-                }}
-              >
-                <Brain className="w-8 h-8 text-blue-200" />
-              </motion.div>
-              <span className="font-semibold text-2xl">Recherche Agentique Immobilière</span>
-              <Sparkles className="w-6 h-6 text-yellow-300" />
-            </motion.div>
-            
-            <div className="space-y-8">
-              <div className="space-y-3">
-                <Label htmlFor="agenticQuery" className="text-white text-lg font-medium text-left block">
-                  Décrivez votre projet immobilier en détail
-                </Label>
-                <motion.div
-                  whileFocus={{ scale: 1.02 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
-                  <Textarea
-                    id="agenticQuery"
-                    value={agenticQuery}
-                    onChange={(e) => setAgenticQuery(e.target.value)}
-                    placeholder="Ex: 'Suisse, 500K CHF de budget, investissement Chypre a Limassol et alentour environ 10km, options fiscales optimisées et scénarios possibles'"
-                    className="min-h-[140px] w-full bg-white/95 text-gray-900 border-white/30 placeholder-gray-500 resize-none focus:ring-4 focus:ring-primary/30 focus:border-primary/50 rounded-2xl text-lg p-6 shadow-inner"
-                    rows={4}
-                  />
-                </motion.div>
-              </div>
-
               <motion.div 
-                className="flex items-start space-x-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 1.8 }}
-              >
-                <motion.div
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <Checkbox
-                    id="consent"
-                    checked={consent}
-                    onCheckedChange={(checked) => setConsent(!!checked)}
-                    className="mt-1 border-white/40 data-[state=checked]:bg-primary data-[state=checked]:border-primary w-6 h-6"
-                  />
-                </motion.div>
-                <Label 
-                  htmlFor="consent" 
-                  className="text-sm text-blue-100 leading-relaxed cursor-pointer flex-1"
-                >
-                  J'accepte le traitement de mes données personnelles pour recevoir une recherche personnalisée 
-                  et des recommandations immobilières adaptées (conforme RGPD)
-                </Label>
-              </motion.div>
-
-              <motion.div
-                className="flex justify-center"
-                whileHover={{ scale: agenticQuery.trim() && consent ? 1.05 : 1 }}
-                whileTap={{ scale: agenticQuery.trim() && consent ? 0.95 : 1 }}
-                transition={{ type: "spring", stiffness: 400, damping: 17 }}
-              >
-                <Button
-                  onClick={handleAgenticSearch}
-                  disabled={!agenticQuery.trim() || !consent || agenticSearchMutation.isPending}
-                  size="lg"
-                  className="px-16 py-6 text-xl font-semibold bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 text-white shadow-2xl hover:shadow-primary/30 transition-all duration-300 disabled:opacity-50 rounded-2xl border border-white/20"
-                >
-                  {agenticSearchMutation.isPending ? (
-                    <>
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                        className="w-6 h-6 border-3 border-white border-t-transparent rounded-full mr-3"
-                      />
-                      Analyse en cours...
-                    </>
-                  ) : (
-                    <>
-                      <Search className="w-6 h-6 mr-3" />
-                      Rechercher
-                    </>
-                  )}
-                </Button>
-              </motion.div>
-            </div>
+                className="w-2 h-3 bg-white rounded-full mt-3"
+                animate={{ y: [0, 8, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+            </motion.div>
           </motion.div>
-        </div>
+        </section>
 
-        {/* Spacer for scroll sequence */}
-        <div className="h-[100vh] bg-gradient-to-b from-transparent to-background"></div>
-
-        {/* Advanced Features Section with GSAP triggers */}
-        <section ref={featuresRef} className="py-32 bg-gradient-to-br from-background via-muted/20 to-background features-section">
+        {/* Advanced Features Section */}
+        <section className="py-32 bg-gradient-to-br from-background via-muted/20 to-background features-section">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 50 }}
