@@ -797,7 +797,6 @@ const Home = () => {
               Une expérience d'investissement immobilier redéfinie, alliant expertise, technologie de pointe et service d'excellence pour des résultats exceptionnels.
             </motion.p>
 
-            {/* Grille premium des trois blocs */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 max-w-7xl mx-auto">
               {[
                 {
@@ -811,8 +810,8 @@ const Home = () => {
                       </div>
                     </div>
                   ),
-                  title: "Sélection d'Excellence",
-                  description: "Accès exclusif aux projets immobiliers les plus prestigieux de Chypre, rigoureusement sélectionnés par nos experts pour leur qualité architecturale et leur potentiel de valorisation.",
+                  title: "Sélection rigoureuse",
+                  description: "Tous les projets des promoteurs les plus fiables réunis en un seul endroit, soigneusement sélectionnés pour leur qualité et leur sérieux.",
                   gradient: "from-blue-500/10 to-indigo-500/10"
                 },
                 {
@@ -826,8 +825,8 @@ const Home = () => {
                       </div>
                     </div>
                   ),
-                  title: "Intelligence Artificielle",
-                  description: "Notre IA révolutionnaire analyse vos critères et préférences pour vous proposer instantanément les opportunités d'investissement les mieux adaptées à votre profil et vos objectifs.",
+                  title: "Recherche intelligente",
+                  description: "Une IA qui comprend vos besoins et vous propose les biens les plus adaptés, sans perte de temps ni recherche complexe.",
                   gradient: "from-purple-500/10 to-pink-500/10"
                 },
                 {
@@ -841,8 +840,8 @@ const Home = () => {
                       </div>
                     </div>
                   ),
-                  title: "Optimisation Patrimoniale",
-                  description: "Simulation financière avancée et stratégies d'optimisation fiscale personnalisées pour maximiser votre rentabilité et construire un patrimoine durable et performant.",
+                  title: "Optimisation fiscale instantanée",
+                  description: "En un clic, obtenez des scénarios personnalisés pour maximiser votre rentabilité et protéger votre patrimoine, avec des réponses immédiates et concrètes.",
                   gradient: "from-emerald-500/10 to-teal-500/10"
                 }
               ].map((item, index) => (
