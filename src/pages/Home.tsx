@@ -37,6 +37,12 @@ gsap.registerPlugin(ScrollTrigger);
 
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 
+// Ensure client-only rendering for WebGL content
+const useIsClient = () => {
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => setIsClient(true), []);
+  return isClient;
+};
 // 3D Background Sphere Component
 const BackgroundSphere = () => (
   <Float speed={1.4} rotationIntensity={1} floatIntensity={2}>
@@ -75,6 +81,8 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
     return () => clearInterval(interval);
   }, [properties.length, isAutoPlaying]);
 
+  const isClient = useIsClient();
+
   const bind = useDrag(({ down, movement: [mx], direction: [xDir], distance, cancel }) => {
     const distanceValue = Array.isArray(distance) ? Math.abs(distance[0]) : Math.abs(distance);
     if (distanceValue > 100) {
@@ -110,12 +118,16 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
       
       {/* 3D Canvas Background */}
       <div className="absolute inset-0 opacity-30">
-        <Canvas camera={{ position: [0, 0, 5] }}>
-          <ambientLight intensity={0.4} />
-          <pointLight position={[10, 10, 10]} />
-          <BackgroundSphere />
-          <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
-        </Canvas>
+        <ErrorBoundary fallback={null}>
+          {isClient && (
+            <Canvas camera={{ position: [0, 0, 5] }}>
+              <ambientLight intensity={0.4} />
+              <pointLight position={[10, 10, 10]} />
+              <BackgroundSphere />
+              <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
+            </Canvas>
+          )}
+        </ErrorBoundary>
       </div>
 
       {/* Main Carousel Container */}
@@ -403,6 +415,7 @@ const Home = () => {
   const { isAuthenticated, user } = useAuth();
   const { toast } = useToast();
   const { scrollY } = useScroll();
+  const isClient = useIsClient();
   
   // Advanced Parallax transforms
   const heroY = useTransform(scrollY, [0, 1000], [0, -300]);
@@ -650,25 +663,29 @@ const Home = () => {
 
           {/* 3D Particles Background */}
           <div className="absolute inset-0 opacity-20">
-            <Canvas camera={{ position: [0, 0, 5] }}>
-              <ambientLight intensity={0.4} />
-              <pointLight position={[10, 10, 10]} />
-              <Float speed={2} rotationIntensity={1} floatIntensity={2}>
-                <Sphere args={[0.1, 16, 16]} position={[-4, -2, -1]}>
-                  <MeshDistortMaterial color="#ffffff" distort={0.2} speed={2} />
-                </Sphere>
-              </Float>
-              <Float speed={1.5} rotationIntensity={2} floatIntensity={1}>
-                <Sphere args={[0.15, 16, 16]} position={[4, 2, -2]}>
-                  <MeshDistortMaterial color="#60A5FA" distort={0.3} speed={1.5} />
-                </Sphere>
-              </Float>
-              <Float speed={1.8} rotationIntensity={1.5} floatIntensity={3}>
-                <Sphere args={[0.08, 16, 16]} position={[0, 3, -1]}>
-                  <MeshDistortMaterial color="#34D399" distort={0.4} speed={2.5} />
-                </Sphere>
-              </Float>
-            </Canvas>
+            <ErrorBoundary fallback={null}>
+              {isClient && (
+                <Canvas camera={{ position: [0, 0, 5] }}>
+                  <ambientLight intensity={0.4} />
+                  <pointLight position={[10, 10, 10]} />
+                  <Float speed={2} rotationIntensity={1} floatIntensity={2}>
+                    <Sphere args={[0.1, 16, 16]} position={[-4, -2, -1]}>
+                      <MeshDistortMaterial color="#ffffff" distort={0.2} speed={2} />
+                    </Sphere>
+                  </Float>
+                  <Float speed={1.5} rotationIntensity={2} floatIntensity={1}>
+                    <Sphere args={[0.15, 16, 16]} position={[4, 2, -2]}>
+                      <MeshDistortMaterial color="#60A5FA" distort={0.3} speed={1.5} />
+                    </Sphere>
+                  </Float>
+                  <Float speed={1.8} rotationIntensity={1.5} floatIntensity={3}>
+                    <Sphere args={[0.08, 16, 16]} position={[0, 3, -1]}>
+                      <MeshDistortMaterial color="#34D399" distort={0.4} speed={2.5} />
+                    </Sphere>
+                  </Float>
+                </Canvas>
+              )}
+            </ErrorBoundary>
           </div>
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
