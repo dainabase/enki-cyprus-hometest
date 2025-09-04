@@ -1182,6 +1182,49 @@ const Home = () => {
           </div>
         </motion.section>
 
+        {/* Premium Video Section */}
+        <motion.section 
+          id="premium-video" 
+          className="py-0 bg-secondary w-full h-[50vh] relative overflow-hidden"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <video 
+            className="w-full h-full object-cover absolute inset-0"
+            autoPlay 
+            muted 
+            loop
+            playsInline
+            poster="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1920&h=1080&fit=crop&crop=center"
+            onLoadStart={() => {
+              trackCustomEvent('video_viewed', { 
+                section: 'premium-video',
+                type: 'hero'
+              });
+            }}
+          >
+            <source src="https://player.vimeo.com/external/434045526.sd.mp4?s=c27eecc69a27dbc4ff2b87d38afc35f1c9a9c7c4&profile_id=164&oauth2_token_id=57447761" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          
+          <div className="absolute inset-0 bg-black/40" />
+          
+          <motion.div 
+            className="absolute inset-0 flex items-center justify-center text-primary-foreground text-3xl md:text-4xl font-bold text-center px-6"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            style={{ 
+              textShadow: '2px 2px 4px rgba(0,0,0,0.8)' 
+            }}
+          >
+            Experience Timeless Elegance, Premium Living in your Dream Home
+          </motion.div>
+        </motion.section>
+
         {/* Section Projets Vedette */}
         <section className="py-32 md:py-40 bg-gradient-to-br from-muted/30 to-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
