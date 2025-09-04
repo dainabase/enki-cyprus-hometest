@@ -759,7 +759,7 @@ const Home = () => {
         {/* Section "Pourquoi Choisir ENKI Realty ?" */}
         <motion.section 
           id="why-enki"
-          className="bg-background py-32 md:py-40 px-4 md:px-8 relative overflow-hidden"
+          className="bg-background py-40 md:py-50 px-4 md:px-8 relative overflow-hidden"
           initial={{ y: 100, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           transition={{ duration: 1, ease: 'easeOut' }}
@@ -923,7 +923,7 @@ const Home = () => {
         {/* Section "Commencer l'Expérience" */}
         <motion.section 
           id="start-experience"
-          className="bg-secondary py-32 md:py-40 px-4 md:px-8 relative overflow-hidden"
+          className="bg-secondary py-40 md:py-50 px-4 md:px-8 relative overflow-hidden"
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, ease: 'easeInOut' }}
