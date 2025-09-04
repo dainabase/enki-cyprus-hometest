@@ -32,17 +32,13 @@ import { SEOHead } from '@/components/SEOHead';
 import { trackPageView, trackCustomEvent } from '@/lib/analytics';
 import PropertyCard from '@/components/ui/PropertyCard';
 import PropertyModal from '@/components/PropertyModal';
+import { useIsClient } from '@/hooks/useIsClient';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 
-// Ensure client-only rendering for WebGL content
-const useIsClient = () => {
-  const [isClient, setIsClient] = useState(false);
-  useEffect(() => setIsClient(true), []);
-  return isClient;
-};
+// useIsClient moved to '@/hooks/useIsClient'
 // 3D Background Sphere Component
 const BackgroundSphere = () => (
   <Float speed={1.4} rotationIntensity={1} floatIntensity={2}>

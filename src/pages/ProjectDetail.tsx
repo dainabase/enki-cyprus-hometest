@@ -29,6 +29,7 @@ import { GoogleMapsProvider } from '@/contexts/GoogleMapsContext';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { trackPageView, trackCustomEvent } from '@/lib/analytics';
 import ZoomablePlans from '@/components/ui/ZoomablePlans';
+import { useIsClient } from '@/hooks/useIsClient';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
@@ -48,34 +49,39 @@ interface Unit {
 
 // 3D Unit Visualization Component
 const Unit3DVisualization = ({ unit, isVisible }: { unit: Unit; isVisible: boolean }) => {
+  const isClient = useIsClient();
   return (
     <div className={`h-64 w-full transition-opacity duration-500 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
       {isVisible && (
-        <Canvas camera={{ position: [0, 0, 5] }}>
-          <ambientLight intensity={0.4} />
-          <directionalLight position={[10, 10, 5]} intensity={1} />
-          <Float speed={1.5} rotationIntensity={1} floatIntensity={2}>
-            <Sphere args={[1.5, 32, 32]} position={[0, 0, 0]}>
-              <MeshDistortMaterial
-                color={unit.status === 'available' ? '#22C55E' : '#EF4444'}
-                attach="material"
-                distort={0.2}
-                speed={2}
-                roughness={0.4}
-              />
-            </Sphere>
-          </Float>
-          <Text
-            position={[0, -2.5, 0]}
-            fontSize={0.5}
-            color="#ffffff"
-            anchorX="center"
-            anchorY="middle"
-          >
-            {unit.type.toUpperCase()}
-          </Text>
-          <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={2} />
-        </Canvas>
+        <ErrorBoundary fallback={null}>
+          {isClient && (
+            <Canvas camera={{ position: [0, 0, 5] }}>
+              <ambientLight intensity={0.4} />
+              <directionalLight position={[10, 10, 5]} intensity={1} />
+              <Float speed={1.5} rotationIntensity={1} floatIntensity={2}>
+                <Sphere args={[1.5, 32, 32]} position={[0, 0, 0]}>
+                  <MeshDistortMaterial
+                    color={unit.status === 'available' ? '#22C55E' : '#EF4444'}
+                    attach="material"
+                    distort={0.2}
+                    speed={2}
+                    roughness={0.4}
+                  />
+                </Sphere>
+              </Float>
+              <Text
+                position={[0, -2.5, 0]}
+                fontSize={0.5}
+                color="#ffffff"
+                anchorX="center"
+                anchorY="middle"
+              >
+                {unit.type.toUpperCase()}
+              </Text>
+              <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={2} />
+            </Canvas>
+          )}
+        </ErrorBoundary>
       )}
     </div>
   );
@@ -150,6 +156,7 @@ const ProjectDetail: React.FC = () => {
   const heroY = useTransform(scrollY, [0, 600], [0, 200]);
   const heroOpacity = useTransform(scrollY, [0, 300], [1, 0.8]);
   const heroScale = useTransform(scrollY, [0, 600], [1, 1.1]);
+  const isClient = useIsClient();
 
   const headerRef = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
@@ -431,20 +438,24 @@ const ProjectDetail: React.FC = () => {
 
           {/* 3D Floating Elements */}
           <div className="absolute inset-0 opacity-30">
-            <Canvas camera={{ position: [0, 0, 8] }}>
-              <ambientLight intensity={0.3} />
-              <pointLight position={[10, 10, 10]} />
-              <Float speed={1.5} rotationIntensity={2} floatIntensity={3}>
-                <Sphere args={[0.3, 16, 16]} position={[-6, 2, -2]}>
-                  <MeshDistortMaterial color="#60A5FA" distort={0.3} speed={1.5} />
-                </Sphere>
-              </Float>
-              <Float speed={2} rotationIntensity={1} floatIntensity={2}>
-                <Sphere args={[0.2, 16, 16]} position={[6, -2, -3]}>
-                  <MeshDistortMaterial color="#34D399" distort={0.4} speed={2} />
-                </Sphere>
-              </Float>
-            </Canvas>
+            <ErrorBoundary fallback={null}>
+              {isClient && (
+                <Canvas camera={{ position: [0, 0, 8] }}>
+                  <ambientLight intensity={0.3} />
+                  <pointLight position={[10, 10, 10]} />
+                  <Float speed={1.5} rotationIntensity={2} floatIntensity={3}>
+                    <Sphere args={[0.3, 16, 16]} position={[-6, 2, -2]}>
+                      <MeshDistortMaterial color="#60A5FA" distort={0.3} speed={1.5} />
+                    </Sphere>
+                  </Float>
+                  <Float speed={2} rotationIntensity={1} floatIntensity={2}>
+                    <Sphere args={[0.2, 16, 16]} position={[6, -2, -3]}>
+                      <MeshDistortMaterial color="#34D399" distort={0.4} speed={2} />
+                    </Sphere>
+                  </Float>
+                </Canvas>
+              )}
+            </ErrorBoundary>
           </div>
 
           {/* Navigation et actions */}
