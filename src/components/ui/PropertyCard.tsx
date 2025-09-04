@@ -55,7 +55,9 @@ const PropertyCard = memo(({ property, index = 0, onClick, className = '' }: Pro
         {/* Image Container */}
       <div className="relative overflow-hidden">
         <OptimizedImage
-          src={property.photos?.[0] || '/placeholder.svg'}
+          src={property.photos?.[0] 
+            ? `https://ccsakftsslurjgnjwdci.supabase.co/functions/v1/image-proxy?url=${encodeURIComponent(property.photos[0])}`
+            : '/placeholder.svg'}
           alt={`Photo du bien: ${property.title} - ${property.location}`}
           aspectRatio="4/3"
           className=""

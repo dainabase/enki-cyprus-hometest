@@ -59,6 +59,8 @@ const OptimizedImage = memo(({
           initial={{ opacity: 0, scale: 1.1 }}
           animate={{ opacity: isLoading ? 0 : 1, scale: 1 }}
           transition={{ duration: 0.3 }}
+          crossOrigin="anonymous"
+          referrerPolicy="no-referrer"
         />
       ) : (
         <div className="w-full h-full flex items-center justify-center text-muted-foreground">
