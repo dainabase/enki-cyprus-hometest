@@ -1,5 +1,6 @@
 import { useState, lazy, Suspense, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import Hero from '@/components/Hero';
 import PropertyCard from '@/components/ui/PropertyCard';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
@@ -7,14 +8,16 @@ import PropertyModal from '@/components/PropertyModal';
 import { Button } from '@/components/ui/button';
 import { Property } from '@/lib/supabase';
 import { useSupabaseProperties } from '@/hooks/useSupabaseProperties';
-import { TrendingUp, Shield, Award, Users } from 'lucide-react';
+import { TrendingUp, Shield, Award, Users, UserPlus } from 'lucide-react';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { SEOHead } from '@/components/SEOHead';
 import { trackPageView } from '@/lib/analytics';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Home = () => {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isAuthenticated } = useAuth();
   
   // Load properties from Supabase
   const { properties, loading, error } = useSupabaseProperties();
@@ -211,6 +214,45 @@ const Home = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* Inscription CTA Section - Visible only for non-authenticated users */}
+      {!isAuthenticated && (
+        <section className="py-16 bg-accent/30">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="space-y-6"
+            >
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground">
+                Rejoignez ENKI-REALTY
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                Créez votre compte pour sauvegarder vos recherches, recevoir des alertes personnalisées 
+                et accéder à nos propriétés exclusives.
+              </p>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              >
+                <Button 
+                  size="lg" 
+                  asChild
+                  className="btn-premium"
+                >
+                  <Link to="/register">
+                    <UserPlus className="w-5 h-5 mr-2" />
+                    S'inscrire gratuitement
+                  </Link>
+                </Button>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+      )}
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-hero">

@@ -36,11 +36,11 @@ const Navbar = () => {
   const { user, profile, isAuthenticated, isAdmin, signOut, loading } = useAuth();
   const { toast } = useToast();
 
-  // Navigation publique
+  // Navigation publique - ordre spécifié
   const publicNavigation = [
     { name: 'Accueil', href: '/', icon: Home },
-    { name: 'Recherche', href: '/search', icon: Search },
     { name: 'Projets', href: '/projects', icon: Building },
+    { name: 'Recherche', href: '/search', icon: Search },
     { name: 'À Propos', href: '/about', icon: Info },
     { name: 'Contact', href: '/contact', icon: Mail },
   ];
@@ -104,10 +104,15 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <motion.div
-              whileHover={{ scale: 1.05 }}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              whileHover={{ 
+                scale: 1.05,
+                filter: "drop-shadow(0 0 8px hsl(200 100% 45% / 0.4))"
+              }}
               whileTap={{ scale: 0.98 }}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
-              className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"
+              className="text-2xl font-bold text-[#1E3A8A] hover:text-primary transition-colors duration-300"
             >
               ENKI-REALTY
             </motion.div>
@@ -233,40 +238,23 @@ const Navbar = () => {
                 </DropdownMenu>
               </>
             ) : (
-              <div className="flex items-center space-x-2">
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              >
+                <Button
+                  variant="outline"
+                  size="sm"
+                  asChild
+                  className="border-primary/20 hover:bg-primary/5"
                 >
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    asChild
-                    className="border-primary/20 hover:bg-primary/5"
-                  >
-                    <Link to="/login">
-                      <LogIn className="w-4 h-4 mr-2" />
-                      Connexion
-                    </Link>
-                  </Button>
-                </motion.div>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                >
-                  <Button
-                    size="sm"
-                    asChild
-                    className="bg-gradient-to-r from-primary to-accent hover:opacity-90"
-                  >
-                    <Link to="/register">
-                      Inscription
-                    </Link>
-                  </Button>
-                </motion.div>
-              </div>
+                  <Link to="/login">
+                    <LogIn className="w-4 h-4 mr-2" />
+                    Connexion
+                  </Link>
+                </Button>
+              </motion.div>
             )}
           </div>
 
@@ -372,37 +360,26 @@ const Navbar = () => {
                         Déconnexion
                       </Button>
                     </motion.div>
-                  ) : (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: allNavigation.length * 0.1, duration: 0.3 }}
-                      className="space-y-2"
-                    >
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        asChild
-                        className="w-full justify-start"
-                        onClick={() => setIsOpen(false)}
-                      >
-                        <Link to="/login">
-                          <LogIn className="w-4 h-4 mr-2" />
-                          Connexion
-                        </Link>
-                      </Button>
-                      <Button
-                        size="sm"
-                        asChild
-                        className="w-full bg-gradient-to-r from-primary to-accent"
-                        onClick={() => setIsOpen(false)}
-                      >
-                        <Link to="/register">
-                          Inscription
-                        </Link>
-                      </Button>
-                    </motion.div>
-                  )}
+                   ) : (
+                     <motion.div
+                       initial={{ opacity: 0, y: 20 }}
+                       animate={{ opacity: 1, y: 0 }}
+                       transition={{ delay: allNavigation.length * 0.1, duration: 0.3 }}
+                     >
+                       <Button
+                         variant="outline"
+                         size="sm"
+                         asChild
+                         className="w-full justify-start"
+                         onClick={() => setIsOpen(false)}
+                       >
+                         <Link to="/login">
+                           <LogIn className="w-4 h-4 mr-2" />
+                           Connexion
+                         </Link>
+                       </Button>
+                     </motion.div>
+                   )}
                 </div>
               </div>
             </motion.div>
