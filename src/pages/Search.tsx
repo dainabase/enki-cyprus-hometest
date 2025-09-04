@@ -31,9 +31,9 @@ const Search = () => {
   return (
     <GoogleMapsProvider>
       <FilterProvider>
-        <div className="min-h-screen pt-16 bg-gray-50">
+        <div className="min-h-screen pt-16 bg-background">
           {/* Header */}
-          <section className="bg-gradient-to-r from-blue-600 to-blue-800 py-16">
+          <section className="bg-gradient-hero py-16">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
@@ -44,7 +44,7 @@ const Search = () => {
                 <h1 className="text-4xl md:text-5xl font-bold mb-4">
                   Recherche Avancée
                 </h1>
-                <p className="text-xl text-blue-100 max-w-2xl mx-auto">
+                <p className="text-xl text-primary-foreground/80 max-w-2xl mx-auto">
                   Trouvez la propriété de vos rêves à Chypre avec nos filtres intelligents
                 </p>
               </motion.div>
@@ -100,7 +100,7 @@ const Search = () => {
                 <Card className="shadow-lg">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3">
-                      <MapPin className="w-6 h-6 text-blue-600" />
+                      <MapPin className="w-6 h-6 text-primary" />
                       Carte Interactive - Propriétés à Chypre
                     </CardTitle>
                   </CardHeader>
@@ -108,10 +108,10 @@ const Search = () => {
                     <ErrorBoundary>
                       <Suspense 
                         fallback={
-                          <div className="w-full h-[600px] flex items-center justify-center bg-gray-100 rounded-b-lg">
+                          <div className="w-full h-[600px] flex items-center justify-center bg-muted rounded-b-lg">
                             <div className="text-center">
-                              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
-                              <p className="text-gray-600">Chargement de la carte...</p>
+                              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+                              <p className="text-muted-foreground">Chargement de la carte...</p>
                             </div>
                           </div>
                         }

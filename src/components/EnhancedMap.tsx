@@ -161,10 +161,10 @@ const EnhancedMap: React.FC<EnhancedMapProps> = ({
 
   if (!isLoaded && !loadError) {
     return (
-      <div className="w-full flex items-center justify-center bg-gray-100 rounded-lg" style={{ height }}>
+      <div className="w-full flex items-center justify-center bg-muted rounded-lg" style={{ height }}>
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
-          <p className="text-gray-600">Chargement de Google Maps...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+          <p className="text-muted-foreground">Chargement de Google Maps...</p>
         </div>
       </div>
     );
@@ -208,45 +208,45 @@ const EnhancedMap: React.FC<EnhancedMapProps> = ({
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between mb-3">
                       <div>
-                        <h3 className="font-semibold text-gray-800 mb-1">
+                        <h3 className="font-semibold text-foreground mb-1">
                           {selectedProperty.title}
                         </h3>
-                        <div className="flex items-center text-sm text-gray-600 mb-2">
+                        <div className="flex items-center text-sm text-muted-foreground mb-2">
                           <MapPin className="w-3 h-3 mr-1" />
                           {selectedProperty.location}
                         </div>
                       </div>
-                      <Badge variant="secondary" className="ml-2 bg-blue-100 text-blue-800">
+        <Badge variant="secondary" className="ml-2 bg-primary/10 text-primary">
                         {selectedProperty.type}
                       </Badge>
                     </div>
                     
                     <div className="space-y-2 mb-4">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">Prix:</span>
-                        <span className="font-semibold text-blue-600">
+                        <span className="text-sm text-muted-foreground">Prix:</span>
+                        <span className="font-semibold text-primary">
                           {selectedProperty.price}
                         </span>
                       </div>
                       
                       {selectedProperty.bedrooms && (
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">Chambres:</span>
+                          <span className="text-sm text-muted-foreground">Chambres:</span>
                           <span className="text-sm">{selectedProperty.bedrooms}</span>
                         </div>
                       )}
                       
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">Surface:</span>
+                        <span className="text-sm text-muted-foreground">Surface:</span>
                         <span className="text-sm">{selectedProperty.area}</span>
                       </div>
                     </div>
 
-                    <Button 
-                      size="sm" 
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-                      onClick={() => onPropertySelect?.(selectedProperty)}
-                    >
+          <Button 
+            size="sm" 
+            className="w-full bg-primary hover:bg-primary-hover text-primary-foreground"
+            onClick={() => onPropertySelect?.(selectedProperty)}
+          >
                       Voir les détails
                     </Button>
                   </CardContent>
