@@ -1011,16 +1011,6 @@ const Home = () => {
                   whileInView={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.5 }}
                 >
-                  {/* Header style chat LLM */}
-                  <div className="bg-gray-50 border-b border-gray-200/50 px-6 py-3 flex items-center space-x-3">
-                    <div className="flex space-x-2">
-                      <div className="w-3 h-3 rounded-full bg-red-400"></div>
-                      <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
-                      <div className="w-3 h-3 rounded-full bg-green-400"></div>
-                    </div>
-                    <span className="text-sm font-medium text-gray-600">Assistant IA Immobilier</span>
-                  </div>
-                  
                   {/* Zone de saisie style chat */}
                   <div className="p-6">
                     <Textarea
@@ -1032,22 +1022,19 @@ const Home = () => {
                     />
                     
                     {/* Barre d'actions en bas */}
-                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-                      <div className="flex items-center space-x-2 text-sm text-gray-500">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                        <span>IA activée</span>
+                    <div className="flex flex-col space-y-4 mt-4 pt-4 border-t border-gray-100">
+                      <div className="flex items-center space-x-2 text-sm text-gray-600">
+                        <span>J'accepte que mes données soient utilisées pour générer des recommandations personnalisées</span>
                       </div>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-xs text-gray-400">{agenticQuery.length}/1000</span>
+                      <div className="flex justify-center">
                         <motion.button
-                          className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="px-8 py-3 bg-primary text-white rounded-lg text-lg font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           disabled={!agenticQuery.trim() || !consent}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
+                          onClick={handleAgenticSearch}
                         >
-                          Envoyer
+                          Lancer la Recherche
                         </motion.button>
                       </div>
                     </div>
