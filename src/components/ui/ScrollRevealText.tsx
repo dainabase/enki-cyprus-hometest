@@ -1,117 +1,89 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useRef } from 'react';
+import { motion, useScroll, useTransform, useSpring, useMotionTemplate } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 
-interface ScrollRevealTextProps {
+interface BaseProps {
   text: string;
   className?: string;
   containerClassName?: string;
 }
 
-export const ScrollRevealText: React.FC<ScrollRevealTextProps> = ({
+// Effet d'écriture fluide au scroll via un masque (mask-image) piloté par un pourcentage lissé
+export const ScrollRevealText: React.FC<BaseProps> = ({
   text,
-  className = "",
-  containerClassName = ""
+  className = '',
+  containerClassName = ''
 }) => {
   const targetRef = useRef<HTMLDivElement>(null);
-  const [ref, inView] = useInView({
-    threshold: 0.1,
-    triggerOnce: false
-  });
+  const [observeRef] = useInView({ threshold: 0.1, triggerOnce: false });
 
   const { scrollYProgress } = useScroll({
     target: targetRef,
-    offset: ["start 0.8", "end 0.2"]
+    offset: ['start 0.85', 'end 0.15']
   });
 
-  // Convertir le texte en mots
-  const words = text.split(' ');
-  
-  return (
-    <div ref={(node) => {
-      targetRef.current = node;
-      ref(node);
-    }} className={containerClassName}>
-      <motion.h2 className={className}>
-        {words.map((word, index) => {
-          // Calculer le progrès pour chaque mot
-          const start = index / words.length;
-          const end = (index + 1) / words.length;
-          
-          const wordProgress = useTransform(
-            scrollYProgress,
-            [start, end],
-            [0, 1]
-          );
+  // Lissage pour éviter les saccades
+  const smooth = useSpring(scrollYProgress, { stiffness: 80, damping: 20, mass: 0.3 });
+  const percent = useTransform(smooth, [0, 1], ['0%', '100%']);
+  const mask = useMotionTemplate`linear-gradient(to right, black 0%, black ${percent}, transparent ${percent}, transparent 100%)`;
 
-          return (
-            <motion.span
-              key={index}
-              className="inline-block mr-2"
-              style={{
-                opacity: inView ? wordProgress : 0,
-              }}
-              initial={{ opacity: 0 }}
-            >
-              {word}
-            </motion.span>
-          );
-        })}
+  return (
+    <div
+      ref={(node) => {
+        targetRef.current = node;
+        observeRef(node);
+      }}
+      className={containerClassName}
+    >
+      {/* Calque de fond (piste) */}
+      <h2 className={`${className} text-left`} aria-hidden>
+        <span className="text-muted-foreground/40">{text}</span>
+      </h2>
+      {/* Calque révélé par le masque */}
+      <motion.h2
+        className={`${className} text-left -mt-[1.05em]`} // superpose exactement
+        style={{ WebkitMaskImage: mask as unknown as string, maskImage: mask as unknown as string }}
+      >
+        {text}
       </motion.h2>
     </div>
   );
 };
 
-export const ScrollRevealTextLetters: React.FC<ScrollRevealTextProps> = ({
+export const ScrollRevealParagraph: React.FC<BaseProps> = ({
   text,
-  className = "",
-  containerClassName = ""
+  className = '',
+  containerClassName = ''
 }) => {
   const targetRef = useRef<HTMLDivElement>(null);
-  const [ref, inView] = useInView({
-    threshold: 0.1,
-    triggerOnce: false
-  });
+  const [observeRef] = useInView({ threshold: 0.1, triggerOnce: false });
 
   const { scrollYProgress } = useScroll({
     target: targetRef,
-    offset: ["start 0.8", "end 0.2"]
+    offset: ['start 0.9', 'end 0.2']
   });
 
-  // Convertir le texte en lettres (en gardant les espaces)
-  const letters = text.split('');
-  
-  return (
-    <div ref={(node) => {
-      targetRef.current = node;
-      ref(node);
-    }} className={containerClassName}>
-      <motion.h2 className={className}>
-        {letters.map((letter, index) => {
-          // Calculer le progrès pour chaque lettre
-          const start = index / letters.length;
-          const end = (index + 1) / letters.length;
-          
-          const letterProgress = useTransform(
-            scrollYProgress,
-            [start, end],
-            [0, 1]
-          );
+  const smooth = useSpring(scrollYProgress, { stiffness: 80, damping: 20, mass: 0.3 });
+  const percent = useTransform(smooth, [0, 1], ['0%', '100%']);
+  const mask = useMotionTemplate`linear-gradient(to right, black 0%, black ${percent}, transparent ${percent}, transparent 100%)`;
 
-          return (
-            <motion.span
-              key={index}
-              className="inline-block"
-              style={{
-                opacity: inView ? letterProgress : 0,
-              }}
-              initial={{ opacity: 0 }}
-            >
-              {letter === ' ' ? '\u00A0' : letter}
-            </motion.span>
-          );
-        })}
-      </motion.h2>
+  return (
+    <div
+      ref={(node) => {
+        targetRef.current = node;
+        observeRef(node);
+      }}
+      className={containerClassName}
+    >
+      <p className={`${className} text-left`} aria-hidden>
+        <span className="text-muted-foreground/50">{text}</span>
+      </p>
+      <motion.p
+        className={`${className} text-left -mt-[1.7em]`}
+        style={{ WebkitMaskImage: mask as unknown as string, maskImage: mask as unknown as string }}
+      >
+        {text}
+      </motion.p>
     </div>
   );
 };

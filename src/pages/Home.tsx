@@ -16,7 +16,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Property } from '@/lib/supabase';
 import { useSupabaseProperties } from '@/hooks/useSupabaseProperties';
 import { useDebounce } from '@/hooks/useDebounce';
-import { ScrollRevealText } from '@/components/ui/ScrollRevealText';
+import { ScrollRevealText, ScrollRevealParagraph } from '@/components/ui/ScrollRevealText';
 import { 
   Search, MapPin, TrendingUp, Brain, Shield, Award, 
   Star, Download, Save, Eye, Heart, ArrowRight, Building,
@@ -804,20 +804,10 @@ const Home = () => {
             />
 
             {/* Texte intro avec fade-in-up spring */}
-            <motion.p 
-              className="swaarg-body-large text-muted-foreground text-left max-w-3xl mb-16"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ 
-                duration: 0.8, 
-                delay: 0.3, 
-                type: "spring", 
-                damping: 15 
-              }}
-              viewport={{ once: true }}
-            >
-              ENKI Realty vous ouvre un accès privilégié aux projets les plus solides de l'île, avec une approche innovante qui simplifie la recherche et optimise immédiatement vos choix d'investissement.
-            </motion.p>
+            <ScrollRevealParagraph 
+              text="ENKI Realty vous ouvre un accès privilégié aux projets les plus solides de l'île, avec une approche innovante qui simplifie la recherche et optimise immédiatement vos choix d'investissement."
+              className="swaarg-body-large text-muted-foreground max-w-3xl mb-16"
+            />
 
             {/* Grille des trois blocs avec animations séquentielles */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16">
@@ -922,91 +912,16 @@ const Home = () => {
           />
           
           <div className="max-w-7xl mx-auto relative z-10">
-            {/* Titre section avec parallax tilt */}
-            <motion.h2 
-              className="swaarg-large-title text-primary text-left mb-10"
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={{
-                hidden: {},
-                visible: {
-                  transition: {
-                    staggerChildren: 0.08
-                  }
-                }
-              }}
-              style={{
-                transformStyle: "preserve-3d",
-              }}
-              whileHover={{
-                rotateX: 2,
-                rotateY: 2,
-                transition: { 
-                  type: "spring",
-                  damping: 20,
-                  duration: 0.4
-                }
-              }}
-            >
-              {["Commencer", "l'Expérience"].map((word, index) => (
-                <motion.span
-                  key={index}
-                  variants={{
-                    hidden: { opacity: 0, y: 30, rotateX: -90 },
-                    visible: { 
-                      opacity: 1, 
-                      y: 0,
-                      rotateX: 0,
-                      transition: {
-                        type: "spring",
-                        damping: 15
-                      }
-                    }
-                  }}
-                  className="inline-block mr-3"
-                >
-                  {word}
-                </motion.span>
-              ))}
-            </motion.h2>
+            {/* Titre section avec effet d'écriture au scroll */}
+            <ScrollRevealText 
+              text="Commencer l'Expérience"
+              className="swaarg-large-title text-primary mb-10"
+            />
 
-            {/* Texte intro avec révélation word-by-word */}
-            <motion.p 
-              className="text-lg md:text-xl text-muted-foreground text-center mb-12 leading-loose"
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={{
-                hidden: {},
-                visible: {
-                  transition: {
-                    staggerChildren: 0.1,
-                    delayChildren: 0.3
-                  }
-                }
-              }}
-            >
-              {["Démarrez", "votre", "recherche", "personnalisée", "assistée", "par", "IA."].map((word, index) => (
-                <motion.span
-                  key={index}
-                  variants={{
-                    hidden: { opacity: 0, y: 20 },
-                    visible: { 
-                      opacity: 1, 
-                      y: 0,
-                      transition: {
-                        type: "spring",
-                        damping: 15
-                      }
-                    }
-                  }}
-                  className="inline-block mr-2"
-                >
-                  {word}
-                </motion.span>
-              ))}
-            </motion.p>
+            <ScrollRevealParagraph 
+              text="Démarrez votre recherche personnalisée assistée par IA."
+              className="swaarg-body-large text-muted-foreground max-w-3xl mb-12"
+            />
 
             {/* Recherche agentique avec animations époustouflantes */}
             <motion.div 
@@ -1163,14 +1078,16 @@ const Home = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="text-center mb-16"
+              className="mb-16"
             >
-              <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-                Projets Vedette
-              </h2>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                Découvrez notre sélection exclusive de propriétés d'exception à Chypre
-              </p>
+              <ScrollRevealText 
+                text="Projets Vedette"
+                className="swaarg-large-title text-primary mb-6"
+              />
+              <ScrollRevealParagraph 
+                text="Découvrez notre sélection exclusive de propriétés d'exception à Chypre"
+                className="swaarg-body-large text-muted-foreground max-w-3xl"
+              />
             </motion.div>
 
             {enable3D && featuredProperties.length > 0 ? (
