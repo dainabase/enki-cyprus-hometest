@@ -122,7 +122,6 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
       <div 
         ref={carouselRef}
         className="relative w-full h-full flex items-center justify-center transform-gpu preserve-3d"
-        {...bind()}
       >
         {properties.map((property: Property, index: number) => {
           const offset = (index - currentIndex + properties.length) % properties.length;
