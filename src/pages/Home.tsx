@@ -756,14 +756,14 @@ const Home = () => {
           </motion.div>
         </section>
 
-        {/* Nouvelle Section "Pourquoi Choisir ENKI Realty ?" */}
+        {/* Section "Pourquoi Choisir ENKI Realty ?" */}
         <motion.section 
           id="why-enki"
           className="bg-background py-32 md:py-40 px-4 md:px-8 relative overflow-hidden"
           initial={{ y: 100, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           transition={{ duration: 1, ease: 'easeOut' }}
-          viewport={{ once: false }}
+          viewport={{ once: true }}
         >
           {/* Parallax background overlay */}
           <motion.div 
@@ -771,22 +771,31 @@ const Home = () => {
             initial={{ y: -50, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 1.5, ease: 'easeOut' }}
-            viewport={{ once: false }}
+            viewport={{ once: true }}
           />
           
           <div className="max-w-7xl mx-auto relative z-10">
-            {/* Titre section avec effet d'écriture au scroll */}
-            <ScrollRevealText 
-              text="Pourquoi choisir ENKI Realty ?"
-              className="swaarg-large-title text-primary text-left mb-8"
-              containerClassName="mb-8"
-            />
+            {/* Titre section unique */}
+            <motion.h2 
+              className="text-3xl md:text-4xl font-bold text-primary text-center mb-8"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              Pourquoi choisir ENKI Realty ?
+            </motion.h2>
 
-            {/* Texte intro avec fade-in-up spring */}
-            <ScrollRevealParagraph 
-              text="ENKI Realty vous ouvre un accès privilégié aux projets les plus solides de l'île, avec une approche innovante qui simplifie la recherche et optimise immédiatement vos choix d'investissement."
-              className="swaarg-body-large text-muted-foreground max-w-3xl mb-16"
-            />
+            {/* Texte intro unique */}
+            <motion.p 
+              className="text-lg text-muted-foreground max-w-3xl mx-auto text-center mb-16 leading-loose"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              ENKI Realty vous ouvre un accès privilégié aux projets les plus solides de l'île, avec une approche innovante qui simplifie la recherche et optimise immédiatement vos choix d'investissement.
+            </motion.p>
 
             {/* Grille des trois blocs avec animations séquentielles */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 max-w-5xl mx-auto">
@@ -861,14 +870,14 @@ const Home = () => {
           </div>
         </motion.section>
 
-        {/* Nouvelle Section "Commencer l'Expérience" */}
+        {/* Section "Commencer l'Expérience" */}
         <motion.section 
           id="start-experience"
           className="bg-secondary py-32 md:py-40 px-4 md:px-8 relative overflow-hidden"
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, ease: 'easeInOut' }}
-          viewport={{ once: false }}
+          viewport={{ once: true }}
         >
           {/* Premium background overlays */}
           <motion.div 
@@ -876,6 +885,7 @@ const Home = () => {
             initial={{ opacity: 0, scale: 1.1 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 2 }}
+            viewport={{ once: true }}
           />
           <motion.div 
             className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"
@@ -891,16 +901,27 @@ const Home = () => {
           />
           
           <div className="max-w-7xl mx-auto relative z-10">
-            {/* Titre section avec effet d'écriture au scroll */}
-            <ScrollRevealText 
-              text="Commencer l'Expérience"
-              className="swaarg-large-title text-primary mb-10"
-            />
+            {/* Titre section unique */}
+            <motion.h2 
+              className="text-3xl md:text-4xl font-bold text-primary text-center mb-10"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              Commencer l'Expérience
+            </motion.h2>
 
-            <ScrollRevealParagraph 
-              text="Démarrez votre recherche personnalisée assistée par IA et découvrez les propriétés qui correspondent parfaitement à vos critères et vos rêves."
-              className="swaarg-body-large text-muted-foreground max-w-3xl mb-12"
-            />
+            {/* Texte intro unique */}
+            <motion.p 
+              className="text-lg text-muted-foreground max-w-3xl mx-auto text-center mb-12 leading-loose"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              Démarrez votre recherche personnalisée assistée par IA et découvrez les propriétés qui correspondent parfaitement à vos critères et vos rêves.
+            </motion.p>
 
             {/* Recherche agentique avec animations époustouflantes */}
             <motion.div 
@@ -1161,7 +1182,7 @@ const Home = () => {
           </div>
         </motion.section>
 
-        {/* Advanced 3D Carousel Section */}
+        {/* Section Projets Vedette */}
         <section className="py-32 md:py-40 bg-gradient-to-br from-muted/30 to-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
@@ -1169,16 +1190,26 @@ const Home = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="mb-16"
+              className="text-center mb-16"
             >
-              <ScrollRevealText 
-                text="Projets Vedette"
-                className="swaarg-large-title text-primary mb-6"
-              />
-              <ScrollRevealParagraph 
-                text="Découvrez notre sélection exclusive de propriétés d'exception, choisies pour leur emplacement privilégié, leur architecture remarquable et leur potentiel d'investissement."
-                className="swaarg-body-large text-muted-foreground max-w-3xl"
-              />
+              <motion.h2 
+                className="text-3xl md:text-4xl font-bold text-primary mb-6"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+              >
+                Projets Vedette
+              </motion.h2>
+              <motion.p 
+                className="text-lg text-muted-foreground max-w-3xl mx-auto leading-loose"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                viewport={{ once: true }}
+              >
+                Découvrez notre sélection exclusive de propriétés d'exception, choisies pour leur emplacement privilégié, leur architecture remarquable et leur potentiel d'investissement.
+              </motion.p>
             </motion.div>
 
             {enable3D && featuredProperties.length > 0 ? (
@@ -1199,7 +1230,7 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Latest Properties Section */}
+        {/* Section Dernières Nouveautés */}
         <section className="py-32 md:py-40 bg-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
@@ -1209,14 +1240,24 @@ const Home = () => {
               transition={{ duration: 0.6 }}
               className="text-center mb-16"
             >
-              <ScrollRevealText 
-                text="Dernières Nouveautés"
-                className="swaarg-large-title text-primary mb-6"
-              />
-              <ScrollRevealParagraph 
-                text="Restez informé des dernières tendances du marché immobilier chypriote, des nouvelles réglementations et des opportunités d'investissement émergentes."
-                className="swaarg-body-large text-muted-foreground max-w-3xl"
-              />
+              <motion.h2 
+                className="text-3xl md:text-4xl font-bold text-primary mb-6"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+              >
+                Dernières Nouveautés
+              </motion.h2>
+              <motion.p 
+                className="text-lg text-muted-foreground max-w-3xl mx-auto leading-loose"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                viewport={{ once: true }}
+              >
+                Restez informé des dernières tendances du marché immobilier chypriote, des nouvelles réglementations et des opportunités d'investissement émergentes.
+              </motion.p>
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -1261,7 +1302,7 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Google Maps Section */}
+        {/* Section Explorer la Carte */}
         <section className="py-32 md:py-40 bg-muted/30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
@@ -1271,14 +1312,24 @@ const Home = () => {
               transition={{ duration: 0.6 }}
               className="text-center mb-12"
             >
-              <ScrollRevealText 
-                text="Explorer la Carte"
-                className="swaarg-large-title text-primary mb-6"
-              />
-              <ScrollRevealParagraph 
-                text="Explorez visuellement les propriétés disponibles à travers Chypre avec notre carte interactive intuitive. Filtrez par zone, prix et type de bien pour trouver votre futur investissement."
-                className="swaarg-body-large text-muted-foreground max-w-3xl"
-              />
+              <motion.h2 
+                className="text-3xl md:text-4xl font-bold text-primary mb-6"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+              >
+                Explorer la Carte
+              </motion.h2>
+              <motion.p 
+                className="text-lg text-muted-foreground max-w-3xl mx-auto leading-loose"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                viewport={{ once: true }}
+              >
+                Explorez visuellement les propriétés disponibles à travers Chypre avec notre carte interactive intuitive. Filtrez par zone, prix et type de bien pour trouver votre futur investissement.
+              </motion.p>
             </motion.div>
 
             <motion.div
