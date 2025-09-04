@@ -7,6 +7,7 @@ import { useSpring as useReactSpring, animated, config } from '@react-spring/web
 import { useDrag } from '@use-gesture/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Atropos from 'atropos/react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -20,7 +21,8 @@ import {
   Search, MapPin, TrendingUp, Brain, Shield, Award, 
   Star, Download, Save, Eye, Heart, ArrowRight, Building,
   Trophy, Briefcase, Target, ExternalLink, Clock, Sparkles, 
-  ChevronLeft, ChevronRight, Play, Zap, Compass, Globe
+  ChevronLeft, ChevronRight, Play, Zap, Compass, Globe,
+  HandHeart, Settings, Laptop, CheckCircle, Users
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -872,6 +874,244 @@ const Home = () => {
           </motion.div>
         </section>
 
+        {/* Innovative Why Choose Section */}
+        <section className="py-12 bg-gradient-to-b from-white to-gray-100" id="why-choose">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.h2 
+              className="text-4xl font-bold text-blue-900 text-center mb-12"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              onViewportEnter={() => {
+                trackCustomEvent('why_section_viewed', { page: 'home' });
+              }}
+            >
+              Pourquoi Choisir ENKI-REALTY ?
+            </motion.h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {/* Card 1: Promoteurs Sélectionnés */}
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0, ease: "easeOut" }}
+                className="why-card"
+              >
+                <Atropos
+                  className="atropos-card"
+                  activeOffset={40}
+                  shadowScale={1.05}
+                  onEnter={() => {
+                    gsap.to(".promoters-bg", { y: -10, duration: 0.3 });
+                  }}
+                  onLeave={() => {
+                    gsap.to(".promoters-bg", { y: 0, duration: 0.3 });
+                  }}
+                >
+                  <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300">
+                    <div className="bg-blue-100 p-4 relative overflow-hidden">
+                      <div 
+                        className="promoters-bg absolute inset-0 opacity-20"
+                        style={{
+                          backgroundImage: 'url(https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=400&fit=crop)',
+                          backgroundSize: 'cover',
+                          backgroundPosition: 'center'
+                        }}
+                      />
+                      <motion.div
+                        className="relative z-10 flex justify-center mb-4"
+                        whileHover={{ 
+                          scale: 1.1, 
+                          rotate: [0, -5, 5, 0],
+                          transition: { duration: 0.6, ease: "easeInOut" }
+                        }}
+                      >
+                        <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center">
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            whileInView={{ scale: 1 }}
+                            transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+                          >
+                            <HandHeart className="w-8 h-8 text-white" />
+                          </motion.div>
+                        </div>
+                      </motion.div>
+                      <h3 className="text-2xl font-semibold text-gray-800 text-center relative z-10">
+                        Promoteurs Sélectionnés d'Élite
+                      </h3>
+                    </div>
+                    <div className="p-6">
+                      <p className="text-gray-600 text-center leading-relaxed">
+                        Nous collaborons uniquement avec les meilleurs promoteurs fiables, dynamiques et innovants de Chypre, 
+                        garantissant qualité et excellence pour chaque projet.
+                      </p>
+                      <motion.div 
+                        className="mt-4 flex justify-center"
+                        whileHover={{ y: -2 }}
+                        transition={{ type: "spring", stiffness: 400 }}
+                      >
+                        <div className="w-8 h-1 bg-blue-600 rounded-full" />
+                      </motion.div>
+                    </div>
+                  </div>
+                </Atropos>
+              </motion.div>
+
+              {/* Card 2: Optimisation Fiscale */}
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
+                className="why-card md:col-span-1"
+              >
+                <Atropos
+                  className="atropos-card"
+                  activeOffset={40}
+                  shadowScale={1.05}
+                  onEnter={() => {
+                    gsap.to(".fiscal-icon", { rotation: 360, duration: 1, ease: "power2.out" });
+                  }}
+                >
+                  <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300">
+                    <div className="bg-gradient-to-br from-green-100 to-emerald-100 p-4">
+                      <motion.div
+                        className="flex justify-center mb-4"
+                        whileHover={{ scale: 1.1 }}
+                      >
+                        <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center">
+                          <motion.div
+                            className="fiscal-icon"
+                            initial={{ scale: 0, rotate: -180 }}
+                            whileInView={{ scale: 1, rotate: 0 }}
+                            transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
+                          >
+                            <Settings className="w-8 h-8 text-white" />
+                          </motion.div>
+                        </div>
+                      </motion.div>
+                      <h3 className="text-2xl font-semibold text-gray-800 text-center">
+                        Optimisation Fiscale Unique au Monde
+                      </h3>
+                    </div>
+                    <div className="p-6">
+                      <p className="text-gray-600 text-center leading-relaxed mb-4">
+                        Seule plateforme avec recherche agentique offrant études personnalisées automatisées de faisabilité 
+                        et optimisation fiscale, adaptées à votre lieu de résidence via AI Lexaia (lois EU/US).
+                      </p>
+                      <motion.div 
+                        className="flex justify-center space-x-2"
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        transition={{ delay: 0.8 }}
+                      >
+                        {[1, 2, 3].map((step, idx) => (
+                          <motion.div
+                            key={step}
+                            className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-bold"
+                            initial={{ scale: 0 }}
+                            whileInView={{ scale: 1 }}
+                            transition={{ delay: 0.8 + idx * 0.2, type: "spring" }}
+                            whileHover={{ scale: 1.2, backgroundColor: "#059669" }}
+                          >
+                            {step}
+                          </motion.div>
+                        ))}
+                      </motion.div>
+                    </div>
+                  </div>
+                </Atropos>
+              </motion.div>
+
+              {/* Card 3: Service Complet */}
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.4, ease: "easeOut" }}
+                className="why-card"
+              >
+                <Atropos
+                  className="atropos-card"
+                  activeOffset={40}
+                  shadowScale={1.05}
+                  onEnter={() => {
+                    gsap.to(".service-checks", {
+                      scale: 1.1,
+                      stagger: 0.1,
+                      duration: 0.3
+                    });
+                  }}
+                  onLeave={() => {
+                    gsap.to(".service-checks", {
+                      scale: 1,
+                      duration: 0.3
+                    });
+                  }}
+                >
+                  <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300">
+                    <div className="bg-gradient-to-br from-purple-100 to-indigo-100 p-4">
+                      <motion.div
+                        className="flex justify-center mb-4"
+                        whileHover={{ scale: 1.1 }}
+                      >
+                        <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center">
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            whileInView={{ scale: 1 }}
+                            transition={{ delay: 0.7, type: "spring", stiffness: 200 }}
+                          >
+                            <Laptop className="w-8 h-8 text-white" />
+                          </motion.div>
+                        </div>
+                      </motion.div>
+                      <h3 className="text-2xl font-semibold text-gray-800 text-center">
+                        Tout en Ligne, Simplement
+                      </h3>
+                    </div>
+                    <div className="p-6">
+                      <p className="text-gray-600 text-center leading-relaxed mb-4">
+                        Tous les services accessibles directement sur le site : recherche, détails, contact, dashboard – 
+                        pour une expérience fluide et complète.
+                      </p>
+                      <div className="flex justify-center space-x-3 mb-4">
+                        {[CheckCircle, Users, Globe].map((Icon, idx) => (
+                          <motion.div
+                            key={idx}
+                            className="service-checks w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center"
+                            initial={{ scale: 0, rotate: -180 }}
+                            whileInView={{ scale: 1, rotate: 0 }}
+                            transition={{ delay: 1 + idx * 0.2, type: "spring" }}
+                          >
+                            <Icon className="w-4 h-4 text-white" />
+                          </motion.div>
+                        ))}
+                      </div>
+                      <motion.div className="text-center">
+                        <motion.div
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          transition={{ type: "spring", stiffness: 400 }}
+                        >
+                          <Link 
+                            to="/about"
+                            className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200"
+                          >
+                            Découvrez Plus
+                            <ArrowRight className="w-4 h-4 ml-2" />
+                          </Link>
+                        </motion.div>
+                      </motion.div>
+                    </div>
+                  </div>
+                </Atropos>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
         {/* Advanced Features Section */}
         <section className="py-32 bg-gradient-to-br from-background via-muted/20 to-background features-section">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -883,10 +1123,10 @@ const Home = () => {
               className="text-center mb-20"
             >
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
-                Pourquoi Choisir ENKI-REALTY ?
+                Fonctionnalités Avancées
               </h2>
               <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                Excellence, innovation et expertise locale pour votre réussite immobilière à Chypre
+                Technologie de pointe pour une expérience immobilière exceptionnelle
               </p>
             </motion.div>
 
