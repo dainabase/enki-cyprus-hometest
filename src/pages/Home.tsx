@@ -1079,7 +1079,7 @@ const Home = () => {
           viewport={{ once: true }}
         >
           <div className="max-w-7xl mx-auto">
-            {/* Grid des KPIs en style bubble comme Framer */}
+            {/* Grid des KPIs en style bubble comme Framer - SANS les cercles */}
             <motion.div 
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12"
               initial={{ opacity: 0 }}
@@ -1089,24 +1089,28 @@ const Home = () => {
             >
               {[
                 {
-                  number: "200+",
-                  title: "Home Projects",
-                  subtitle: "Crafted with precision and ultimate elegance."
+                  number: "+5%",
+                  title: "Croissance Annuelle des Prix",
+                  subtitle: "Moyenne tout confondu projetée pour 2025.",
+                  source: "Source: <a href='https://www.globalpropertyguide.com/europe/cyprus/price-history' target='_blank' class='text-sm text-muted-foreground hover:underline hover:text-primary'>Global Property Guide (2025)</a>"
                 },
                 {
-                  number: "50+", 
-                  title: "Years of Works",
-                  subtitle: "Decades of expertise and leading innovation."
+                  number: "17 500", 
+                  title: "Volume des Transactions",
+                  subtitle: "Moyenne annuelle projetée.",
+                  source: ""
                 },
                 {
-                  number: "5K",
-                  title: "Satisfied Clients", 
-                  subtitle: "Trust, excellence, and lasting relationships."
+                  number: "4,5%",
+                  title: "Rendement Locatif Moyen", 
+                  subtitle: "Moyenne tout confondu.",
+                  source: ""
                 },
                 {
-                  number: "97%",
-                  title: "Happy Rate",
-                  subtitle: "Delivering joy through exceptional living."
+                  number: "95,89 Md USD",
+                  title: "Valeur Totale du Marché Locations",
+                  subtitle: "Marché résidentiel global.",
+                  source: ""
                 }
               ].map((kpi, index) => (
                 <motion.div
@@ -1136,40 +1140,21 @@ const Home = () => {
                     });
                   }}
                 >
-                  {/* Bubble/Badge container */}
-                  <motion.div className="relative mb-8">
-                    {/* Glow effect */}
-                    <motion.div
-                      className="absolute -inset-4 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500"
-                      initial={{ scale: 0.8 }}
-                      whileHover={{ scale: 1.2 }}
-                    />
-                    
-                    {/* Main bubble */}
-                    <motion.div 
-                      className="relative bg-card/80 backdrop-blur-sm border border-primary/20 rounded-full w-32 h-32 mx-auto flex items-center justify-center shadow-lg hover:shadow-xl hover:bg-accent/50 transition-all duration-300"
-                      whileHover={{ 
-                        borderColor: "hsl(200 100% 45%)",
-                        boxShadow: "0 0 30px hsla(200, 100%, 45%, 0.3)"
-                      }}
-                    >
-                      {/* Large number with count-up animation */}
-                      <motion.div
-                        className="text-4xl md:text-5xl font-bold text-primary"
-                        initial={{ scale: 0, opacity: 0 }}
-                        whileInView={{ scale: 1, opacity: 1 }}
-                        transition={{ 
-                          duration: 1.5,
-                          delay: index * 0.2 + 0.5,
-                          ease: "easeOut",
-                          type: "spring",
-                          damping: 15
-                        }}
-                        viewport={{ once: true }}
-                      >
-                        {kpi.number}
-                      </motion.div>
-                    </motion.div>
+                  {/* Large number SANS cercle */}
+                  <motion.div
+                    className="text-6xl md:text-7xl font-bold text-primary mb-6"
+                    initial={{ scale: 0, opacity: 0 }}
+                    whileInView={{ scale: 1, opacity: 1 }}
+                    transition={{ 
+                      duration: 1.5,
+                      delay: index * 0.2 + 0.5,
+                      ease: "easeOut",
+                      type: "spring",
+                      damping: 15
+                    }}
+                    viewport={{ once: true }}
+                  >
+                    {kpi.number}
                   </motion.div>
                   
                   {/* Title */}
@@ -1188,7 +1173,7 @@ const Home = () => {
                   
                   {/* Subtitle */}
                   <motion.p 
-                    className="text-muted-foreground leading-relaxed max-w-xs mx-auto"
+                    className="text-muted-foreground leading-relaxed max-w-xs mx-auto mb-3"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ 
@@ -1199,6 +1184,21 @@ const Home = () => {
                   >
                     {kpi.subtitle}
                   </motion.p>
+
+                  {/* Source si elle existe */}
+                  {kpi.source && (
+                    <motion.div 
+                      className="text-xs"
+                      dangerouslySetInnerHTML={{ __html: kpi.source }}
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      transition={{ 
+                        duration: 0.6, 
+                        delay: index * 0.2 + 1.1
+                      }}
+                      viewport={{ once: true }}
+                    />
+                  )}
                 </motion.div>
               ))}
             </motion.div>
