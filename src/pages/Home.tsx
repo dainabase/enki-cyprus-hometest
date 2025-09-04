@@ -1214,24 +1214,24 @@ const Home = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <video 
-            className="w-full h-full object-cover absolute inset-0"
-            autoPlay 
-            muted 
-            loop
-            playsInline
-            poster="https://images.unsplash.com/photo-1601919051950-bb9f3ffb3fee?w=1920&h=1080&fit=crop&crop=center"
-            onLoadStart={() => {
-              trackCustomEvent('video_viewed', { 
-                section: 'premium-video',
-                type: 'hero'
-              });
-            }}
-          >
-            <source src="https://videos.pexels.com/video-files/4786283/4786283-uhd_2560_1440_30fps.mp4" type="video/mp4" />
-            <source src="https://videos.pexels.com/video-files/2169880/2169880-uhd_2560_1440_30fps.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+           <video 
+             className="w-full h-full object-cover absolute inset-0"
+             autoPlay 
+             muted 
+             loop
+             playsInline
+             poster="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&h=1080&fit=crop&auto=format"
+             onLoadStart={() => {
+               trackCustomEvent('video_viewed', { 
+                 section: 'premium-video',
+                 type: 'hero'
+               });
+             }}
+           >
+             <source src="https://videos.pexels.com/video-files/2507016/2507016-uhd_2560_1440_25fps.mp4" type="video/mp4" />
+             <source src="https://videos.pexels.com/video-files/3571264/3571264-uhd_2560_1440_30fps.mp4" type="video/mp4" />
+             Your browser does not support the video tag.
+           </video>
           
           <div className="absolute inset-0 bg-black/40" />
           
