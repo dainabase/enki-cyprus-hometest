@@ -683,7 +683,10 @@ const AdminProjects = () => {
                 <TabsContent value="media" className="space-y-4">
                   <div>
                     <Label>Photos du projet</Label>
-                    <ImageUploader />
+        <ImageUploader 
+          value={formData.photos || []} 
+          onChange={(urls) => setFormData(prev => ({ ...prev, photos: urls }))} 
+        />
                     {formData.photos.length > 0 && (
                       <div className="grid grid-cols-3 gap-4 mt-4">
                         {formData.photos.map((photo, index) => (

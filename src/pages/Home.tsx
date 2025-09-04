@@ -474,7 +474,7 @@ const Home = () => {
                   
                   if (!isActive && !isNext && !isPrev) return null;
                   
-                  const locationKey = property.location?.city?.toLowerCase() || 'limassol';
+                  const locationKey = typeof property.location === 'string' ? property.location.toLowerCase() : (property.location as any)?.city?.toLowerCase() || 'limassol';
                   const interests = mockInterests[locationKey] || mockInterests['limassol'];
 
                   return (
@@ -516,7 +516,7 @@ const Home = () => {
                             <h3 className="text-2xl font-bold mb-2">{property.title}</h3>
                             <div className="flex items-center gap-2 mb-2">
                               <MapPin className="w-4 h-4" />
-                              <span>{property.location?.city || property.location}</span>
+                              <span>{typeof property.location === 'string' ? property.location : (property.location as any)?.city || property.location}</span>
                             </div>
                             <div className="text-xl font-semibold text-primary-foreground">
                               {property.price}
@@ -673,7 +673,7 @@ const Home = () => {
                 <Suspense fallback={
                   <div className="h-96 bg-muted flex items-center justify-center">
                     <div className="text-center">
-                      <Map className="w-12 h-12 mx-auto mb-4 text-primary" />
+                      <MapPin className="w-12 h-12 mx-auto mb-4 text-primary" />
                       <p className="text-muted-foreground">Chargement de la carte...</p>
                     </div>
                   </div>
@@ -684,7 +684,7 @@ const Home = () => {
                       setSelectedProperty(property);
                       setIsModalOpen(true);
                     }}
-                    className="h-96 w-full"
+                    
                   />
                 </Suspense>
               </ErrorBoundary>

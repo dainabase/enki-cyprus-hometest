@@ -83,10 +83,10 @@ const LexaiaPage = () => {
       return data?.map(d => ({
         id: d.id,
         query: d.query,
-        response: d.lexaia_outputs?.summary || 'Analyse en cours...',
+        response: (d.lexaia_outputs as any)?.summary || 'Analyse en cours...',
         analysis: d.lexaia_outputs,
         created_at: d.created_at,
-        starred: d.lexaia_outputs?.starred || false
+        starred: (d.lexaia_outputs as any)?.starred || false
       })) || [];
     },
     enabled: isAuthenticated
@@ -116,7 +116,7 @@ const LexaiaPage = () => {
         id: p.id,
         title: p.title,
         price: p.price,
-        location: p.location?.city || p.location,
+        location: typeof p.location === 'string' ? p.location : (p.location as any)?.city || p.location,
         selected: false
       })) || [];
     },

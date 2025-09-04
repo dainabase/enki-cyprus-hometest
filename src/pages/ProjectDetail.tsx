@@ -363,7 +363,7 @@ const ProjectDetail: React.FC = () => {
               
               <div className="flex items-center gap-2 mb-4">
                 <MapPin className="w-5 h-5" />
-                <span className="text-lg">{property.location?.city || property.location}</span>
+                <span className="text-lg">{typeof property.location === 'string' ? property.location : (property.location as any)?.city || property.location}</span>
               </div>
               
               <div className="text-3xl md:text-4xl font-bold text-primary-foreground">
@@ -392,13 +392,13 @@ const ProjectDetail: React.FC = () => {
                   <div className="lg:col-span-2">
                     <h2 className="text-2xl font-bold text-foreground mb-6">À propos de cette propriété</h2>
                     <p className="text-muted-foreground leading-relaxed mb-8 text-lg">
-                      {property.detailed_description || property.description}
+                      {(property as any).detailed_description || property.description}
                     </p>
                     
                     {/* Caractéristiques détaillées */}
                     <h3 className="text-xl font-semibold text-foreground mb-4">Caractéristiques</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {(property.detailed_features || property.features || []).map((feature, index) => (
+                      {((property as any).detailed_features || property.features || []).map((feature, index) => (
                         <motion.div
                           key={index}
                           initial={{ opacity: 0, x: -20 }}
@@ -434,7 +434,7 @@ const ProjectDetail: React.FC = () => {
                             <MapPin className="w-5 h-5 text-primary" />
                             <span className="text-muted-foreground">Localisation</span>
                           </div>
-                          <span className="font-medium text-sm">{property.location?.city || property.location}</span>
+                          <span className="font-medium text-sm">{typeof property.location === 'string' ? property.location : (property.location as any)?.city || property.location}</span>
                         </div>
                       </div>
                     </div>
@@ -565,7 +565,7 @@ const ProjectDetail: React.FC = () => {
           )}
 
           {/* Visite Virtuelle Matterport */}
-          {property.virtual_tour && (
+          {(property as any).virtual_tour && (
             <motion.section
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -585,7 +585,7 @@ const ProjectDetail: React.FC = () => {
                   
                   <div className="relative rounded-lg overflow-hidden">
                     <iframe
-                      src={property.virtual_tour}
+                      src={(property as any).virtual_tour}
                       className="w-full h-96"
                       allowFullScreen
                       title="Visite virtuelle"
@@ -693,7 +693,7 @@ const ProjectDetail: React.FC = () => {
                     }>
                       <MiniMap 
                         property={property}
-                        className="h-64 w-full"
+                        
                       />
                     </Suspense>
                   </ErrorBoundary>
