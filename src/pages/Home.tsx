@@ -750,25 +750,12 @@ const Home = () => {
                 }}
               >
                 <motion.div 
-                  className="flex items-center justify-center space-x-3 text-white mb-8"
+                  className="flex items-center justify-center text-white mb-8"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 1.6, duration: 0.8 }}
                 >
-                  <motion.div
-                    animate={{ 
-                      rotate: 360,
-                      scale: [1, 1.2, 1]
-                    }}
-                    transition={{ 
-                      rotate: { duration: 3, repeat: Infinity, ease: "linear" },
-                      scale: { duration: 2, repeat: Infinity, ease: "easeInOut" }
-                    }}
-                  >
-                    <Brain className="w-8 h-8 text-blue-200" />
-                  </motion.div>
                   <span className="font-semibold text-2xl">Recherche Agentique Immobilière</span>
-                  <Sparkles className="w-6 h-6 text-yellow-300" />
                 </motion.div>
                 
                 <div className="space-y-8">
