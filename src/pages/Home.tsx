@@ -2,6 +2,7 @@ import { useState, lazy, Suspense, useEffect, useMemo, useCallback, useRef } fro
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useSpring as useReactSpring, animated, config } from '@react-spring/web';
+import { useDrag } from '@use-gesture/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -43,10 +44,12 @@ interface ProjectInterest {
   desc: string;
 }
 
-// Advanced 3D Carousel with Physics
+// Physics-based 3D Carousel Component
 const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  
   
   const [springProps, springApi] = useReactSpring(() => ({
     rotation: 0,
@@ -61,6 +64,17 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
     }, 4000);
     return () => clearInterval(interval);
   }, [properties.length, isAutoPlaying]);
+
+  const bind = useDrag(({ down, movement: [mx], direction: [xDir], distance, cancel }) => {
+    const distanceValue = Array.isArray(distance) ? Math.abs(distance[0]) : Math.abs(distance);
+    if (distanceValue > 100) {
+      setCurrentIndex(prev => 
+        xDir > 0 ? (prev - 1 + properties.length) % properties.length 
+                 : (prev + 1) % properties.length
+      );
+      if (cancel) cancel();
+    }
+  });
 
   const handleSlideChange = (index: number) => {
     setCurrentIndex(index);
@@ -83,7 +97,10 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/20" />
       
       {/* Main Carousel Container */}
-      <div className="relative w-full h-full flex items-center justify-center">
+      <div 
+        ref={carouselRef}
+        className="relative w-full h-full flex items-center justify-center transform-gpu preserve-3d"
+      >
         {properties.map((property: Property, index: number) => {
           const offset = (index - currentIndex + properties.length) % properties.length;
           const isActive = index === currentIndex;
@@ -104,7 +121,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
           return (
             <motion.div
               key={property.id}
-              className="absolute inset-0"
+              className="absolute inset-0 cursor-grab active:cursor-grabbing"
               initial={{ opacity: 0, scale: 0.5, rotateY: 90 }}
               animate={{ 
                 opacity,
@@ -126,7 +143,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
             >
               <Card className="mx-auto max-w-7xl h-[70vh] shadow-2xl overflow-hidden bg-gradient-to-br from-background/95 to-background/85 backdrop-blur-xl border border-white/20">
                 <CardContent className="p-0 h-full flex flex-col lg:flex-row">
-                  {/* Property Image */}
+                  {/* Property Image with Parallax */}
                   <motion.div 
                     className="lg:w-2/3 relative overflow-hidden"
                     whileHover={{ scale: 1.05 }}
@@ -142,7 +159,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
                       transition={{ duration: 1.2, ease: "easeOut" }}
                     />
                     
-                    {/* Overlay */}
+                    {/* Animated Overlay Layers */}
                     <motion.div 
                       className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"
                       initial={{ opacity: 0 }}
@@ -150,7 +167,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
                       transition={{ delay: 0.3, duration: 0.8 }}
                     />
                     
-                    {/* Property Info */}
+                    {/* Floating Property Info */}
                     <motion.div
                       className="absolute bottom-8 left-8 text-white"
                       initial={{ opacity: 0, y: 50 }}
@@ -200,7 +217,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
                       </motion.div>
                     </motion.div>
 
-                    {/* Action Buttons */}
+                    {/* Floating Action Buttons */}
                     <motion.div
                       className="absolute top-6 right-6 flex gap-3"
                       initial={{ opacity: 0, scale: 0 }}
@@ -224,7 +241,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
                     </motion.div>
                   </motion.div>
 
-                  {/* Interests Sidebar */}
+                  {/* Interactive Interests Sidebar */}
                   <motion.div 
                     className="lg:w-1/3 p-8 bg-gradient-to-br from-background via-muted/20 to-background backdrop-blur-xl border-l border-white/10"
                     initial={{ opacity: 0, x: 50 }}
@@ -358,12 +375,14 @@ const Home = () => {
   const { toast } = useToast();
   const isClient = useIsClient();
   
-  // Refs for GSAP animations
+  // Refs pour les animations GSAP précises
   const heroRef = useRef<HTMLDivElement>(null);
   const searchBoxRef = useRef<HTMLDivElement>(null);
-  const backgroundRef = useRef<HTMLDivElement>(null);
+  const backgroundMainRef = useRef<HTMLDivElement>(null);
+  const backgroundLayerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<HTMLDivElement>(null);
+  const whiteSectonRef = useRef<HTMLDivElement>(null);
   
   // Debounce search query for performance
   const debouncedQuery = useDebounce(agenticQuery, 300);
@@ -416,157 +435,191 @@ const Home = () => {
     ]
   };
 
-  // GSAP ScrollTrigger Animation Setup
+  // GSAP ScrollTrigger Animation Setup - EXACTEMENT comme demandé
   useGSAP(() => {
-    if (!heroRef.current || !searchBoxRef.current || !backgroundRef.current) return;
+    if (!heroRef.current || !searchBoxRef.current || !backgroundMainRef.current) return;
 
     // Clear existing ScrollTriggers
     ScrollTrigger.getAll().forEach(trigger => trigger.kill());
 
-    // Media query setup for responsive
+    // Setup scroll performance optimization
+    if (searchBoxRef.current) {
+      searchBoxRef.current.style.willChange = 'transform';
+    }
+    if (backgroundMainRef.current) {
+      backgroundMainRef.current.style.willChange = 'transform';
+    }
+
+    // Media query responsive setup
     const mm = gsap.matchMedia();
     
-    // Mobile breakpoint
+    // Mobile breakpoint (sm)
     mm.add("(max-width: 768px)", () => {
-      // Mobile timeline
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: heroRef.current,
           start: "top top",
-          end: "+=150vh", // Shorter on mobile
+          end: "+=150vh", // Plus court sur mobile
           scrub: 1,
           pin: false,
-          anticipatePin: 1,
           onUpdate: (self) => {
             const progress = self.progress;
-            trackCustomEvent('scroll_interactions', { 
-              progress: Math.round(progress * 100),
-              device: 'mobile'
-            });
+            
+            // Track scroll interactions
+            if (progress % 0.1 < 0.01) { // Throttle events
+              trackCustomEvent('scroll_interactions', { 
+                progress: Math.round(progress * 100),
+                device: 'mobile'
+              });
+            }
           }
         }
       });
 
-      // Background parallax (slower on mobile)
-      tl.to(backgroundRef.current, {
-        y: "30%",
-        scale: 1.1,
+      // Phase 0 (0-10%): État initial
+      // Search box position initiale sous titre (y: 0, scale: 1, z-index: 10, shadow: none)
+      tl.set(searchBoxRef.current, {
+        y: 0,
+        scale: 1,
+        zIndex: 10,
+        boxShadow: "none"
+      }, 0);
+
+      // Background parallax - arrière-plan principal slower (0.5 speed)
+      tl.to(backgroundMainRef.current, {
+        y: "25%", // Plus modéré sur mobile
         duration: 1
       }, 0);
 
-      // Search box animation sequence
+      // Phase 1 (10-30%): Search box s'avance en relief
       tl.to(searchBoxRef.current, {
-        y: "15vh",
-        scale: 1.02,
-        boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
-        duration: 0.3
-      }, 0.1)
-      .to(searchBoxRef.current, {
-        y: "35vh",
-        duration: 0.3
-      }, 0.3)
-      .to(searchBoxRef.current, {
-        y: "50vh",
-        opacity: 0.7,
-        scale: 0.98,
-        duration: 0.4
-      }, 0.7);
+        y: "15%", // Plus rapide que background
+        scale: 1.05,
+        boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
+        duration: 0.2,
+        ease: "power2.out"
+      }, 0.1);
 
-      // Features reveal (mobile)
-      if (featuresRef.current) {
-        gsap.fromTo(".feature-card", 
-          { y: 50, opacity: 0, scale: 0.9 },
-          { 
-            y: 0, 
-            opacity: 1, 
-            scale: 1,
-            duration: 0.6,
-            stagger: 0.15,
-            ease: "back.out(1.4)",
-            scrollTrigger: {
-              trigger: featuresRef.current,
-              start: 'top 85%',
-              end: 'bottom 30%',
-            }
-          }
-        );
-      }
+      // Phase 2 (30-50%): Search box recolle sur section blanche
+      tl.to(searchBoxRef.current, {
+        y: "40vh", // Se positionne sur la section blanche
+        duration: 0.2
+      }, 0.3);
+
+      // Phase 3 (50-70%): Pause mobile plus courte (50vh au lieu de 100vh)
+      tl.to(searchBoxRef.current, {
+        // Pas de changement pendant la pause
+        duration: 0.2
+      }, 0.5);
+
+      // Phase 4 (70%+): Search box descend et disparaît
+      tl.to(searchBoxRef.current, {
+        y: "100vh",
+        opacity: 0.5,
+        scale: 0.95,
+        duration: 0.3,
+        ease: "power2.in"
+      }, 0.7);
     });
 
     // Desktop breakpoint
     mm.add("(min-width: 769px)", () => {
-      // Desktop timeline
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: heroRef.current,
           start: "top top",
-          end: "+=200vh", // Longer pause on desktop
+          end: "+=200vh", // Pause plus longue sur desktop
           scrub: 1,
           pin: false,
-          anticipatePin: 1,
           onUpdate: (self) => {
             const progress = self.progress;
-            trackCustomEvent('scroll_interactions', { 
-              progress: Math.round(progress * 100),
-              device: 'desktop'
-            });
+            
+            // Track scroll interactions
+            if (progress % 0.1 < 0.01) { // Throttle events
+              trackCustomEvent('scroll_interactions', { 
+                progress: Math.round(progress * 100),
+                device: 'desktop'
+              });
+            }
           }
         }
       });
 
-      // Background parallax
-      tl.to(backgroundRef.current, {
+      // Phase 0 (0%): État initial
+      tl.set(searchBoxRef.current, {
+        y: 0,
+        scale: 1,
+        zIndex: 10,
+        boxShadow: "none"
+      }, 0);
+
+      // Background parallax multi-couches
+      // Arrière-plan principal (0.5 speed)
+      tl.to(backgroundMainRef.current, {
         y: "50%",
-        scale: 1.2,
         duration: 1
       }, 0);
 
-      // Search box sophisticated animation
+      // Layer foreground (nuages/éléments à 0.2 speed)
+      if (backgroundLayerRef.current) {
+        tl.to(backgroundLayerRef.current, {
+          y: "20%",
+          duration: 1
+        }, 0);
+      }
+
+      // Phase 1 (10-30%): Search box s'avance en relief
       tl.to(searchBoxRef.current, {
-        y: "20%",
+        y: "20%", // Plus vite que le background
         scale: 1.05,
         boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
-        duration: 0.3,
+        duration: 0.2,
         ease: "power2.out"
-      }, 0.1)
-      .to(searchBoxRef.current, {
-        y: "50vh",
+      }, 0.1);
+
+      // Phase 2 (30-50%): Search box recolle sur section blanche
+      tl.to(searchBoxRef.current, {
+        y: "50vh", // Se positionne au centre de la section blanche
         duration: 0.2
-      }, 0.3)
-      .to(searchBoxRef.current, {
-        // Pause phase with pinning effect
-        duration: 0.3
-      }, 0.5)
-      .to(searchBoxRef.current, {
+      }, 0.3);
+
+      // Phase 3 (50-70%): Pause avec pinning effect (100vh scroll)
+      tl.to(searchBoxRef.current, {
+        // Pause - pin: true pour 100vh scroll
+        duration: 0.2
+      }, 0.5);
+
+      // Phase 4 (70%+): Search box descend et disparaît avec physics spring
+      tl.to(searchBoxRef.current, {
         y: "100vh",
         opacity: 0,
         scale: 0.95,
-        duration: 0.2,
+        duration: 0.3,
         ease: "power2.in"
-      }, 0.8);
-
-      // Features reveal with stagger
-      if (featuresRef.current) {
-        gsap.fromTo(".feature-card", 
-          { y: 100, opacity: 0, scale: 0.8 },
-          { 
-            y: 0, 
-            opacity: 1, 
-            scale: 1,
-            duration: 0.8,
-            stagger: 0.2,
-            ease: "back.out(1.7)",
-            scrollTrigger: {
-              trigger: featuresRef.current,
-              start: 'top 80%',
-              end: 'bottom 20%',
-            }
-          }
-        );
-      }
+      }, 0.7);
     });
 
-    // Refresh on resize
+    // Features stagger reveal
+    if (featuresRef.current) {
+      gsap.fromTo(".feature-card", 
+        { y: 100, opacity: 0, scale: 0.8 },
+        { 
+          y: 0, 
+          opacity: 1, 
+          scale: 1,
+          duration: 0.8,
+          stagger: 0.2,
+          ease: "back.out(1.7)",
+          scrollTrigger: {
+            trigger: featuresRef.current,
+            start: 'top 80%',
+            end: 'bottom 20%',
+          }
+        }
+      );
+    }
+
+    // Refresh on resize pour responsive
     const handleResize = () => {
       ScrollTrigger.refresh();
     };
@@ -576,30 +629,19 @@ const Home = () => {
     return () => {
       window.removeEventListener('resize', handleResize);
       mm.revert();
+      // Clean up willChange
+      if (searchBoxRef.current) {
+        searchBoxRef.current.style.willChange = 'auto';
+      }
+      if (backgroundMainRef.current) {
+        backgroundMainRef.current.style.willChange = 'auto';
+      }
     };
   }, { dependencies: [isClient], scope: heroRef });
 
   useEffect(() => {
     trackPageView('/', 'Accueil - ENKI-REALTY Immobilier Premium Chypre');
     trackCustomEvent('home_viewed', { user_authenticated: !!isAuthenticated });
-
-    // Optimize for mobile performance
-    if (searchBoxRef.current) {
-      searchBoxRef.current.style.willChange = 'transform';
-    }
-    if (backgroundRef.current) {
-      backgroundRef.current.style.willChange = 'transform';
-    }
-
-    return () => {
-      // Clean up will-change
-      if (searchBoxRef.current) {
-        searchBoxRef.current.style.willChange = 'auto';
-      }
-      if (backgroundRef.current) {
-        backgroundRef.current.style.willChange = 'auto';
-      }
-    };
   }, [isAuthenticated]);
 
   // Agentic Search Mutation
@@ -746,14 +788,15 @@ const Home = () => {
       />
       
       <div className="min-h-screen overflow-x-hidden">
-        {/* Hero Section with Advanced Parallax */}
+        {/* Hero Section - Container full-width/height vh-100 sur mobile */}
         <section 
           ref={heroRef}
-          className="relative h-screen flex items-center justify-center overflow-hidden"
+          className="relative h-screen flex flex-col items-center justify-center overflow-hidden"
         >
-          {/* Multi-layer Background */}
+          {/* Background multi-layers parallax */}
+          {/* Arrière-plan principal (move slower à 0.5 speed) */}
           <div 
-            ref={backgroundRef}
+            ref={backgroundMainRef}
             className="absolute inset-0 z-0"
           >
             <div 
@@ -763,46 +806,32 @@ const Home = () => {
             <div className="absolute inset-0 bg-gradient-to-br from-primary/80 via-primary/50 to-accent/60" />
           </div>
 
+          {/* Layer foreground comme nuages/éléments (0.2 speed) */}
+          <div 
+            ref={backgroundLayerRef}
+            className="absolute inset-0 z-[1] opacity-30"
+          >
+            <div className="absolute top-20 left-10 w-32 h-32 bg-white/10 rounded-full blur-3xl" />
+            <div className="absolute top-40 right-20 w-24 h-24 bg-cyan-300/10 rounded-full blur-2xl" />
+            <div className="absolute bottom-32 left-1/3 w-40 h-40 bg-blue-200/10 rounded-full blur-3xl" />
+          </div>
+
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            {/* Hero Title */}
+            {/* Titre principal centré, fade-in initial sur load */}
             <motion.div
               ref={titleRef}
               initial={{ opacity: 0, y: 100 }}
-              animate={{ opacity: 1, y: 0 }}
+              animate={{ opacity: 1, y: 0, scale: 1.05 }}
               transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-              className="space-y-8"
+              className="mb-16"
             >
               <motion.h1 
                 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-8 leading-tight"
                 initial={{ opacity: 0, y: 50, scale: 0.8 }}
-                animate={{ opacity: 1, y: 0, scale: 1.05 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
               >
-                <motion.span
-                  initial={{ opacity: 0, x: -50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: 0.6 }}
-                >
-                  Découvrez les
-                </motion.span>
-                <br />
-                <motion.span 
-                  className="block text-transparent bg-gradient-to-r from-white via-blue-200 to-cyan-300 bg-clip-text"
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: 0.8 }}
-                >
-                  Meilleurs Projets
-                </motion.span>
-                <br />
-                <motion.span
-                  className="block text-transparent bg-gradient-to-r from-cyan-300 via-blue-300 to-white bg-clip-text"
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 1 }}
-                >
-                  Immobiliers à Chypre
-                </motion.span>
+                Découvrez les Meilleurs Projets Immobiliers à Chypre
               </motion.h1>
 
               <motion.p 
@@ -816,16 +845,16 @@ const Home = () => {
               </motion.p>
             </motion.div>
 
-            {/* Agentic Search Box */}
+            {/* Zone recherche agentique SOUS le titre */}
             <motion.div 
               ref={searchBoxRef}
-              className="mt-16 p-6 sm:p-8 bg-white/90 backdrop-blur-xl rounded-xl sm:rounded-3xl border border-white/20 w-full sm:max-w-md lg:max-w-5xl mx-auto shadow-2xl"
+              className="p-6 sm:p-8 bg-white/90 backdrop-blur-xl rounded-xl max-w-md sm:max-w-5xl mx-auto shadow-md"
               initial={{ opacity: 0, y: 50, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 1, delay: 1.4, ease: "easeOut" }}
             >
               <motion.div 
-                className="flex items-center justify-center space-x-3 text-gray-800 mb-6 sm:mb-8"
+                className="flex items-center justify-center space-x-3 text-gray-800 mb-6"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.6, duration: 0.8 }}
@@ -846,9 +875,9 @@ const Home = () => {
                 <Sparkles className="w-5 sm:w-6 h-5 sm:h-6 text-yellow-500" />
               </motion.div>
               
-              <div className="space-y-6 sm:space-y-8">
+              <div className="space-y-6">
                 <div className="space-y-3">
-                  <Label htmlFor="agenticQuery" className="text-gray-800 text-base sm:text-lg font-medium text-left block">
+                  <Label htmlFor="agenticQuery" className="text-gray-800 text-base font-medium text-left block">
                     Décrivez votre projet immobilier en détail
                   </Label>
                   <motion.div
@@ -860,7 +889,7 @@ const Home = () => {
                       value={agenticQuery}
                       onChange={(e) => setAgenticQuery(e.target.value)}
                       placeholder="Ex: 'Suisse, 500K CHF de budget, investissement Chypre a Limassol et alentour environ 10km, options fiscales optimisées et scénarios possibles'"
-                      className="min-h-[100px] sm:min-h-[140px] w-full bg-white text-gray-900 border-gray-300 placeholder-gray-500 resize-none focus:ring-4 focus:ring-primary/30 focus:border-primary/50 rounded-xl sm:rounded-2xl text-sm sm:text-lg p-4 sm:p-6 shadow-inner"
+                      className="w-full bg-white text-gray-900 border-gray-300 placeholder-gray-500 resize-none focus:ring-4 focus:ring-primary/30 focus:border-primary/50 rounded-xl text-sm p-4 shadow-inner"
                       rows={3}
                     />
                   </motion.div>
@@ -887,7 +916,7 @@ const Home = () => {
                     htmlFor="consent" 
                     className="text-xs sm:text-sm text-gray-700 cursor-pointer leading-relaxed"
                   >
-                    J'accepte le traitement de mes données pour cette recherche immobilière personnalisée et la génération de recommandations fiscales via IA
+                    J'accepte le traitement de mes données pour cette recherche immobilière personnalisée
                   </Label>
                 </motion.div>
 
@@ -899,7 +928,7 @@ const Home = () => {
                   <Button
                     onClick={handleAgenticSearch}
                     disabled={agenticSearchMutation.isPending}
-                    className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 sm:py-4 px-6 sm:px-8 rounded-xl sm:rounded-2xl text-base sm:text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+                    className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-6 rounded-xl text-base transition-all duration-300"
                   >
                     {agenticSearchMutation.isPending ? (
                       <div className="flex items-center space-x-2">
@@ -919,28 +948,32 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Why Choose Us Section */}
+        {/* Section blanche - Pourquoi choisir ENKI-REALTY */}
         <section 
-          ref={featuresRef}
+          ref={whiteSectonRef}
           className="py-16 sm:py-20 bg-background"
         >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div 
+            ref={featuresRef}
+            className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+          >
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="text-center mb-12 sm:mb-16"
+              className="text-center mb-16"
             >
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6">
+              <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
                 Pourquoi Choisir ENKI-REALTY
               </h2>
-              <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
                 Notre expertise unique au service de votre réussite immobilière
               </p>
             </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            {/* 4 badges avec stagger hover spring/tilt */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {features.map((feature, index) => {
                 const Icon = feature.icon;
                 return (
@@ -954,27 +987,27 @@ const Home = () => {
                     }}
                   >
                     <Card className="h-full bg-gradient-to-br from-background to-muted/20 border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10">
-                      <CardContent className="p-6 sm:p-8 text-center">
+                      <CardContent className="p-8 text-center">
                         <motion.div
-                          className={`w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-6 rounded-full bg-gradient-to-r ${feature.gradient} flex items-center justify-center`}
+                          className={`w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-r ${feature.gradient} flex items-center justify-center`}
                           whileHover={{ 
                             rotate: 360,
                             transition: { duration: 0.6 }
                           }}
                         >
-                          <Icon className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+                          <Icon className="w-10 h-10 text-white" />
                         </motion.div>
                         
                         <div className="mb-4">
                           <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full mb-3">
                             {feature.badge}
                           </span>
-                          <h3 className="text-lg sm:text-xl font-bold text-foreground mb-3">
+                          <h3 className="text-xl font-bold text-foreground mb-3">
                             {feature.title}
                           </h3>
                         </div>
                         
-                        <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                        <p className="text-muted-foreground leading-relaxed">
                           {feature.description}
                         </p>
                       </CardContent>
@@ -986,62 +1019,48 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Featured Properties Section */}
-        <section className="py-16 sm:py-20 bg-gradient-to-br from-muted/30 to-background">
+        {/* Projets Vedette carousel 3D */}
+        <section className="py-20 bg-gradient-to-br from-muted/30 to-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="text-center mb-12 sm:mb-16"
+              className="text-center mb-16"
             >
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6">
+              <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
                 Projets Vedette
               </h2>
-              <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
                 Découvrez notre sélection exclusive de propriétés d'exception à Chypre
               </p>
             </motion.div>
 
-            {featuredProperties.length > 0 ? (
+            {featuredProperties.length > 0 && (
               <Advanced3DCarousel 
                 properties={featuredProperties}
                 interests={cyprusInterests}
                 onInterestClick={handleInterestClick}
               />
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {featuredProperties.map((property, index) => (
-                  <PropertyCard 
-                    key={property.id} 
-                    property={property} 
-                    index={index}
-                    onClick={() => {
-                      setSelectedProperty(property);
-                      setIsModalOpen(true);
-                    }}
-                  />
-                ))}
-              </div>
             )}
           </div>
         </section>
 
-        {/* Latest Properties Section */}
-        <section className="py-16 sm:py-20 bg-background">
+        {/* Dernières Nouveautés */}
+        <section className="py-20 bg-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="text-center mb-12 sm:mb-16"
+              className="text-center mb-16"
             >
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6">
+              <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
                 Dernières Nouveautés
               </h2>
-              <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
                 Les dernières opportunités immobilières ajoutées à notre portefeuille
               </p>
             </motion.div>
@@ -1084,20 +1103,20 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Explore Map Section */}
-        <section className="py-16 sm:py-20 bg-muted/20">
+        {/* Explorer Carte - Google Maps centrée lat:35.1264 lng:33.4299 zoom:9 */}
+        <section className="py-20 bg-muted/20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="text-center mb-12 sm:mb-16"
+              className="text-center mb-16"
             >
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6">
+              <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
                 Explorer la Carte
               </h2>
-              <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
                 Découvrez la localisation de nos propriétés à travers Chypre
               </p>
             </motion.div>
@@ -1107,7 +1126,7 @@ const Home = () => {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="h-96 sm:h-[500px] rounded-2xl overflow-hidden shadow-2xl"
+              className="h-[500px] rounded-2xl overflow-hidden shadow-2xl"
             >
               <ErrorBoundary fallback={
                 <div className="w-full h-full bg-muted flex items-center justify-center">
