@@ -412,6 +412,7 @@ const Home = () => {
   const { toast } = useToast();
   const { scrollY } = useScroll();
   const isClient = useIsClient();
+  const enable3D = false; // temporary: disable 3D to fix blank page
   
   // Advanced Parallax transforms
   const heroY = useTransform(scrollY, [0, 1000], [0, -300]);
@@ -658,7 +659,8 @@ const Home = () => {
           </motion.div>
 
           {/* 3D Particles Background */}
-          <div className="absolute inset-0 opacity-20">
+          {enable3D && (
+            <div className="absolute inset-0 opacity-20">
             <ErrorBoundary fallback={null}>
               {isClient && (
                 <Canvas camera={{ position: [0, 0, 5] }}>
@@ -683,6 +685,7 @@ const Home = () => {
               )}
             </ErrorBoundary>
           </div>
+          )}
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <motion.div
@@ -967,12 +970,20 @@ const Home = () => {
               </p>
             </motion.div>
 
-            {featuredProperties.length > 0 && (
+            {enable3D && featuredProperties.length > 0 ? (
               <Advanced3DCarousel 
                 properties={featuredProperties}
                 interests={cyprusInterests}
                 onInterestClick={handleInterestClick}
               />
+            ) : (
+              featuredProperties.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {featuredProperties.map((p, i) => (
+                    <PropertyCard key={p.id} property={p} index={i} />
+                  ))}
+                </div>
+              )
             )}
           </div>
         </section>
