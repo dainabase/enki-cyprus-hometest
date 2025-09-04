@@ -1209,17 +1209,17 @@ const Home = () => {
         <motion.section 
           id="premium-video" 
           className="py-0 bg-secondary w-full h-[60vh] relative overflow-hidden"
-          initial={{ opacity: 0, scale: 1.1 }}
-          whileInView={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 1.2, ease: "easeOut" }}
+          transition={{ duration: 0.8 }}
         >
           <motion.div
             className="w-full h-full relative"
-            initial={{ y: 100, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
+            initial={{ x: -100, opacity: 0 }}
+            whileInView={{ x: 0, opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
           >
             <video 
               className="w-full h-full object-cover absolute inset-0"
@@ -1246,15 +1246,15 @@ const Home = () => {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.5 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
           />
            
           <motion.div 
             className="absolute inset-0 flex items-center justify-center text-primary-foreground text-4xl md:text-6xl font-bold text-center px-6"
-            initial={{ opacity: 0, y: 50, scale: 0.9 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            initial={{ opacity: 0, x: 100 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.7, ease: "easeOut" }}
+            transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
             style={{ 
               textShadow: '2px 2px 4px rgba(0,0,0,0.8)' 
             }}
