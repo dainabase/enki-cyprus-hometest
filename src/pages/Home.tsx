@@ -1069,7 +1069,7 @@ const Home = () => {
           </div>
         </motion.section>
 
-        {/* Section KPIs Marché Immobilier */}
+        {/* Section KPIs Marché Immobilier - Style Framer Template */}
         <motion.section 
           id="market-kpis"
           className="bg-background py-32 md:py-40 px-4 md:px-8"
@@ -1079,103 +1079,126 @@ const Home = () => {
           viewport={{ once: true }}
         >
           <div className="max-w-7xl mx-auto">
+            {/* Grid des KPIs en style bubble comme Framer */}
             <motion.div 
-              className="text-center mb-16"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-            >
-              <h2 className="text-3xl md:text-4xl font-bold text-primary mb-6">
-                Tendances du Marché Immobilier à Chypre
-              </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-loose">
-                Découvrez les indicateurs clés pour investir intelligemment.
-              </p>
-            </motion.div>
-
-            <motion.div 
-              className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-16 max-w-5xl mx-auto"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
-              transition={{ duration: 0.8, staggerChildren: 0.3 }}
+              transition={{ duration: 0.8, staggerChildren: 0.2 }}
               viewport={{ once: true }}
             >
               {[
                 {
-                  title: "Croissance Annuelle des Prix",
-                  value: "+5%",
-                  description: "Moyenne tout confondu projetée pour 2025.",
-                  source: "Global Property Guide (2025)",
-                  sourceUrl: "https://www.globalpropertyguide.com/europe/cyprus/price-history"
+                  number: "200+",
+                  title: "Home Projects",
+                  subtitle: "Crafted with precision and ultimate elegance."
                 },
                 {
-                  title: "Volume des Transactions",
-                  value: "+17 500",
-                  description: "Moyenne annuelle projetée.",
-                  source: "Données du marché (2025)",
-                  sourceUrl: "#"
+                  number: "50+", 
+                  title: "Years of Works",
+                  subtitle: "Decades of expertise and leading innovation."
                 },
                 {
-                  title: "Rendement Locatif Moyen",
-                  value: "4,5%",
-                  description: "Moyenne tout confondu.",
-                  source: "Analyse du marché (2025)",
-                  sourceUrl: "#"
+                  number: "5K",
+                  title: "Satisfied Clients", 
+                  subtitle: "Trust, excellence, and lasting relationships."
                 },
                 {
-                  title: "Valeur Totale du Marché Locations",
-                  value: "95,89 Md USD",
-                  description: "Marché résidentiel global.",
-                  source: "Projections marché (2025)",
-                  sourceUrl: "#"
+                  number: "97%",
+                  title: "Happy Rate",
+                  subtitle: "Delivering joy through exceptional living."
                 }
               ].map((kpi, index) => (
                 <motion.div
                   key={index}
-                  className="bg-card p-8 rounded-xl border border-border shadow-sm hover:shadow-md hover:bg-accent transition-all duration-300"
+                  className="text-center group"
                   initial={{ opacity: 0, y: 50 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ 
                     duration: 0.6, 
-                    delay: index * 0.3,
+                    delay: index * 0.2,
                     type: "spring",
                     damping: 20
                   }}
                   viewport={{ once: true }}
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ 
+                    scale: 1.05,
+                    transition: { 
+                      type: "spring", 
+                      damping: 15 
+                    }
+                  }}
+                  onViewportEnter={() => {
+                    trackCustomEvent('kpi_viewed', { 
+                      title: kpi.title,
+                      number: kpi.number,
+                      index 
+                    });
+                  }}
                 >
-                  <div className="text-center">
+                  {/* Bubble/Badge container */}
+                  <motion.div className="relative mb-8">
+                    {/* Glow effect */}
                     <motion.div
-                      className="text-4xl font-bold text-primary mb-4"
-                      initial={{ scale: 0 }}
-                      whileInView={{ scale: 1 }}
-                      transition={{ 
-                        duration: 2,
-                        delay: index * 0.3 + 0.5,
-                        ease: "easeOut"
+                      className="absolute -inset-4 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500"
+                      initial={{ scale: 0.8 }}
+                      whileHover={{ scale: 1.2 }}
+                    />
+                    
+                    {/* Main bubble */}
+                    <motion.div 
+                      className="relative bg-card/80 backdrop-blur-sm border border-primary/20 rounded-full w-32 h-32 mx-auto flex items-center justify-center shadow-lg hover:shadow-xl hover:bg-accent/50 transition-all duration-300"
+                      whileHover={{ 
+                        borderColor: "hsl(200 100% 45%)",
+                        boxShadow: "0 0 30px hsla(200, 100%, 45%, 0.3)"
                       }}
-                      viewport={{ once: true }}
                     >
-                      {kpi.value}
-                    </motion.div>
-                    <h3 className="text-lg font-semibold text-foreground mb-3">
-                      {kpi.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      {kpi.description}
-                    </p>
-                    <div className="text-xs text-muted-foreground">
-                      Source: <a 
-                        href={kpi.sourceUrl} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-muted-foreground hover:underline hover:text-primary transition-colors"
+                      {/* Large number with count-up animation */}
+                      <motion.div
+                        className="text-4xl md:text-5xl font-bold text-primary"
+                        initial={{ scale: 0, opacity: 0 }}
+                        whileInView={{ scale: 1, opacity: 1 }}
+                        transition={{ 
+                          duration: 1.5,
+                          delay: index * 0.2 + 0.5,
+                          ease: "easeOut",
+                          type: "spring",
+                          damping: 15
+                        }}
+                        viewport={{ once: true }}
                       >
-                        {kpi.source}
-                      </a>
-                    </div>
-                  </div>
+                        {kpi.number}
+                      </motion.div>
+                    </motion.div>
+                  </motion.div>
+                  
+                  {/* Title */}
+                  <motion.h3 
+                    className="text-xl md:text-2xl font-bold text-foreground mb-3"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ 
+                      duration: 0.6, 
+                      delay: index * 0.2 + 0.7
+                    }}
+                    viewport={{ once: true }}
+                  >
+                    {kpi.title}
+                  </motion.h3>
+                  
+                  {/* Subtitle */}
+                  <motion.p 
+                    className="text-muted-foreground leading-relaxed max-w-xs mx-auto"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ 
+                      duration: 0.6, 
+                      delay: index * 0.2 + 0.9
+                    }}
+                    viewport={{ once: true }}
+                  >
+                    {kpi.subtitle}
+                  </motion.p>
                 </motion.div>
               ))}
             </motion.div>
