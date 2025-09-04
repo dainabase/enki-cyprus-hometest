@@ -32,27 +32,15 @@ export const StickyCardsSection: React.FC<StickyCardsSectionProps> = ({ cards })
     }
     
     if (activeCard === cardIndex) {
-      // Active card animation
-      const flipProgress = cardProgress * 2; // 0 to 2
-      
-      if (flipProgress <= 1) {
-        // First half: move forward and start flipping
-        return {
-          scale: 1 + (flipProgress * 0.1), // Slight scale up
-          rotateY: flipProgress * 180, // Flip to show back
-          z: flipProgress * 50, // Move forward
-          opacity: 1
-        };
-      } else {
-        // Second half: flip back and return to position
-        const returnProgress = flipProgress - 1; // 0 to 1
-        return {
-          scale: 1.1 - (returnProgress * 0.1), // Scale back down
-          rotateY: 180 - (returnProgress * 180), // Flip back to front
-          z: 50 - (returnProgress * 50), // Move back
-          opacity: 1
-        };
-      }
+      // Active card 360° spin with slight z-move forward then back
+      const spinProgress = cardProgress; // 0 → 1
+      const zMove = 50 * (1 - Math.abs(1 - spinProgress * 2)); // 0 → 50 → 0
+      return {
+        scale: 1 + (zMove / 500),
+        rotateY: spinProgress * 360,
+        z: zMove,
+        opacity: 1
+      };
     }
     
     // Card has been animated already
@@ -65,14 +53,15 @@ export const StickyCardsSection: React.FC<StickyCardsSectionProps> = ({ cards })
   };
 
   return (
-    <div className="relative">
-      {/* Sticky container with controlled height */}
-      <motion.section 
-        ref={sectionRef}
-        className="sticky top-0 bg-background py-32 md:py-40 px-4 md:px-8 overflow-hidden min-h-screen flex items-center z-40"
+    <div
+      ref={sectionRef}
+      className="relative bg-background"
+      style={{ height: `calc(100vh + 2000px)` }}
+    >
+      <motion.div
+        className="sticky top-[10vh] py-32 md:py-40 px-4 md:px-8 overflow-hidden min-h-[80vh] flex items-center z-40"
         style={{
           perspective: '1000px',
-          height: '2000px', // Give the section enough height to stay sticky
         }}
       >
         {/* Background overlays */}
@@ -240,7 +229,7 @@ export const StickyCardsSection: React.FC<StickyCardsSectionProps> = ({ cards })
             </motion.div>
           )}
         </div>
-      </motion.section>
+      </motion.div>
     </div>
   );
 };

@@ -50,8 +50,8 @@ export const useScrollProgress = ({ totalDistance, cardCount }: UseScrollProgres
       const windowHeight = window.innerHeight;
       
       // Calculate when section becomes sticky (when it reaches the top)
-      const stickyStart = sectionTop; // Start when section reaches top
-      const stickyEnd = stickyStart + totalDistance + windowHeight; // Add window height to extend sticky duration
+      const stickyStart = sectionTop - windowHeight * 0.1; // Start slightly before
+      const stickyEnd = stickyStart + totalDistance;
       
       // Check if we're in the sticky zone
       const isInStickyZone = scrollY >= stickyStart && scrollY <= stickyEnd;
