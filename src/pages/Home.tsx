@@ -1022,11 +1022,17 @@ const Home = () => {
                     />
                     
                     {/* Barre d'actions en bas */}
-                    <div className="flex flex-col space-y-4 mt-4 pt-4 border-t border-gray-100">
-                      <div className="flex items-center space-x-2 text-sm text-gray-600">
-                        <span>J'accepte que mes données soient utilisées pour générer des recommandations personnalisées</span>
-                      </div>
-                      <div className="flex justify-center">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-4 pt-4 border-t border-gray-100">
+                        <label htmlFor="consent" className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                          <input
+                            id="consent"
+                            type="checkbox"
+                            className="h-4 w-4 rounded border-gray-300"
+                            checked={consent}
+                            onChange={(e) => setConsent(e.currentTarget.checked)}
+                          />
+                          <span>J'accepte que mes données soient utilisées pour générer des recommandations personnalisées</span>
+                        </label>
                         <motion.button
                           className="px-8 py-3 bg-primary text-white rounded-lg text-lg font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           disabled={!agenticQuery.trim() || !consent}
@@ -1037,105 +1043,11 @@ const Home = () => {
                           Lancer la Recherche
                         </motion.button>
                       </div>
-                    </div>
                   </div>
                 </motion.div>
               </motion.div>
               
-              <motion.div 
-                className="flex items-center space-x-3 justify-center"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ delay: 0.8, duration: 0.5 }}
-              >
-                <Checkbox
-                  id="consent-new"
-                  checked={consent}
-                  onCheckedChange={(checked) => setConsent(!!checked)}
-                  className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-                />
-                <label 
-                  htmlFor="consent-new" 
-                  className="text-muted-foreground text-sm cursor-pointer leading-relaxed"
-                >
-                  J'accepte que mes données soient utilisées pour générer des recommandations personnalisées
-                </label>
-              </motion.div>
 
-              {/* Bouton submit avec morph effect */}
-              <motion.div
-                className="flex justify-center"
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ 
-                  delay: 1, 
-                  duration: 0.6,
-                  type: "spring",
-                  damping: 15
-                }}
-              >
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="relative group"
-                >
-                  {/* Pulse glow effect */}
-                  <motion.div
-                    className="absolute -inset-1 bg-gradient-to-r from-primary via-primary/80 to-primary rounded-lg blur opacity-25 group-hover:opacity-50"
-                    animate={{
-                      scale: [1, 1.05, 1],
-                      opacity: [0.25, 0.4, 0.25]
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut"
-                    }}
-                  />
-                  
-                  <Button
-                    onClick={handleAgenticSearch}
-                    disabled={!agenticQuery.trim() || !consent || agenticSearchMutation.isPending}
-                    className="relative w-full md:w-auto px-10 py-4 bg-primary hover:bg-primary-hover text-primary-foreground font-semibold text-lg shadow-xl transition-all duration-300 overflow-hidden"
-                    style={{
-                      borderRadius: agenticQuery.trim() && consent ? '0.5rem' : '9999px',
-                      background: agenticQuery.trim() && consent ? 
-                        'linear-gradient(135deg, hsl(200 100% 45%) 0%, hsl(210 85% 40%) 50%, hsl(190 80% 45%) 100%)' :
-                        undefined
-                    }}
-                  >
-                    {/* Shimmer effect */}
-                    <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                      animate={{
-                        x: [-100, 300],
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        repeatDelay: 3
-                      }}
-                    />
-                    
-                    {agenticSearchMutation.isPending ? (
-                      <>
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                          className="w-6 h-6 border-3 border-white border-t-transparent rounded-full mr-3"
-                        />
-                        Recherche en cours...
-                      </>
-                    ) : (
-                      <>
-                        <Search className="w-6 h-6 mr-3" />
-                        Lancer la Recherche
-                      </>
-                    )}
-                  </Button>
-                </motion.div>
-              </motion.div>
             </motion.div>
           </div>
         </motion.section>
