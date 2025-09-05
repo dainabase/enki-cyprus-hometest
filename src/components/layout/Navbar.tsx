@@ -215,7 +215,7 @@ const Navbar = () => {
                       className="relative h-10 w-10 rounded-full"
                     >
                       <Avatar className="h-8 w-8">
-                        <AvatarFallback className="bg-primary/10 text-primary font-medium">
+                        <AvatarFallback className="bg-white text-blue-600 font-medium hover:bg-blue-600 hover:text-white transition-colors duration-200">
                           {getUserInitials()}
                         </AvatarFallback>
                       </Avatar>
