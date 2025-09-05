@@ -1072,28 +1072,28 @@ const Home = () => {
             >
               {[
                 {
-                  number: "+5%",
-                  title: "Croissance Annuelle des Prix",
-                  subtitle: "Moyenne tout confondu projetée pour 2025.",
-                  source: "Source: <a href='https://www.globalpropertyguide.com/europe/cyprus/price-history' target='_blank' class='text-sm text-muted-foreground hover:underline hover:text-primary'>Global Property Guide (2025)</a>"
+                  number: "+6,5%",
+                  title: "Appréciation annuelle des prix immobiliers",
+                  subtitle: "Augmentation constante des valeurs immobilières.",
+                  source: "Sources : Global Property Guide · CEIC Data"
                 },
                 {
-                  number: "17 500", 
-                  title: "Volume des Transactions",
-                  subtitle: "Moyenne annuelle projetée.",
-                  source: ""
+                  number: "23 900", 
+                  title: "Transactions immobilières en 2024",
+                  subtitle: "Volume exceptionnel d'activité du marché.",
+                  source: "Sources : PwC Cyprus Real Estate Market Review · Cyprus Mail"
                 },
                 {
-                  number: "4,5%",
-                  title: "Rendement Locatif Moyen", 
-                  subtitle: "Moyenne tout confondu.",
-                  source: ""
+                  number: "70%",
+                  title: "Taux d'occupation locative", 
+                  subtitle: "Performance locative attractive et stable.",
+                  source: "Sources : Airbtics · Investropa"
                 },
                 {
-                  number: "95,89 Md USD",
-                  title: "Valeur Totale du Marché Locations",
-                  subtitle: "Marché résidentiel global.",
-                  source: ""
+                  number: "4,75%",
+                  title: "Rendement locatif brut moyen",
+                  subtitle: "Rentabilité optimale pour les investisseurs.",
+                  source: "Sources : Global Citizens Solutions · RICS Cyprus · Global Property Guide"
                 }
               ].map((kpi, index) => (
                 <motion.div
