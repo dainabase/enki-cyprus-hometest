@@ -1258,7 +1258,7 @@ const Home = () => {
               className="text-center mb-16"
             >
               <motion.h2 
-                className="text-4xl md:text-5xl font-bold text-primary mb-6"
+                className="text-5xl md:text-7xl font-bold text-primary mb-6"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
@@ -1379,7 +1379,7 @@ const Home = () => {
               className="text-center mb-16"
             >
               <motion.h2 
-                className="text-3xl md:text-4xl font-bold text-primary mb-6"
+                className="text-5xl md:text-7xl font-bold text-primary mb-6"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
@@ -1399,7 +1399,62 @@ const Home = () => {
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {latestProperties.map((property, index) => (
+              {[
+                {
+                  id: 1,
+                  title: "Penthouse 3 chambres",
+                  location: "Nicosia",
+                  price: "€450,000",
+                  image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&h=400&fit=crop&auto=format",
+                  features: ["Terrasse panoramique", "Climatisation"],
+                  description: "Magnifique penthouse avec vue imprenable sur la ville de Nicosia."
+                },
+                {
+                  id: 2,
+                  title: "Appartement 2 chambres",
+                  location: "Limassol",
+                  price: "€280,000",
+                  image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&h=400&fit=crop&auto=format",
+                  features: ["Rénové", "Meublé", "Wifi inclus"],
+                  description: "Appartement moderne entièrement rénové dans le centre de Limassol."
+                },
+                {
+                  id: 3,
+                  title: "Villa 4 chambres",
+                  location: "Paphos",
+                  price: "€650,000",
+                  image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=400&fit=crop&auto=format",
+                  features: ["Piscine privée", "Jardin", "Garage"],
+                  description: "Villa familiale avec piscine et jardin paysager dans un quartier calme."
+                },
+                {
+                  id: 4,
+                  title: "Studio moderne",
+                  location: "Larnaca",
+                  price: "€120,000",
+                  image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&h=400&fit=crop&auto=format",
+                  features: ["Proche aéroport", "Balcon", "Meublé"],
+                  description: "Studio contemporain idéal pour investissement locatif près de l'aéroport."
+                },
+                {
+                  id: 5,
+                  title: "Maison 3 chambres",
+                  location: "Ayia Napa",
+                  price: "€380,000",
+                  image: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=600&h=400&fit=crop&auto=format",
+                  features: ["Vue mer", "Terrasse", "Proche plage"],
+                  description: "Maison familiale avec vue mer à quelques minutes des plages d'Ayia Napa."
+                },
+                {
+                  id: 6,
+                  title: "Duplex 2 chambres",
+                  location: "Protaras",
+                  price: "€325,000",
+                  image: "https://images.unsplash.com/photo-1600607687644-c7171b42498b?w=600&h=400&fit=crop&auto=format",
+                  features: ["Duplex", "Piscine commune", "Parking"],
+                  description: "Duplex moderne dans résidence sécurisée avec piscine commune."
+                }
+              ].map((property, index) => (
                 <motion.div
                   key={property.id}
                   initial={{ opacity: 0, y: 50 }}
@@ -1407,14 +1462,53 @@ const Home = () => {
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   whileHover={{ y: -5, scale: 1.02 }}
+                  className="h-full"
                 >
-                  <PropertyCard 
-                    property={property}
-                    onClick={() => {
-                      setSelectedProperty(property);
-                      setIsModalOpen(true);
-                    }}
-                  />
+                  <Card className="h-full flex flex-col overflow-hidden bg-card border-border/50 shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div className="relative h-48 overflow-hidden">
+                      <img
+                        src={property.image}
+                        alt={property.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute top-4 right-4 bg-primary text-white px-3 py-1 rounded-full text-sm font-bold">
+                        {property.price}
+                      </div>
+                    </div>
+                    
+                    <CardContent className="p-6 flex-1 flex flex-col">
+                      <h3 className="text-xl font-bold text-primary mb-2">{property.title}</h3>
+                      <p className="text-sm text-muted-foreground mb-2 flex items-center">
+                        <MapPin className="w-4 h-4 mr-1" />
+                        {property.location}
+                      </p>
+                      
+                      <p className="text-muted-foreground text-sm leading-relaxed mb-4 flex-1">
+                        {property.description}
+                      </p>
+                      
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {property.features.map((feature, i) => (
+                          <Badge key={i} variant="secondary" className="text-xs">
+                            {feature}
+                          </Badge>
+                        ))}
+                      </div>
+                      
+                      <Button 
+                        className="w-full mt-auto bg-gradient-to-r from-primary to-primary-hover hover:from-primary/90 hover:to-primary-hover/90 text-white"
+                        onClick={() => {
+                          trackCustomEvent('latest_property_clicked', { 
+                            property_title: property.title,
+                            property_location: property.location
+                          });
+                        }}
+                      >
+                        Voir les détails
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </CardContent>
+                  </Card>
                 </motion.div>
               ))}
             </div>
@@ -1440,7 +1534,7 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Section Explorer la Carte */}
+        {/* Section Témoignages */}
         <section className="py-32 md:py-40 bg-muted/30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
@@ -1448,16 +1542,16 @@ const Home = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="text-center mb-12"
+              className="text-center mb-16"
             >
               <motion.h2 
-                className="text-3xl md:text-4xl font-bold text-primary mb-6"
+                className="text-5xl md:text-7xl font-bold text-primary mb-6"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
               >
-                Explorer la Carte
+                Témoignages
               </motion.h2>
               <motion.p 
                 className="text-lg text-muted-foreground max-w-3xl mx-auto leading-loose"
@@ -1466,40 +1560,97 @@ const Home = () => {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 viewport={{ once: true }}
               >
-                Explorez visuellement les propriétés disponibles à travers Chypre avec notre carte interactive intuitive. Filtrez par zone, prix et type de bien pour trouver votre futur investissement.
+                Découvrez les témoignages de nos clients satisfaits qui ont trouvé leur propriété de rêve grâce à ENKI Realty.
               </motion.p>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="rounded-3xl overflow-hidden shadow-2xl border border-white/20"
-            >
-              <ErrorBoundary>
-                <Suspense fallback={
-                  <div className="h-96 bg-muted flex items-center justify-center">
-                    <div className="text-center">
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                        className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"
-                      />
-                      <p className="text-muted-foreground">Chargement de la carte...</p>
-                    </div>
-                  </div>
-                }>
-                  <GoogleMapComponent 
-                    properties={properties}
-                    onPropertySelect={(property) => {
-                      setSelectedProperty(property);
-                      setIsModalOpen(true);
-                    }}
-                  />
-                </Suspense>
-              </ErrorBoundary>
-            </motion.div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[
+                {
+                  id: 1,
+                  name: "Marie Dubois",
+                  location: "France",
+                  photo: "https://images.unsplash.com/photo-1494790108755-2616b612b193?w=100&h=100&fit=crop&auto=format",
+                  rating: 5,
+                  comment: "Service exceptionnel ! L'équipe d'ENKI Realty m'a accompagnée dans tout le processus d'achat de ma villa à Limassol. Professionnalisme et expertise remarquables."
+                },
+                {
+                  id: 2,
+                  name: "Thomas Wagner",
+                  location: "Allemagne",
+                  photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&auto=format",
+                  rating: 5,
+                  comment: "Investissement parfait à Paphos grâce aux conseils avisés de l'équipe. La recherche personnalisée par IA m'a fait gagner énormément de temps."
+                },
+                {
+                  id: 3,
+                  name: "Sarah Johnson",
+                  location: "Royaume-Uni",
+                  photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&auto=format",
+                  rating: 5,
+                  comment: "Une expérience client remarquable. De la recherche à la signature, tout s'est déroulé parfaitement. Je recommande vivement ENKI Realty."
+                },
+                {
+                  id: 4,
+                  name: "Marco Rossi",
+                  location: "Italie",
+                  photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&auto=format",
+                  rating: 5,
+                  comment: "Accompagnement personnalisé et professionnel. L'équipe connaît parfaitement le marché chypriote et m'a trouvé l'appartement idéal à Larnaca."
+                },
+                {
+                  id: 5,
+                  name: "Anna Petrov",
+                  location: "Russie",
+                  photo: "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=100&h=100&fit=crop&auto=format",
+                  rating: 5,
+                  comment: "Processus d'achat simplifié et transparent. L'expertise en fiscalité internationale a été un atout majeur pour mon investissement."
+                },
+                {
+                  id: 6,
+                  name: "David Chen",
+                  location: "Singapour",
+                  photo: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=100&h=100&fit=crop&auto=format",
+                  rating: 5,
+                  comment: "Excellent service de bout en bout. La technologie utilisée pour la recherche de propriétés est impressionnante et très efficace."
+                }
+              ].map((testimonial, index) => (
+                <motion.div
+                  key={testimonial.id}
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  whileHover={{ y: -5, scale: 1.02 }}
+                >
+                  <Card className="h-full bg-card border-border/50 shadow-lg hover:shadow-xl transition-all duration-300 p-6">
+                    <CardContent className="p-0">
+                      <div className="flex items-center mb-4">
+                        <img
+                          src={testimonial.photo}
+                          alt={testimonial.name}
+                          className="w-12 h-12 rounded-full mr-4 object-cover"
+                        />
+                        <div>
+                          <h3 className="font-semibold text-primary">{testimonial.name}</h3>
+                          <p className="text-sm text-muted-foreground">{testimonial.location}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex mb-4">
+                        {[...Array(testimonial.rating)].map((_, i) => (
+                          <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                        ))}
+                      </div>
+                      
+                      <blockquote className="text-muted-foreground italic leading-relaxed">
+                        "{testimonial.comment}"
+                      </blockquote>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </section>
 
