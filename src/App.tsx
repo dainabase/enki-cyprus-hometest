@@ -27,6 +27,7 @@ const Register = lazy(() => import("./pages/Register").then(module => ({ default
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy").then(module => ({ default: module.default })));
 const Dashboard = lazy(() => import("./pages/Dashboard").then(module => ({ default: module.default })));
 const Admin = lazy(() => import("./pages/Admin").then(module => ({ default: module.default })));
+const LexaiaPage = lazy(() => import("./pages/LexaiaPage").then(module => ({ default: module.default })));
 const NotFound = lazy(() => import("./pages/NotFound").then(module => ({ default: module.default })));
 
 const queryClient = new QueryClient({
@@ -66,6 +67,7 @@ const AppContent = () => {
                 <Route path="/register" element={<Register />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+                <Route path="/lexaia" element={<LexaiaPage />} />
                 <Route path="/admin" element={<PrivateRoute adminOnly><Admin /></PrivateRoute>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
