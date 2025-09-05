@@ -1234,14 +1234,11 @@ const Home = () => {
           />
            
           <motion.div 
-            className="absolute inset-0 flex items-center justify-center text-primary-foreground text-4xl md:text-6xl font-bold text-center px-6"
+            className="absolute inset-0 flex items-center justify-center text-white text-4xl md:text-6xl font-bold text-center px-6"
             initial={{ opacity: 0, x: 100 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
-            style={{ 
-              textShadow: '2px 2px 4px rgba(0,0,0,0.8)' 
-            }}
           >
             Experience Timeless Elegance, Premium Living in your Dream Home
           </motion.div>
