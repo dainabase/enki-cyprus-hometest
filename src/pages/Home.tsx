@@ -1075,25 +1075,25 @@ const Home = () => {
                   number: "+6,5%",
                   title: "Appréciation annuelle des prix immobiliers",
                   subtitle: "",
-                  source: "Sources : <a href='https://www.globalpropertyguide.com' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>Global Property Guide</a> · <a href='https://www.ceicdata.com' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>CEIC Data</a>"
+                  source: "Sources : <a href='https://www.globalpropertyguide.com/Europe/Cyprus/Price-History' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>Global Property Guide</a> · <a href='https://www.ceicdata.com/en/indicator/cyprus/house-prices-growth' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>CEIC Data</a>"
                 },
                 {
                   number: "23,9K", 
                   title: "Transactions immobilières en 2024",
                   subtitle: "",
-                  source: "Sources : <a href='https://www.pwc.com.cy' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>PwC Cyprus Real Estate Market Review</a> · <a href='https://cyprus-mail.com' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>Cyprus Mail</a>"
+                  source: "Sources : <a href='https://www.pwc.com.cy/en/publications/cyprus-real-estate-market-review.html' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>PwC Cyprus Real Estate Market Review</a> · <a href='https://cyprus-mail.com/' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>Cyprus Mail</a>"
                 },
                 {
                   number: "70%",
                   title: "Taux d'occupation locative", 
                   subtitle: "",
-                  source: "Sources : <a href='https://www.airbtics.com' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>Airbtics</a> · <a href='https://www.investropa.com' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>Investropa</a>"
+                  source: "Sources : <a href='https://airbtics.com/' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>Airbtics</a> · <a href='https://investropa.com/' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>Investropa</a>"
                 },
                 {
                   number: "4,75%",
                   title: "Rendement locatif brut moyen",
                   subtitle: "",
-                  source: "Sources : <a href='https://www.globalcitizensolutions.com' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>Global Citizens Solutions</a> · <a href='https://www.rics.org' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>RICS Cyprus</a> · <a href='https://www.globalpropertyguide.com' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>Global Property Guide</a>"
+                  source: "Sources : <a href='https://www.globalcitizensolutions.com/' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>Global Citizens Solutions</a> · <a href='https://www.rics.org/cyprus/' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>RICS Cyprus</a> · <a href='https://www.globalpropertyguide.com/Europe/Cyprus' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>Global Property Guide</a>"
                 }
               ].map((kpi, index) => (
                 <motion.div
