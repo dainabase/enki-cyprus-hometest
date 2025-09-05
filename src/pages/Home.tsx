@@ -1572,7 +1572,7 @@ const Home = () => {
                   location: "France",
                   photo: "https://images.unsplash.com/photo-1494790108755-2616b612b193?w=100&h=100&fit=crop&auto=format",
                   rating: 5,
-                  comment: "Service exceptionnel ! L'équipe d'ENKI Realty m'a accompagnée dans tout le processus d'achat de ma villa à Limassol. Professionnalisme et expertise remarquables."
+                  comment: "L'IA de recherche automatisée d'ENKI Realty a analysé mon profil et m'a proposé exactement le type de villa que je cherchais à Limassol. En 48h j'avais ma sélection parfaite !"
                 },
                 {
                   id: 2,
@@ -1580,7 +1580,7 @@ const Home = () => {
                   location: "Allemagne",
                   photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&auto=format",
                   rating: 5,
-                  comment: "Investissement parfait à Paphos grâce aux conseils avisés de l'équipe. La recherche personnalisée par IA m'a fait gagner énormément de temps."
+                  comment: "Grâce à leur agent fiscal IA, j'ai pu optimiser mon montage d'entreprise à Chypre et réduire ma fiscalité de 40%. Un accompagnement sur-mesure exceptionnel."
                 },
                 {
                   id: 3,
@@ -1588,7 +1588,7 @@ const Home = () => {
                   location: "Royaume-Uni",
                   photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&auto=format",
                   rating: 5,
-                  comment: "Une expérience client remarquable. De la recherche à la signature, tout s'est déroulé parfaitement. Je recommande vivement ENKI Realty."
+                  comment: "L'obtention de ma résidence chypriote s'est faite en un temps record grâce à leur IA conseil. Toutes les démarches ont été automatisées et simplifiées."
                 },
                 {
                   id: 4,
@@ -1596,7 +1596,7 @@ const Home = () => {
                   location: "Italie",
                   photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&auto=format",
                   rating: 5,
-                  comment: "Accompagnement personnalisé et professionnel. L'équipe connaît parfaitement le marché chypriote et m'a trouvé l'appartement idéal à Larnaca."
+                  comment: "La recherche automatisée a parfaitement cerné mon profil d'investisseur. Le montage fiscal proposé par leur IA m'a fait économiser des milliers d'euros."
                 },
                 {
                   id: 5,
@@ -1604,7 +1604,7 @@ const Home = () => {
                   location: "Russie",
                   photo: "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=100&h=100&fit=crop&auto=format",
                   rating: 5,
-                  comment: "Processus d'achat simplifié et transparent. L'expertise en fiscalité internationale a été un atout majeur pour mon investissement."
+                  comment: "Leur agent fiscal IA a structuré mon montage d'entreprise offshore de façon optimale. La recherche de propriétés s'est adaptée automatiquement à mes besoins."
                 },
                 {
                   id: 6,
@@ -1612,7 +1612,7 @@ const Home = () => {
                   location: "Singapour",
                   photo: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=100&h=100&fit=crop&auto=format",
                   rating: 5,
-                  comment: "Excellent service de bout en bout. La technologie utilisée pour la recherche de propriétés est impressionnante et très efficace."
+                  comment: "L'IA d'ENKI Realty a analysé mon profil fiscal et m'a guidé vers la résidence parfaite avec un montage d'entreprise sur-mesure. Technologie impressionnante !"
                 }
               ].map((testimonial, index) => (
                 <motion.div
