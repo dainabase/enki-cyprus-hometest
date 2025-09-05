@@ -12,6 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Property } from '@/lib/supabase';
 import { useSupabaseProperties } from '@/hooks/useSupabaseProperties';
@@ -1257,7 +1258,7 @@ const Home = () => {
               className="text-center mb-16"
             >
               <motion.h2 
-                className="text-3xl md:text-4xl font-bold text-primary mb-6"
+                className="text-4xl md:text-5xl font-bold text-primary mb-6"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
@@ -1272,25 +1273,98 @@ const Home = () => {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 viewport={{ once: true }}
               >
-                Découvrez notre sélection exclusive de propriétés d'exception, choisies pour leur emplacement privilégié, leur architecture remarquable et leur potentiel d'investissement.
+                Découvrez notre sélection exclusive de programmes immobiliers d'exception, choisies pour leur emplacement privilégié, leur architecture remarquable et leur potentiel d'investissement.
               </motion.p>
             </motion.div>
 
-            {enable3D && featuredProperties.length > 0 ? (
-              <Advanced3DCarousel 
-                properties={featuredProperties}
-                interests={cyprusInterests}
-                onInterestClick={handleInterestClick}
-              />
-            ) : (
-              featuredProperties.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {featuredProperties.map((p, i) => (
-                    <PropertyCard key={p.id} property={p} index={i} />
-                  ))}
-                </div>
-              )
-            )}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[
+                {
+                  id: 1,
+                  name: "Résidence Marina Bay",
+                  image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&h=400&fit=crop&auto=format",
+                  priceFrom: "€250,000",
+                  location: "Limassol Marina",
+                  description: "Résidence de luxe en bord de mer avec vue panoramique sur la Marina. Architecture moderne et finitions haut de gamme.",
+                  features: ["Vue mer", "Piscine privée", "Parking", "Centre-ville"]
+                },
+                {
+                  id: 2,
+                  name: "Les Jardins de Paphos",
+                  image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&auto=format",
+                  priceFrom: "€180,000",
+                  location: "Paphos",
+                  description: "Programme résidentiel dans un cadre verdoyant, proche des sites historiques de Paphos. Idéal pour investissement locatif.",
+                  features: ["Piscine commune", "Jardins paysagers", "Centre-ville", "Proche plages"]
+                },
+                {
+                  id: 3,
+                  name: "Cyprus Heights",
+                  image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&h=400&fit=crop&auto=format",
+                  priceFrom: "€320,000",
+                  location: "Larnaca",
+                  description: "Tours résidentielles modernes avec services hôteliers. Vue imprenable sur la côte et l'aéroport international.",
+                  features: ["Vue mer", "Services hôteliers", "Parking", "Proche aéroport"]
+                }
+              ].map((project, index) => (
+                <motion.div
+                  key={project.id}
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  whileHover={{ y: -5, scale: 1.02 }}
+                  className="group"
+                >
+                  <Card className="overflow-hidden bg-card border-border/50 shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div className="relative h-64 overflow-hidden">
+                      <img
+                        src={project.image}
+                        alt={project.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                      <div className="absolute bottom-4 left-4 text-white">
+                        <p className="text-sm font-medium">{project.priceFrom}</p>
+                        <p className="text-xs opacity-90">À partir de</p>
+                      </div>
+                    </div>
+                    
+                    <CardContent className="p-6">
+                      <h3 className="text-xl font-bold text-primary mb-2">{project.name}</h3>
+                      <p className="text-sm text-muted-foreground mb-2 flex items-center">
+                        <MapPin className="w-4 h-4 mr-1" />
+                        {project.location}
+                      </p>
+                      <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+                        {project.description}
+                      </p>
+                      
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {project.features.map((feature, i) => (
+                          <Badge key={i} variant="secondary" className="text-xs">
+                            {feature}
+                          </Badge>
+                        ))}
+                      </div>
+                      
+                      <Button 
+                        className="w-full bg-gradient-to-r from-primary to-primary-hover hover:from-primary/90 hover:to-primary-hover/90 text-white"
+                        onClick={() => {
+                          trackCustomEvent('featured_project_clicked', { 
+                            project_name: project.name,
+                            project_location: project.location
+                          });
+                        }}
+                      >
+                        En savoir plus
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </CardContent>
+                  </Card>
+                 </motion.div>
+              ))}
+            </div>
           </div>
         </section>
 
