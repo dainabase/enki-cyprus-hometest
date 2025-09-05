@@ -174,7 +174,7 @@ const LexaiaPage = () => {
         .from('dossiers')
         .insert({
           user_id: user?.id,
-          title: `Analyse Lexaia - ${new Date().toLocaleDateString()}`,
+          title: `Analyse Conseil Fiscal - ${new Date().toLocaleDateString()}`,
           query,
           lexaia_outputs: { 
             summary: response, 
@@ -302,7 +302,7 @@ const LexaiaPage = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen pt-16 flex items-center justify-center bg-muted/30">
+      <div className="min-h-screen pt-16 flex items-center justify-center bg-secondary">
         <Card className="max-w-md">
           <CardContent className="p-6 text-center">
             <Brain className="w-12 h-12 text-primary mx-auto mb-4" />
@@ -328,16 +328,22 @@ const LexaiaPage = () => {
         url="https://enki-realty.com/lexaia"
       />
       
-      <div className="min-h-screen pt-16 bg-gradient-to-br from-muted/30 to-background">
-        {/* Background Premium Overlays - même style que la homepage */}
+      {/* Section Conseil Fiscal IA - Style exact "Commencer l'Expérience" */}
+      <motion.section 
+        className="bg-secondary py-40 md:py-50 px-4 md:px-8 relative overflow-hidden min-h-screen"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.2, ease: 'easeInOut' }}
+      >
+        {/* Premium background overlays - exactement comme homepage */}
         <motion.div 
-          className="fixed inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/10 pointer-events-none"
+          className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/15"
           initial={{ opacity: 0, scale: 1.1 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 2 }}
         />
         <motion.div 
-          className="fixed top-1/4 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none"
+          className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"
           animate={{ 
             x: [0, 50, -50, 0],
             y: [0, -30, 30, 0],
@@ -349,131 +355,103 @@ const LexaiaPage = () => {
           }}
         />
         
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
-          {/* Header - Style homepage */}
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
+        <div className="max-w-7xl mx-auto relative z-10">
+          {/* Titre section - même style que "Commencer l'Expérience" */}
+          <motion.h1 
+            className="text-5xl md:text-7xl font-bold text-primary text-center mb-10"
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-center mb-16"
+            transition={{ duration: 0.6 }}
           >
-            <div className="flex items-center justify-center gap-4 mb-8">
-              <motion.div
-                animate={{ rotate: [0, 360] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                className="w-16 h-16 bg-gradient-to-r from-primary to-purple-600 rounded-full flex items-center justify-center shadow-lg"
-              >
-                <Brain className="w-8 h-8 text-white" />
-              </motion.div>
-              <motion.h1 
-                className="text-5xl md:text-7xl font-bold text-primary"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                Conseil Fiscal IA
-              </motion.h1>
-              <Badge className="bg-gradient-to-r from-primary to-purple-600 text-white shadow-lg text-sm px-4 py-2">
-                Agent Spécialisé
-              </Badge>
-            </div>
-            
-            <motion.p 
-              className="text-xl text-muted-foreground max-w-4xl mx-auto mb-8 leading-relaxed font-light"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              Agent fiscal spécialisé dans l'investissement immobilier à Chypre avec connaissance complète des bases fiscales de tous les pays d'Europe et d'autres juridictions
-            </motion.p>
-            
-            {/* Disclaimer - Style premium homepage */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200/50 rounded-2xl p-6 max-w-5xl mx-auto shadow-lg backdrop-blur-sm"
-            >
-              <div className="flex items-start gap-4">
-                <div className="w-6 h-6 text-yellow-600 flex-shrink-0 mt-1">
+            Conseil Fiscal IA
+          </motion.h1>
+
+          {/* Texte intro - même style */}
+          <motion.p 
+            className="text-lg text-muted-foreground max-w-3xl mx-auto text-center mb-12 leading-loose"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            Agent fiscal spécialisé dans l'investissement immobilier à Chypre avec connaissance complète des bases fiscales de tous les pays d'Europe et d'autres juridictions.
+          </motion.p>
+
+          {/* Disclaimer - style intégré */}
+          <motion.div
+            className="max-w-4xl mx-auto mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <div className="bg-yellow-50/80 border border-yellow-200/50 rounded-xl p-4 backdrop-blur-sm">
+              <div className="flex items-start gap-3">
+                <div className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5">
                   <svg fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.19-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
                   </svg>
                 </div>
                 <div className="text-sm text-yellow-800">
-                  <p className="font-bold text-base mb-2">Disclaimer Important</p>
+                  <p className="font-semibold mb-1">Disclaimer Important</p>
                   <p className="leading-relaxed">
                     Tous les résultats et réponses de notre agent fiscal ne sont que des scénarios indicatifs. 
-                    Ces scénarios sont obligatoirement à vérifier et à confirmer avec des avocats d'affaires 
-                    pour valider les recommandations et s'assurer de leur conformité avec votre situation spécifique.
+                    Ces scénarios sont obligatoirement à vérifier et à confirmer avec des avocats d'affaires.
                   </p>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Main Chat Interface - Style premium homepage */}
-            <div className="lg:col-span-3">
+          {/* Interface Chat - exact style de la homepage */}
+          <motion.div 
+            className="space-y-8"
+            initial={{ opacity: 0, y: 60 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ 
+              duration: 1, 
+              delay: 0.6, 
+              type: "spring",
+              damping: 15 
+            }}
+          >
+            {/* Container principal avec hover glow - exactement comme homepage */}
+            <motion.div
+              className="relative group"
+              whileHover={{
+                scale: 1.02,
+                transition: { 
+                  type: "spring", 
+                  damping: 15 
+                }
+              }}
+            >
+              {/* Glow effect on hover - exactement comme homepage */}
               <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="relative"
+                className="absolute -inset-2 z-0 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                initial={{ scale: 0.8 }}
+                whileHover={{ scale: 1.1 }}
+              />
+              
+              <motion.div
+                className="relative z-10 bg-white rounded-2xl shadow-2xl border border-gray-200/50 overflow-hidden"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5 }}
               >
-                <Card className="h-[70vh] flex flex-col shadow-2xl border-border/20 bg-card/95 backdrop-blur-sm overflow-hidden">
-                  {/* Premium background overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 pointer-events-none" />
-                  
-                  <CardHeader className="border-b border-border relative z-10">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <CardTitle className="flex items-center gap-2">
-                        <MessageCircle className="w-5 h-5" />
-                        Consultation Fiscale
-                      </CardTitle>
-                      <Badge variant="outline" className="text-green-600 border-green-600">
-                        En ligne
-                      </Badge>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setShowPropertySelector(true)}
-                        disabled={userProperties.length === 0}
-                      >
-                        <Building className="w-4 h-4 mr-2" />
-                        Sélectionner biens ({selectedProperties.filter(p => p.selected).length})
-                      </Button>
-                      {messages.length > 0 && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => generatePDFMutation.mutate()}
-                          disabled={generatePDFMutation.isPending}
-                        >
-                          <Download className="w-4 h-4 mr-2" />
-                          PDF
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                </CardHeader>
-
                 {/* Messages Area */}
-                <ScrollArea className="flex-1 p-6 relative z-10">
+                <div className="h-96 overflow-y-auto p-6">
                   <AnimatePresence>
                     {messages.length === 0 ? (
                       <div className="text-center py-12">
-                        <Sparkles className="w-16 h-16 text-primary mx-auto mb-4 opacity-50" />
-                        <h3 className="text-lg font-semibold mb-2">Prêt à optimiser votre fiscalité ?</h3>
-                        <p className="text-muted-foreground mb-6">
+                        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <Brain className="w-8 h-8 text-primary" />
+                        </div>
+                        <h3 className="text-lg font-semibold mb-2 text-gray-800">Prêt à optimiser votre fiscalité ?</h3>
+                        <p className="text-gray-600 mb-6">
                           Posez votre première question à notre agent fiscal pour commencer
                         </p>
                         
-                        {/* Predefined Questions */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+                        {/* Questions prédéfinies */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-4xl mx-auto">
                           {predefinedQuestions.map((item, index) => (
                             <motion.button
                               key={index}
@@ -481,15 +459,15 @@ const LexaiaPage = () => {
                               animate={{ opacity: 1, y: 0 }}
                               transition={{ delay: index * 0.1 }}
                               onClick={() => setCurrentQuery(item.question)}
-                              className="p-4 text-left border border-border rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-all duration-200 group"
+                              className="p-3 text-left border border-gray-200 rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-all duration-200 group"
                             >
                               <div className="flex items-start gap-3">
-                                <item.icon className="w-5 h-5 text-primary flex-shrink-0 mt-1 group-hover:scale-110 transition-transform" />
+                                <item.icon className="w-4 h-4 text-primary flex-shrink-0 mt-1 group-hover:scale-110 transition-transform" />
                                 <div>
-                                  <h4 className="font-medium text-sm mb-1 group-hover:text-primary transition-colors">
+                                  <h4 className="font-medium text-sm mb-1 group-hover:text-primary transition-colors text-gray-800">
                                     {item.question}
                                   </h4>
-                                  <p className="text-xs text-muted-foreground">
+                                  <p className="text-xs text-gray-500">
                                     {item.description}
                                   </p>
                                 </div>
@@ -499,7 +477,7 @@ const LexaiaPage = () => {
                         </div>
                       </div>
                     ) : (
-                      <div className="space-y-6">
+                      <div className="space-y-4">
                         {messages.map((message, index) => (
                           <motion.div
                             key={message.id}
@@ -511,307 +489,65 @@ const LexaiaPage = () => {
                             <div className={`max-w-[80%] ${message.type === 'user' ? 'order-2' : 'order-1'}`}>
                               <div className="flex items-center gap-2 mb-2">
                                 {message.type === 'user' ? (
-                                  <User className="w-5 h-5 text-primary" />
+                                  <User className="w-4 h-4 text-primary" />
                                 ) : (
-                                  <Bot className="w-5 h-5 text-purple-600" />
+                                  <Brain className="w-4 h-4 text-purple-600" />
                                 )}
-                                <span className="text-sm font-medium">
+                                <span className="text-sm font-medium text-gray-700">
                                   {message.type === 'user' ? 'Vous' : 'Agent Fiscal IA'}
                                 </span>
-                                <span className="text-xs text-muted-foreground">
+                                <span className="text-xs text-gray-500">
                                   {message.timestamp.toLocaleTimeString()}
                                 </span>
                               </div>
                               
-                              <div className={`p-4 rounded-lg ${
+                              <div className={`p-3 rounded-lg ${
                                 message.type === 'user' 
                                   ? 'bg-primary text-white' 
-                                  : 'bg-muted border border-border'
+                                  : 'bg-gray-100 text-gray-800'
                               }`}>
-                                <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                                  {message.content}
-                                </p>
-                                
-                                {/* Analysis Section for AI responses */}
-                                {message.type === 'assistant' && message.analysis && (
-                                  <div className="mt-4 pt-4 border-t border-border/20">
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      onClick={() => setExpandedMessage(
-                                        expandedMessage === message.id ? null : message.id
-                                      )}
-                                      className="mb-3 h-auto p-0 text-xs"
-                                    >
-                                      <span className="flex items-center gap-1">
-                                        Analyse détaillée
-                                        {expandedMessage === message.id ? (
-                                          <ChevronUp className="w-3 h-3" />
-                                        ) : (
-                                          <ChevronDown className="w-3 h-3" />
-                                        )}
-                                      </span>
-                                    </Button>
-                                    
-                                    <AnimatePresence>
-                                      {expandedMessage === message.id && (
-                                        <motion.div
-                                          initial={{ opacity: 0, height: 0 }}
-                                          animate={{ opacity: 1, height: 'auto' }}
-                                          exit={{ opacity: 0, height: 0 }}
-                                          className="space-y-3"
-                                        >
-                                          {message.analysis.tax_optimization && (
-                                            <div>
-                                              <h5 className="text-xs font-semibold mb-2 text-green-600">
-                                                💰 Optimisations fiscales:
-                                              </h5>
-                                              <ul className="text-xs space-y-1">
-                                                {message.analysis.tax_optimization.map((item: string, i: number) => (
-                                                  <li key={i} className="flex items-start gap-2">
-                                                    <span className="w-1 h-1 bg-green-500 rounded-full mt-2 flex-shrink-0" />
-                                                    {item}
-                                                  </li>
-                                                ))}
-                                              </ul>
-                                            </div>
-                                          )}
-                                          
-                                          {message.analysis.recommendations && (
-                                            <div>
-                                              <h5 className="text-xs font-semibold mb-2 text-blue-600">
-                                                🎯 Recommandations:
-                                              </h5>
-                                              <ul className="text-xs space-y-1">
-                                                {message.analysis.recommendations.map((item: string, i: number) => (
-                                                  <li key={i} className="flex items-start gap-2">
-                                                    <span className="w-1 h-1 bg-blue-500 rounded-full mt-2 flex-shrink-0" />
-                                                    {item}
-                                                  </li>
-                                                ))}
-                                              </ul>
-                                            </div>
-                                          )}
-                                          
-                                          {message.analysis.savings_potential && (
-                                            <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded">
-                                              <p className="text-xs font-semibold text-green-700 dark:text-green-400">
-                                                💡 Potentiel d'économie: €{message.analysis.savings_potential.toLocaleString()}
-                                              </p>
-                                            </div>
-                                          )}
-                                        </motion.div>
-                                      )}
-                                    </AnimatePresence>
-                                  </div>
-                                )}
-                                
-                                {/* Action buttons for AI responses */}
-                                {message.type === 'assistant' && (
-                                  <div className="flex gap-2 mt-3">
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      onClick={() => navigator.clipboard.writeText(message.content)}
-                                      className="h-auto p-1 text-xs"
-                                    >
-                                      <Copy className="w-3 h-3 mr-1" />
-                                      Copier
-                                    </Button>
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      onClick={handleSaveConversation}
-                                      disabled={saveQueryMutation.isPending}
-                                      className="h-auto p-1 text-xs"
-                                    >
-                                      <Save className="w-3 h-3 mr-1" />
-                                      Sauvegarder
-                                    </Button>
-                                  </div>
-                                )}
+                                <p className="text-sm leading-relaxed">{message.content}</p>
                               </div>
                             </div>
                           </motion.div>
                         ))}
-                        
-                        {lexaiaQueryMutation.isPending && (
-                          <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="flex justify-start"
-                          >
-                            <div className="max-w-[80%]">
-                              <div className="flex items-center gap-2 mb-2">
-                                <Bot className="w-5 h-5 text-purple-600" />
-                                <span className="text-sm font-medium">Agent Fiscal IA</span>
-                              </div>
-                              <div className="bg-muted border border-border p-4 rounded-lg">
-                                <div className="flex items-center gap-3">
-                                  <motion.div
-                                    animate={{ rotate: 360 }}
-                                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                                    className="w-4 h-4 border-2 border-purple-600 border-t-transparent rounded-full"
-                                  />
-                                  <span className="text-sm text-muted-foreground">
-                                    Analyse en cours...
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          </motion.div>
-                        )}
                       </div>
                     )}
                   </AnimatePresence>
                   <div ref={messagesEndRef} />
-                </ScrollArea>
-
-                {/* Input Area */}
-                <div className="border-t border-border p-6 relative z-10">
-                  <div className="flex gap-3">
-                    <div className="flex-1">
-                      <Textarea
-                        value={currentQuery}
-                        onChange={(e) => setCurrentQuery(e.target.value)}
-                        placeholder="Posez votre question fiscale... (ex: 'Scénarios optimisation pour investissement Chypre depuis Suisse')"
-                        className="min-h-[60px] resize-none"
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter' && !e.shiftKey) {
-                            e.preventDefault();
-                            handleSubmitQuery();
-                          }
-                        }}
-                      />
-                      {selectedProperties.filter(p => p.selected).length > 0 && (
-                        <div className="mt-2 flex flex-wrap gap-1">
-                          {selectedProperties.filter(p => p.selected).map(property => (
-                            <Badge key={property.id} variant="secondary" className="text-xs">
-                              {property.title}
-                            </Badge>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    <Button
-                      onClick={handleSubmitQuery}
-                      disabled={!currentQuery.trim() || lexaiaQueryMutation.isPending}
-                      className="btn-premium h-[60px] px-6"
-                    >
-                      <Send className="w-4 h-4" />
-                    </Button>
-                  </div>
                 </div>
-                </Card>
-              </motion.div>
-            </div>
 
-            {/* Sidebar - Style premium homepage */}
-            <motion.div 
-              className="space-y-6"
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            >
-              {/* Saved Queries */}
-              <Card className="shadow-lg border-border/20 bg-card/95 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="text-lg">Analyses Sauvegardées</CardTitle>
-                  <CardDescription>Vos consultations précédentes</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {savedQueries.length === 0 ? (
-                    <p className="text-sm text-muted-foreground text-center py-4">
-                      Aucune analyse sauvegardée
-                    </p>
-                  ) : (
-                    <ScrollArea className="h-64">
-                      <div className="space-y-3">
-                        {savedQueries.map((query) => (
-                          <motion.div
-                            key={query.id}
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            className="p-3 border border-border rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                            onClick={() => setCurrentQuery(query.query)}
-                          >
-                            <div className="flex items-start justify-between mb-2">
-                              <p className="text-xs font-medium line-clamp-2">
-                                {query.query}
-                              </p>
-                              {query.starred && (
-                                <Star className="w-3 h-3 text-yellow-500 flex-shrink-0 ml-1" />
-                              )}
-                            </div>
-                            <p className="text-xs text-muted-foreground">
-                              {new Date(query.created_at).toLocaleDateString()}
-                            </p>
-                          </motion.div>
-                        ))}
-                      </div>
-                    </ScrollArea>
-                  )}
-                </CardContent>
-              </Card>
-
-              {/* Quick Stats */}
-              <Card className="shadow-lg border-border/20 bg-card/95 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="text-lg">Statistiques</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Consultations:</span>
-                    <Badge variant="secondary">{savedQueries.length}</Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Cette session:</span>
-                    <Badge variant="secondary">{messages.filter(m => m.type === 'user').length}</Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Biens sélectionnés:</span>
-                    <Badge variant="secondary">{selectedProperties.filter(p => p.selected).length}</Badge>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </div>
-        </div>
-
-        {/* Property Selector Modal */}
-        <Dialog open={showPropertySelector} onOpenChange={setShowPropertySelector}>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle>Sélectionner vos biens</DialogTitle>
-              <DialogDescription>
-                Choisissez les propriétés à inclure dans l'analyse
-              </DialogDescription>
-            </DialogHeader>
-            
-            <div className="space-y-3 max-h-64 overflow-y-auto">
-              {userProperties.map((property) => (
-                <div key={property.id} className="flex items-center space-x-3 p-3 border border-border rounded-lg">
-                  <Checkbox
-                    checked={selectedProperties.find(p => p.id === property.id)?.selected || false}
-                    onCheckedChange={(checked) => handlePropertySelection(property.id, !!checked)}
+                {/* Zone de saisie - style exact homepage */}
+                <div className="p-6 border-t border-gray-100">
+                  <Textarea
+                    value={currentQuery}
+                    onChange={(e) => setCurrentQuery(e.target.value)}
+                    placeholder="Décrivez votre situation fiscale : ex. 'Français, investissement 500k € à Chypre – meilleures structures d'optimisation fiscale ?'"
+                    className="w-full border-0 bg-transparent resize-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 min-h-[100px] text-gray-800 placeholder:text-gray-500 text-lg leading-relaxed"
                   />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{property.title}</p>
-                    <p className="text-xs text-muted-foreground">{property.location}</p>
-                    <p className="text-xs text-primary font-semibold">{property.price}</p>
+                  
+                  {/* Barre d'actions - style exact homepage */}
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-4 pt-4 border-t border-gray-100">
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <Brain className="w-4 h-4" />
+                      <span>Consultation confidentielle et sécurisée</span>
+                    </div>
+                    <motion.button
+                      className="px-8 py-3 bg-primary text-white rounded-lg text-lg font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      disabled={!currentQuery.trim() || lexaiaQueryMutation.isPending}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={handleSubmitQuery}
+                    >
+                      {lexaiaQueryMutation.isPending ? 'Analyse en cours...' : 'Analyser'}
+                    </motion.button>
                   </div>
                 </div>
-              ))}
-            </div>
-            
-            <div className="flex justify-end gap-3">
-              <Button variant="outline" onClick={() => setShowPropertySelector(false)}>
-                Fermer
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </motion.section>
     </>
   );
 };
