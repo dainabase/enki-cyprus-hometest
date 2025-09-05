@@ -255,7 +255,7 @@ const Navbar = () => {
                   variant="outline"
                   size="sm"
                   asChild
-                  className="border-white/20 text-white hover:bg-white/10 hover:text-blue-300"
+                  className="border-white text-white hover:bg-white hover:text-black bg-transparent"
                 >
                   <Link to="/login">
                     <LogIn className="w-4 h-4 mr-2" />
