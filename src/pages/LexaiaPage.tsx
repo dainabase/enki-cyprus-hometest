@@ -328,47 +328,80 @@ const LexaiaPage = () => {
         url="https://enki-realty.com/lexaia"
       />
       
-      <div className="min-h-screen pt-16 bg-muted/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Header */}
+      <div className="min-h-screen pt-16 bg-gradient-to-br from-muted/30 to-background">
+        {/* Background Premium Overlays - même style que la homepage */}
+        <motion.div 
+          className="fixed inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/10 pointer-events-none"
+          initial={{ opacity: 0, scale: 1.1 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 2 }}
+        />
+        <motion.div 
+          className="fixed top-1/4 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none"
+          animate={{ 
+            x: [0, 50, -50, 0],
+            y: [0, -30, 30, 0],
+          }}
+          transition={{ 
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
+          {/* Header - Style homepage */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-8"
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="text-center mb-16"
           >
-            <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="flex items-center justify-center gap-4 mb-8">
               <motion.div
                 animate={{ rotate: [0, 360] }}
                 transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                className="w-12 h-12 bg-gradient-to-r from-primary to-purple-600 rounded-full flex items-center justify-center"
+                className="w-16 h-16 bg-gradient-to-r from-primary to-purple-600 rounded-full flex items-center justify-center shadow-lg"
               >
-                <Brain className="w-6 h-6 text-white" />
+                <Brain className="w-8 h-8 text-white" />
               </motion.div>
-              <h1 className="text-4xl font-bold text-foreground">Conseil Fiscal IA</h1>
-              <Badge className="bg-gradient-to-r from-primary to-purple-600 text-white">
+              <motion.h1 
+                className="text-5xl md:text-7xl font-bold text-primary"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                Conseil Fiscal IA
+              </motion.h1>
+              <Badge className="bg-gradient-to-r from-primary to-purple-600 text-white shadow-lg text-sm px-4 py-2">
                 Agent Spécialisé
               </Badge>
             </div>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">
-              Agent fiscal spécialisé dans l'investissement immobilier à Chypre avec connaissance complète des bases fiscales de tous les pays d'Europe et d'autres juridictions
-            </p>
             
-            {/* Disclaimer */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
+            <motion.p 
+              className="text-xl text-muted-foreground max-w-4xl mx-auto mb-8 leading-relaxed font-light"
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 max-w-4xl mx-auto"
+              transition={{ duration: 0.6, delay: 0.4 }}
             >
-              <div className="flex items-start gap-3">
-                <div className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5">
+              Agent fiscal spécialisé dans l'investissement immobilier à Chypre avec connaissance complète des bases fiscales de tous les pays d'Europe et d'autres juridictions
+            </motion.p>
+            
+            {/* Disclaimer - Style premium homepage */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200/50 rounded-2xl p-6 max-w-5xl mx-auto shadow-lg backdrop-blur-sm"
+            >
+              <div className="flex items-start gap-4">
+                <div className="w-6 h-6 text-yellow-600 flex-shrink-0 mt-1">
                   <svg fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.19-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
                   </svg>
                 </div>
                 <div className="text-sm text-yellow-800">
-                  <p className="font-semibold mb-1">Disclaimer Important</p>
+                  <p className="font-bold text-base mb-2">Disclaimer Important</p>
                   <p className="leading-relaxed">
                     Tous les résultats et réponses de notre agent fiscal ne sont que des scénarios indicatifs. 
                     Ces scénarios sont obligatoirement à vérifier et à confirmer avec des avocats d'affaires 
@@ -380,10 +413,19 @@ const LexaiaPage = () => {
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Main Chat Interface */}
+            {/* Main Chat Interface - Style premium homepage */}
             <div className="lg:col-span-3">
-              <Card className="h-[70vh] flex flex-col shadow-lg">
-                <CardHeader className="border-b border-border">
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="relative"
+              >
+                <Card className="h-[70vh] flex flex-col shadow-2xl border-border/20 bg-card/95 backdrop-blur-sm overflow-hidden">
+                  {/* Premium background overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 pointer-events-none" />
+                  
+                  <CardHeader className="border-b border-border relative z-10">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <CardTitle className="flex items-center gap-2">
@@ -420,7 +462,7 @@ const LexaiaPage = () => {
                 </CardHeader>
 
                 {/* Messages Area */}
-                <ScrollArea className="flex-1 p-6">
+                <ScrollArea className="flex-1 p-6 relative z-10">
                   <AnimatePresence>
                     {messages.length === 0 ? (
                       <div className="text-center py-12">
@@ -626,7 +668,7 @@ const LexaiaPage = () => {
                 </ScrollArea>
 
                 {/* Input Area */}
-                <div className="border-t border-border p-6">
+                <div className="border-t border-border p-6 relative z-10">
                   <div className="flex gap-3">
                     <div className="flex-1">
                       <Textarea
@@ -660,13 +702,19 @@ const LexaiaPage = () => {
                     </Button>
                   </div>
                 </div>
-              </Card>
+                </Card>
+              </motion.div>
             </div>
 
-            {/* Sidebar */}
-            <div className="space-y-6">
+            {/* Sidebar - Style premium homepage */}
+            <motion.div 
+              className="space-y-6"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
               {/* Saved Queries */}
-              <Card>
+              <Card className="shadow-lg border-border/20 bg-card/95 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="text-lg">Analyses Sauvegardées</CardTitle>
                   <CardDescription>Vos consultations précédentes</CardDescription>
@@ -707,7 +755,7 @@ const LexaiaPage = () => {
               </Card>
 
               {/* Quick Stats */}
-              <Card>
+              <Card className="shadow-lg border-border/20 bg-card/95 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="text-lg">Statistiques</CardTitle>
                 </CardHeader>
@@ -726,7 +774,7 @@ const LexaiaPage = () => {
                   </div>
                 </CardContent>
               </Card>
-            </div>
+            </motion.div>
           </div>
         </div>
 
