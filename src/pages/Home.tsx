@@ -833,7 +833,7 @@ const Home = () => {
               ].map((item, index) => (
                 <motion.div
                   key={index}
-                  className="relative group bg-secondary border border-border/50 rounded-3xl p-8 lg:p-10 hover:border-primary/30 transition-all duration-500 overflow-hidden"
+                  className="relative group bg-secondary border border-border/50 rounded-3xl p-8 lg:p-10 hover:border-primary/30 transition-all duration-500 overflow-hidden cursor-pointer"
                   initial={{ 
                     opacity: 0, 
                     y: 60,
@@ -857,6 +857,18 @@ const Home = () => {
                       type: "spring", 
                       damping: 20,
                       stiffness: 300
+                    }
+                  }}
+                  onClick={() => {
+                    if (index === 0) {
+                      // Sélection rigoureuse -> Projets Vedette
+                      document.getElementById('featured-projects')?.scrollIntoView({ behavior: 'smooth' });
+                    } else if (index === 1) {
+                      // Recherche intelligente -> Commencer l'Expérience
+                      document.getElementById('start-experience')?.scrollIntoView({ behavior: 'smooth' });
+                    } else if (index === 2) {
+                      // Optimisation fiscale -> Page LEXAIA
+                      window.location.href = '/lexaia';
                     }
                   }}
                 >
@@ -1245,7 +1257,7 @@ const Home = () => {
         </motion.section>
 
         {/* Section Projets Vedette */}
-        <section className="py-32 md:py-40 bg-gradient-to-br from-muted/30 to-background">
+        <section id="featured-projects" className="py-32 md:py-40 bg-gradient-to-br from-muted/30 to-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 50 }}
