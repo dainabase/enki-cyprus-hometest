@@ -336,14 +336,21 @@ const Hero = () => {
         transition={{ duration: 1, delay: 1.5 }}
       >
         <motion.div 
-          className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
+          className="w-8 h-14 border-2 border-white/60 rounded-full flex justify-center relative"
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
         >
           <motion.div 
-            className="w-1 h-2 bg-white rounded-full mt-2"
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
+            className="w-2 h-3 bg-white rounded-full mt-2"
+            animate={{ 
+              y: [0, 16, 0],
+              opacity: [1, 0.3, 1]
+            }}
+            transition={{ 
+              duration: 2.5, 
+              repeat: Infinity, 
+              ease: "easeInOut" 
+            }}
           />
         </motion.div>
       </motion.div>
