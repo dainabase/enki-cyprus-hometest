@@ -1074,26 +1074,26 @@ const Home = () => {
                 {
                   number: "+6,5%",
                   title: "Appréciation annuelle des prix immobiliers",
-                  subtitle: "Augmentation constante des valeurs immobilières.",
-                  source: "Sources : Global Property Guide · CEIC Data"
+                  subtitle: "",
+                  source: "Sources : <a href='https://www.globalpropertyguide.com' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>Global Property Guide</a> · <a href='https://www.ceicdata.com' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>CEIC Data</a>"
                 },
                 {
-                  number: "23 900", 
+                  number: "23,9K", 
                   title: "Transactions immobilières en 2024",
-                  subtitle: "Volume exceptionnel d'activité du marché.",
-                  source: "Sources : PwC Cyprus Real Estate Market Review · Cyprus Mail"
+                  subtitle: "",
+                  source: "Sources : <a href='https://www.pwc.com.cy' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>PwC Cyprus Real Estate Market Review</a> · <a href='https://cyprus-mail.com' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>Cyprus Mail</a>"
                 },
                 {
                   number: "70%",
                   title: "Taux d'occupation locative", 
-                  subtitle: "Performance locative attractive et stable.",
-                  source: "Sources : Airbtics · Investropa"
+                  subtitle: "",
+                  source: "Sources : <a href='https://www.airbtics.com' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>Airbtics</a> · <a href='https://www.investropa.com' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>Investropa</a>"
                 },
                 {
                   number: "4,75%",
                   title: "Rendement locatif brut moyen",
-                  subtitle: "Rentabilité optimale pour les investisseurs.",
-                  source: "Sources : Global Citizens Solutions · RICS Cyprus · Global Property Guide"
+                  subtitle: "",
+                  source: "Sources : <a href='https://www.globalcitizensolutions.com' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>Global Citizens Solutions</a> · <a href='https://www.rics.org' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>RICS Cyprus</a> · <a href='https://www.globalpropertyguide.com' target='_blank' class='text-foreground/70 hover:text-primary hover:underline transition-colors'>Global Property Guide</a>"
                 }
               ].map((kpi, index) => (
                 <motion.div
