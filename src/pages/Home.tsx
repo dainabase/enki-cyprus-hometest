@@ -744,14 +744,14 @@ const Home = () => {
             transition={{ duration: 1, delay: 2 }}
           >
             <motion.div 
-              className="w-8 h-14 border-3 border-white/50 rounded-full flex justify-center backdrop-blur-sm"
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
+              className="w-10 h-16 border-2 border-white/70 rounded-full flex items-start justify-center backdrop-blur-sm"
+              animate={{ y: [0, 8, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
             >
               <motion.div 
-                className="w-2 h-3 bg-white rounded-full mt-3"
-                animate={{ y: [0, 8, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
+                className="w-2.5 h-2.5 bg-white rounded-full mt-2"
+                animate={{ y: [0, 18, 0], opacity: [1, 0.4, 1] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
               />
             </motion.div>
           </motion.div>
