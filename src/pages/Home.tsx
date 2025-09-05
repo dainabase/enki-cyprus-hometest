@@ -1450,7 +1450,7 @@ const Home = () => {
                   title: "Duplex 2 chambres",
                   location: "Protaras",
                   price: "€325,000",
-                  image: "https://images.unsplash.com/photo-1600607687644-c7171b42498b?w=600&h=400&fit=crop&auto=format",
+                  image: "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=600&h=400&fit=crop&auto=format",
                   features: ["Duplex", "Piscine commune", "Parking"],
                   description: "Duplex moderne dans résidence sécurisée avec piscine commune."
                 }
