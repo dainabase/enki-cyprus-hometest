@@ -212,10 +212,10 @@ const Navbar = () => {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"
-                      className="relative h-10 w-10 rounded-full"
+                      className="group relative h-10 w-10 rounded-full hover:bg-transparent"
                     >
-                      <Avatar className="h-8 w-8">
-                        <AvatarFallback className="bg-white text-primary font-medium hover:bg-primary hover:text-white transition-colors duration-200">
+                      <Avatar className="h-10 w-10">
+                        <AvatarFallback className="bg-white text-primary font-medium transition-colors duration-200 group-hover:bg-primary group-hover:text-primary-foreground">
                           {getUserInitials()}
                         </AvatarFallback>
                       </Avatar>
