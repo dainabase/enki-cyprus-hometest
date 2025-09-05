@@ -1,13 +1,17 @@
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { useFilters } from '@/contexts/FilterContext';
-import { Building2, MapPin, Filter, Trophy, Star, Users, Home, Target } from 'lucide-react';
+import { Building2, MapPin, Filter, Trophy, Star, Users, Home, Target, Sparkles, ArrowRight, ExternalLink } from 'lucide-react';
 import FeaturedProjectCard from '@/components/FeaturedProjectCard';
-import { ScrollRevealText } from '@/components/ui/ScrollRevealText';
+import { ScrollRevealText, ScrollRevealParagraph } from '@/components/ui/ScrollRevealText';
 
 const Projects = () => {
+  const { scrollY } = useScroll();
+  const y1 = useTransform(scrollY, [0, 300], [0, 100]);
+  const y2 = useTransform(scrollY, [0, 300], [0, -100]);
+  
   const { state } = useFilters();
   const { filteredProperties: properties } = state;
   
@@ -70,52 +74,114 @@ const Projects = () => {
   ];
 
   return (
-    <div className="min-h-screen pt-16">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        {/* Animated Background */}
+    <div className="min-h-screen">
+      {/* Hero Section - Exact same style as Home page */}
+      <section className="relative min-h-[90vh] overflow-hidden">
+        {/* Complex Animated Background - Same as Home page */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-hero" />
           <motion.div 
-            className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/20"
-            animate={{ 
-              background: [
-                "linear-gradient(45deg, hsl(var(--primary))/0.2, transparent, hsl(var(--accent))/0.2)",
-                "linear-gradient(135deg, hsl(var(--accent))/0.2, transparent, hsl(var(--primary))/0.2)",
-                "linear-gradient(45deg, hsl(var(--primary))/0.2, transparent, hsl(var(--accent))/0.2)"
-              ] 
-            }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/20 via-transparent to-transparent" />
+            className="absolute inset-0"
+            style={{ y: y1 }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-transparent to-primary/20" />
+          </motion.div>
+          <motion.div 
+            className="absolute inset-0"
+            style={{ y: y2 }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-tl from-accent/20 via-transparent to-primary/30" />
+          </motion.div>
+          <div className="absolute inset-0 bg-gradient-to-t from-background/30 via-transparent to-transparent" />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center"
-          >
-            <ScrollRevealText
-              text="Nos Programmes Immobiliers"
-              className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent"
+        {/* Floating particles */}
+        <div className="absolute inset-0">
+          {[...Array(20)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-2 h-2 bg-white/20 rounded-full"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+              }}
+              animate={{
+                y: [0, -20, 0],
+                opacity: [0.2, 0.8, 0.2],
+              }}
+              transition={{
+                duration: 3 + Math.random() * 2,
+                repeat: Infinity,
+                delay: Math.random() * 2,
+              }}
             />
-            <motion.p 
-              className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed"
-              initial={{ opacity: 0, y: 20 }}
+          ))}
+        </div>
+
+        <div className="relative h-full flex items-center justify-center">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
+              transition={{ duration: 1, ease: "easeOut" }}
             >
-              Découvrez notre portfolio exclusif de résidences et complexes immobiliers premium à Chypre
-            </motion.p>
-          </motion.div>
+              <ScrollRevealText
+                text="Programmes Immobiliers"
+                className="swaarg-hero-title text-white mb-8"
+              />
+              <ScrollRevealParagraph
+                text="Découvrez notre portfolio exclusif de résidences et complexes immobiliers premium à Chypre. Des programmes soigneusement sélectionnés pour votre investissement."
+                className="swaarg-hero-subtitle text-white/90 max-w-4xl mx-auto mb-12"
+              />
+              
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+                className="flex flex-col sm:flex-row gap-6 justify-center"
+              >
+                <Button 
+                  size="lg" 
+                  className="btn-premium text-lg px-8 py-4 group"
+                >
+                  <Building2 className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform" />
+                  Explorer les Programmes
+                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="border-2 border-white text-white bg-white/10 backdrop-blur-sm hover:bg-white hover:text-primary px-8 py-4 text-lg font-semibold transition-all group"
+                >
+                  <Filter className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                  Filtres Avancés
+                </Button>
+              </motion.div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-16 bg-gradient-to-br from-background via-muted/30 to-background">
+      {/* Stats Section - Swaarg style */}
+      <section className="py-24 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <ScrollRevealText
+              text="Portfolio d'Excellence"
+              className="swaarg-large-title text-foreground mb-6"
+            />
+            <ScrollRevealParagraph
+              text="Des chiffres qui témoignent de notre expertise et de la confiance de nos clients"
+              className="swaarg-body-large text-muted-foreground max-w-2xl mx-auto"
+            />
+          </motion.div>
+
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -133,16 +199,16 @@ const Projects = () => {
                 className="text-center group"
               >
                 <motion.div 
-                  className="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent text-white shadow-lg"
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  transition={{ type: "spring", stiffness: 400 }}
+                  className="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-premium text-white shadow-premium"
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <stat.icon className="w-8 h-8" />
+                  <stat.icon className="w-10 h-10" />
                 </motion.div>
-                <div className="text-3xl md:text-4xl font-bold text-primary mb-2 group-hover:text-accent transition-colors">
+                <div className="swaarg-card-title text-primary mb-3 group-hover:text-primary-hover transition-colors">
                   {stat.value}
                 </div>
-                <div className="text-sm text-muted-foreground font-medium">
+                <div className="swaarg-body text-muted-foreground">
                   {stat.label}
                 </div>
               </motion.div>
@@ -151,89 +217,117 @@ const Projects = () => {
         </div>
       </section>
 
-      {/* Programs and Filters */}
-      <section className="py-16">
+      {/* Programs Section - Swaarg style */}
+      <section className="py-24 bg-gradient-to-br from-muted/20 via-background to-muted/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          {/* Category Filters */}
+          {/* Section Header */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mb-12"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-20"
           >
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
-                  Portfolio Programmes
-                </h2>
-                <p className="text-lg text-muted-foreground">
-                  Résidences et complexes immobiliers d'exception
-                </p>
-              </div>
-              <Button variant="outline" className="btn-outline-premium">
-                <Filter className="w-4 h-4 mr-2" />
-                Filtres avancés
-              </Button>
-            </div>
+            <ScrollRevealText
+              text="Programmes Immobiliers"
+              className="swaarg-large-title text-foreground mb-6"
+            />
+            <ScrollRevealParagraph
+              text="Résidences et complexes immobiliers d'exception soigneusement sélectionnés pour votre investissement à Chypre"
+              className="swaarg-body-large text-muted-foreground max-w-3xl mx-auto mb-12"
+            />
             
-            <div className="flex flex-wrap gap-3">
-              {categories.map(category => (
-                <Badge
+            {/* Category Filters */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="flex flex-wrap justify-center gap-4"
+            >
+              {categories.map((category, index) => (
+                <motion.div
                   key={category.name}
-                  variant={category.active ? "default" : "outline"}
-                  className="px-6 py-3 cursor-pointer hover:scale-105 transition-transform text-sm font-medium"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
+                  whileHover={{ scale: 1.05, y: -2 }}
                 >
-                  {category.name} ({category.count})
-                </Badge>
+                  <Badge
+                    variant={category.active ? "default" : "outline"}
+                    className={`px-6 py-3 cursor-pointer transition-all duration-300 swaarg-button ${
+                      category.active 
+                        ? 'bg-gradient-premium text-white shadow-premium border-0' 
+                        : 'border-2 border-primary/30 text-primary hover:border-primary hover:bg-primary/5'
+                    }`}
+                  >
+                    {category.name} ({category.count})
+                  </Badge>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </motion.div>
 
           {/* Projects Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-20">
             {featuredProjects.map((project, index) => (
-              <FeaturedProjectCard 
-                key={project.id} 
-                project={project} 
-                index={index}
-              />
+              <motion.div
+                key={project.id}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.2 }}
+                whileHover={{ y: -10 }}
+                className="group"
+              >
+                <FeaturedProjectCard 
+                  project={project} 
+                  index={index}
+                />
+              </motion.div>
             ))}
           </div>
 
           {/* Load More */}
           <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
             className="text-center"
           >
-            <Button size="lg" className="btn-premium px-8 py-4">
-              <Building2 className="w-5 h-5 mr-2" />
+            <Button 
+              size="lg" 
+              className="btn-premium px-12 py-4 text-lg group"
+            >
+              <Building2 className="w-6 h-6 mr-3 group-hover:rotate-12 transition-transform" />
               Découvrir plus de programmes
+              <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
             </Button>
           </motion.div>
         </div>
       </section>
 
-      {/* Featured Locations */}
-      <section className="py-16 bg-gradient-to-br from-muted/30 via-background to-muted/30">
+      {/* Featured Locations - Swaarg style */}
+      <section className="py-24 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
+            transition={{ duration: 0.8 }}
+            className="text-center mb-20"
           >
             <ScrollRevealText
-              text="Nos Destinations Premium"
-              className="text-3xl md:text-4xl font-bold text-foreground mb-4"
+              text="Destinations Premium"
+              className="swaarg-large-title text-foreground mb-6"
             />
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Explorez nos programmes immobiliers dans les plus belles régions de Chypre
-            </p>
+            <ScrollRevealParagraph
+              text="Explorez nos programmes immobiliers dans les plus belles régions de Chypre, soigneusement sélectionnées pour leur potentiel d'investissement"
+              className="swaarg-body-large text-muted-foreground max-w-3xl mx-auto"
+            />
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -291,68 +385,89 @@ const Projects = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="relative py-20 overflow-hidden">
-        {/* Animated Background */}
+      {/* CTA Section - Swaarg style */}
+      <section className="relative py-32 overflow-hidden">
+        {/* Complex Animated Background - Same as Home page */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-hero" />
           <motion.div 
-            className="absolute inset-0 bg-gradient-to-br from-primary/30 via-transparent to-accent/30"
+            className="absolute inset-0"
             animate={{ 
               background: [
-                "linear-gradient(45deg, hsl(var(--primary))/0.3, transparent, hsl(var(--accent))/0.3)",
-                "linear-gradient(135deg, hsl(var(--accent))/0.3, transparent, hsl(var(--primary))/0.3)",
-                "linear-gradient(45deg, hsl(var(--primary))/0.3, transparent, hsl(var(--accent))/0.3)"
+                "linear-gradient(45deg, hsl(200 100% 45%) 0%, hsl(190 85% 50%) 100%)",
+                "linear-gradient(135deg, hsl(190 85% 50%) 0%, hsl(200 100% 45%) 100%)",
+                "linear-gradient(45deg, hsl(200 100% 45%) 0%, hsl(190 85% 50%) 100%)"
               ] 
             }}
             transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
           />
+          
+          {/* Floating particles */}
+          {[...Array(15)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-1 h-1 bg-white/30 rounded-full"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+              }}
+              animate={{
+                y: [0, -30, 0],
+                opacity: [0.3, 1, 0.3],
+              }}
+              transition={{
+                duration: 4 + Math.random() * 2,
+                repeat: Infinity,
+                delay: Math.random() * 2,
+              }}
+            />
+          ))}
         </div>
 
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-white space-y-8"
-          >
-            <ScrollRevealText
-              text="Programme sur Mesure ?"
-              className="text-4xl md:text-5xl font-bold mb-4"
-            />
-            <motion.p 
-              className="text-xl text-white/90 max-w-2xl mx-auto leading-relaxed"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
+        <div className="relative h-full flex items-center justify-center">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="text-white space-y-12"
             >
-              Notre équipe d'experts peut vous aider à identifier le programme immobilier 
-              parfait selon vos critères d'investissement spécifiques.
-            </motion.p>
-            <motion.div 
-              className="flex flex-col sm:flex-row gap-6 justify-center pt-4"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-            >
-              <Button 
-                size="lg" 
-                className="bg-white text-primary hover:bg-white/90 px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all group"
+              <ScrollRevealText
+                text="Programme sur Mesure ?"
+                className="swaarg-section-title text-white mb-8"
+              />
+              <ScrollRevealParagraph 
+                text="Notre équipe d'experts peut vous aider à identifier le programme immobilier parfait selon vos critères d'investissement spécifiques à Chypre."
+                className="swaarg-hero-subtitle text-white/90 max-w-3xl mx-auto leading-relaxed mb-12"
+              />
+              <motion.div 
+                className="flex flex-col sm:flex-row gap-6 justify-center"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.4 }}
               >
-                <Target className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform" />
-                Recherche Ciblée
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="border-2 border-white text-white bg-white/10 backdrop-blur-sm hover:bg-white hover:text-primary px-8 py-4 text-lg font-semibold transition-all group"
-              >
-                <Trophy className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-                Conseil VIP
-              </Button>
+                <Button 
+                  size="lg" 
+                  className="bg-white text-primary hover:bg-white/90 px-12 py-4 swaarg-button shadow-premium hover:shadow-xl transition-all group"
+                >
+                  <Target className="w-6 h-6 mr-3 group-hover:rotate-12 transition-transform" />
+                  Recherche Ciblée
+                  <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="border-2 border-white text-white bg-white/10 backdrop-blur-sm hover:bg-white hover:text-primary px-12 py-4 swaarg-button transition-all group"
+                >
+                  <Trophy className="w-6 h-6 mr-3 group-hover:scale-110 transition-transform" />
+                  Conseil VIP
+                  <Sparkles className="w-6 h-6 ml-3 group-hover:rotate-12 transition-transform" />
+                </Button>
+              </motion.div>
             </motion.div>
-          </motion.div>
+          </div>
         </div>
       </section>
     </div>
