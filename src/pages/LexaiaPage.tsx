@@ -239,7 +239,7 @@ const LexaiaPage = () => {
       toast({
         variant: "destructive",
         title: "Connexion requise",
-        description: "Veuillez vous connecter pour utiliser Lexaia"
+        description: "Veuillez vous connecter pour utiliser notre Conseil Fiscal IA"
       });
       return;
     }
@@ -306,9 +306,9 @@ const LexaiaPage = () => {
         <Card className="max-w-md">
           <CardContent className="p-6 text-center">
             <Brain className="w-12 h-12 text-primary mx-auto mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Accès Lexaia Premium</h2>
+            <h2 className="text-xl font-semibold mb-2">Accès Conseil Fiscal IA</h2>
             <p className="text-muted-foreground mb-4">
-              Connectez-vous pour accéder à notre IA fiscale spécialisée
+              Connectez-vous pour accéder à notre agent fiscal spécialisé
             </p>
             <Button className="btn-premium" asChild>
               <a href="/login">Se connecter</a>
@@ -322,9 +322,9 @@ const LexaiaPage = () => {
   return (
     <>
       <SEOHead 
-        title="Lexaia - IA Fiscale Immobilière Premium | ENKI-REALTY"
-        description="Consultez notre IA fiscale Lexaia pour optimiser vos investissements immobiliers à Chypre. Analyses personnalisées, scénarios d'optimisation et recommandations expertes."
-        keywords="lexaia, IA fiscale, optimisation fiscale, investissement immobilier, Chypre, conseil fiscal, intelligence artificielle"
+        title="Conseil Fiscal IA - Agent Fiscal Spécialisé Chypre | ENKI-REALTY"
+        description="Consultez notre agent fiscal IA spécialisé dans l'investissement immobilier à Chypre. Analyses personnalisées, scénarios d'optimisation fiscale et recommandations expertes pour tous les pays d'Europe."
+        keywords="conseil fiscal IA, agent fiscal Chypre, optimisation fiscale, investissement immobilier, fiscalité européenne, intelligence artificielle fiscale"
         url="https://enki-realty.com/lexaia"
       />
       
@@ -345,14 +345,38 @@ const LexaiaPage = () => {
               >
                 <Brain className="w-6 h-6 text-white" />
               </motion.div>
-              <h1 className="text-4xl font-bold text-foreground">Lexaia</h1>
+              <h1 className="text-4xl font-bold text-foreground">Conseil Fiscal IA</h1>
               <Badge className="bg-gradient-to-r from-primary to-purple-600 text-white">
-                IA Premium
+                Agent Spécialisé
               </Badge>
             </div>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Intelligence artificielle spécialisée en optimisation fiscale immobilière
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">
+              Agent fiscal spécialisé dans l'investissement immobilier à Chypre avec connaissance complète des bases fiscales de tous les pays d'Europe et d'autres juridictions
             </p>
+            
+            {/* Disclaimer */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 max-w-4xl mx-auto"
+            >
+              <div className="flex items-start gap-3">
+                <div className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5">
+                  <svg fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.19-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="text-sm text-yellow-800">
+                  <p className="font-semibold mb-1">Disclaimer Important</p>
+                  <p className="leading-relaxed">
+                    Tous les résultats et réponses de notre agent fiscal ne sont que des scénarios indicatifs. 
+                    Ces scénarios sont obligatoirement à vérifier et à confirmer avec des avocats d'affaires 
+                    pour valider les recommandations et s'assurer de leur conformité avec votre situation spécifique.
+                  </p>
+                </div>
+              </div>
+            </motion.div>
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -403,7 +427,7 @@ const LexaiaPage = () => {
                         <Sparkles className="w-16 h-16 text-primary mx-auto mb-4 opacity-50" />
                         <h3 className="text-lg font-semibold mb-2">Prêt à optimiser votre fiscalité ?</h3>
                         <p className="text-muted-foreground mb-6">
-                          Posez votre première question à Lexaia pour commencer
+                          Posez votre première question à notre agent fiscal pour commencer
                         </p>
                         
                         {/* Predefined Questions */}
@@ -450,7 +474,7 @@ const LexaiaPage = () => {
                                   <Bot className="w-5 h-5 text-purple-600" />
                                 )}
                                 <span className="text-sm font-medium">
-                                  {message.type === 'user' ? 'Vous' : 'Lexaia'}
+                                  {message.type === 'user' ? 'Vous' : 'Agent Fiscal IA'}
                                 </span>
                                 <span className="text-xs text-muted-foreground">
                                   {message.timestamp.toLocaleTimeString()}
@@ -578,7 +602,7 @@ const LexaiaPage = () => {
                             <div className="max-w-[80%]">
                               <div className="flex items-center gap-2 mb-2">
                                 <Bot className="w-5 h-5 text-purple-600" />
-                                <span className="text-sm font-medium">Lexaia</span>
+                                <span className="text-sm font-medium">Agent Fiscal IA</span>
                               </div>
                               <div className="bg-muted border border-border p-4 rounded-lg">
                                 <div className="flex items-center gap-3">

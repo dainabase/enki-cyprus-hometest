@@ -14,7 +14,8 @@ import {
   Search,
   Building,
   Info,
-  Mail
+  Mail,
+  Brain
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
@@ -40,7 +41,8 @@ const Navbar = () => {
   const publicNavigation = [
     { name: 'Accueil', href: '/', icon: Home },
     { name: 'Projets', href: '/projects', icon: Building },
-    { name: 'Recherche', href: '/search', icon: Search },
+    { name: 'Recherche IA', href: '/search', icon: Search },
+    { name: 'Conseil Fiscal IA', href: '/lexaia', icon: Brain },
     { name: 'À Propos', href: '/about', icon: Info },
     { name: 'Contact', href: '/contact', icon: Mail },
   ];
