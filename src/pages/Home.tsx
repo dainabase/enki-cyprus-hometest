@@ -1173,7 +1173,7 @@ const Home = () => {
                 const locationKey = typeof property.location === 'string'
                   ? property.location.toLowerCase()
                   : (property.location as any)?.city?.toLowerCase() || 'limassol';
-                const propertyInterests = Array.isArray(interests[locationKey]) ? interests[locationKey] : [];
+                const propertyInterests = Array.isArray(interests?.[locationKey]) ? interests[locationKey] : [];
                 return (
                   <motion.div
                     key={property.id}
