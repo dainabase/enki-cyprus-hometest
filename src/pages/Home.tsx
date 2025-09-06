@@ -99,7 +99,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
           const locationKey = typeof property.location === 'string'
             ? property.location.toLowerCase()
             : (property.location as any)?.city?.toLowerCase() || 'limassol';
-          const propertyInterests = interests[locationKey] || [];
+          const propertyInterests = Array.isArray(interests?.[locationKey]) ? interests[locationKey] : [];
           return (
             <motion.div
               key={property.id}
@@ -369,7 +369,7 @@ const Home = () => {
         const { data } = await supabase.functions.invoke('fetch-interests', {
           body: { location }
         });
-        interestsData[location] = data || [];
+        interestsData[location] = Array.isArray(data) ? data : [];
       }
       return interestsData;
     },
