@@ -430,9 +430,9 @@ const Home = () => {
     },
   });
 
-  const handleVoiceInput = () => {
+  const handleVoiceInput = useCallback(() => {
     // Voice input functionality placeholder
-  };
+  }, []);
 
   const handleAgenticSearch = () => {
     if (!agenticQuery.trim()) {
