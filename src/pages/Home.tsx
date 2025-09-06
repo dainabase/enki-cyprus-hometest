@@ -15,7 +15,7 @@ import { Search, MapPin, Star, Download, Save, Eye, Heart, ArrowRight, ChevronLe
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import cyprusHero from '@/assets/cyprus-hero.jpg';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { SEOHead } from '@/components/SEOHead';
@@ -27,7 +27,7 @@ import { useIsClient } from '@/hooks/useIsClient';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 
 // Lazy-load 3D components only when needed
-const Canvas = lazy(() => import('@react-three/fiber'));
+const Canvas = lazy(() => import('@react-three/fiber').then(mod => ({ default: mod.Canvas })));
 const OrbitControls = lazy(() => import('@react-three/drei').then(mod => ({ default: mod.OrbitControls })));
 const Sphere = lazy(() => import('@react-three/drei').then(mod => ({ default: mod.Sphere })));
 const MeshDistortMaterial = lazy(() => import('@react-three/drei').then(mod => ({ default: mod.MeshDistortMaterial })));
@@ -407,7 +407,7 @@ const Home = () => {
       toast({
         title: "Recherche complétée",
         description: `${data.properties?.length || 0} propriétés trouvées avec analyse fiscale`,
-        variant: "success",
+        variant: "default",
       });
       trackCustomEvent('agentic_search_completed', {
         query_length: agenticQuery.length,
@@ -442,7 +442,7 @@ const Home = () => {
       toast({
         title: "Dossier sauvegardé",
         description: "Votre recherche a été sauvegardée dans votre espace personnel",
-        variant: "success",
+        variant: "default",
       });
     },
   });
@@ -1234,4 +1234,129 @@ const Home = () => {
                   id: 6,
                   name: "David Chen",
                   location: "Singapour",
-                  photo: "https://images.unsplash.com/photo-1519345182560-
+                  photo: "https://images.unsplash.com/photo-1519345182560-3f2917c78026?w=100&h=100&fit=crop&auto=format",
+                  rating: 5,
+                  comment: "La technologie IA d'ENKI Realty a révolutionné ma recherche immobilière. Analyse précise, recommandations personnalisées et accompagnement fiscal d'excellence.",
+                },
+              ].map((testimonial) => (
+                <motion.div
+                  key={testimonial.id}
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: testimonial.id * 0.1 }}
+                  className="bg-card rounded-2xl p-8 shadow-lg border border-border/50 hover:shadow-xl transition-all duration-500 hover:scale-105"
+                >
+                  <div className="flex items-center mb-6">
+                    <img
+                      src={testimonial.photo}
+                      alt={`Photo de ${testimonial.name}`}
+                      className="w-16 h-16 rounded-full object-cover mr-4"
+                    />
+                    <div>
+                      <h4 className="font-semibold text-lg">{testimonial.name}</h4>
+                      <p className="text-muted-foreground">{testimonial.location}</p>
+                    </div>
+                  </div>
+                  <div className="flex mb-4">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                    ))}
+                  </div>
+                  <p className="text-muted-foreground leading-relaxed">
+                    "{testimonial.comment}"
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Call to Action */}
+        <section className="py-24 md:py-32 bg-gradient-to-br from-primary via-primary/90 to-accent">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              <h2 className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight text-white mb-8">
+                Prêt à investir ?
+              </h2>
+              <p className="text-xl sm:text-2xl text-white/90 mb-12 leading-relaxed">
+                Découvrez nos propriétés premium et bénéficiez de notre expertise fiscale IA
+              </p>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button 
+                  size="lg" 
+                  variant="secondary"
+                  className="px-12 py-6 text-lg bg-white text-primary hover:bg-white/90"
+                  asChild
+                >
+                  <Link to="/projects">
+                    Découvrir nos projets
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </Link>
+                </Button>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+      </div>
+
+      {/* Property Modal */}
+      <PropertyModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        property={selectedProperty}
+      />
+
+      {/* Agentic Search Results Modal */}
+      <Dialog open={showResultsModal} onOpenChange={setShowResultsModal}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Résultats de Recherche IA</DialogTitle>
+            <DialogDescription>
+              Voici les propriétés qui correspondent le mieux à votre recherche personnalisée
+            </DialogDescription>
+          </DialogHeader>
+          {searchResults && (
+            <div className="space-y-6">
+              <div className="bg-muted/50 p-4 rounded-lg">
+                <h3 className="font-semibold mb-2">Votre recherche :</h3>
+                <p className="text-muted-foreground">{searchResults.query}</p>
+              </div>
+              {searchResults.recommendations?.length > 0 && (
+                <div className="grid gap-4 md:grid-cols-2">
+                  {searchResults.recommendations.map((property: Property) => (
+                    <PropertyCard
+                      key={property.id}
+                      property={property}
+                      onClick={() => {
+                        setSelectedProperty(property);
+                        setIsModalOpen(true);
+                        setShowResultsModal(false);
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
+              {searchResults.analysis && (
+                <div className="bg-accent/10 p-4 rounded-lg">
+                  <h3 className="font-semibold mb-2">Analyse IA :</h3>
+                  <p className="text-sm leading-relaxed">{searchResults.analysis}</p>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
+
+export default Home;
