@@ -25,6 +25,38 @@ import OptimizedPropertyCard from '@/components/ui/OptimizedPropertyCard';
 import Carousel3D from '@/components/ui/Carousel3D';
 import PropertyModal from '@/components/PropertyModal';
 import { useIsClient } from '@/hooks/useIsClient';
+
+// TypeScript declarations for Web Speech API
+declare global {
+  interface Window {
+    SpeechRecognition: typeof SpeechRecognition;
+    webkitSpeechRecognition: typeof SpeechRecognition;
+  }
+}
+
+interface SpeechRecognition extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  start(): void;
+  stop(): void;
+  onresult: (event: SpeechRecognitionEvent) => void;
+  onend: () => void;
+  onerror: (event: SpeechRecognitionErrorEvent) => void;
+}
+
+interface SpeechRecognitionEvent {
+  results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognitionErrorEvent {
+  error: string;
+}
+
+declare var SpeechRecognition: {
+  prototype: SpeechRecognition;
+  new(): SpeechRecognition;
+};
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 // Lazy-load 3D components only when needed
 const Canvas = lazy(() => import('@react-three/fiber').then(mod => ({ default: mod.Canvas })));
@@ -342,6 +374,34 @@ const Home = () => {
   const [showResultsModal, setShowResultsModal] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+  
+  // Mock testimonials data
+  const testimonials = useMemo(() => [
+    {
+      id: 1,
+      name: "Marie Dubois",
+      location: "Limassol",
+      photo: "https://picsum.photos/300x400?random=1",
+      rating: "5",
+      comment: "Service exceptionnel ! ENKI Realty m'a aidé à trouver la maison de mes rêves à Chypre."
+    },
+    {
+      id: 2,
+      name: "Jean Martin",
+      location: "Paphos",
+      photo: "https://picsum.photos/300x400?random=2",
+      rating: "5",
+      comment: "Professionnalisme et expertise remarquables. Je recommande vivement leurs services."
+    },
+    {
+      id: 3,
+      name: "Sophie Laurent",
+      location: "Larnaca",
+      photo: "https://picsum.photos/300x400?random=3",
+      rating: "4",
+      comment: "Une équipe dédiée qui comprend vraiment les besoins de ses clients."
+    }
+  ], []);
   const { isAuthenticated, user } = useAuth();
   const { toast } = useToast();
   const { scrollY } = useScroll();
@@ -387,8 +447,8 @@ const Home = () => {
   }, [isAuthenticated]);
   useEffect(() => {
     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognitionRef.current = new SpeechRecognition();
+      const SpeechRecognitionConstructor = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognitionConstructor();
       recognitionRef.current.continuous = true;
       recognitionRef.current.interimResults = true;
       recognitionRef.current.lang = 'fr-FR';
