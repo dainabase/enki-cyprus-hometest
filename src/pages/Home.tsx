@@ -70,7 +70,6 @@ const BackgroundSphere = () => (
     <Sphere args={[1, 100, 200]} scale={2.4}>
       <MeshDistortMaterial
         color="#0090E6" // Aligned with primary color
-        attach="material"
         distort={0.3}
         speed={1.5}
         roughness={0}
@@ -79,7 +78,7 @@ const BackgroundSphere = () => (
   </Float>
 );
 // Advanced3DCarousel Component
-const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => {
+const Advanced3DCarousel = ({ properties, interests = {}, onInterestClick }: any) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -135,7 +134,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
           const locationKey = typeof property.location === 'string'
             ? property.location.toLowerCase()
             : (property.location as any)?.city?.toLowerCase() || 'limassol';
-          const propertyInterests = interests[locationKey] || [];
+          const propertyInterests = Array.isArray(interests?.[locationKey]) ? interests[locationKey] : [];
           return (
             <motion.div
               key={property.id}
@@ -262,7 +261,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
                       </h4>
                     </motion.div>
                     <div className="space-y-4">
-                      {propertyInterests.map((interest: any, idx: number) => (
+                      {(Array.isArray(propertyInterests) ? propertyInterests : []).map((interest: any, idx: number) => (
                         <motion.button
                           key={idx}
                           onClick={() => {
