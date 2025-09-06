@@ -966,32 +966,23 @@ const Home = () => {
             <video 
               className="w-full h-full object-cover absolute inset-0"
               autoPlay 
-              muted
+              muted 
               loop
               playsInline
-              preload="metadata"
-              
+              poster="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&h=1080&fit=crop&auto=format"
               onLoadStart={() => {
-                trackCustomEvent('video_viewed', { section: 'premium-video', type: 'hero' });
-              }}
-              onLoadedData={(e) => {
-                try {
-                  e.currentTarget.muted = true;
-                  void e.currentTarget.play();
-                } catch {}
+                trackCustomEvent('video_viewed', { 
+                  section: 'premium-video',
+                  type: 'hero'
+                });
               }}
             >
-              <source src="https://videos.pexels.com/video-files/1093662/1093662-uhd_2560_1440_25fps.mp4" type="video/mp4" />
-              <track
-                kind="captions"
-                src="/captions/premium-video.vtt"
-                srcLang="fr"
-                label="French Captions"
-                default
-              />
-              Votre navigateur ne supporte pas la balise vidéo.
+              <source src="https://videos.pexels.com/video-files/2507016/2507016-uhd_2560_1440_25fps.mp4" type="video/mp4" />
+              <source src="https://videos.pexels.com/video-files/3571264/3571264-uhd_2560_1440_30fps.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
             </video>
           </motion.div>
+           
           <motion.div 
             className="absolute inset-0 bg-black/40"
             initial={{ opacity: 0 }}
@@ -999,14 +990,15 @@ const Home = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.3 }}
           />
+           
           <motion.div 
-            className="absolute inset-0 flex items-center justify-center text-white text-4xl sm:text-5xl md:text-6xl font-light tracking-tight -0.015em text-center px-6"
+            className="absolute inset-0 flex items-center justify-center text-white text-4xl md:text-6xl font-bold text-center px-6"
             initial={{ opacity: 0, x: 100 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
           >
-            Discover timeless elegance and luxury in your dream home
+            Experience Timeless Elegance, Premium Living in your Dream Home
           </motion.div>
         </motion.section>
 
