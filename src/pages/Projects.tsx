@@ -258,7 +258,7 @@ const Projects = () => {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
                         <Badge className="absolute top-4 right-4 bg-primary text-primary-foreground">
-                          À partir de €{project.price.toLocaleString()}
+                          À partir de €{Number(project.price).toLocaleString()}
                         </Badge>
                       </div>
                       <CardContent className="p-6">
