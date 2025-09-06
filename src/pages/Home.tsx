@@ -1014,193 +1014,149 @@ const Home = () => {
             </motion.div>
           </div>
         </motion.section>
-        {/* Projets Vedette - Parallax Animation Section */}
-        <section id="featured-projects" className="py-24 md:py-32 bg-gradient-to-br from-muted/30 to-background">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="text-center mb-16"
-            >
-              <motion.h2
-                className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight -0.015em text-primary mb-6"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                viewport={{ once: true }}
-              >
-                Projets Vedette
-              </motion.h2>
-              <motion.p
-                className="text-lg sm:text-xl font-normal leading-relaxed -0.005em text-muted-foreground max-w-3xl mx-auto"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                viewport={{ once: true }}
-              >
-                Découvrez notre sélection exclusive de programmes immobiliers d'exception, choisis pour leur emplacement privilégié, leur architecture remarquable et leur potentiel d'investissement.
-              </motion.p>
-            </motion.div>
-            
-            {/* Parallax Container */}
-            <div className="relative">
-              {/* Sticky Header for Section */}
-              <motion.div 
-                className="sticky top-0 z-30 bg-background/80 backdrop-blur-sm py-4 text-center border-b border-border/50"
-                initial={{ y: -50 }}
-                animate={{ y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <h3 className="text-xl font-medium text-primary">Sélection Premium</h3>
-              </motion.div>
+        {/* Projets Vedette */}
+        {(() => {
+          const sectionRef = useRef<HTMLDivElement>(null);
+          const { scrollYProgress } = useScroll({ 
+            target: sectionRef,
+            offset: ["start end", "end start"]
+          });
+
+          return (
+            <section id="featured-projects" className="relative py-24 md:py-32 bg-gradient-to-br from-muted/30 to-background overflow-hidden">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8 }}
+                  className="text-center mb-16"
+                >
+                  <motion.h2
+                    className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight -0.015em text-primary mb-6"
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                    viewport={{ once: true }}
+                  >
+                    Projets Vedette
+                  </motion.h2>
+                  <motion.p
+                    className="text-lg sm:text-xl font-normal leading-relaxed -0.005em text-muted-foreground max-w-3xl mx-auto"
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.2 }}
+                    viewport={{ once: true }}
+                  >
+                    Découvrez notre sélection exclusive de programmes immobiliers d'exception, choisis pour leur emplacement privilégié, leur architecture remarquable et leur potentiel d'investissement.
+                  </motion.p>
+                </motion.div>
+              </div>
               
-              {(featuredProperties || []).slice(0, 3).map((property, index) => {
-                const ParallaxPropertyBlock = () => {
-                  const sectionRef = useRef<HTMLDivElement>(null);
-                  const { scrollYProgress } = useScroll({ 
-                    target: sectionRef,
-                    offset: ["start end", "end start"]
-                  });
-                  const parallaxY = useTransform(scrollYProgress, [0, 1], [0, -100]);
-                  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.5, 1, 1, 0.5]);
+              {/* Main Parallax Sticky Container */}
+              <div ref={sectionRef} className="relative h-[300vh]">
+                <div className="sticky top-0 h-screen overflow-hidden">
+                  {/* Background Parallax Layer */}
+                  <motion.div 
+                    className="absolute inset-0 bg-primary/5"
+                    style={{ y: useTransform(scrollYProgress, [0, 1], [0, -200]) }}
+                  />
                   
-                  return (
-                    <motion.div
-                      key={property.id}
-                      ref={sectionRef}
-                      className="relative mb-8 overflow-hidden rounded-3xl shadow-premium"
-                      style={{ opacity }}
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      transition={{ 
-                        duration: 0.8, 
-                        type: "spring", 
-                        stiffness: 400, 
-                        damping: 20 
-                      }}
-                      viewport={{ once: true }}
-                      whileHover={{ 
-                        scale: 1.02, 
-                        y: -5,
-                        boxShadow: "0 25px 50px -12px rgba(0, 144, 230, 0.25)",
-                        transition: { type: "spring", stiffness: 400, damping: 20 }
-                      }}
-                    >
-                      {/* Parallax Background Image */}
-                      <motion.div 
-                        className="absolute inset-0 bg-cover bg-center"
-                        style={{ 
-                          backgroundImage: `url(${property.photos?.[0] || 'https://picsum.photos/1200/800'})`,
-                          y: parallaxY 
-                        }}
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-br from-transparent to-black/50" />
-                      </motion.div>
+                  {/* Content Layers */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-8">
+                    {featuredProperties.map((property, index) => {
+                      // Calculate progress range for each card
+                      const start = index / featuredProperties.length;
+                      const end = (index + 1) / featuredProperties.length;
+                      const cardProgress = useTransform(scrollYProgress, [start, end], [0, 1]);
                       
-                      {/* Content Overlay */}
-                      <div className="relative z-10 p-8 lg:p-12 min-h-[60vh] flex flex-col justify-end">
+                      const y = useTransform(cardProgress, [0, 1], ['100%', '0%']);
+                      const opacity = useTransform(cardProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+                      const scale = useTransform(cardProgress, [0, 0.5, 1], [0.95, 1, 0.95]);
+                      
+                      return (
                         <motion.div
-                          initial={{ opacity: 0, y: 50 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          transition={{ 
-                            duration: 0.6, 
-                            staggerChildren: 0.1,
-                            ease: "easeOut"
-                          }}
-                          viewport={{ once: true }}
+                          key={property.id}
+                          className="absolute w-full max-w-4xl bg-card rounded-3xl shadow-premium overflow-hidden border border-border/50"
+                          style={{ y, opacity, scale }}
+                          transition={{ type: "spring", damping: 20, stiffness: 100 }}
                         >
-                          <motion.h3 
-                            className="text-4xl font-light text-white mb-2"
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4 }}
-                          >
-                            {property.title}
-                          </motion.h3>
-                          
+                          {/* Card Background Image with Internal Parallax */}
                           <motion.div 
-                            className="flex items-center gap-2 mb-4 text-white/80"
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4, delay: 0.1 }}
+                            className="relative h-96 overflow-hidden"
+                            style={{ y: useTransform(cardProgress, [0, 1], [50, -50]) }}
                           >
-                            <MapPin className="w-5 h-5" />
-                            <span>{property.location}</span>
+                            <img
+                              src={property.photos?.[0] || `https://picsum.photos/1200/800?random=${property.id}`}
+                              alt={`Image of ${property.title} in ${property.location}`}
+                              className="w-full h-full object-cover"
+                              loading="lazy"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60" />
                           </motion.div>
                           
-                          <motion.p 
-                            className="text-white/90 mb-6 leading-relaxed line-clamp-3"
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4, delay: 0.2 }}
-                          >
-                            {property.description || 'Description du projet...'}
-                          </motion.p>
-                          
-                          <motion.div 
-                            className="flex flex-wrap gap-2 mb-6"
-                            initial={{ opacity: 0 }}
-                            whileInView={{ opacity: 1 }}
-                            transition={{ staggerChildren: 0.05, delay: 0.3 }}
-                          >
-                            {(property.features || []).slice(0, 4).map((feature: string, i: number) => (
-                              <motion.span
-                                key={i}
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                whileInView={{ opacity: 1, scale: 1 }}
-                                transition={{ duration: 0.3 }}
-                                whileHover={{ 
-                                  scale: 1.05,
-                                  transition: { 
-                                    repeat: Infinity, 
-                                    repeatType: "reverse", 
-                                    duration: 0.6 
-                                  }
-                                }}
-                              >
-                                <Badge className="bg-white/20 text-white border-white/30">
+                          {/* Card Content */}
+                          <div className="p-8 space-y-4">
+                            <motion.h3 
+                              className="text-3xl font-light text-primary"
+                              initial={{ opacity: 0, y: 20 }}
+                              whileInView={{ opacity: 1, y: 0 }}
+                              transition={{ duration: 0.4 }}
+                            >
+                              {property.title}
+                            </motion.h3>
+                            
+                            <motion.div 
+                              className="flex items-center gap-2 text-muted-foreground"
+                              initial={{ opacity: 0, y: 20 }}
+                              whileInView={{ opacity: 1, y: 0 }}
+                              transition={{ duration: 0.4, delay: 0.1 }}
+                            >
+                              <MapPin className="w-5 h-5 text-primary" />
+                              <span>{property.location}</span>
+                            </motion.div>
+                            
+                            <motion.p 
+                              className="text-muted-foreground leading-relaxed"
+                              initial={{ opacity: 0, y: 20 }}
+                              whileInView={{ opacity: 1, y: 0 }}
+                              transition={{ duration: 0.4, delay: 0.2 }}
+                            >
+                              {property.description || 'Description du projet...'}
+                            </motion.p>
+                            
+                            <motion.div 
+                              className="flex flex-wrap gap-2"
+                              initial={{ opacity: 0, y: 20 }}
+                              whileInView={{ opacity: 1, y: 0 }}
+                              transition={{ duration: 0.4, delay: 0.3 }}
+                            >
+                              {(property.features || []).slice(0, 4).map((feature: string, i: number) => (
+                                <Badge key={i} variant="secondary" className="hover:bg-primary/10 transition-colors">
                                   {feature}
                                 </Badge>
-                              </motion.span>
-                            ))}
-                          </motion.div>
-                          
-                          <motion.div
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4, delay: 0.4 }}
-                          >
-                            <motion.div
-                              whileHover={{ 
-                                scale: 1.05,
-                                boxShadow: "0 10px 25px -5px rgba(255, 255, 255, 0.3)"
-                              }}
-                              transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                            >
-                              <Button 
-                                asChild
-                                className="bg-white text-primary hover:bg-white/90 w-fit"
-                              >
-                                <Link to={`/project/${property.id}`}>
-                                  Explorer
-                                  <ArrowRight className="ml-2 h-4 w-4" />
-                                </Link>
-                              </Button>
+                              ))}
                             </motion.div>
-                          </motion.div>
+                            
+                            <Button 
+                              asChild
+                              className="bg-primary text-primary-foreground hover:bg-primary-hover w-full sm:w-auto"
+                            >
+                              <Link to={`/project/${property.id}`}>
+                                Explorer le projet
+                                <ArrowRight className="ml-2 h-4 w-4" />
+                              </Link>
+                            </Button>
+                          </div>
                         </motion.div>
-                      </div>
-                    </motion.div>
-                  );
-                };
-                
-                return <ParallaxPropertyBlock key={property.id} />;
-              })}
-            </div>
-          </div>
-        </section>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </section>
+          );
+        })()}
         {/* Dernières Nouveautés */}
         <section className="py-24 md:py-32 bg-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
