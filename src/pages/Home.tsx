@@ -1043,106 +1043,105 @@ const Home = () => {
                 Découvrez notre sélection exclusive de programmes immobiliers d'exception, choisis pour leur emplacement privilégié, leur architecture remarquable et leur potentiel d'investissement.
               </motion.p>
             </motion.div>
-            <div className="space-y-16">
-              {featuredProperties.slice(0, 3).map((property, index) => (
-                <motion.div
-                  key={property.id}
-                  className="relative bg-card border-border/50 rounded-3xl shadow-premium overflow-hidden backdrop-blur-sm"
-                  initial={{ opacity: 0, y: 100 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 1, delay: index * 0.3, type: 'spring', stiffness: 50 }}
-                  whileHover={{ scale: 1.02 }}
-                >
-                  {/* Background Parallax Image */}
-                  <motion.div 
-                    className="absolute inset-0 z-0"
-                    style={{
-                      backgroundImage: `url(${property.photos?.[0] || 'https://picsum.photos/1200/800?random=' + property.id})`,
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                    }}
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.5 }}
+            {/* Parallax Container */}
+            <div className="relative overflow-hidden">
+              {/* Sticky Header for Section */}
+              <motion.div 
+                className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm py-4 text-center border-b border-border/50"
+                initial={{ y: -50 }}
+                animate={{ y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <h3 className="text-xl font-medium text-primary">Sélection Premium</h3>
+              </motion.div>
+              
+              {properties.slice(0, 3).map((property, index) => {
+                const sectionRef = useRef<HTMLDivElement>(null);
+                const { scrollYProgress } = useScroll({ target: sectionRef });
+                const parallaxY = useTransform(scrollYProgress, [0, 1], [0, -100]);
+                const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.5, 1, 1, 0.5]);
+                
+                return (
+                  <motion.div
+                    key={property.id}
+                    ref={sectionRef}
+                    className="relative mb-8 overflow-hidden rounded-3xl shadow-premium"
+                    style={{ opacity }}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.8, type: "spring" }}
+                    viewport={{ once: true }}
                   >
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20" />
-                  </motion.div>
-                  
-                  {/* Glassmorphism Overlay */}
-                  <div className="relative z-10 p-8 lg:p-12 flex flex-col lg:flex-row items-center gap-8 backdrop-blur-sm bg-background/30">
-                    {/* Property Info Column */}
+                    {/* Parallax Image */}
                     <motion.div 
-                      className="lg:w-1/2 space-y-6"
-                      initial={{ opacity: 0, x: -50 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.8, delay: 0.2 }}
+                      className="absolute inset-0 bg-cover bg-center"
+                      style={{ 
+                        backgroundImage: `url(${property.photos?.[0] || 'https://picsum.photos/1200/800'})`,
+                        y: parallaxY 
+                      }}
                     >
-                      <h3 className="text-3xl lg:text-5xl font-light tracking-tight text-white">{property.title}</h3>
-                      <div className="flex items-center gap-2 text-white/80">
-                        <MapPin className="w-5 h-5" />
-                        <span>{property.location}</span>
-                      </div>
-                      <Badge className="bg-white/20 text-white border-white/30">
-                        €{Number(property.priceValue || 0).toLocaleString()}
-                      </Badge>
-                      <p className="text-white/90 leading-relaxed">
-                        {property.description || 'Une propriété premium offrant des équipements modernes et des vues exceptionnelles.'}
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {(property.features || []).slice(0, 4).map((feature: string, i: number) => (
-                          <Badge key={i} className="bg-white/10 text-white border-white/20">{feature}</Badge>
-                        ))}
-                      </div>
-                      <Button 
-                        onClick={() => {
-                          trackCustomEvent('featured_property_clicked', {
-                            property_id: property.id,
-                            property_title: property.title,
-                            property_location: property.location,
-                            section: 'featured_projects'
-                          });
-                          setSelectedProperty(property);
-                          setIsModalOpen(true);
-                        }}
-                        className="bg-white text-primary hover:bg-white/90 mt-4"
-                      >
-                        Explorer la propriété
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
+                      <div className="absolute inset-0 bg-gradient-to-br from-transparent to-black/50" />
                     </motion.div>
                     
-                    {/* Image Column */}
-                    <motion.div 
-                      className="lg:w-1/2 h-64 lg:h-96 overflow-hidden rounded-2xl"
-                      initial={{ opacity: 0, x: 50 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.8, delay: 0.4 }}
-                    >
-                      <motion.img 
-                        src={property.photos?.[0] || 'https://picsum.photos/800/500?random=' + property.id}
-                        alt={`Photo de ${property.title}`}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                        whileHover={{ scale: 1.05 }}
-                        transition={{ duration: 0.5 }}
-                      />
-                    </motion.div>
-                  </div>
-                  
-                  {/* Futuristic Glow Effect */}
-                  <motion.div 
-                    className="absolute inset-0 pointer-events-none"
-                    animate={{
-                      boxShadow: [
-                        '0 0 20px rgba(0, 144, 230, 0.1)',
-                        '0 0 40px rgba(0, 144, 230, 0.2)',
-                        '0 0 20px rgba(0, 144, 230, 0.1)',
-                      ],
-                    }}
-                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                  />
-                </motion.div>
-              ))}
+                    {/* Content Overlay */}
+                    <div className="relative z-10 p-12 min-h-[60vh] flex flex-col justify-end">
+                      <motion.div
+                        initial={{ opacity: 0, y: 50 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, staggerChildren: 0.1 }}
+                      >
+                        <motion.h3 
+                          className="text-4xl font-light text-white mb-2"
+                          transition={{ duration: 0.4 }}
+                        >
+                          {property.title}
+                        </motion.h3>
+                        <motion.div 
+                          className="flex items-center gap-2 mb-4 text-white/80"
+                          transition={{ duration: 0.4 }}
+                        >
+                          <MapPin className="w-5 h-5" />
+                          <span>{typeof property.location === 'string' ? property.location : (property.location as any)?.city || property.location}</span>
+                        </motion.div>
+                        <motion.p 
+                          className="text-white/90 mb-6 leading-relaxed"
+                          transition={{ duration: 0.4 }}
+                        >
+                          {property.description || 'Description du projet...'}
+                        </motion.p>
+                        <motion.div 
+                          className="flex flex-wrap gap-2 mb-6"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ staggerChildren: 0.05 }}
+                        >
+                          {(property.features || []).slice(0, 4).map((feature: string, i: number) => (
+                            <motion.span
+                              key={i}
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ duration: 0.3 }}
+                            >
+                              <Badge className="bg-white/20 text-white border-white/30">
+                                {feature}
+                              </Badge>
+                            </motion.span>
+                          ))}
+                        </motion.div>
+                        <Button 
+                          asChild
+                          className="bg-white text-primary hover:bg-white/90 w-fit"
+                        >
+                          <Link to={`/project/${property.id}`}>
+                            Explorer
+                            <ArrowRight className="ml-2 h-4 w-4" />
+                          </Link>
+                        </Button>
+                      </motion.div>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         </section>
