@@ -25,20 +25,16 @@ import OptimizedPropertyCard from '@/components/ui/OptimizedPropertyCard';
 import Carousel3D from '@/components/ui/Carousel3D';
 import PropertyModal from '@/components/PropertyModal';
 import { useIsClient } from '@/hooks/useIsClient';
+// 3D components (imported directly to avoid Suspense/lazy issues inside Canvas)
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Sphere, MeshDistortMaterial, Float } from '@react-three/drei';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
-// Lazy-load 3D components only when needed
-const Canvas = lazy(() => import('@react-three/fiber').then(mod => ({ default: mod.Canvas })));
-const OrbitControls = lazy(() => import('@react-three/drei').then(mod => ({ default: mod.OrbitControls })));
-const Sphere = lazy(() => import('@react-three/drei').then(mod => ({ default: mod.Sphere })));
-const MeshDistortMaterial = lazy(() => import('@react-three/drei').then(mod => ({ default: mod.MeshDistortMaterial })));
-const Float = lazy(() => import('@react-three/drei').then(mod => ({ default: mod.Float })));
 // BackgroundSphere Component
 const BackgroundSphere = () => (
   <Float speed={1.4} rotationIntensity={1} floatIntensity={2}>
     <Sphere args={[1, 100, 200]} scale={2.4}>
       <MeshDistortMaterial
-        color="#0090E6" // Aligned with primary color
-        attach="material"
+        color="#0090E6"
         distort={0.3}
         speed={1.5}
         roughness={0}
