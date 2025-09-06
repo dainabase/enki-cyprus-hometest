@@ -590,7 +590,7 @@ const Home = () => {
                 transition={{ duration: 1, delay: 1.6, ease: "easeOut" }}
               >
                 <Button
-                  className="bg-primary hover:bg-primary-hover hover:text-[hsl(var(--golden))] text-primary-foreground px-8 py-4 text-lg font-medium rounded-lg shadow-lg hover:shadow-premium transition-all duration-300 transform hover:scale-105"
+                  className="bg-primary hover:bg-primary-hover text-primary-foreground px-8 py-4 text-lg font-medium rounded-lg shadow-lg hover:shadow-premium transition-all duration-300 transform hover:scale-105"
                   onClick={() => document.getElementById('why-enki')?.scrollIntoView({ behavior: 'smooth' })}
                 >
                   Découvrez Pourquoi Nous Choisir
@@ -656,7 +656,7 @@ const Home = () => {
               {[
                 {
                   icon: (
-                    <svg className="w-16 h-16 text-primary group-hover:text-[hsl(var(--golden))] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-16 h-16 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
                   ),
@@ -666,7 +666,7 @@ const Home = () => {
                 },
                 {
                   icon: (
-                    <svg className="w-16 h-16 text-primary group-hover:text-[hsl(var(--golden))] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-16 h-16 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                     </svg>
                   ),
@@ -676,7 +676,7 @@ const Home = () => {
                 },
                 {
                   icon: (
-                    <svg className="w-16 h-16 text-primary group-hover:text-[hsl(var(--golden))] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-16 h-16 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                     </svg>
                   ),
@@ -687,7 +687,7 @@ const Home = () => {
               ].map((item, index) => (
                 <motion.div
                   key={index}
-                  className="relative group bg-card border-2 border-[hsl(var(--golden))]/30 rounded-3xl p-8 lg:p-10 hover:border-[hsl(var(--golden))] hover:shadow-[0_0_30px_hsl(var(--golden)/0.3)] transition-all duration-500 overflow-hidden cursor-pointer"
+                  className="relative group bg-card border border-border/50 rounded-3xl p-8 lg:p-10 hover:border-primary/30 transition-all duration-500 overflow-hidden cursor-pointer"
                   initial={{ opacity: 0, y: 60, scale: 0.95 }}
                   whileInView={{ opacity: 1, y: 0, scale: 1, transition: { duration: 0.7, delay: index * 0.2, ease: [0.21, 0.47, 0.32, 0.98] } }}
                   viewport={{ once: true }}
@@ -724,7 +724,7 @@ const Home = () => {
                     {item.description}
                   </p>
                   <motion.div
-                   className="absolute bottom-0 left-8 right-8 h-0.5 bg-gradient-to-r from-[hsl(var(--golden))]/20 via-[hsl(var(--golden))]/60 to-[hsl(var(--golden))]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    className="absolute bottom-0 left-8 right-8 h-0.5 bg-gradient-to-r from-primary/20 via-primary/60 to-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                     initial={{ scaleX: 0 }}
                     whileInView={{ scaleX: 1 }}
                     transition={{ duration: 0.8, delay: 0.5 + index * 0.1 }}
@@ -850,17 +850,17 @@ const Home = () => {
             
             {/* Futuristic Input Container */}
             <motion.div 
-              className="relative bg-card/50 backdrop-blur-xl border-2 border-[hsl(var(--golden))]/30 rounded-3xl p-8 shadow-premium overflow-hidden hover:border-[hsl(var(--golden))]"
+              className="relative bg-card/50 backdrop-blur-xl border border-primary/20 rounded-3xl p-8 shadow-premium overflow-hidden"
               initial={{ opacity: 0, scale: 0.95, rotateX: -10 }}
               whileInView={{ opacity: 1, scale: 1, rotateX: 0 }}
               transition={{ duration: 1, type: 'spring', damping: 15 }}
-              whileHover={{ scale: 1.02, boxShadow: '0 0 40px hsl(35 65% 50% / 0.30)' }}
+              whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(0,144,230,0.2)' }}
             >
               {/* Glowing Border Effect */}
               <motion.div
-                className="absolute inset-0 border-2 border-transparent rounded-3xl pointer-events-none"
+                className="absolute inset-0 border-2 border-primary/0 rounded-3xl pointer-events-none"
                 animate={{
-                  borderColor: ['hsl(35 65% 50% / 0)', 'hsl(35 65% 50% / 0.3)', 'hsl(35 65% 50% / 0)'],
+                  borderColor: ['rgba(0,144,230,0)', 'rgba(0,144,230,0.3)', 'rgba(0,144,230,0)'],
                 }}
                 transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
               />
@@ -896,19 +896,19 @@ const Home = () => {
                 
                 <div className="flex gap-4">
                   <motion.button 
-                    className="group p-3 bg-primary/10 rounded-full hover:bg-[hsl(var(--golden))]/20 transition-colors"
+                    className="p-3 bg-primary/10 rounded-full hover:bg-primary/20 transition-colors"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={handleVoiceInput}
                     aria-label="Voice input"
                   >
-                    <Mic className="w-5 h-5 text-primary group-hover:text-[hsl(var(--golden))] transition-colors" />
+                    <Mic className="w-5 h-5 text-primary" />
                   </motion.button>
                   
                   <Button 
                     onClick={handleAgenticSearch}
                     disabled={!agenticQuery.trim() || !consent}
-                    className="bg-primary hover:bg-primary-hover hover:text-[hsl(var(--golden))]"
+                    className="bg-primary hover:bg-primary-hover"
                   >
                     Lancer l'Analyse IA
                   </Button>
@@ -962,7 +962,7 @@ const Home = () => {
               ].map((kpi, index) => (
                 <motion.div
                   key={index}
-                  className="text-center group border-2 border-[hsl(var(--golden))]/20 rounded-2xl p-6 hover:border-[hsl(var(--golden))] transition-all"
+                  className="text-center group"
                   initial={{ opacity: 0, y: 50 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.2, type: "spring", damping: 20 }}
@@ -973,7 +973,7 @@ const Home = () => {
                   }}
                 >
                   <motion.div
-                    className="text-6xl sm:text-7xl font-light tracking-tight -0.015em text-[hsl(var(--golden))] mb-6"
+                    className="text-6xl sm:text-7xl font-light tracking-tight -0.015em text-primary mb-6"
                     initial={{ scale: 0, opacity: 0 }}
                     whileInView={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 1.5, delay: index * 0.2 + 0.5, ease: "easeOut", type: "spring", damping: 15 }}
@@ -982,7 +982,7 @@ const Home = () => {
                     {kpi.number}
                   </motion.div>
                   <motion.h3
-                    className="text-xl sm:text-2xl font-medium tracking-tight -0.01em text-primary group-hover:text-[hsl(var(--golden))] transition-colors mb-3"
+                    className="text-xl sm:text-2xl font-medium tracking-tight -0.01em text-primary mb-3"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: index * 0.2 + 0.7 }}
@@ -1047,7 +1047,7 @@ const Home = () => {
               {featuredProperties.slice(0, 3).map((property, index) => (
                 <motion.div
                   key={property.id}
-                  className="relative bg-card border-2 border-[hsl(var(--golden))]/30 rounded-3xl shadow-premium overflow-hidden backdrop-blur-sm hover:border-[hsl(var(--golden))]"
+                  className="relative bg-card border-border/50 rounded-3xl shadow-premium overflow-hidden backdrop-blur-sm"
                   initial={{ opacity: 0, y: 100 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -1104,10 +1104,10 @@ const Home = () => {
                           setSelectedProperty(property);
                           setIsModalOpen(true);
                         }}
-                        className="group bg-white text-primary hover:bg-white/90 hover:text-[hsl(var(--golden))] mt-4"
+                        className="bg-white text-primary hover:bg-white/90 mt-4"
                       >
                         Explorer la propriété
-                        <ArrowRight className="ml-2 h-4 w-4 transition-colors group-hover:text-[hsl(var(--golden))]" />
+                        <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                     </motion.div>
                     
@@ -1219,10 +1219,10 @@ const Home = () => {
               <Button
                 asChild
                 size="lg"
-                className="group bg-gradient-to-r from-primary to-primary-hover hover:from-primary/90 hover:to-primary-hover/90 text-primary-foreground hover:text-[hsl(var(--golden))] shadow-lg hover:shadow-premium transition-all duration-300"
+                className="bg-gradient-to-r from-primary to-primary-hover hover:from-primary/90 hover:to-primary-hover/90 text-primary-foreground shadow-lg hover:shadow-premium transition-all duration-300"
               >
                 <Link to="/search">
-                  <Eye className="w-5 h-5 mr-2 transition-colors group-hover:text-[hsl(var(--golden))]" />
+                  <Eye className="w-5 h-5 mr-2" />
                   Voir Toutes les Propriétés
                 </Link>
               </Button>
@@ -1315,7 +1315,7 @@ const Home = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: testimonial.id * 0.1 }}
-                  className="bg-card rounded-2xl p-8 shadow-lg border-2 border-[hsl(var(--golden))]/30 hover:border-[hsl(var(--golden))] hover:shadow-[0_0_30px_hsl(var(--golden)/0.25)] transition-all duration-500 hover:scale-105"
+                  className="bg-card rounded-2xl p-8 shadow-lg border border-border/50 hover:shadow-xl transition-all duration-500 hover:scale-105"
                 >
                   <div className="flex items-center mb-6">
                     <img
@@ -1330,7 +1330,7 @@ const Home = () => {
                   </div>
                   <div className="flex mb-4">
                     {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="w-5 h-5 fill-[hsl(var(--golden))] text-[hsl(var(--golden))]" />
+                      <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
                     ))}
                   </div>
                   <p className="text-muted-foreground leading-relaxed">
