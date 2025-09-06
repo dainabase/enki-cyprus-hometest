@@ -429,6 +429,11 @@ const Home = () => {
       });
     },
   });
+
+  const handleVoiceInput = () => {
+    // Voice input functionality placeholder
+  };
+
   const handleAgenticSearch = () => {
     if (!agenticQuery.trim()) {
       toast({
