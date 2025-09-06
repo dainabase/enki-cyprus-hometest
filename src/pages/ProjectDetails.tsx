@@ -22,7 +22,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Property } from '@/lib/supabase';
-import { useSupabaseProperty } from '@/hooks/useSupabaseProperties';
+import { useSupabaseProject } from '@/hooks/useSupabaseProjects';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -89,7 +89,7 @@ function CustomNextArrow(props: any) {
 const ProjectDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { property, loading, error } = useSupabaseProperty(id);
+  const { project: property, loading, error } = useSupabaseProject(id);
   const { user, isAuthenticated } = useAuth();
   const { toast } = useToast();
   const [isLiked, setIsLiked] = useState(false);

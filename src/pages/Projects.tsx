@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Search, Filter, Waves, Trees, Dumbbell, Shield, ParkingCircle, ArrowRight } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { useSupabaseProjects } from '@/hooks/useSupabaseProjects';
 import { useQuery } from '@tanstack/react-query';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { SEOHead } from '@/components/SEOHead';
@@ -22,19 +22,8 @@ const Projects = () => {
   const [selectedType, setSelectedType] = useState('');
   const [selectedBudget, setSelectedBudget] = useState('');
 
-  // Récupérer les projets immobiliers depuis la base de données
-  const { data: projects = [], isLoading: loading, error } = useQuery({
-    queryKey: ['projects'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('projects')
-        .select('*')
-        .order('created_at', { ascending: false });
-      
-      if (error) throw error;
-      return data;
-    },
-  });
+  // Récupérer les projets immobiliers directement avec le nouveau hook
+  const { projects, loading, error } = useSupabaseProjects();
 
   useEffect(() => {
     trackPageView('/projects', 'Projets - ENKI-REALTY Immobilier Premium Chypre');
@@ -42,7 +31,8 @@ const Projects = () => {
 
   const uniqueTypes = Array.from(new Set(projects.map((p: any) => p.type).filter(Boolean)));
   const filteredProjects = projects.filter((project: any) => {
-    const projectLocationStr = typeof project.location === 'string' ? project.location : (project.location?.city || project.location?.name || JSON.stringify(project.location));
+    const projectLocationStr = project.location?.city || project.location?.name || 
+                              (typeof project.location === 'string' ? project.location : JSON.stringify(project.location));
     const matchesQuery = project.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                          projectLocationStr.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesLocation = !selectedLocation || projectLocationStr.includes(selectedLocation);
@@ -274,7 +264,7 @@ const Projects = () => {
                         </h3>
                         <p className="text-sm text-muted-foreground flex items-center mb-4">
                           <MapPin className="w-4 h-4 mr-1" />
-                          {typeof project.location === 'string' ? project.location : (project.location?.city || project.location?.name || '')}
+                          {project.location?.city || project.location?.name || 'Non spécifié'}
                         </p>
                         <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
                           {project.description || 'Un programme immobilier premium offrant des équipements modernes et des vues exceptionnelles.'}
