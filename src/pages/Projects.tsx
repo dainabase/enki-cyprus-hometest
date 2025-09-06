@@ -13,15 +13,12 @@ import ErrorBoundary from '@/components/ErrorBoundary';
 import { SEOHead } from '@/components/SEOHead';
 import { trackPageView, trackCustomEvent } from '@/lib/analytics';
 import Layout from '@/components/layout/Layout';
-
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
-
 const Projects = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
   const [selectedType, setSelectedType] = useState('');
   const [selectedBudget, setSelectedBudget] = useState('');
-
   // Récupérer les projets immobiliers depuis la base de données
   const { data: projects = [], isLoading: loading, error } = useQuery({
     queryKey: ['projects'],
@@ -30,30 +27,27 @@ const Projects = () => {
         .from('projects')
         .select('*')
         .order('created_at', { ascending: false });
-      
+     
       if (error) throw error;
       return data;
     },
   });
-
   useEffect(() => {
     trackPageView('/projects', 'Projets - ENKI-REALTY Immobilier Premium Chypre');
   }, []);
-
   const uniqueTypes = Array.from(new Set(projects.map((p: any) => p.type).filter(Boolean)));
   const filteredProjects = projects.filter((project: any) => {
     const projectLocationStr = typeof project.location === 'string' ? project.location : (project.location?.city || project.location?.name || JSON.stringify(project.location));
-    const matchesQuery = project.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    const matchesQuery = project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          projectLocationStr.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesLocation = !selectedLocation || projectLocationStr.includes(selectedLocation);
     const matchesType = !selectedType || project.type === selectedType;
     const matchesBudget = !selectedBudget || (project.price && Number(project.price) <= parseFloat(selectedBudget));
     return matchesQuery && matchesLocation && matchesType && matchesBudget;
   });
-
   return (
     <Layout>
-      <SEOHead 
+      <SEOHead
         title="Projets Immobiliers à Chypre | ENKI-REALTY"
         description="Découvrez notre sélection exclusive de projets immobiliers premium à Chypre. Résidences de luxe, villas et appartements dans les meilleurs emplacements."
         keywords="projets immobiliers Chypre, résidences premium, investissements Chypre, villas Limassol, appartements Paphos"
@@ -61,21 +55,21 @@ const Projects = () => {
         canonical="https://enki-realty.com/projects"
         image="/og-projects.jpg"
       />
-      
+     
       <main className="min-h-screen bg-background">
         {/* Hero Section */}
         <section className="relative h-screen flex items-center justify-center overflow-hidden">
-          <motion.div 
+          <motion.div
             className="absolute inset-0 z-0"
             initial={{ scale: 1.1, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 1.2 }}
           >
-            <video 
+            <video
               className="w-full h-full object-cover"
-              autoPlay 
-              muted 
-              loop 
+              autoPlay
+              muted
+              loop
               playsInline
               preload="metadata"
             >
@@ -85,9 +79,9 @@ const Projects = () => {
             </video>
             <div className="absolute inset-0 bg-hero-gradient opacity-50" />
           </motion.div>
-          
+         
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <motion.h1 
+            <motion.h1
               className="text-6xl sm:text-7xl lg:text-8xl font-light tracking-tight text-white mb-8"
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
@@ -95,7 +89,7 @@ const Projects = () => {
             >
               Découvrez nos Programmes Immobiliers à Chypre
             </motion.h1>
-            <motion.p 
+            <motion.p
               className="text-lg sm:text-xl md:text-2xl font-normal leading-relaxed text-white/90 max-w-4xl mx-auto mb-12"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -108,7 +102,7 @@ const Projects = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.8 }}
             >
-              <Button 
+              <Button
                 className="bg-primary hover:bg-primary-hover text-primary-foreground px-8 py-4 text-base font-medium rounded-lg shadow-lg hover:shadow-premium hover:scale-105 transition-all"
                 onClick={() => document.getElementById('projects-grid')?.scrollIntoView({ behavior: 'smooth' })}
               >
@@ -116,15 +110,15 @@ const Projects = () => {
               </Button>
             </motion.div>
           </div>
-          
-          <motion.div 
+         
+          <motion.div
             className="absolute bottom-12 left-1/2 -translate-x-1/2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 1 }}
           >
             <div className="w-7 h-11 border-2 border-white/70 rounded-full flex items-start justify-center backdrop-blur-sm">
-              <motion.div 
+              <motion.div
                 className="w-1.5 h-1.5 bg-white rounded-full mt-1.5"
                 animate={{ y: [0, 12, 0], opacity: [1, 0.4, 1] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
@@ -132,11 +126,10 @@ const Projects = () => {
             </div>
           </motion.div>
         </section>
-
         {/* Search & Filter Section */}
         <section className="bg-secondary py-16 px-4 sm:px-6 lg:px-8 relative">
           <div className="max-w-7xl mx-auto">
-            <motion.h2 
+            <motion.h2
               className="text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight text-primary text-center mb-8"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -145,7 +138,7 @@ const Projects = () => {
             >
               Trouvez votre programme idéal
             </motion.h2>
-            <motion.p 
+            <motion.p
               className="text-lg sm:text-xl font-normal leading-relaxed text-muted-foreground max-w-3xl mx-auto text-center mb-12"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -154,7 +147,7 @@ const Projects = () => {
             >
               Affinez votre recherche pour trouver le programme qui correspond à votre vision
             </motion.p>
-            <motion.div 
+            <motion.div
               className="flex flex-col md:flex-row gap-4 max-w-4xl mx-auto"
               initial={{ opacity: 0, x: 100 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -163,7 +156,7 @@ const Projects = () => {
             >
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                <Input 
+                <Input
                   placeholder="Rechercher par localisation, type de programme ou budget..."
                   className="pl-10 bg-transparent border-0 focus:ring-2 ring-ring text-primary text-lg"
                   value={searchQuery}
@@ -216,11 +209,10 @@ const Projects = () => {
             </motion.div>
           </div>
         </section>
-
         {/* Projects Grid Section */}
         <section id="projects-grid" className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
           <div className="max-w-7xl mx-auto">
-            <motion.h2 
+            <motion.h2
               className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight text-primary text-center mb-8"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -229,7 +221,7 @@ const Projects = () => {
             >
               Nos Programmes Immobiliers
             </motion.h2>
-            <motion.p 
+            <motion.p
               className="text-lg sm:text-xl font-normal leading-relaxed text-muted-foreground max-w-3xl mx-auto text-center mb-12"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -284,8 +276,8 @@ const Projects = () => {
                             <Badge key={i} variant="secondary">{feature}</Badge>
                           ))}
                         </div>
-                        <Button 
-                          asChild 
+                        <Button
+                          asChild
                           className="w-full bg-primary hover:bg-primary-hover text-primary-foreground hover:scale-105 transition-all"
                         >
                           <Link to={`/project/${project.id}`}>
@@ -301,11 +293,10 @@ const Projects = () => {
             )}
           </div>
         </section>
-
         {/* Interactive Map Section */}
         <section className="py-16 px-4 sm:px-6 lg:px-8 bg-secondary relative">
           <div className="max-w-7xl mx-auto">
-            <motion.h2 
+            <motion.h2
               className="text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight text-primary text-center mb-8"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -314,7 +305,7 @@ const Projects = () => {
             >
               Explorer par localisation
             </motion.h2>
-            <motion.div 
+            <motion.div
               className="h-64 md:h-96 rounded-xl overflow-hidden shadow-lg"
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -330,11 +321,10 @@ const Projects = () => {
             </motion.div>
           </div>
         </section>
-
         {/* Featured Amenities Section */}
         <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
           <div className="max-w-7xl mx-auto">
-            <motion.h2 
+            <motion.h2
               className="text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight text-primary text-center mb-8"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -343,7 +333,7 @@ const Projects = () => {
             >
               Un art de vivre premium, réinventé
             </motion.h2>
-            <motion.p 
+            <motion.p
               className="text-lg sm:text-xl font-normal leading-relaxed text-muted-foreground max-w-3xl mx-auto text-center mb-12"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -383,11 +373,10 @@ const Projects = () => {
             </div>
           </div>
         </section>
-
         {/* CTA Section */}
         <section className="py-16 px-4 sm:px-6 lg:px-8 bg-primary text-primary-foreground">
           <div className="max-w-4xl mx-auto text-center">
-            <motion.h2 
+            <motion.h2
               className="text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight mb-8"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -396,7 +385,7 @@ const Projects = () => {
             >
               Ready to Make Cyprus Your Home?
             </motion.h2>
-            <motion.p 
+            <motion.p
               className="text-lg sm:text-xl font-normal leading-relaxed mb-12 opacity-90"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -411,7 +400,7 @@ const Projects = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              <Button 
+              <Button
                 asChild
                 size="lg"
                 variant="secondary"
@@ -429,5 +418,4 @@ const Projects = () => {
     </Layout>
   );
 };
-
 export default Projects;
