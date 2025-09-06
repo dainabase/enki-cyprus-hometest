@@ -83,12 +83,14 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
       
       <Suspense fallback={null}>
         {isClient && (
-          <Canvas camera={{ position: [0, 0, 5] }}>
-            <ambientLight intensity={0.4} />
-            <pointLight position={[10, 10, 10]} />
-            <BackgroundSphere />
-            <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
-          </Canvas>
+          <ErrorBoundary fallback={null}>
+            <Canvas camera={{ position: [0, 0, 5] }}>
+              <ambientLight intensity={0.4} />
+              <pointLight position={[10, 10, 10]} />
+              <BackgroundSphere />
+              <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
+            </Canvas>
+          </ErrorBoundary>
         )}
       </Suspense>
 
