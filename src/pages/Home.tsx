@@ -1045,7 +1045,7 @@ const Home = () => {
             </motion.div>
             
             {/* Parallax Container */}
-            <div className="relative overflow-hidden">
+            <div className="relative">
               {/* Sticky Header for Section */}
               <motion.div 
                 className="sticky top-0 z-30 bg-background/80 backdrop-blur-sm py-4 text-center border-b border-border/50"
@@ -1056,7 +1056,7 @@ const Home = () => {
                 <h3 className="text-xl font-medium text-primary">Sélection Premium</h3>
               </motion.div>
               
-              {featuredProperties.slice(0, 3).map((property, index) => {
+              {(featuredProperties || []).slice(0, 3).map((property, index) => {
                 const ParallaxPropertyBlock = () => {
                   const sectionRef = useRef<HTMLDivElement>(null);
                   const { scrollYProgress } = useScroll({ 
