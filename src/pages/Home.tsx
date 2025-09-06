@@ -1039,25 +1039,33 @@ const Home = () => {
                 Découvrez notre sélection exclusive de programmes immobiliers d'exception, choisis pour leur emplacement privilégié, leur architecture remarquable et leur potentiel d'investissement.
               </motion.p>
             </motion.div>
-            {loading ? (
-              <div className="text-center text-muted-foreground">Chargement des projets...</div>
-            ) : error ? (
-              <div className="text-center text-destructive">Erreur de chargement des projets. Veuillez réessayer.</div>
-            ) : featuredProperties.length === 0 ? (
-              <div className="text-center text-muted-foreground">Aucun projet disponible pour le moment.</div>
-            ) : (
-              <Carousel3D 
-                properties={featuredProperties}
-                interests={interests || {}}
-                onInterestClick={(interest: any) => {
-                  trackCustomEvent('interests_clicked', { 
-                    name: interest.name, 
-                    link: interest.link 
-                  });
-                  window.open(interest.link, '_blank', 'noopener,noreferrer');
-                }}
-              />
-            )}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {featuredProperties.slice(0, 3).map((property, index) => (
+                <motion.div
+                  key={property.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                  whileHover={{ y: -5, scale: 1.02 }}
+                  className="h-full"
+                >
+                  <PropertyCard
+                    property={property}
+                    onClick={() => {
+                      trackCustomEvent('featured_property_clicked', { 
+                        property_id: property.id,
+                        property_title: property.title,
+                        property_location: property.location,
+                        section: 'featured_projects'
+                      });
+                      setSelectedProperty(property);
+                      setIsModalOpen(true);
+                    }}
+                  />
+                </motion.div>
+              ))}
+            </div>
           </div>
         </section>
 
