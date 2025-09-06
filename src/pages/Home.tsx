@@ -9,7 +9,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Property } from '@/lib/supabase';
-import { useSupabaseProjects } from '@/hooks/useSupabaseProjects';
+import { useSupabaseProperties } from '@/hooks/useSupabaseProperties';
 import { useDebounce } from '@/hooks/useDebounce';
 import { Search, MapPin, Star, Download, Save, Eye, Heart, ArrowRight, ChevronLeft, ChevronRight, ExternalLink, Compass } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -367,14 +367,14 @@ const Home = () => {
   const heroScale = useTransform(scrollY, [0, 600], [1, 1.1]);
   
   const debouncedQuery = useDebounce(agenticQuery, 300);
-  const { projects: properties, loading, error } = useSupabaseProjects();
+  const { properties, loading, error } = useSupabaseProperties();
 
   // Dynamic interests fetch
   const { data: interests } = useQuery({
     queryKey: ['interests', properties],
     queryFn: async () => {
-      const uniqueLocations = Array.from(new Set(properties.map((p: any) => 
-        (p.location as any)?.city?.toLowerCase() || 'limassol'
+      const uniqueLocations = Array.from(new Set(properties.map((p: Property) => 
+        typeof p.location === 'string' ? p.location.toLowerCase() : (p.location as any)?.city?.toLowerCase() || 'limassol'
       )));
       const interestsData: Record<string, ProjectInterest[]> = {};
       for (const location of uniqueLocations) {

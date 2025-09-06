@@ -42,8 +42,6 @@ const PropertyCard = memo(({ property, index = 0, onClick, className = '' }: Pro
     }
   };
 
-  const locationText = typeof property.location === 'string' ? property.location : (property.location as any)?.city || (property.location as any)?.name || '';
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -60,7 +58,7 @@ const PropertyCard = memo(({ property, index = 0, onClick, className = '' }: Pro
           src={property.photos?.[0] 
             ? `https://ccsakftsslurjgnjwdci.supabase.co/functions/v1/image-proxy?url=${encodeURIComponent(property.photos[0])}`
             : '/placeholder.svg'}
-          alt={`Photo du bien: ${property.title} - ${locationText}`}
+          alt={`Photo du bien: ${property.title} - ${property.location}`}
           aspectRatio="4/3"
           className=""
           loading="lazy"
@@ -106,7 +104,7 @@ const PropertyCard = memo(({ property, index = 0, onClick, className = '' }: Pro
           {/* Location */}
           <div className="flex items-center text-muted-foreground mb-3">
             <MapPin className="w-4 h-4 mr-1 text-primary" />
-            <span className="text-sm">{locationText}</span>
+            <span className="text-sm">{property.location}</span>
           </div>
 
           {/* Description */}

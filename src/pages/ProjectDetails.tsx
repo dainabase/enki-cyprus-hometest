@@ -22,7 +22,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Property } from '@/lib/supabase';
-import { useSupabaseProject } from '@/hooks/useSupabaseProjects';
+import { useSupabaseProperty } from '@/hooks/useSupabaseProperties';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -89,7 +89,7 @@ function CustomNextArrow(props: any) {
 const ProjectDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { project, loading, error } = useSupabaseProject(id);
+  const { property, loading, error } = useSupabaseProperty(id);
   const { user, isAuthenticated } = useAuth();
   const { toast } = useToast();
   const [isLiked, setIsLiked] = useState(false);
@@ -199,7 +199,7 @@ const ProjectDetails: React.FC = () => {
     );
   }
 
-  if (!project) {
+  if (!property) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
@@ -242,8 +242,8 @@ const ProjectDetails: React.FC = () => {
             className="absolute inset-0"
           >
             <img
-              src={project.image_url || `https://placehold.co/1200x600/4A90E2/ffffff?text=${encodeURIComponent(project.title.substring(0, 20))}`}
-              alt={project.title}
+              src={`https://placehold.co/1200x600/4A90E2/ffffff?text=${encodeURIComponent(property.title.substring(0, 20))}`}
+              alt={property.title}
               className="w-full h-full object-cover"
               loading="lazy"
             />
@@ -301,20 +301,20 @@ const ProjectDetails: React.FC = () => {
           >
             <div className="max-w-4xl">
               <Badge className="mb-4 bg-blue-600 text-white" variant="secondary">
-                {project.type}
+                {property.type}
               </Badge>
               
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                {project.title}
+                {property.title}
               </h1>
               
               <div className="flex items-center gap-2 mb-4">
                 <MapPin className="w-5 h-5" />
-                <span className="text-lg">{project.location?.city || 'Location non spécifiée'}</span>
+                <span className="text-lg">{property.location}</span>
               </div>
               
               <div className="text-3xl md:text-4xl font-bold text-blue-400">
-                À partir de {project.price_from?.toLocaleString()}€
+                {property.price}
               </div>
             </div>
           </motion.div>
@@ -337,30 +337,27 @@ const ProjectDetails: React.FC = () => {
                   
                   {/* Description principale */}
                   <div className="lg:col-span-2">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-6">À propos de ce projet</h2>
+                    <h2 className="text-2xl font-bold text-gray-800 mb-6">À propos de cette propriété</h2>
                     <p className="text-gray-600 leading-relaxed mb-8 text-lg">
-                      {project.description || 'Description non disponible'}
+                      {property.detailedDescription}
                     </p>
                     
-                    {/* Informations du projet */}
-                    <h3 className="text-xl font-semibold text-gray-800 mb-4">Informations</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0" />
-                        <span className="text-gray-700">Statut: {getStatusText(project.status)}</span>
-                      </div>
-                      {project.completion_date && (
-                        <div className="flex items-center gap-3">
+                    {/* Caractéristiques détaillées */}
+                    <h3 className="text-xl font-semibold text-gray-800 mb-4">Caractéristiques</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {property.detailedFeatures.map((feature, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, x: -20 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: index * 0.05 }}
+                          className="flex items-center gap-3"
+                        >
                           <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0" />
-                          <span className="text-gray-700">Livraison: {new Date(project.completion_date).getFullYear()}</span>
-                        </div>
-                      )}
-                      {project.units_total && (
-                        <div className="flex items-center gap-3">
-                          <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0" />
-                          <span className="text-gray-700">Nombre d'unités: {project.units_total}</span>
-                        </div>
-                      )}
+                          <span className="text-gray-700">{feature}</span>
+                        </motion.div>
+                      ))}
                     </div>
                   </div>
 
@@ -369,23 +366,33 @@ const ProjectDetails: React.FC = () => {
                     <div className="bg-gray-50 rounded-lg p-6">
                       <h3 className="text-lg font-semibold text-gray-800 mb-4">Informations clés</h3>
                       <div className="space-y-4">
+                        {property.bedrooms && (
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <Bed className="w-5 h-5 text-blue-600" />
+                              <span className="text-gray-700">Chambres</span>
+                            </div>
+                            <span className="font-medium">{property.bedrooms}</span>
+                          </div>
+                        )}
+                        
+                        {property.bathrooms && (
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <Bath className="w-5 h-5 text-blue-600" />
+                              <span className="text-gray-700">Salles de bain</span>
+                            </div>
+                            <span className="font-medium">{property.bathrooms}</span>
+                          </div>
+                        )}
+                        
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <Square className="w-5 h-5 text-blue-600" />
-                            <span className="text-gray-700">Prix à partir de</span>
+                            <span className="text-gray-700">Surface</span>
                           </div>
-                          <span className="font-medium">{project.price_from?.toLocaleString()}€</span>
+                          <span className="font-medium">{property.area}</span>
                         </div>
-                        
-                        {project.price_to && (
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <Square className="w-5 h-5 text-blue-600" />
-                              <span className="text-gray-700">Prix jusqu'à</span>
-                            </div>
-                            <span className="font-medium">{project.price_to.toLocaleString()}€</span>
-                          </div>
-                        )}
                         
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
@@ -393,17 +400,7 @@ const ProjectDetails: React.FC = () => {
                             <span className="text-gray-700">Type</span>
                           </div>
                           <Badge variant="outline" className="capitalize">
-                            {project.type}
-                          </Badge>
-                        </div>
-                        
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <Badge className="w-5 h-5 text-blue-600" />
-                            <span className="text-gray-700">Statut</span>
-                          </div>
-                          <Badge variant="outline" className={getStatusColor(project.status)}>
-                            {getStatusText(project.status)}
+                            {property.type}
                           </Badge>
                         </div>
                       </div>
@@ -463,35 +460,22 @@ const ProjectDetails: React.FC = () => {
                   `}</style>
                   
                   <Slider {...sliderSettings}>
-                    {project.images && project.images.length > 0 ? (
-                      project.images.map((image, index) => (
-                        <div key={index} className="relative">
-                          <motion.div
-                            whileHover={{ scale: 1.1 }}
-                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                            className="overflow-hidden"
-                          >
-                            <img
-                              src={image}
-                              alt={`${project.title} - Photo ${index + 1}`}
-                              className="w-full h-[500px] object-cover cursor-pointer"
-                              loading="lazy"
-                            />
-                          </motion.div>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="relative">
-                        <div className="overflow-hidden">
+                    {property.photos.map((photo, index) => (
+                      <div key={index} className="relative">
+                        <motion.div
+                          whileHover={{ scale: 1.1 }}
+                          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                          className="overflow-hidden"
+                        >
                           <img
-                            src={project.image_url || `https://placehold.co/1200x500/4A90E2/ffffff?text=${encodeURIComponent(project.title)}`}
-                            alt={project.title}
-                            className="w-full h-[500px] object-cover"
+                            src={photo}
+                            alt={`${property.title} - Photo ${index + 1}`}
+                            className="w-full h-[500px] object-cover cursor-pointer"
                             loading="lazy"
                           />
-                        </div>
+                        </motion.div>
                       </div>
-                    )}
+                    ))}
                   </Slider>
                 </div>
               </CardContent>
@@ -517,56 +501,50 @@ const ProjectDetails: React.FC = () => {
                 </p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {project.floor_plans && project.floor_plans.length > 0 ? (
-                    project.floor_plans.map((planUrl, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: index * 0.1 }}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="cursor-pointer group"
-                        onClick={() => setSelectedPlan({ 
-                          url: planUrl, 
-                          title: `Plan ${index + 1} - ${project.title}` 
-                        })}
-                      >
-                        <Card className="overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
-                          <div className="relative">
-                            <img
-                              src={planUrl}
-                              alt={`Plan ${index + 1} - ${project.title}`}
-                              className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
-                              loading="lazy"
-                            />
-                            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
-                              <motion.div
-                                initial={{ scale: 0 }}
-                                whileHover={{ scale: 1 }}
-                                className="bg-white bg-opacity-90 rounded-full p-3"
-                              >
-                                <ImageIcon className="w-6 h-6 text-blue-600" />
-                              </motion.div>
-                            </div>
+                  {property.plans.map((planUrl, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: index * 0.1 }}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="cursor-pointer group"
+                      onClick={() => setSelectedPlan({ 
+                        url: planUrl, 
+                        title: `Plan ${index + 1} - ${property.title}` 
+                      })}
+                    >
+                      <Card className="overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
+                        <div className="relative">
+                          <img
+                            src={planUrl}
+                            alt={`Plan ${index + 1} - ${property.title}`}
+                            className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
+                            loading="lazy"
+                          />
+                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+                            <motion.div
+                              initial={{ scale: 0 }}
+                              whileHover={{ scale: 1 }}
+                              className="bg-white bg-opacity-90 rounded-full p-3"
+                            >
+                              <ImageIcon className="w-6 h-6 text-blue-600" />
+                            </motion.div>
                           </div>
-                          <CardContent className="p-4">
-                            <h3 className="font-semibold text-gray-800 mb-1">
-                              Plan {index + 1}
-                            </h3>
-                            <p className="text-sm text-gray-600">
-                              Cliquez pour agrandir et explorer en détail
-                            </p>
-                          </CardContent>
-                        </Card>
-                      </motion.div>
-                    ))
-                  ) : (
-                    <div className="col-span-full text-center py-8">
-                      <p className="text-gray-500">Aucun plan disponible pour ce projet</p>
-                    </div>
-                  )}
+                        </div>
+                        <CardContent className="p-4">
+                          <h3 className="font-semibold text-gray-800 mb-1">
+                            Plan {index + 1}
+                          </h3>
+                          <p className="text-sm text-gray-600">
+                            Cliquez pour agrandir et explorer en détail
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
                 </div>
                 
                 {/* Instructions */}
@@ -599,8 +577,8 @@ const ProjectDetails: React.FC = () => {
             </div>
             
             <VirtualTourViewer 
-              tourUrl={project.virtual_tour_url}
-              propertyTitle={project.title}
+              tourUrl={property.virtualTour}
+              propertyTitle={property.title}
             />
           </motion.section>
 
@@ -625,7 +603,7 @@ const ProjectDetails: React.FC = () => {
                         </div>
                       </div>
                     }>
-                      <MiniMap property={project} />
+                      <MiniMap property={property} />
                     </Suspense>
                   </ErrorBoundary>
                 </div>
@@ -718,7 +696,7 @@ const ProjectDetails: React.FC = () => {
               </Link>
               
               <div className="flex items-center gap-4 text-sm text-gray-600">
-                <span>Réf: {project.id}</span>
+                <span>Réf: {property.id}</span>
                 <span>•</span>
                 <span>ENKI-REALTY</span>
               </div>

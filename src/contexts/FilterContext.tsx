@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
 import { debounce } from 'lodash';
 import { Property } from '@/lib/supabase';
-import { useSupabaseProjects } from '@/hooks/useSupabaseProjects';
+import { useSupabaseProperties } from '@/hooks/useSupabaseProperties';
 
 // Types pour les filtres
 export interface SearchFilters {
@@ -106,7 +106,7 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
   
   // Hook pour charger les propriétés depuis Supabase
   // On force propertyType à undefined si c'est "Tous" pour éviter le filtrage
-  const { projects: properties, loading, error } = useSupabaseProjects({
+  const { properties, loading, error } = useSupabaseProperties({
     propertyType: state.filters.propertyType === 'Tous' ? undefined : state.filters.propertyType,
     budgetMin: state.filters.budgetMin,
     budgetMax: state.filters.budgetMax,
