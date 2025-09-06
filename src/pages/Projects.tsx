@@ -7,8 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Search, Filter, Waves, Trees, Dumbbell, Shield, ParkingCircle, ArrowRight } from 'lucide-react';
-import { useSupabaseProperties } from '@/hooks/useSupabaseProperties';
-import { Property } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from '@tanstack/react-query';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { SEOHead } from '@/components/SEOHead';
 import { trackPageView, trackCustomEvent } from '@/lib/analytics';
@@ -21,18 +21,32 @@ const Projects = () => {
   const [selectedLocation, setSelectedLocation] = useState('');
   const [selectedType, setSelectedType] = useState('');
   const [selectedBudget, setSelectedBudget] = useState('');
-  const { properties, loading, error } = useSupabaseProperties();
+
+  // Récupérer les projets immobiliers depuis la base de données
+  const { data: projects = [], isLoading: loading, error } = useQuery({
+    queryKey: ['projects'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data;
+    },
+  });
 
   useEffect(() => {
     trackPageView('/projects', 'Projets - ENKI-REALTY Immobilier Premium Chypre');
   }, []);
 
-  const filteredProperties = properties.filter((property: Property) => {
-    const matchesQuery = property.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                         (typeof property.location === 'string' && property.location.toLowerCase().includes(searchQuery.toLowerCase()));
-    const matchesLocation = !selectedLocation || (typeof property.location === 'string' && property.location === selectedLocation);
-    const matchesType = !selectedType || property.type === selectedType;
-    const matchesBudget = !selectedBudget || (property.price && parseFloat(property.price.replace('€', '').replace(',', '')) <= parseFloat(selectedBudget));
+  const filteredProjects = projects.filter((project: any) => {
+    const projectLocation = typeof project.location === 'string' ? project.location : JSON.stringify(project.location);
+    const matchesQuery = project.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                         projectLocation.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesLocation = !selectedLocation || projectLocation.includes(selectedLocation);
+    const matchesType = !selectedType || project.type === selectedType;
+    const matchesBudget = !selectedBudget || (project.price && project.price <= parseFloat(selectedBudget));
     return matchesQuery && matchesLocation && matchesType && matchesBudget;
   });
 
@@ -220,12 +234,14 @@ const Projects = () => {
             {loading ? (
               <div className="text-center text-muted-foreground">Loading projects...</div>
             ) : error ? (
-              <div className="text-center text-destructive">Error loading projects. Please try again.</div>
+              <div className="text-center text-destructive">Erreur de chargement des projets. Veuillez réessayer.</div>
+            ) : filteredProjects.length === 0 ? (
+              <div className="text-center text-muted-foreground">Aucun projet trouvé avec ces critères.</div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {filteredProperties.map((property: Property, index: number) => (
+                {filteredProjects.map((project: any, index: number) => (
                   <motion.div
-                    key={property.id}
+                    key={project.id}
                     initial={{ opacity: 0, y: 50 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
@@ -235,38 +251,38 @@ const Projects = () => {
                     <Card className="h-full overflow-hidden bg-card border-border/50 shadow-lg hover:shadow-premium transition-all duration-300">
                       <div className="relative h-48 overflow-hidden">
                         <img
-                          src={property.photos?.[0] || `https://picsum.photos/600/400?random=${property.id}`}
-                          alt={`Image of ${property.title} in ${property.location}`}
+                          src={project.photos?.[0] || `https://picsum.photos/600/400?random=${project.id}`}
+                          alt={`Image du projet ${project.title}`}
                           className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                           loading="lazy"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
                         <Badge className="absolute top-4 right-4 bg-primary text-primary-foreground">
-                          {property.price}
+                          À partir de €{project.price.toLocaleString()}
                         </Badge>
                       </div>
                       <CardContent className="p-6">
                         <h3 className="text-2xl font-medium tracking-tight text-primary mb-2">
-                          {property.title}
+                          {project.title}
                         </h3>
                         <p className="text-sm text-muted-foreground flex items-center mb-4">
                           <MapPin className="w-4 h-4 mr-1" />
-                          {property.location}
+                          {typeof project.location === 'string' ? project.location : JSON.stringify(project.location)}
                         </p>
                         <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
-                          {property.description || 'A premium residence offering modern amenities and stunning views.'}
+                          {project.description || 'Un programme immobilier premium offrant des équipements modernes et des vues exceptionnelles.'}
                         </p>
                         <div className="flex flex-wrap gap-2 mb-4">
-                          <Badge variant="secondary">Pool</Badge>
-                          <Badge variant="secondary">Gym</Badge>
-                          <Badge variant="secondary">Garden</Badge>
+                          {project.features?.slice(0, 3).map((feature: string, i: number) => (
+                            <Badge key={i} variant="secondary">{feature}</Badge>
+                          ))}
                         </div>
                         <Button 
                           asChild 
                           className="w-full bg-primary hover:bg-primary-hover text-primary-foreground hover:scale-105 transition-all"
                         >
-                          <Link to={`/project/${property.id}`}>
-                            View Details
+                          <Link to={`/project/${project.id}`}>
+                            Voir le Projet
                             <ArrowRight className="ml-2 h-4 w-4" />
                           </Link>
                         </Button>
@@ -299,7 +315,10 @@ const Projects = () => {
               transition={{ duration: 0.8 }}
             >
               <Suspense fallback={<div className="h-full bg-muted animate-pulse" />}>
-                <GoogleMapComponent properties={filteredProperties} />
+                {/* Composant de carte simplifié pour les projets */}
+                <div className="h-full bg-muted rounded-xl flex items-center justify-center text-muted-foreground">
+                  Carte des projets - À implémenter
+                </div>
               </Suspense>
             </motion.div>
           </div>
