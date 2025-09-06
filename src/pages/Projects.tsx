@@ -277,7 +277,7 @@ const Projects = () => {
                         <h3 className="text-3xl lg:text-5xl font-light tracking-tight text-white">{project.title}</h3>
                         <div className="flex items-center gap-2 text-white/80">
                           <MapPin className="w-5 h-5" />
-                          <span>{project.location}</span>
+                          <span>{typeof project.location === 'string' ? project.location : (project.location?.city || project.location?.name || JSON.stringify(project.location))}</span>
                         </div>
                         <Badge className="bg-white/20 text-white border-white/30">
                           À partir de €{Number(project.price_from || project.price).toLocaleString()}
