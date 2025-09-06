@@ -970,7 +970,7 @@ const Home = () => {
               loop
               playsInline
               preload="metadata"
-              poster="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&h=1080&fit=crop&auto=format"
+              
               onLoadStart={() => {
                 trackCustomEvent('video_viewed', { section: 'premium-video', type: 'hero' });
               }}
@@ -1006,7 +1006,7 @@ const Home = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
           >
-            Découvrez l'élégance intemporelle et le luxe dans votre maison de rêve
+            Discover timeless elegance and luxury in your dream home
           </motion.div>
         </motion.section>
 
