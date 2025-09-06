@@ -62,7 +62,7 @@ export const useSupabaseProperties = (options: UsePropertiesOptions = {}) => {
       }
 
       console.log('📊 Raw data from Supabase:', data?.length, 'properties');
-      const transformedProperties = (data as DatabaseProperty[]).map(transformDatabaseProperty);
+      const transformedProperties = (data as unknown as DatabaseProperty[]).map(transformDatabaseProperty);
       console.log('✨ Transformed properties:', transformedProperties.length);
       setProperties(transformedProperties);
     } catch (err) {
@@ -107,7 +107,7 @@ export const useSupabaseProperty = (id: string | undefined) => {
         }
 
         if (data) {
-          setProperty(transformDatabaseProperty(data as DatabaseProperty));
+          setProperty(transformDatabaseProperty(data as unknown as DatabaseProperty));
         } else {
           setProperty(null);
         }
