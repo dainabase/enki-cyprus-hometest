@@ -1147,39 +1147,150 @@ const Home = () => {
         />
 
         {/* Projets Vedette */}
-        <section id="featured-projects" className="py-24 md:py-32 bg-gradient-to-br from-muted/30 to-background">
+        <section id="featured-projects" className="py-24 md:py-32 bg-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
+            <motion.h2
+              className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight text-primary text-center mb-8"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="text-center mb-16"
+              transition={{ duration: 0.6 }}
             >
-              <motion.h2
-                className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight -0.015em text-primary mb-6"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                viewport={{ once: true }}
+              Projets Vedette
+            </motion.h2>
+            <motion.p
+              className="text-lg sm:text-xl font-normal leading-relaxed text-muted-foreground max-w-3xl mx-auto text-center mb-12"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              Découvrez une sélection de programmes premium conçus pour un art de vivre d'exception
+            </motion.p>
+
+            <div className="space-y-16">
+              {featuredProperties.slice(0, 3).map((property, index) => {
+                const locationKey = typeof property.location === 'string'
+                  ? property.location.toLowerCase()
+                  : (property.location as any)?.city?.toLowerCase() || 'limassol';
+                const propertyInterests = Array.isArray(interests[locationKey]) ? interests[locationKey] : [];
+                return (
+                  <motion.div
+                    key={property.id}
+                    className="relative bg-card border-border/50 rounded-3xl shadow-premium overflow-hidden backdrop-blur-sm"
+                    initial={{ opacity: 0, y: 100 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1, delay: index * 0.3, type: 'spring', stiffness: 50 }}
+                    whileHover={{ scale: 1.02 }}
+                  >
+                    {/* Background Parallax Image */}
+                    <motion.div 
+                      className="absolute inset-0 z-0"
+                      style={{
+                        backgroundImage: `url(${property.photos?.[0] || 'https://picsum.photos/1200/800?random=' + property.id})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                      }}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20" />
+                    </motion.div>
+                    
+                    {/* Glassmorphism Overlay */}
+                    <div className="relative z-10 p-8 lg:p-12 flex flex-col lg:flex-row items-center gap-8 backdrop-blur-sm bg-background/30">
+                      {/* Project Info Column */}
+                      <motion.div 
+                        className="lg:w-1/2 space-y-6"
+                        initial={{ opacity: 0, x: -50 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                      >
+                        <h3 className="text-3xl lg:text-5xl font-light tracking-tight text-white">{property.title}</h3>
+                        <div className="flex items-center gap-2 text-white/80">
+                          <MapPin className="w-5 h-5" />
+                          <span>{typeof property.location === 'string' ? property.location : String(property.location)}</span>
+                        </div>
+                        <Badge className="bg-white/20 text-white border-white/30">
+                          À partir de {property.price || `€250,000`}
+                        </Badge>
+                        <p className="text-white/90 leading-relaxed">
+                          {property.description || 'Un programme immobilier premium offrant des équipements modernes et des vues exceptionnelles.'}
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {property.features?.slice(0, 4).map((amenity: string, i: number) => (
+                            <Badge key={i} className="bg-white/10 text-white border-white/20">{amenity}</Badge>
+                          )) || []}
+                        </div>
+                        <Button 
+                          asChild
+                          className="bg-white text-primary hover:bg-white/90 mt-4"
+                        >
+                          <Link to={`/project/${property.id}`}>
+                            Explorer le projet
+                            <ArrowRight className="ml-2 h-4 w-4" />
+                          </Link>
+                        </Button>
+                      </motion.div>
+                      
+                      {/* Image Column */}
+                      <motion.div 
+                        className="lg:w-1/2 h-64 lg:h-96 overflow-hidden rounded-2xl"
+                        initial={{ opacity: 0, x: 50 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8, delay: 0.4 }}
+                      >
+                        <motion.div 
+                          className="h-full"
+                          whileHover={{ scale: 1.05 }}
+                          transition={{ duration: 0.5 }}
+                        >
+                          <img 
+                            src={property.photos?.[0] || 'https://picsum.photos/800/500?random=' + property.id}
+                            alt={`Photo du projet ${property.title}`}
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                          />
+                        </motion.div>
+                      </motion.div>
+                    </div>
+                    
+                    {/* Futuristic Glow Effect */}
+                    <motion.div 
+                      className="absolute inset-0 pointer-events-none"
+                      animate={{
+                        boxShadow: [
+                          '0 0 20px rgba(0, 144, 230, 0.1)',
+                          '0 0 40px rgba(0, 144, 230, 0.2)',
+                          '0 0 20px rgba(0, 144, 230, 0.1)',
+                        ],
+                      }}
+                      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                    />
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            <motion.div
+              className="text-center mt-16"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              <Button
+                asChild
+                size="lg"
+                className="bg-primary hover:bg-primary-hover text-primary-foreground px-8 py-4 text-base font-medium rounded-lg shadow-lg hover:shadow-premium hover:scale-105 transition-all"
               >
-                Projets Vedette
-              </motion.h2>
-              <motion.p
-                className="text-lg sm:text-xl font-normal leading-relaxed -0.005em text-muted-foreground max-w-3xl mx-auto"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                viewport={{ once: true }}
-              >
-                Découvrez notre sélection exclusive de programmes immobiliers d'exception, choisis pour leur emplacement privilégié, leur architecture remarquable et leur potentiel d'investissement.
-              </motion.p>
+                <Link to="/projects">
+                  Voir tous les projets
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
             </motion.div>
-            <Advanced3DCarousel
-              properties={featuredProperties}
-              interests={interests || {}}
-              onInterestClick={handleInterestClick}
-            />
           </div>
         </section>
 
