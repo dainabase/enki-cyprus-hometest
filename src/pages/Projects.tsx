@@ -40,13 +40,14 @@ const Projects = () => {
     trackPageView('/projects', 'Projets - ENKI-REALTY Immobilier Premium Chypre');
   }, []);
 
+  const uniqueTypes = Array.from(new Set(projects.map((p: any) => p.type).filter(Boolean)));
   const filteredProjects = projects.filter((project: any) => {
-    const projectLocation = typeof project.location === 'string' ? project.location : JSON.stringify(project.location);
+    const projectLocationStr = typeof project.location === 'string' ? project.location : (project.location?.city || project.location?.name || JSON.stringify(project.location));
     const matchesQuery = project.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                         projectLocation.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesLocation = !selectedLocation || projectLocation.includes(selectedLocation);
+                         projectLocationStr.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesLocation = !selectedLocation || projectLocationStr.includes(selectedLocation);
     const matchesType = !selectedType || project.type === selectedType;
-    const matchesBudget = !selectedBudget || (project.price && project.price <= parseFloat(selectedBudget));
+    const matchesBudget = !selectedBudget || (project.price && Number(project.price) <= parseFloat(selectedBudget));
     return matchesQuery && matchesLocation && matchesType && matchesBudget;
   });
 
@@ -92,7 +93,7 @@ const Projects = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              Discover Our Exclusive Projects in Cyprus
+              Découvrez nos Programmes Immobiliers à Chypre
             </motion.h1>
             <motion.p 
               className="text-lg sm:text-xl md:text-2xl font-normal leading-relaxed text-white/90 max-w-4xl mx-auto mb-12"
@@ -100,7 +101,7 @@ const Projects = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
             >
-              Explore a curated selection of premium residences designed for sophisticated living
+              Découvrez une sélection de programmes premium conçus pour un art de vivre d’exception
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 50 }}
@@ -111,7 +112,7 @@ const Projects = () => {
                 className="bg-primary hover:bg-primary-hover text-primary-foreground px-8 py-4 text-base font-medium rounded-lg shadow-lg hover:shadow-premium hover:scale-105 transition-all"
                 onClick={() => document.getElementById('projects-grid')?.scrollIntoView({ behavior: 'smooth' })}
               >
-                Explore Projects
+                Découvrir les projets
               </Button>
             </motion.div>
           </div>
@@ -142,7 +143,7 @@ const Projects = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              Find Your Perfect Project
+              Trouvez votre programme idéal
             </motion.h2>
             <motion.p 
               className="text-lg sm:text-xl font-normal leading-relaxed text-muted-foreground max-w-3xl mx-auto text-center mb-12"
@@ -151,7 +152,7 @@ const Projects = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              Refine your search to discover projects that match your vision
+              Affinez votre recherche pour trouver le programme qui correspond à votre vision
             </motion.p>
             <motion.div 
               className="flex flex-col md:flex-row gap-4 max-w-4xl mx-auto"
@@ -163,7 +164,7 @@ const Projects = () => {
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input 
-                  placeholder="Search by location, type, or budget..."
+                  placeholder="Rechercher par localisation, type de programme ou budget..."
                   className="pl-10 bg-transparent border-0 focus:ring-2 ring-ring text-primary text-lg"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -183,13 +184,19 @@ const Projects = () => {
               </Select>
               <Select value={selectedType} onValueChange={setSelectedType}>
                 <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Type" />
+                  <SelectValue placeholder="Type de programme" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Apartment">Apartment</SelectItem>
-                  <SelectItem value="Villa">Villa</SelectItem>
-                  <SelectItem value="Penthouse">Penthouse</SelectItem>
-                  <SelectItem value="Mixed-Use">Mixed-Use</SelectItem>
+                  {uniqueTypes.length > 0 ? (
+                    uniqueTypes.map((t: string) => (
+                      <SelectItem key={t} value={t}>{t}</SelectItem>
+                    ))
+                  ) : (
+                    <>
+                      <SelectItem value="Residential">Residential</SelectItem>
+                      <SelectItem value="Mixed-Use">Mixed-Use</SelectItem>
+                    </>
+                  )}
                 </SelectContent>
               </Select>
               <Select value={selectedBudget} onValueChange={setSelectedBudget}>
@@ -220,7 +227,7 @@ const Projects = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              Our Exclusive Projects
+              Nos Programmes Immobiliers
             </motion.h2>
             <motion.p 
               className="text-lg sm:text-xl font-normal leading-relaxed text-muted-foreground max-w-3xl mx-auto text-center mb-12"
@@ -229,10 +236,10 @@ const Projects = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              Discover a curated selection of premium residences designed for modern living
+              Découvrez une sélection de programmes premium conçus pour la vie moderne
             </motion.p>
             {loading ? (
-              <div className="text-center text-muted-foreground">Loading projects...</div>
+              <div className="text-center text-muted-foreground">Chargement des projets...</div>
             ) : error ? (
               <div className="text-center text-destructive">Erreur de chargement des projets. Veuillez réessayer.</div>
             ) : filteredProjects.length === 0 ? (
@@ -267,7 +274,7 @@ const Projects = () => {
                         </h3>
                         <p className="text-sm text-muted-foreground flex items-center mb-4">
                           <MapPin className="w-4 h-4 mr-1" />
-                          {typeof project.location === 'string' ? project.location : JSON.stringify(project.location)}
+                          {typeof project.location === 'string' ? project.location : (project.location?.city || project.location?.name || '')}
                         </p>
                         <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
                           {project.description || 'Un programme immobilier premium offrant des équipements modernes et des vues exceptionnelles.'}
@@ -305,7 +312,7 @@ const Projects = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              Explore by Location
+              Explorer par localisation
             </motion.h2>
             <motion.div 
               className="h-64 md:h-96 rounded-xl overflow-hidden shadow-lg"
@@ -334,7 +341,7 @@ const Projects = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              Premium Living, Redefined
+              Un art de vivre premium, réinventé
             </motion.h2>
             <motion.p 
               className="text-lg sm:text-xl font-normal leading-relaxed text-muted-foreground max-w-3xl mx-auto text-center mb-12"
@@ -343,7 +350,7 @@ const Projects = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              Experience unparalleled luxury through thoughtfully curated amenities
+              Découvrez un luxe inégalé au sein de programmes soigneusement conçus
             </motion.p>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
               {[
