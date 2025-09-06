@@ -333,6 +333,94 @@ interface ProjectInterest {
   link: string;
   desc: string;
 }
+
+// Composant isolé pour respecter les règles des Hooks
+const FeaturedParallaxCard: React.FC<{ property: Property }> = ({ property }) => {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: sectionRef });
+  const parallaxY = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.5, 1, 1, 0.5]);
+
+  return (
+    <motion.div
+      ref={sectionRef}
+      className="relative mb-8 overflow-hidden rounded-3xl shadow-premium"
+      style={{ opacity }}
+      initial={{ opacity: 0, scale: 0.95 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.8, type: 'spring' }}
+      viewport={{ once: true }}
+    >
+      {/* Image Parallax */}
+      <motion.div 
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ 
+          backgroundImage: `url(${property.photos?.[0] || 'https://picsum.photos/1200/800'})`,
+          y: parallaxY 
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-transparent to-black/50" />
+      </motion.div>
+      {/* Contenu */}
+      <div className="relative z-10 p-12 min-h-[60vh] flex flex-col justify-end">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, staggerChildren: 0.1 }}
+        >
+          <motion.h3 
+            className="text-4xl font-light text-white mb-2"
+            transition={{ duration: 0.4 }}
+          >
+            {property.title}
+          </motion.h3>
+          <motion.div 
+            className="flex items-center gap-2 mb-4 text-white/80"
+            transition={{ duration: 0.4 }}
+          >
+            <MapPin className="w-5 h-5" />
+            <span>{typeof property.location === 'string' ? property.location : (property.location as any)?.city || ''}</span>
+          </motion.div>
+          <motion.p 
+            className="text-white/90 mb-6 leading-relaxed"
+            transition={{ duration: 0.4 }}
+          >
+            {property.description || 'Description du projet...'}
+          </motion.p>
+          <motion.div 
+            className="flex flex-wrap gap-2 mb-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ staggerChildren: 0.05 }}
+          >
+            {(property.features || []).slice(0, 4).map((feature: any, i: number) => (
+              <motion.span
+                key={i}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Badge className="bg-white/20 text-white border-white/30">
+                  {feature}
+                </Badge>
+              </motion.span>
+            ))}
+          </motion.div>
+          <Button 
+            asChild
+            className="bg-white text-primary hover:bg-white/90 w-fit"
+          >
+            <Link to={`/project/${property.id}`}>
+              Explorer
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+};
+
 const Home = () => {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -1056,93 +1144,9 @@ const Home = () => {
                 <h3 className="text-xl font-medium text-primary">Sélection Premium</h3>
               </motion.div>
               
-              {featuredProperties.map((property, index) => {
-                const sectionRef = useRef<HTMLDivElement>(null);
-                const { scrollYProgress } = useScroll({ target: sectionRef });
-                const parallaxY = useTransform(scrollYProgress, [0, 1], [0, -100]);
-                const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.5, 1, 1, 0.5]);
-                
-                return (
-                  <motion.div
-                    key={property.id}
-                    ref={sectionRef}
-                    className="relative mb-8 overflow-hidden rounded-3xl shadow-premium"
-                    style={{ opacity }}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.8, type: "spring" }}
-                    viewport={{ once: true }}
-                  >
-                    {/* Parallax Image */}
-                    <motion.div 
-                      className="absolute inset-0 bg-cover bg-center"
-                      style={{ 
-                        backgroundImage: `url(${property.photos?.[0] || 'https://picsum.photos/1200/800'})`,
-                        y: parallaxY 
-                      }}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-br from-transparent to-black/50" />
-                    </motion.div>
-                    
-                    {/* Content Overlay */}
-                    <div className="relative z-10 p-12 min-h-[60vh] flex flex-col justify-end">
-                      <motion.div
-                        initial={{ opacity: 0, y: 50 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, staggerChildren: 0.1 }}
-                      >
-                        <motion.h3 
-                          className="text-4xl font-light text-white mb-2"
-                          transition={{ duration: 0.4 }}
-                        >
-                          {property.title}
-                        </motion.h3>
-                        <motion.div 
-                          className="flex items-center gap-2 mb-4 text-white/80"
-                          transition={{ duration: 0.4 }}
-                        >
-                          <MapPin className="w-5 h-5" />
-                          <span>{property.location}</span>
-                        </motion.div>
-                        <motion.p 
-                          className="text-white/90 mb-6 leading-relaxed"
-                          transition={{ duration: 0.4 }}
-                        >
-                          {property.description || 'Description du projet...'}
-                        </motion.p>
-                        <motion.div 
-                          className="flex flex-wrap gap-2 mb-6"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ staggerChildren: 0.05 }}
-                        >
-                          {(property.features || []).slice(0, 4).map((feature: string, i: number) => (
-                            <motion.span
-                              key={i}
-                              initial={{ opacity: 0, scale: 0.8 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              transition={{ duration: 0.3 }}
-                            >
-                              <Badge className="bg-white/20 text-white border-white/30">
-                                {feature}
-                              </Badge>
-                            </motion.span>
-                          ))}
-                        </motion.div>
-                        <Button 
-                          asChild
-                          className="bg-white text-primary hover:bg-white/90 w-fit"
-                        >
-                          <Link to={`/project/${property.id}`}>
-                            Explorer
-                            <ArrowRight className="ml-2 h-4 w-4" />
-                          </Link>
-                        </Button>
-                      </motion.div>
-                    </div>
-                  </motion.div>
-                );
-              })}
+              {featuredProperties.map((property) => (
+                <FeaturedParallaxCard key={property.id} property={property} />
+              ))}
             </div>
           </div>
         </section>
