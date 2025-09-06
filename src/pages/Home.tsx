@@ -32,6 +32,17 @@ const OrbitControls = lazy(() => import('@react-three/drei').then(mod => ({ defa
 const Sphere = lazy(() => import('@react-three/drei').then(mod => ({ default: mod.Sphere })));
 const MeshDistortMaterial = lazy(() => import('@react-three/drei').then(mod => ({ default: mod.MeshDistortMaterial })));
 const Float = lazy(() => import('@react-three/drei').then(mod => ({ default: mod.Float })));
+// Minimal TS declarations and fallbacks (no UI changes)
+declare global {
+  interface Window {
+    SpeechRecognition?: any;
+    webkitSpeechRecognition?: any;
+  }
+}
+// Fallback testimonials to avoid runtime errors if undefined
+const testimonials: any[] = [];
+
+
 // BackgroundSphere Component
 const BackgroundSphere = () => (
   <Float speed={1.4} rotationIntensity={1} floatIntensity={2}>
@@ -341,7 +352,7 @@ const Home = () => {
   const [searchResults, setSearchResults] = useState<any>(null);
   const [showResultsModal, setShowResultsModal] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const recognitionRef = useRef<any | null>(null);
   const { isAuthenticated, user } = useAuth();
   const { toast } = useToast();
   const { scrollY } = useScroll();
@@ -387,7 +398,7 @@ const Home = () => {
   }, [isAuthenticated]);
   useEffect(() => {
     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = true;
       recognitionRef.current.interimResults = true;
