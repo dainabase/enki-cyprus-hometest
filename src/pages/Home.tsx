@@ -1,5 +1,8 @@
 import { useState, lazy, Suspense, useEffect, useMemo, useCallback, useRef } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring, useInView } from 'framer-motion';
+import Slider from 'react-slick';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -1003,61 +1006,147 @@ const Home = () => {
         </motion.section>
 
         {/* Projets Vedette */}
-        <section id="featured-projects" className="py-24 md:py-32 bg-gradient-to-br from-muted/30 to-background">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
+        <section id="featured-projects" className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
+          <div className="max-w-7xl mx-auto">
+            <motion.h2
+              className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight text-primary text-center mb-8"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="text-center mb-16"
+              transition={{ duration: 0.6 }}
             >
-              <motion.h2 
-                className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight -0.015em text-primary mb-6"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                viewport={{ once: true }}
-              >
-                Projets Vedette
-              </motion.h2>
-              <motion.p 
-                className="text-lg sm:text-xl font-normal leading-relaxed -0.005em text-muted-foreground max-w-3xl mx-auto"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                viewport={{ once: true }}
-              >
-                Découvrez notre sélection exclusive de programmes immobiliers d'exception, choisis pour leur emplacement privilégié, leur architecture remarquable et leur potentiel d'investissement.
-              </motion.p>
-            </motion.div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {featuredProperties.slice(0, 3).map((property, index) => (
-                <motion.div
-                  key={property.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.2 }}
-                  whileHover={{ y: -5, scale: 1.02 }}
-                  className="h-full"
-                >
-                  <PropertyCard
-                    property={property}
-                    onClick={() => {
-                      trackCustomEvent('featured_property_clicked', { 
-                        property_id: property.id,
-                        property_title: property.title,
-                        property_location: property.location,
-                        section: 'featured_projects'
-                      });
-                      setSelectedProperty(property);
-                      setIsModalOpen(true);
-                    }}
-                  />
-                </motion.div>
-              ))}
-            </div>
+              Projets Vedette
+            </motion.h2>
+            <motion.p
+              className="text-lg sm:text-xl font-normal leading-relaxed text-muted-foreground max-w-3xl mx-auto text-center mb-12"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              Découvrez notre sélection exclusive de programmes immobiliers d'exception
+            </motion.p>
+            {loading ? (
+              <div className="text-center text-muted-foreground">Chargement des projets...</div>
+            ) : error ? (
+              <div className="text-center text-destructive">Erreur de chargement des projets. Veuillez réessayer.</div>
+            ) : featuredProperties.length === 0 ? (
+              <div className="text-center text-muted-foreground">Aucun projet trouvé.</div>
+            ) : (
+              <div className="space-y-16">
+                {featuredProperties.slice(0, 3).map((project: any, index: number) => (
+                  <motion.div
+                    key={project.id}
+                    className="relative bg-card border-border/50 rounded-3xl shadow-premium overflow-hidden backdrop-blur-sm"
+                    initial={{ opacity: 0, y: 100 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1, delay: index * 0.3, type: 'spring', stiffness: 50 }}
+                    whileHover={{ scale: 1.02 }}
+                  >
+                    {/* Background Parallax Image */}
+                    <motion.div 
+                      className="absolute inset-0 z-0"
+                      style={{
+                        backgroundImage: `url(${project.photos?.[0] || 'https://picsum.photos/1200/800?random=' + project.id})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                      }}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20" />
+                    </motion.div>
+                    
+                    {/* Glassmorphism Overlay */}
+                    <div className="relative z-10 p-8 lg:p-12 flex flex-col lg:flex-row items-center gap-8 backdrop-blur-sm bg-background/30">
+                      {/* Project Info Column */}
+                      <motion.div 
+                        className="lg:w-1/2 space-y-6"
+                        initial={{ opacity: 0, x: -50 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                      >
+                        <h3 className="text-3xl lg:text-5xl font-light tracking-tight text-white">{project.title}</h3>
+                        <div className="flex items-center gap-2 text-white/80">
+                          <MapPin className="w-5 h-5" />
+                          <span>{typeof project.location === 'string' ? project.location : (project.location?.city || project.location?.name || JSON.stringify(project.location))}</span>
+                        </div>
+                        <Badge className="bg-white/20 text-white border-white/30">
+                          À partir de €{Number(project.price_from || project.price).toLocaleString()}
+                        </Badge>
+                        <p className="text-white/90 leading-relaxed">
+                          {project.description || 'Un programme immobilier premium offrant des équipements modernes et des vues exceptionnelles.'}
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {(project.amenities || []).slice(0, 4).map((amenity: string, i: number) => (
+                            <Badge key={i} className="bg-white/10 text-white border-white/20">{amenity}</Badge>
+                          ))}
+                        </div>
+                        <Button 
+                          asChild
+                          className="bg-white text-primary hover:bg-white/90 mt-4"
+                        >
+                          <Link to={`/project/${project.id}`}>
+                            Explorer le projet
+                            <ArrowRight className="ml-2 h-4 w-4" />
+                          </Link>
+                        </Button>
+                      </motion.div>
+                      
+                      {/* Slideshow Column */}
+                      <motion.div 
+                        className="lg:w-1/2 h-64 lg:h-96 overflow-hidden rounded-2xl"
+                        initial={{ opacity: 0, x: 50 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8, delay: 0.4 }}
+                      >
+                        <Slider {...{
+                          dots: true,
+                          infinite: true,
+                          speed: 500,
+                          slidesToShow: 1,
+                          slidesToScroll: 1,
+                          autoplay: true,
+                          autoplaySpeed: 3000,
+                          arrows: false,
+                          fade: true,
+                        }}>
+                          {(project.photos || [project.photos?.[0]]).map((photo: string, photoIndex: number) => (
+                            <motion.div 
+                              key={photoIndex}
+                              className="h-full"
+                              whileHover={{ scale: 1.05 }}
+                              transition={{ duration: 0.5 }}
+                            >
+                              <img 
+                                src={photo || 'https://picsum.photos/800/500?random=' + photoIndex}
+                                alt={`Photo ${photoIndex + 1} du projet ${project.title}`}
+                                className="w-full h-full object-cover"
+                                loading="lazy"
+                              />
+                            </motion.div>
+                          ))}
+                        </Slider>
+                      </motion.div>
+                    </div>
+                    
+                    {/* Futuristic Glow Effect */}
+                    <motion.div 
+                      className="absolute inset-0 pointer-events-none"
+                      animate={{
+                        boxShadow: [
+                          '0 0 20px rgba(0, 144, 230, 0.1)',
+                          '0 0 40px rgba(0, 144, 230, 0.2)',
+                          '0 0 20px rgba(0, 144, 230, 0.1)',
+                        ],
+                      }}
+                      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                    />
+                  </motion.div>
+                ))}
+              </div>
+            )}
           </div>
         </section>
 
