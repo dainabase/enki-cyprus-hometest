@@ -24,6 +24,8 @@ interface PropertyModalProps {
 const PropertyModal = ({ property, isOpen, onClose }: PropertyModalProps) => {
   if (!property) return null;
 
+  const locationText = typeof property.location === 'string' ? property.location : (property.location as any)?.city || (property.location as any)?.name || '';
+
   // Status functionality removed as it's not in the new Property structure
 
   return (
@@ -53,7 +55,7 @@ const PropertyModal = ({ property, isOpen, onClose }: PropertyModalProps) => {
                 
                 <div className="flex items-center gap-2 mb-4">
                   <MapPin className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">{property.location}</span>
+                  <span className="text-muted-foreground">{locationText}</span>
                   <Badge variant="secondary">
                     {property.type}
                   </Badge>
