@@ -39,7 +39,8 @@ const Carousel3D: React.FC<Carousel3DProps> = ({ properties, interests, onIntere
   const locationKey = typeof currentProperty.location === 'string' 
     ? currentProperty.location.toLowerCase() 
     : (currentProperty.location as any)?.city?.toLowerCase() || 'limassol';
-  const currentInterests = interests[locationKey] || interests['limassol'] || [];
+  const rawInterests = (interests && (interests as any)[locationKey]) ?? (interests as any)?.['limassol'];
+  const currentInterests: ProjectInterest[] = Array.isArray(rawInterests) ? rawInterests : [];
 
   return (
     <div className="relative w-full h-[600px] overflow-hidden">
