@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Search, Filter, Pool, Trees, Dumbbell, Shield, ParkingCircle, Waves } from 'lucide-react';
+import { MapPin, Search, Filter, Waves, Trees, Dumbbell, Shield, ParkingCircle, ArrowRight } from 'lucide-react';
 import { useSupabaseProperties } from '@/hooks/useSupabaseProperties';
 import { Property } from '@/lib/supabase';
 import ErrorBoundary from '@/components/ErrorBoundary';
@@ -371,7 +371,7 @@ const Projects = () => {
             </motion.p>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
               {[
-                { icon: Pool, label: 'Infinity Pools' },
+                { icon: Waves, label: 'Infinity Pools' },
                 { icon: Trees, label: 'Lush Gardens' },
                 { icon: Dumbbell, label: 'State-of-the-Art Gym' },
                 { icon: Shield, label: '24/7 Security' },
