@@ -386,52 +386,91 @@ export type Database = {
       }
       projects: {
         Row: {
+          amenities: string[] | null
+          completion_date: string | null
           created_at: string
           description: string
           detailed_description: string | null
           detailed_features: string[] | null
+          developer_id: string | null
           features: string[]
+          furniture_status: string | null
           id: string
+          interests: Json[] | null
+          livability: boolean | null
           location: Json
+          map_image: string | null
           photos: string[]
           plans: string[] | null
           price: number
+          price_from: string | null
+          status: string
+          subtitle: string | null
           title: string
           type: string
+          units: Json[] | null
           updated_at: string
+          video_url: string | null
           virtual_tour: string | null
+          virtual_tour_url: string | null
         }
         Insert: {
+          amenities?: string[] | null
+          completion_date?: string | null
           created_at?: string
           description: string
           detailed_description?: string | null
           detailed_features?: string[] | null
+          developer_id?: string | null
           features?: string[]
+          furniture_status?: string | null
           id?: string
+          interests?: Json[] | null
+          livability?: boolean | null
           location: Json
+          map_image?: string | null
           photos?: string[]
           plans?: string[] | null
           price: number
+          price_from?: string | null
+          status?: string
+          subtitle?: string | null
           title: string
           type: string
+          units?: Json[] | null
           updated_at?: string
+          video_url?: string | null
           virtual_tour?: string | null
+          virtual_tour_url?: string | null
         }
         Update: {
+          amenities?: string[] | null
+          completion_date?: string | null
           created_at?: string
           description?: string
           detailed_description?: string | null
           detailed_features?: string[] | null
+          developer_id?: string | null
           features?: string[]
+          furniture_status?: string | null
           id?: string
+          interests?: Json[] | null
+          livability?: boolean | null
           location?: Json
+          map_image?: string | null
           photos?: string[]
           plans?: string[] | null
           price?: number
+          price_from?: string | null
+          status?: string
+          subtitle?: string | null
           title?: string
           type?: string
+          units?: Json[] | null
           updated_at?: string
+          video_url?: string | null
           virtual_tour?: string | null
+          virtual_tour_url?: string | null
         }
         Relationships: []
       }
