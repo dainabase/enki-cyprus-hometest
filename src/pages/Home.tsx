@@ -520,25 +520,27 @@ const Home = () => {
           <Suspense fallback={null}>
             {isClient && (
               <div className="absolute inset-0 opacity-20">
-                <ErrorBoundary fallback={<div className="bg-gradient-to-br from-accent/20 to-primary/20" />}>
+                <ErrorBoundary fallback={<div className="bg-gradient-to-br from-accent/20 to-primary/20 h-full w-full" />}>
                   <Canvas camera={{ position: [0, 0, 5] }}>
                     <ambientLight intensity={0.4} />
                     <pointLight position={[10, 10, 10]} />
-                    <Float speed={2} rotationIntensity={1} floatIntensity={2}>
-                      <Sphere args={[0.1, 16, 16]} position={[-4, -2, -1]}>
-                        <MeshDistortMaterial color="#F0F7FD" distort={0.2} speed={2} /> {/* Accent */}
-                      </Sphere>
-                    </Float>
-                    <Float speed={1.5} rotationIntensity={2} floatIntensity={1}>
-                      <Sphere args={[0.15, 16, 16]} position={[4, 2, -2]}>
-                        <MeshDistortMaterial color="#0090E6" distort={0.3} speed={1.5} /> {/* Primary */}
-                      </Sphere>
-                    </Float>
-                    <Float speed={1.8} rotationIntensity={1.5} floatIntensity={3}>
-                      <Sphere args={[0.08, 16, 16]} position={[0, 3, -1]}>
-                        <MeshDistortMaterial color="#20B256" distort={0.4} speed={2.5} /> {/* Success */}
-                      </Sphere>
-                    </Float>
+                    <Suspense fallback={null}>
+                      <Float speed={2} rotationIntensity={1} floatIntensity={2}>
+                        <Sphere args={[0.1, 16, 16]} position={[-4, -2, -1]}>
+                          <MeshDistortMaterial color="#F0F7FD" distort={0.2} speed={2} />
+                        </Sphere>
+                      </Float>
+                      <Float speed={1.5} rotationIntensity={2} floatIntensity={1}>
+                        <Sphere args={[0.15, 16, 16]} position={[4, 2, -2]}>
+                          <MeshDistortMaterial color="#0090E6" distort={0.3} speed={1.5} />
+                        </Sphere>
+                      </Float>
+                      <Float speed={1.8} rotationIntensity={1.5} floatIntensity={3}>
+                        <Sphere args={[0.08, 16, 16]} position={[0, 3, -1]}>
+                          <MeshDistortMaterial color="#20B256" distort={0.4} speed={2.5} />
+                        </Sphere>
+                      </Float>
+                    </Suspense>
                   </Canvas>
                 </ErrorBoundary>
               </div>
@@ -1031,14 +1033,30 @@ const Home = () => {
               <div className="text-center text-muted-foreground">Chargement des projets...</div>
             ) : error ? (
               <div className="text-center text-destructive">Erreur de chargement des projets. Veuillez réessayer.</div>
+            ) : featuredProperties.length === 0 ? (
+              <div className="text-center text-muted-foreground">Aucun projet disponible pour le moment.</div>
             ) : (
-              <ErrorBoundary fallback={<div className="text-center text-destructive">Erreur d'affichage des projets.</div>}>
-                <Advanced3DCarousel 
-                  properties={featuredProperties} 
-                  interests={interests || {}} 
-                  onInterestClick={handleInterestClick} 
-                />
-              </ErrorBoundary>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {featuredProperties.map((property: Property, index: number) => (
+                  <motion.div
+                    key={property.id}
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                    whileHover={{ y: -5, scale: 1.02 }}
+                    className="h-full"
+                  >
+                    <PropertyCard
+                      property={property}
+                      onClick={() => {
+                        setSelectedProperty(property);
+                        setIsModalOpen(true);
+                      }}
+                    />
+                  </motion.div>
+                ))}
+              </div>
             )}
           </div>
         </section>
@@ -1076,6 +1094,8 @@ const Home = () => {
               <div className="text-center text-muted-foreground">Chargement des propriétés...</div>
             ) : error ? (
               <div className="text-center text-destructive">Erreur de chargement des propriétés. Veuillez réessayer.</div>
+            ) : latestProperties.length === 0 ? (
+              <div className="text-center text-muted-foreground">Aucune propriété disponible pour le moment.</div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {latestProperties.map((property: Property, index: number) => (
