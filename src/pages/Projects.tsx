@@ -12,6 +12,7 @@ import { Property } from '@/lib/supabase';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { SEOHead } from '@/components/SEOHead';
 import { trackPageView, trackCustomEvent } from '@/lib/analytics';
+import Layout from '@/components/layout/Layout';
 
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 
@@ -439,9 +440,7 @@ const Projects = () => {
           </div>
         </section>
       </main>
-      
-      <Footer />
-    </>
+    </Layout>
   );
 };
 
