@@ -46,6 +46,8 @@ const BackgroundSphere = () => (
     </Sphere>
   </Float>
 );
+// Fallback testimonials to prevent reference errors when data is unavailable
+const testimonials: any[] = [];
 // Advanced3DCarousel Component
 const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -386,9 +388,9 @@ const Home = () => {
     trackCustomEvent('home_viewed', { user_authenticated: !!isAuthenticated });
   }, [isAuthenticated]);
   useEffect(() => {
-    if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognitionRef.current = new SpeechRecognition();
+    if (typeof window !== 'undefined' && (('SpeechRecognition' in window) || ('webkitSpeechRecognition' in window))) {
+      const SpeechRecognitionCtor = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognitionCtor();
       recognitionRef.current.continuous = true;
       recognitionRef.current.interimResults = true;
       recognitionRef.current.lang = 'fr-FR';
