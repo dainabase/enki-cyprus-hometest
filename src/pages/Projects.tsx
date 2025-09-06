@@ -16,48 +16,6 @@ import Layout from '@/components/layout/Layout';
 
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 
-// Header Component
-const Header = () => (
-  <motion.header 
-    className="bg-background sticky top-0 z-50 shadow-md"
-    initial={{ y: -100 }}
-    animate={{ y: 0 }}
-    transition={{ duration: 0.5 }}
-  >
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-      <Link to="/">
-        <div className="text-2xl font-light tracking-tight text-primary">ENKI-REALTY</div>
-      </Link>
-      <nav className="hidden md:flex space-x-6">
-        <Link to="/" className="text-base font-medium text-primary hover:text-primary-hover">Accueil</Link>
-        <Link to="/projects" className="text-base font-medium text-primary hover:text-primary-hover">Projets</Link>
-        <Link to="/search" className="text-base font-medium text-primary hover:text-primary-hover">Recherche IA</Link>
-        <Link to="/lexaia" className="text-base font-medium text-primary hover:text-primary-hover">Conseil Fiscal IA</Link>
-        <Link to="/blog" className="text-base font-medium text-primary hover:text-primary-hover">Blog</Link>
-        <Link to="/about" className="text-base font-medium text-primary hover:text-primary-hover">À Propos</Link>
-        <Link to="/contact" className="text-base font-medium text-primary hover:text-primary-hover">Contact</Link>
-      </nav>
-      <Link to="/login">
-        <Button variant="outline" className="text-base font-medium">Connexion</Button>
-      </Link>
-    </div>
-  </motion.header>
-);
-
-// Footer Component
-const Footer = () => (
-  <footer className="bg-background py-8 border-t border-border">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-primary">
-      <p>&copy; 2025 ENKI-REALTY. Tous droits réservés.</p>
-      <div className="mt-4 space-x-4">
-        <Link to="/about" className="text-sm font-normal hover:text-primary-hover">À Propos</Link>
-        <Link to="/contact" className="text-sm font-normal hover:text-primary-hover">Contact</Link>
-        <Link to="/privacy" className="text-sm font-normal hover:text-primary-hover">Politique de Confidentialité</Link>
-      </div>
-    </div>
-  </footer>
-);
-
 const Projects = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
@@ -79,7 +37,7 @@ const Projects = () => {
   });
 
   return (
-    <>
+    <Layout>
       <SEOHead 
         title="Projets Immobiliers à Chypre | ENKI-REALTY"
         description="Découvrez notre sélection exclusive de projets immobiliers premium à Chypre. Résidences de luxe, villas et appartements dans les meilleurs emplacements."
@@ -88,8 +46,6 @@ const Projects = () => {
         canonical="https://enki-realty.com/projects"
         image="/og-projects.jpg"
       />
-      
-      <Header />
       
       <main className="min-h-screen bg-background">
         {/* Hero Section */}
@@ -368,7 +324,7 @@ const Projects = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              Our projects offer world-class amenities for an elevated lifestyle
+              Experience unparalleled luxury through thoughtfully curated amenities
             </motion.p>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
               {[
@@ -376,20 +332,26 @@ const Projects = () => {
                 { icon: Trees, label: 'Lush Gardens' },
                 { icon: Dumbbell, label: 'State-of-the-Art Gym' },
                 { icon: Shield, label: '24/7 Security' },
-                { icon: ParkingCircle, label: 'Private Parking' },
-                { icon: Waves, label: 'Sea Views' },
+                { icon: ParkingCircle, label: 'Underground Parking' },
+                { icon: ArrowRight, label: 'Concierge Services' },
               ].map((amenity, index) => (
                 <motion.div
-                  key={index}
-                  className="flex flex-col items-center p-4 bg-card border-border/50 rounded-xl shadow-md hover:shadow-premium transition-all"
-                  initial={{ opacity: 0, y: 50 }}
+                  key={amenity.label}
+                  className="text-center p-6 rounded-xl bg-card border border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg"
+                  initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: 1.05, y: -5 }}
                 >
-                  <amenity.icon className="w-8 h-8 text-primary mb-2" />
-                  <span className="text-sm font-medium text-center">{amenity.label}</span>
+                  <motion.div
+                    className="w-12 h-12 mx-auto mb-4 flex items-center justify-center rounded-full bg-primary/10"
+                    whileHover={{ rotate: 360 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <amenity.icon className="w-6 h-6 text-primary" />
+                  </motion.div>
+                  <h3 className="text-sm font-medium text-primary">{amenity.label}</h3>
                 </motion.div>
               ))}
             </div>
@@ -397,25 +359,25 @@ const Projects = () => {
         </section>
 
         {/* CTA Section */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-premium-gradient text-primary-foreground text-center">
-          <div className="max-w-7xl mx-auto">
+        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-primary text-primary-foreground">
+          <div className="max-w-4xl mx-auto text-center">
             <motion.h2 
-              className="text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight mb-6"
+              className="text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight mb-8"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              Start Your Journey Today
+              Ready to Make Cyprus Your Home?
             </motion.h2>
             <motion.p 
-              className="text-lg sm:text-xl font-normal leading-relaxed max-w-3xl mx-auto mb-8"
+              className="text-lg sm:text-xl font-normal leading-relaxed mb-12 opacity-90"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              Let our AI-powered search find the perfect project for you
+              Connect with our expert team to discover your perfect property investment
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -424,17 +386,15 @@ const Projects = () => {
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               <Button 
-                className="bg-primary-foreground text-primary px-8 py-4 text-base font-medium rounded-lg shadow-lg hover:shadow-premium hover:scale-105 transition-all mr-4"
-                onClick={() => trackCustomEvent('cta_search_clicked')}
-              >
-                Start Search
-              </Button>
-              <Button 
-                variant="outline"
-                className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary"
+                asChild
+                size="lg"
+                variant="secondary"
+                className="bg-white text-primary hover:bg-white/90 px-8 py-4 text-base font-medium rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all"
                 onClick={() => trackCustomEvent('cta_contact_clicked')}
               >
-                Contact Us
+                <Link to="/contact">
+                  Contact Us
+                </Link>
               </Button>
             </motion.div>
           </div>
