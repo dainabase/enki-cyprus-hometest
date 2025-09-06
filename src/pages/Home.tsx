@@ -341,7 +341,7 @@ const Home = () => {
   const [searchResults, setSearchResults] = useState<any>(null);
   const [showResultsModal, setShowResultsModal] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const recognitionRef = useRef<any>(null);
   const { isAuthenticated, user } = useAuth();
   const { toast } = useToast();
   const { scrollY } = useScroll();
@@ -382,14 +382,19 @@ const Home = () => {
   // Use dynamic properties instead of hardcoded
   const featuredProperties = useMemo(() => properties.slice(0, 3), [properties]);
   const latestProperties = useMemo(() => properties.slice(3, 8), [properties]);
+  // Fallback testimonials data (use external source if available on window)
+  const testimonials: { id: string; name: string; location: string; photo: string; rating: number; comment: string; }[] =
+    (typeof window !== 'undefined' && Array.isArray((window as any).__ENKI_TESTIMONIALS))
+      ? (window as any).__ENKI_TESTIMONIALS
+      : [];
   useEffect(() => {
     trackPageView('/', 'Accueil - ENKI-REALTY Immobilier Premium Chypre');
     trackCustomEvent('home_viewed', { user_authenticated: !!isAuthenticated });
   }, [isAuthenticated]);
   useEffect(() => {
-    if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognitionRef.current = new SpeechRecognition();
+  if (typeof window !== 'undefined' && ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition)) {
+      const SpeechRecognitionCtor = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      recognitionRef.current = new (SpeechRecognitionCtor as any)();
       recognitionRef.current.continuous = true;
       recognitionRef.current.interimResults = true;
       recognitionRef.current.lang = 'fr-FR';
