@@ -1,8 +1,5 @@
 import { useState, lazy, Suspense, useEffect, useMemo, useCallback, useRef } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring, useInView } from 'framer-motion';
-import Slider from 'react-slick';
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -14,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Property } from '@/lib/supabase';
 import { useSupabaseProperties } from '@/hooks/useSupabaseProperties';
 import { useDebounce } from '@/hooks/useDebounce';
-import { Search, MapPin, Star, Download, Save, Eye, Heart, ArrowRight, ChevronLeft, ChevronRight, ExternalLink, Compass } from 'lucide-react';
+import { Search, MapPin, Star, Download, Save, Eye, Heart, ArrowRight, ChevronLeft, ChevronRight, ExternalLink, Compass, Mic } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -28,16 +25,13 @@ import OptimizedPropertyCard from '@/components/ui/OptimizedPropertyCard';
 import Carousel3D from '@/components/ui/Carousel3D';
 import PropertyModal from '@/components/PropertyModal';
 import { useIsClient } from '@/hooks/useIsClient';
-
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
-
 // Lazy-load 3D components only when needed
 const Canvas = lazy(() => import('@react-three/fiber').then(mod => ({ default: mod.Canvas })));
 const OrbitControls = lazy(() => import('@react-three/drei').then(mod => ({ default: mod.OrbitControls })));
 const Sphere = lazy(() => import('@react-three/drei').then(mod => ({ default: mod.Sphere })));
 const MeshDistortMaterial = lazy(() => import('@react-three/drei').then(mod => ({ default: mod.MeshDistortMaterial })));
 const Float = lazy(() => import('@react-three/drei').then(mod => ({ default: mod.Float })));
-
 // BackgroundSphere Component
 const BackgroundSphere = () => (
   <Float speed={1.4} rotationIntensity={1} floatIntensity={2}>
@@ -52,7 +46,6 @@ const BackgroundSphere = () => (
     </Sphere>
   </Float>
 );
-
 // Advanced3DCarousel Component
 const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -60,7 +53,6 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
   const carouselRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const background = useTransform(x, [-100, 0, 100], ['#F0F7FD', '#F4F6F8', '#0090E6']); // Aligned with palette
-
   useEffect(() => {
     if (!isAutoPlaying) return;
     const interval = setInterval(() => {
@@ -68,24 +60,20 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
     }, 4000);
     return () => clearInterval(interval);
   }, [properties.length, isAutoPlaying]);
-
   const isClient = useIsClient();
-
   const handleSlideChange = (index: number) => {
     setCurrentIndex(index);
   };
-
   if (!properties.length) return <div className="text-center text-muted-foreground">Aucune propriété disponible</div>;
-
   return (
-    <motion.div 
+    <motion.div
       className="relative w-full h-[80vh] overflow-hidden perspective-2000"
       style={{ background }}
       onMouseEnter={() => setIsAutoPlaying(false)}
       onMouseLeave={() => setIsAutoPlaying(true)}
     >
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/20" />
-      
+     
       <Suspense fallback={null}>
         {isClient && (
           <ErrorBoundary fallback={null}>
@@ -98,8 +86,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
           </ErrorBoundary>
         )}
       </Suspense>
-
-      <div 
+      <div
         ref={carouselRef}
         className="relative w-full h-full flex items-center justify-center transform-gpu preserve-3d"
       >
@@ -107,25 +94,22 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
           const offset = (index - currentIndex + properties.length) % properties.length;
           const isActive = index === currentIndex;
           const isAdjacent = offset === 1 || offset === properties.length - 1;
-          
+         
           if (!isActive && !isAdjacent) return null;
-
           const translateZ = isActive ? 0 : -200;
           const rotateY = isActive ? 0 : offset === 1 ? 45 : -45;
           const scale = isActive ? 1 : 0.8;
           const opacity = isActive ? 1 : 0.6;
-
-          const locationKey = typeof property.location === 'string' 
-            ? property.location.toLowerCase() 
+          const locationKey = typeof property.location === 'string'
+            ? property.location.toLowerCase()
             : (property.location as any)?.city?.toLowerCase() || 'limassol';
           const propertyInterests = interests[locationKey] || [];
-
           return (
             <motion.div
               key={property.id}
               className="absolute inset-0"
               initial={{ opacity: 0, scale: 0.5, rotateY: 90 }}
-              animate={{ 
+              animate={{
                 opacity,
                 scale,
                 rotateY,
@@ -137,7 +121,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
             >
               <Card className="mx-auto max-w-7xl h-[70vh] shadow-2xl overflow-hidden bg-gradient-to-br from-background/95 to-background/85 backdrop-blur-xl border border-border/20">
                 <CardContent className="p-0 h-full flex flex-col lg:flex-row">
-                  <motion.div 
+                  <motion.div
                     className="lg:w-2/3 relative overflow-hidden"
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.4, ease: "easeOut" }}
@@ -151,7 +135,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
                       animate={{ scale: 1 }}
                       transition={{ duration: 1.2, ease: "easeOut" }}
                     />
-                    <motion.div 
+                    <motion.div
                       className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -172,7 +156,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
                           {property.type}
                         </div>
                       </motion.div>
-                      <motion.h3 
+                      <motion.h3
                         className="text-3xl lg:text-4xl font-medium tracking-tight -0.01em mb-4 bg-gradient-to-r from-white to-accent bg-clip-text text-transparent"
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -180,7 +164,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
                       >
                         {property.title}
                       </motion.h3>
-                      <motion.div 
+                      <motion.div
                         className="flex items-center gap-3 mb-4"
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -191,7 +175,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
                           {typeof property.location === 'string' ? property.location : (property.location as any)?.city || property.location}
                         </span>
                       </motion.div>
-                      <motion.div 
+                      <motion.div
                         className="text-3xl lg:text-4xl font-bold text-success"
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -224,7 +208,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
                       </motion.button>
                     </motion.div>
                   </motion.div>
-                  <motion.div 
+                  <motion.div
                     className="lg:w-1/3 p-8 bg-gradient-to-br from-background via-muted/20 to-background backdrop-blur-xl border-l border-border/10"
                     initial={{ opacity: 0, x: 50 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -251,10 +235,10 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
                           key={idx}
                           onClick={() => {
                             onInterestClick(interest);
-                            trackCustomEvent('interests_clicked', { 
-                              name: interest.name, 
+                            trackCustomEvent('interests_clicked', {
+                              name: interest.name,
                               link: interest.link,
-                              property_id: property.id 
+                              property_id: property.id
                             });
                           }}
                           className="w-full group relative"
@@ -268,7 +252,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
                           <div className="p-4 rounded-xl border border-border/50 hover:border-primary/50 bg-gradient-to-r from-background/50 to-muted/30 backdrop-blur-sm transition-all duration-300 group-hover:shadow-lg group-hover:shadow-primary/20">
                             <div className="flex items-start justify-between gap-3">
                               <div className="flex-1 text-left">
-                                <motion.h5 
+                                <motion.h5
                                   className="font-semibold text-sm mb-2 group-hover:text-primary transition-colors"
                                   initial={{ opacity: 0 }}
                                   animate={{ opacity: 1 }}
@@ -276,7 +260,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
                                 >
                                   {interest.name}
                                 </motion.h5>
-                                <motion.p 
+                                <motion.p
                                   className="text-xs text-muted-foreground line-clamp-2"
                                   initial={{ opacity: 0 }}
                                   animate={{ opacity: 1 }}
@@ -320,8 +304,8 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
               key={index}
               onClick={() => handleSlideChange(index)}
               className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${
-                index === currentIndex 
-                  ? 'bg-white border-white scale-125' 
+                index === currentIndex
+                  ? 'bg-white border-white scale-125'
                   : 'bg-transparent border-white/50 hover:border-white/80'
               }`}
               whileHover={{ scale: index === currentIndex ? 1.3 : 1.1 }}
@@ -343,14 +327,12 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
     </motion.div>
   );
 };
-
 // Interface for project interests
 interface ProjectInterest {
   name: string;
   link: string;
   desc: string;
 }
-
 const Home = () => {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -358,25 +340,23 @@ const Home = () => {
   const [consent, setConsent] = useState(false);
   const [searchResults, setSearchResults] = useState<any>(null);
   const [showResultsModal, setShowResultsModal] = useState(false);
-  
+ 
   const { isAuthenticated, user } = useAuth();
   const { toast } = useToast();
   const { scrollY } = useScroll();
   const isClient = useIsClient();
-
   // Parallax transforms
   const heroY = useTransform(scrollY, [0, 600], [0, -100]);
   const heroOpacity = useTransform(scrollY, [0, 400], [1, 0.9]);
   const heroScale = useTransform(scrollY, [0, 600], [1, 1.1]);
-  
+ 
   const debouncedQuery = useDebounce(agenticQuery, 300);
   const { properties, loading, error } = useSupabaseProperties();
-
   // Dynamic interests fetch
   const { data: interests } = useQuery({
     queryKey: ['interests', properties],
     queryFn: async () => {
-      const uniqueLocations = Array.from(new Set(properties.map((p: Property) => 
+      const uniqueLocations = Array.from(new Set(properties.map((p: Property) =>
         typeof p.location === 'string' ? p.location.toLowerCase() : (p.location as any)?.city?.toLowerCase() || 'limassol'
       )));
       const interestsData: Record<string, ProjectInterest[]> = {};
@@ -390,16 +370,13 @@ const Home = () => {
     },
     enabled: !!properties.length,
   });
-
   // Use dynamic properties instead of hardcoded
   const featuredProperties = useMemo(() => properties.slice(0, 3), [properties]);
   const latestProperties = useMemo(() => properties.slice(3, 8), [properties]);
-
   useEffect(() => {
     trackPageView('/', 'Accueil - ENKI-REALTY Immobilier Premium Chypre');
     trackCustomEvent('home_viewed', { user_authenticated: !!isAuthenticated });
   }, [isAuthenticated]);
-
   const agenticSearchMutation = useMutation({
     mutationFn: async ({ query, consent }: { query: string; consent: boolean }) => {
       const { data, error } = await supabase.functions.invoke('agentic-search', {
@@ -430,7 +407,6 @@ const Home = () => {
       });
     },
   });
-
   const saveDossierMutation = useMutation({
     mutationFn: async (dossierData: any) => {
       const { data, error } = await supabase
@@ -453,7 +429,6 @@ const Home = () => {
       });
     },
   });
-
   const handleAgenticSearch = () => {
     if (!agenticQuery.trim()) {
       toast({
@@ -474,14 +449,12 @@ const Home = () => {
     trackCustomEvent('search_submitted', { query_length: agenticQuery.length });
     agenticSearchMutation.mutate({ query: agenticQuery, consent });
   };
-
   const handleDownloadPDF = () => {
     if (searchResults?.pdf_url) {
       window.open(searchResults.pdf_url, '_blank');
       trackCustomEvent('pdf_downloaded', { source: 'agentic_search' });
     }
   };
-
   const handleSaveDossier = () => {
     if (searchResults && isAuthenticated) {
       saveDossierMutation.mutate(searchResults);
@@ -493,15 +466,13 @@ const Home = () => {
       });
     }
   };
-
   const handleInterestClick = (interest: ProjectInterest) => {
     trackCustomEvent('interests_clicked', { name: interest.name, link: interest.link });
     window.open(interest.link, '_blank');
   };
-
   return (
     <>
-      <SEOHead 
+      <SEOHead
         title="Découvrez les Meilleurs Projets Immobiliers à Chypre | ENKI-REALTY"
         description="Plateforme immobilière premium à Chypre. Recherche agentique, optimisation fiscale AI, propriétés d'exception. Investissement sécurisé avec ENKI-REALTY."
         keywords="immobilier Chypre, investissement immobilier Chypre, propriétés premium, recherche agentique, optimisation fiscale, appartements villas penthouses, Chypre luxe"
@@ -509,21 +480,20 @@ const Home = () => {
         canonical="https://enki-realty.com/"
         image="/og-image.jpg"
       />
-      
+     
       <div className="min-h-screen overflow-x-hidden bg-background">
         {/* Hero Section */}
         <section className="relative h-screen flex items-center justify-center overflow-hidden">
-          <motion.div 
+          <motion.div
             style={{ y: heroY, opacity: heroOpacity, scale: heroScale }}
             className="absolute inset-0 z-0"
           >
-            <div 
+            <div
               className="w-full h-full bg-cover bg-center bg-no-repeat"
               style={{ backgroundImage: `url(${cyprusHero})` }}
             />
             <div className="absolute inset-0 bg-gradient-to-br from-primary/50 via-primary/20 to-accent/30" />
           </motion.div>
-
           <Suspense fallback={null}>
             {isClient && (
               <div className="absolute inset-0 opacity-20">
@@ -553,7 +523,6 @@ const Home = () => {
               </div>
             )}
           </Suspense>
-
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <motion.div
               initial={{ opacity: 0, y: 100 }}
@@ -561,7 +530,7 @@ const Home = () => {
               transition={{ duration: 1.2, delay: 0.2, ease: "easeOut" }}
               className="space-y-12"
             >
-              <motion.h1 
+              <motion.h1
                 className="text-6xl sm:text-7xl lg:text-8xl font-light tracking-tight -0.02em text-white mb-8 leading-tight"
                 initial={{ opacity: 0, y: 50, scale: 0.8 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -575,7 +544,7 @@ const Home = () => {
                   Découvrez les
                 </motion.span>
                 <br />
-                <motion.span 
+                <motion.span
                   className="block text-white"
                   initial={{ opacity: 0, x: 50 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -592,7 +561,7 @@ const Home = () => {
                   Immobiliers à Chypre
                 </motion.span>
               </motion.h1>
-              <motion.p 
+              <motion.p
                 className="font-inter text-lg sm:text-xl md:text-2xl font-normal leading-relaxed -0.005em text-white/90 max-w-4xl mx-auto"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -600,7 +569,7 @@ const Home = () => {
               >
                 La nouvelle expérience de l'investissement immobilier
               </motion.p>
-              <motion.div 
+              <motion.div
                 className="flex justify-center items-center mt-16"
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -615,18 +584,18 @@ const Home = () => {
               </motion.div>
             </motion.div>
           </div>
-          <motion.div 
-            className="absolute bottom-20 left-1/2 transform -translate-x-1/2"
+          <motion.div
+            className="absolute bottom-12 left-1/2 transform -translate-x-1/2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 2 }}
           >
-            <motion.div 
+            <motion.div
               className="w-7 h-11 border-2 border-white/70 rounded-full flex items-start justify-center backdrop-blur-sm"
               animate={{ y: [0, 6, 0] }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
             >
-              <motion.div 
+              <motion.div
                 className="w-1.5 h-1.5 bg-white rounded-full mt-1.5"
                 animate={{ y: [0, 12, 0], opacity: [1, 0.4, 1] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
@@ -634,9 +603,8 @@ const Home = () => {
             </motion.div>
           </motion.div>
         </section>
-
         {/* Pourquoi Choisir ENKI Realty */}
-        <motion.section 
+        <motion.section
           id="why-enki"
           className="bg-background py-24 md:py-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
           initial={{ y: 100, opacity: 0 }}
@@ -644,7 +612,7 @@ const Home = () => {
           transition={{ duration: 1, ease: 'easeOut' }}
           viewport={{ once: true }}
         >
-          <motion.div 
+          <motion.div
             className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5"
             initial={{ y: -50, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
@@ -652,7 +620,7 @@ const Home = () => {
             viewport={{ once: true }}
           />
           <div className="max-w-7xl mx-auto relative z-10">
-            <motion.h2 
+            <motion.h2
               className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight -0.015em text-primary text-center mb-6"
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -661,7 +629,7 @@ const Home = () => {
             >
               Pourquoi choisir ENKI Realty ?
             </motion.h2>
-            <motion.p 
+            <motion.p
               className="text-lg sm:text-xl font-normal leading-relaxed -0.005em text-muted-foreground max-w-4xl mx-auto text-center mb-20"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -716,20 +684,20 @@ const Home = () => {
                     else window.location.href = '/lexaia';
                   }}
                 >
-                  <motion.div 
+                  <motion.div
                     className={`absolute inset-0 bg-gradient-to-br ${item.gradient}`}
                     initial={{ opacity: 0, scale: 1.1 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 2 }}
                     viewport={{ once: true }}
                   />
-                  <motion.div 
+                  <motion.div
                     className="absolute top-1/4 right-1/4 w-32 h-32 bg-primary/5 rounded-full blur-2xl"
                     animate={{ x: [0, 20, -20, 0], y: [0, -10, 10, 0] }}
                     transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl z-10"></div>
-                  <motion.div 
+                  <motion.div
                     className="mb-8 flex justify-center lg:justify-start relative z-20"
                     whileHover={{ scale: 1.1, rotate: 5, transition: { type: "spring", damping: 15 } }}
                   >
@@ -741,7 +709,7 @@ const Home = () => {
                   <p className="text-lg font-normal leading-relaxed -0.005em text-muted-foreground text-center lg:text-left relative z-20">
                     {item.description}
                   </p>
-                  <motion.div 
+                  <motion.div
                     className="absolute bottom-0 left-8 right-8 h-0.5 bg-gradient-to-r from-primary/20 via-primary/60 to-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                     initial={{ scaleX: 0 }}
                     whileInView={{ scaleX: 1 }}
@@ -752,163 +720,137 @@ const Home = () => {
             </div>
           </div>
         </motion.section>
-
-        {/* Premium Video Section */}
-        <motion.section 
-          id="premium-video" 
-          className="py-0 bg-secondary w-full h-[45vh] relative overflow-hidden"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-        >
-          <motion.div
-            className="w-full h-full relative"
-            initial={{ x: -100, opacity: 0 }}
-            whileInView={{ x: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
-          >
-            <video 
-              className="w-full h-full object-cover absolute inset-0"
-              autoPlay 
-              muted 
-              loop
-              playsInline
-              poster="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&h=1080&fit=crop&auto=format"
-              onLoadStart={() => {
-                trackCustomEvent('video_viewed', { 
-                  section: 'premium-video',
-                  type: 'hero'
-                });
-              }}
-            >
-              <source src="https://videos.pexels.com/video-files/2507016/2507016-uhd_2560_1440_25fps.mp4" type="video/mp4" />
-              <source src="https://videos.pexels.com/video-files/3571264/3571264-uhd_2560_1440_30fps.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </motion.div>
-           
-          <motion.div 
-            className="absolute inset-0 bg-black/40"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-          />
-           
-          <motion.div 
-            className="absolute inset-0 flex items-center justify-center text-white text-4xl md:text-6xl font-bold text-center px-6"
-            initial={{ opacity: 0, x: 100 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
-          >
-            Experience Timeless Elegance, Premium Living in your Dream Home
-          </motion.div>
-        </motion.section>
-
         {/* Commencer l'Expérience */}
-        <motion.section 
+        <motion.section
           id="start-experience"
-          className="bg-secondary py-24 md:py-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
+          className="relative py-24 md:py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-secondary to-background/80 overflow-hidden"
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, ease: 'easeInOut' }}
           viewport={{ once: true }}
         >
+          {/* Background Effects */}
           <motion.div 
-            className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/15"
-            initial={{ opacity: 0, scale: 1.1 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 2 }}
-            viewport={{ once: true }}
+            className="absolute inset-0 pointer-events-none"
+            animate={{
+              background: 'radial-gradient(circle at 50% 50%, rgba(0,144,230,0.1) 0%, transparent 70%)',
+            }}
+            transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", repeatType: "reverse" }}
           />
-          <motion.div 
-            className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"
-            animate={{ x: [0, 50, -50, 0], y: [0, -30, 30, 0] }}
-            transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <div className="max-w-7xl mx-auto relative z-10">
-            <motion.h2 
-              className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight -0.015em text-primary text-center mb-10"
-              initial={{ opacity: 0, y: 30 }}
+          
+          {/* Floating Particles */}
+          <Suspense fallback={null}>
+            {isClient && (
+              <div className="absolute inset-0 opacity-30">
+                <ErrorBoundary fallback={null}>
+                  <Canvas style={{ height: '100%', width: '100%' }}>
+                    <ambientLight intensity={0.5} />
+                    <pointLight position={[10, 10, 10]} />
+                    <group>
+                      {[...Array(20)].map((_, i) => (
+                        <Float key={i} speed={1 + Math.random() * 2} rotationIntensity={1} floatIntensity={2}>
+                          <Sphere args={[0.05 + Math.random() * 0.1, 16, 16]} position={[Math.random() * 10 - 5, Math.random() * 10 - 5, Math.random() * 5 - 2.5]}>
+                            <MeshDistortMaterial color="#0090E6" distort={0.3} speed={1.5} />
+                          </Sphere>
+                        </Float>
+                      ))}
+                    </group>
+                  </Canvas>
+                </ErrorBoundary>
+              </div>
+            )}
+          </Suspense>
+          
+          <div className="max-w-3xl mx-auto relative z-10">
+            <motion.h2
+              className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight -0.015em text-primary text-center mb-12"
+              initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
             >
               Commencer l'Expérience
             </motion.h2>
-            <motion.p 
-              className="text-lg sm:text-xl font-normal leading-relaxed -0.005em text-muted-foreground max-w-3xl mx-auto text-center mb-12"
+            
+            <motion.p
+              className="text-lg sm:text-xl font-normal leading-relaxed -0.005em text-muted-foreground text-center mb-12"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
             >
-              Démarrez votre recherche personnalisée assistée par IA et découvrez les propriétés qui correspondent parfaitement à vos critères et vos rêves.
+              Laissez l'IA transformer votre vision en réalité immobilière parfaite
             </motion.p>
+            
+            {/* Futuristic Input Container */}
             <motion.div 
-              className="space-y-8"
-              initial={{ opacity: 0, y: 60 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.6, type: "spring", damping: 15 }}
-              viewport={{ once: true }}
+              className="relative bg-card/50 backdrop-blur-xl border border-primary/20 rounded-3xl p-8 shadow-premium overflow-hidden"
+              initial={{ opacity: 0, scale: 0.95, rotateX: -10 }}
+              whileInView={{ opacity: 1, scale: 1, rotateX: 0 }}
+              transition={{ duration: 1, type: 'spring', damping: 15 }}
+              whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(0,144,230,0.2)' }}
             >
+              {/* Glowing Border Effect */}
               <motion.div
-                className="relative group"
-                whileHover={{ scale: 1.02, transition: { type: "spring", damping: 15 } }}
+                className="absolute inset-0 border-2 border-primary/0 rounded-3xl pointer-events-none"
+                animate={{
+                  borderColor: ['rgba(0,144,230,0)', 'rgba(0,144,230,0.3)', 'rgba(0,144,230,0)'],
+                }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              />
+              
+              {/* AI Orb Indicator */}
+              <motion.div 
+                className="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-24 rounded-full bg-primary/20 blur-xl"
+                animate={{
+                  scale: [1, 1.2, 1],
+                  opacity: [0.5, 0.8, 0.5],
+                }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
               >
-                <motion.div
-                  className="absolute -inset-2 z-0 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                  initial={{ scale: 0.8 }}
-                  whileHover={{ scale: 1.1 }}
+                <motion.div 
+                  className="absolute inset-4 rounded-full bg-primary shadow-[0_0_20px_rgba(0,144,230,0.5)]"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
                 />
-                <motion.div
-                  className="relative z-10 bg-card rounded-2xl shadow-2xl border border-border/50 overflow-hidden"
-                  initial={{ y: 20, opacity: 0 }}
-                  whileInView={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <div className="p-6">
-                    <Textarea
-                      value={agenticQuery}
-                      onChange={(e) => setAgenticQuery(e.target.value)}
-                      placeholder="Décrivez votre projet : ex. 'Français, budget 500k €, appartement près de la mer à Chypre – options fiscales pour optimisation rentabilité ?'"
-                      className="w-full border-0 bg-transparent resize-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 min-h-[120px] text-primary placeholder:text-muted-foreground text-lg leading-relaxed"
-                      sanitize={false}
-                      aria-label="Describe your real estate project"
-                    />
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-4 pt-4 border-t border-border/50">
-                      <Label htmlFor="consent" className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
-                        <Checkbox
-                          id="consent"
-                          checked={consent}
-                          onCheckedChange={(checked) => setConsent(checked as boolean)}
-                          aria-label="Consent for personalized recommendations"
-                        />
-                        J'accepte que mes données soient utilisées pour générer des recommandations personnalisées
-                      </Label>
-                      <motion.button
-                        className="px-8 py-3 bg-primary text-primary-foreground rounded-lg text-lg font-medium hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        disabled={!agenticQuery.trim() || !consent}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={handleAgenticSearch}
-                        aria-label="Launch agentic search"
-                      >
-                        Lancer la Recherche
-                      </motion.button>
-                    </div>
-                  </div>
-                </motion.div>
               </motion.div>
+              
+              <Textarea
+                value={agenticQuery}
+                onChange={(e) => setAgenticQuery(e.target.value)}
+                placeholder="Décrivez votre projet idéal... (ex: Appartement vue mer à Limassol, budget 500k€, optimisation fiscale)"
+                className="w-full min-h-[120px] bg-transparent border-0 text-primary placeholder:text-muted-foreground/60 focus-visible:ring-0 resize-none text-lg"
+              />
+              
+              <div className="flex items-center justify-between mt-4">
+                <Label htmlFor="consent" className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
+                  <Checkbox id="consent" checked={consent} onCheckedChange={(checked) => setConsent(!!checked)} />
+                  Accepter le traitement des données pour recommandations personnalisées
+                </Label>
+                
+                <div className="flex gap-4">
+                  <motion.button 
+                    className="p-3 bg-primary/10 rounded-full hover:bg-primary/20 transition-colors"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={handleVoiceInput}
+                    aria-label="Voice input"
+                  >
+                    <Mic className="w-5 h-5 text-primary" />
+                  </motion.button>
+                  
+                  <Button 
+                    onClick={handleAgenticSearch}
+                    disabled={!agenticQuery.trim() || !consent}
+                    className="bg-primary hover:bg-primary-hover"
+                  >
+                    Lancer l'Analyse IA
+                  </Button>
+                </div>
+              </div>
             </motion.div>
           </div>
         </motion.section>
-
         {/* KPIs Marché Immobilier */}
-        <motion.section 
+        <motion.section
           id="market-kpis"
           className="bg-background py-24 md:py-32 px-4 sm:px-6 lg:px-8"
           initial={{ opacity: 0 }}
@@ -917,7 +859,7 @@ const Home = () => {
           viewport={{ once: true }}
         >
           <div className="max-w-7xl mx-auto">
-            <motion.div 
+            <motion.div
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
@@ -932,14 +874,14 @@ const Home = () => {
                   source: "Sources : <a href='https://www.globalpropertyguide.com/Europe/Cyprus/Price-History' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Global Property Guide</a> · <a href='https://www.ceicdata.com/en/indicator/cyprus/house-prices-growth' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>CEIC Data</a>",
                 },
                 {
-                  number: "23,9K", 
+                  number: "23,9K",
                   title: "Transactions immobilières en 2024",
                   subtitle: "",
                   source: "Sources : <a href='https://www.pwc.com.cy/en/publications/cyprus-real-estate-market-review.html' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>PwC Cyprus Real Estate Market Review</a> · <a href='https://cyprus-mail.com/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Cyprus Mail</a>",
                 },
                 {
                   number: "70%",
-                  title: "Taux d'occupation locative", 
+                  title: "Taux d'occupation locative",
                   subtitle: "",
                   source: "Sources : <a href='https://airbtics.com/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Airbtics</a> · <a href='https://investropa.com/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Investropa</a>",
                 },
@@ -971,7 +913,7 @@ const Home = () => {
                   >
                     {kpi.number}
                   </motion.div>
-                  <motion.h3 
+                  <motion.h3
                     className="text-xl sm:text-2xl font-medium tracking-tight -0.01em text-primary mb-3"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -980,7 +922,7 @@ const Home = () => {
                   >
                     {kpi.title}
                   </motion.h3>
-                  <motion.p 
+                  <motion.p
                     className="text-sm font-normal leading-relaxed -0.003em text-muted-foreground max-w-xs mx-auto mb-3"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -990,7 +932,7 @@ const Home = () => {
                     {kpi.subtitle}
                   </motion.p>
                   {kpi.source && (
-                    <motion.div 
+                    <motion.div
                       className="text-xs"
                       dangerouslySetInnerHTML={{ __html: kpi.source }}
                       initial={{ opacity: 0 }}
@@ -1004,152 +946,118 @@ const Home = () => {
             </motion.div>
           </div>
         </motion.section>
-
+        {/* Premium Video Section */}
+        <motion.section
+          id="premium-video"
+          className="py-0 bg-secondary w-full h-[45vh] relative overflow-hidden"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <motion.div
+            className="w-full h-full relative"
+            initial={{ x: -100, opacity: 0 }}
+            whileInView={{ x: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+          >
+            <video
+              className="w-full h-full object-cover absolute inset-0"
+              autoPlay
+              muted
+              loop
+              playsInline
+              poster="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&h=1080&fit=crop&auto=format"
+              onLoadStart={() => {
+                trackCustomEvent('video_viewed', {
+                  section: 'premium-video',
+                  type: 'hero'
+                });
+              }}
+            >
+              <source src="https://videos.pexels.com/video-files/2507016/2507016-uhd_2560_1440_25fps.mp4" type="video/mp4" />
+              <source src="https://videos.pexels.com/video-files/3571264/3571264-uhd_2560_1440_30fps.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </motion.div>
+          
+          <motion.div
+            className="absolute inset-0 bg-black/40"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          />
+          
+          <motion.div
+            className="absolute inset-0 flex items-center justify-center text-white text-4xl md:text-6xl font-bold text-center px-6"
+            initial={{ opacity: 0, x: 100 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+          >
+            Experience Timeless Elegance, Premium Living in your Dream Home
+          </motion.div>
+        </motion.section>
         {/* Projets Vedette */}
-        <section id="featured-projects" className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
-          <div className="max-w-7xl mx-auto">
-            <motion.h2
-              className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight text-primary text-center mb-8"
+        <section id="featured-projects" className="py-24 md:py-32 bg-gradient-to-br from-muted/30 to-background">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-16"
             >
-              Projets Vedette
-            </motion.h2>
-            <motion.p
-              className="text-lg sm:text-xl font-normal leading-relaxed text-muted-foreground max-w-3xl mx-auto text-center mb-12"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              Découvrez notre sélection exclusive de programmes immobiliers d'exception
-            </motion.p>
-            {loading ? (
-              <div className="text-center text-muted-foreground">Chargement des projets...</div>
-            ) : error ? (
-              <div className="text-center text-destructive">Erreur de chargement des projets. Veuillez réessayer.</div>
-            ) : featuredProperties.length === 0 ? (
-              <div className="text-center text-muted-foreground">Aucun projet trouvé.</div>
-            ) : (
-              <div className="space-y-16">
-                {featuredProperties.slice(0, 3).map((project: any, index: number) => (
-                  <motion.div
-                    key={project.id}
-                    className="relative bg-card border-border/50 rounded-3xl shadow-premium overflow-hidden backdrop-blur-sm"
-                    initial={{ opacity: 0, y: 100 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1, delay: index * 0.3, type: 'spring', stiffness: 50 }}
-                    whileHover={{ scale: 1.02 }}
-                  >
-                    {/* Background Parallax Image */}
-                    <motion.div 
-                      className="absolute inset-0 z-0"
-                      style={{
-                        backgroundImage: `url(${project.photos?.[0] || 'https://picsum.photos/1200/800?random=' + project.id})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                      }}
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ duration: 0.5 }}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20" />
-                    </motion.div>
-                    
-                    {/* Glassmorphism Overlay */}
-                    <div className="relative z-10 p-8 lg:p-12 flex flex-col lg:flex-row items-center gap-8 backdrop-blur-sm bg-background/30">
-                      {/* Project Info Column */}
-                      <motion.div 
-                        className="lg:w-1/2 space-y-6"
-                        initial={{ opacity: 0, x: -50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
-                      >
-                        <h3 className="text-3xl lg:text-5xl font-light tracking-tight text-white">{project.title}</h3>
-                        <div className="flex items-center gap-2 text-white/80">
-                          <MapPin className="w-5 h-5" />
-                          <span>{typeof project.location === 'string' ? project.location : (project.location?.city || project.location?.name || JSON.stringify(project.location))}</span>
-                        </div>
-                        <Badge className="bg-white/20 text-white border-white/30">
-                          À partir de €{Number(project.price_from || project.price).toLocaleString()}
-                        </Badge>
-                        <p className="text-white/90 leading-relaxed">
-                          {project.description || 'Un programme immobilier premium offrant des équipements modernes et des vues exceptionnelles.'}
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                          {(project.amenities || []).slice(0, 4).map((amenity: string, i: number) => (
-                            <Badge key={i} className="bg-white/10 text-white border-white/20">{amenity}</Badge>
-                          ))}
-                        </div>
-                        <Button 
-                          asChild
-                          className="bg-white text-primary hover:bg-white/90 mt-4"
-                        >
-                          <Link to={`/project/${project.id}`}>
-                            Explorer le projet
-                            <ArrowRight className="ml-2 h-4 w-4" />
-                          </Link>
-                        </Button>
-                      </motion.div>
-                      
-                      {/* Slideshow Column */}
-                      <motion.div 
-                        className="lg:w-1/2 h-64 lg:h-96 overflow-hidden rounded-2xl"
-                        initial={{ opacity: 0, x: 50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.8, delay: 0.4 }}
-                      >
-                        <Slider {...{
-                          dots: true,
-                          infinite: true,
-                          speed: 500,
-                          slidesToShow: 1,
-                          slidesToScroll: 1,
-                          autoplay: true,
-                          autoplaySpeed: 3000,
-                          arrows: false,
-                          fade: true,
-                        }}>
-                          {(project.photos || [project.photos?.[0]]).map((photo: string, photoIndex: number) => (
-                            <motion.div 
-                              key={photoIndex}
-                              className="h-full"
-                              whileHover={{ scale: 1.05 }}
-                              transition={{ duration: 0.5 }}
-                            >
-                              <img 
-                                src={photo || 'https://picsum.photos/800/500?random=' + photoIndex}
-                                alt={`Photo ${photoIndex + 1} du projet ${project.title}`}
-                                className="w-full h-full object-cover"
-                                loading="lazy"
-                              />
-                            </motion.div>
-                          ))}
-                        </Slider>
-                      </motion.div>
-                    </div>
-                    
-                    {/* Futuristic Glow Effect */}
-                    <motion.div 
-                      className="absolute inset-0 pointer-events-none"
-                      animate={{
-                        boxShadow: [
-                          '0 0 20px rgba(0, 144, 230, 0.1)',
-                          '0 0 40px rgba(0, 144, 230, 0.2)',
-                          '0 0 20px rgba(0, 144, 230, 0.1)',
-                        ],
-                      }}
-                      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                    />
-                  </motion.div>
-                ))}
-              </div>
-            )}
+              <motion.h2
+                className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight -0.015em text-primary mb-6"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+              >
+                Projets Vedette
+              </motion.h2>
+              <motion.p
+                className="text-lg sm:text-xl font-normal leading-relaxed -0.005em text-muted-foreground max-w-3xl mx-auto"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                viewport={{ once: true }}
+              >
+                Découvrez notre sélection exclusive de programmes immobiliers d'exception, choisis pour leur emplacement privilégié, leur architecture remarquable et leur potentiel d'investissement.
+              </motion.p>
+            </motion.div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {featuredProperties.slice(0, 3).map((property, index) => (
+                <motion.div
+                  key={property.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                  whileHover={{ y: -5, scale: 1.02 }}
+                  className="h-full"
+                >
+                  <PropertyCard
+                    property={property}
+                    onClick={() => {
+                      trackCustomEvent('featured_property_clicked', {
+                        property_id: property.id,
+                        property_title: property.title,
+                        property_location: property.location,
+                        section: 'featured_projects'
+                      });
+                      setSelectedProperty(property);
+                      setIsModalOpen(true);
+                    }}
+                  />
+                </motion.div>
+              ))}
+            </div>
           </div>
         </section>
-
         {/* Dernières Nouveautés */}
         <section className="py-24 md:py-32 bg-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1160,7 +1068,7 @@ const Home = () => {
               transition={{ duration: 0.8 }}
               className="text-center mb-16"
             >
-              <motion.h2 
+              <motion.h2
                 className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight -0.015em text-primary mb-6"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -1169,7 +1077,7 @@ const Home = () => {
               >
                 Dernières Nouveautés
               </motion.h2>
-              <motion.p 
+              <motion.p
                 className="text-lg sm:text-xl font-normal leading-relaxed -0.005em text-muted-foreground max-w-3xl mx-auto"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -1200,7 +1108,7 @@ const Home = () => {
                     <OptimizedPropertyCard
                       property={property as any}
                       onSelect={() => {
-                        trackCustomEvent('latest_property_clicked', { 
+                        trackCustomEvent('latest_property_clicked', {
                           property_id: property.id,
                           property_title: property.title,
                           property_location: property.location,
@@ -1220,8 +1128,8 @@ const Home = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              <Button 
-                asChild 
+              <Button
+                asChild
                 size="lg"
                 className="bg-gradient-to-r from-primary to-primary-hover hover:from-primary/90 hover:to-primary-hover/90 text-primary-foreground shadow-lg hover:shadow-premium transition-all duration-300"
               >
@@ -1233,7 +1141,6 @@ const Home = () => {
             </motion.div>
           </div>
         </section>
-
         {/* Témoignages */}
         <section className="py-24 md:py-32 bg-muted/30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1244,7 +1151,7 @@ const Home = () => {
               transition={{ duration: 0.8 }}
               className="text-center mb-16"
             >
-              <motion.h2 
+              <motion.h2
                 className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight -0.015em text-primary mb-6"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -1253,7 +1160,7 @@ const Home = () => {
               >
                 Témoignages
               </motion.h2>
-              <motion.p 
+              <motion.p
                 className="text-lg sm:text-xl font-normal leading-relaxed -0.005em text-muted-foreground max-w-3xl mx-auto"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -1346,7 +1253,6 @@ const Home = () => {
             </div>
           </div>
         </section>
-
         {/* Call to Action */}
         <section className="py-24 md:py-32 bg-gradient-to-br from-primary via-primary/90 to-accent">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -1366,8 +1272,8 @@ const Home = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   variant="secondary"
                   className="px-12 py-6 text-lg bg-white text-primary hover:bg-white/90"
                   asChild
@@ -1382,14 +1288,12 @@ const Home = () => {
           </div>
         </section>
       </div>
-
       {/* Property Modal */}
       <PropertyModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         property={selectedProperty}
       />
-
       {/* Agentic Search Results Modal */}
       <Dialog open={showResultsModal} onOpenChange={setShowResultsModal}>
         <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
@@ -1433,5 +1337,4 @@ const Home = () => {
     </>
   );
 };
-
 export default Home;
