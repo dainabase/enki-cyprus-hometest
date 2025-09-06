@@ -521,35 +521,8 @@ const Home = () => {
             <div className="absolute inset-0 bg-gradient-to-br from-primary/50 via-primary/20 to-accent/30" />
           </motion.div>
 
-          <Suspense fallback={null}>
-            {isClient && (
-              <div className="absolute inset-0 opacity-20">
-                <ErrorBoundary fallback={<div className="bg-gradient-to-br from-accent/20 to-primary/20 h-full w-full" />}>
-                  <Canvas camera={{ position: [0, 0, 5] }}>
-                    <ambientLight intensity={0.4} />
-                    <pointLight position={[10, 10, 10]} />
-                    <Suspense fallback={null}>
-                      <Float speed={2} rotationIntensity={1} floatIntensity={2}>
-                        <Sphere args={[0.1, 16, 16]} position={[-4, -2, -1]}>
-                          <MeshDistortMaterial color="#F0F7FD" distort={0.2} speed={2} />
-                        </Sphere>
-                      </Float>
-                      <Float speed={1.5} rotationIntensity={2} floatIntensity={1}>
-                        <Sphere args={[0.15, 16, 16]} position={[4, 2, -2]}>
-                          <MeshDistortMaterial color="#0090E6" distort={0.3} speed={1.5} />
-                        </Sphere>
-                      </Float>
-                      <Float speed={1.8} rotationIntensity={1.5} floatIntensity={3}>
-                        <Sphere args={[0.08, 16, 16]} position={[0, 3, -1]}>
-                          <MeshDistortMaterial color="#20B256" distort={0.4} speed={2.5} />
-                        </Sphere>
-                      </Float>
-                    </Suspense>
-                  </Canvas>
-                </ErrorBoundary>
-              </div>
-            )}
-          </Suspense>
+          {/* Decorative background glow (3D disabled) */}
+          <div className="absolute inset-0 opacity-20 bg-gradient-to-br from-accent/20 to-primary/20" />
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <motion.div
