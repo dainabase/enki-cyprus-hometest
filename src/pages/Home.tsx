@@ -975,7 +975,7 @@ const Home = () => {
                 trackCustomEvent('video_viewed', { section: 'premium-video', type: 'hero' });
               }}
             >
-              <source src="https://videos.pexels.com/video-files/2507016/2507016-uhd_2560_1440_25fps.mp4" type="video/mp4" />
+              <source src="https://videos.pexels.com/video-files/1093662/1093662-uhd_2560_1440_25fps.mp4" type="video/mp4" />
               <track
                 kind="captions"
                 src="/captions/premium-video.vtt"
