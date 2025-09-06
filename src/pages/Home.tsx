@@ -333,6 +333,158 @@ interface ProjectInterest {
   link: string;
   desc: string;
 }
+// Extracted to fix hooks usage without changing UI
+const FeaturedProjectsSection = ({ featuredProperties }: { featuredProperties: any[] }) => {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const bgY = useTransform(scrollYProgress, [0, 1], [0, -200]);
+
+  const ParallaxFeaturedCard = ({ property, index, total }: any) => {
+    const start = index / total;
+    const end = (index + 1) / total;
+    const cardProgress = useTransform(scrollYProgress, [start, end], [0, 1]);
+
+    const y = useTransform(cardProgress, [0, 1], ['100%', '0%']);
+    const opacity = useTransform(cardProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+    const scale = useTransform(cardProgress, [0, 0.5, 1], [0.95, 1, 0.95]);
+    const innerY = useTransform(cardProgress, [0, 1], [50, -50]);
+
+    return (
+      <motion.div
+        className="absolute w-full max-w-4xl bg-card rounded-3xl shadow-premium overflow-hidden border border-border/50"
+        style={{ y, opacity, scale }}
+        transition={{ type: "spring", damping: 20, stiffness: 100 }}
+      >
+        {/* Card Background Image with Internal Parallax */}
+        <motion.div className="relative h-96 overflow-hidden" style={{ y: innerY }}>
+          <img
+            src={property.photos?.[0] || `https://picsum.photos/1200/800?random=${property.id}`}
+            alt={`Image of ${property.title} in ${typeof property.location === 'string' ? property.location : (property.location?.city || '')}`}
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60" />
+        </motion.div>
+
+        {/* Card Content */}
+        <div className="p-8 space-y-4">
+          <motion.h3 
+            className="text-3xl font-light text-primary"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            {property.title}
+          </motion.h3>
+
+          <motion.div 
+            className="flex items-center gap-2 text-muted-foreground"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+          >
+            <MapPin className="w-5 h-5 text-primary" />
+            <span>{typeof property.location === 'string' ? property.location : (property.location?.city || '')}</span>
+          </motion.div>
+
+          <motion.p 
+            className="text-muted-foreground leading-relaxed"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+          >
+            {property.description || 'Description du projet...'}
+          </motion.p>
+
+          <motion.div 
+            className="flex flex-wrap gap-2"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.3 }}
+          >
+            {(property.features || []).slice(0, 4).map((feature: string, i: number) => (
+              <Badge key={i} variant="secondary" className="hover:bg-primary/10 transition-colors">
+                {feature}
+              </Badge>
+            ))}
+          </motion.div>
+
+          <Button 
+            asChild
+            className="bg-primary text-primary-foreground hover:bg-primary-hover w-full sm:w-auto"
+          >
+            <Link to={`/project/${property.id}`}>
+              Explorer le projet
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
+      </motion.div>
+    );
+  };
+
+  return (
+    <section id="featured-projects" className="relative py-24 md:py-32 bg-gradient-to-br from-muted/30 to-background overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-16"
+        >
+          <motion.h2
+            className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight -0.015em text-primary mb-6"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            Projets Vedette
+          </motion.h2>
+          <motion.p
+            className="text-lg sm:text-xl font-normal leading-relaxed -0.005em text-muted-foreground max-w-3xl mx-auto"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            Découvrez notre sélection exclusive de programmes immobiliers d'exception, choisis pour leur emplacement privilégié, leur architecture remarquable et leur potentiel d'investissement.
+          </motion.p>
+        </motion.div>
+      </div>
+      
+      {/* Main Parallax Sticky Container */}
+      <div ref={sectionRef} className="relative h-[300vh]">
+        <div className="sticky top-0 h-screen overflow-hidden">
+          {/* Background Parallax Layer */}
+          <motion.div 
+            className="absolute inset-0 bg-primary/5"
+            style={{ y: bgY }}
+          />
+          
+          {/* Content Layers */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-8">
+            {(featuredProperties || []).map((property, index) => (
+              <ParallaxFeaturedCard
+                key={property.id}
+                property={property}
+                index={index}
+                total={(featuredProperties || []).length}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Keep the rest of Home component unchanged
 const Home = () => {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -1015,153 +1167,7 @@ const Home = () => {
           </div>
         </motion.section>
         {/* Projets Vedette */}
-        {(() => {
-          const sectionRef = useRef<HTMLDivElement>(null);
-          const { scrollYProgress } = useScroll({ 
-            target: sectionRef,
-            offset: ["start end", "end start"]
-          });
-
-          const ParallaxFeaturedCard = ({ property, index, total }: any) => {
-            const start = index / total;
-            const end = (index + 1) / total;
-            const cardProgress = useTransform(scrollYProgress, [start, end], [0, 1]);
-
-            const y = useTransform(cardProgress, [0, 1], ['100%', '0%']);
-            const opacity = useTransform(cardProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-            const scale = useTransform(cardProgress, [0, 0.5, 1], [0.95, 1, 0.95]);
-            const innerY = useTransform(cardProgress, [0, 1], [50, -50]);
-
-            return (
-              <motion.div
-                className="absolute w-full max-w-4xl bg-card rounded-3xl shadow-premium overflow-hidden border border-border/50"
-                style={{ y, opacity, scale }}
-                transition={{ type: 'spring', damping: 20, stiffness: 100 }}
-              >
-                {/* Card Background Image with Internal Parallax */}
-                <motion.div className="relative h-96 overflow-hidden" style={{ y: innerY }}>
-                  <img
-                    src={property.photos?.[0] || `https://picsum.photos/1200/800?random=${property.id}`}
-                    alt={`Image of ${property.title} in ${typeof property.location === 'string' ? property.location : (property.location?.city || '')}`}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60" />
-                </motion.div>
-
-                {/* Card Content */}
-                <div className="p-8 space-y-4">
-                  <motion.h3 
-                    className="text-3xl font-light text-primary"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4 }}
-                  >
-                    {property.title}
-                  </motion.h3>
-
-                  <motion.div 
-                    className="flex items-center gap-2 text-muted-foreground"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: 0.1 }}
-                  >
-                    <MapPin className="w-5 h-5 text-primary" />
-                    <span>{typeof property.location === 'string' ? property.location : (property.location?.city || '')}</span>
-                  </motion.div>
-
-                  <motion.p 
-                    className="text-muted-foreground leading-relaxed"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: 0.2 }}
-                  >
-                    {property.description || 'Description du projet...'}
-                  </motion.p>
-
-                  <motion.div 
-                    className="flex flex-wrap gap-2"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: 0.3 }}
-                  >
-                    {(property.features || []).slice(0, 4).map((feature: string, i: number) => (
-                      <Badge key={i} variant="secondary" className="hover:bg-primary/10 transition-colors">
-                        {feature}
-                      </Badge>
-                    ))}
-                  </motion.div>
-
-                  <Button 
-                    asChild
-                    className="bg-primary text-primary-foreground hover:bg-primary-hover w-full sm:w-auto"
-                  >
-                    <Link to={`/project/${property.id}`}>
-                      Explorer le projet
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                </div>
-              </motion.div>
-            );
-          };
-
-          return (
-            <section id="featured-projects" className="relative py-24 md:py-32 bg-gradient-to-br from-muted/30 to-background overflow-hidden">
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8 }}
-                  className="text-center mb-16"
-                >
-                  <motion.h2
-                    className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight -0.015em text-primary mb-6"
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                    viewport={{ once: true }}
-                  >
-                    Projets Vedette
-                  </motion.h2>
-                  <motion.p
-                    className="text-lg sm:text-xl font-normal leading-relaxed -0.005em text-muted-foreground max-w-3xl mx-auto"
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.2 }}
-                    viewport={{ once: true }}
-                  >
-                    Découvrez notre sélection exclusive de programmes immobiliers d'exception, choisis pour leur emplacement privilégié, leur architecture remarquable et leur potentiel d'investissement.
-                  </motion.p>
-                </motion.div>
-              </div>
-              
-              {/* Main Parallax Sticky Container */}
-              <div ref={sectionRef} className="relative h-[300vh]">
-                <div className="sticky top-0 h-screen overflow-hidden">
-                  {/* Background Parallax Layer */}
-                  <motion.div 
-                    className="absolute inset-0 bg-primary/5"
-                    style={{ y: useTransform(scrollYProgress, [0, 1], [0, -200]) }}
-                  />
-                  
-                  {/* Content Layers */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-center p-8">
-                    {(featuredProperties || []).map((property, index) => (
-                      <ParallaxFeaturedCard
-                        key={property.id}
-                        property={property}
-                        index={index}
-                        total={(featuredProperties || []).length}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </section>
-          );
-        })()}
+        <FeaturedProjectsSection featuredProperties={featuredProperties} />
         {/* Dernières Nouveautés */}
         <section className="py-24 md:py-32 bg-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
