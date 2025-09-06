@@ -248,14 +248,14 @@ const Projects = () => {
                     <Card className="h-full overflow-hidden bg-card border-border/50 shadow-lg hover:shadow-premium transition-all duration-300">
                       <div className="relative h-48 overflow-hidden">
                         <img
-                          src={project.photos?.[0] || `https://picsum.photos/600/400?random=${project.id}`}
+                          src={project.image_url || `https://picsum.photos/600/400?random=${project.id}`}
                           alt={`Image du projet ${project.title}`}
                           className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                           loading="lazy"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
                         <Badge className="absolute top-4 right-4 bg-primary text-primary-foreground">
-                          À partir de €{Number(project.price).toLocaleString()}
+                          À partir de {project.price_from?.toLocaleString()}€
                         </Badge>
                       </div>
                       <CardContent className="p-6">
