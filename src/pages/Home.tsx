@@ -57,7 +57,7 @@ const BackgroundSphere = () => (
   </Float>
 );
 // Advanced3DCarousel Component
-const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => {
+const Advanced3DCarousel = ({ properties = [], interests = {}, onInterestClick }: any) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -113,7 +113,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
           const locationKey = typeof property.location === 'string'
             ? property.location.toLowerCase()
             : (property.location as any)?.city?.toLowerCase() || 'limassol';
-          const propertyInterests = Array.isArray(interests[locationKey]) ? interests[locationKey] : [];
+          const propertyInterests = Array.isArray(interests?.[locationKey]) ? interests[locationKey] : [];
           return (
             <motion.div
               key={property.id}
