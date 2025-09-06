@@ -43,6 +43,7 @@ const Navbar = () => {
     { name: 'Projets', href: '/projects', icon: Building },
     { name: 'Recherche IA', href: '/search', icon: Search },
     { name: 'Conseil Fiscal IA', href: '/lexaia', icon: Brain },
+    { name: 'Blog', href: '/blog', icon: Info },
     { name: 'À Propos', href: '/about', icon: Info },
     { name: 'Contact', href: '/contact', icon: Mail },
   ];
