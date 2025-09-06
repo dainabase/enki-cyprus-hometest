@@ -560,7 +560,6 @@ const Home = () => {
                   <Canvas camera={{ position: [0, 0, 5] }}>
                     <ambientLight intensity={0.4} />
                     <pointLight position={[10, 10, 10]} />
-                    <Suspense fallback={null}>
                       <Float speed={2} rotationIntensity={1} floatIntensity={2}>
                         <Sphere args={[0.1, 16, 16]} position={[-4, -2, -1]}>
                           <MeshDistortMaterial color="#F0F7FD" distort={0.2} speed={2} />
@@ -576,7 +575,6 @@ const Home = () => {
                           <MeshDistortMaterial color="#20B256" distort={0.4} speed={2.5} />
                         </Sphere>
                       </Float>
-                    </Suspense>
                   </Canvas>
                 </ErrorBoundary>
               </div>
