@@ -1038,27 +1038,21 @@ const Home = () => {
             ) : featuredProperties.length === 0 ? (
               <div className="text-center text-muted-foreground">Aucun projet disponible pour le moment.</div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {featuredProperties.map((property: Property, index: number) => (
-                  <motion.div
-                    key={property.id}
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
-                    whileHover={{ y: -5, scale: 1.02 }}
-                    className="h-full"
-                  >
-                    <PropertyCard
-                      property={property}
-                      onClick={() => {
-                        setSelectedProperty(property);
-                        setIsModalOpen(true);
-                      }}
-                    />
-                  </motion.div>
-                ))}
-              </div>
+              <Suspense fallback={<div className="text-center text-muted-foreground">Chargement...</div>}>
+                <ErrorBoundary fallback={<div className="text-center text-destructive">Erreur de chargement</div>}>
+                  <Advanced3DCarousel 
+                    properties={featuredProperties}
+                    interests={interests || {}}
+                    onInterestClick={(interest: any) => {
+                      trackCustomEvent('interests_clicked', { 
+                        name: interest.name, 
+                        link: interest.link 
+                      });
+                      window.open(interest.link, '_blank', 'noopener,noreferrer');
+                    }}
+                  />
+                </ErrorBoundary>
+              </Suspense>
             )}
           </div>
         </section>
@@ -1110,52 +1104,18 @@ const Home = () => {
                     whileHover={{ y: -5, scale: 1.02 }}
                     className="h-full"
                   >
-                    <Card className="h-full flex flex-col overflow-hidden bg-card border-border/50 shadow-lg hover:shadow-premium transition-all duration-300">
-                      <div className="relative h-48 overflow-hidden">
-                        <img
-                          src={property.photos?.[0] || `https://picsum.photos/600/400?random=${property.id}`}
-                          alt={`Image of ${property.title} in ${property.location}`}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          loading="lazy"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                        <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium">
-                          {property.price}
-                        </div>
-                      </div>
-                      <CardContent className="p-6 flex-1 flex flex-col">
-                        <h3 className="text-xl sm:text-2xl font-medium tracking-tight -0.01em text-primary mb-2">{property.title}</h3>
-                        <p className="text-sm font-normal leading-relaxed -0.003em text-muted-foreground mb-2 flex items-center">
-                          <MapPin className="w-4 h-4 mr-1" />
-                          {typeof property.location === 'string' ? property.location : (property.location as any)?.city || property.location}
-                        </p>
-                        <p className="text-sm font-normal leading-relaxed -0.003em text-muted-foreground mb-4 flex-1">
-                          {property.description}
-                        </p>
-                        <div className="flex flex-wrap gap-2 mb-4">
-                          {property.features?.map((feature: string, i: number) => (
-                            <Badge key={i} variant="secondary" className="text-xs">
-                              {feature}
-                            </Badge>
-                          ))}
-                        </div>
-                        <Button 
-                          className="w-full mt-auto bg-gradient-to-r from-primary to-primary-hover hover:from-primary/90 hover:to-primary-hover/90 text-primary-foreground"
-                          onClick={() => {
-                            trackCustomEvent('latest_property_clicked', { 
-                              property_id: property.id,
-                              property_title: property.title,
-                              property_location: property.location,
-                            });
-                            setSelectedProperty(property);
-                            setIsModalOpen(true);
-                          }}
-                        >
-                          Voir les détails
-                          <ArrowRight className="w-4 h-4 ml-2" />
-                        </Button>
-                      </CardContent>
-                    </Card>
+                    <PropertyCard
+                      property={property}
+                      onClick={() => {
+                        trackCustomEvent('latest_property_clicked', { 
+                          property_id: property.id,
+                          property_title: property.title,
+                          property_location: property.location,
+                        });
+                        setSelectedProperty(property);
+                        setIsModalOpen(true);
+                      }}
+                    />
                   </motion.div>
                 ))}
               </div>
