@@ -38,7 +38,6 @@ const BackgroundSphere = () => (
     <Sphere args={[1, 100, 200]} scale={2.4}>
       <MeshDistortMaterial
         color="#0090E6" // Aligned with primary color
-        attach="material"
         distort={0.3}
         speed={1.5}
         roughness={0}
@@ -76,18 +75,17 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
     >
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/20" />
     
-      <Suspense fallback={null}>
-        {isClient && (
-          <ErrorBoundary fallback={null}>
-            <Canvas camera={{ position: [0, 0, 5] }}>
-              <ambientLight intensity={0.4} />
-              <pointLight position={[10, 10, 10]} />
-              <BackgroundSphere />
-              <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
-            </Canvas>
-          </ErrorBoundary>
-        )}
-      </Suspense>
+      {isClient && (
+        <ErrorBoundary fallback={null}>
+          <Canvas camera={{ position: [0, 0, 5] }}>
+            <ambientLight intensity={0.4} />
+            <pointLight position={[10, 10, 10]} />
+            <BackgroundSphere />
+            <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
+          </Canvas>
+        </ErrorBoundary>
+      )}
+
       <div
         ref={carouselRef}
         className="relative w-full h-full flex items-center justify-center transform-gpu preserve-3d"
