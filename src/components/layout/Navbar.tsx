@@ -135,14 +135,14 @@ const Navbar = () => {
                   className={`relative px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 text-white ${
                     isActive(item.href)
                       ? ''
-                      : 'hover:border hover:border-white/30'
+                      : 'hover:text-[hsl(var(--golden))] hover:border hover:border-white/30'
                   }`}
                 >
                   {item.name}
                   {isActive(item.href) && (
                     <motion.div
                       layoutId="activeTab"
-                      className="absolute bottom-0 left-2 right-2 h-0.5 bg-white rounded-full"
+                      className="absolute bottom-0 left-2 right-2 h-0.5 bg-[hsl(var(--golden))] rounded-full"
                       initial={false}
                       transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     />
@@ -256,11 +256,11 @@ const Navbar = () => {
                   variant="outline"
                   size="sm"
                   asChild
-                  className="border-white text-white hover:bg-white hover:text-black bg-transparent"
+                  className="border-white text-white hover:bg-white hover:text-[hsl(var(--golden))] bg-transparent group"
                 >
                   <Link to="/login">
-                    <LogIn className="w-4 h-4 mr-2" />
-                    Connexion
+                    <LogIn className="w-4 h-4 mr-2 group-hover:text-[hsl(var(--golden))]" />
+                    <span className="group-hover:text-[hsl(var(--golden))]">Connexion</span>
                   </Link>
                 </Button>
               </motion.div>

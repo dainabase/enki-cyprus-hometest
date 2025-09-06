@@ -590,7 +590,7 @@ const Home = () => {
                 transition={{ duration: 1, delay: 1.6, ease: "easeOut" }}
               >
                 <Button
-                  className="bg-primary hover:bg-primary-hover text-primary-foreground px-8 py-4 text-lg font-medium rounded-lg shadow-lg hover:shadow-premium transition-all duration-300 transform hover:scale-105"
+                  className="bg-primary hover:bg-primary-hover hover:text-[hsl(var(--golden))] text-primary-foreground px-8 py-4 text-lg font-medium rounded-lg shadow-lg hover:shadow-premium transition-all duration-300 transform hover:scale-105"
                   onClick={() => document.getElementById('why-enki')?.scrollIntoView({ behavior: 'smooth' })}
                 >
                   Découvrez Pourquoi Nous Choisir
@@ -687,7 +687,7 @@ const Home = () => {
               ].map((item, index) => (
                 <motion.div
                   key={index}
-                  className="relative group bg-card border border-border/50 rounded-3xl p-8 lg:p-10 hover:border-primary/30 transition-all duration-500 overflow-hidden cursor-pointer"
+                  className="relative group bg-card border-2 border-[hsl(var(--golden))]/30 rounded-3xl p-8 lg:p-10 hover:border-[hsl(var(--golden))] hover:shadow-[0_0_30px_hsl(var(--golden)/0.3)] transition-all duration-500 overflow-hidden cursor-pointer"
                   initial={{ opacity: 0, y: 60, scale: 0.95 }}
                   whileInView={{ opacity: 1, y: 0, scale: 1, transition: { duration: 0.7, delay: index * 0.2, ease: [0.21, 0.47, 0.32, 0.98] } }}
                   viewport={{ once: true }}
@@ -724,7 +724,7 @@ const Home = () => {
                     {item.description}
                   </p>
                   <motion.div
-                    className="absolute bottom-0 left-8 right-8 h-0.5 bg-gradient-to-r from-primary/20 via-primary/60 to-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                   className="absolute bottom-0 left-8 right-8 h-0.5 bg-gradient-to-r from-[hsl(var(--golden))]/20 via-[hsl(var(--golden))]/60 to-[hsl(var(--golden))]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                     initial={{ scaleX: 0 }}
                     whileInView={{ scaleX: 1 }}
                     transition={{ duration: 0.8, delay: 0.5 + index * 0.1 }}
@@ -1047,7 +1047,7 @@ const Home = () => {
               {featuredProperties.slice(0, 3).map((property, index) => (
                 <motion.div
                   key={property.id}
-                  className="relative bg-card border-border/50 rounded-3xl shadow-premium overflow-hidden backdrop-blur-sm"
+                  className="relative bg-card border-2 border-[hsl(var(--golden))]/30 rounded-3xl shadow-premium overflow-hidden backdrop-blur-sm hover:border-[hsl(var(--golden))]"
                   initial={{ opacity: 0, y: 100 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
