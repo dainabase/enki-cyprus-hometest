@@ -966,13 +966,19 @@ const Home = () => {
             <video 
               className="w-full h-full object-cover absolute inset-0"
               autoPlay 
-              muted 
+              muted
               loop
               playsInline
               preload="metadata"
-              poster="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&h=1080&fit=crop&auto=format"
+              poster="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&h=1080&fit=crop&auto=format"
               onLoadStart={() => {
                 trackCustomEvent('video_viewed', { section: 'premium-video', type: 'hero' });
+              }}
+              onLoadedData={(e) => {
+                try {
+                  e.currentTarget.muted = true;
+                  void e.currentTarget.play();
+                } catch {}
               }}
             >
               <source src="https://videos.pexels.com/video-files/1093662/1093662-uhd_2560_1440_25fps.mp4" type="video/mp4" />
