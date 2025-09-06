@@ -49,7 +49,6 @@ const BackgroundSphere = () => (
     <Sphere args={[1, 100, 200]} scale={2.4}>
       <MeshDistortMaterial
         color="#0090E6" // Aligned with primary color
-        attach="material"
         distort={0.3}
         speed={1.5}
         roughness={0}
@@ -114,7 +113,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
           const locationKey = typeof property.location === 'string'
             ? property.location.toLowerCase()
             : (property.location as any)?.city?.toLowerCase() || 'limassol';
-          const propertyInterests = interests[locationKey] || [];
+          const propertyInterests = Array.isArray(interests[locationKey]) ? interests[locationKey] : [];
           return (
             <motion.div
               key={property.id}
@@ -383,7 +382,7 @@ const Home = () => {
         const { data } = await supabase.functions.invoke('fetch-interests', {
           body: { location }
         });
-        interestsData[location] = data || [];
+        interestsData[location] = Array.isArray(data) ? data : (data?.interests ?? []);
       }
       return interestsData;
     },
