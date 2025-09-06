@@ -350,14 +350,6 @@ const Home = () => {
   const heroY = useTransform(scrollY, [0, 600], [0, -100]);
   const heroOpacity = useTransform(scrollY, [0, 400], [1, 0.9]);
   const heroScale = useTransform(scrollY, [0, 600], [1, 1.1]);
-  // Precompute floating particles once to avoid runtime errors from changing random props
-  const floatingParticles = useMemo(() => (
-    Array.from({ length: 20 }, () => ({
-      radius: 0.05 + Math.random() * 0.1,
-      position: [Math.random() * 10 - 5, Math.random() * 10 - 5, Math.random() * 5 - 2.5] as [number, number, number],
-      speed: 1 + Math.random() * 2,
-    }))
-  ), []);
   const debouncedQuery = useDebounce(agenticQuery, 300);
   const { properties, loading, error } = useSupabaseProperties();
   // Dynamic interests fetch
@@ -1039,28 +1031,6 @@ const Home = () => {
         />
         {/* New CTA Section */}
         <section className="py-24 md:py-32 relative overflow-hidden bg-gradient-to-br from-primary to-accent">
-          {/* Animated Background Particles */}
-          <Suspense fallback={null}>
-            {isClient && (
-              <div className="absolute inset-0 opacity-30">
-                <ErrorBoundary fallback={null}>
-                  <Canvas style={{ height: '100%', width: '100%' }}>
-                    <ambientLight intensity={0.5} />
-                    <pointLight position={[10, 10, 10]} />
-                    <group>
-                      {floatingParticles.map((p, i) => (
-                        <Float key={i} speed={p.speed} rotationIntensity={1} floatIntensity={2}>
-                          <Sphere args={[p.radius, 16, 16]} position={p.position}>
-                            <MeshDistortMaterial color="#FFFFFF" distort={0.3} speed={1.5} />
-                          </Sphere>
-                        </Float>
-                      ))}
-                    </group>
-                  </Canvas>
-                </ErrorBoundary>
-              </div>
-            )}
-          </Suspense>
          
           {/* Glowing Overlay */}
           <motion.div
