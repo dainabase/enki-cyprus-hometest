@@ -989,29 +989,103 @@ const Home = () => {
                 Découvrez notre sélection exclusive de programmes immobiliers d'exception, choisis pour leur emplacement privilégié, leur architecture remarquable et leur potentiel d'investissement.
               </motion.p>
             </motion.div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="space-y-16">
               {featuredProperties.slice(0, 3).map((property, index) => (
                 <motion.div
                   key={property.id}
-                  initial={{ opacity: 0, y: 30 }}
+                  className="relative bg-card border-border/50 rounded-3xl shadow-premium overflow-hidden backdrop-blur-sm"
+                  initial={{ opacity: 0, y: 100 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.2 }}
-                  whileHover={{ y: -5, scale: 1.02 }}
-                  className="h-full"
+                  transition={{ duration: 1, delay: index * 0.3, type: 'spring', stiffness: 50 }}
+                  whileHover={{ scale: 1.02 }}
                 >
-                  <PropertyCard
-                    property={property}
-                    onClick={() => {
-                      trackCustomEvent('featured_property_clicked', {
-                        property_id: property.id,
-                        property_title: property.title,
-                        property_location: property.location,
-                        section: 'featured_projects'
-                      });
-                      setSelectedProperty(property);
-                      setIsModalOpen(true);
+                  {/* Background Parallax Image */}
+                  <motion.div 
+                    className="absolute inset-0 z-0"
+                    style={{
+                      backgroundImage: `url(${property.photos?.[0] || 'https://picsum.photos/1200/800?random=' + property.id})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
                     }}
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20" />
+                  </motion.div>
+                  
+                  {/* Glassmorphism Overlay */}
+                  <div className="relative z-10 p-8 lg:p-12 flex flex-col lg:flex-row items-center gap-8 backdrop-blur-sm bg-background/30">
+                    {/* Property Info Column */}
+                    <motion.div 
+                      className="lg:w-1/2 space-y-6"
+                      initial={{ opacity: 0, x: -50 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.8, delay: 0.2 }}
+                    >
+                      <h3 className="text-3xl lg:text-5xl font-light tracking-tight text-white">{property.title}</h3>
+                      <div className="flex items-center gap-2 text-white/80">
+                        <MapPin className="w-5 h-5" />
+                        <span>{property.location}</span>
+                      </div>
+                      <Badge className="bg-white/20 text-white border-white/30">
+                        €{Number(property.priceValue || 0).toLocaleString()}
+                      </Badge>
+                      <p className="text-white/90 leading-relaxed">
+                        {property.description || 'Une propriété premium offrant des équipements modernes et des vues exceptionnelles.'}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {(property.features || []).slice(0, 4).map((feature: string, i: number) => (
+                          <Badge key={i} className="bg-white/10 text-white border-white/20">{feature}</Badge>
+                        ))}
+                      </div>
+                      <Button 
+                        onClick={() => {
+                          trackCustomEvent('featured_property_clicked', {
+                            property_id: property.id,
+                            property_title: property.title,
+                            property_location: property.location,
+                            section: 'featured_projects'
+                          });
+                          setSelectedProperty(property);
+                          setIsModalOpen(true);
+                        }}
+                        className="bg-white text-primary hover:bg-white/90 mt-4"
+                      >
+                        Explorer la propriété
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </motion.div>
+                    
+                    {/* Image Column */}
+                    <motion.div 
+                      className="lg:w-1/2 h-64 lg:h-96 overflow-hidden rounded-2xl"
+                      initial={{ opacity: 0, x: 50 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.8, delay: 0.4 }}
+                    >
+                      <motion.img 
+                        src={property.photos?.[0] || 'https://picsum.photos/800/500?random=' + property.id}
+                        alt={`Photo de ${property.title}`}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                        whileHover={{ scale: 1.05 }}
+                        transition={{ duration: 0.5 }}
+                      />
+                    </motion.div>
+                  </div>
+                  
+                  {/* Futuristic Glow Effect */}
+                  <motion.div 
+                    className="absolute inset-0 pointer-events-none"
+                    animate={{
+                      boxShadow: [
+                        '0 0 20px rgba(0, 144, 230, 0.1)',
+                        '0 0 40px rgba(0, 144, 230, 0.2)',
+                        '0 0 20px rgba(0, 144, 230, 0.1)',
+                      ],
+                    }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                   />
                 </motion.div>
               ))}
