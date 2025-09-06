@@ -27,11 +27,11 @@ import PropertyModal from '@/components/PropertyModal';
 import { useIsClient } from '@/hooks/useIsClient';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 // Lazy-load 3D components only when needed
-const Canvas = lazy(() => import('@react-three/fiber').then(mod => ({ default: mod.Canvas })));
-const OrbitControls = lazy(() => import('@react-three/drei').then(mod => ({ default: mod.OrbitControls })));
-const Sphere = lazy(() => import('@react-three/drei').then(mod => ({ default: mod.Sphere })));
-const MeshDistortMaterial = lazy(() => import('@react-three/drei').then(mod => ({ default: mod.MeshDistortMaterial })));
-const Float = lazy(() => import('@react-three/drei').then(mod => ({ default: mod.Float })));
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Sphere, MeshDistortMaterial, Float } from '@react-three/drei';
+
+
+
 // BackgroundSphere Component
 const BackgroundSphere = () => (
   <Float speed={1.4} rotationIntensity={1} floatIntensity={2}>
