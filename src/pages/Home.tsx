@@ -21,6 +21,8 @@ import ErrorBoundary from '@/components/ErrorBoundary';
 import { SEOHead } from '@/components/SEOHead';
 import { trackPageView, trackCustomEvent } from '@/lib/analytics';
 import PropertyCard from '@/components/ui/PropertyCard';
+import OptimizedPropertyCard from '@/components/ui/OptimizedPropertyCard';
+import Carousel3D from '@/components/ui/Carousel3D';
 import PropertyModal from '@/components/PropertyModal';
 import { useIsClient } from '@/hooks/useIsClient';
 
@@ -1038,21 +1040,17 @@ const Home = () => {
             ) : featuredProperties.length === 0 ? (
               <div className="text-center text-muted-foreground">Aucun projet disponible pour le moment.</div>
             ) : (
-              <Suspense fallback={<div className="text-center text-muted-foreground">Chargement...</div>}>
-                <ErrorBoundary fallback={<div className="text-center text-destructive">Erreur de chargement</div>}>
-                  <Advanced3DCarousel 
-                    properties={featuredProperties}
-                    interests={interests || {}}
-                    onInterestClick={(interest: any) => {
-                      trackCustomEvent('interests_clicked', { 
-                        name: interest.name, 
-                        link: interest.link 
-                      });
-                      window.open(interest.link, '_blank', 'noopener,noreferrer');
-                    }}
-                  />
-                </ErrorBoundary>
-              </Suspense>
+              <Carousel3D 
+                properties={featuredProperties}
+                interests={interests || {}}
+                onInterestClick={(interest: any) => {
+                  trackCustomEvent('interests_clicked', { 
+                    name: interest.name, 
+                    link: interest.link 
+                  });
+                  window.open(interest.link, '_blank', 'noopener,noreferrer');
+                }}
+              />
             )}
           </div>
         </section>
@@ -1104,9 +1102,9 @@ const Home = () => {
                     whileHover={{ y: -5, scale: 1.02 }}
                     className="h-full"
                   >
-                    <PropertyCard
-                      property={property}
-                      onClick={() => {
+                    <OptimizedPropertyCard
+                      property={property as any}
+                      onSelect={() => {
                         trackCustomEvent('latest_property_clicked', { 
                           property_id: property.id,
                           property_title: property.title,
