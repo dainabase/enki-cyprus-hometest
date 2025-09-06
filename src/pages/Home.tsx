@@ -25,38 +25,6 @@ import OptimizedPropertyCard from '@/components/ui/OptimizedPropertyCard';
 import Carousel3D from '@/components/ui/Carousel3D';
 import PropertyModal from '@/components/PropertyModal';
 import { useIsClient } from '@/hooks/useIsClient';
-
-// TypeScript declarations for Web Speech API
-declare global {
-  interface Window {
-    SpeechRecognition: typeof SpeechRecognition;
-    webkitSpeechRecognition: typeof SpeechRecognition;
-  }
-}
-
-interface SpeechRecognition extends EventTarget {
-  continuous: boolean;
-  interimResults: boolean;
-  lang: string;
-  start(): void;
-  stop(): void;
-  onresult: (event: SpeechRecognitionEvent) => void;
-  onend: () => void;
-  onerror: (event: SpeechRecognitionErrorEvent) => void;
-}
-
-interface SpeechRecognitionEvent {
-  results: SpeechRecognitionResultList;
-}
-
-interface SpeechRecognitionErrorEvent {
-  error: string;
-}
-
-declare var SpeechRecognition: {
-  prototype: SpeechRecognition;
-  new(): SpeechRecognition;
-};
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 // Lazy-load 3D components only when needed
 const Canvas = lazy(() => import('@react-three/fiber').then(mod => ({ default: mod.Canvas })));
@@ -70,6 +38,7 @@ const BackgroundSphere = () => (
     <Sphere args={[1, 100, 200]} scale={2.4}>
       <MeshDistortMaterial
         color="#0090E6" // Aligned with primary color
+        attach="material"
         distort={0.3}
         speed={1.5}
         roughness={0}
@@ -78,7 +47,7 @@ const BackgroundSphere = () => (
   </Float>
 );
 // Advanced3DCarousel Component
-const Advanced3DCarousel = ({ properties, interests = {}, onInterestClick }: any) => {
+const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -104,7 +73,7 @@ const Advanced3DCarousel = ({ properties, interests = {}, onInterestClick }: any
       onMouseLeave={() => setIsAutoPlaying(true)}
     >
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/20" />
-    
+     
       <Suspense fallback={null}>
         {isClient && (
           <ErrorBoundary fallback={null}>
@@ -125,7 +94,7 @@ const Advanced3DCarousel = ({ properties, interests = {}, onInterestClick }: any
           const offset = (index - currentIndex + properties.length) % properties.length;
           const isActive = index === currentIndex;
           const isAdjacent = offset === 1 || offset === properties.length - 1;
-       
+         
           if (!isActive && !isAdjacent) return null;
           const translateZ = isActive ? 0 : -200;
           const rotateY = isActive ? 0 : offset === 1 ? 45 : -45;
@@ -134,7 +103,7 @@ const Advanced3DCarousel = ({ properties, interests = {}, onInterestClick }: any
           const locationKey = typeof property.location === 'string'
             ? property.location.toLowerCase()
             : (property.location as any)?.city?.toLowerCase() || 'limassol';
-          const propertyInterests = Array.isArray(interests?.[locationKey]) ? interests[locationKey] : [];
+          const propertyInterests = interests[locationKey] || [];
           return (
             <motion.div
               key={property.id}
@@ -261,7 +230,7 @@ const Advanced3DCarousel = ({ properties, interests = {}, onInterestClick }: any
                       </h4>
                     </motion.div>
                     <div className="space-y-4">
-                      {(Array.isArray(propertyInterests) ? propertyInterests : []).map((interest: any, idx: number) => (
+                      {propertyInterests.map((interest: any, idx: number) => (
                         <motion.button
                           key={idx}
                           onClick={() => {
@@ -371,36 +340,7 @@ const Home = () => {
   const [consent, setConsent] = useState(false);
   const [searchResults, setSearchResults] = useState<any>(null);
   const [showResultsModal, setShowResultsModal] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
-  
-  // Mock testimonials data
-  const testimonials = useMemo(() => [
-    {
-      id: 1,
-      name: "Marie Dubois",
-      location: "Limassol",
-      photo: "https://picsum.photos/300x400?random=1",
-      rating: "5",
-      comment: "Service exceptionnel ! ENKI Realty m'a aidé à trouver la maison de mes rêves à Chypre."
-    },
-    {
-      id: 2,
-      name: "Jean Martin",
-      location: "Paphos",
-      photo: "https://picsum.photos/300x400?random=2",
-      rating: "5",
-      comment: "Professionnalisme et expertise remarquables. Je recommande vivement leurs services."
-    },
-    {
-      id: 3,
-      name: "Sophie Laurent",
-      location: "Larnaca",
-      photo: "https://picsum.photos/300x400?random=3",
-      rating: "4",
-      comment: "Une équipe dédiée qui comprend vraiment les besoins de ses clients."
-    }
-  ], []);
+ 
   const { isAuthenticated, user } = useAuth();
   const { toast } = useToast();
   const { scrollY } = useScroll();
@@ -409,6 +349,7 @@ const Home = () => {
   const heroY = useTransform(scrollY, [0, 600], [0, -100]);
   const heroOpacity = useTransform(scrollY, [0, 400], [1, 0.9]);
   const heroScale = useTransform(scrollY, [0, 600], [1, 1.1]);
+
   // Precompute floating particles once to avoid runtime errors from changing random props
   const floatingParticles = useMemo(() => (
     Array.from({ length: 20 }, () => ({
@@ -417,6 +358,7 @@ const Home = () => {
       speed: 1 + Math.random() * 2,
     }))
   ), []);
+  
   const debouncedQuery = useDebounce(agenticQuery, 300);
   const { properties, loading, error } = useSupabaseProperties();
   // Dynamic interests fetch
@@ -444,52 +386,6 @@ const Home = () => {
     trackPageView('/', 'Accueil - ENKI-REALTY Immobilier Premium Chypre');
     trackCustomEvent('home_viewed', { user_authenticated: !!isAuthenticated });
   }, [isAuthenticated]);
-  useEffect(() => {
-    if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-      const SpeechRecognitionConstructor = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      recognitionRef.current = new SpeechRecognitionConstructor();
-      recognitionRef.current.continuous = true;
-      recognitionRef.current.interimResults = true;
-      recognitionRef.current.lang = 'fr-FR';
-      recognitionRef.current.onresult = (event) => {
-        const transcript = Array.from(event.results)
-          .map(result => result[0].transcript)
-          .join('');
-        setAgenticQuery(prev => prev + transcript);
-      };
-      recognitionRef.current.onend = () => setIsRecording(false);
-      recognitionRef.current.onerror = (event) => {
-        console.error('Speech recognition error', event.error);
-        toast({
-          title: "Erreur de reconnaissance vocale",
-          description: "Veuillez réessayer ou utiliser le clavier.",
-          variant: "destructive",
-        });
-        setIsRecording(false);
-      };
-    } else {
-      toast({
-        title: "Reconnaissance vocale non supportée",
-        description: "Votre navigateur ne supporte pas la reconnaissance vocale. Veuillez utiliser le clavier.",
-        variant: "destructive",
-      });
-    }
-    return () => {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
-    };
-  }, [toast]);
-  const toggleRecording = () => {
-    if (!recognitionRef.current) return;
-    if (isRecording) {
-      recognitionRef.current.stop();
-      setIsRecording(false);
-    } else {
-      recognitionRef.current.start();
-      setIsRecording(true);
-    }
-  };
   const agenticSearchMutation = useMutation({
     mutationFn: async ({ query, consent }: { query: string; consent: boolean }) => {
       const { data, error } = await supabase.functions.invoke('agentic-search', {
@@ -542,9 +438,11 @@ const Home = () => {
       });
     },
   });
+
   const handleVoiceInput = useCallback(() => {
-    toggleRecording();
+    // Voice input functionality placeholder
   }, []);
+
   const handleAgenticSearch = () => {
     if (!agenticQuery.trim()) {
       toast({
@@ -871,7 +769,7 @@ const Home = () => {
               Your browser does not support the video tag.
             </video>
           </motion.div>
-        
+          
           <motion.div
             className="absolute inset-0 bg-black/40"
             initial={{ opacity: 0 }}
@@ -879,7 +777,7 @@ const Home = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.3 }}
           />
-        
+          
           <motion.div
             className="absolute inset-0 flex items-center justify-center text-white text-4xl md:text-6xl font-bold text-center px-6"
             initial={{ opacity: 0, x: 100 }}
@@ -890,13 +788,232 @@ const Home = () => {
             Experience Timeless Elegance, Premium Living in your Dream Home
           </motion.div>
         </motion.section>
-        {/* Transition Spacer */}
-        <motion.div
-          className="h-20 bg-gradient-to-b from-secondary to-background"
+        {/* Commencer l'Expérience */}
+        <motion.section
+          id="start-experience"
+          className="relative py-24 md:py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-secondary to-background/80 overflow-hidden"
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.2, ease: 'easeInOut' }}
+          viewport={{ once: true }}
+        >
+          {/* Background Effects */}
+          <motion.div 
+            className="absolute inset-0 pointer-events-none"
+            animate={{
+              background: 'radial-gradient(circle at 50% 50%, rgba(0,144,230,0.1) 0%, transparent 70%)',
+            }}
+            transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", repeatType: "reverse" }}
+          />
+          
+          {/* Floating Particles */}
+          <Suspense fallback={null}>
+            {isClient && (
+              <div className="absolute inset-0 opacity-30">
+                <ErrorBoundary fallback={null}>
+                  <Canvas style={{ height: '100%', width: '100%' }}>
+                    <ambientLight intensity={0.5} />
+                    <pointLight position={[10, 10, 10]} />
+                    <group>
+                      {floatingParticles.map((p, i) => (
+                        <Float key={i} speed={p.speed} rotationIntensity={1} floatIntensity={2}>
+                          <Sphere args={[p.radius, 16, 16]} position={p.position}>
+                            <MeshDistortMaterial color="#0090E6" distort={0.3} speed={1.5} />
+                          </Sphere>
+                        </Float>
+                      ))}
+                    </group>
+                  </Canvas>
+                </ErrorBoundary>
+              </div>
+            )}
+          </Suspense>
+          
+          <div className="max-w-3xl mx-auto relative z-10">
+            <motion.h2
+              className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight -0.015em text-primary text-center mb-12"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              Commencer l'Expérience
+            </motion.h2>
+            
+            <motion.p
+              className="text-lg sm:text-xl font-normal leading-relaxed -0.005em text-muted-foreground text-center mb-12"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              Laissez l'IA transformer votre vision en réalité immobilière parfaite
+            </motion.p>
+            
+            {/* Futuristic Input Container */}
+            <motion.div 
+              className="relative bg-card/50 backdrop-blur-xl border border-primary/20 rounded-3xl p-8 shadow-premium overflow-hidden"
+              initial={{ opacity: 0, scale: 0.95, rotateX: -10 }}
+              whileInView={{ opacity: 1, scale: 1, rotateX: 0 }}
+              transition={{ duration: 1, type: 'spring', damping: 15 }}
+              whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(0,144,230,0.2)' }}
+            >
+              {/* Glowing Border Effect */}
+              <motion.div
+                className="absolute inset-0 border-2 border-primary/0 rounded-3xl pointer-events-none"
+                animate={{
+                  borderColor: ['rgba(0,144,230,0)', 'rgba(0,144,230,0.3)', 'rgba(0,144,230,0)'],
+                }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              />
+              
+              {/* AI Orb Indicator */}
+              <motion.div 
+                className="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-24 rounded-full bg-primary/20 blur-xl"
+                animate={{
+                  scale: [1, 1.2, 1],
+                  opacity: [0.5, 0.8, 0.5],
+                }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <motion.div 
+                  className="absolute inset-4 rounded-full bg-primary shadow-[0_0_20px_rgba(0,144,230,0.5)]"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+                />
+              </motion.div>
+              
+              <Textarea
+                value={agenticQuery}
+                onChange={(e) => setAgenticQuery(e.target.value)}
+                placeholder="Décrivez votre projet idéal... (ex: Appartement vue mer à Limassol, budget 500k€, optimisation fiscale)"
+                className="w-full min-h-[120px] bg-transparent border-0 text-primary placeholder:text-muted-foreground/60 focus-visible:ring-0 resize-none text-lg"
+              />
+              
+              <div className="flex items-center justify-between mt-4">
+                <Label htmlFor="consent" className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
+                  <Checkbox id="consent" checked={consent} onCheckedChange={(checked) => setConsent(!!checked)} />
+                  Accepter le traitement des données pour recommandations personnalisées
+                </Label>
+                
+                <div className="flex gap-4">
+                  <motion.button 
+                    className="p-3 bg-primary/10 rounded-full hover:bg-primary/20 transition-colors"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={handleVoiceInput}
+                    aria-label="Voice input"
+                  >
+                    <Mic className="w-5 h-5 text-primary" />
+                  </motion.button>
+                  
+                  <Button 
+                    onClick={handleAgenticSearch}
+                    disabled={!agenticQuery.trim() || !consent}
+                    className="bg-primary hover:bg-primary-hover"
+                  >
+                    Lancer l'Analyse IA
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </motion.section>
+        {/* KPIs Marché Immobilier */}
+        <motion.section
+          id="market-kpis"
+          className="bg-background py-24 md:py-32 px-4 sm:px-6 lg:px-8"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-        />
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <div className="max-w-7xl mx-auto">
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.8, staggerChildren: 0.2 }}
+              viewport={{ once: true }}
+            >
+              {[
+                {
+                  number: "+6,5%",
+                  title: "Appréciation annuelle des prix immobiliers",
+                  subtitle: "",
+                  source: "Sources : <a href='https://www.globalpropertyguide.com/Europe/Cyprus/Price-History' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Global Property Guide</a> · <a href='https://www.ceicdata.com/en/indicator/cyprus/house-prices-growth' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>CEIC Data</a>",
+                },
+                {
+                  number: "23,9K",
+                  title: "Transactions immobilières en 2024",
+                  subtitle: "",
+                  source: "Sources : <a href='https://www.pwc.com.cy/en/publications/cyprus-real-estate-market-review.html' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>PwC Cyprus Real Estate Market Review</a> · <a href='https://cyprus-mail.com/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Cyprus Mail</a>",
+                },
+                {
+                  number: "70%",
+                  title: "Taux d'occupation locative",
+                  subtitle: "",
+                  source: "Sources : <a href='https://airbtics.com/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Airbtics</a> · <a href='https://investropa.com/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Investropa</a>",
+                },
+                {
+                  number: "4,75%",
+                  title: "Rendement locatif brut moyen",
+                  subtitle: "",
+                  source: "Sources : <a href='https://www.globalcitizensolutions.com/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Global Citizens Solutions</a> · <a href='https://www.rics.org/cyprus/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>RICS Cyprus</a> · <a href='https://www.globalpropertyguide.com/Europe/Cyprus' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Global Property Guide</a>",
+                },
+              ].map((kpi, index) => (
+                <motion.div
+                  key={index}
+                  className="text-center group"
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.2, type: "spring", damping: 20 }}
+                  viewport={{ once: true }}
+                  whileHover={{ scale: 1.05, transition: { type: "spring", damping: 15 } }}
+                  onViewportEnter={() => {
+                    trackCustomEvent('kpi_viewed', { title: kpi.title, number: kpi.number, index });
+                  }}
+                >
+                  <motion.div
+                    className="text-6xl sm:text-7xl font-light tracking-tight -0.015em text-primary mb-6"
+                    initial={{ scale: 0, opacity: 0 }}
+                    whileInView={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 1.5, delay: index * 0.2 + 0.5, ease: "easeOut", type: "spring", damping: 15 }}
+                    viewport={{ once: true }}
+                  >
+                    {kpi.number}
+                  </motion.div>
+                  <motion.h3
+                    className="text-xl sm:text-2xl font-medium tracking-tight -0.01em text-primary mb-3"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.2 + 0.7 }}
+                    viewport={{ once: true }}
+                  >
+                    {kpi.title}
+                  </motion.h3>
+                  <motion.p
+                    className="text-sm font-normal leading-relaxed -0.003em text-muted-foreground max-w-xs mx-auto mb-3"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.2 + 0.9 }}
+                    viewport={{ once: true }}
+                  >
+                    {kpi.subtitle}
+                  </motion.p>
+                  {kpi.source && (
+                    <motion.div
+                      className="text-xs"
+                      dangerouslySetInnerHTML={{ __html: kpi.source }}
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      transition={{ duration: 0.6, delay: index * 0.2 + 1.1 }}
+                      viewport={{ once: true }}
+                    />
+                  )}
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </motion.section>
         {/* Projets Vedette */}
         <section id="featured-projects" className="py-24 md:py-32 bg-gradient-to-br from-muted/30 to-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -926,20 +1043,109 @@ const Home = () => {
                 Découvrez notre sélection exclusive de programmes immobiliers d'exception, choisis pour leur emplacement privilégié, leur architecture remarquable et leur potentiel d'investissement.
               </motion.p>
             </motion.div>
-            <Advanced3DCarousel
-              properties={featuredProperties}
-              interests={interests || {}}
-              onInterestClick={handleInterestClick}
-            />
+            <div className="space-y-16">
+              {featuredProperties.slice(0, 3).map((property, index) => (
+                <motion.div
+                  key={property.id}
+                  className="relative bg-card border-border/50 rounded-3xl shadow-premium overflow-hidden backdrop-blur-sm"
+                  initial={{ opacity: 0, y: 100 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1, delay: index * 0.3, type: 'spring', stiffness: 50 }}
+                  whileHover={{ scale: 1.02 }}
+                >
+                  {/* Background Parallax Image */}
+                  <motion.div 
+                    className="absolute inset-0 z-0"
+                    style={{
+                      backgroundImage: `url(${property.photos?.[0] || 'https://picsum.photos/1200/800?random=' + property.id})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                    }}
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20" />
+                  </motion.div>
+                  
+                  {/* Glassmorphism Overlay */}
+                  <div className="relative z-10 p-8 lg:p-12 flex flex-col lg:flex-row items-center gap-8 backdrop-blur-sm bg-background/30">
+                    {/* Property Info Column */}
+                    <motion.div 
+                      className="lg:w-1/2 space-y-6"
+                      initial={{ opacity: 0, x: -50 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.8, delay: 0.2 }}
+                    >
+                      <h3 className="text-3xl lg:text-5xl font-light tracking-tight text-white">{property.title}</h3>
+                      <div className="flex items-center gap-2 text-white/80">
+                        <MapPin className="w-5 h-5" />
+                        <span>{property.location}</span>
+                      </div>
+                      <Badge className="bg-white/20 text-white border-white/30">
+                        €{Number(property.priceValue || 0).toLocaleString()}
+                      </Badge>
+                      <p className="text-white/90 leading-relaxed">
+                        {property.description || 'Une propriété premium offrant des équipements modernes et des vues exceptionnelles.'}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {(property.features || []).slice(0, 4).map((feature: string, i: number) => (
+                          <Badge key={i} className="bg-white/10 text-white border-white/20">{feature}</Badge>
+                        ))}
+                      </div>
+                      <Button 
+                        onClick={() => {
+                          trackCustomEvent('featured_property_clicked', {
+                            property_id: property.id,
+                            property_title: property.title,
+                            property_location: property.location,
+                            section: 'featured_projects'
+                          });
+                          setSelectedProperty(property);
+                          setIsModalOpen(true);
+                        }}
+                        className="bg-white text-primary hover:bg-white/90 mt-4"
+                      >
+                        Explorer la propriété
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </motion.div>
+                    
+                    {/* Image Column */}
+                    <motion.div 
+                      className="lg:w-1/2 h-64 lg:h-96 overflow-hidden rounded-2xl"
+                      initial={{ opacity: 0, x: 50 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.8, delay: 0.4 }}
+                    >
+                      <motion.img 
+                        src={property.photos?.[0] || 'https://picsum.photos/800/500?random=' + property.id}
+                        alt={`Photo de ${property.title}`}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                        whileHover={{ scale: 1.05 }}
+                        transition={{ duration: 0.5 }}
+                      />
+                    </motion.div>
+                  </div>
+                  
+                  {/* Futuristic Glow Effect */}
+                  <motion.div 
+                    className="absolute inset-0 pointer-events-none"
+                    animate={{
+                      boxShadow: [
+                        '0 0 20px rgba(0, 144, 230, 0.1)',
+                        '0 0 40px rgba(0, 144, 230, 0.2)',
+                        '0 0 20px rgba(0, 144, 230, 0.1)',
+                      ],
+                    }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                  />
+                </motion.div>
+              ))}
+            </div>
           </div>
         </section>
-        {/* Transition Spacer */}
-        <motion.div
-          className="h-20 bg-gradient-to-b from-background to-muted/30"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-        />
         {/* Dernières Nouveautés */}
         <section className="py-24 md:py-32 bg-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1023,28 +1229,8 @@ const Home = () => {
             </motion.div>
           </div>
         </section>
-        {/* Transition Spacer */}
-        <motion.div
-          className="h-20 bg-gradient-to-b from-background to-muted/30"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-        />
         {/* Témoignages */}
-        <section className="py-24 md:py-32 bg-muted/30 relative overflow-hidden">
-          {/* Background Gradient Waves */}
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-30"
-            animate={{
-              backgroundPosition: ['0% 0%', '100% 100%'],
-            }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear", repeatType: "reverse" }}
-            style={{
-              background: 'linear-gradient(135deg, rgba(0,144,230,0.05) 0%, rgba(240,247,253,0.05) 100%)',
-              backgroundSize: '200% 200%',
-            }}
-          />
-         
+        <section className="py-24 md:py-32 bg-muted/30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -1060,7 +1246,7 @@ const Home = () => {
                 transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
               >
-                Ce Que Disent Nos Clients
+                Témoignages
               </motion.h2>
               <motion.p
                 className="text-lg sm:text-xl font-normal leading-relaxed -0.005em text-muted-foreground max-w-3xl mx-auto"
@@ -1069,111 +1255,123 @@ const Home = () => {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 viewport={{ once: true }}
               >
-                Découvrez les expériences de ceux qui ont réalisé leur rêve immobilier avec ENKI Realty
+                Découvrez les témoignages de nos clients satisfaits qui ont trouvé leur propriété de rêve grâce à ENKI Realty.
               </motion.p>
             </motion.div>
-           
-            {/* 3D Testimonial Carousel */}
-            <Advanced3DCarousel
-              properties={testimonials.map(t => ({
-                id: t.id,
-                title: t.name,
-                location: t.location,
-                photos: [t.photo],
-                type: t.rating + ' étoiles',
-                price: t.comment,
-                interests: [] // No interests for testimonials
-              }))}
-              interests={{}}
-              onInterestClick={() => {}}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[
+                {
+                  id: 1,
+                  name: "Marie Dubois",
+                  location: "France",
+                  photo: "https://images.unsplash.com/photo-1494790108755-2616b612b193?w=100&h=100&fit=crop&auto=format",
+                  rating: 5,
+                  comment: "L'IA de recherche automatisée d'ENKI Realty a analysé mon profil et m'a proposé exactement le type de villa que je cherchais à Limassol. En 48h j'avais ma sélection parfaite !",
+                },
+                {
+                  id: 2,
+                  name: "Thomas Wagner",
+                  location: "Allemagne",
+                  photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&auto=format",
+                  rating: 5,
+                  comment: "Grâce à leur agent fiscal IA, j'ai pu optimiser mon montage d'entreprise à Chypre et réduire ma fiscalité de 40%. Un accompagnement sur-mesure exceptionnel.",
+                },
+                {
+                  id: 3,
+                  name: "Sarah Johnson",
+                  location: "Royaume-Uni",
+                  photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&auto=format",
+                  rating: 5,
+                  comment: "L'obtention de ma résidence chypriote s'est faite en un temps record grâce à leur IA conseil. Toutes les démarches ont été automatisées et simplifiées.",
+                },
+                {
+                  id: 4,
+                  name: "Marco Rossi",
+                  location: "Italie",
+                  photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&auto=format",
+                  rating: 5,
+                  comment: "La recherche automatisée a parfaitement cerné mon profil d'investisseur. Le montage fiscal proposé par leur IA m'a fait économiser des milliers d'euros.",
+                },
+                {
+                  id: 5,
+                  name: "Anna Petrov",
+                  location: "Russie",
+                  photo: "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=100&h=100&fit=crop&auto=format",
+                  rating: 5,
+                  comment: "Leur agent fiscal IA a structuré mon montage d'entreprise offshore de façon optimale. La recherche de propriétés s'est adaptée automatiquement à mes besoins.",
+                },
+                {
+                  id: 6,
+                  name: "David Chen",
+                  location: "Singapour",
+                  photo: "https://images.unsplash.com/photo-1519345182560-3f2917c78026?w=100&h=100&fit=crop&auto=format",
+                  rating: 5,
+                  comment: "La technologie IA d'ENKI Realty a révolutionné ma recherche immobilière. Analyse précise, recommandations personnalisées et accompagnement fiscal d'excellence.",
+                },
+              ].map((testimonial) => (
+                <motion.div
+                  key={testimonial.id}
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: testimonial.id * 0.1 }}
+                  className="bg-card rounded-2xl p-8 shadow-lg border border-border/50 hover:shadow-xl transition-all duration-500 hover:scale-105"
+                >
+                  <div className="flex items-center mb-6">
+                    <img
+                      src={testimonial.photo}
+                      alt={`Photo de ${testimonial.name}`}
+                      className="w-16 h-16 rounded-full object-cover mr-4"
+                    />
+                    <div>
+                      <h4 className="font-semibold text-lg">{testimonial.name}</h4>
+                      <p className="text-muted-foreground">{testimonial.location}</p>
+                    </div>
+                  </div>
+                  <div className="flex mb-4">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                    ))}
+                  </div>
+                  <p className="text-muted-foreground leading-relaxed">
+                    "{testimonial.comment}"
+                  </p>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </section>
-        {/* Transition Spacer */}
-        <motion.div
-          className="h-20 bg-gradient-to-b from-muted/30 to-background"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-        />
-        {/* New CTA Section */}
-        <section className="py-24 md:py-32 relative overflow-hidden bg-gradient-to-br from-primary to-accent">
-          {/* Animated Background Particles */}
-          <Suspense fallback={null}>
-            {isClient && (
-              <div className="absolute inset-0 opacity-30">
-                <ErrorBoundary fallback={null}>
-                  <Canvas style={{ height: '100%', width: '100%' }}>
-                    <ambientLight intensity={0.5} />
-                    <pointLight position={[10, 10, 10]} />
-                    <group>
-                      {floatingParticles.map((p, i) => (
-                        <Float key={i} speed={p.speed} rotationIntensity={1} floatIntensity={2}>
-                          <Sphere args={[p.radius, 16, 16]} position={p.position}>
-                            <MeshDistortMaterial color="#FFFFFF" distort={0.3} speed={1.5} />
-                          </Sphere>
-                        </Float>
-                      ))}
-                    </group>
-                  </Canvas>
-                </ErrorBoundary>
-              </div>
-            )}
-          </Suspense>
-         
-          {/* Glowing Overlay */}
-          <motion.div
-            className="absolute inset-0 pointer-events-none"
-            animate={{
-              background: 'radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%)',
-            }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          />
-         
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            <motion.h2
-              className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight text-white mb-8"
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1 }}
-            >
-              Prêt à Transformer Votre Vision en Réalité?
-            </motion.h2>
-            <motion.p
-              className="text-xl sm:text-2xl text-white/90 mb-12 leading-relaxed max-w-3xl mx-auto"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.2 }}
-            >
-              Explorez nos propriétés d'exception et bénéficiez d'une optimisation fiscale personnalisée via notre IA avancée.
-            </motion.p>
+        {/* Call to Action */}
+        <section className="py-24 md:py-32 bg-gradient-to-br from-primary via-primary/90 to-accent">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <motion.div
-              className="flex flex-col sm:flex-row justify-center gap-6"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.4 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
             >
-              <Button
-                size="lg"
-                className="bg-white text-primary hover:bg-white/90 px-8 py-4 text-base font-medium rounded-lg shadow-premium hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-105 transition-all duration-300"
-                asChild
+              <h2 className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight text-white mb-8">
+                Prêt à investir ?
+              </h2>
+              <p className="text-xl sm:text-2xl text-white/90 mb-12 leading-relaxed">
+                Découvrez nos propriétés premium et bénéficiez de notre expertise fiscale IA
+              </p>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <Link to="/projects">
-                  Découvrir Nos Projets
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Link>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white text-white hover:bg-white hover:text-primary px-8 py-4 text-base font-medium rounded-lg transition-all duration-300 hover:scale-105"
-                asChild
-              >
-                <Link to="/lexaia">
-                  Optimiser Ma Fiscalité
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Link>
-              </Button>
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  className="px-12 py-6 text-lg bg-white text-primary hover:bg-white/90"
+                  asChild
+                >
+                  <Link to="/projects">
+                    Découvrir nos projets
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </Link>
+                </Button>
+              </motion.div>
             </motion.div>
           </div>
         </section>
