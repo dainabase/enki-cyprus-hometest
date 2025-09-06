@@ -510,15 +510,10 @@ const Home = () => {
             style={{ y: heroY, opacity: heroOpacity, scale: heroScale }}
             className="absolute inset-0 z-0"
           >
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="w-full h-full object-cover"
-            >
-              <source src={cyprusHero} type="video/mp4" />
-            </video>
+            <div 
+              className="w-full h-full bg-cover bg-center bg-no-repeat"
+              style={{ backgroundImage: `url(${cyprusHero})` }}
+            />
             <div className="absolute inset-0 bg-gradient-to-br from-primary/50 via-primary/20 to-accent/30" />
           </motion.div>
 
