@@ -546,7 +546,7 @@ const Home = () => {
             >
               {/* Animated Logo Assembly */}
               <motion.div
-                className="relative flex flex-col items-center justify-center space-y-6"
+                className="relative flex flex-col items-center justify-center space-y-3"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
@@ -576,9 +576,9 @@ const Home = () => {
                   </motion.span>
                 </motion.div>
 
-                {/* Sharp separation line arrives from background (depth) */}
+                {/* Sharp separation line arrives from background (depth) - bigger */}
                 <motion.div
-                  className="relative w-32 h-0.5 bg-white"
+                  className="relative w-48 h-0.5 bg-white"
                   initial={{ 
                     opacity: 0, 
                     scaleX: 0,
@@ -621,9 +621,9 @@ const Home = () => {
                 </motion.div>
               </motion.div>
 
-              {/* Lowered subtitle and button */}
+              {/* Lowered subtitle and button - moved much lower */}
               <motion.p
-                className="font-inter text-lg sm:text-xl md:text-2xl font-normal leading-relaxed -0.005em text-white/90 max-w-4xl mx-auto mt-16"
+                className="font-inter text-lg sm:text-xl md:text-2xl font-normal leading-relaxed -0.005em text-white/90 max-w-4xl mx-auto mt-32"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 2.5, ease: "easeOut" }}
@@ -632,7 +632,7 @@ const Home = () => {
               </motion.p>
               
               <motion.div
-                className="flex justify-center items-center mt-12 mb-16"
+                className="flex justify-center items-center mt-16 mb-24"
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 3, ease: "easeOut" }}
