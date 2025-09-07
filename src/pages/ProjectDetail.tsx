@@ -37,6 +37,10 @@ const ProjectDetail = () => {
     }
   }, [project, id]);
 
+  // Framer Motion hooks declared before conditional returns
+  const { scrollY } = useScroll();
+  const parallaxY = useTransform(scrollY, [0, 400], [0, -100]);
+
   if (isLoading) return <Layout><div className="text-center py-20 text-muted-foreground">Chargement du projet...</div></Layout>;
   if (error || !project) return <Layout><div className="text-center py-20 text-destructive">Erreur de chargement du projet. Veuillez réessayer.</div></Layout>;
 
@@ -51,10 +55,6 @@ const ProjectDetail = () => {
     arrows: true,
     lazyLoad: 'ondemand',
   };
-
-  // Framer Motion hooks must be declared at the top-level of the component
-  const { scrollY } = useScroll();
-  const parallaxY = useTransform(scrollY, [0, 400], [0, -100]);
 
   type Unit = {
     type?: string;
