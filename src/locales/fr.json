@@ -358,5 +358,12 @@
     "date": "Date",
     "noProjects": "Aucun projet trouvé",
     "noCommissions": "Aucune commission trouvée"
+  },
+  "tests": {
+    "title": "Tests et Validation",
+    "description": "Tests manuels et vérification d'intégrité des données",
+    "generateData": "Générer Données Test",
+    "resetData": "Reset Données Test",
+    "systemHealth": "Santé du Système"
   }
 }

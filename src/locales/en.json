@@ -358,5 +358,12 @@
     "date": "Date",
     "noProjects": "No projects found",
     "noCommissions": "No commissions found"
+  },
+  "tests": {
+    "title": "Tests & Validation",
+    "description": "Manual testing and data integrity verification",
+    "generateData": "Generate Test Data",
+    "resetData": "Reset Test Data",
+    "systemHealth": "System Health"
   }
 }

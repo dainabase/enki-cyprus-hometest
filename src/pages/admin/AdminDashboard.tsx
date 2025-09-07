@@ -1,21 +1,25 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
-import { AdminOverview } from './AdminOverview';
-import AdminDevelopers from './AdminDevelopers';
-import AdminProjects from './AdminProjects';
-import AdminUnits from './AdminUnits';
-import { AdminCommissions } from './AdminCommissions';
-import { AdminUsers } from './AdminUsers';
-import { AdminAnalytics } from './AdminAnalytics';
-import AdminPredictions from './AdminPredictions';
-import AdminSegmentation from './AdminSegmentation';
-import AdminPerformance from './AdminPerformance';
-import { AdminContent } from './AdminContent';
-import AdminLeads from './AdminLeads';
-import AdminPipeline from './AdminPipeline';
-import AdminReports from './AdminReports';
+
+// Lazy load admin pages for better performance
+const AdminOverview = lazy(() => import('./AdminOverview').then(module => ({ default: module.AdminOverview })));
+const AdminDevelopers = lazy(() => import('./AdminDevelopers'));
+const AdminProjects = lazy(() => import('./AdminProjects'));
+const AdminUnits = lazy(() => import('./AdminUnits'));
+const AdminCommissions = lazy(() => import('./AdminCommissions').then(module => ({ default: module.AdminCommissions })));
+const AdminUsers = lazy(() => import('./AdminUsers').then(module => ({ default: module.AdminUsers })));
+const AdminAnalytics = lazy(() => import('./AdminAnalytics').then(module => ({ default: module.AdminAnalytics })));
+const AdminPredictions = lazy(() => import('./AdminPredictions'));
+const AdminSegmentation = lazy(() => import('./AdminSegmentation'));
+const AdminPerformance = lazy(() => import('./AdminPerformance'));
+const AdminContent = lazy(() => import('./AdminContent').then(module => ({ default: module.AdminContent })));
+const AdminLeads = lazy(() => import('./AdminLeads'));
+const AdminPipeline = lazy(() => import('./AdminPipeline'));
+const AdminReports = lazy(() => import('./AdminReports'));
+const AdminTests = lazy(() => import('./AdminTests'));
+
 import { useAuth } from '@/contexts/AuthContext';
 import { PrivateRoute } from '@/components/auth/PrivateRoute';
 import { Card, CardContent } from '@/components/ui/card';
@@ -61,6 +65,9 @@ export const AdminDashboard = () => {
                 <Route path="performance" element={<AdminPerformance />} />
                 <Route path="reports" element={<AdminReports />} />
                 <Route path="settings" element={<AdminContent />} />
+                {process.env.NODE_ENV === 'development' && (
+                  <Route path="tests" element={<AdminTests />} />
+                )}
                 <Route path="*" element={<Navigate to="/admin" replace />} />
               </Routes>
             </main>

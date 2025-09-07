@@ -94,13 +94,23 @@ const getAdminNavItems = (t: any) => [
     url: '/admin/settings',
     icon: Settings,
     description: 'Configuration'
-  }
+  },
+  // Development section (only show in development mode)
+  ...(process.env.NODE_ENV === 'development' ? [
+    { 
+      title: 'Tests & Validation',
+      url: '/admin/tests',
+      icon: Settings,
+      description: 'Tests manuels et validation',
+      isDev: true 
+    }
+  ] : [])
 ];
 
 export function AdminSidebar() {
-  const { state } = useSidebar();
   const location = useLocation();
   const { t } = useTranslation();
+  const { state } = useSidebar();
   const collapsed = state === "collapsed";
   
   const adminNavItems = getAdminNavItems(t);
