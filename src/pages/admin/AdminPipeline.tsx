@@ -61,15 +61,15 @@ export default function AdminPipeline() {
   };
 
   const calculateMetrics = (leadsData) => {
-    const metricsData = {};
+    const newMetrics = {};
     stages.forEach(stage => {
       const stageLeads = leadsData.filter(lead => lead.status === stage.stage_key);
-      metricsData[stage.stage_key] = {
+      newMetrics[stage.stage_key] = {
         count: stageLeads.length,
-        value: stageLeads.reduce((sum, lead) => sum + (Number(lead.budget_max) || 0), 0)
+        value: stageLeads.reduce((sum, lead) => sum + (lead.budget_max || 0), 0)
       };
     });
-    setMetrics(metricsData);
+    setMetrics(newMetrics);
   };
 
   const onDragEnd = async (result) => {
@@ -80,7 +80,7 @@ export default function AdminPipeline() {
     
     // Mettre à jour localement
     const updatedLeads = leads.map(lead => 
-      lead.id === leadId ? { ...lead, status: newStatus } : lead
+      lead.id === leadId ? { ...lead, status: newStatus, status_changed_at: new Date().toISOString() } : lead
     );
     setLeads(updatedLeads);
     
@@ -96,7 +96,7 @@ export default function AdminPipeline() {
         description: error.message,
         variant: 'destructive'
       });
-      // Revert on error
+      // Revert local change on error
       fetchLeads();
     } else {
       // Log activity
@@ -107,7 +107,7 @@ export default function AdminPipeline() {
           activity_type: 'status_change',
           description: `Moved to ${newStatus}`
         });
-        
+      
       toast({
         title: t('messages.success'),
         description: t('pipeline.leadMoved')
@@ -138,13 +138,13 @@ export default function AdminPipeline() {
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className={`bg-card p-3 rounded mb-2 cursor-move border transition-colors ${
-            snapshot.isDragging ? 'shadow-lg bg-accent' : 'hover:bg-accent/50'
+          className={`bg-card border p-3 rounded mb-2 cursor-move hover:bg-muted/50 ${
+            snapshot.isDragging ? 'opacity-75' : ''
           }`}
           onClick={() => setSelectedLead(lead)}
         >
           <div className="flex justify-between items-start mb-2">
-            <div className="font-medium text-sm">
+            <div className="font-medium text-sm text-card-foreground">
               {lead.first_name} {lead.last_name}
             </div>
             {lead.golden_visa_interest && (
@@ -161,9 +161,9 @@ export default function AdminPipeline() {
           </div>
           
           {lead.budget_max && (
-            <div className="flex items-center text-sm text-foreground">
+            <div className="flex items-center text-sm text-card-foreground">
               <Euro size={12} className="mr-1" />
-              {Number(lead.budget_max).toLocaleString()}
+              €{Number(lead.budget_max).toLocaleString()}
             </div>
           )}
           
@@ -177,6 +177,18 @@ export default function AdminPipeline() {
     </Draggable>
   );
 
+  if (stages.length === 0) {
+    return (
+      <div className="p-6">
+        <Card>
+          <CardContent className="p-8 text-center">
+            <p>{t('form.loading')}</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6">
       <Card>
@@ -189,7 +201,7 @@ export default function AdminPipeline() {
                 <div className="text-sm text-muted-foreground">
                   €{(metrics[stage.stage_key]?.value || 0).toLocaleString()}
                 </div>
-                <div className="text-xs text-muted-foreground">
+                <div className="text-xs text-muted-foreground mt-1">
                   {t(`leads.status.${stage.stage_key}`)}
                 </div>
               </div>
@@ -213,8 +225,8 @@ export default function AdminPipeline() {
                       <div
                         ref={provided.innerRef}
                         {...provided.droppableProps}
-                        className={`min-h-[400px] rounded p-2 transition-colors ${
-                          snapshot.isDraggingOver ? 'bg-accent' : 'bg-muted'
+                        className={`min-h-[400px] bg-muted/30 rounded p-2 ${
+                          snapshot.isDraggingOver ? 'bg-muted/50' : ''
                         }`}
                       >
                         {leads
@@ -240,31 +252,31 @@ export default function AdminPipeline() {
           onClick={() => setSelectedLead(null)}
         >
           <div 
-            className="bg-card p-6 rounded-lg max-w-md w-full mx-4 border"
+            className="bg-card border p-6 rounded-lg max-w-md w-full mx-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-xl font-bold mb-4">
+            <h3 className="text-xl font-bold mb-4 text-card-foreground">
               {selectedLead.first_name} {selectedLead.last_name}
             </h3>
-            <div className="space-y-2 text-sm">
+            <div className="space-y-2 text-card-foreground">
               <p><strong>{t('leads.email')}:</strong> {selectedLead.email}</p>
               <p><strong>{t('leads.phone')}:</strong> {selectedLead.phone || '-'}</p>
               <p><strong>{t('leads.budget')}:</strong> 
-                {selectedLead.budget_min && selectedLead.budget_max 
-                  ? ` €${Number(selectedLead.budget_min).toLocaleString()} - €${Number(selectedLead.budget_max).toLocaleString()}`
-                  : ' -'
-                }
+                {selectedLead.budget_min && selectedLead.budget_max && (
+                  ` €${Number(selectedLead.budget_min).toLocaleString()} - €${Number(selectedLead.budget_max).toLocaleString()}`
+                )}
               </p>
               <p><strong>{t('pipeline.urgency')}:</strong> {t(`leads.urgency.${selectedLead.urgency}`)}</p>
               <p><strong>{t('pipeline.source')}:</strong> {t(`leads.source.${selectedLead.source}`)}</p>
-              <p><strong>{t('pipeline.score')}:</strong> 
-                <span className="ml-2 flex items-center">
+              <p><strong>{t('leads.score')}:</strong> 
+                <span className="flex items-center gap-1 mt-1">
                   {renderStars(selectedLead.score)}
                 </span>
               </p>
               {selectedLead.notes && (
                 <p><strong>{t('leads.notes')}:</strong> {selectedLead.notes}</p>
               )}
+              <p><strong>{t('pipeline.timeInStage')}:</strong> {getDaysInStage(selectedLead.status_changed_at)} {t('pipeline.days')}</p>
             </div>
             <button 
               className="mt-4 bg-primary text-primary-foreground px-4 py-2 rounded hover:bg-primary/90"

@@ -191,6 +191,7 @@
     "leadMoved": "Lead moved successfully",
     "urgency": "Urgency",
     "source": "Source",
-    "score": "Score"
+    "timeInStage": "Time in stage",
+    "days": "days"
   }
 }

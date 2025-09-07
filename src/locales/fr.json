@@ -191,6 +191,7 @@
     "leadMoved": "Lead déplacé avec succès",
     "urgency": "Urgence",
     "source": "Source",
-    "score": "Score"
+    "timeInStage": "Temps dans l'étape",
+    "days": "jours"
   }
 }
