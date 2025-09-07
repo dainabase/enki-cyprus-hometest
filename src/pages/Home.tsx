@@ -615,9 +615,9 @@ const Home = () => {
                 </motion.div>
               </motion.div>
 
-              {/* Much lower subtitle and button - 50% more down */}
+              {/* Much lower subtitle and button - even more down */}
               <motion.p
-                className="font-inter text-lg sm:text-xl md:text-2xl font-normal leading-relaxed -0.005em text-white/90 max-w-4xl mx-auto mt-48"
+                className="font-inter text-lg sm:text-xl md:text-2xl font-normal leading-relaxed -0.005em text-white/90 max-w-4xl mx-auto mt-64"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 3.2, ease: "easeOut" }}
@@ -626,7 +626,7 @@ const Home = () => {
               </motion.p>
               
               <motion.div
-                className="flex justify-center items-center mt-20 mb-32"
+                className="flex justify-center items-center mt-24 mb-40"
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 3.7, ease: "easeOut" }}
