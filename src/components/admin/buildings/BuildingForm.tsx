@@ -6,6 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import SimpleImageUploader from '@/components/admin/common/SimpleImageUploader';
+import { createBuildingImage, fetchBuildingImages, BuildingImage } from '@/lib/supabase/images';
 
 interface BuildingFormProps {
   building?: any;
@@ -31,6 +33,7 @@ interface BuildingFormData {
 const BuildingForm: React.FC<BuildingFormProps> = ({ building, projects, onSave, onCancel }) => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [existingImages, setExistingImages] = useState<BuildingImage[]>([]);
   
   const [formData, setFormData] = useState<BuildingFormData>({
     name: '',
@@ -61,8 +64,20 @@ const BuildingForm: React.FC<BuildingFormProps> = ({ building, projects, onSave,
         address: building.address || '',
         description: building.description || ''
       });
+      
+      // Load existing images
+      loadExistingImages(building.id);
     }
   }, [building]);
+
+  const loadExistingImages = async (buildingId: string) => {
+    try {
+      const images = await fetchBuildingImages(buildingId);
+      setExistingImages(images);
+    } catch (error) {
+      console.error('Error loading images:', error);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -276,6 +291,49 @@ const BuildingForm: React.FC<BuildingFormProps> = ({ building, projects, onSave,
           />
         </div>
       </div>
+
+      {/* Images Upload Section */}
+      {building && (
+        <div className="space-y-4">
+          <div>
+            <Label>Images du bâtiment (max 5)</Label>
+            <p className="text-sm text-muted-foreground mb-4">
+              Uploadez jusqu'à 5 images pour ce bâtiment
+            </p>
+          </div>
+          <SimpleImageUploader
+            bucket="buildings"
+            entityId={building.id}
+            maxFiles={5}
+            existingImages={existingImages.map(img => img.url)}
+            onUploadComplete={async (urls) => {
+              try {
+                // Save images to database
+                for (let i = 0; i < urls.length; i++) {
+                  await createBuildingImage({
+                    building_id: building.id,
+                    url: urls[i],
+                    is_primary: existingImages.length === 0 && i === 0,
+                    display_order: existingImages.length + i
+                  });
+                }
+                // Reload images
+                await loadExistingImages(building.id);
+                toast({
+                  title: "Images uploadées",
+                  description: `${urls.length} image(s) ajoutée(s) avec succès`
+                });
+              } catch (error) {
+                toast({
+                  variant: "destructive",
+                  title: "Erreur",
+                  description: "Impossible de sauvegarder les images"
+                });
+              }
+            }}
+          />
+        </div>
+      )}
 
       {/* Actions */}
       <div className="flex items-center justify-end space-x-2 pt-4">

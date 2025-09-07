@@ -181,6 +181,44 @@ export type Database = {
         }
         Relationships: []
       }
+      building_images: {
+        Row: {
+          building_id: string | null
+          caption: string | null
+          created_at: string | null
+          display_order: number | null
+          id: string
+          is_primary: boolean | null
+          url: string
+        }
+        Insert: {
+          building_id?: string | null
+          caption?: string | null
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          is_primary?: boolean | null
+          url: string
+        }
+        Update: {
+          building_id?: string | null
+          caption?: string | null
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          is_primary?: boolean | null
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "building_images_building_id_fkey"
+            columns: ["building_id"]
+            isOneToOne: false
+            referencedRelation: "buildings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       buildings: {
         Row: {
           building_type: string | null
@@ -469,6 +507,44 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      project_images: {
+        Row: {
+          caption: string | null
+          created_at: string | null
+          display_order: number | null
+          id: string
+          is_primary: boolean | null
+          project_id: string | null
+          url: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          is_primary?: boolean | null
+          project_id?: string | null
+          url: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          is_primary?: boolean | null
+          project_id?: string | null
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_images_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       projects: {
         Row: {

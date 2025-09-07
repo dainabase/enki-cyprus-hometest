@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, Edit, Building2, Calendar, Users, Zap, MapPin } from 'lucide-react';
+import { ArrowLeft, Edit, Building2, Calendar, Users, Zap, MapPin, Star, X, Image } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -10,10 +10,14 @@ import { supabase } from '@/integrations/supabase/client';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import HierarchyBreadcrumb from '@/components/admin/common/HierarchyBreadcrumb';
 import { getHierarchyBreadcrumb } from '@/lib/supabase/integrity';
+import { fetchBuildingImages, deleteBuildingImage, updateBuildingImagePrimary } from '@/lib/supabase/images';
+import { deleteImage, getImagePath } from '@/lib/supabase/storage';
+import { useToast } from '@/hooks/use-toast';
 
 const AdminBuildingDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   // Fetch building details
   const { data: building, isLoading, error } = useQuery({
@@ -43,6 +47,13 @@ const AdminBuildingDetail = () => {
   const { data: breadcrumbData } = useQuery({
     queryKey: ['building-breadcrumb', id],
     queryFn: () => getHierarchyBreadcrumb(undefined, id),
+    enabled: !!id
+  });
+
+  // Fetch building images
+  const { data: images = [], refetch: refetchImages } = useQuery({
+    queryKey: ['building-images', id],
+    queryFn: () => fetchBuildingImages(id!),
     enabled: !!id
   });
 
@@ -105,6 +116,57 @@ const AdminBuildingDetail = () => {
 
   const project = getProject(building.project);
   const developer = project ? getDeveloper(project.developer) : null;
+
+  const handleDeleteImage = async (imageId: string, imageUrl: string) => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cette image ?')) return;
+    
+    try {
+      // Delete from storage
+      const imagePath = getImagePath(imageUrl);
+      if (imagePath) {
+        await deleteImage('buildings', imagePath);
+      }
+      
+      // Delete from database
+      await deleteBuildingImage(imageId);
+      
+      // Reload images
+      refetchImages();
+      
+      toast({
+        title: "Image supprimée",
+        description: "L'image a été supprimée avec succès"
+      });
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible de supprimer l'image"
+      });
+    }
+  };
+
+  const handleSetPrimaryImage = async (imageId: string) => {
+    if (!id) return;
+    
+    try {
+      await updateBuildingImagePrimary(imageId, id);
+      refetchImages();
+      
+      toast({
+        title: "Image principale",
+        description: "L'image principale a été mise à jour"
+      });
+    } catch (error) {
+      console.error('Error setting primary image:', error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible de définir l'image principale"
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -261,6 +323,83 @@ const AdminBuildingDetail = () => {
                 </div>
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Images Gallery */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <span className="flex items-center gap-2">
+                <Image className="w-5 h-5" />
+                Images du bâtiment
+              </span>
+              <Badge variant="outline">
+                {images.length} image(s)
+              </Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {images.length > 0 ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {images.map((image) => (
+                  <div key={image.id} className="relative group">
+                    <img
+                      src={image.url}
+                      alt={image.caption || `Image du bâtiment ${building.name}`}
+                      className="w-full h-32 object-cover rounded border"
+                    />
+                    
+                    {/* Primary badge */}
+                    {image.is_primary && (
+                      <div className="absolute top-2 left-2">
+                        <Badge variant="secondary" className="text-xs bg-yellow-100 text-yellow-800">
+                          <Star className="w-3 h-3 mr-1" />
+                          Principal
+                        </Badge>
+                      </div>
+                    )}
+                    
+                    {/* Actions */}
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
+                      {!image.is_primary && (
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => handleSetPrimaryImage(image.id)}
+                          className="h-6 w-6 p-0"
+                          title="Définir comme image principale"
+                        >
+                          <Star className="w-3 h-3" />
+                        </Button>
+                      )}
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleDeleteImage(image.id, image.url)}
+                        className="h-6 w-6 p-0"
+                        title="Supprimer l'image"
+                      >
+                        <X className="w-3 h-3" />
+                      </Button>
+                    </div>
+                    
+                    {/* Caption */}
+                    {image.caption && (
+                      <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs p-1 rounded-b">
+                        {image.caption}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-muted-foreground">
+                <Image className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <p>Aucune image pour ce bâtiment</p>
+                <p className="text-sm">Utilisez le formulaire d'édition pour ajouter des images</p>
+              </div>
+            )}
           </CardContent>
         </Card>
 
