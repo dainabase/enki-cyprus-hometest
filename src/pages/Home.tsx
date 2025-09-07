@@ -563,7 +563,7 @@ const Home = () => {
                     type: "tween"
                   }}
                 >
-                  ENKI - REALTY
+                  ENKI<span className="mx-2">-</span>REALTY
                   <motion.span
                     className="text-xl sm:text-2xl lg:text-2xl font-normal ml-1 mt-2 text-white/90"
                     initial={{ opacity: 0, scale: 0 }}
