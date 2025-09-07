@@ -264,6 +264,13 @@ export type Database = {
             referencedRelation: "projects"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "fk_buildings_project_id"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
         ]
       }
       checklists: {
@@ -887,6 +894,13 @@ export type Database = {
           virtual_tour_url?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "fk_projects_developer_id"
+            columns: ["developer_id"]
+            isOneToOne: false
+            referencedRelation: "developers"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "projects_building_id_fkey"
             columns: ["building_id"]
