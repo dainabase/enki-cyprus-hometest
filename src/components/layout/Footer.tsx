@@ -15,7 +15,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="space-y-4">
-            <div className="text-2xl font-bold text-gradient hover:scale-105 transition-transform duration-200">
+            <div className="text-2xl font-bold text-gradient-gold hover:scale-105 transition-transform duration-200">
               ENKI-REALTY
             </div>
             <p className="text-muted-foreground text-sm">

@@ -225,4 +225,12 @@ All colors MUST be HSL.
   .text-gradient {
     @apply bg-gradient-to-r from-primary to-accent-foreground bg-clip-text text-transparent;
   }
+  
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #a17964 0%, #d4af7a 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
 }
