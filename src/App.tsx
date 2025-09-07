@@ -30,6 +30,9 @@ const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard").then(mo
 const LexaiaPage = lazy(() => import("./pages/LexaiaPage").then(module => ({ default: module.default })));
 const NotFound = lazy(() => import("./pages/NotFound").then(module => ({ default: module.default })));
 
+// Test integration page (dev mode only)
+const AdminTestIntegration = lazy(() => import("./pages/admin/AdminTestIntegration").then(module => ({ default: module.default })));
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -70,6 +73,8 @@ const AppContent = () => {
                 <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
                 <Route path="/lexaia" element={<LexaiaPage />} />
                 <Route path="/admin/*" element={<PrivateRoute adminOnly><AdminDashboard /></PrivateRoute>} />
+                {/* Test integration route - dev mode only */}
+                <Route path="/admin-test" element={<PrivateRoute adminOnly><AdminTestIntegration /></PrivateRoute>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
