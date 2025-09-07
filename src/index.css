@@ -233,4 +233,17 @@ All colors MUST be HSL.
     -webkit-text-fill-color: transparent;
     color: transparent;
   }
+
+  /* Admin space overrides - Black text for all content */
+  .admin-text-override {
+    @apply text-black !important;
+  }
+  
+  .admin-text-secondary-override {
+    @apply text-black !important;
+  }
+  
+  .admin-text-muted-override {
+    @apply text-black !important;
+  }
 }

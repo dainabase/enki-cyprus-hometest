@@ -159,7 +159,7 @@ export const AdminUsers = () => {
             <h1 className="text-4xl font-light tracking-tight text-primary">
               Gestion des Utilisateurs
             </h1>
-            <p className="text-lg text-secondary mt-2">
+            <p className="text-lg admin-text-secondary-override mt-2">
               Modération des comptes et permissions
             </p>
           </div>

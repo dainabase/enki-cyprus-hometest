@@ -187,7 +187,7 @@ export const AdminOverview = () => {
             <h1 className="text-4xl font-light tracking-tight text-primary">
               Tableau de Bord
             </h1>
-            <p className="text-lg text-secondary mt-2">
+            <p className="text-lg admin-text-secondary-override mt-2">
               Aperçu de votre plateforme ENKI-REALTY
             </p>
           </div>
