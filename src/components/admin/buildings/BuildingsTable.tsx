@@ -16,7 +16,7 @@ interface BuildingsTableProps {
   isLoading: boolean;
 }
 
-const BuildingsTable: React.FC<BuildingsTableProps> = ({ buildings, onEdit, onRefetch, isLoading }) => {
+const BuildingsTable: React.FC<BuildingsTableProps> = React.memo(({ buildings, onEdit, onRefetch, isLoading }) => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -218,6 +218,12 @@ const BuildingsTable: React.FC<BuildingsTableProps> = ({ buildings, onEdit, onRe
       </Table>
     </div>
   );
-};
+}, (prevProps, nextProps) => {
+  return prevProps.buildings.length === nextProps.buildings.length &&
+         prevProps.buildings.every((building, index) => building.id === nextProps.buildings[index]?.id) &&
+         prevProps.isLoading === nextProps.isLoading;
+});
+
+BuildingsTable.displayName = 'BuildingsTable';
 
 export default BuildingsTable;

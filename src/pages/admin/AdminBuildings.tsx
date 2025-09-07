@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { Plus, Filter } from 'lucide-react';
+import { useSupabaseQuery, getPaginationRange } from '@/hooks/useSupabaseQuery';
+import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -22,6 +23,10 @@ const AdminBuildings = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBuilding, setEditingBuilding] = useState<any>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 25,
+  });
   const [filters, setFilters] = useState<FilterState>({
     projectId: '',
     constructionStatus: '',
@@ -29,19 +34,21 @@ const AdminBuildings = () => {
     maxFloors: ''
   });
 
-  // Fetch buildings with project and properties data
-  const { data: buildingsData, isLoading, refetch } = useQuery({
-    queryKey: ['admin-buildings', filters],
-    queryFn: async () => {
+  // Fetch buildings with project data with pagination
+  const { data: buildingsResponse, isLoading, refetch } = useSupabaseQuery(
+    ['admin-buildings', filters, pagination],
+    async () => {
+      const { from, to } = getPaginationRange(pagination);
+      
       let query = supabase
         .from('buildings')
         .select(`
-          *,
-          project:projects(id, title, cyprus_zone),
-          properties:projects(properties(id, status))
-        `)
+          id, name, building_type, construction_status, total_floors, total_units,
+          project:projects(id, title, cyprus_zone)
+        `, { count: 'exact' })
         .order('project_id', { ascending: true })
-        .order('name', { ascending: true });
+        .order('name', { ascending: true })
+        .range(from, to);
 
       // Apply filters
       if (filters.projectId) {
@@ -57,16 +64,19 @@ const AdminBuildings = () => {
         query = query.lte('total_floors', parseInt(filters.maxFloors));
       }
 
-      const { data, error } = await query;
+      const { data, error, count } = await query;
       if (error) throw error;
-      return data;
+      return { data, count };
     }
-  });
+  );
+
+  const buildingsData = buildingsResponse?.data || [];
+  const totalCount = buildingsResponse?.count || 0;
 
   // Fetch projects for filter dropdown
-  const { data: projects } = useQuery({
-    queryKey: ['projects-for-buildings'],
-    queryFn: async () => {
+  const { data: projects } = useSupabaseQuery(
+    ['projects-for-buildings'],
+    async () => {
       const { data, error } = await supabase
         .from('projects')
         .select('id, title, cyprus_zone')
@@ -74,7 +84,7 @@ const AdminBuildings = () => {
       if (error) throw error;
       return data;
     }
-  });
+  );
 
   const openCreateModal = () => {
     setEditingBuilding(null);
@@ -199,6 +209,15 @@ const AdminBuildings = () => {
               onRefetch={refetch}
               isLoading={isLoading}
             />
+            {buildingsData.length > 0 && (
+              <Pagination
+                pageIndex={pagination.pageIndex}
+                pageSize={pagination.pageSize}
+                totalCount={totalCount}
+                onPageChange={(pageIndex) => setPagination(prev => ({ ...prev, pageIndex }))}
+                onPageSizeChange={(pageSize) => setPagination({ pageIndex: 0, pageSize })}
+              />
+            )}
           </CardContent>
         </Card>
 

@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSupabaseQuery, getPaginationRange } from '@/hooks/useSupabaseQuery';
+import { Pagination } from '@/components/Pagination';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -13,9 +15,12 @@ import { useToast } from '@/hooks/use-toast';
 export default function AdminLeads() {
   const { t } = useTranslation();
   const { toast } = useToast();
-  const [leads, setLeads] = useState([]);
   const [developers, setDevelopers] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 25,
+  });
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -30,32 +35,35 @@ export default function AdminLeads() {
     notes: ''
   });
 
+  // Fetch leads with pagination
+  const { data: leadsResponse, refetch } = useSupabaseQuery(
+    ['admin-leads', pagination],
+    async () => {
+      const { from, to } = getPaginationRange(pagination);
+      
+      const { data, error, count } = await supabase
+        .from('leads')
+        .select('id, first_name, last_name, email, phone, status, score, budget_min, budget_max, urgency, created_at, golden_visa_interest, assigned_to, notes', { count: 'exact' })
+        .order('created_at', { ascending: false })
+        .range(from, to);
+      
+      if (error) throw error;
+      return { data, count };
+    }
+  );
+
+  const leads = leadsResponse?.data || [];
+  const totalCount = leadsResponse?.count || 0;
+
   useEffect(() => {
-    fetchLeads();
     fetchDevelopers();
   }, []);
-
-  const fetchLeads = async () => {
-    const { data, error } = await supabase
-      .from('leads')
-      .select('*, developers(name)')
-      .order('created_at', { ascending: false });
-    
-    if (error) {
-      toast({
-        title: t('messages.error'),
-        description: error.message,
-        variant: 'destructive'
-      });
-    } else if (data) {
-      setLeads(data);
-    }
-  };
 
   const fetchDevelopers = async () => {
     const { data, error } = await supabase
       .from('developers')
       .select('id, name')
+      .eq('status', 'active')
       .order('name');
     
     if (error) {
@@ -91,7 +99,7 @@ export default function AdminLeads() {
       });
     } else {
       setIsOpen(false);
-      fetchLeads();
+      refetch();
       setFormData({
         first_name: '',
         last_name: '',
@@ -128,7 +136,7 @@ export default function AdminLeads() {
           description: `Status changed to ${newStatus}`
         });
       
-      fetchLeads();
+      refetch();
       toast({
         title: t('messages.success'),
         description: t('leads.statusUpdated')
@@ -143,7 +151,7 @@ export default function AdminLeads() {
       .eq('id', leadId);
     
     if (!error) {
-      fetchLeads();
+      refetch();
       toast({
         title: t('messages.success'),
         description: t('leads.leadAssigned')
@@ -348,6 +356,15 @@ export default function AdminLeads() {
               </tbody>
             </table>
           </div>
+          {leads.length > 0 && (
+            <Pagination
+              pageIndex={pagination.pageIndex}
+              pageSize={pagination.pageSize}
+              totalCount={totalCount}
+              onPageChange={(pageIndex) => setPagination(prev => ({ ...prev, pageIndex }))}
+              onPageSizeChange={(pageSize) => setPagination({ pageIndex: 0, pageSize })}
+            />
+          )}
         </CardContent>
       </Card>
     </div>

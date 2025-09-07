@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { Plus, Filter } from 'lucide-react';
+import { useSupabaseQuery, getPaginationRange } from '@/hooks/useSupabaseQuery';
+import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -28,6 +29,10 @@ const AdminProjects = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<any>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 25,
+  });
   const [filters, setFilters] = useState<FilterState>({
     developerId: '',
     zone: '',
@@ -35,19 +40,23 @@ const AdminProjects = () => {
     goldenVisaOnly: false
   });
 
-  // Fetch projects with developer data
-  const { data: projectsData, isLoading, refetch } = useQuery({
-    queryKey: ['admin-projects', filters],
-    queryFn: async () => {
+  // Fetch projects with developer data with pagination
+  const { data: projectsResponse, isLoading, refetch } = useSupabaseQuery(
+    ['admin-projects', filters, pagination],
+    async () => {
+      const { from, to } = getPaginationRange(pagination);
+      
       let query = supabase
         .from('projects')
         .select(`
-          *,
-          developer:developers(id, name, contact_info),
+          id, title, status, cyprus_zone, golden_visa_eligible, price_from,
+          completion_date, units_available, units_sold, total_units, developer_id,
+          developer:developers(id, name),
           buildings(count)
-        `)
+        `, { count: 'exact' })
         .order('developer_id', { ascending: true })
-        .order('title', { ascending: true });
+        .order('title', { ascending: true })
+        .range(from, to);
 
       // Apply filters
       if (filters.developerId) {
@@ -63,16 +72,19 @@ const AdminProjects = () => {
         query = query.eq('golden_visa_eligible', true);
       }
 
-      const { data, error } = await query;
+      const { data, error, count } = await query;
       if (error) throw error;
-      return data;
+      return { data, count };
     }
-  });
+  );
+
+  const projectsData = projectsResponse?.data || [];
+  const totalCount = projectsResponse?.count || 0;
 
   // Fetch developers for filter dropdown
-  const { data: developers } = useQuery({
-    queryKey: ['developers'],
-    queryFn: async () => {
+  const { data: developers } = useSupabaseQuery(
+    ['developers'],
+    async () => {
       const { data, error } = await supabase
         .from('developers')
         .select('id, name')
@@ -81,7 +93,7 @@ const AdminProjects = () => {
       if (error) throw error;
       return data;
     }
-  });
+  );
 
   // Group projects by developer
   const groupedProjects = React.useMemo(() => {
@@ -234,6 +246,16 @@ const AdminProjects = () => {
               </CardContent>
             </Card>
           ))}
+          
+          {projectsData.length > 0 && (
+            <Pagination
+              pageIndex={pagination.pageIndex}
+              pageSize={pagination.pageSize}
+              totalCount={totalCount}
+              onPageChange={(pageIndex) => setPagination(prev => ({ ...prev, pageIndex }))}
+              onPageSizeChange={(pageSize) => setPagination({ pageIndex: 0, pageSize })}
+            />
+          )}
         </div>
 
         {/* Project Form Modal */}

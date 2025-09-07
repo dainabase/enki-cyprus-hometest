@@ -15,7 +15,7 @@ interface ProjectsTableProps {
   onRefetch: () => void;
 }
 
-const ProjectsTable: React.FC<ProjectsTableProps> = ({ projects, onEdit, onRefetch }) => {
+const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEdit, onRefetch }) => {
   const { toast } = useToast();
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -206,6 +206,11 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({ projects, onEdit, onRefet
       </Table>
     </div>
   );
-};
+}, (prevProps, nextProps) => {
+  return prevProps.projects.length === nextProps.projects.length &&
+         prevProps.projects.every((project, index) => project.id === nextProps.projects[index]?.id);
+});
+
+ProjectsTable.displayName = 'ProjectsTable';
 
 export default ProjectsTable;

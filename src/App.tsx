@@ -16,19 +16,26 @@ import { NotificationProvider } from "./components/NotificationProvider";
 import { initGA, trackPageView } from "./lib/analytics";
 
 // Lazy load pages for code splitting  
-const Home = lazy(() => import("./pages/Home").then(module => ({ default: module.default })));
-const Search = lazy(() => import("./pages/Search").then(module => ({ default: module.default })));
-const Projects = lazy(() => import("./pages/Projects").then(module => ({ default: module.default })));
-const ProjectDetail = lazy(() => import("./pages/ProjectDetail").then(module => ({ default: module.default })));
-const About = lazy(() => import("./pages/About").then(module => ({ default: module.default })));
-const Contact = lazy(() => import("./pages/Contact").then(module => ({ default: module.default })));
-const Login = lazy(() => import("./pages/Login").then(module => ({ default: module.default })));
-const Register = lazy(() => import("./pages/Register").then(module => ({ default: module.default })));
-const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy").then(module => ({ default: module.default })));
-const Dashboard = lazy(() => import("./pages/Dashboard").then(module => ({ default: module.default })));
+const Home = lazy(() => import("./pages/Home"));
+const Search = lazy(() => import("./pages/Search"));
+const Projects = lazy(() => import("./pages/Projects"));
+const ProjectDetail = lazy(() => import("./pages/ProjectDetail"));
+const About = lazy(() => import("./pages/About"));
+const Contact = lazy(() => import("./pages/Contact"));
+const Login = lazy(() => import("./pages/Login"));
+const Register = lazy(() => import("./pages/Register"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard").then(module => ({ default: module.AdminDashboard })));
-const LexaiaPage = lazy(() => import("./pages/LexaiaPage").then(module => ({ default: module.default })));
-const NotFound = lazy(() => import("./pages/NotFound").then(module => ({ default: module.default })));
+const LexaiaPage = lazy(() => import("./pages/LexaiaPage"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+
+// Lazy load admin pages for better performance
+const AdminProjects = lazy(() => import("./pages/admin/AdminProjects"));
+const AdminBuildings = lazy(() => import("./pages/admin/AdminBuildings"));
+const AdminLeads = lazy(() => import("./pages/admin/AdminLeads"));
+const AdminPerformance = lazy(() => import("./pages/admin/AdminPerformance"));
+const AdminSegmentation = lazy(() => import("./pages/admin/AdminSegmentation"));
 
 // Test integration page (dev mode only)
 const AdminTestIntegration = lazy(() => import("./pages/admin/AdminTestIntegration").then(module => ({ default: module.default })));
