@@ -181,6 +181,53 @@ export type Database = {
         }
         Relationships: []
       }
+      buildings: {
+        Row: {
+          building_type: string | null
+          construction_status: string | null
+          created_at: string | null
+          energy_rating: string | null
+          id: string
+          name: string
+          project_id: string | null
+          total_floors: number | null
+          total_units: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          building_type?: string | null
+          construction_status?: string | null
+          created_at?: string | null
+          energy_rating?: string | null
+          id?: string
+          name: string
+          project_id?: string | null
+          total_floors?: number | null
+          total_units?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          building_type?: string | null
+          construction_status?: string | null
+          created_at?: string | null
+          energy_rating?: string | null
+          id?: string
+          name?: string
+          project_id?: string | null
+          total_floors?: number | null
+          total_units?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "buildings_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       checklists: {
         Row: {
           created_at: string
@@ -249,6 +296,45 @@ export type Database = {
           status?: string
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      developers: {
+        Row: {
+          commission_rate: number | null
+          contact_info: Json | null
+          created_at: string | null
+          id: string
+          logo: string | null
+          name: string
+          payment_terms: string | null
+          status: string | null
+          updated_at: string | null
+          website: string | null
+        }
+        Insert: {
+          commission_rate?: number | null
+          contact_info?: Json | null
+          created_at?: string | null
+          id?: string
+          logo?: string | null
+          name: string
+          payment_terms?: string | null
+          status?: string | null
+          updated_at?: string | null
+          website?: string | null
+        }
+        Update: {
+          commission_rate?: number | null
+          contact_info?: Json | null
+          created_at?: string | null
+          id?: string
+          logo?: string | null
+          name?: string
+          payment_terms?: string | null
+          status?: string | null
+          updated_at?: string | null
+          website?: string | null
         }
         Relationships: []
       }
@@ -387,92 +473,163 @@ export type Database = {
       projects: {
         Row: {
           amenities: string[] | null
+          building_id: string | null
+          commission_rate: number | null
           completion_date: string | null
+          construction_phase: string | null
+          construction_start: string | null
           created_at: string
           description: string
           detailed_description: string | null
           detailed_features: string[] | null
           developer_id: string | null
+          featured_property: boolean | null
           features: string[]
+          floor_number: number | null
           furniture_status: string | null
+          golden_visa_eligible: boolean | null
           id: string
           interests: Json[] | null
           livability: boolean | null
           location: Json
           map_image: string | null
+          meta_description: string | null
+          meta_title: string | null
           photos: string[]
           plans: string[] | null
           price: number
           price_from: string | null
+          project_status: string | null
+          reservation_status: string | null
           status: string
           subtitle: string | null
           title: string
+          title_deed_status: string | null
+          total_units: number | null
+          transfer_fee: number | null
+          translations: Json | null
           type: string
+          unit_number: string | null
           units: Json[] | null
+          units_available: number | null
+          units_sold: number | null
           updated_at: string
+          url_slug: string | null
+          vat_rate: number | null
           video_url: string | null
+          view_count: number | null
           virtual_tour: string | null
           virtual_tour_url: string | null
         }
         Insert: {
           amenities?: string[] | null
+          building_id?: string | null
+          commission_rate?: number | null
           completion_date?: string | null
+          construction_phase?: string | null
+          construction_start?: string | null
           created_at?: string
           description: string
           detailed_description?: string | null
           detailed_features?: string[] | null
           developer_id?: string | null
+          featured_property?: boolean | null
           features?: string[]
+          floor_number?: number | null
           furniture_status?: string | null
+          golden_visa_eligible?: boolean | null
           id?: string
           interests?: Json[] | null
           livability?: boolean | null
           location: Json
           map_image?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
           photos?: string[]
           plans?: string[] | null
           price: number
           price_from?: string | null
+          project_status?: string | null
+          reservation_status?: string | null
           status?: string
           subtitle?: string | null
           title: string
+          title_deed_status?: string | null
+          total_units?: number | null
+          transfer_fee?: number | null
+          translations?: Json | null
           type: string
+          unit_number?: string | null
           units?: Json[] | null
+          units_available?: number | null
+          units_sold?: number | null
           updated_at?: string
+          url_slug?: string | null
+          vat_rate?: number | null
           video_url?: string | null
+          view_count?: number | null
           virtual_tour?: string | null
           virtual_tour_url?: string | null
         }
         Update: {
           amenities?: string[] | null
+          building_id?: string | null
+          commission_rate?: number | null
           completion_date?: string | null
+          construction_phase?: string | null
+          construction_start?: string | null
           created_at?: string
           description?: string
           detailed_description?: string | null
           detailed_features?: string[] | null
           developer_id?: string | null
+          featured_property?: boolean | null
           features?: string[]
+          floor_number?: number | null
           furniture_status?: string | null
+          golden_visa_eligible?: boolean | null
           id?: string
           interests?: Json[] | null
           livability?: boolean | null
           location?: Json
           map_image?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
           photos?: string[]
           plans?: string[] | null
           price?: number
           price_from?: string | null
+          project_status?: string | null
+          reservation_status?: string | null
           status?: string
           subtitle?: string | null
           title?: string
+          title_deed_status?: string | null
+          total_units?: number | null
+          transfer_fee?: number | null
+          translations?: Json | null
           type?: string
+          unit_number?: string | null
           units?: Json[] | null
+          units_available?: number | null
+          units_sold?: number | null
           updated_at?: string
+          url_slug?: string | null
+          vat_rate?: number | null
           video_url?: string | null
+          view_count?: number | null
           virtual_tour?: string | null
           virtual_tour_url?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "projects_building_id_fkey"
+            columns: ["building_id"]
+            isOneToOne: false
+            referencedRelation: "buildings"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       promoters: {
         Row: {
