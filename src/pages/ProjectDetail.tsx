@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useEffect } from 'react';
 import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion';
 import { useParams, Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
@@ -93,12 +93,7 @@ const ScrollingCard = ({
 
 const ProjectDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const sectionRef = useRef<HTMLDivElement>(null);
-  
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"],
-  });
+  const { scrollYProgress } = useScroll();
 
   const { data: project, isLoading, error } = useQuery({
     queryKey: ['project', id],
@@ -249,7 +244,7 @@ const ProjectDetail = () => {
       </section>
 
       {/* Scrolling Cards Section */}
-      <section ref={sectionRef} className="relative h-[300vh] bg-background">
+      <section className="relative h-[300vh] bg-background">
         <div className="sticky top-0 h-screen overflow-hidden">
           <div className="absolute top-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-sm border-b border-border/50 text-center z-20">
             <h3 className="text-xl font-medium text-primary">Découverte du Projet</h3>
