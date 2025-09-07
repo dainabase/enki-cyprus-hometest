@@ -626,7 +626,7 @@ const Home = () => {
               </motion.p>
               
               <motion.div
-                className="flex justify-center items-center mt-24 mb-40"
+                className="flex justify-center items-center mt-36 mb-20"
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 3.7, ease: "easeOut" }}
