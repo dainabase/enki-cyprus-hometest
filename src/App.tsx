@@ -20,6 +20,7 @@ const Home = lazy(() => import("./pages/Home").then(module => ({ default: module
 const Search = lazy(() => import("./pages/Search").then(module => ({ default: module.default })));
 const Projects = lazy(() => import("./pages/Projects").then(module => ({ default: module.default })));
 const ProjectDetails = lazy(() => import("./pages/ProjectDetails").then(module => ({ default: module.default })));
+const ProjectDetail = lazy(() => import("./pages/ProjectDetail").then(module => ({ default: module.default })));
 const About = lazy(() => import("./pages/About").then(module => ({ default: module.default })));
 const Contact = lazy(() => import("./pages/Contact").then(module => ({ default: module.default })));
 const Login = lazy(() => import("./pages/Login").then(module => ({ default: module.default })));
@@ -61,6 +62,7 @@ const AppContent = () => {
                 <Route path="/search" element={<Search />} />
                 <Route path="/projects" element={<Projects />} />
                 <Route path="/project/:id" element={<ProjectDetails />} />
+                <Route path="/project-detail/:id" element={<ProjectDetail />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/login" element={<Login />} />
