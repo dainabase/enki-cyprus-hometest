@@ -544,37 +544,84 @@ const Home = () => {
               transition={{ duration: 1.2, delay: 0.2, ease: "easeOut" }}
               className="space-y-12"
             >
-              <motion.h1
-                className="text-6xl sm:text-7xl lg:text-8xl font-light tracking-tight -0.02em text-white mb-8 leading-tight"
-                initial={{ opacity: 0, y: 50, scale: 0.8 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
+              {/* Animated Logo Assembly */}
+              <motion.div
+                className="relative flex flex-col items-center justify-center space-y-6"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
               >
-                <motion.span
-                  initial={{ opacity: 0, x: -50 }}
+                {/* ENKI REALTY arrives from left */}
+                <motion.div
+                  className="text-6xl sm:text-7xl lg:text-8xl font-light tracking-tight text-white"
+                  initial={{ opacity: 0, x: -300 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: 0.6 }}
+                  transition={{ 
+                    duration: 1.2, 
+                    delay: 0.5, 
+                    ease: "easeOut",
+                    type: "spring",
+                    stiffness: 100,
+                    damping: 15
+                  }}
                 >
-                  Découvrez les
-                </motion.span>
-                <br />
-                <motion.span
-                  className="block text-white"
-                  initial={{ opacity: 0, x: 50 }}
+                  ENKI REALTY
+                </motion.div>
+
+                {/* Separation line arrives from background (depth) */}
+                <motion.div
+                  className="relative w-32 h-1 bg-gradient-to-r from-transparent via-white to-transparent"
+                  initial={{ 
+                    opacity: 0, 
+                    scaleX: 0, 
+                    scaleY: 0.1,
+                    rotateX: 90
+                  }}
+                  animate={{ 
+                    opacity: 1, 
+                    scaleX: 1, 
+                    scaleY: 1,
+                    rotateX: 0
+                  }}
+                  transition={{ 
+                    duration: 1, 
+                    delay: 1.2, 
+                    ease: "easeOut",
+                    type: "spring",
+                    stiffness: 120,
+                    damping: 20
+                  }}
+                  style={{
+                    transformOrigin: "center",
+                    perspective: "1000px"
+                  }}
+                >
+                  {/* Glow effect for the separator */}
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent blur-sm"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.8 }}
+                    transition={{ duration: 0.5, delay: 1.7 }}
+                  />
+                </motion.div>
+
+                {/* Cyprus Properties arrives from right */}
+                <motion.div
+                  className="text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight text-white/90"
+                  initial={{ opacity: 0, x: 300 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: 0.8 }}
+                  transition={{ 
+                    duration: 1.2, 
+                    delay: 1.8, 
+                    ease: "easeOut",
+                    type: "spring",
+                    stiffness: 100,
+                    damping: 15
+                  }}
                 >
-                  Meilleurs Projets
-                </motion.span>
-                <motion.span
-                  className="block text-white"
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 1 }}
-                >
-                  Immobiliers à Chypre
-                </motion.span>
-              </motion.h1>
+                  Cyprus Properties
+                </motion.div>
+              </motion.div>
               <motion.p
                 className="font-inter text-lg sm:text-xl md:text-2xl font-normal leading-relaxed -0.005em text-white/90 max-w-4xl mx-auto"
                 initial={{ opacity: 0, y: 30 }}
