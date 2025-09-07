@@ -27,25 +27,9 @@ import PropertyModal from '@/components/PropertyModal';
 import FeaturedProjectsCarousel from '@/components/FeaturedProjectsCarousel';
 import { useIsClient } from '@/hooks/useIsClient';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
-// Lazy-load 3D components only when needed
-const Canvas = lazy(() => import('@react-three/fiber').then(mod => ({ default: mod.Canvas })));
-const OrbitControls = lazy(() => import('@react-three/drei').then(mod => ({ default: mod.OrbitControls })));
-const Sphere = lazy(() => import('@react-three/drei').then(mod => ({ default: mod.Sphere })));
-const MeshDistortMaterial = lazy(() => import('@react-three/drei').then(mod => ({ default: mod.MeshDistortMaterial })));
-const Float = lazy(() => import('@react-three/drei').then(mod => ({ default: mod.Float })));
-// BackgroundSphere Component
-const BackgroundSphere = () => (
-  <Float speed={1.4} rotationIntensity={1} floatIntensity={2}>
-    <Sphere args={[1, 100, 200]} scale={2.4}>
-      <MeshDistortMaterial
-        color="#0090E6" // Aligned with primary color
-        attach="material"
-        distort={0.3}
-        speed={1.5}
-        roughness={0}
-      />
-    </Sphere>
-  </Float>
+// Static background component to replace 3D elements (fixes runtime errors)
+const StaticBackground = () => (
+  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/20 opacity-50" />
 );
 // Advanced3DCarousel Component
 const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => {
@@ -75,18 +59,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
     >
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/20" />
      
-      <Suspense fallback={null}>
-        {isClient && (
-          <ErrorBoundary fallback={null}>
-            <Canvas camera={{ position: [0, 0, 5] }}>
-              <ambientLight intensity={0.4} />
-              <pointLight position={[10, 10, 10]} />
-              <BackgroundSphere />
-              <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
-            </Canvas>
-          </ErrorBoundary>
-        )}
-      </Suspense>
+      <StaticBackground />
       <div
         ref={carouselRef}
         className="relative w-full h-full flex items-center justify-center transform-gpu preserve-3d"
@@ -509,35 +482,11 @@ const Home = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-br from-primary/50 via-primary/20 to-accent/30" />
           </motion.div>
-          <Suspense fallback={null}>
-            {isClient && (
-              <div className="absolute inset-0 opacity-20">
-                <ErrorBoundary fallback={<div className="bg-gradient-to-br from-accent/20 to-primary/20 h-full w-full" />}>
-                  <Canvas camera={{ position: [0, 0, 5] }}>
-                    <ambientLight intensity={0.4} />
-                    <pointLight position={[10, 10, 10]} />
-                    <Suspense fallback={null}>
-                      <Float speed={2} rotationIntensity={1} floatIntensity={2}>
-                        <Sphere args={[0.1, 16, 16]} position={[-4, -2, -1]}>
-                          <MeshDistortMaterial color="#F0F7FD" distort={0.2} speed={2} />
-                        </Sphere>
-                      </Float>
-                      <Float speed={1.5} rotationIntensity={2} floatIntensity={1}>
-                        <Sphere args={[0.15, 16, 16]} position={[4, 2, -2]}>
-                          <MeshDistortMaterial color="#0090E6" distort={0.3} speed={1.5} />
-                        </Sphere>
-                      </Float>
-                      <Float speed={1.8} rotationIntensity={1.5} floatIntensity={3}>
-                        <Sphere args={[0.08, 16, 16]} position={[0, 3, -1]}>
-                          <MeshDistortMaterial color="#20B256" distort={0.4} speed={2.5} />
-                        </Sphere>
-                      </Float>
-                    </Suspense>
-                  </Canvas>
-                </ErrorBoundary>
-              </div>
-            )}
-          </Suspense>
+          <div className="absolute inset-0 bg-gradient-to-br from-accent/20 to-primary/20 opacity-20">
+            <div className="absolute top-10 left-10 w-4 h-4 bg-white/20 rounded-full animate-pulse" />
+            <div className="absolute top-20 right-20 w-6 h-6 bg-accent/30 rounded-full animate-pulse delay-500" />
+            <div className="absolute bottom-20 left-20 w-3 h-3 bg-primary/40 rounded-full animate-pulse delay-1000" />
+          </div>
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <motion.div
               initial={{ opacity: 0, y: 100 }}
@@ -869,28 +818,12 @@ const Home = () => {
             transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", repeatType: "reverse" }}
           />
           
-          {/* Floating Particles */}
-          <Suspense fallback={null}>
-            {isClient && (
-              <div className="absolute inset-0 opacity-30">
-                <ErrorBoundary fallback={null}>
-                  <Canvas style={{ height: '100%', width: '100%' }}>
-                    <ambientLight intensity={0.5} />
-                    <pointLight position={[10, 10, 10]} />
-                    <group>
-                      {floatingParticles.map((p, i) => (
-                        <Float key={i} speed={p.speed} rotationIntensity={1} floatIntensity={2}>
-                          <Sphere args={[p.radius, 16, 16]} position={p.position}>
-                            <MeshDistortMaterial color="#0090E6" distort={0.3} speed={1.5} />
-                          </Sphere>
-                        </Float>
-                      ))}
-                    </group>
-                  </Canvas>
-                </ErrorBoundary>
-              </div>
-            )}
-          </Suspense>
+          {/* Static Floating Particles */}
+          <div className="absolute inset-0 opacity-30">
+            <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-primary/60 rounded-full animate-bounce" />
+            <div className="absolute top-1/3 right-1/3 w-3 h-3 bg-accent/40 rounded-full animate-bounce delay-300" />
+            <div className="absolute bottom-1/3 left-1/2 w-1 h-1 bg-primary/80 rounded-full animate-bounce delay-700" />
+          </div>
           
           <div className="max-w-3xl mx-auto relative z-10">
             <motion.h2
