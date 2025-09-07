@@ -8,9 +8,9 @@ import { checkHierarchyIntegrity } from '@/lib/supabase/integrity';
 import { cleanOrphanData } from '@/lib/supabase/test-helpers';
 
 interface OrphanData {
-  orphanedProjects: any[];
-  orphanedBuildings: any[];
-  orphanedProperties: any[];
+  orphanProjects: any[];
+  orphanBuildings: any[];
+  orphanProperties: any[];
 }
 
 const IntegrityReport = () => {
@@ -23,7 +23,12 @@ const IntegrityReport = () => {
     setIsLoading(true);
     try {
       const data = await checkHierarchyIntegrity();
-      setOrphanData(data);
+      const normalized: OrphanData = {
+        orphanProjects: (data as any).orphanProjects ?? (data as any).orphanedProjects ?? [],
+        orphanBuildings: (data as any).orphanBuildings ?? (data as any).orphanedBuildings ?? [],
+        orphanProperties: (data as any).orphanProperties ?? (data as any).orphanedProperties ?? []
+      };
+      setOrphanData(normalized);
     } catch (error) {
       console.error('Error loading integrity report:', error);
     } finally {

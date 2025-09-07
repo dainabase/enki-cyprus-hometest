@@ -279,9 +279,8 @@ export async function getHierarchyBreadcrumb(
 
       if (!buildingError && buildingData) {
         building = { id: buildingData.id, name: buildingData.name };
-        const projectData = buildingData.project;
-        if (projectData && typeof projectData === 'object' && projectData !== null && 'id' in projectData) {
-          const typedProjectData = projectData as any;
+        const typedProjectData = (buildingData as any).project as any;
+        if (typedProjectData && typeof typedProjectData === 'object' && 'id' in typedProjectData) {
           project = { 
             id: typedProjectData.id, 
             title: typedProjectData.title 
