@@ -12,7 +12,7 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({
   children, 
   adminOnly = false 
 }) => {
-  const { isAuthenticated, isAdmin, loading } = useAuth();
+  const { isAuthenticated, isAdmin, loading, profile } = useAuth();
   const location = useLocation();
 
   if (loading) {
@@ -28,6 +28,11 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({
 
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  // Block access to client space (dashboard etc.) if profile flag is set
+  if (!adminOnly && profile?.profile?.blockedClient) {
+    return <Navigate to="/" replace />;
   }
 
   if (adminOnly && !isAdmin) {
