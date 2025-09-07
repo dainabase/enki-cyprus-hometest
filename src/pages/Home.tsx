@@ -615,31 +615,30 @@ const Home = () => {
                 </motion.div>
               </motion.div>
 
-              {/* Subtitle + CTA anchored near bottom for precise placement */}
-              <div className="absolute bottom-16 left-1/2 -translate-x-1/2 w-full px-4">
-                <motion.p
-                  className="font-inter text-lg sm:text-xl md:text-2xl font-normal leading-relaxed -0.005em text-white/90 max-w-4xl mx-auto text-center mb-6"
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1, delay: 3.2, ease: "easeOut" }}
-                >
-                  La nouvelle expérience de l'investissement immobilier
-                </motion.p>
-                
-                <motion.div
-                  className="flex justify-center items-center"
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1, delay: 3.7, ease: "easeOut" }}
-                >
-                  <Button
-                    className="bg-primary hover:bg-primary-hover text-primary-foreground px-8 py-4 text-lg font-medium rounded-lg shadow-lg hover:shadow-premium transition-all duration-300 transform hover:scale-105"
-                    onClick={() => document.getElementById('why-enki')?.scrollIntoView({ behavior: 'smooth' })}
-                  >
-                    Découvrez Pourquoi Nous Choisir
-                  </Button>
-                </motion.div>
-              </div>
+            </motion.div>
+          </div>
+          {/* Bottom anchored subtitle + CTA (does not overlap titles) */}
+          <div className="absolute bottom-28 left-1/2 -translate-x-1/2 w-full px-4 z-20 pointer-events-none">
+            <motion.p
+              className="font-inter text-lg sm:text-xl md:text-2xl font-normal leading-relaxed -0.005em text-white/90 max-w-4xl mx-auto text-center mb-6"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 2, ease: "easeOut" }}
+            >
+              La nouvelle expérience de l'investissement immobilier
+            </motion.p>
+            <motion.div
+              className="flex justify-center items-center pointer-events-auto"
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 2.4, ease: "easeOut" }}
+            >
+              <Button
+                className="bg-primary hover:bg-primary-hover text-primary-foreground px-8 py-4 text-lg font-medium rounded-lg shadow-lg hover:shadow-premium transition-all duration-300 transform hover:scale-105"
+                onClick={() => document.getElementById('why-enki')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                Découvrez Pourquoi Nous Choisir
+              </Button>
             </motion.div>
           </div>
           <motion.div
