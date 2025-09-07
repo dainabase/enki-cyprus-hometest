@@ -542,7 +542,7 @@ const Home = () => {
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2, delay: 0.2, ease: "easeOut" }}
-              className="space-y-12"
+              className="space-y-12 pt-8"
             >
               {/* Animated Logo Assembly */}
               <motion.div
@@ -565,7 +565,7 @@ const Home = () => {
                 >
                   ENKI REALTY
                   <motion.span
-                    className="text-2xl sm:text-3xl lg:text-4xl font-normal ml-1 mt-2 text-white/90"
+                    className="text-xl sm:text-2xl lg:text-2xl font-normal ml-1 mt-2 text-white/90"
                     initial={{ opacity: 0, scale: 0 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.6, delay: 2.8, ease: "easeOut" }}
