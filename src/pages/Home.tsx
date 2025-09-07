@@ -76,7 +76,6 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/20" />
      
       <Suspense fallback={null}>
-        {/* Temporarily disabled 3D components to fix errors
         {isClient && (
           <ErrorBoundary fallback={null}>
             <Canvas camera={{ position: [0, 0, 5] }}>
@@ -87,7 +86,6 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
             </Canvas>
           </ErrorBoundary>
         )}
-        */}
       </Suspense>
       <div
         ref={carouselRef}
@@ -1089,9 +1087,159 @@ const Home = () => {
                 Découvrez notre sélection exclusive de programmes immobiliers d'exception, choisis pour leur emplacement privilégié, leur architecture remarquable et leur potentiel d'investissement.
               </motion.p>
             </motion.div>
-            <div className="space-y-16">
-              {featuredProperties.slice(0, 3).map((property, index) => (
-                <motion.div
+            <FeaturedProjectsCarousel 
+              properties={featuredProperties.slice(0, 3)}
+              onPropertyClick={(property) => {
+                setSelectedProperty(property);
+                setIsModalOpen(true);
+              }}
+              onTrackEvent={trackCustomEvent}
+            />
+          </div>
+        </section>
+        
+        {/* Dernières Nouveautés */}
+        <section className="py-24 md:py-32 bg-background">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-16"
+            >
+              <motion.h2
+                className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight -0.015em text-primary mb-6"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+              >
+                Dernières Nouveautés
+              </motion.h2>
+              <motion.p
+                className="text-lg sm:text-xl font-normal leading-relaxed -0.005em text-muted-foreground max-w-3xl mx-auto"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                viewport={{ once: true }}
+              >
+                Les dernières opportunités d'investissement ajoutées à notre portefeuille exclusif.
+              </motion.p>
+            </motion.div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {latestProperties.map((property, index) => (
+                <OptimizedPropertyCard key={property.id} property={property} />
+              ))}
+            </div>
+          </div>
+        </section>
+      </Layout>
+
+      {/* Property Modal */}
+      <PropertyModal 
+        property={selectedProperty} 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+      />
+
+      <Dialog open={isLoginModalOpen} onOpenChange={setIsLoginModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Connexion requise</DialogTitle>
+            <DialogDescription>
+              Connectez-vous pour accéder aux fonctionnalités premium et sauvegarder vos propriétés favorites.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-4">
+            <Button asChild className="w-full">
+              <Link to="/login">Se connecter</Link>
+            </Button>
+            <Button asChild variant="outline" className="w-full">
+              <Link to="/register">Créer un compte</Link>
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={searchModalOpen} onOpenChange={setSearchModalOpen}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Search className="w-5 h-5 text-primary" />
+              Recherche Intelligente IA
+            </DialogTitle>
+            <DialogDescription>
+              Décrivez votre propriété idéale en langage naturel, notre IA trouvera les meilleures correspondances.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-6">
+            <div className="flex gap-2">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                <input
+                  type="text"
+                  placeholder="Ex: Villa moderne 3 chambres avec piscine près de la plage..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-12 py-3 border border-input rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !searchMutation.isPending) {
+                      handleAISearch();
+                    }
+                  }}
+                />
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="absolute right-1 top-1/2 transform -translate-y-1/2 p-2"
+                  onClick={() => setSearchQuery('')}
+                >
+                  ×
+                </Button>
+              </div>
+              <Button 
+                onClick={handleAISearch}
+                disabled={!searchQuery.trim() || searchMutation.isPending}
+                className="px-6"
+              >
+                {searchMutation.isPending ? (
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
+                  />
+                ) : (
+                  <Search className="w-4 h-4" />
+                )}
+              </Button>
+            </div>
+
+            {searchMutation.isError && (
+              <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+                <p className="text-sm text-destructive">
+                  Erreur lors de la recherche. Veuillez réessayer.
+                </p>
+              </div>
+            )}
+
+            {searchResults && (
+              <div className="space-y-6">
+                <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg">
+                  <h3 className="font-semibold text-primary mb-2">Analyse de votre recherche</h3>
+                  <p className="text-sm leading-relaxed">{searchResults.analysis}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
+
+export default Home;
                   key={property.id}
                   className="relative bg-card border-border/50 rounded-3xl shadow-premium overflow-hidden backdrop-blur-sm"
                   initial={{ opacity: 0, y: 100 }}
