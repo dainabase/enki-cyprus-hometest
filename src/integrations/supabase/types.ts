@@ -931,6 +931,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_access_leads: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       can_view_audit_logs: {
         Args: Record<PropertyKey, never>
         Returns: boolean
