@@ -8,9 +8,9 @@ import { checkHierarchyIntegrity } from '@/lib/supabase/integrity';
 import { cleanOrphanData } from '@/lib/supabase/test-helpers';
 
 interface OrphanData {
-  orphanProjects: any[];
-  orphanBuildings: any[];
-  orphanProperties: any[];
+  orphanedProjects: any[];
+  orphanedBuildings: any[];
+  orphanedProperties: any[];
 }
 
 const IntegrityReport = () => {

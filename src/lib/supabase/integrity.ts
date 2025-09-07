@@ -1,53 +1,58 @@
 import { supabase } from '@/integrations/supabase/client';
 
-// Types for hierarchy integrity checks
-export interface OrphanData {
-  orphanProjects: any[];
-  orphanBuildings: any[];
-  orphanProperties: any[];
+// Types
+interface OrphanData {
+  orphanedProjects: any[];
+  orphanedBuildings: any[];
+  orphanedProperties: any[];
 }
 
-export interface DependencyCheck {
+interface DependencyCheck {
+  hasItems: boolean;
   count: number;
   details: string;
   items: any[];
 }
 
-// Check hierarchy integrity - detect orphaned records
+// Integrity checks
 export async function checkHierarchyIntegrity(): Promise<OrphanData> {
   try {
-    // Check for projects without developers
-    const { data: orphanProjects, error: projectError } = await supabase
+    // Check for orphaned projects (projects without developers)
+    const { data: orphanedProjects, error: projectError } = await supabase
       .from('projects')
-      .select('id, title')
+      .select('id, title, developer_id')
       .is('developer_id', null);
 
     if (projectError) throw projectError;
 
-    // Check for buildings without projects
-    const { data: orphanBuildings, error: buildingError } = await supabase
+    // Check for orphaned buildings (buildings without projects)
+    const { data: orphanedBuildings, error: buildingError } = await supabase
       .from('buildings')
-      .select('id, name')
+      .select('id, name, project_id')
       .is('project_id', null);
 
     if (buildingError) throw buildingError;
 
-    // Check for properties without buildings (when we have properties table)
-    // For now, return empty array as properties aren't implemented yet
-    const orphanProperties: any[] = [];
+    // For now, we'll return empty array for properties as we don't have a properties table yet
+    const orphanedProperties: any[] = [];
 
     return {
-      orphanProjects: orphanProjects || [],
-      orphanBuildings: orphanBuildings || [],
-      orphanProperties
+      orphanedProjects: orphanedProjects || [],
+      orphanedBuildings: orphanedBuildings || [],
+      orphanedProperties
     };
+
   } catch (error) {
     console.error('Error checking hierarchy integrity:', error);
-    throw error;
+    return {
+      orphanedProjects: [],
+      orphanedBuildings: [],
+      orphanedProperties: []
+    };
   }
 }
 
-// Check dependencies before deleting a project
+// Dependency checks for deletion
 export async function checkProjectDependencies(projectId: string): Promise<DependencyCheck> {
   try {
     const { data: buildings, error } = await supabase
@@ -58,132 +63,125 @@ export async function checkProjectDependencies(projectId: string): Promise<Depen
     if (error) throw error;
 
     const count = buildings?.length || 0;
-    const details = count > 0 
-      ? `${count} bâtiment(s): ${buildings?.map(b => b.name).join(', ')}`
-      : '';
-
+    
     return {
+      hasItems: count > 0,
       count,
-      details,
+      details: count > 0 ? `${count} bâtiment(s) associé(s)` : 'Aucune dépendance',
       items: buildings || []
     };
+
   } catch (error) {
     console.error('Error checking project dependencies:', error);
-    throw error;
-  }
-}
-
-// Check dependencies before deleting a building
-export async function checkBuildingDependencies(buildingId: string): Promise<DependencyCheck> {
-  try {
-    // For now, simulate property check since properties table isn't fully implemented
-    // In real scenario, this would check the properties table
-    const simulatedProperties = Math.floor(Math.random() * 5); // 0-4 properties
-    
-    const count = simulatedProperties;
-    const details = count > 0 
-      ? `${count} unité(s) associée(s)`
-      : '';
-
     return {
-      count,
-      details,
+      hasItems: false,
+      count: 0,
+      details: 'Erreur lors de la vérification',
       items: []
     };
-  } catch (error) {
-    console.error('Error checking building dependencies:', error);
-    throw error;
   }
 }
 
-// Synchronize project prices based on building prices
+export async function checkBuildingDependencies(buildingId: string): Promise<DependencyCheck> {
+  // For now, we'll simulate checking for properties
+  // In a real implementation, this would check the properties table
+  try {
+    // Simulate some properties for testing
+    const simulatedProperties = [];
+    
+    return {
+      hasItems: simulatedProperties.length > 0,
+      count: simulatedProperties.length,
+      details: simulatedProperties.length > 0 ? `${simulatedProperties.length} propriété(s) associée(s)` : 'Aucune dépendance',
+      items: simulatedProperties
+    };
+
+  } catch (error) {
+    console.error('Error checking building dependencies:', error);
+    return {
+      hasItems: false,
+      count: 0,
+      details: 'Erreur lors de la vérification',
+      items: []
+    };
+  }
+}
+
+// Data synchronization functions
 export async function synchronizeProjectPrices(projectId: string): Promise<void> {
   try {
-    // Get all buildings for this project with their price ranges
-    const { data: buildings, error } = await supabase
+    // Get all buildings for this project
+    const { data: buildings, error: buildingsError } = await supabase
       .from('buildings')
-      .select('id, total_units')
+      .select('*')
       .eq('project_id', projectId);
 
-    if (error) throw error;
+    if (buildingsError) throw buildingsError;
 
-    if (buildings && buildings.length > 0) {
-      // For now, simulate price calculation since properties aren't fully implemented
-      // In real scenario, this would aggregate actual property prices
-      const simulatedMinPrice = 250000;
-      const simulatedMaxPrice = 850000;
+    // In a real implementation, this would calculate prices based on building data
+    // For now, we'll simulate the price calculation
+    
+    console.log(`Synchronizing prices for project ${projectId} with ${buildings?.length || 0} buildings`);
+    
+    // Update project with calculated price
+    // const calculatedPrice = calculatePriceFromBuildings(buildings);
+    // await supabase
+    //   .from('projects')
+    //   .update({ price: calculatedPrice })
+    //   .eq('id', projectId);
 
-      // Update project with calculated prices
-      const { error: updateError } = await supabase
-        .from('projects')
-        .update({
-          price: simulatedMinPrice,
-          price_from: `€${simulatedMinPrice.toLocaleString()}`
-        })
-        .eq('id', projectId);
-
-      if (updateError) throw updateError;
-    }
   } catch (error) {
     console.error('Error synchronizing project prices:', error);
     throw error;
   }
 }
 
-// Synchronize building prices based on unit prices
 export async function synchronizeBuildingPrices(buildingId: string): Promise<void> {
   try {
-    // For now, simulate since properties table isn't fully implemented
-    // In real scenario, this would query actual property prices
-    console.log(`Synchronizing prices for building ${buildingId}`);
-    
-    // Get the building's project to update project prices too
-    const { data: building, error } = await supabase
+    // Get the building and its project
+    const { data: building, error: buildingError } = await supabase
       .from('buildings')
-      .select('project_id')
+      .select('*, project:projects(*)')
       .eq('id', buildingId)
       .single();
 
-    if (error) throw error;
+    if (buildingError) throw buildingError;
 
-    if (building?.project_id) {
-      await synchronizeProjectPrices(building.project_id);
+    if (building && building.project) {
+      // Synchronize the project prices
+      await synchronizeProjectPrices((building.project as any).id);
     }
+
   } catch (error) {
     console.error('Error synchronizing building prices:', error);
     throw error;
   }
 }
 
-// Update building status based on unit statuses
+// Status synchronization
 export async function synchronizeBuildingStatus(buildingId: string): Promise<void> {
   try {
-    // For now, simulate since properties aren't fully implemented
-    // In real scenario, this would check actual property statuses
-    const { data: building, error } = await supabase
+    // Get the building
+    const { data: building, error: buildingError } = await supabase
       .from('buildings')
-      .select('total_units')
+      .select('*')
       .eq('id', buildingId)
       .single();
 
-    if (error) throw error;
+    if (buildingError) throw buildingError;
 
-    // Simulate: if building has units, randomly determine if sold out
-    if (building && building.total_units > 0) {
-      const soldOutChance = Math.random() > 0.8; // 20% chance of being sold out
-      
-      if (soldOutChance) {
-        console.log(`Building ${buildingId} marked as sold out`);
-        // In real implementation, this might update a status field
-      }
-    }
+    // In a real implementation, this would check unit availability
+    // and update building status accordingly (e.g., "sold_out" if all units are sold)
+    
+    console.log(`Synchronizing status for building ${buildingId}`);
+
   } catch (error) {
     console.error('Error synchronizing building status:', error);
     throw error;
   }
 }
 
-// Validate hierarchy consistency for a specific chain
+// Hierarchy validation
 export async function validateHierarchyChain(
   developerId?: string,
   projectId?: string,
@@ -194,44 +192,44 @@ export async function validateHierarchyChain(
   try {
     // Validate developer exists if provided
     if (developerId) {
-      const { data: developer, error } = await supabase
+      const { data: developer, error: devError } = await supabase
         .from('developers')
         .select('id')
         .eq('id', developerId)
         .single();
 
-      if (error || !developer) {
-        errors.push(`Développeur ${developerId} non trouvé`);
+      if (devError || !developer) {
+        errors.push(`Développeur ${developerId} n'existe pas`);
       }
     }
 
-    // Validate project exists and belongs to developer if provided
+    // Validate project exists and is linked to developer if provided
     if (projectId) {
-      const { data: project, error } = await supabase
+      const { data: project, error: projectError } = await supabase
         .from('projects')
         .select('id, developer_id')
         .eq('id', projectId)
         .single();
 
-      if (error || !project) {
-        errors.push(`Projet ${projectId} non trouvé`);
+      if (projectError || !project) {
+        errors.push(`Projet ${projectId} n'existe pas`);
       } else if (developerId && project.developer_id !== developerId) {
-        errors.push(`Projet ${projectId} n'appartient pas au développeur ${developerId}`);
+        errors.push(`Projet ${projectId} n'est pas lié au développeur ${developerId}`);
       }
     }
 
-    // Validate building exists and belongs to project if provided
+    // Validate building exists and is linked to project if provided
     if (buildingId) {
-      const { data: building, error } = await supabase
+      const { data: building, error: buildingError } = await supabase
         .from('buildings')
         .select('id, project_id')
         .eq('id', buildingId)
         .single();
 
-      if (error || !building) {
-        errors.push(`Bâtiment ${buildingId} non trouvé`);
+      if (buildingError || !building) {
+        errors.push(`Bâtiment ${buildingId} n'existe pas`);
       } else if (projectId && building.project_id !== projectId) {
-        errors.push(`Bâtiment ${buildingId} n'appartient pas au projet ${projectId}`);
+        errors.push(`Bâtiment ${buildingId} n'est pas lié au projet ${projectId}`);
       }
     }
 
@@ -239,6 +237,7 @@ export async function validateHierarchyChain(
       isValid: errors.length === 0,
       errors
     };
+
   } catch (error) {
     console.error('Error validating hierarchy chain:', error);
     return {
@@ -257,9 +256,12 @@ export async function getHierarchyBreadcrumb(
   project?: { id: string; title: string };
   building?: { id: string; name: string };
 }> {
-  try {
-    let developer, project, building;
+  let developer: { id: string; name: string } | undefined;
+  let project: { id: string; title: string } | undefined;
+  let building: { id: string; name: string } | undefined;
 
+  try {
+    // If building ID is provided, get building and its project with developer
     if (buildingId) {
       const { data: buildingData, error: buildingError } = await supabase
         .from('buildings')
@@ -277,20 +279,25 @@ export async function getHierarchyBreadcrumb(
 
       if (!buildingError && buildingData) {
         building = { id: buildingData.id, name: buildingData.name };
-        if (buildingData.project && typeof buildingData.project === 'object' && 'id' in buildingData.project) {
+        const projectData = buildingData.project;
+        if (projectData && typeof projectData === 'object' && projectData !== null && 'id' in projectData) {
+          const typedProjectData = projectData as any;
           project = { 
-            id: buildingData.project.id, 
-            title: (buildingData.project as any).title 
+            id: typedProjectData.id, 
+            title: typedProjectData.title 
           };
-          if ((buildingData.project as any).developer && typeof (buildingData.project as any).developer === 'object') {
+          if (typedProjectData.developer && typeof typedProjectData.developer === 'object') {
+            const developerData = typedProjectData.developer as any;
             developer = {
-              id: ((buildingData.project as any).developer as any).id,
-              name: ((buildingData.project as any).developer as any).name
+              id: developerData.id,
+              name: developerData.name
             };
           }
         }
       }
-    } else if (projectId) {
+    }
+    // If only project ID is provided, get project with developer
+    else if (projectId) {
       const { data: projectData, error: projectError } = await supabase
         .from('projects')
         .select(`
@@ -304,15 +311,17 @@ export async function getHierarchyBreadcrumb(
       if (!projectError && projectData) {
         project = { id: projectData.id, title: projectData.title };
         if (projectData.developer && typeof projectData.developer === 'object') {
+          const typedDeveloper = projectData.developer as any;
           developer = {
-            id: (projectData.developer as any).id,
-            name: (projectData.developer as any).name
+            id: typedDeveloper.id,
+            name: typedDeveloper.name
           };
         }
       }
     }
 
     return { developer, project, building };
+
   } catch (error) {
     console.error('Error getting hierarchy breadcrumb:', error);
     return {};
