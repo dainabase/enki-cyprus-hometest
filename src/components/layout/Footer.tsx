@@ -15,12 +15,9 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="space-y-4">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="text-2xl font-bold text-gradient"
-            >
+            <div className="text-2xl font-bold text-gradient hover:scale-105 transition-transform duration-200">
               ENKI-REALTY
-            </motion.div>
+            </div>
             <p className="text-muted-foreground text-sm">
               Votre partenaire de confiance pour l'immobilier premium à Chypre.
               Découvrez des propriétés d'exception avec notre expertise locale.
