@@ -115,5 +115,31 @@
   },
   "language": {
     "select": "Sprache wählen"
+  },
+  "segmentation": {
+    "title": "Kundensegmentierung",
+    "subtitle": "Automatische Analyse von Leads nach vordefinierten Segmenten",
+    "totalLeads": "Leads gesamt: {{count}}",
+    "leads": "Leads",
+    "clickToView": "Zum Anzeigen klicken",
+    "leadsInSegment": "Leads im Segment: {{segment}}",
+    "noLeadsInSegment": "Keine Leads in diesem Segment gefunden",
+    "notSpecified": "Nicht angegeben",
+    "segments": {
+      "goldenVisa": "Golden Visa Interessenten",
+      "highBudget": "Hohes Budget",
+      "urgent": "Dringende Käufer",
+      "qualified": "Hoch qualifiziert",
+      "newLeads": "Neu diese Woche",
+      "dormant": "Inaktive Leads"
+    },
+    "table": {
+      "name": "Name",
+      "email": "E-Mail",
+      "budget": "Budget",
+      "score": "Bewertung",
+      "status": "Status",
+      "created": "Erstellt"
+    }
   }
 }

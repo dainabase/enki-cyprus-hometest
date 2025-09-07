@@ -292,5 +292,31 @@
     "commissions": "Προμήθειες",
     "disclaimer": "Σημαντική πληροφορία",
     "disclaimerText": "Αυτές οι προβλέψεις βασίζονται σε απλές ιστορικές τάσεις και δεν αποτελούν εγγυήσεις. Χρησιμοποιήστε τες μόνο ως κατευθυντήριους δείκτες."
+  },
+  "segmentation": {
+    "title": "Κατάτμηση Πελατών",
+    "subtitle": "Αυτόματη ανάλυση leads ανά προκαθορισμένα τμήματα",
+    "totalLeads": "Σύνολο leads: {{count}}",
+    "leads": "leads",
+    "clickToView": "Κάντε κλικ για προβολή λεπτομερειών",
+    "leadsInSegment": "Leads στο τμήμα: {{segment}}",
+    "noLeadsInSegment": "Δεν βρέθηκαν leads σε αυτό το τμήμα",
+    "notSpecified": "Δεν έχει οριστεί",
+    "segments": {
+      "goldenVisa": "Υποψήφιοι Golden Visa",
+      "highBudget": "Υψηλός Προϋπολογισμός",
+      "urgent": "Επείγοντες Αγοραστές",
+      "qualified": "Υψηλά Εξειδικευμένοι",
+      "newLeads": "Νέα αυτή την εβδομάδα",
+      "dormant": "Αδρανή Leads"
+    },
+    "table": {
+      "name": "Όνομα",
+      "email": "Email",
+      "budget": "Προϋπολογισμός",
+      "score": "Βαθμολογία",
+      "status": "Κατάσταση",
+      "created": "Δημιουργήθηκε"
+    }
   }
 }

@@ -115,5 +115,31 @@
   },
   "language": {
     "select": "Выбрать язык"
+  },
+  "segmentation": {
+    "title": "Сегментация клиентов",
+    "subtitle": "Автоматический анализ лидов по предопределенным сегментам",
+    "totalLeads": "Всего лидов: {{count}}",
+    "leads": "лидов",
+    "clickToView": "Нажмите для просмотра деталей",
+    "leadsInSegment": "Лиды в сегменте: {{segment}}",
+    "noLeadsInSegment": "В этом сегменте лидов не найдено",
+    "notSpecified": "Не указано",
+    "segments": {
+      "goldenVisa": "Кандидаты Golden Visa",
+      "highBudget": "Высокий бюджет",
+      "urgent": "Срочные покупатели",
+      "qualified": "Высококвалифицированные",
+      "newLeads": "Новые на этой неделе",
+      "dormant": "Спящие лиды"
+    },
+    "table": {
+      "name": "Имя",
+      "email": "Email",
+      "budget": "Бюджет",
+      "score": "Оценка",
+      "status": "Статус",
+      "created": "Создано"
+    }
   }
 }

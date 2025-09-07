@@ -292,5 +292,31 @@
     "commissions": "Commissions",
     "disclaimer": "Important Information",
     "disclaimerText": "These predictions are based on simple historical trends and do not constitute guarantees. Use them as directional indicators only."
+  },
+  "segmentation": {
+    "title": "Customer Segmentation",
+    "subtitle": "Automatic analysis of leads by predefined segments",
+    "totalLeads": "Total leads: {{count}}",
+    "leads": "leads",
+    "clickToView": "Click to view details",
+    "leadsInSegment": "Leads in segment: {{segment}}",
+    "noLeadsInSegment": "No leads found in this segment",
+    "notSpecified": "Not specified",
+    "segments": {
+      "goldenVisa": "Golden Visa Prospects",
+      "highBudget": "High Budget",
+      "urgent": "Urgent Buyers",
+      "qualified": "Highly Qualified",
+      "newLeads": "New This Week",
+      "dormant": "Dormant Leads"
+    },
+    "table": {
+      "name": "Name",
+      "email": "Email",
+      "budget": "Budget",
+      "score": "Score",
+      "status": "Status",
+      "created": "Created"
+    }
   }
 }

@@ -11,7 +11,8 @@ import {
   TrendingUp,
   Settings,
   FileText,
-  Home
+  Home,
+  Target
 } from 'lucide-react';
 import {
   Sidebar,
@@ -69,6 +70,12 @@ const getAdminNavItems = (t: any) => [
     url: '/admin/analytics', 
     icon: TrendingUp,
     description: 'Conversions & trafic'
+  },
+  {
+    title: 'Segmentation',
+    url: '/admin/segmentation',
+    icon: Target,
+    description: 'Segmentation automatique'
   },
   {
     title: 'Rapports',

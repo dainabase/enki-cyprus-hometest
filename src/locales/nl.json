@@ -115,5 +115,31 @@
   },
   "language": {
     "select": "Taal Selecteren"
+  },
+  "segmentation": {
+    "title": "Klantensegmentatie",
+    "subtitle": "Automatische analyse van leads per voorgedefinieerde segmenten",
+    "totalLeads": "Totaal leads: {{count}}",
+    "leads": "leads",
+    "clickToView": "Klik om details te bekijken",
+    "leadsInSegment": "Leads in segment: {{segment}}",
+    "noLeadsInSegment": "Geen leads gevonden in dit segment",
+    "notSpecified": "Niet gespecificeerd",
+    "segments": {
+      "goldenVisa": "Golden Visa Prospects",
+      "highBudget": "Hoog Budget",
+      "urgent": "Urgente Kopers",
+      "qualified": "Zeer Gekwalificeerd",
+      "newLeads": "Nieuw deze week",
+      "dormant": "Slapende Leads"
+    },
+    "table": {
+      "name": "Naam",
+      "email": "Email",
+      "budget": "Budget",
+      "score": "Score",
+      "status": "Status",
+      "created": "Aangemaakt"
+    }
   }
 }
