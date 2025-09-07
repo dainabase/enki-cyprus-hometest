@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion';
 import { useParams, Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,87 @@ import { useQuery } from '@tanstack/react-query';
 import { SEOHead } from '@/components/SEOHead';
 import { trackPageView } from '@/lib/analytics';
 import Layout from '@/components/layout/Layout';
+
+// Reusable card component to avoid calling hooks inside loops
+
+type Section = { title: string; description: string; features: string[]; image: string };
+
+const ScrollingCard = ({
+  index,
+  section,
+  scrollYProgress,
+}: {
+  index: number;
+  section: Section;
+  scrollYProgress: MotionValue<number>;
+}) => {
+  const start = index / 3;
+  const end = (index + 1) / 3;
+  const progress = useTransform(scrollYProgress, [start, end], [0, 1]);
+  const y = useTransform(progress, [0, 1], ['100vh', '0vh']);
+  const opacity = useTransform(progress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+  const scale = useTransform(progress, [0, 0.5, 1], [0.95, 1, 0.95]);
+  const bgY = useTransform(progress, [0, 1], [0, -100]);
+
+  return (
+    <motion.div
+      className="absolute inset-0 flex items-center justify-center p-8"
+      style={{ y, opacity, scale }}
+    >
+      <div className="relative w-full max-w-4xl h-[80vh] rounded-3xl overflow-hidden shadow-2xl border border-border/50">
+        <motion.div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${section.image})`,
+            y: bgY,
+          }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60" />
+        </motion.div>
+
+        <div className="relative z-10 h-full flex flex-col justify-end p-12 text-white">
+          <motion.h3
+            className="text-4xl font-light mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            {section.title}
+          </motion.h3>
+
+          <motion.p
+            className="mb-6 leading-relaxed text-lg"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+          >
+            {section.description}
+          </motion.p>
+
+          <motion.div
+            className="flex flex-wrap gap-2 mb-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+          >
+            {section.features.map((feature: string, i: number) => (
+              <Badge key={`feature-${index}-${i}`} className="bg-white/20 border-white/30 text-white">
+                {feature}
+              </Badge>
+            ))}
+          </motion.div>
+
+          <Button asChild className="bg-white text-primary hover:bg-white/90 w-fit">
+            <Link to="#contact">
+              En Savoir Plus
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
 
 const ProjectDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -174,79 +255,14 @@ const ProjectDetail = () => {
             <h3 className="text-xl font-medium text-primary">Découverte du Projet</h3>
           </div>
 
-          {projectSections.map((section, index) => {
-            const start = index / 3;
-            const end = (index + 1) / 3;
-            
-            // Safely create transforms only if scrollYProgress is available
-            const progress = useTransform(scrollYProgress, [start, end], [0, 1]);
-            const y = useTransform(progress, [0, 1], ['100vh', '0vh']);
-            const opacity = useTransform(progress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-            const scale = useTransform(progress, [0, 0.5, 1], [0.95, 1, 0.95]);
-
-            return (
-              <motion.div
-                key={`section-${index}`}
-                className="absolute inset-0 flex items-center justify-center p-8"
-                style={{ y, opacity, scale }}
-              >
-                <div className="relative w-full max-w-4xl h-[80vh] rounded-3xl overflow-hidden shadow-2xl border border-border/50">
-                  <motion.div
-                    className="absolute inset-0 bg-cover bg-center"
-                    style={{
-                      backgroundImage: `url(${section.image})`,
-                      y: useTransform(progress, [0, 1], [0, -100]),
-                    }}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60" />
-                  </motion.div>
-
-                  <div className="relative z-10 h-full flex flex-col justify-end p-12 text-white">
-                    <motion.h3
-                      className="text-4xl font-light mb-4"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4 }}
-                    >
-                      {section.title}
-                    </motion.h3>
-                    
-                    <motion.p
-                      className="mb-6 leading-relaxed text-lg"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: 0.1 }}
-                    >
-                      {section.description}
-                    </motion.p>
-                    
-                    <motion.div
-                      className="flex flex-wrap gap-2 mb-6"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: 0.2 }}
-                    >
-                      {section.features.map((feature: string, i: number) => (
-                        <Badge key={`feature-${index}-${i}`} className="bg-white/20 border-white/30 text-white">
-                          {feature}
-                        </Badge>
-                      ))}
-                    </motion.div>
-                    
-                    <Button 
-                      asChild
-                      className="bg-white text-primary hover:bg-white/90 w-fit"
-                    >
-                      <Link to={`/contact?project=${project.id}`}>
-                        En Savoir Plus
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
+          {projectSections.map((section, index) => (
+            <ScrollingCard
+              key={`section-${index}`}
+              index={index}
+              section={section}
+              scrollYProgress={scrollYProgress}
+            />
+          ))}
         </div>
       </section>
 
