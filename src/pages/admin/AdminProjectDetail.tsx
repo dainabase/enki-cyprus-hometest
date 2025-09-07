@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, Edit, MapPin, Building, Calendar, Euro, Users } from 'lucide-react';
+import { ArrowLeft, Edit, MapPin, Building, Calendar, Euro, Users, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -262,9 +262,20 @@ const AdminProjectDetail = () => {
                 <Building className="w-5 h-5" />
                 Bâtiments associés
               </span>
-              <Badge variant="outline">
-                {Array.isArray(project.buildings) ? project.buildings.length : 0} bâtiment(s)
-              </Badge>
+              <div className="flex items-center gap-2">
+                <Badge variant="outline">
+                  {Array.isArray(project.buildings) ? project.buildings.length : 0} bâtiment(s)
+                </Badge>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate(`/admin/buildings?project=${project.id}`)}
+                  className="gap-2"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Voir tous les bâtiments
+                </Button>
+              </div>
             </CardTitle>
           </CardHeader>
           <CardContent>
