@@ -139,15 +139,19 @@ export const generateTestData = async () => {
     if (leadError) throw leadError;
     console.log('Created leads:', createdLeads.length);
 
-    // 5. Create test commissions
+    // 5. Create test commissions - Fix promoter_id to use correct developers
     const commissions = [];
-    for (let i = 0; i < Math.min(10, createdProjects.length); i++) {
+    
+    // Get all promoters to use their IDs
+    const { data: promoters } = await supabase.from('promoters').select('*').limit(1);
+    
+    for (let i = 0; i < Math.min(5, createdProjects.length); i++) {
       const project = createdProjects[i];
       const developer = createdDevelopers.find(d => d.id === project.developer_id);
       
-      if (developer) {
+      if (developer && promoters && promoters.length > 0) {
         commissions.push({
-          promoter_id: developer.id,
+          promoter_id: promoters[0].id, // Use existing promoter
           project_id: project.id,
           amount: project.price * (developer.commission_rate / 100),
           status: Math.random() > 0.5 ? 'pending' : 'paid',
