@@ -19,6 +19,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import { useNavigate } from 'react-router-dom';
 
 interface DashboardStats {
   totalProjects: number;
@@ -107,6 +108,8 @@ export const AdminOverview = () => {
     refetchInterval: 30000 // Refresh every 30 seconds for real-time feel
   });
 
+  const navigate = useNavigate();
+
   if (isLoading) {
     return (
       <div className="p-8">
@@ -155,21 +158,21 @@ export const AdminOverview = () => {
       title: 'Nouveau Projet',
       description: 'Ajouter une propriété',
       icon: Building,
-      action: () => window.location.href = '/admin/projects',
+      action: () => navigate('/admin/projects'),
       color: 'primary'
     },
     {
       title: 'Gérer Utilisateurs',
       description: 'Modération des comptes',
       icon: Users,
-      action: () => window.location.href = '/admin/users',
+      action: () => navigate('/admin/users'),
       color: 'secondary'
     },
     {
       title: 'Voir Analytics',
       description: 'Rapports détaillés',
       icon: TrendingUp,
-      action: () => window.location.href = '/admin/analytics',
+      action: () => navigate('/admin/analytics'),
       color: 'accent'
     }
   ];

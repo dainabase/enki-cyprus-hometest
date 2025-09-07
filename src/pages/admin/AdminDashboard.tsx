@@ -34,7 +34,7 @@ export const AdminDashboard = () => {
 
   return (
     <PrivateRoute adminOnly>
-      <div className="min-h-screen bg-muted/30">
+      <div className="min-h-screen bg-muted/30 admin-theme">
         <SidebarProvider defaultOpen>
           <div className="flex min-h-screen w-full">
             <AdminSidebar />

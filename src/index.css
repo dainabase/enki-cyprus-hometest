@@ -234,16 +234,22 @@ All colors MUST be HSL.
     color: transparent;
   }
 
-  /* Admin space overrides - Black text for all content */
-  .admin-text-override {
-    @apply text-black !important;
+  /* Admin all-black theme overrides */
+  .admin-theme {
+    --foreground: 0 0% 0%;
+    --card-foreground: 0 0% 0%;
+    --popover-foreground: 0 0% 0%;
+    --secondary-foreground: 0 0% 0%;
+    --muted-foreground: 0 0% 0%;
+    --accent-foreground: 0 0% 0%;
+    --sidebar-foreground: 0 0% 0%;
+    --sidebar-accent-foreground: 0 0% 0%;
   }
-  
-  .admin-text-secondary-override {
-    @apply text-black !important;
+  .admin-theme, .admin-theme * {
+    color: hsl(0 0% 0%) !important;
   }
-  
-  .admin-text-muted-override {
-    @apply text-black !important;
+  .admin-theme svg {
+    color: hsl(0 0% 0%) !important;
+    stroke: hsl(0 0% 0%) !important;
   }
 }
