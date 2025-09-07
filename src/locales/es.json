@@ -267,4 +267,31 @@
     "commissionsOverTime": "Evolución de comisiones",
     "topZones": "Top 5 zonas"
   }
+  },
+  "predictions": {
+    "title": "Predicciones y Tendencias",
+    "subtitle": "Estimaciones basadas en datos históricos",
+    "nextMonth": "Predicciones para el próximo mes",
+    "expectedSales": "Ventas esperadas",
+    "expectedLeads": "Leads esperados",
+    "expectedCommissions": "Comisiones estimadas",
+    "expectedConversion": "Tasa conversión prevista",
+    "confidenceLevels": "Niveles de confianza",
+    "confidence": {
+      "high": "Alto (6+ meses de datos)",
+      "medium": "Medio (3-5 meses de datos)",
+      "low": "Bajo (<3 meses de datos)"
+    },
+    "confidenceNote": "La fiabilidad depende de la cantidad de datos históricos disponibles",
+    "lastMonthComparison": "Comparación con el mes pasado",
+    "metric": "Métrica",
+    "predicted": "Predicho",
+    "actual": "Real",
+    "accuracy": "Precisión",
+    "sales": "Ventas",
+    "leads": "Leads",
+    "commissions": "Comisiones",
+    "disclaimer": "Información importante",
+    "disclaimerText": "Estas predicciones se basan en tendencias históricas simples y no constituyen garantías. Úselas solo como indicadores direccionales."
+  }
 }

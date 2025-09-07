@@ -266,5 +266,31 @@
     "leadsByStatus": "Leads by Status",
     "commissionsOverTime": "Commissions Over Time",
     "topZones": "Top 5 Zones"
+  },
+  "predictions": {
+    "title": "Predictions and Trends",
+    "subtitle": "Estimates based on historical data",
+    "nextMonth": "Predictions for next month",
+    "expectedSales": "Expected Sales",
+    "expectedLeads": "Expected Leads",
+    "expectedCommissions": "Estimated Commissions",
+    "expectedConversion": "Expected Conversion Rate",
+    "confidenceLevels": "Confidence Levels",
+    "confidence": {
+      "high": "High (6+ months of data)",
+      "medium": "Medium (3-5 months of data)",
+      "low": "Low (<3 months of data)"
+    },
+    "confidenceNote": "Reliability depends on the amount of historical data available",
+    "lastMonthComparison": "Last Month Comparison",
+    "metric": "Metric",
+    "predicted": "Predicted",
+    "actual": "Actual",
+    "accuracy": "Accuracy",
+    "sales": "Sales",
+    "leads": "Leads",
+    "commissions": "Commissions",
+    "disclaimer": "Important Information",
+    "disclaimerText": "These predictions are based on simple historical trends and do not constitute guarantees. Use them as directional indicators only."
   }
 }

@@ -9,6 +9,7 @@ import AdminUnits from './AdminUnits';
 import { AdminCommissions } from './AdminCommissions';
 import { AdminUsers } from './AdminUsers';
 import { AdminAnalytics } from './AdminAnalytics';
+import AdminPredictions from './AdminPredictions';
 import { AdminContent } from './AdminContent';
 import AdminLeads from './AdminLeads';
 import AdminPipeline from './AdminPipeline';
@@ -53,6 +54,7 @@ export const AdminDashboard = () => {
                 <Route path="pipeline" element={<AdminPipeline />} />
                 <Route path="commissions" element={<AdminCommissions />} />
                 <Route path="analytics" element={<AdminAnalytics />} />
+                <Route path="predictions" element={<AdminPredictions />} />
                 <Route path="reports" element={<AdminReports />} />
                 <Route path="settings" element={<AdminContent />} />
                 <Route path="*" element={<Navigate to="/admin" replace />} />

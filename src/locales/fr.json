@@ -266,5 +266,31 @@
     "leadsByStatus": "Leads par statut",
     "commissionsOverTime": "Évolution des commissions",
     "topZones": "Top 5 zones"
+  },
+  "predictions": {
+    "title": "Prédictions et Tendances",
+    "subtitle": "Estimations basées sur les données historiques",
+    "nextMonth": "Prédictions pour le mois prochain",
+    "expectedSales": "Ventes prévues",
+    "expectedLeads": "Leads attendus",
+    "expectedCommissions": "Commissions estimées",
+    "expectedConversion": "Taux conversion prévu",
+    "confidenceLevels": "Niveaux de confiance",
+    "confidence": {
+      "high": "Élevé (6+ mois de données)",
+      "medium": "Moyen (3-5 mois de données)",
+      "low": "Faible (<3 mois de données)"
+    },
+    "confidenceNote": "La fiabilité dépend de la quantité de données historiques disponibles",
+    "lastMonthComparison": "Comparaison avec le mois dernier",
+    "metric": "Métrique",
+    "predicted": "Prédit",
+    "actual": "Réel",
+    "accuracy": "Précision",
+    "sales": "Ventes",
+    "leads": "Leads",
+    "commissions": "Commissions",
+    "disclaimer": "Information importante",
+    "disclaimerText": "Ces prédictions sont basées sur des tendances historiques simples et ne constituent pas des garanties. Utilisez-les comme indicateurs directionnels uniquement."
   }
 }
