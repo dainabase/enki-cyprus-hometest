@@ -14,6 +14,7 @@ const AdminAnalytics = lazy(() => import('./AdminAnalytics').then(module => ({ d
 const AdminPredictions = lazy(() => import('./AdminPredictions'));
 const AdminSegmentation = lazy(() => import('./AdminSegmentation'));
 const AdminPerformance = lazy(() => import('./AdminPerformance'));
+const AdminDocumentation = lazy(() => import('./AdminDocumentation'));
 const AdminContent = lazy(() => import('./AdminContent').then(module => ({ default: module.AdminContent })));
 const AdminLeads = lazy(() => import('./AdminLeads'));
 const AdminPipeline = lazy(() => import('./AdminPipeline'));
@@ -63,6 +64,7 @@ export const AdminDashboard = () => {
                 <Route path="predictions" element={<AdminPredictions />} />
                 <Route path="segmentation" element={<AdminSegmentation />} />
                 <Route path="performance" element={<AdminPerformance />} />
+                <Route path="documentation" element={<AdminDocumentation />} />
                 <Route path="reports" element={<AdminReports />} />
                 <Route path="settings" element={<AdminContent />} />
                 {process.env.NODE_ENV === 'development' && (

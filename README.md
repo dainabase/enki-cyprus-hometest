@@ -1,176 +1,79 @@
-# ENKI-REALTY Cyprus Real Estate Platform
+# Enki Reality Admin Panel
 
-Une plateforme immobilière moderne pour explorer et découvrir les propriétés premium à Chypre, construite avec React, Vite, TypeScript, Tailwind CSS, et Framer Motion.
+## 🏠 Vue d'ensemble
+Panel d'administration pour la gestion immobilière à Chypre.
+- Gestion multi-projets (Développeur → Projet → Bâtiment → Propriété)
+- Support Golden Visa (≥€300,000)
+- CRM et pipeline de vente
+- Support 8 langues
+- Analytics et prédictions
 
-## 🏠 Fonctionnalités Principales
-
-- **Carte Interactive Google Maps** : Explorez les propriétés avec clustering intelligent et animations
-- **Recherche Avancée** : Filtrez par localisation, type, et gamme de prix
-- **Propriétés Premium** : Collection de villas, appartements, penthouses et locaux commerciaux
-- **Interface Responsive** : Optimisée pour desktop, tablet et mobile
-- **Animations Fluides** : Interface utilisateur avec Framer Motion
-- **Design Moderne** : System de design cohérent avec Tailwind CSS
-
-## 🗺️ Configuration de la Carte
-
-La carte Google Maps est configurée pour :
-- **Centre par défaut** : Chypre (35.1264, 33.4299) avec zoom niveau 9
-- **Clustering** : Regroupement automatique des marqueurs selon le zoom
-- **Marqueurs personnalisés** : Icônes différenciées par type de propriété
-- **Info Windows** : Aperçu rapide avec détails de la propriété
-
-## 🧪 Test de la Propriété Mersini Beach
-
-Une propriété de test spéciale a été ajoutée pour validation :
-- **Nom** : "Mersini Beach Apartment"
-- **Localisation** : Paphos (34.7768, 32.4245)
-- **Caractéristiques** : 2 chambres, 80 m², 250,000 €
-- **Test** : Rechercher "Mersini" ou "Paphos" pour isoler cette propriété
-
-## 🚀 Installation et Lancement
-
+## 🚀 Quick Start
 ```bash
-# Cloner le projet
-git clone [url-du-repo]
-cd enki-realty
-
-# Installer les dépendances
 npm install
-
-# Configurer la clé API Google Maps
-cp .env.example .env.local
-# Éditer .env.local et remplacer 'your_google_maps_api_key_here' par votre clé API
-
-# Lancer en développement
+cp .env.example .env
 npm run dev
 ```
 
-## 🔑 Configuration Google Maps API
+## 📋 Fonctionnalités principales
 
-⚠️ **IMPORTANT** : Une clé API Google Maps valide est requise pour le fonctionnement de la carte.
+✅ **CRUD complet** pour toutes les entités
+✅ **Gestion multilingue** (EN, FR, EL, RU, ES, IT, DE, NL)
+✅ **Upload d'images** avec Supabase Storage
+✅ **Calcul automatique** des commissions
+✅ **Pipeline de vente** kanban
+✅ **Segmentation clients** automatique
+✅ **Dashboard** avec KPIs temps réel
+✅ **Export CSV** des données
+✅ **Analytics** avec graphiques
 
-### 📋 Étapes de Configuration
+## 🛠 Stack technique
 
-1. **Obtenir une clé API** sur [Google Cloud Console](https://console.cloud.google.com/google/maps-apis)
-2. **Activer les APIs** suivantes :
-   - Maps JavaScript API
-   - Places API
-   - Geocoding API
-3. **Configurer les restrictions de domaine** :
-   - Ajouter `*.sandbox.lovable.dev/*` pour le développement Lovable
-   - Ajouter `localhost:*` pour le développement local
-   - Ajouter votre domaine de production
-4. **Ajouter la clé** dans `.env.local` :
-   ```
-   VITE_GOOGLE_MAPS_API_KEY=votre_cle_api_ici
-   ```
+- **Frontend**: React + Vite + TypeScript
+- **Backend**: Supabase (PostgreSQL + Auth + Storage)
+- **UI**: Tailwind CSS + Shadcn/ui
+- **State**: React Query + Zustand
+- **Charts**: Recharts
 
-   Note: Le projet charge Google Maps via useJsApiLoader et utilise import.meta.env.VITE_GOOGLE_MAPS_API_KEY sans aucun fallback. Les libraries sont définies de manière statique (['places','marker']) pour éviter les rechargements inutiles et garantir un chargement asynchrone optimal.
-
-### 🚨 Erreurs Communes et Solutions
-
-#### `InvalidKeyMapError`
-- **Cause** : Clé API invalide ou non configurée
-- **Solution** : Vérifiez votre clé API dans `.env.local`
-
-#### `RefererNotAllowedMapError`
-- **Cause** : Domaine non autorisé dans les restrictions
-- **Solution** : Ajoutez `*.sandbox.lovable.dev/*` dans les restrictions de votre clé API
-
-#### Carte qui ne charge pas
-- **Solution** : Ouvrez la console du navigateur pour voir les erreurs détaillées
-- **Debug** : Consultez les logs avec les emojis (🗺️, 📍, ❌) pour identifier le problème
-
-### 🔍 Console de Debug
-
-Le projet inclut des logs détaillés pour diagnostiquer les problèmes :
-- `🗺️` : Chargement de Google Maps
-- `📍` : Centrage sur Chypre 
-- `📌` : Création des marqueurs
-- `❌` : Erreurs API ou de chargement
-- `⚠️` : Avertissements
-
-## 🧪 Tests Recommandés
-
-### Test de la Carte
-1. Lancer `npm run dev`
-2. Naviguer vers la page d'accueil
-3. Vérifier que la carte se centre sur Chypre au chargement
-4. Observer les console logs pour le debug
-
-### Test de Recherche
-1. Utiliser la barre de recherche avec "Paphos"
-2. Vérifier que seuls les biens à Paphos s'affichent
-3. Tester le bouton "Mersini Beach (Test)" pour isoler l'appartement test
-4. Essayer différents filtres de type et prix
-
-### Test de Clustering
-1. Zoomer/dézoomer sur la carte
-2. Observer le regroupement automatique des marqueurs
-3. Cliquer sur les clusters pour zoom automatique
-
-### Test des Animations
-1. Cliquer sur un marqueur pour ouvrir l'InfoWindow
-2. Vérifier l'animation fade-in du modal de propriété
-3. Tester les animations hover sur les marqueurs
-
-## 📱 Structure du Projet
+## 📊 Architecture
 
 ```
-src/
-├── components/
-│   ├── GoogleMap.tsx           # Composant carte principal
-│   ├── PropertySearch.tsx      # Recherche et filtres
-│   ├── PropertyModal.tsx       # Modal détails propriété
-│   └── ui/                     # Composants UI réutilisables
-├── data/
-│   └── mockData.ts            # Données de test (incluant Mersini Beach)
-├── pages/
-│   └── Home.tsx               # Page d'accueil principale
-└── lib/
-    └── utils.ts               # Utilitaires
+Développeur (1)
+  └── Projets (N)
+      └── Bâtiments (N)
+          └── Propriétés (N)
 ```
 
-## 🐛 Debug et Console Logs
+## 🔐 Fonctionnalités métier
 
-Le projet inclut des console logs détaillés pour le debug :
-- `🗺️` : Événements de la carte Google Maps
-- `📍` : Centrage et positionnement
-- `📌` : Création des marqueurs
-- `🏠` : Interaction avec les propriétés
-- `🔍` : Fonctions de recherche et filtrage
-- `📊` : Statistiques et compteurs
+- **Golden Visa**: Détection automatique pour investissements ≥€300,000
+- **Commissions**: Calcul automatique selon taux développeur
+- **Pipeline**: Suivi des prospects de "New" à "Sold"
+- **Segmentation**: Classification automatique des clients
+- **Performance**: Classement des agents commerciaux
 
-## 🚀 Production
+## 📖 Documentation
 
-```bash
-# Build pour production
-npm run build
+- [Guide d'installation](./INSTALLATION.md)
+- [Guide utilisateur](./USER_GUIDE.md)
+- [Documentation API](./API_DOCUMENTATION.md)
+- [Changelog](./CHANGELOG.md)
 
-# Preview du build
-npm run preview
-```
+## 🌐 Zones géographiques supportées
 
-## 🛠️ Technologies Utilisées
+- **Limassol**: Hub commercial principal
+- **Paphos**: Tourisme & résidentiel
+- **Larnaca**: Proximité aéroport
+- **Nicosia**: Capitale
+- **Famagusta**: Zone émergente
 
-- **React 18** : Framework frontend
-- **Vite** : Build tool moderne
-- **TypeScript** : Typage statique
-- **Tailwind CSS** : Framework CSS utility-first
-- **Framer Motion** : Animations et transitions
-- **Google Maps API** : Cartes interactives
-- **React Router** : Navigation SPA
-- **Radix UI** : Composants accessibles
+## 📱 Support
 
-## 🎯 Prochaines Étapes
-
-- [ ] Intégration avec une vraie API backend
-- [ ] Authentification utilisateur
-- [ ] Système de favoris
-- [ ] Visite virtuelle 360°
-- [ ] Calculateur de financement
-- [ ] Notifications en temps réel
+- Desktop responsive
+- Tablet optimisé
+- Mobile friendly
+- PWA ready
 
 ---
 
-**ENKI-REALTY** - Votre passerelle vers l'immobilier de luxe à Chypre 🏝️
+**ENKI-REALITY** - Votre solution d'administration immobilière à Chypre 🏝️

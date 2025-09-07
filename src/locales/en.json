@@ -365,5 +365,14 @@
     "generateData": "Generate Test Data",
     "resetData": "Reset Test Data",
     "systemHealth": "System Health"
+  },
+  "documentation": {
+    "title": "Documentation",
+    "subtitle": "Complete guide for the admin panel",
+    "quickStart": "Quick Start",
+    "features": "Key Features",
+    "shortcuts": "Keyboard Shortcuts",
+    "api": "API Reference",
+    "external": "External Links"
   }
 }

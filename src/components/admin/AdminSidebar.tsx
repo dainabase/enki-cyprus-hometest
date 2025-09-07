@@ -90,6 +90,12 @@ const getAdminNavItems = (t: any) => [
     description: 'Exports et rapports'
   },
   {
+    title: 'Documentation',
+    url: '/admin/documentation',
+    icon: FileText,
+    description: 'Guide et documentation'
+  },
+  {
     title: t('nav.settings'),
     url: '/admin/settings',
     icon: Settings,
