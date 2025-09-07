@@ -616,7 +616,7 @@ const Home = () => {
               </motion.div>
 
               {/* Subtitle + CTA anchored near bottom for precise placement */}
-              <div className="absolute bottom-20 left-1/2 -translate-x-1/2 w-full px-4">
+              <div className="absolute bottom-16 left-1/2 -translate-x-1/2 w-full px-4">
                 <motion.p
                   className="font-inter text-lg sm:text-xl md:text-2xl font-normal leading-relaxed -0.005em text-white/90 max-w-4xl mx-auto text-center mb-6"
                   initial={{ opacity: 0, y: 30 }}
