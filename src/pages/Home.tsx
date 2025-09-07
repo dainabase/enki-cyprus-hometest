@@ -76,6 +76,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/20" />
      
       <Suspense fallback={null}>
+        {/* Temporarily disabled 3D components to fix errors
         {isClient && (
           <ErrorBoundary fallback={null}>
             <Canvas camera={{ position: [0, 0, 5] }}>
@@ -86,6 +87,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
             </Canvas>
           </ErrorBoundary>
         )}
+        */}
       </Suspense>
       <div
         ref={carouselRef}
