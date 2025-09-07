@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Edit, Trash2, Eye, MapPin, Building } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -16,6 +17,7 @@ interface ProjectsTableProps {
 
 const ProjectsTable: React.FC<ProjectsTableProps> = ({ projects, onEdit, onRefetch }) => {
   const { toast } = useToast();
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleDelete = async (projectId: string, projectTitle: string) => {
@@ -56,15 +58,16 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({ projects, onEdit, onRefet
   };
 
   const getStatusBadge = (status: string) => {
+    const statusText = t(`status.${status}`, status);
     const statusConfig = {
-      'planning': { label: 'Planification', variant: 'secondary' as const },
-      'under_construction': { label: 'Construction', variant: 'default' as const },
-      'delivered': { label: 'Livré', variant: 'outline' as const },
-      'available': { label: 'Disponible', variant: 'secondary' as const }
+      'planning': { variant: 'secondary' as const },
+      'under_construction': { variant: 'default' as const },
+      'delivered': { variant: 'outline' as const },
+      'available': { variant: 'secondary' as const }
     };
     
-    const config = statusConfig[status as keyof typeof statusConfig] || { label: status, variant: 'secondary' as const };
-    return <Badge variant={config.variant}>{config.label}</Badge>;
+    const config = statusConfig[status as keyof typeof statusConfig] || { variant: 'secondary' as const };
+    return <Badge variant={config.variant}>{statusText}</Badge>;
   };
 
   const getZoneBadge = (zone: string) => {
@@ -110,12 +113,12 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({ projects, onEdit, onRefet
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Nom du projet</TableHead>
-            <TableHead>Développeur</TableHead>
-            <TableHead>Zone</TableHead>
+            <TableHead>{t('fields.name')}</TableHead>
+            <TableHead>{t('fields.developer')}</TableHead>
+            <TableHead>{t('fields.zone')}</TableHead>
             <TableHead>Statut</TableHead>
-            <TableHead>Unités</TableHead>
-            <TableHead>Prix min</TableHead>
+            <TableHead>{t('fields.units')}</TableHead>
+            <TableHead>{t('fields.minPrice')}</TableHead>
             <TableHead>Golden Visa</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
@@ -158,7 +161,7 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({ projects, onEdit, onRefet
               <TableCell>
                 {project.golden_visa_eligible && (
                   <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
-                    ✨ Golden Visa
+                    ✨ {t('fields.goldenVisa')}
                   </Badge>
                 )}
               </TableCell>

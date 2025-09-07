@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   BarChart3,
   Building,
@@ -24,52 +25,53 @@ import {
   SidebarTrigger,
   useSidebar,
 } from '@/components/ui/sidebar';
+import LanguageSelector from './common/LanguageSelector';
 
-const adminNavItems = [
+const getAdminNavItems = (t: any) => [
   {
-    title: 'Dashboard',
+    title: t('nav.dashboard'),
     url: '/admin',
     icon: BarChart3,
     description: 'KPIs Enki Reality'
   },
   {
-    title: 'Développeurs',
+    title: t('nav.developers'),
     url: '/admin/developers', 
     icon: Building2,
     description: 'Gestion développeurs'
   },
   {
-    title: 'Projets',
+    title: t('nav.projects'),
     url: '/admin/projects', 
     icon: Building,
     description: 'Hiérarchie projets'
   },
   {
-    title: 'Unités',
+    title: t('nav.units'),
     url: '/admin/units',
     icon: Home,
     description: 'Inventaire unités'
   },
   {
-    title: 'Leads/CRM',
+    title: t('nav.leads'),
     url: '/admin/leads',
     icon: Users,
     description: 'Pipeline ventes'
   },
   {
-    title: 'Commissions',
+    title: t('nav.commissions'),
     url: '/admin/commissions',
     icon: DollarSign,
     description: 'Tracking financier'
   },
   {
-    title: 'Analytics',
+    title: t('nav.analytics'),
     url: '/admin/analytics', 
     icon: TrendingUp,
     description: 'Conversions & trafic'
   },
   {
-    title: 'Paramètres',
+    title: t('nav.settings'),
     url: '/admin/settings',
     icon: Settings,
     description: 'Configuration'
@@ -79,8 +81,10 @@ const adminNavItems = [
 export function AdminSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
+  const { t } = useTranslation();
   const collapsed = state === "collapsed";
   
+  const adminNavItems = getAdminNavItems(t);
   const isActive = (path: string) => location.pathname === path;
   const isAnyProjectsActive = adminNavItems.some((item) => isActive(item.url));
 
@@ -172,6 +176,13 @@ export function AdminSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {/* Language Selector */}
+        {!collapsed && (
+          <div className="mt-auto p-3 border-t border-border/50">
+            <LanguageSelector />
+          </div>
+        )}
 
         {/* Bottom section - collapsed state indicator */}
         {collapsed && (
