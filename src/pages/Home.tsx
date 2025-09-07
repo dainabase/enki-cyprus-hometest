@@ -551,40 +551,46 @@ const Home = () => {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
               >
-                {/* ENKI REALTY arrives from left */}
+                {/* ENKI REALTY arrives from extreme left */}
                 <motion.div
-                  className="text-6xl sm:text-7xl lg:text-8xl font-light tracking-tight text-white"
-                  initial={{ opacity: 0, x: -300 }}
+                  className="text-6xl sm:text-7xl lg:text-8xl font-light tracking-tight text-white flex items-start"
+                  initial={{ opacity: 0, x: "-100vw" }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ 
-                    duration: 1.2, 
+                    duration: 1.5, 
                     delay: 0.5, 
                     ease: "easeOut",
                     type: "spring",
-                    stiffness: 100,
+                    stiffness: 80,
                     damping: 15
                   }}
                 >
                   ENKI REALTY
+                  <motion.span
+                    className="text-2xl sm:text-3xl lg:text-4xl font-normal ml-1 mt-2 text-white/90"
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.6, delay: 2.2 }}
+                  >
+                    AI
+                  </motion.span>
                 </motion.div>
 
-                {/* Separation line arrives from background (depth) */}
+                {/* Sharp separation line arrives from background (depth) */}
                 <motion.div
-                  className="relative w-32 h-1 bg-gradient-to-r from-transparent via-white to-transparent"
+                  className="relative w-32 h-0.5 bg-white"
                   initial={{ 
                     opacity: 0, 
-                    scaleX: 0, 
-                    scaleY: 0.1,
+                    scaleX: 0,
                     rotateX: 90
                   }}
                   animate={{ 
                     opacity: 1, 
-                    scaleX: 1, 
-                    scaleY: 1,
+                    scaleX: 1,
                     rotateX: 0
                   }}
                   transition={{ 
-                    duration: 1, 
+                    duration: 0.8, 
                     delay: 1.2, 
                     ease: "easeOut",
                     type: "spring",
@@ -595,46 +601,41 @@ const Home = () => {
                     transformOrigin: "center",
                     perspective: "1000px"
                   }}
-                >
-                  {/* Glow effect for the separator */}
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent blur-sm"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.8 }}
-                    transition={{ duration: 0.5, delay: 1.7 }}
-                  />
-                </motion.div>
+                />
 
-                {/* Cyprus Properties arrives from right */}
+                {/* Cyprus Properties arrives from extreme right */}
                 <motion.div
                   className="text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight text-white/90"
-                  initial={{ opacity: 0, x: 300 }}
+                  initial={{ opacity: 0, x: "100vw" }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ 
-                    duration: 1.2, 
+                    duration: 1.5, 
                     delay: 1.8, 
                     ease: "easeOut",
                     type: "spring",
-                    stiffness: 100,
+                    stiffness: 80,
                     damping: 15
                   }}
                 >
                   Cyprus Properties
                 </motion.div>
               </motion.div>
+
+              {/* Lowered subtitle and button */}
               <motion.p
-                className="font-inter text-lg sm:text-xl md:text-2xl font-normal leading-relaxed -0.005em text-white/90 max-w-4xl mx-auto"
+                className="font-inter text-lg sm:text-xl md:text-2xl font-normal leading-relaxed -0.005em text-white/90 max-w-4xl mx-auto mt-16"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 0.8, ease: "easeOut" }}
+                transition={{ duration: 1, delay: 2.5, ease: "easeOut" }}
               >
                 La nouvelle expérience de l'investissement immobilier
               </motion.p>
+              
               <motion.div
-                className="flex justify-center items-center mt-16"
+                className="flex justify-center items-center mt-12 mb-16"
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 1.6, ease: "easeOut" }}
+                transition={{ duration: 1, delay: 3, ease: "easeOut" }}
               >
                 <Button
                   className="bg-primary hover:bg-primary-hover text-primary-foreground px-8 py-4 text-lg font-medium rounded-lg shadow-lg hover:shadow-premium transition-all duration-300 transform hover:scale-105"
