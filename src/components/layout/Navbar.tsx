@@ -57,14 +57,12 @@ const Navbar = () => {
   }, []);
 
   const projectDetailPath = firstProjectId ? `/project-detail/${firstProjectId}` : '/projects';
-  const projectDetailsPath = firstProjectId ? `/project-details/${firstProjectId}` : '/projects';
 
   // Navigation publique - ordre spécifié
   const publicNavigation = [
     { name: 'Accueil', href: '/', icon: Home },
     { name: 'Projets', href: '/projects', icon: Building },
     { name: 'Project Detail', href: projectDetailPath, icon: Building },
-    { name: 'Project Details', href: projectDetailsPath, icon: Building },
     { name: 'Recherche IA', href: '/search', icon: Search },
     { name: 'Conseil Fiscal IA', href: '/lexaia', icon: Brain },
     { name: 'Blog', href: '/blog', icon: Info },

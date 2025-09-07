@@ -19,7 +19,6 @@ import { initGA, trackPageView } from "./lib/analytics";
 const Home = lazy(() => import("./pages/Home").then(module => ({ default: module.default })));
 const Search = lazy(() => import("./pages/Search").then(module => ({ default: module.default })));
 const Projects = lazy(() => import("./pages/Projects").then(module => ({ default: module.default })));
-const ProjectDetails = lazy(() => import("./pages/ProjectDetails").then(module => ({ default: module.default })));
 const ProjectDetail = lazy(() => import("./pages/ProjectDetail").then(module => ({ default: module.default })));
 const About = lazy(() => import("./pages/About").then(module => ({ default: module.default })));
 const Contact = lazy(() => import("./pages/Contact").then(module => ({ default: module.default })));
@@ -61,8 +60,7 @@ const AppContent = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/projects" element={<Projects />} />
-                <Route path="/project/:id" element={<ProjectDetails />} />
-                <Route path="/project-details/:id" element={<ProjectDetails />} />
+                <Route path="/project/:id" element={<ProjectDetail />} />
                 <Route path="/project-detail/:id" element={<ProjectDetail />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
