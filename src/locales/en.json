@@ -254,5 +254,17 @@
     "pending": "pending",
     "converted": "converted",
     "conversion": "conversion"
+  },
+  "analytics": {
+    "title": "Analytics",
+    "months": "months",
+    "salesValue": "Sales Value",
+    "newLeads": "New Leads",
+    "conversionRate": "Conversion Rate",
+    "avgDealSize": "Average Deal Size",
+    "salesByMonth": "Sales by Month",
+    "leadsByStatus": "Leads by Status",
+    "commissionsOverTime": "Commissions Over Time",
+    "topZones": "Top 5 Zones"
   }
 }

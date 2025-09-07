@@ -254,5 +254,17 @@
     "pending": "εκκρεμεί",
     "converted": "μετατράπηκαν",
     "conversion": "μετατροπή"
+  },
+  "analytics": {
+    "title": "Αναλύσεις",
+    "months": "μήνες",
+    "salesValue": "Αξία πωλήσεων",
+    "newLeads": "Νέα leads",
+    "conversionRate": "Ποσοστό μετατροπής",
+    "avgDealSize": "Μέση συναλλαγή",
+    "salesByMonth": "Πωλήσεις ανά μήνα",
+    "leadsByStatus": "Leads ανά κατάσταση",
+    "commissionsOverTime": "Εξέλιξη προμηθειών",
+    "topZones": "Κορυφαίες 5 ζώνες"
   }
 }
