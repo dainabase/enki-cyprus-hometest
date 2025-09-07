@@ -58,6 +58,7 @@
     "cmdk": "^1.1.1",
     "cypress": "^15.1.0",
     "date-fns": "^3.6.0",
+    "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "framer-motion": "^12.23.12",
     "gsap": "^3.13.0",

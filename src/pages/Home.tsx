@@ -24,6 +24,7 @@ import PropertyCard from '@/components/ui/PropertyCard';
 import OptimizedPropertyCard from '@/components/ui/OptimizedPropertyCard';
 import Carousel3D from '@/components/ui/Carousel3D';
 import PropertyModal from '@/components/PropertyModal';
+import FeaturedProjectsCarousel from '@/components/FeaturedProjectsCarousel';
 import { useIsClient } from '@/hooks/useIsClient';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 // Lazy-load 3D components only when needed
