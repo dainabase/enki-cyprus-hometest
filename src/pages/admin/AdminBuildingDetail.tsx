@@ -8,6 +8,8 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import HierarchyBreadcrumb from '@/components/admin/common/HierarchyBreadcrumb';
+import { getHierarchyBreadcrumb } from '@/lib/supabase/integrity';
 
 const AdminBuildingDetail = () => {
   const { id } = useParams();
@@ -34,6 +36,13 @@ const AdminBuildingDetail = () => {
       if (error) throw error;
       return data;
     },
+    enabled: !!id
+  });
+
+  // Fetch breadcrumb data
+  const { data: breadcrumbData } = useQuery({
+    queryKey: ['building-breadcrumb', id],
+    queryFn: () => getHierarchyBreadcrumb(undefined, id),
     enabled: !!id
   });
 
@@ -100,6 +109,14 @@ const AdminBuildingDetail = () => {
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-6xl mx-auto space-y-6">
+        {/* Breadcrumb */}
+        <HierarchyBreadcrumb
+          developer={breadcrumbData?.developer}
+          project={breadcrumbData?.project}
+          building={breadcrumbData?.building}
+          currentPage="Détail du bâtiment"
+        />
+
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">

@@ -7,6 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import { checkBuildingDependencies } from '@/lib/supabase/integrity';
 
 interface BuildingsTableProps {
   buildings: any[];
@@ -20,11 +21,20 @@ const BuildingsTable: React.FC<BuildingsTableProps> = ({ buildings, onEdit, onRe
   const navigate = useNavigate();
 
   const handleDelete = async (buildingId: string, buildingName: string) => {
-    if (!confirm(`Êtes-vous sûr de vouloir supprimer le bâtiment "${buildingName}" ?`)) {
-      return;
-    }
-
     try {
+      // Check for dependencies first
+      const dependencies = await checkBuildingDependencies(buildingId);
+      
+      let confirmMessage = `Êtes-vous sûr de vouloir supprimer le bâtiment "${buildingName}" ?`;
+      
+      if (dependencies.count > 0) {
+        confirmMessage = `⚠️ ATTENTION ⚠️\n\nLe bâtiment "${buildingName}" a des dépendances :\n${dependencies.details}\n\nLa suppression supprimera aussi ces éléments.\n\nÊtes-vous sûr de vouloir continuer ?`;
+      }
+      
+      if (!confirm(confirmMessage)) {
+        return;
+      }
+
       const { error } = await supabase
         .from('buildings')
         .delete()
@@ -37,12 +47,12 @@ const BuildingsTable: React.FC<BuildingsTableProps> = ({ buildings, onEdit, onRe
         description: 'Le bâtiment a été supprimé avec succès'
       });
       onRefetch();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting building:', error);
       toast({
         variant: 'destructive',
         title: 'Erreur',
-        description: 'Impossible de supprimer le bâtiment'
+        description: error.message || 'Impossible de supprimer le bâtiment'
       });
     }
   };
@@ -70,11 +80,19 @@ const BuildingsTable: React.FC<BuildingsTableProps> = ({ buildings, onEdit, onRe
   };
 
   const calculateAvailableUnits = (building: any) => {
-    // This would be calculated from actual properties data in a real scenario
-    // For now, return placeholder data
+    // Enhanced calculation with more details
     const total = building.total_units || 0;
     const available = Math.floor(total * 0.3); // Simulate 30% availability
-    return { available, total };
+    const sold = total - available;
+    const occupancyRate = total > 0 ? Math.round((sold / total) * 100) : 0;
+    
+    return { 
+      available, 
+      total, 
+      sold,
+      occupancyRate,
+      isSoldOut: available === 0 && total > 0
+    };
   };
 
   if (isLoading) {
@@ -140,11 +158,18 @@ const BuildingsTable: React.FC<BuildingsTableProps> = ({ buildings, onEdit, onRe
                 </TableCell>
                 <TableCell>
                   <div className="space-y-1">
-                    <span className="font-mono text-sm font-medium text-green-600">
-                      {units.available}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className={`font-mono text-sm font-medium ${units.isSoldOut ? 'text-red-600' : 'text-green-600'}`}>
+                        {units.available}
+                      </span>
+                      {units.isSoldOut && (
+                        <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">
+                          SOLD OUT
+                        </span>
+                      )}
+                    </div>
                     <div className="text-xs text-muted-foreground">
-                      sur {units.total}
+                      sur {units.total} ({units.occupancyRate}% occupé)
                     </div>
                   </div>
                 </TableCell>

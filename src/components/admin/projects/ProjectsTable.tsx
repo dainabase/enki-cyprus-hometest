@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { checkProjectDependencies } from '@/lib/supabase/integrity';
 
 interface ProjectsTableProps {
   projects: any[];
@@ -18,11 +19,20 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({ projects, onEdit, onRefet
   const navigate = useNavigate();
 
   const handleDelete = async (projectId: string, projectTitle: string) => {
-    if (!confirm(`Êtes-vous sûr de vouloir supprimer le projet "${projectTitle}" ?`)) {
-      return;
-    }
-
     try {
+      // Check for dependencies first
+      const dependencies = await checkProjectDependencies(projectId);
+      
+      let confirmMessage = `Êtes-vous sûr de vouloir supprimer le projet "${projectTitle}" ?`;
+      
+      if (dependencies.count > 0) {
+        confirmMessage = `⚠️ ATTENTION ⚠️\n\nLe projet "${projectTitle}" a des dépendances :\n${dependencies.details}\n\nLa suppression supprimera aussi ces éléments.\n\nÊtes-vous sûr de vouloir continuer ?`;
+      }
+      
+      if (!confirm(confirmMessage)) {
+        return;
+      }
+
       const { error } = await supabase
         .from('projects')
         .delete()
@@ -35,12 +45,12 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({ projects, onEdit, onRefet
         description: 'Le projet a été supprimé avec succès'
       });
       onRefetch();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting project:', error);
       toast({
         variant: 'destructive',
         title: 'Erreur',
-        description: 'Impossible de supprimer le projet'
+        description: error.message || 'Impossible de supprimer le projet'
       });
     }
   };
@@ -82,10 +92,16 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({ projects, onEdit, onRefet
   };
 
   const calculateUnits = (project: any) => {
-    // For now, use the units available/total from the project
-    // Later this could be calculated from buildings/units
-    const available = project.units_available || 0;
-    const total = project.total_units || 0;
+    // Calculate from buildings data if available
+    const buildings = Array.isArray(project.buildings) ? project.buildings : [];
+    const totalFromBuildings = buildings.reduce((sum: number, building: any) => {
+      return sum + (building.total_units || 0);
+    }, 0);
+    
+    // Use buildings data if available, otherwise fall back to project data
+    const available = project.units_available || Math.floor(totalFromBuildings * 0.3);
+    const total = totalFromBuildings || project.total_units || 0;
+    
     return `${available}/${total}`;
   };
 

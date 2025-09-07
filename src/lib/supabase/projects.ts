@@ -117,8 +117,22 @@ export const updateProject = async (id: string, projectData: Partial<ProjectForm
   return data;
 };
 
-// Delete project
+// Delete project with cascade validation
 export const deleteProject = async (id: string) => {
+  // Check for dependent buildings first
+  const { data: buildings, error: checkError } = await supabase
+    .from('buildings')
+    .select('id, name')
+    .eq('project_id', id);
+
+  if (checkError) throw checkError;
+
+  if (buildings && buildings.length > 0) {
+    const buildingNames = buildings.map(b => b.name).join(', ');
+    throw new Error(`Impossible de supprimer : ${buildings.length} bâtiment(s) associé(s) (${buildingNames})`);
+  }
+
+  // Proceed with deletion if no dependencies
   const { error } = await supabase
     .from('projects')
     .delete()
@@ -146,7 +160,11 @@ export const calculateProjectStats = (projects: any[]) => {
     available: projects.filter(p => p.status === 'available').length,
     construction: projects.filter(p => p.status === 'under_construction').length,
     delivered: projects.filter(p => p.status === 'delivered').length,
-    goldenVisa: projects.filter(p => p.golden_visa_eligible).length
+    goldenVisa: projects.filter(p => p.golden_visa_eligible).length,
+    totalBuildings: projects.reduce((sum, p) => {
+      // Count buildings associated with this project
+      return sum + (Array.isArray(p.buildings) ? p.buildings.length : 0);
+    }, 0)
   };
 };
 
