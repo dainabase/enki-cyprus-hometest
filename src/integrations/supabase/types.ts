@@ -545,6 +545,7 @@ export type Database = {
           score: number | null
           source: string | null
           status: string | null
+          status_changed_at: string | null
           updated_at: string | null
           urgency: string | null
           zones: string[] | null
@@ -566,6 +567,7 @@ export type Database = {
           score?: number | null
           source?: string | null
           status?: string | null
+          status_changed_at?: string | null
           updated_at?: string | null
           urgency?: string | null
           zones?: string[] | null
@@ -587,6 +589,7 @@ export type Database = {
           score?: number | null
           source?: string | null
           status?: string | null
+          status_changed_at?: string | null
           updated_at?: string | null
           urgency?: string | null
           zones?: string[] | null
@@ -631,6 +634,36 @@ export type Database = {
           marketing_emails?: boolean | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      pipeline_stages: {
+        Row: {
+          color: string | null
+          created_at: string | null
+          display_name: string
+          display_order: number
+          id: string
+          is_active: boolean | null
+          stage_key: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string | null
+          display_name: string
+          display_order: number
+          id?: string
+          is_active?: boolean | null
+          stage_key: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string | null
+          display_name?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean | null
+          stage_key?: string
         }
         Relationships: []
       }

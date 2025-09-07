@@ -7,6 +7,7 @@
     "properties": "Ακίνητα",
     "units": "Μονάδες",
     "leads": "Δυνητικοί Πελάτες/CRM",
+    "pipeline": "Pipeline",
     "commissions": "Προμήθειες",
     "analytics": "Αναλύσεις",
     "settings": "Ρυθμίσεις",
@@ -180,5 +181,16 @@
       "converted": "Μετατράπηκε",
       "lost": "Χάθηκε"
     }
+  },
+  "pipeline": {
+    "title": "Pipeline Πωλήσεων",
+    "totalValue": "Συνολική Αξία",
+    "leadsCount": "Αριθμός Leads",
+    "averageTime": "Μέσος Χρόνος",
+    "conversionRate": "Ποσοστό Μετατροπής",
+    "leadMoved": "Lead μετακινήθηκε επιτυχώς",
+    "urgency": "Επείγον",
+    "source": "Πηγή",
+    "score": "Βαθμολογία"
   }
 }

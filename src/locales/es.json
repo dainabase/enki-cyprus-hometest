@@ -7,6 +7,7 @@
     "properties": "Propiedades",
     "units": "Unidades",
     "leads": "Clientes Potenciales/CRM",
+    "pipeline": "Pipeline",
     "commissions": "Comisiones",
     "analytics": "Análisis",
     "settings": "Configuración",
@@ -180,5 +181,16 @@
       "converted": "Convertido",
       "lost": "Perdido"
     }
+  },
+  "pipeline": {
+    "title": "Pipeline de Ventas",
+    "totalValue": "Valor Total",
+    "leadsCount": "Número de Leads",
+    "averageTime": "Tiempo Promedio",
+    "conversionRate": "Tasa de Conversión",
+    "leadMoved": "Lead movido exitosamente",
+    "urgency": "Urgencia",
+    "source": "Fuente",
+    "score": "Puntuación"
   }
 }
