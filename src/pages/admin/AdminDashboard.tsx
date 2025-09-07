@@ -3,7 +3,9 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { AdminOverview } from './AdminOverview';
+import AdminDevelopers from './AdminDevelopers';
 import { AdminProjects } from './AdminProjects';
+import AdminUnits from './AdminUnits';
 import { AdminCommissions } from './AdminCommissions';
 import { AdminUsers } from './AdminUsers';
 import { AdminAnalytics } from './AdminAnalytics';
@@ -41,13 +43,14 @@ export const AdminDashboard = () => {
             <main className="flex-1 pt-16">
               <Routes>
                 <Route path="" element={<AdminOverview />} />
-                <Route path="overview" element={<AdminOverview />} />
+                <Route path="developers" element={<AdminDevelopers />} />
                 <Route path="projects" element={<AdminProjects />} />
+                <Route path="units" element={<AdminUnits />} />
+                <Route path="leads" element={<AdminUsers />} />
                 <Route path="commissions" element={<AdminCommissions />} />
-                <Route path="users" element={<AdminUsers />} />
                 <Route path="analytics" element={<AdminAnalytics />} />
-                <Route path="content" element={<AdminContent />} />
-                <Route path="*" element={<Navigate to="/admin/overview" replace />} />
+                <Route path="settings" element={<AdminContent />} />
+                <Route path="*" element={<Navigate to="/admin" replace />} />
               </Routes>
             </main>
           </div>

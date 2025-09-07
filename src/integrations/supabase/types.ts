@@ -479,6 +479,7 @@ export type Database = {
           construction_phase: string | null
           construction_start: string | null
           created_at: string
+          cyprus_zone: string | null
           description: string
           detailed_description: string | null
           detailed_features: string[] | null
@@ -529,6 +530,7 @@ export type Database = {
           construction_phase?: string | null
           construction_start?: string | null
           created_at?: string
+          cyprus_zone?: string | null
           description: string
           detailed_description?: string | null
           detailed_features?: string[] | null
@@ -579,6 +581,7 @@ export type Database = {
           construction_phase?: string | null
           construction_start?: string | null
           created_at?: string
+          cyprus_zone?: string | null
           description?: string
           detailed_description?: string | null
           detailed_features?: string[] | null

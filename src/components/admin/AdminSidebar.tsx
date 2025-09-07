@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import {
   BarChart3,
   Building,
+  Building2,
   DollarSign,
   Users,
   TrendingUp,
@@ -26,40 +27,52 @@ import {
 
 const adminNavItems = [
   {
-    title: 'Vue d\'ensemble',
-    url: '/admin/overview',
-    icon: Home,
-    description: 'Tableau de bord principal'
+    title: 'Dashboard',
+    url: '/admin',
+    icon: BarChart3,
+    description: 'KPIs Enki Reality'
+  },
+  {
+    title: 'Développeurs',
+    url: '/admin/developers', 
+    icon: Building2,
+    description: 'Gestion développeurs'
   },
   {
     title: 'Projets',
     url: '/admin/projects', 
     icon: Building,
-    description: 'Gestion des propriétés'
+    description: 'Hiérarchie projets'
+  },
+  {
+    title: 'Unités',
+    url: '/admin/units',
+    icon: Home,
+    description: 'Inventaire unités'
+  },
+  {
+    title: 'Leads/CRM',
+    url: '/admin/leads',
+    icon: Users,
+    description: 'Pipeline ventes'
   },
   {
     title: 'Commissions',
     url: '/admin/commissions',
     icon: DollarSign,
-    description: 'Suivi des paiements'
-  },
-  {
-    title: 'Utilisateurs',
-    url: '/admin/users',
-    icon: Users,
-    description: 'Gestion des comptes'
+    description: 'Tracking financier'
   },
   {
     title: 'Analytics',
-    url: '/admin/analytics',
+    url: '/admin/analytics', 
     icon: TrendingUp,
-    description: 'Insights et rapports'
+    description: 'Conversions & trafic'
   },
   {
-    title: 'Contenu',
-    url: '/admin/content',
-    icon: FileText,
-    description: 'Gestion du site'
+    title: 'Paramètres',
+    url: '/admin/settings',
+    icon: Settings,
+    description: 'Configuration'
   }
 ];
 
