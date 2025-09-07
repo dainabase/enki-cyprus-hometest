@@ -1,4 +1,5 @@
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
@@ -8,8 +9,9 @@ import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { MapPin, ArrowRight } from 'lucide-react';
+import { MapPin, ArrowRight, ExternalLink } from 'lucide-react';
 import Slider from 'react-slick';
+import type { Settings } from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
@@ -38,7 +40,7 @@ const ProjectDetail = () => {
   if (isLoading) return <Layout><div className="text-center py-20 text-muted-foreground">Chargement du projet...</div></Layout>;
   if (error || !project) return <Layout><div className="text-center py-20 text-destructive">Erreur de chargement du projet. Veuillez réessayer.</div></Layout>;
 
-  const sliderSettings = {
+  const sliderSettings: Settings = {
     dots: true,
     infinite: true,
     speed: 500,
@@ -50,10 +52,18 @@ const ProjectDetail = () => {
     lazyLoad: 'ondemand',
   };
 
+  type Unit = {
+    type?: string;
+    price?: string | number;
+    status?: string;
+    image?: string;
+    description?: string;
+  };
+  const units: Unit[] = Array.isArray(project.units) ? (project.units as unknown as Unit[]) : [];
   const fallbackStats = [
     { label: "Surface terrain", value: "3665 m²" },
-    { label: "Appartements", value: project.units?.filter(u => u.type === 'apartment').length || "8+" },
-    { label: "Villas", value: project.units?.filter(u => u.type === 'villa').length || "4+" },
+    { label: "Appartements", value: units.filter(u => u.type === 'apartment').length || "8+" },
+    { label: "Villas", value: units.filter(u => u.type === 'villa').length || "4+" },
     { label: "Parkings", value: "2+" },
   ];
 
@@ -216,7 +226,7 @@ const ProjectDetail = () => {
               Unités Disponibles
             </motion.h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {(project.units || []).map((unit, index) => (
+              {units.map((unit, index) => (
                 <motion.div
                   key={index}
                   className="bg-card rounded-lg overflow-hidden shadow-md hover:shadow-premium transition-all"
@@ -233,7 +243,7 @@ const ProjectDetail = () => {
                   <div className="p-6">
                     <h3 className="text-xl font-medium mb-2">{unit.type}</h3>
                     <p className="text-success font-bold mb-2">{unit.price}</p>
-                    <Badge variant={unit.status === 'available' ? 'success' : 'destructive'}>
+                    <Badge variant={unit.status === 'available' ? 'secondary' : 'destructive'}>
                       {unit.status}
                     </Badge>
                     <p className="text-muted-foreground mt-4">{unit.description}</p>
