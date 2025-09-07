@@ -615,29 +615,31 @@ const Home = () => {
                 </motion.div>
               </motion.div>
 
-              {/* Much lower subtitle and button - even more down */}
-              <motion.p
-                className="font-inter text-lg sm:text-xl md:text-2xl font-normal leading-relaxed -0.005em text-white/90 max-w-4xl mx-auto mt-64"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 3.2, ease: "easeOut" }}
-              >
-                La nouvelle expérience de l'investissement immobilier
-              </motion.p>
-              
-              <motion.div
-                className="flex justify-center items-center mt-36 mb-20"
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 3.7, ease: "easeOut" }}
-              >
-                <Button
-                  className="bg-primary hover:bg-primary-hover text-primary-foreground px-8 py-4 text-lg font-medium rounded-lg shadow-lg hover:shadow-premium transition-all duration-300 transform hover:scale-105"
-                  onClick={() => document.getElementById('why-enki')?.scrollIntoView({ behavior: 'smooth' })}
+              {/* Subtitle + CTA anchored near bottom for precise placement */}
+              <div className="absolute bottom-20 left-1/2 -translate-x-1/2 w-full px-4">
+                <motion.p
+                  className="font-inter text-lg sm:text-xl md:text-2xl font-normal leading-relaxed -0.005em text-white/90 max-w-4xl mx-auto text-center mb-6"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1, delay: 3.2, ease: "easeOut" }}
                 >
-                  Découvrez Pourquoi Nous Choisir
-                </Button>
-              </motion.div>
+                  La nouvelle expérience de l'investissement immobilier
+                </motion.p>
+                
+                <motion.div
+                  className="flex justify-center items-center"
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1, delay: 3.7, ease: "easeOut" }}
+                >
+                  <Button
+                    className="bg-primary hover:bg-primary-hover text-primary-foreground px-8 py-4 text-lg font-medium rounded-lg shadow-lg hover:shadow-premium transition-all duration-300 transform hover:scale-105"
+                    onClick={() => document.getElementById('why-enki')?.scrollIntoView({ behavior: 'smooth' })}
+                  >
+                    Découvrez Pourquoi Nous Choisir
+                  </Button>
+                </motion.div>
+              </div>
             </motion.div>
           </div>
           <motion.div
