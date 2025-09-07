@@ -52,6 +52,10 @@ const ProjectDetail = () => {
     lazyLoad: 'ondemand',
   };
 
+  // Framer Motion hooks must be declared at the top-level of the component
+  const { scrollY } = useScroll();
+  const parallaxY = useTransform(scrollY, [0, 400], [0, -100]);
+
   type Unit = {
     type?: string;
     price?: string | number;
@@ -90,7 +94,7 @@ const ProjectDetail = () => {
             className="absolute inset-0 bg-cover bg-center"
             style={{ 
               backgroundImage: `url(${project.photos?.[0] || 'https://picsum.photos/1920/1080'})`,
-              y: useTransform(useScroll().scrollY, [0, 400], [0, -100]),
+              y: parallaxY,
             }}
           >
             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60" />
