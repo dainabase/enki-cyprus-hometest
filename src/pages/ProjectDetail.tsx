@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useParams, Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
@@ -32,8 +32,23 @@ const ProjectDetail = () => {
     },
   });
 
-  if (isLoading) return <div className="text-center py-20 text-muted-foreground">Chargement du projet...</div>;
-  if (error || !project) return <div className="text-center py-20 text-destructive">Erreur de chargement du projet.</div>;
+  useEffect(() => {
+    if (project) {
+      trackPageView(`/project/${id}`, `Projet ${project.title} - ENKI-REALTY`);
+    }
+  }, [project, id]);
+
+  if (isLoading) return (
+    <Layout>
+      <div className="text-center py-20 text-muted-foreground">Chargement du projet...</div>
+    </Layout>
+  );
+  
+  if (error || !project) return (
+    <Layout>
+      <div className="text-center py-20 text-destructive">Erreur de chargement du projet.</div>
+    </Layout>
+  );
 
   // Create 3 different views of the same project
   const projectSections = [
@@ -162,6 +177,8 @@ const ProjectDetail = () => {
           {projectSections.map((section, index) => {
             const start = index / 3;
             const end = (index + 1) / 3;
+            
+            // Safely create transforms only if scrollYProgress is available
             const progress = useTransform(scrollYProgress, [start, end], [0, 1]);
             const y = useTransform(progress, [0, 1], ['100vh', '0vh']);
             const opacity = useTransform(progress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
@@ -169,7 +186,7 @@ const ProjectDetail = () => {
 
             return (
               <motion.div
-                key={index}
+                key={`section-${index}`}
                 className="absolute inset-0 flex items-center justify-center p-8"
                 style={{ y, opacity, scale }}
               >
@@ -210,7 +227,7 @@ const ProjectDetail = () => {
                       transition={{ duration: 0.4, delay: 0.2 }}
                     >
                       {section.features.map((feature: string, i: number) => (
-                        <Badge key={i} className="bg-white/20 border-white/30 text-white">
+                        <Badge key={`feature-${index}-${i}`} className="bg-white/20 border-white/30 text-white">
                           {feature}
                         </Badge>
                       ))}
