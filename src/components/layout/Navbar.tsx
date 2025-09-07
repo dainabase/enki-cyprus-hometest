@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -29,6 +29,7 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,12 +38,33 @@ const Navbar = () => {
   const { user, profile, isAuthenticated, isAdmin, signOut, loading } = useAuth();
   const { toast } = useToast();
 
+
+  const [firstProjectId, setFirstProjectId] = useState<string | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    supabase
+      .from('projects')
+      .select('id')
+      .limit(1)
+      .then(({ data, error }) => {
+        if (!error && data && data.length > 0 && mounted) {
+          // @ts-ignore - Supabase returns id as string (uuid)
+          setFirstProjectId(data[0].id as string);
+        }
+      });
+    return () => { mounted = false; };
+  }, []);
+
+  const projectDetailPath = firstProjectId ? `/project-detail/${firstProjectId}` : '/projects';
+  const projectDetailsPath = firstProjectId ? `/project-details/${firstProjectId}` : '/projects';
+
   // Navigation publique - ordre spécifié
   const publicNavigation = [
     { name: 'Accueil', href: '/', icon: Home },
     { name: 'Projets', href: '/projects', icon: Building },
-    { name: 'Project Detail', href: '/project-detail/1', icon: Building },
-    { name: 'Project Details', href: '/project-details/1', icon: Building },
+    { name: 'Project Detail', href: projectDetailPath, icon: Building },
+    { name: 'Project Details', href: projectDetailsPath, icon: Building },
     { name: 'Recherche IA', href: '/search', icon: Search },
     { name: 'Conseil Fiscal IA', href: '/lexaia', icon: Brain },
     { name: 'Blog', href: '/blog', icon: Info },
