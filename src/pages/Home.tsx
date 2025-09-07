@@ -542,7 +542,7 @@ const Home = () => {
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2, delay: 0.2, ease: "easeOut" }}
-              className="space-y-12 pt-16"
+              className="space-y-12 pt-20"
             >
               {/* Animated Logo Assembly */}
               <motion.div
