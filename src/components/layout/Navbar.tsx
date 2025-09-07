@@ -41,6 +41,8 @@ const Navbar = () => {
   const publicNavigation = [
     { name: 'Accueil', href: '/', icon: Home },
     { name: 'Projets', href: '/projects', icon: Building },
+    { name: 'Project Detail', href: '/project-detail/1', icon: Building },
+    { name: 'Project Details', href: '/project-details/1', icon: Building },
     { name: 'Recherche IA', href: '/search', icon: Search },
     { name: 'Conseil Fiscal IA', href: '/lexaia', icon: Brain },
     { name: 'Blog', href: '/blog', icon: Info },
