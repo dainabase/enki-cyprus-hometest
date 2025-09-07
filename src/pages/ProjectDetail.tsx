@@ -51,6 +51,11 @@ const Project = () => {
     arrows: true,
   };
 
+  const formatPrice = (price: any): string => {
+    const n = typeof price === 'number' ? price : Number(price);
+    return isNaN(n) ? 'N/A' : `€${n.toLocaleString()}`;
+  };
+
   const amenities = [
     { icon: Waves, title: 'Piscine', desc: 'Piscine infinity avec vue mer' },
     { icon: Trees, title: 'Jardins', desc: 'Jardins paysagers luxuriants' },
@@ -168,9 +173,9 @@ const Project = () => {
             </motion.p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {[
-                { title: 'Location', desc: typeof project.location === 'string' ? project.location : 'Limassol', icon: MapPin },
-                { title: 'Price From', desc: `€${project.price.toLocaleString()}`, icon: Waves },
-                { title: 'Type', desc: project.type || 'Apartment', icon: ParkingCircle },
+                { title: 'Location', desc: typeof (project as any).location === 'string' ? (project as any).location : ((project as any).location?.city || 'Limassol'), icon: MapPin },
+                { title: 'Price From', desc: formatPrice((project as any).price), icon: Waves },
+                { title: 'Type', desc: (project as any).type || 'Apartment', icon: ParkingCircle },
                 { title: 'Status', desc: 'Available', icon: Shield },
               ].map((highlight, index) => (
                 <motion.div
