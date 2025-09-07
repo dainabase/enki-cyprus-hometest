@@ -542,7 +542,7 @@ const Home = () => {
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2, delay: 0.2, ease: "easeOut" }}
-              className="space-y-12 pt-8"
+              className="space-y-12 pt-16"
             >
               {/* Animated Logo Assembly */}
               <motion.div
@@ -553,7 +553,7 @@ const Home = () => {
               >
                 {/* ENKI REALTY arrives from extreme left - synchronized timing */}
                 <motion.div
-                  className="text-6xl sm:text-7xl lg:text-8xl font-light tracking-tight text-white flex items-start"
+                  className="text-7xl sm:text-8xl lg:text-9xl font-light tracking-tight text-white flex items-start"
                   initial={{ opacity: 0, x: "-100vw" }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ 
