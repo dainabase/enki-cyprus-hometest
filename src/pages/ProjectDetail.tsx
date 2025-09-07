@@ -1,100 +1,21 @@
-import { useEffect } from 'react';
-import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion';
-import { useParams, Link } from 'react-router-dom';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { MapPin, ArrowRight, Square, Bed, Bath, Car } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { supabase } from '@/integrations/supabase/client';
 import { SEOHead } from '@/components/SEOHead';
 import { trackPageView } from '@/lib/analytics';
 import Layout from '@/components/layout/Layout';
-
-// Reusable card component to avoid calling hooks inside loops
-
-type Section = { title: string; description: string; features: string[]; image: string };
-
-const ScrollingCard = ({
-  index,
-  section,
-  scrollYProgress,
-}: {
-  index: number;
-  section: Section;
-  scrollYProgress: MotionValue<number>;
-}) => {
-  const start = index / 3;
-  const end = (index + 1) / 3;
-  const progress = useTransform(scrollYProgress, [start, end], [0, 1]);
-  const y = useTransform(progress, [0, 1], ['100vh', '0vh']);
-  const opacity = useTransform(progress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-  const scale = useTransform(progress, [0, 0.5, 1], [0.95, 1, 0.95]);
-  const bgY = useTransform(progress, [0, 1], [0, -100]);
-
-  return (
-    <motion.div
-      className="absolute inset-0 flex items-center justify-center p-8"
-      style={{ y, opacity, scale }}
-    >
-      <div className="relative w-full max-w-4xl h-[80vh] rounded-3xl overflow-hidden shadow-2xl border border-border/50">
-        <motion.div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: `url(${section.image})`,
-            y: bgY,
-          }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60" />
-        </motion.div>
-
-        <div className="relative z-10 h-full flex flex-col justify-end p-12 text-white">
-          <motion.h3
-            className="text-4xl font-light mb-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            {section.title}
-          </motion.h3>
-
-          <motion.p
-            className="mb-6 leading-relaxed text-lg"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-          >
-            {section.description}
-          </motion.p>
-
-          <motion.div
-            className="flex flex-wrap gap-2 mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.2 }}
-          >
-            {section.features.map((feature: string, i: number) => (
-              <Badge key={`feature-${index}-${i}`} className="bg-white/20 border-white/30 text-white">
-                {feature}
-              </Badge>
-            ))}
-          </motion.div>
-
-          <Button asChild className="bg-white text-primary hover:bg-white/90 w-fit">
-            <Link to="#contact">
-              En Savoir Plus
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { MapPin, ArrowRight } from 'lucide-react';
+import Slider from 'react-slick';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const ProjectDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const { scrollYProgress } = useScroll();
-
+  
   const { data: project, isLoading, error } = useQuery({
     queryKey: ['project', id],
     queryFn: async () => {
@@ -114,162 +35,421 @@ const ProjectDetail = () => {
     }
   }, [project, id]);
 
-  if (isLoading) return (
-    <Layout>
-      <div className="text-center py-20 text-muted-foreground">Chargement du projet...</div>
-    </Layout>
-  );
-  
-  if (error || !project) return (
-    <Layout>
-      <div className="text-center py-20 text-destructive">Erreur de chargement du projet.</div>
-    </Layout>
-  );
+  if (isLoading) return <Layout><div className="text-center py-20 text-muted-foreground">Chargement du projet...</div></Layout>;
+  if (error || !project) return <Layout><div className="text-center py-20 text-destructive">Erreur de chargement du projet. Veuillez réessayer.</div></Layout>;
 
-  // Create 3 different views of the same project
-  const projectSections = [
-    {
-      title: "Extérieur & Prestations",
-      description: project.description || "Découvrez l'architecture moderne et les prestations exceptionnelles de ce projet unique.",
-      features: project.features?.slice(0, 4) || ["Architecture moderne", "Matériaux premium", "Design contemporain", "Finitions haut de gamme"],
-      image: project.photos?.[0] || `https://picsum.photos/1200/800?random=${project.id}1`
-    },
-    {
-      title: "Équipements & Services",
-      description: project.detailed_description || "Un ensemble d'équipements et services pensés pour votre confort au quotidien.",
-      features: project.amenities?.slice(0, 4) || ["Parking sécurisé", "Espaces verts", "Salle de sport", "Concierge"],
-      image: project.photos?.[1] || `https://picsum.photos/1200/800?random=${project.id}2`
-    },
-    {
-      title: "Localisation & Environnement",
-      description: `Idéalement situé ${typeof project.location === 'object' && project.location !== null ? (project.location as any).city || 'dans un cadre exceptionnel' : 'dans un cadre exceptionnel'}, ce projet offre un accès privilégié à tous les services.`,
-      features: ["Transports à proximité", "Commerces", "Écoles", "Espaces de loisirs"],
-      image: project.photos?.[2] || `https://picsum.photos/1200/800?random=${project.id}3`
-    }
-  ];
-
-  const formatLocation = (location: any) => {
-    if (typeof location === 'string') return location;
-    if (typeof location === 'object' && location !== null) {
-      return (location as any).city || (location as any).address || 'Localisation premium';
-    }
-    return 'Localisation premium';
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    arrows: true,
+    lazyLoad: 'ondemand',
   };
+
+  const fallbackStats = [
+    { label: "Surface terrain", value: "3665 m²" },
+    { label: "Appartements", value: project.units?.filter(u => u.type === 'apartment').length || "8+" },
+    { label: "Villas", value: project.units?.filter(u => u.type === 'villa').length || "4+" },
+    { label: "Parkings", value: "2+" },
+  ];
 
   return (
     <Layout>
       <SEOHead 
         title={`${project.title} | ENKI-REALTY`}
-        description={project.description || 'Découvrez ce projet immobilier premium'}
-        keywords={`projet immobilier ${project.title}, ${project.location}, investissement`}
+        description={project.description || 'Découvrez ce projet immobilier premium à Chypre.'}
+        keywords={`projet immobilier ${project.title}, ${project.location}, investissement Chypre`}
         url={`https://enki-realty.com/project/${id}`}
         canonical={`https://enki-realty.com/project/${id}`}
         image={project.photos?.[0] || '/og-image.jpg'}
       />
-
-      {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <motion.div 
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: `url(${project.photos?.[0] || `https://picsum.photos/1920/1080?random=${project.id}`})`,
-          }}
-          initial={{ scale: 1.1 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 1.5 }}
+      
+      <main className="bg-background min-h-screen">
+        {/* Hero Section with Parallax */}
+        <motion.section 
+          className="relative h-screen flex items-center justify-center overflow-hidden"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/60" />
-        </motion.div>
-
-        <div className="relative z-10 text-center text-white max-w-6xl mx-auto px-4">
-          <motion.p
-            className="text-lg mb-4 opacity-90"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            {formatLocation(project.location)}
-          </motion.p>
-          
-          <motion.h1 
-            className="text-5xl md:text-7xl font-light mb-8 tracking-tight"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            {project.title}
-          </motion.h1>
-
           <motion.div 
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ 
+              backgroundImage: `url(${project.photos?.[0] || 'https://picsum.photos/1920/1080'})`,
+              y: useTransform(useScroll().scrollY, [0, 400], [0, -100]),
+            }}
           >
-            <Button className="bg-white text-black hover:bg-white/90 px-8 py-3">
-              Découvrir Plus
-            </Button>
-            <Button variant="outline" className="border-white text-white hover:bg-white hover:text-black px-8 py-3">
-              Nous Appeler
-            </Button>
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60" />
           </motion.div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-16 bg-background">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              { icon: Square, value: "3665", label: "Surface terrain", unit: "m²" },
-              { icon: Bed, value: "8+", label: "Appartements", unit: "" },
-              { icon: Bath, value: "4+", label: "Villas", unit: "" },
-              { icon: Car, value: "2+", label: "Parkings", unit: "" }
-            ].map((stat, index) => (
-              <motion.div
+          
+          <div className="relative z-10 text-center text-white space-y-4">
+            <motion.h1 
+              className="text-6xl sm:text-7xl lg:text-8xl font-light tracking-tight"
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.8 }}
+            >
+              {project.title}
+            </motion.h1>
+            <motion.p 
+              className="text-xl sm:text-2xl font-normal"
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              {project.subtitle || 'A premium real estate project in Cyprus'}
+            </motion.p>
+          </div>
+          
+          {/* 4 Stats Blocks at Bottom */}
+          <motion.div 
+            className="absolute bottom-0 left-0 right-0 z-20 grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-background/80 backdrop-blur-sm border-t border-border/50"
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            {fallbackStats.map((stat, index) => (
+              <motion.div 
                 key={index}
-                className="bg-card p-6 rounded-2xl text-center border border-border/50"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
+                className="text-center p-4 rounded-lg bg-card border border-border/50"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.6 + index * 0.1 }}
               >
-                <stat.icon className="w-8 h-8 mx-auto mb-4 text-primary" />
-                <div className="text-3xl font-light mb-2">{stat.value}</div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
-                {stat.unit && <div className="text-xs text-muted-foreground">{stat.unit}</div>}
+                <p className="text-3xl font-light text-primary">{stat.value}</p>
+                <p className="text-sm text-muted-foreground">{stat.label}</p>
               </motion.div>
             ))}
+          </motion.div>
+        </motion.section>
+
+        {/* Galerie Photos */}
+        <section className="py-16 bg-background">
+          <div className="max-w-7xl mx-auto px-4">
+            <motion.h2 
+              className="text-4xl font-light text-primary mb-8 text-center"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              Galerie
+            </motion.h2>
+            <Slider {...sliderSettings}>
+              {(project.photos || []).map((photo, index) => (
+                <div key={index}>
+                  <img 
+                    src={photo}
+                    alt={`Photo ${index + 1} du projet ${project.title}`}
+                    className="w-full h-[60vh] object-cover rounded-lg"
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+            </Slider>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Scrolling Cards Section */}
-      <section className="relative h-[300vh] bg-background">
-        <div className="sticky top-0 h-screen overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-sm border-b border-border/50 text-center z-20">
-            <h3 className="text-xl font-medium text-primary">Découverte du Projet</h3>
+        {/* Description Détaillée */}
+        <section className="py-16 bg-muted/30">
+          <div className="max-w-4xl mx-auto px-4">
+            <motion.h2 
+              className="text-4xl font-light text-primary mb-6"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              Description
+            </motion.h2>
+            <motion.p 
+              className="text-lg leading-relaxed text-muted-foreground mb-8"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              {project.detailed_description || project.description}
+            </motion.p>
           </div>
+        </section>
 
-          {projectSections.map((section, index) => (
-            <ScrollingCard
-              key={`section-${index}`}
-              index={index}
-              section={section}
-              scrollYProgress={scrollYProgress}
-            />
-          ))}
-        </div>
-      </section>
+        {/* Caractéristiques & Équipements */}
+        <section className="py-16 bg-background">
+          <div className="max-w-7xl mx-auto px-4">
+            <motion.h2 
+              className="text-4xl font-light text-primary mb-8 text-center"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              Caractéristiques
+            </motion.h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {(project.amenities || []).map((amenity, index) => (
+                <motion.div
+                  key={index}
+                  className="p-6 bg-card rounded-lg border border-border/50 hover:border-primary/50 transition-all"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                >
+                  <h3 className="text-xl font-medium mb-2">{amenity}</h3>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
 
-      {/* Additional sections placeholder for later */}
-      <section className="py-16 bg-muted/30">
-        <div className="max-w-6xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-light mb-8">Prochaines sections à venir</h2>
-          <p className="text-muted-foreground">
-            Plans, visite virtuelle, galerie 3D, vidéo de présentation, et formulaire de contact...
-          </p>
-        </div>
-      </section>
+        {/* Unités Disponibles */}
+        <section className="py-16 bg-muted/30">
+          <div className="max-w-7xl mx-auto px-4">
+            <motion.h2 
+              className="text-4xl font-light text-primary mb-8 text-center"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              Unités Disponibles
+            </motion.h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {(project.units || []).map((unit, index) => (
+                <motion.div
+                  key={index}
+                  className="bg-card rounded-lg overflow-hidden shadow-md hover:shadow-premium transition-all"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                >
+                  <img 
+                    src={unit.image || 'https://picsum.photos/400/300'}
+                    alt={`Unité ${unit.type}`}
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="p-6">
+                    <h3 className="text-xl font-medium mb-2">{unit.type}</h3>
+                    <p className="text-success font-bold mb-2">{unit.price}</p>
+                    <Badge variant={unit.status === 'available' ? 'success' : 'destructive'}>
+                      {unit.status}
+                    </Badge>
+                    <p className="text-muted-foreground mt-4">{unit.description}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Plans & Documents */}
+        <section className="py-16 bg-background">
+          <div className="max-w-7xl mx-auto px-4">
+            <motion.h2 
+              className="text-4xl font-light text-primary mb-8 text-center"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              Plans
+            </motion.h2>
+            <Slider {...sliderSettings}>
+              {(project.plans || []).map((plan, index) => (
+                <div key={index}>
+                  <img 
+                    src={plan}
+                    alt={`Plan ${index + 1}`}
+                    className="w-full h-[60vh] object-contain"
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+            </Slider>
+          </div>
+        </section>
+
+        {/* Visite Virtuelle */}
+        <section className="py-16 bg-muted/30">
+          <div className="max-w-7xl mx-auto px-4">
+            <motion.h2 
+              className="text-4xl font-light text-primary mb-8 text-center"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              Visite Virtuelle
+            </motion.h2>
+            {project.virtual_tour_url ? (
+              <iframe
+                src={project.virtual_tour_url}
+                className="w-full h-[60vh] rounded-lg"
+                title="Visite virtuelle"
+                loading="lazy"
+              />
+            ) : (
+              <p className="text-center text-muted-foreground">Visite virtuelle non disponible pour ce projet.</p>
+            )}
+          </div>
+        </section>
+
+        {/* Vidéo de Présentation */}
+        <section className="py-16 bg-background">
+          <div className="max-w-7xl mx-auto px-4">
+            <motion.h2 
+              className="text-4xl font-light text-primary mb-8 text-center"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              Vidéo de Présentation
+            </motion.h2>
+            {project.video_url ? (
+              <video 
+                className="w-full h-[60vh] rounded-lg"
+                controls
+                poster={project.photos?.[0]}
+              >
+                <source src={project.video_url} type="video/mp4" />
+                Votre navigateur ne supporte pas la vidéo.
+              </video>
+            ) : (
+              <p className="text-center text-muted-foreground">Vidéo non disponible pour ce projet.</p>
+            )}
+          </div>
+        </section>
+
+        {/* Localisation & Points d'Intérêt */}
+        <section className="py-16 bg-muted/30">
+          <div className="max-w-7xl mx-auto px-4">
+            <motion.h2 
+              className="text-4xl font-light text-primary mb-8 text-center"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              Localisation
+            </motion.h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <motion.div
+                className="rounded-lg overflow-hidden shadow-md"
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6 }}
+              >
+                <img 
+                  src={project.map_image || 'https://picsum.photos/800/400'}
+                  alt="Carte du projet"
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
+              </motion.div>
+              <div className="space-y-4">
+                <motion.h3
+                  className="text-2xl font-medium"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                >
+                  Points d'Intérêt
+                </motion.h3>
+                {(project.interests || []).map((interest: any, index) => (
+                  <motion.div
+                    key={index}
+                    className="p-4 bg-card rounded-lg border border-border/50 hover:border-primary/50 transition-all"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                  >
+                    <div className="flex justify-between">
+                      <span>{interest.name}</span>
+                      <ExternalLink className="w-4 h-4 text-primary cursor-pointer" onClick={() => window.open(interest.link, '_blank')} />
+                    </div>
+                    <p className="text-sm text-muted-foreground">{interest.desc}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Informations Techniques */}
+        <section className="py-16 bg-background">
+          <div className="max-w-4xl mx-auto px-4">
+            <motion.h2 
+              className="text-4xl font-light text-primary mb-8 text-center"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              Informations Techniques
+            </motion.h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <motion.div 
+                className="p-6 bg-card rounded-lg border border-border/50"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                <h3 className="text-xl font-medium mb-2">Type</h3>
+                <p>{project.type}</p>
+              </motion.div>
+              <motion.div 
+                className="p-6 bg-card rounded-lg border border-border/50"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+              >
+                <h3 className="text-xl font-medium mb-2">Date de Livraison</h3>
+                <p>{project.completion_date}</p>
+              </motion.div>
+              <motion.div 
+                className="p-6 bg-card rounded-lg border border-border/50"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <h3 className="text-xl font-medium mb-2">État Meublé</h3>
+                <p>{project.furniture_status}</p>
+              </motion.div>
+              <motion.div 
+                className="p-6 bg-card rounded-lg border border-border/50"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
+                <h3 className="text-xl font-medium mb-2">Habitabilité</h3>
+                <p>{project.livability ? 'Oui' : 'Non'}</p>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* Call to Action */}
+        <section className="py-16 bg-primary text-primary-foreground text-center">
+          <div className="max-w-4xl mx-auto">
+            <motion.h2
+              className="text-4xl font-light mb-4"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              Intéressé par ce projet ?
+            </motion.h2>
+            <Button
+              variant="secondary"
+              className="bg-background text-primary hover:bg-background/90"
+              asChild
+            >
+              <Link to="/contact">
+                Nous Contacter
+                <ArrowRight className="ml-2" />
+              </Link>
+            </Button>
+          </div>
+        </section>
+      </main>
     </Layout>
   );
 };
