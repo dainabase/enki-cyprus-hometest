@@ -33,7 +33,7 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner';
 interface UserProfile {
   id: string;
   email: string;
-  role: 'user' | 'admin';
+  role: string;
   profile: any;
   created_at: string;
   updated_at: string;

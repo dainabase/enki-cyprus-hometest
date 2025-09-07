@@ -64,8 +64,9 @@ const adminNavItems = [
 ];
 
 export function AdminSidebar() {
-  const { collapsed } = useSidebar();
+  const { state } = useSidebar();
   const location = useLocation();
+  const collapsed = state === "collapsed";
   
   const isActive = (path: string) => location.pathname === path;
   const isAnyProjectsActive = adminNavItems.some((item) => isActive(item.url));
@@ -73,7 +74,7 @@ export function AdminSidebar() {
   return (
     <Sidebar
       className={collapsed ? "w-[72px]" : "w-64"}
-      collapsible
+      collapsible="icon"
     >
       {/* Header with trigger */}
       <div className="flex items-center justify-between p-4 border-b border-border/50">

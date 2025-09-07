@@ -24,17 +24,13 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner';
 interface Commission {
   id: string;
   amount: number;
-  status: 'pending' | 'paid' | 'overdue';
+  status: string;
   date: string;
   project_id: string;
   promoter_id: string;
   created_at: string;
   updated_at: string;
-  project?: {
-    title: string;
-    type: string;
-    location: any;
-  };
+  project?: any;
 }
 
 const container = {
@@ -77,7 +73,7 @@ export const AdminCommissions = () => {
       const { data, error } = await query;
       if (error) throw error;
       
-      return data || [];
+      return (data || []) as unknown as Commission[];
     }
   });
 

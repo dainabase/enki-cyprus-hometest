@@ -477,7 +477,7 @@ export const AdminProjects = () => {
 
                         <div className="flex items-center text-sm text-secondary">
                           <MapPin className="w-4 h-4 mr-1" />
-                          {project.location?.city || 'Non spécifié'}
+                          {(project.location as any)?.city || 'Non spécifié'}
                         </div>
 
                         <p className="text-sm text-secondary line-clamp-2">
