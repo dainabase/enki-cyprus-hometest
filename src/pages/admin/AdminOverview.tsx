@@ -1,342 +1,350 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { useQuery } from '@tanstack/react-query';
-import {
-  Building,
-  Users,
-  TrendingUp,
-  DollarSign,
-  Eye,
-  Heart,
-  Download,
-  AlertCircle,
-  CheckCircle,
-  Clock,
-  Zap
-} from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import LoadingSpinner from '@/components/ui/LoadingSpinner';
-import { useNavigate } from 'react-router-dom';
-
-interface DashboardStats {
-  totalProjects: number;
-  totalUsers: number;
-  publishedProjects: number;
-  draftProjects: number;
-  totalViews: number;
-  totalFavorites: number;
-  totalDownloads: number;
-  conversionRate: number;
-  recentActivity: Array<{
-    id: string;
-    type: 'project_created' | 'user_registered' | 'favorite_added';
-    title: string;
-    timestamp: string;
-  }>;
-}
-
-const container = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2
-    }
-  }
-};
-
-const item = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0 }
-};
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { 
+  Users, 
+  Building, 
+  Euro, 
+  TrendingUp, 
+  Award,
+  Clock,
+  CheckCircle,
+  AlertCircle
+} from 'lucide-react';
 
 export const AdminOverview = () => {
-  const { data: stats, isLoading } = useQuery({
-    queryKey: ['admin-dashboard-stats'],
-    queryFn: async (): Promise<DashboardStats> => {
-      const [
-        projectsResult,
-        usersResult,
-        analyticsResult
-      ] = await Promise.all([
-        supabase.from('projects').select('*', { count: 'exact' }),
-        supabase.from('profiles').select('*', { count: 'exact' }),
-        supabase.from('analytics_events').select('*').limit(100)
-      ]);
-
-      const publishedProjects = projectsResult.data?.filter(p => p.status === 'published').length || 0;
-      const draftProjects = (projectsResult.count || 0) - publishedProjects;
-      
-      // Mock recent activity for now
-      const recentActivity = [
-        {
-          id: '1',
-          type: 'project_created' as const,
-          title: 'Nouveau projet: Villa Luxueuse Paphos',
-          timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
-        },
-        {
-          id: '2', 
-          type: 'user_registered' as const,
-          title: 'Nouvel utilisateur inscrit',
-          timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString()
-        },
-        {
-          id: '3',
-          type: 'favorite_added' as const,
-          title: 'Projet ajouté aux favoris',
-          timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString()
-        }
-      ];
-
-      return {
-        totalProjects: projectsResult.count || 0,
-        totalUsers: usersResult.count || 0,
-        publishedProjects,
-        draftProjects,
-        totalViews: analyticsResult.data?.filter(e => e.event_name === 'page_view').length || 0,
-        totalFavorites: 0, // Would come from favorites table
-        totalDownloads: analyticsResult.data?.filter(e => e.event_name === 'pdf_download').length || 0,
-        conversionRate: 4.2, // Mock data
-        recentActivity
-      };
-    },
-    refetchInterval: 30000 // Refresh every 30 seconds for real-time feel
+  const { t } = useTranslation();
+  const [period, setPeriod] = useState(30); // 7, 30, 90 jours
+  const [kpis, setKpis] = useState({
+    totalLeads: 0,
+    convertedLeads: 0,
+    conversionRate: 0,
+    totalProperties: 0,
+    availableProperties: 0,
+    totalPropertyValue: 0,
+    totalCommissions: 0,
+    pendingCommissions: 0,
+    paidCommissions: 0,
+    goldenVisaProperties: 0,
+    goldenVisaLeads: 0,
+    averageDaysToConvert: 0
   });
+  const [recentLeads, setRecentLeads] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    fetchKPIs();
+    fetchRecentLeads();
+  }, [period]);
 
-  if (isLoading) {
+  const fetchKPIs = async () => {
+    setLoading(true);
+    
+    // Calculer la date de début selon la période
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - period);
+    
+    try {
+      // Fetch leads stats
+      const { data: leads } = await supabase
+        .from('leads')
+        .select('status, golden_visa_interest, created_at');
+      
+      // Fetch properties stats (using projects table)
+      const { data: properties } = await supabase
+        .from('projects')
+        .select('price, reservation_status, golden_visa_eligible');
+      
+      // Fetch commissions stats
+      const { data: commissions } = await supabase
+        .from('commissions')
+        .select('amount, status, created_at')
+        .gte('created_at', startDate.toISOString());
+      
+      // Calculate KPIs
+      if (leads && properties && commissions) {
+        const recentLeads = leads.filter(l => new Date(l.created_at) >= startDate);
+        const totalLeads = recentLeads.length;
+        const convertedLeads = recentLeads.filter(l => l.status === 'converted').length;
+        const conversionRate = totalLeads > 0 ? (convertedLeads / totalLeads * 100) : 0;
+        
+        const totalProperties = properties.length;
+        const availableProperties = properties.filter(p => p.reservation_status === 'available').length;
+        const totalPropertyValue = properties.reduce((sum, p) => sum + (Number(p.price) || 0), 0);
+        
+        const goldenVisaProperties = properties.filter(p => p.golden_visa_eligible).length;
+        const goldenVisaLeads = recentLeads.filter(l => l.golden_visa_interest).length;
+        
+        const totalCommissions = commissions.reduce((sum, c) => sum + (Number(c.amount) || 0), 0);
+        const pendingCommissions = commissions
+          .filter(c => c.status === 'pending')
+          .reduce((sum, c) => sum + (Number(c.amount) || 0), 0);
+        const paidCommissions = commissions
+          .filter(c => c.status === 'paid')
+          .reduce((sum, c) => sum + (Number(c.amount) || 0), 0);
+        
+        setKpis({
+          totalLeads,
+          convertedLeads,
+          conversionRate,
+          totalProperties,
+          availableProperties,
+          totalPropertyValue,
+          totalCommissions,
+          pendingCommissions,
+          paidCommissions,
+          goldenVisaProperties,
+          goldenVisaLeads,
+          averageDaysToConvert: 15 // Placeholder - calcul complexe
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching KPIs:', error);
+    }
+    
+    setLoading(false);
+  };
+
+  const fetchRecentLeads = async () => {
+    try {
+      const { data } = await supabase
+        .from('leads')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(5);
+      
+      if (data) setRecentLeads(data);
+    } catch (error) {
+      console.error('Error fetching recent leads:', error);
+    }
+  };
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('fr-FR', {
+      style: 'currency',
+      currency: 'EUR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount);
+  };
+
+  const MetricCard = ({ icon: Icon, title, value, subtitle, color = 'blue' }) => {
+    const colorClasses = {
+      blue: 'text-blue-500',
+      green: 'text-green-500',
+      yellow: 'text-yellow-500',
+      purple: 'text-purple-500',
+      red: 'text-red-500'
+    };
+
     return (
-      <div className="p-8">
-        <LoadingSpinner size="lg" text="Chargement du tableau de bord..." />
+      <Card>
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground">{title}</p>
+              <p className="text-2xl font-bold mt-1">{value}</p>
+              {subtitle && (
+                <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>
+              )}
+            </div>
+            <div className="p-3 rounded-lg bg-muted">
+              <Icon className={`w-6 h-6 ${colorClasses[color]}`} />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
+
+  if (loading) {
+    return (
+      <div className="p-6">
+        <div className="text-center">Loading...</div>
       </div>
     );
   }
 
-  const statCards = [
-    {
-      title: 'Total Projets',
-      value: stats?.totalProjects || 0,
-      icon: Building,
-      description: `${stats?.publishedProjects || 0} publiés, ${stats?.draftProjects || 0} brouillons`,
-      trend: '+12%',
-      trendUp: true
-    },
-    {
-      title: 'Utilisateurs Actifs',
-      value: stats?.totalUsers || 0,
-      icon: Users,
-      description: 'Comptes enregistrés',
-      trend: '+8%',
-      trendUp: true
-    },
-    {
-      title: 'Vues Totales',
-      value: stats?.totalViews || 0,
-      icon: Eye,
-      description: 'Pages vues ce mois',
-      trend: '+15%',
-      trendUp: true
-    },
-    {
-      title: 'Taux Conversion',
-      value: `${stats?.conversionRate || 0}%`,
-      icon: TrendingUp,
-      description: 'Objectif: 5%',
-      trend: '+0.8%',
-      trendUp: true
-    }
-  ];
-
-  const quickActions = [
-    {
-      title: 'Nouveau Projet',
-      description: 'Ajouter une propriété',
-      icon: Building,
-      action: () => navigate('/admin/projects'),
-      color: 'primary'
-    },
-    {
-      title: 'Gérer Utilisateurs',
-      description: 'Modération des comptes',
-      icon: Users,
-      action: () => navigate('/admin/users'),
-      color: 'secondary'
-    },
-    {
-      title: 'Voir Analytics',
-      description: 'Rapports détaillés',
-      icon: TrendingUp,
-      action: () => navigate('/admin/analytics'),
-      color: 'accent'
-    }
-  ];
-
   return (
-    <div className="p-8 space-y-8">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-4xl font-light tracking-tight text-primary">
-              Tableau de Bord
-            </h1>
-            <p className="text-lg admin-text-secondary-override mt-2">
-              Aperçu de votre plateforme ENKI-REALTY
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <Badge variant="outline" className="px-3 py-1">
-              <div className="w-2 h-2 bg-success rounded-full mr-2"></div>
-              Système en ligne
-            </Badge>
-            <Button variant="outline" size="sm">
-              <Download className="w-4 h-4 mr-2" />
-              Exporter Rapport
-            </Button>
-          </div>
+    <div className="p-6 space-y-6">
+      {/* Header avec filtres */}
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">{t('dashboard.title')}</h1>
+        <div className="flex gap-2">
+          <Button 
+            variant={period === 7 ? 'default' : 'outline'}
+            onClick={() => setPeriod(7)}
+            size="sm"
+          >
+            7 {t('dashboard.days')}
+          </Button>
+          <Button 
+            variant={period === 30 ? 'default' : 'outline'}
+            onClick={() => setPeriod(30)}
+            size="sm"
+          >
+            30 {t('dashboard.days')}
+          </Button>
+          <Button 
+            variant={period === 90 ? 'default' : 'outline'}
+            onClick={() => setPeriod(90)}
+            size="sm"
+          >
+            90 {t('dashboard.days')}
+          </Button>
         </div>
-      </motion.div>
+      </div>
 
-      {/* Stats Grid */}
-      <motion.div
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6"
-      >
-        {statCards.map((stat, index) => (
-          <motion.div key={stat.title} variants={item}>
-            <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-md">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-secondary">
-                  {stat.title}
-                </CardTitle>
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <stat.icon className="h-4 w-4 text-primary" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-light tracking-tight text-primary mb-1">
-                  {stat.value}
-                </div>
-                <div className="flex items-center justify-between">
-                  <p className="text-xs text-secondary">
-                    {stat.description}
-                  </p>
-                  <Badge 
-                    variant="outline" 
-                    className={`text-xs ${stat.trendUp ? 'text-success' : 'text-destructive'}`}
-                  >
-                    {stat.trend}
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
-      </motion.div>
+      {/* KPIs Leads */}
+      <div>
+        <h2 className="text-lg font-semibold mb-4">{t('dashboard.leads')}</h2>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <MetricCard
+            icon={Users}
+            title={t('dashboard.totalLeads')}
+            value={kpis.totalLeads}
+            subtitle={`${kpis.convertedLeads} ${t('dashboard.converted')}`}
+            color="blue"
+          />
+          <MetricCard
+            icon={TrendingUp}
+            title={t('dashboard.conversionRate')}
+            value={`${kpis.conversionRate.toFixed(1)}%`}
+            subtitle={t('dashboard.leadToClient')}
+            color="green"
+          />
+          <MetricCard
+            icon={Award}
+            title={t('dashboard.goldenVisaLeads')}
+            value={kpis.goldenVisaLeads}
+            subtitle={t('dashboard.interested')}
+            color="yellow"
+          />
+          <MetricCard
+            icon={Clock}
+            title={t('dashboard.avgConversion')}
+            value={`${kpis.averageDaysToConvert} ${t('dashboard.days')}`}
+            subtitle={t('dashboard.toConvert')}
+            color="purple"
+          />
+        </div>
+      </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-        {/* Quick Actions */}
-        <motion.div
-          variants={item}
-          initial="hidden"
-          animate="show"
-          transition={{ delay: 0.4 }}
-          className="xl:col-span-1"
-        >
-          <Card className="h-full shadow-md">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Zap className="w-5 h-5 text-primary" />
-                Actions Rapides
-              </CardTitle>
-              <CardDescription>
-                Accès direct aux fonctions principales
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {quickActions.map((action, index) => (
-                <motion.div
-                  key={action.title}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.5 + index * 0.1 }}
-                >
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start h-auto p-4 hover:shadow-md transition-all duration-200"
-                    onClick={action.action}
-                  >
-                    <action.icon className="w-5 h-5 mr-3 text-primary" />
-                    <div className="text-left">
-                      <div className="font-medium">{action.title}</div>
-                      <div className="text-xs text-secondary">{action.description}</div>
-                    </div>
-                  </Button>
-                </motion.div>
-              ))}
-            </CardContent>
-          </Card>
-        </motion.div>
+      {/* KPIs Propriétés */}
+      <div>
+        <h2 className="text-lg font-semibold mb-4">{t('dashboard.properties')}</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <MetricCard
+            icon={Building}
+            title={t('dashboard.totalProperties')}
+            value={kpis.totalProperties}
+            subtitle={`${kpis.availableProperties} ${t('dashboard.available')}`}
+            color="blue"
+          />
+          <MetricCard
+            icon={Euro}
+            title={t('dashboard.totalValue')}
+            value={formatCurrency(kpis.totalPropertyValue)}
+            subtitle={t('dashboard.portfolioValue')}
+            color="green"
+          />
+          <MetricCard
+            icon={Award}
+            title={t('dashboard.goldenVisaEligible')}
+            value={kpis.goldenVisaProperties}
+            subtitle={t('dashboard.properties')}
+            color="yellow"
+          />
+        </div>
+      </div>
 
-        {/* Recent Activity */}
-        <motion.div
-          variants={item}
-          initial="hidden"
-          animate="show"
-          transition={{ delay: 0.6 }}
-          className="xl:col-span-2"
-        >
-          <Card className="h-full shadow-md">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Clock className="w-5 h-5 text-primary" />
-                Activité Récente
-              </CardTitle>
-              <CardDescription>
-                Derniers événements sur la plateforme
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {stats?.recentActivity.map((activity, index) => (
-                  <motion.div
-                    key={activity.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.7 + index * 0.1 }}
-                    className="flex items-center gap-4 p-3 rounded-lg bg-accent/50 hover:bg-accent transition-colors duration-200"
-                  >
-                    <div className="p-2 rounded-full bg-primary/10">
-                      {activity.type === 'project_created' && <Building className="w-4 h-4 text-primary" />}
-                      {activity.type === 'user_registered' && <Users className="w-4 h-4 text-primary" />}
-                      {activity.type === 'favorite_added' && <Heart className="w-4 h-4 text-primary" />}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-primary truncate">
-                        {activity.title}
-                      </p>
-                      <p className="text-xs text-secondary">
-                        {new Date(activity.timestamp).toLocaleString('fr-FR')}
-                      </p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+      {/* KPIs Commissions */}
+      <div>
+        <h2 className="text-lg font-semibold mb-4">{t('dashboard.commissions')}</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <MetricCard
+            icon={Euro}
+            title={t('dashboard.totalCommissions')}
+            value={formatCurrency(kpis.totalCommissions)}
+            subtitle={t('dashboard.period', { days: period })}
+            color="green"
+          />
+          <MetricCard
+            icon={AlertCircle}
+            title={t('dashboard.pending')}
+            value={formatCurrency(kpis.pendingCommissions)}
+            subtitle={t('dashboard.toPay')}
+            color="yellow"
+          />
+          <MetricCard
+            icon={CheckCircle}
+            title={t('dashboard.paid')}
+            value={formatCurrency(kpis.paidCommissions)}
+            subtitle={t('dashboard.completed')}
+            color="blue"
+          />
+        </div>
+      </div>
+
+      {/* Activité récente */}
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('dashboard.recentActivity')}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {recentLeads.length > 0 ? (
+              recentLeads.map(lead => (
+                <div key={lead.id} className="flex items-center justify-between p-3 bg-muted rounded">
+                  <div>
+                    <p className="font-medium">
+                      {lead.first_name} {lead.last_name}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {lead.email} • {t(`leads.status.${lead.status}`)}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    {lead.budget_max && (
+                      <p className="font-medium">{formatCurrency(Number(lead.budget_max))}</p>
+                    )}
+                    <p className="text-xs text-muted-foreground">
+                      {new Date(lead.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-muted-foreground text-center py-4">
+                {t('dashboard.noRecentActivity')}
+              </p>
+            )}
+          </div>
+          <Link to="/admin/leads" className="block mt-4">
+            <Button variant="outline" className="w-full">
+              {t('dashboard.viewAllLeads')}
+            </Button>
+          </Link>
+        </CardContent>
+      </Card>
+
+      {/* Liens rapides */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <Link to="/admin/projects">
+          <Button variant="outline" className="w-full">{t('nav.projects')}</Button>
+        </Link>
+        <Link to="/admin/leads">
+          <Button variant="outline" className="w-full">{t('nav.leads')}</Button>
+        </Link>
+        <Link to="/admin/pipeline">
+          <Button variant="outline" className="w-full">{t('nav.pipeline')}</Button>
+        </Link>
+        <Link to="/admin/commissions">
+          <Button variant="outline" className="w-full">{t('nav.commissions')}</Button>
+        </Link>
       </div>
     </div>
   );
