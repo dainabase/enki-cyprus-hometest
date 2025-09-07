@@ -318,5 +318,45 @@
       "status": "Κατάσταση",
       "created": "Δημιουργήθηκε"
     }
+  },
+  "performance": {
+    "title": "Απόδοση Αναπτυξιακών",
+    "subtitle": "Μετρήσεις απόδοσης και κατατάξεις για όλους τους αναπτυξιακούς",
+    "topPerformers": "Κορυφαίοι Αναπτυξιακοί",
+    "allDevelopers": "Όλοι οι Αναπτυξιακοί",
+    "developerDetails": "Στοιχεία για {{name}}",
+    "period": {
+      "7days": "7 Ημέρες",
+      "30days": "30 Ημέρες",
+      "90days": "90 Ημέρες",
+      "all": "Όλος ο χρόνος"
+    },
+    "table": {
+      "rank": "#",
+      "developer": "Αναπτυξιακός",
+      "projects": "Έργα",
+      "properties": "Ακίνητα",
+      "sold": "Πουλήθηκαν",
+      "conversion": "Μετατροπή",
+      "revenue": "Έσοδα",
+      "commissions": "Προμήθειες",
+      "avgPrice": "Μέση Τιμή",
+      "goldenVisa": "Golden Visa"
+    },
+    "totalRevenue": "Συνολικά Έσοδα",
+    "sales": "Πωλήσεις",
+    "projects": "Έργα",
+    "propertiesSold": "Ακίνητα που Πουλήθηκαν",
+    "conversionRate": "Ποσοστό Μετατροπής",
+    "recentProjects": "Πρόσφατα Έργα",
+    "recentCommissions": "Πρόσφατες Προμήθειες",
+    "projectName": "Όνομα Έργου",
+    "status": "Κατάσταση",
+    "price": "Τιμή",
+    "created": "Δημιουργήθηκε",
+    "amount": "Ποσό",
+    "date": "Ημερομηνία",
+    "noProjects": "Δεν βρέθηκαν έργα",
+    "noCommissions": "Δεν βρέθηκαν προμήθειες"
   }
 }

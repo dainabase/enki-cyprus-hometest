@@ -141,5 +141,45 @@
       "status": "Status",
       "created": "Aangemaakt"
     }
+  },
+  "performance": {
+    "title": "Ontwikkelaar Prestaties",
+    "subtitle": "Prestatiemetrieken en rankings voor alle ontwikkelaars",
+    "topPerformers": "Top Performers",
+    "allDevelopers": "Alle Ontwikkelaars",
+    "developerDetails": "Details voor {{name}}",
+    "period": {
+      "7days": "7 Dagen",
+      "30days": "30 Dagen",
+      "90days": "90 Dagen",
+      "all": "Alle tijd"
+    },
+    "table": {
+      "rank": "#",
+      "developer": "Ontwikkelaar",
+      "projects": "Projecten",
+      "properties": "Eigendommen",
+      "sold": "Verkocht",
+      "conversion": "Conversie",
+      "revenue": "Inkomsten",
+      "commissions": "Commissies",
+      "avgPrice": "Gem. Prijs",
+      "goldenVisa": "Golden Visa"
+    },
+    "totalRevenue": "Totale Inkomsten",
+    "sales": "Verkopen",
+    "projects": "Projecten",
+    "propertiesSold": "Verkochte Eigendommen",
+    "conversionRate": "Conversieratio",
+    "recentProjects": "Recente Projecten",
+    "recentCommissions": "Recente Commissies",
+    "projectName": "Projectnaam",
+    "status": "Status",
+    "price": "Prijs",
+    "created": "Aangemaakt",
+    "amount": "Bedrag",
+    "date": "Datum",
+    "noProjects": "Geen projecten gevonden",
+    "noCommissions": "Geen commissies gevonden"
   }
 }

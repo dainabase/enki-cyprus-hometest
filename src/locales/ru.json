@@ -141,5 +141,45 @@
       "status": "Статус",
       "created": "Создано"
     }
+  },
+  "performance": {
+    "title": "Производительность Застройщиков",
+    "subtitle": "Метрики производительности и рейтинги для всех застройщиков",
+    "topPerformers": "Лучшие Исполнители",
+    "allDevelopers": "Все Застройщики",
+    "developerDetails": "Детали для {{name}}",
+    "period": {
+      "7days": "7 Дней",
+      "30days": "30 Дней",
+      "90days": "90 Дней",
+      "all": "Все время"
+    },
+    "table": {
+      "rank": "#",
+      "developer": "Застройщик",
+      "projects": "Проекты",
+      "properties": "Недвижимость",
+      "sold": "Продано",
+      "conversion": "Конверсия",
+      "revenue": "Доходы",
+      "commissions": "Комиссии",
+      "avgPrice": "Средняя Цена",
+      "goldenVisa": "Golden Visa"
+    },
+    "totalRevenue": "Общий Доход",
+    "sales": "Продажи",
+    "projects": "Проекты",
+    "propertiesSold": "Продано Недвижимости",
+    "conversionRate": "Коэффициент Конверсии",
+    "recentProjects": "Последние Проекты",
+    "recentCommissions": "Последние Комиссии",
+    "projectName": "Название Проекта",
+    "status": "Статус",
+    "price": "Цена",
+    "created": "Создано",
+    "amount": "Сумма",
+    "date": "Дата",
+    "noProjects": "Проекты не найдены",
+    "noCommissions": "Комиссии не найдены"
   }
 }

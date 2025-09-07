@@ -78,6 +78,12 @@ const getAdminNavItems = (t: any) => [
     description: 'Segmentation automatique'
   },
   {
+    title: 'Performance',
+    url: '/admin/performance',
+    icon: TrendingUp,
+    description: 'Performance développeurs'
+  },
+  {
     title: 'Rapports',
     url: '/admin/reports',
     icon: FileText,

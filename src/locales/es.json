@@ -318,5 +318,45 @@
       "status": "Estado",
       "created": "Creado"
     }
+  },
+  "performance": {
+    "title": "Rendimiento Desarrolladores",
+    "subtitle": "Métricas de rendimiento y rankings para todos los desarrolladores",
+    "topPerformers": "Mejores Performers",
+    "allDevelopers": "Todos los Desarrolladores",
+    "developerDetails": "Detalles para {{name}}",
+    "period": {
+      "7days": "7 Días",
+      "30days": "30 Días",
+      "90days": "90 Días",
+      "all": "Todo el tiempo"
+    },
+    "table": {
+      "rank": "#",
+      "developer": "Desarrollador",
+      "projects": "Proyectos",
+      "properties": "Propiedades",
+      "sold": "Vendidas",
+      "conversion": "Conversión",
+      "revenue": "Ingresos",
+      "commissions": "Comisiones",
+      "avgPrice": "Precio Promedio",
+      "goldenVisa": "Golden Visa"
+    },
+    "totalRevenue": "Ingresos Totales",
+    "sales": "Ventas",
+    "projects": "Proyectos",
+    "propertiesSold": "Propiedades Vendidas",
+    "conversionRate": "Tasa de Conversión",
+    "recentProjects": "Proyectos Recientes",
+    "recentCommissions": "Comisiones Recientes",
+    "projectName": "Nombre del Proyecto",
+    "status": "Estado",
+    "price": "Precio",
+    "created": "Creado",
+    "amount": "Cantidad",
+    "date": "Fecha",
+    "noProjects": "No se encontraron proyectos",
+    "noCommissions": "No se encontraron comisiones"
   }
 }

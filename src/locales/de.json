@@ -141,5 +141,45 @@
       "status": "Status",
       "created": "Erstellt"
     }
+  },
+  "performance": {
+    "title": "Entwickler-Performance",
+    "subtitle": "Performance-Metriken und Rankings für alle Entwickler",
+    "topPerformers": "Top Performer",
+    "allDevelopers": "Alle Entwickler",
+    "developerDetails": "Details für {{name}}",
+    "period": {
+      "7days": "7 Tage",
+      "30days": "30 Tage",
+      "90days": "90 Tage",
+      "all": "Alle Zeit"
+    },
+    "table": {
+      "rank": "#",
+      "developer": "Entwickler",
+      "projects": "Projekte",
+      "properties": "Immobilien",
+      "sold": "Verkauft",
+      "conversion": "Konversion",
+      "revenue": "Umsatz",
+      "commissions": "Provisionen",
+      "avgPrice": "Ø Preis",
+      "goldenVisa": "Golden Visa"
+    },
+    "totalRevenue": "Gesamtumsatz",
+    "sales": "Verkäufe",
+    "projects": "Projekte",
+    "propertiesSold": "Verkaufte Immobilien",
+    "conversionRate": "Konversionsrate",
+    "recentProjects": "Neueste Projekte",
+    "recentCommissions": "Neueste Provisionen",
+    "projectName": "Projektname",
+    "status": "Status",
+    "price": "Preis",
+    "created": "Erstellt",
+    "amount": "Betrag",
+    "date": "Datum",
+    "noProjects": "Keine Projekte gefunden",
+    "noCommissions": "Keine Provisionen gefunden"
   }
 }
