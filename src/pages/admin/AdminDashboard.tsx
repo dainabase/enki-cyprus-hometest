@@ -4,7 +4,7 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { AdminOverview } from './AdminOverview';
 import AdminDevelopers from './AdminDevelopers';
-import { AdminProjects } from './AdminProjects';
+import AdminProjects from './AdminProjects';
 import AdminUnits from './AdminUnits';
 import { AdminCommissions } from './AdminCommissions';
 import { AdminUsers } from './AdminUsers';

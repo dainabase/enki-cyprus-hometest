@@ -1,0 +1,168 @@
+import { supabase } from '@/integrations/supabase/client';
+
+export interface ProjectFilters {
+  developerId?: string;
+  zone?: string;
+  status?: string;
+  goldenVisaOnly?: boolean;
+}
+
+export interface ProjectFormData {
+  title: string;
+  subtitle?: string;
+  description: string;
+  detailed_description?: string;
+  developer_id?: string;
+  cyprus_zone: string;
+  status: string;
+  type: string;
+  price: number;
+  price_from?: string;
+  vat_rate: number;
+  completion_date?: string;
+  golden_visa_eligible: boolean;
+  units_available: number;
+  total_units: number;
+  location: {
+    city: string;
+    address?: string;
+    lat: number;
+    lng: number;
+  };
+  features?: string[];
+  photos?: string[];
+}
+
+// Fetch projects with optional filters
+export const fetchProjects = async (filters: ProjectFilters = {}) => {
+  let query = supabase
+    .from('projects')
+    .select(`
+      *,
+      developer:developers(id, name, contact_info),
+      buildings(count)
+    `)
+    .order('developer_id', { ascending: true })
+    .order('title', { ascending: true });
+
+  // Apply filters
+  if (filters.developerId) {
+    query = query.eq('developer_id', filters.developerId);
+  }
+  if (filters.zone) {
+    query = query.eq('cyprus_zone', filters.zone);
+  }
+  if (filters.status) {
+    query = query.eq('status', filters.status);
+  }
+  if (filters.goldenVisaOnly) {
+    query = query.eq('golden_visa_eligible', true);
+  }
+
+  const { data, error } = await query;
+  if (error) throw error;
+  return data;
+};
+
+// Fetch single project with full details
+export const fetchProject = async (id: string) => {
+  const { data, error } = await supabase
+    .from('projects')
+    .select(`
+      *,
+      developer:developers(id, name, contact_info, logo, website),
+      buildings(
+        id,
+        name,
+        total_floors,
+        total_units,
+        building_type,
+        construction_status,
+        energy_rating
+      )
+    `)
+    .eq('id', id)
+    .single();
+  
+  if (error) throw error;
+  return data;
+};
+
+// Create new project
+export const createProject = async (projectData: ProjectFormData) => {
+  const { data, error } = await supabase
+    .from('projects')
+    .insert([{
+      ...projectData,
+      features: projectData.features || [],
+      photos: projectData.photos || []
+    }])
+    .select()
+    .single();
+  
+  if (error) throw error;
+  return data;
+};
+
+// Update existing project
+export const updateProject = async (id: string, projectData: Partial<ProjectFormData>) => {
+  const { data, error } = await supabase
+    .from('projects')
+    .update(projectData)
+    .eq('id', id)
+    .select()
+    .single();
+  
+  if (error) throw error;
+  return data;
+};
+
+// Delete project
+export const deleteProject = async (id: string) => {
+  const { error } = await supabase
+    .from('projects')
+    .delete()
+    .eq('id', id);
+  
+  if (error) throw error;
+};
+
+// Fetch developers for dropdowns
+export const fetchDevelopers = async () => {
+  const { data, error } = await supabase
+    .from('developers')
+    .select('id, name')
+    .eq('status', 'active')
+    .order('name');
+  
+  if (error) throw error;
+  return data;
+};
+
+// Calculate project statistics
+export const calculateProjectStats = (projects: any[]) => {
+  return {
+    total: projects.length,
+    available: projects.filter(p => p.status === 'available').length,
+    construction: projects.filter(p => p.status === 'under_construction').length,
+    delivered: projects.filter(p => p.status === 'delivered').length,
+    goldenVisa: projects.filter(p => p.golden_visa_eligible).length
+  };
+};
+
+// Group projects by developer
+export const groupProjectsByDeveloper = (projects: any[]) => {
+  return projects.reduce((acc, project) => {
+    const developerId = project.developer_id || 'no-developer';
+    const developerName = project.developer?.name || 'Sans développeur';
+    
+    if (!acc[developerId]) {
+      acc[developerId] = {
+        developerName,
+        projects: []
+      };
+    }
+    acc[developerId].projects.push(project);
+    return acc;
+  }, {} as Record<string, { developerName: string; projects: any[] }>);
+};
