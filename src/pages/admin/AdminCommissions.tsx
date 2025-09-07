@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import {
   DollarSign,
   TrendingUp,
@@ -19,18 +20,28 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 interface Commission {
   id: string;
-  amount: number;
-  status: string;
-  date: string;
-  project_id: string;
-  promoter_id: string;
+  property_id: string;
+  developer_id: string;
+  sale_price: number;
+  commission_rate: number;
+  commission_amount: number;
+  status: 'pending' | 'paid' | 'cancelled';
+  sale_date: string;
+  due_date: string;
   created_at: string;
   updated_at: string;
-  project?: any;
+  projects?: {
+    title: string;
+    type: string;
+  };
+  developers?: {
+    name: string;
+  };
 }
 
 const container = {
@@ -49,29 +60,69 @@ const item = {
 };
 
 export const AdminCommissions = () => {
+  const { t } = useTranslation();
+  const { toast } = useToast();
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [dateFilter, setDateFilter] = useState<string>('this_month');
+  const [dateFilter, setDateFilter] = useState<string>('month');
   const [searchTerm, setSearchTerm] = useState('');
 
   // Fetch commissions data
-  const { data: commissions = [], isLoading } = useQuery({
+  const { data: commissions = [], isLoading, refetch } = useQuery({
     queryKey: ['admin-commissions', statusFilter, dateFilter],
     queryFn: async (): Promise<Commission[]> => {
+      // Calculate start date based on filter
+      const startDate = new Date();
+      if (dateFilter === 'month') {
+        startDate.setMonth(startDate.getMonth() - 1);
+      } else if (dateFilter === 'quarter') {
+        startDate.setMonth(startDate.getMonth() - 3);
+      } else if (dateFilter === 'year') {
+        startDate.setFullYear(startDate.getFullYear() - 1);
+      }
+
       let query = supabase
         .from('commissions')
         .select(`
           *,
-          project:projects(title, type, location)
+          projects!inner(title, type),
+          developers!inner(name)
         `)
-        .order('created_at', { ascending: false });
+        .gte('sale_date', startDate.toISOString().split('T')[0])
+        .order('sale_date', { ascending: false });
 
       if (statusFilter !== 'all') {
         query = query.eq('status', statusFilter);
       }
 
-      // Date filtering logic would go here
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) {
+        console.error('Commission query error:', error);
+        // Fallback to the existing table structure if the new one doesn't exist yet
+        const fallbackQuery = supabase
+          .from('commissions')
+          .select('*')
+          .order('created_at', { ascending: false });
+          
+        const { data: fallbackData, error: fallbackError } = await fallbackQuery;
+        if (fallbackError) throw fallbackError;
+        
+        // Transform fallback data to match expected structure
+        return (fallbackData || []).map(item => ({
+          id: item.id,
+          property_id: item.project_id || '',
+          developer_id: item.promoter_id || '',
+          sale_price: item.amount || 0,
+          commission_rate: 5.0,
+          commission_amount: item.amount || 0,
+          status: item.status || 'pending',
+          sale_date: item.date || item.created_at,
+          due_date: '',
+          created_at: item.created_at,
+          updated_at: item.updated_at,
+          projects: { title: 'Projet existant', type: 'apartment' },
+          developers: { name: 'Développeur' }
+        })) as Commission[];
+      }
       
       return (data || []) as unknown as Commission[];
     }
@@ -79,37 +130,79 @@ export const AdminCommissions = () => {
 
   // Calculate statistics
   const stats = {
-    totalCommissions: commissions.reduce((sum, c) => sum + c.amount, 0),
-    pendingAmount: commissions.filter(c => c.status === 'pending').reduce((sum, c) => sum + c.amount, 0),
-    paidAmount: commissions.filter(c => c.status === 'paid').reduce((sum, c) => sum + c.amount, 0),
-    overdueAmount: commissions.filter(c => c.status === 'overdue').reduce((sum, c) => sum + c.amount, 0),
+    totalCommissions: commissions.reduce((sum, c) => sum + c.commission_amount, 0),
+    pendingAmount: commissions.filter(c => c.status === 'pending').reduce((sum, c) => sum + c.commission_amount, 0),
+    paidAmount: commissions.filter(c => c.status === 'paid').reduce((sum, c) => sum + c.commission_amount, 0),
+    cancelledAmount: commissions.filter(c => c.status === 'cancelled').reduce((sum, c) => sum + c.commission_amount, 0),
     pendingCount: commissions.filter(c => c.status === 'pending').length,
     paidCount: commissions.filter(c => c.status === 'paid').length,
-    overdueCount: commissions.filter(c => c.status === 'overdue').length
+    cancelledCount: commissions.filter(c => c.status === 'cancelled').length
   };
 
   const filteredCommissions = commissions.filter(commission => {
     const matchesSearch = searchTerm === '' || 
-      commission.project?.title.toLowerCase().includes(searchTerm.toLowerCase());
+      commission.projects?.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      commission.developers?.name.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesSearch;
   });
+
+  // Function to mark commission as paid
+  const markAsPaid = async (commissionId: string, amount: number) => {
+    try {
+      // Insert payment record
+      const { error: paymentError } = await supabase
+        .from('commission_payments')
+        .insert({
+          commission_id: commissionId,
+          amount: amount,
+          payment_date: new Date().toISOString().split('T')[0],
+          payment_method: 'bank_transfer'
+        });
+
+      if (paymentError) throw paymentError;
+
+      // Update commission status
+      const { error: updateError } = await supabase
+        .from('commissions')
+        .update({ status: 'paid' })
+        .eq('id', commissionId);
+
+      if (updateError) throw updateError;
+
+      toast({
+        title: t('messages.success'),
+        description: 'Commission marquée comme payée'
+      });
+
+      refetch();
+    } catch (error) {
+      console.error('Error marking commission as paid:', error);
+      toast({
+        variant: 'destructive',
+        title: t('messages.error'),
+        description: 'Erreur lors du marquage de la commission'
+      });
+    }
+  };
 
   const statusColors = {
     pending: { bg: 'bg-orange-100', text: 'text-orange-800', icon: Clock },
     paid: { bg: 'bg-green-100', text: 'text-green-800', icon: CheckCircle },
-    overdue: { bg: 'bg-red-100', text: 'text-red-800', icon: AlertCircle }
+    cancelled: { bg: 'bg-red-100', text: 'text-red-800', icon: AlertCircle }
   };
 
   const handleExportCSV = () => {
     const csvContent = [
-      ['ID', 'Montant', 'Statut', 'Date', 'Projet', 'Type'].join(','),
+      ['ID', 'Projet', 'Développeur', 'Prix Vente', 'Taux', 'Commission', 'Statut', 'Date Vente'].join(','),
       ...filteredCommissions.map(c => [
         c.id,
-        c.amount,
+        c.projects?.title || 'N/A',
+        c.developers?.name || 'N/A',
+        c.sale_price,
+        c.commission_rate + '%',
+        c.commission_amount,
         c.status,
-        new Date(c.date).toLocaleDateString('fr-FR'),
-        c.project?.title || 'N/A',
-        c.project?.type || 'N/A'
+        new Date(c.sale_date).toLocaleDateString('fr-FR')
       ].join(','))
     ].join('\n');
 
@@ -140,10 +233,10 @@ export const AdminCommissions = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-4xl font-light tracking-tight text-primary">
-              Gestion des Commissions
+              {t('nav.commissions')}
             </h1>
             <p className="text-lg text-secondary mt-2">
-              Suivi des paiements et facturation
+              Calcul automatique et suivi des commissions développeurs
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -172,28 +265,28 @@ export const AdminCommissions = () => {
             value: `€${stats.totalCommissions.toLocaleString()}`,
             icon: DollarSign,
             description: 'Montant total',
-            trend: '+12%'
+            trend: `${commissions.length} commissions`
           },
           {
             title: 'En Attente',
             value: `€${stats.pendingAmount.toLocaleString()}`,
             icon: Clock,
-            description: `${stats.pendingCount} factures`,
-            trend: `${stats.pendingCount} en cours`
+            description: `${stats.pendingCount} commissions`,
+            trend: 'À payer'
           },
           {
             title: 'Payées',
             value: `€${stats.paidAmount.toLocaleString()}`,
             icon: CheckCircle,
-            description: `${stats.paidCount} factures`,
-            trend: `${stats.paidCount} réglées`
+            description: `${stats.paidCount} commissions`,
+            trend: 'Réglées'
           },
           {
-            title: 'En Retard',
-            value: `€${stats.overdueAmount.toLocaleString()}`,
+            title: 'Annulées',
+            value: `€${stats.cancelledAmount.toLocaleString()}`,
             icon: AlertCircle,
-            description: `${stats.overdueCount} factures`,
-            trend: `${stats.overdueCount} à relancer`
+            description: `${stats.cancelledCount} commissions`,
+            trend: 'Annulées'
           }
         ].map((stat, index) => (
           <motion.div key={stat.title} variants={item}>
@@ -248,7 +341,7 @@ export const AdminCommissions = () => {
                 <SelectItem value="all">Tous les statuts</SelectItem>
                 <SelectItem value="pending">En attente</SelectItem>
                 <SelectItem value="paid">Payées</SelectItem>
-                <SelectItem value="overdue">En retard</SelectItem>
+                <SelectItem value="cancelled">Annulées</SelectItem>
               </SelectContent>
             </Select>
 
@@ -257,10 +350,9 @@ export const AdminCommissions = () => {
                 <SelectValue placeholder="Période" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="this_month">Ce mois</SelectItem>
-                <SelectItem value="last_month">Mois dernier</SelectItem>
-                <SelectItem value="this_quarter">Ce trimestre</SelectItem>
-                <SelectItem value="this_year">Cette année</SelectItem>
+                <SelectItem value="month">Dernier mois</SelectItem>
+                <SelectItem value="quarter">Dernier trimestre</SelectItem>
+                <SelectItem value="year">Dernière année</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -301,13 +393,15 @@ export const AdminCommissions = () => {
                     
                     <div>
                       <h3 className="font-medium text-primary">
-                        {commission.project?.title || 'Projet non spécifié'}
+                        {commission.projects?.title || 'Projet non spécifié'}
                       </h3>
                       <div className="flex items-center gap-2 text-sm text-secondary">
                         <Calendar className="w-3 h-3" />
-                        {new Date(commission.date).toLocaleDateString('fr-FR')}
+                        {new Date(commission.sale_date).toLocaleDateString('fr-FR')}
                         <span className="text-xs">•</span>
-                        <span className="capitalize">{commission.project?.type || 'N/A'}</span>
+                        <span>{commission.developers?.name || 'N/A'}</span>
+                        <span className="text-xs">•</span>
+                        <span>{commission.commission_rate}%</span>
                       </div>
                     </div>
                   </div>
@@ -315,10 +409,10 @@ export const AdminCommissions = () => {
                   <div className="flex items-center gap-4">
                     <div className="text-right">
                       <div className="text-lg font-semibold text-primary">
-                        €{commission.amount.toLocaleString()}
+                        €{commission.commission_amount.toLocaleString()}
                       </div>
                       <div className="text-xs text-secondary">
-                        Commission 5%
+                        Sur €{commission.sale_price.toLocaleString()}
                       </div>
                     </div>
 
@@ -328,15 +422,21 @@ export const AdminCommissions = () => {
                       {React.createElement(statusColors[commission.status].icon, { className: "w-3 h-3 mr-1" })}
                       {commission.status === 'pending' && 'En attente'}
                       {commission.status === 'paid' && 'Payée'}
-                      {commission.status === 'overdue' && 'En retard'}
+                      {commission.status === 'cancelled' && 'Annulée'}
                     </Badge>
 
                     <div className="flex gap-2">
+                      {commission.status === 'pending' && (
+                        <Button 
+                          variant="default" 
+                          size="sm"
+                          onClick={() => markAsPaid(commission.id, commission.commission_amount)}
+                        >
+                          Marquer payée
+                        </Button>
+                      )}
                       <Button variant="outline" size="sm">
                         <FileText className="w-3 h-3" />
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        <Download className="w-3 h-3" />
                       </Button>
                     </div>
                   </div>

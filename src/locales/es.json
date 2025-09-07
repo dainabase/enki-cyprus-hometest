@@ -115,5 +115,25 @@
   },
   "language": {
     "select": "Seleccionar Idioma"
+  },
+  "commissions": {
+    "title": "Comisiones",
+    "lastMonth": "Último Mes",
+    "lastQuarter": "Último Trimestre", 
+    "lastYear": "Último Año",
+    "totalDue": "Total Pendiente",
+    "totalPaid": "Total Pagado",
+    "property": "Propiedad",
+    "developer": "Desarrollador",
+    "salePrice": "Precio de Venta",
+    "rate": "Tasa",
+    "amount": "Monto",
+    "status": {
+      "pending": "Pendiente",
+      "paid": "Pagado",
+      "cancelled": "Cancelado"
+    },
+    "actions": "Acciones",
+    "markPaid": "Marcar Pagado"
   }
 }
