@@ -12,6 +12,7 @@ import { AdminAnalytics } from './AdminAnalytics';
 import { AdminContent } from './AdminContent';
 import AdminLeads from './AdminLeads';
 import AdminPipeline from './AdminPipeline';
+import AdminReports from './AdminReports';
 import { useAuth } from '@/contexts/AuthContext';
 import { PrivateRoute } from '@/components/auth/PrivateRoute';
 import { Card, CardContent } from '@/components/ui/card';
@@ -52,6 +53,7 @@ export const AdminDashboard = () => {
                 <Route path="pipeline" element={<AdminPipeline />} />
                 <Route path="commissions" element={<AdminCommissions />} />
                 <Route path="analytics" element={<AdminAnalytics />} />
+                <Route path="reports" element={<AdminReports />} />
                 <Route path="settings" element={<AdminContent />} />
                 <Route path="*" element={<Navigate to="/admin" replace />} />
               </Routes>
