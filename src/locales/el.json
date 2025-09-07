@@ -135,5 +135,50 @@
     },
     "actions": "Ενέργειες",
     "markPaid": "Σήμανση ως Πληρωμένο"
+  },
+  "leads": {
+    "title": "Leads / Δυνητικοί Πελάτες",
+    "addLead": "Προσθήκη Lead",
+    "newLead": "Νέο Lead",
+    "firstName": "Όνομα",
+    "lastName": "Επώνυμο",
+    "email": "Email",
+    "phone": "Τηλέφωνο",
+    "budget": "Προϋπολογισμός",
+    "budgetMin": "Ελάχιστος προϋπολογισμός",
+    "budgetMax": "Μέγιστος προϋπολογισμός",
+    "score": "Βαθμολογία",
+    "name": "Όνομα",
+    "contact": "Επικοινωνία",
+    "assigned": "Ανατεθειμένο σε",
+    "unassigned": "Μη ανατεθειμένο",
+    "actions": "Ενέργειες",
+    "notes": "Σημειώσεις",
+    "goldenVisaInterest": "Ενδιαφέρον για Golden Visa",
+    "leadCreated": "Lead δημιουργήθηκε επιτυχώς",
+    "statusUpdated": "Κατάσταση ενημερώθηκε επιτυχώς",
+    "leadAssigned": "Lead ανατέθηκε επιτυχώς",
+    "urgency": {
+      "immediate": "Άμεσα",
+      "3months": "3 μήνες",
+      "6months": "6 μήνες",
+      "1year": "1 χρόνος",
+      "exploring": "Εξερευνώντας"
+    },
+    "source": {
+      "website": "Ιστοσελίδα",
+      "referral": "Παραπομπή",
+      "agent": "Πράκτορας",
+      "social": "Κοινωνικά δίκτυα",
+      "other": "Άλλο"
+    },
+    "status": {
+      "new": "Νέο",
+      "contacted": "Επικοινώνησε",
+      "qualified": "Εγκρίθηκε",
+      "opportunity": "Ευκαιρία",
+      "converted": "Μετατράπηκε",
+      "lost": "Χάθηκε"
+    }
   }
 }

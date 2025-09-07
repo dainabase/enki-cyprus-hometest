@@ -135,5 +135,50 @@
     },
     "actions": "Actions",
     "markPaid": "Mark Paid"
+  },
+  "leads": {
+    "title": "Leads / Prospects",
+    "addLead": "Add Lead",
+    "newLead": "New Lead",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "phone": "Phone",
+    "budget": "Budget",
+    "budgetMin": "Min Budget",
+    "budgetMax": "Max Budget",
+    "score": "Score",
+    "name": "Name",
+    "contact": "Contact",
+    "assigned": "Assigned to",
+    "unassigned": "Unassigned",
+    "actions": "Actions",
+    "notes": "Notes",
+    "goldenVisaInterest": "Golden Visa Interest",
+    "leadCreated": "Lead created successfully",
+    "statusUpdated": "Status updated successfully",
+    "leadAssigned": "Lead assigned successfully",
+    "urgency": {
+      "immediate": "Immediate",
+      "3months": "3 months",
+      "6months": "6 months",
+      "1year": "1 year",
+      "exploring": "Exploring"
+    },
+    "source": {
+      "website": "Website",
+      "referral": "Referral",
+      "agent": "Agent",
+      "social": "Social Media",
+      "other": "Other"
+    },
+    "status": {
+      "new": "New",
+      "contacted": "Contacted",
+      "qualified": "Qualified",
+      "opportunity": "Opportunity",
+      "converted": "Converted",
+      "lost": "Lost"
+    }
   }
 }

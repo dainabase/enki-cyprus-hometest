@@ -135,5 +135,50 @@
     },
     "actions": "Acciones",
     "markPaid": "Marcar Pagado"
+  },
+  "leads": {
+    "title": "Leads / Prospectos",
+    "addLead": "Añadir Lead",
+    "newLead": "Nuevo Lead",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "email": "Email",
+    "phone": "Teléfono",
+    "budget": "Presupuesto",
+    "budgetMin": "Presupuesto mín",
+    "budgetMax": "Presupuesto máx",
+    "score": "Puntuación",
+    "name": "Nombre",
+    "contact": "Contacto",
+    "assigned": "Asignado a",
+    "unassigned": "Sin asignar",
+    "actions": "Acciones",
+    "notes": "Notas",
+    "goldenVisaInterest": "Interés en Golden Visa",
+    "leadCreated": "Lead creado exitosamente",
+    "statusUpdated": "Estado actualizado exitosamente",
+    "leadAssigned": "Lead asignado exitosamente",
+    "urgency": {
+      "immediate": "Inmediato",
+      "3months": "3 meses",
+      "6months": "6 meses",
+      "1year": "1 año",
+      "exploring": "Explorando"
+    },
+    "source": {
+      "website": "Sitio web",
+      "referral": "Referencia",
+      "agent": "Agente",
+      "social": "Redes sociales",
+      "other": "Otro"
+    },
+    "status": {
+      "new": "Nuevo",
+      "contacted": "Contactado",
+      "qualified": "Calificado",
+      "opportunity": "Oportunidad",
+      "converted": "Convertido",
+      "lost": "Perdido"
+    }
   }
 }

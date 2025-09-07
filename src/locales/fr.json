@@ -135,5 +135,50 @@
     },
     "actions": "Actions",
     "markPaid": "Marquer payée"
+  },
+  "leads": {
+    "title": "Leads / Prospects",
+    "addLead": "Ajouter un lead",
+    "newLead": "Nouveau lead",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "email": "Email",
+    "phone": "Téléphone",
+    "budget": "Budget",
+    "budgetMin": "Budget min",
+    "budgetMax": "Budget max",
+    "score": "Score",
+    "name": "Nom",
+    "contact": "Contact",
+    "assigned": "Assigné à",
+    "unassigned": "Non assigné",
+    "actions": "Actions",
+    "notes": "Notes",
+    "goldenVisaInterest": "Intéressé par Golden Visa",
+    "leadCreated": "Lead créé avec succès",
+    "statusUpdated": "Statut mis à jour avec succès",
+    "leadAssigned": "Lead assigné avec succès",
+    "urgency": {
+      "immediate": "Immédiat",
+      "3months": "3 mois",
+      "6months": "6 mois",
+      "1year": "1 an",
+      "exploring": "En exploration"
+    },
+    "source": {
+      "website": "Site web",
+      "referral": "Référence",
+      "agent": "Agent",
+      "social": "Réseaux sociaux",
+      "other": "Autre"
+    },
+    "status": {
+      "new": "Nouveau",
+      "contacted": "Contacté",
+      "qualified": "Qualifié",
+      "opportunity": "Opportunité",
+      "converted": "Converti",
+      "lost": "Perdu"
+    }
   }
 }

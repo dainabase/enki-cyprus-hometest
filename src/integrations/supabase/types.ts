@@ -492,6 +492,115 @@ export type Database = {
           },
         ]
       }
+      lead_activities: {
+        Row: {
+          activity_type: string
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          lead_id: string | null
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          lead_id?: string | null
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          lead_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_activities_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      leads: {
+        Row: {
+          assigned_to: string | null
+          budget_max: number | null
+          budget_min: number | null
+          created_at: string | null
+          email: string
+          first_name: string
+          golden_visa_interest: boolean | null
+          id: string
+          last_contact_date: string | null
+          last_name: string
+          notes: string | null
+          phone: string | null
+          property_type: string | null
+          score: number | null
+          source: string | null
+          status: string | null
+          updated_at: string | null
+          urgency: string | null
+          zones: string[] | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          budget_max?: number | null
+          budget_min?: number | null
+          created_at?: string | null
+          email: string
+          first_name: string
+          golden_visa_interest?: boolean | null
+          id?: string
+          last_contact_date?: string | null
+          last_name: string
+          notes?: string | null
+          phone?: string | null
+          property_type?: string | null
+          score?: number | null
+          source?: string | null
+          status?: string | null
+          updated_at?: string | null
+          urgency?: string | null
+          zones?: string[] | null
+        }
+        Update: {
+          assigned_to?: string | null
+          budget_max?: number | null
+          budget_min?: number | null
+          created_at?: string | null
+          email?: string
+          first_name?: string
+          golden_visa_interest?: boolean | null
+          id?: string
+          last_contact_date?: string | null
+          last_name?: string
+          notes?: string | null
+          phone?: string | null
+          property_type?: string | null
+          score?: number | null
+          source?: string | null
+          status?: string | null
+          updated_at?: string | null
+          urgency?: string | null
+          zones?: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "developers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notification_preferences: {
         Row: {
           analytics_tracking: boolean | null

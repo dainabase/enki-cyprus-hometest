@@ -10,6 +10,7 @@ import { AdminCommissions } from './AdminCommissions';
 import { AdminUsers } from './AdminUsers';
 import { AdminAnalytics } from './AdminAnalytics';
 import { AdminContent } from './AdminContent';
+import AdminLeads from './AdminLeads';
 import { useAuth } from '@/contexts/AuthContext';
 import { PrivateRoute } from '@/components/auth/PrivateRoute';
 import { Card, CardContent } from '@/components/ui/card';
@@ -46,7 +47,7 @@ export const AdminDashboard = () => {
                 <Route path="developers" element={<AdminDevelopers />} />
                 <Route path="projects" element={<AdminProjects />} />
                 <Route path="units" element={<AdminUnits />} />
-                <Route path="leads" element={<AdminUsers />} />
+                <Route path="leads" element={<AdminLeads />} />
                 <Route path="commissions" element={<AdminCommissions />} />
                 <Route path="analytics" element={<AdminAnalytics />} />
                 <Route path="settings" element={<AdminContent />} />
