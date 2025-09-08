@@ -249,8 +249,17 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
     </div>
   );
 }, (prevProps, nextProps) => {
-  return prevProps.projects.length === nextProps.projects.length &&
-         prevProps.projects.every((project, index) => project.id === nextProps.projects[index]?.id);
+  // Re-render when selection changes
+  if (prevProps.selectedProjects.length !== nextProps.selectedProjects.length) return false;
+  const prevSet = new Set(prevProps.selectedProjects);
+  for (const id of nextProps.selectedProjects) {
+    if (!prevSet.has(id)) return false;
+  }
+  // Preserve optimization for stable project lists
+  return (
+    prevProps.projects.length === nextProps.projects.length &&
+    prevProps.projects.every((project, index) => project.id === nextProps.projects[index]?.id)
+  );
 });
 
 ProjectsTable.displayName = 'ProjectsTable';
