@@ -35,7 +35,7 @@ interface Favorite {
     id: string;
     title: string;
     description: string;
-    type: string;
+    property_category: string;
     price: number;
     location: any;
     photos: string[];

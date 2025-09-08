@@ -78,7 +78,7 @@ const AdminUnits = () => {
     const matchesSearch = unit.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          unit.location.city?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || unit.reservation_status === statusFilter;
-    const matchesType = typeFilter === 'all' || unit.type === typeFilter;
+    const matchesType = typeFilter === 'all' || (unit.property_sub_type && unit.property_sub_type.includes(typeFilter));
     const matchesZone = zoneFilter === 'all' || unit.cyprus_zone === zoneFilter;
     const matchesGoldenVisa = goldenVisaFilter === 'all' || 
                               (goldenVisaFilter === 'true' && unit.golden_visa_eligible) ||

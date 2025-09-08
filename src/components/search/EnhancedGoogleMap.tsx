@@ -61,9 +61,9 @@ const EnhancedGoogleMap: React.FC<EnhancedGoogleMapProps> = ({
     ]
   }), []);
 
-  const getPropertyIcon = (type: Property['type'], isSelected: boolean = false) => {
+  const getPropertyIcon = (type: string, isSelected: boolean = false) => {
     const iconSize = isSelected ? 50 : 40;
-    const icons = {
+    const icons: Record<string, string> = {
       villa: '🏖️',
       apartment: '🏢',
       penthouse: '🏰',
@@ -164,7 +164,7 @@ const EnhancedGoogleMap: React.FC<EnhancedGoogleMapProps> = ({
     };
   }, [isLoaded, map, filteredProperties, selectedProperty, selectProperty]);
 
-  const getTypeIcon = (type: Property['type']) => {
+  const getTypeIcon = (type: string) => {
     switch (type) {
       case 'villa': return Home;
       case 'apartment': return Building;
