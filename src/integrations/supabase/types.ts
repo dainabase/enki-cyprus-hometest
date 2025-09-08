@@ -390,40 +390,88 @@ export type Database = {
       }
       developers: {
         Row: {
+          addresses: string[] | null
           commission_rate: number | null
           contact_info: Json | null
           created_at: string | null
+          email_marketing: string | null
+          email_primary: string | null
+          email_sales: string | null
+          financial_stability: string | null
+          founded_year: number | null
+          history: string | null
           id: string
+          key_projects: string | null
           logo: string | null
+          main_activities: string | null
+          main_city: string | null
           name: string
           payment_terms: string | null
+          phone_numbers: string[] | null
+          rating_justification: string | null
+          rating_score: number | null
+          reputation_reviews: string | null
           status: string | null
+          total_projects: number | null
           updated_at: string | null
           website: string | null
+          years_experience: number | null
         }
         Insert: {
+          addresses?: string[] | null
           commission_rate?: number | null
           contact_info?: Json | null
           created_at?: string | null
+          email_marketing?: string | null
+          email_primary?: string | null
+          email_sales?: string | null
+          financial_stability?: string | null
+          founded_year?: number | null
+          history?: string | null
           id?: string
+          key_projects?: string | null
           logo?: string | null
+          main_activities?: string | null
+          main_city?: string | null
           name: string
           payment_terms?: string | null
+          phone_numbers?: string[] | null
+          rating_justification?: string | null
+          rating_score?: number | null
+          reputation_reviews?: string | null
           status?: string | null
+          total_projects?: number | null
           updated_at?: string | null
           website?: string | null
+          years_experience?: number | null
         }
         Update: {
+          addresses?: string[] | null
           commission_rate?: number | null
           contact_info?: Json | null
           created_at?: string | null
+          email_marketing?: string | null
+          email_primary?: string | null
+          email_sales?: string | null
+          financial_stability?: string | null
+          founded_year?: number | null
+          history?: string | null
           id?: string
+          key_projects?: string | null
           logo?: string | null
+          main_activities?: string | null
+          main_city?: string | null
           name?: string
           payment_terms?: string | null
+          phone_numbers?: string[] | null
+          rating_justification?: string | null
+          rating_score?: number | null
+          reputation_reviews?: string | null
           status?: string | null
+          total_projects?: number | null
           updated_at?: string | null
           website?: string | null
+          years_experience?: number | null
         }
         Relationships: []
       }
