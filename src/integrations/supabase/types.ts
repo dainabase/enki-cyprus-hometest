@@ -789,160 +789,448 @@ export type Database = {
       }
       projects: {
         Row: {
+          after_sales_service: boolean | null
+          ai_chatbot_enabled: boolean | null
+          ai_content_disclosure: string | null
+          ai_description: string | null
+          ai_generated_at: string | null
+          ai_generated_content: Json | null
           amenities: string[] | null
+          ar_experience_url: string | null
+          architect_name: string | null
+          bathrooms_range: string | null
+          bedrooms_range: string | null
+          bim_model_url: string | null
+          builder_name: string | null
           building_id: string | null
+          built_area_m2: number | null
+          city: string | null
           commission_rate: number | null
+          community_features: string[] | null
           completion_date: string | null
+          completion_date_new: string | null
+          compliance_certifications: string[] | null
+          construction_materials: string[] | null
           construction_phase: string | null
           construction_start: string | null
           created_at: string
           cyprus_zone: string | null
           description: string
+          design_style: string | null
           detailed_description: string | null
           detailed_features: string[] | null
           developer_id: string | null
+          drone_footage_urls: string[] | null
+          energy_rating: string | null
+          favorite_count: number | null
+          featured_new: boolean | null
           featured_property: boolean | null
+          featured_until: string | null
           features: string[]
+          financing_available: boolean | null
+          financing_options: Json | null
+          finishing_level: string | null
           floor_number: number | null
+          floor_plan_3d_urls: string[] | null
+          floor_plan_urls: string[] | null
+          floors_total: number | null
+          full_address: string | null
           furniture_status: string | null
           golden_visa_eligible: boolean | null
+          golden_visa_eligible_new: boolean | null
+          gps_latitude: number | null
+          gps_longitude: number | null
           id: string
+          incentives: string[] | null
+          inquiry_count: number | null
+          interactive_map_url: string | null
           interests: Json[] | null
+          land_area_m2: number | null
+          last_price_update: string | null
+          launch_date: string | null
+          legal_status: string | null
+          lifestyle_amenities: string[] | null
           livability: boolean | null
           location: Json
           map_image: string | null
+          marketing_highlights: string[] | null
+          marketing_strategy: Json | null
           meta_description: string | null
+          meta_description_new: string | null
+          meta_keywords: string[] | null
           meta_title: string | null
+          meta_title_new: string | null
+          metaverse_preview_url: string | null
+          model_3d_urls: string[] | null
+          neighborhood: string | null
+          neighborhood_description: string | null
+          nft_ownership_available: boolean | null
+          og_image_url: string | null
+          parking_spaces: number | null
+          payment_plan: Json | null
+          permits_obtained: string[] | null
+          photo_count: number | null
+          photo_gallery_urls: string[] | null
           photos: string[]
           plans: string[] | null
           price: number
           price_from: string | null
+          price_from_new: number | null
+          price_per_m2: number | null
+          price_to: number | null
+          pricing_strategy_notes: string | null
+          project_code: string | null
+          project_narrative: string | null
+          project_phase: string | null
           project_status: string | null
+          property_category: string | null
+          property_sub_type: string | null
           property_types: string[] | null
+          proximity_airport_km: number | null
+          proximity_city_center_km: number | null
+          proximity_highway_km: number | null
+          proximity_sea_km: number | null
+          region: string | null
+          rental_yield_percent: number | null
           reservation_status: string | null
+          roi_estimate_percent: number | null
+          search_ranking_weight: number | null
+          seasonal_features: Json | null
+          smart_home_features: Json | null
+          social_proof_stats: Json | null
           status: string
+          storage_spaces: number | null
           subtitle: string | null
+          surrounding_amenities: Json | null
+          sustainability_certifications: string[] | null
+          target_audience: string[] | null
+          testimonials: Json | null
           title: string
+          title_deed_available: boolean | null
           title_deed_status: string | null
+          title_deed_timeline: string | null
           total_units: number | null
+          total_units_new: number | null
           transfer_fee: number | null
           translations: Json | null
           type: string
+          unique_selling_points: string[] | null
           unit_number: string | null
           units: Json[] | null
           units_available: number | null
+          units_available_new: number | null
           units_sold: number | null
           updated_at: string
           url_slug: string | null
+          vat_included: boolean | null
           vat_rate: number | null
+          vat_rate_new: number | null
+          video_tour_urls: string[] | null
           video_url: string | null
           view_count: number | null
+          view_count_new: number | null
           virtual_tour: string | null
           virtual_tour_url: string | null
+          virtual_tour_url_new: string | null
+          vr_tour_url: string | null
+          warranty_years: number | null
+          wellness_features: string[] | null
         }
         Insert: {
+          after_sales_service?: boolean | null
+          ai_chatbot_enabled?: boolean | null
+          ai_content_disclosure?: string | null
+          ai_description?: string | null
+          ai_generated_at?: string | null
+          ai_generated_content?: Json | null
           amenities?: string[] | null
+          ar_experience_url?: string | null
+          architect_name?: string | null
+          bathrooms_range?: string | null
+          bedrooms_range?: string | null
+          bim_model_url?: string | null
+          builder_name?: string | null
           building_id?: string | null
+          built_area_m2?: number | null
+          city?: string | null
           commission_rate?: number | null
+          community_features?: string[] | null
           completion_date?: string | null
+          completion_date_new?: string | null
+          compliance_certifications?: string[] | null
+          construction_materials?: string[] | null
           construction_phase?: string | null
           construction_start?: string | null
           created_at?: string
           cyprus_zone?: string | null
           description: string
+          design_style?: string | null
           detailed_description?: string | null
           detailed_features?: string[] | null
           developer_id?: string | null
+          drone_footage_urls?: string[] | null
+          energy_rating?: string | null
+          favorite_count?: number | null
+          featured_new?: boolean | null
           featured_property?: boolean | null
+          featured_until?: string | null
           features?: string[]
+          financing_available?: boolean | null
+          financing_options?: Json | null
+          finishing_level?: string | null
           floor_number?: number | null
+          floor_plan_3d_urls?: string[] | null
+          floor_plan_urls?: string[] | null
+          floors_total?: number | null
+          full_address?: string | null
           furniture_status?: string | null
           golden_visa_eligible?: boolean | null
+          golden_visa_eligible_new?: boolean | null
+          gps_latitude?: number | null
+          gps_longitude?: number | null
           id?: string
+          incentives?: string[] | null
+          inquiry_count?: number | null
+          interactive_map_url?: string | null
           interests?: Json[] | null
+          land_area_m2?: number | null
+          last_price_update?: string | null
+          launch_date?: string | null
+          legal_status?: string | null
+          lifestyle_amenities?: string[] | null
           livability?: boolean | null
           location: Json
           map_image?: string | null
+          marketing_highlights?: string[] | null
+          marketing_strategy?: Json | null
           meta_description?: string | null
+          meta_description_new?: string | null
+          meta_keywords?: string[] | null
           meta_title?: string | null
+          meta_title_new?: string | null
+          metaverse_preview_url?: string | null
+          model_3d_urls?: string[] | null
+          neighborhood?: string | null
+          neighborhood_description?: string | null
+          nft_ownership_available?: boolean | null
+          og_image_url?: string | null
+          parking_spaces?: number | null
+          payment_plan?: Json | null
+          permits_obtained?: string[] | null
+          photo_count?: number | null
+          photo_gallery_urls?: string[] | null
           photos?: string[]
           plans?: string[] | null
           price: number
           price_from?: string | null
+          price_from_new?: number | null
+          price_per_m2?: number | null
+          price_to?: number | null
+          pricing_strategy_notes?: string | null
+          project_code?: string | null
+          project_narrative?: string | null
+          project_phase?: string | null
           project_status?: string | null
+          property_category?: string | null
+          property_sub_type?: string | null
           property_types?: string[] | null
+          proximity_airport_km?: number | null
+          proximity_city_center_km?: number | null
+          proximity_highway_km?: number | null
+          proximity_sea_km?: number | null
+          region?: string | null
+          rental_yield_percent?: number | null
           reservation_status?: string | null
+          roi_estimate_percent?: number | null
+          search_ranking_weight?: number | null
+          seasonal_features?: Json | null
+          smart_home_features?: Json | null
+          social_proof_stats?: Json | null
           status?: string
+          storage_spaces?: number | null
           subtitle?: string | null
+          surrounding_amenities?: Json | null
+          sustainability_certifications?: string[] | null
+          target_audience?: string[] | null
+          testimonials?: Json | null
           title: string
+          title_deed_available?: boolean | null
           title_deed_status?: string | null
+          title_deed_timeline?: string | null
           total_units?: number | null
+          total_units_new?: number | null
           transfer_fee?: number | null
           translations?: Json | null
           type: string
+          unique_selling_points?: string[] | null
           unit_number?: string | null
           units?: Json[] | null
           units_available?: number | null
+          units_available_new?: number | null
           units_sold?: number | null
           updated_at?: string
           url_slug?: string | null
+          vat_included?: boolean | null
           vat_rate?: number | null
+          vat_rate_new?: number | null
+          video_tour_urls?: string[] | null
           video_url?: string | null
           view_count?: number | null
+          view_count_new?: number | null
           virtual_tour?: string | null
           virtual_tour_url?: string | null
+          virtual_tour_url_new?: string | null
+          vr_tour_url?: string | null
+          warranty_years?: number | null
+          wellness_features?: string[] | null
         }
         Update: {
+          after_sales_service?: boolean | null
+          ai_chatbot_enabled?: boolean | null
+          ai_content_disclosure?: string | null
+          ai_description?: string | null
+          ai_generated_at?: string | null
+          ai_generated_content?: Json | null
           amenities?: string[] | null
+          ar_experience_url?: string | null
+          architect_name?: string | null
+          bathrooms_range?: string | null
+          bedrooms_range?: string | null
+          bim_model_url?: string | null
+          builder_name?: string | null
           building_id?: string | null
+          built_area_m2?: number | null
+          city?: string | null
           commission_rate?: number | null
+          community_features?: string[] | null
           completion_date?: string | null
+          completion_date_new?: string | null
+          compliance_certifications?: string[] | null
+          construction_materials?: string[] | null
           construction_phase?: string | null
           construction_start?: string | null
           created_at?: string
           cyprus_zone?: string | null
           description?: string
+          design_style?: string | null
           detailed_description?: string | null
           detailed_features?: string[] | null
           developer_id?: string | null
+          drone_footage_urls?: string[] | null
+          energy_rating?: string | null
+          favorite_count?: number | null
+          featured_new?: boolean | null
           featured_property?: boolean | null
+          featured_until?: string | null
           features?: string[]
+          financing_available?: boolean | null
+          financing_options?: Json | null
+          finishing_level?: string | null
           floor_number?: number | null
+          floor_plan_3d_urls?: string[] | null
+          floor_plan_urls?: string[] | null
+          floors_total?: number | null
+          full_address?: string | null
           furniture_status?: string | null
           golden_visa_eligible?: boolean | null
+          golden_visa_eligible_new?: boolean | null
+          gps_latitude?: number | null
+          gps_longitude?: number | null
           id?: string
+          incentives?: string[] | null
+          inquiry_count?: number | null
+          interactive_map_url?: string | null
           interests?: Json[] | null
+          land_area_m2?: number | null
+          last_price_update?: string | null
+          launch_date?: string | null
+          legal_status?: string | null
+          lifestyle_amenities?: string[] | null
           livability?: boolean | null
           location?: Json
           map_image?: string | null
+          marketing_highlights?: string[] | null
+          marketing_strategy?: Json | null
           meta_description?: string | null
+          meta_description_new?: string | null
+          meta_keywords?: string[] | null
           meta_title?: string | null
+          meta_title_new?: string | null
+          metaverse_preview_url?: string | null
+          model_3d_urls?: string[] | null
+          neighborhood?: string | null
+          neighborhood_description?: string | null
+          nft_ownership_available?: boolean | null
+          og_image_url?: string | null
+          parking_spaces?: number | null
+          payment_plan?: Json | null
+          permits_obtained?: string[] | null
+          photo_count?: number | null
+          photo_gallery_urls?: string[] | null
           photos?: string[]
           plans?: string[] | null
           price?: number
           price_from?: string | null
+          price_from_new?: number | null
+          price_per_m2?: number | null
+          price_to?: number | null
+          pricing_strategy_notes?: string | null
+          project_code?: string | null
+          project_narrative?: string | null
+          project_phase?: string | null
           project_status?: string | null
+          property_category?: string | null
+          property_sub_type?: string | null
           property_types?: string[] | null
+          proximity_airport_km?: number | null
+          proximity_city_center_km?: number | null
+          proximity_highway_km?: number | null
+          proximity_sea_km?: number | null
+          region?: string | null
+          rental_yield_percent?: number | null
           reservation_status?: string | null
+          roi_estimate_percent?: number | null
+          search_ranking_weight?: number | null
+          seasonal_features?: Json | null
+          smart_home_features?: Json | null
+          social_proof_stats?: Json | null
           status?: string
+          storage_spaces?: number | null
           subtitle?: string | null
+          surrounding_amenities?: Json | null
+          sustainability_certifications?: string[] | null
+          target_audience?: string[] | null
+          testimonials?: Json | null
           title?: string
+          title_deed_available?: boolean | null
           title_deed_status?: string | null
+          title_deed_timeline?: string | null
           total_units?: number | null
+          total_units_new?: number | null
           transfer_fee?: number | null
           translations?: Json | null
           type?: string
+          unique_selling_points?: string[] | null
           unit_number?: string | null
           units?: Json[] | null
           units_available?: number | null
+          units_available_new?: number | null
           units_sold?: number | null
           updated_at?: string
           url_slug?: string | null
+          vat_included?: boolean | null
           vat_rate?: number | null
+          vat_rate_new?: number | null
+          video_tour_urls?: string[] | null
           video_url?: string | null
           view_count?: number | null
+          view_count_new?: number | null
           virtual_tour?: string | null
           virtual_tour_url?: string | null
+          virtual_tour_url_new?: string | null
+          vr_tour_url?: string | null
+          warranty_years?: number | null
+          wellness_features?: string[] | null
         }
         Relationships: [
           {
