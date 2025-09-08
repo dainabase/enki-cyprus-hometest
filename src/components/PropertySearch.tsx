@@ -48,7 +48,7 @@ const PropertySearch = ({ properties, onFilteredProperties, onPropertySelect }: 
 
     // Filter by type
     if (type !== 'all') {
-      filtered = filtered.filter(property => property.type === type);
+      filtered = filtered.filter(property => property.property_sub_type.includes(type.toLowerCase()));
     }
 
     // Filter by price range

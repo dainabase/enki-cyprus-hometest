@@ -127,7 +127,7 @@ const EnhancedGoogleMap: React.FC<EnhancedGoogleMapProps> = ({
           position: { lat: property.lat, lng: property.lng },
           map,
           title: property.title,
-          icon: getPropertyIcon(property.type, isSelected),
+          icon: getPropertyIcon(property.property_sub_type[0] || 'apartment', isSelected),
         });
 
         marker.addListener('click', () => {
@@ -233,7 +233,7 @@ const EnhancedGoogleMap: React.FC<EnhancedGoogleMapProps> = ({
                         </div>
                       </div>
                       <Badge variant="secondary" className="ml-2">
-                        {selectedProperty.type}
+                        {selectedProperty.property_sub_type.join(', ') || 'Résidentiel'}
                       </Badge>
                     </div>
                     

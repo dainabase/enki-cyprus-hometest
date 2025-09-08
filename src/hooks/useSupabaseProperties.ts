@@ -39,7 +39,7 @@ export const useSupabaseProperties = (options: UsePropertiesOptions = {}) => {
         
         const validTypes = typeMapping[options.propertyType] || [options.propertyType.toLowerCase()];
         console.log('🎯 Filtering by types:', validTypes);
-        query = query.in('type', validTypes);
+        query = query.contains('property_sub_type', validTypes);
       }
 
       // Filtrage par budget

@@ -160,7 +160,7 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children, allPro
       
       const validTypes = typeMapping[filters.propertyType];
       if (validTypes.length > 0) {
-        filtered = filtered.filter(property => validTypes.includes(property.type));
+        filtered = filtered.filter(property => validTypes.some(t => property.property_sub_type.includes(t)));
       }
     }
 

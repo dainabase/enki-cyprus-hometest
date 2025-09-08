@@ -15,7 +15,8 @@ interface Unit {
   id: string;
   title: string;
   price: number;
-  type: string;
+  property_category: string;
+  property_sub_type: string[];
   location: {
     city?: string;
     lat?: number;
@@ -321,7 +322,7 @@ const AdminUnits = () => {
                     <span className="text-sm">-</span>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline">{unit.type}</Badge>
+                    <Badge variant="outline">{unit.property_category || 'Résidentiel'}</Badge>
                   </TableCell>
                   <TableCell>
                     <span className="capitalize">{unit.cyprus_zone}</span>

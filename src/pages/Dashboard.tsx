@@ -106,7 +106,7 @@ const Dashboard = () => {
             id,
             title,
             description,
-            type,
+            property_category,
             price,
             location,
             photos
