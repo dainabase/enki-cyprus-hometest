@@ -11,6 +11,12 @@ import { useToast } from '@/hooks/use-toast';
 import ProjectsTable from '@/components/admin/projects/ProjectsTable';
 import ProjectForm from '@/components/admin/projects/ProjectForm';
 import ProjectFilters from '@/components/admin/projects/ProjectFilters';
+import { ProjectViewSelector, ProjectViewType } from '@/components/admin/projects/ProjectViewSelector';
+import { ProjectSorter, ProjectSortField, SortDirection } from '@/components/admin/projects/ProjectSorter';
+import { ProjectCardView } from '@/components/admin/projects/ProjectCardView';
+import { ProjectListView } from '@/components/admin/projects/ProjectListView';
+import { ProjectCompactView } from '@/components/admin/projects/ProjectCompactView';
+import { ProjectDetailedView } from '@/components/admin/projects/ProjectDetailedView';
 
 // Helper function to safely access developer data
 const getDeveloper = (developer: any) => {
@@ -32,6 +38,9 @@ const AdminProjects = () => {
   const [editingProject, setEditingProject] = useState<any>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
+  const [currentView, setCurrentView] = useState<ProjectViewType>('table');
+  const [sortField, setSortField] = useState<ProjectSortField>('title');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 25,
@@ -44,7 +53,7 @@ const AdminProjects = () => {
   });
 
   const { data: projectsResponse, isLoading, error, refetch } = useSupabaseQuery(
-    ['admin-projects', filters, pagination],
+    ['admin-projects', filters, pagination, sortField, sortDirection],
     async () => {
       const { from, to } = getPaginationRange(pagination);
       
@@ -53,11 +62,29 @@ const AdminProjects = () => {
         .select(`
           id, title, status, cyprus_zone, golden_visa_eligible, price, price_from,
           completion_date, units_available, units_sold, total_units, developer_id,
+          city, neighborhood, description, bedrooms_range, built_area_m2, 
+          total_units_new, parking_spaces, energy_rating, created_at,
           developer:developers(id, name)
         `, { count: 'exact' })
-        .order('developer_id', { ascending: true })
-        .order('title', { ascending: true })
         .range(from, to);
+
+      // Apply sorting
+      if (sortField === 'developer') {
+        query = query.order('developer_id', { ascending: sortDirection === 'asc' });
+      } else if (sortField === 'city') {
+        query = query.order('city', { ascending: sortDirection === 'asc' });
+      } else if (sortField === 'neighborhood') {
+        query = query.order('neighborhood', { ascending: sortDirection === 'asc' });
+      } else if (sortField === 'zone') {
+        query = query.order('cyprus_zone', { ascending: sortDirection === 'asc' });
+      } else {
+        query = query.order(sortField, { ascending: sortDirection === 'asc' });
+      }
+      
+      // Secondary sort by title for consistency
+      if (sortField !== 'title') {
+        query = query.order('title', { ascending: true });
+      }
 
       // Apply filters
       if (filters.developerId) {
@@ -108,11 +135,55 @@ const AdminProjects = () => {
     }
   );
 
-  // Group projects by developer
-  const groupedProjects = React.useMemo(() => {
-    if (!projectsData) return {};
+  // Sort projects based on current sort settings
+  const sortedProjects = React.useMemo(() => {
+    if (!projectsData) return [];
     
-    return projectsData.reduce((acc, project) => {
+    return [...projectsData].sort((a, b) => {
+      let aValue, bValue;
+      
+      switch (sortField) {
+        case 'developer':
+          aValue = getDeveloper(a.developer)?.name || '';
+          bValue = getDeveloper(b.developer)?.name || '';
+          break;
+        case 'city':
+          aValue = a.city || '';
+          bValue = b.city || '';
+          break;
+        case 'neighborhood':
+          aValue = a.neighborhood || '';
+          bValue = b.neighborhood || '';
+          break;
+        case 'zone':
+          aValue = a.cyprus_zone || '';
+          bValue = b.cyprus_zone || '';
+          break;
+        case 'price':
+          aValue = a.price || a.price_from || 0;
+          bValue = b.price || b.price_from || 0;
+          break;
+        default:
+          aValue = a[sortField] || '';
+          bValue = b[sortField] || '';
+      }
+      
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        const comparison = aValue.localeCompare(bValue);
+        return sortDirection === 'asc' ? comparison : -comparison;
+      }
+      
+      if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [projectsData, sortField, sortDirection]);
+
+  // Group projects by developer for table view
+  const groupedProjects = React.useMemo(() => {
+    if (currentView !== 'table' || !sortedProjects) return {};
+    
+    return sortedProjects.reduce((acc, project) => {
       const developerId = project.developer_id || 'no-developer';
       const developer = getDeveloper(project.developer);
       const developerName = developer?.name || 'Sans développeur';
@@ -126,7 +197,7 @@ const AdminProjects = () => {
       acc[developerId].projects.push(project);
       return acc;
     }, {} as Record<string, { developerName: string; projects: any[] }>);
-  }, [projectsData]);
+  }, [sortedProjects, currentView]);
 
   const openCreateModal = () => {
     setEditingProject(null);
@@ -150,43 +221,60 @@ const AdminProjects = () => {
     });
   };
 
-  // Debug helper: create a minimal test project and refetch
-  const createTestProject = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('projects')
-        .insert([{ 
-          title: 'Projet Test (debug)',
-          subtitle: 'Insertion manuelle',
-          description: 'Projet de test pour validation admin',
-          detailed_description: 'Créé automatiquement pour vérifier l’affichage dans la liste.',
-          developer_id: null,
-          cyprus_zone: 'limassol',
-          status: 'under_construction',
-          type: 'apartment',
-          property_types: ['apartment'],
-          price: 150000,
-          price_from: null,
-          vat_rate: 5,
-          completion_date: null,
-          golden_visa_eligible: false,
-          units_available: 0,
-          total_units: 0,
-          location: { city: 'Limassol', address: 'Debug', lat: 34.7768, lng: 32.4245 },
-          features: [],
-          photos: []
-        }])
-        .select()
-        .single();
+  const handleSortChange = (field: ProjectSortField, direction: SortDirection) => {
+    setSortField(field);
+    setSortDirection(direction);
+  };
 
-      if (error) throw error;
+  const renderProjectView = () => {
+    const projects = currentView === 'table' ? null : sortedProjects;
+    
+    if (currentView === 'table') {
+      return (
+        <div className="space-y-6">
+          {Object.entries(groupedProjects).map(([developerId, group]) => (
+            <Card key={developerId}>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <span>{group.developerName}</span>
+                  <span className="text-sm font-normal text-muted-foreground">
+                    {group.projects.length} projet(s)
+                  </span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ProjectsTable
+                  projects={group.projects}
+                  onEdit={openEditModal}
+                  onRefetch={refetch}
+                  selectedProjects={selectedProjects}
+                  onSelectionChange={setSelectedProjects}
+                />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      );
+    }
 
-      console.info('✅ Projet test créé:', data);
-      toast({ title: 'Projet test créé', description: `ID: ${data?.id}` });
-      refetch();
-    } catch (e: any) {
-      console.error('❌ Erreur création projet test:', e);
-      toast({ variant: 'destructive', title: 'Erreur création test', description: e?.message || 'Insertion impossible' });
+    const commonProps = {
+      projects: projects || [],
+      onEdit: openEditModal,
+      selectedProjects,
+      onSelectionChange: setSelectedProjects
+    };
+
+    switch (currentView) {
+      case 'cards':
+        return <ProjectCardView {...commonProps} />;
+      case 'list':
+        return <ProjectListView {...commonProps} />;
+      case 'compact':
+        return <ProjectCompactView {...commonProps} />;
+      case 'detailed':
+        return <ProjectDetailedView {...commonProps} />;
+      default:
+        return <ProjectCardView {...commonProps} />;
     }
   };
 
@@ -233,7 +321,7 @@ const AdminProjects = () => {
   };
 
   const handleSelectAllProjects = () => {
-    const allProjectIds = projectsData.map(project => project.id);
+    const allProjectIds = sortedProjects.map(project => project.id);
     setSelectedProjects(allProjectIds);
     toast({
       title: 'Tous les projets sélectionnés',
@@ -246,15 +334,15 @@ const AdminProjects = () => {
   };
 
   const stats = React.useMemo(() => {
-    if (!projectsData) return { total: 0, available: 0, construction: 0, delivered: 0 };
+    if (!sortedProjects) return { total: 0, available: 0, construction: 0, delivered: 0 };
     
     return {
-      total: projectsData.length,
-      available: projectsData.filter(p => p.status === 'available').length,
-      construction: projectsData.filter(p => p.status === 'under_construction').length,
-      delivered: projectsData.filter(p => p.status === 'delivered').length
+      total: sortedProjects.length,
+      available: sortedProjects.filter(p => p.status === 'available').length,
+      construction: sortedProjects.filter(p => p.status === 'under_construction').length,
+      delivered: sortedProjects.filter(p => p.status === 'delivered').length
     };
-  }, [projectsData]);
+  }, [sortedProjects]);
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -263,9 +351,9 @@ const AdminProjects = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-foreground">Gestion des Projets</h1>
-            <p className="text-muted-foreground mt-2">Gérer les projets par développeur</p>
+            <p className="text-muted-foreground mt-2">Gérer les projets immobiliers</p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <Button
               variant="outline"
               onClick={() => setShowFilters(!showFilters)}
@@ -274,12 +362,21 @@ const AdminProjects = () => {
               <Filter className="w-4 h-4" />
               Filtres
             </Button>
+            
+            <ProjectViewSelector
+              currentView={currentView}
+              onViewChange={setCurrentView}
+            />
+            
+            <ProjectSorter
+              sortField={sortField}
+              sortDirection={sortDirection}
+              onSortChange={handleSortChange}
+            />
+            
             <Button onClick={() => navigate('/admin/projects/new')} className="gap-2">
               <Plus className="w-4 h-4" />
               Nouveau Projet
-            </Button>
-            <Button variant="secondary" className="gap-2" onClick={createTestProject}>
-              Debug: Projet test
             </Button>
           </div>
         </div>
@@ -376,30 +473,11 @@ const AdminProjects = () => {
             </CardContent>
           </Card>
         )}
+        
         <div className="space-y-6">
-          {Object.entries(groupedProjects).map(([developerId, group]) => (
-            <Card key={developerId}>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span>{group.developerName}</span>
-                  <span className="text-sm font-normal text-muted-foreground">
-                    {group.projects.length} projet(s)
-                  </span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ProjectsTable
-                  projects={group.projects}
-                  onEdit={openEditModal}
-                  onRefetch={refetch}
-                  selectedProjects={selectedProjects}
-                  onSelectionChange={setSelectedProjects}
-                />
-              </CardContent>
-            </Card>
-          ))}
+          {renderProjectView()}
           
-          {projectsData.length > 0 && (
+          {sortedProjects.length > 0 && (
             <Pagination
               pageIndex={pagination.pageIndex}
               pageSize={pagination.pageSize}
