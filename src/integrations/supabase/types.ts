@@ -997,7 +997,6 @@ export type Database = {
           total_units_new: number | null
           transfer_fee: number | null
           translations: Json | null
-          type: string
           unique_selling_points: string[] | null
           unit_number: string | null
           units: Json[] | null
@@ -1145,7 +1144,6 @@ export type Database = {
           total_units_new?: number | null
           transfer_fee?: number | null
           translations?: Json | null
-          type: string
           unique_selling_points?: string[] | null
           unit_number?: string | null
           units?: Json[] | null
@@ -1293,7 +1291,6 @@ export type Database = {
           total_units_new?: number | null
           transfer_fee?: number | null
           translations?: Json | null
-          type?: string
           unique_selling_points?: string[] | null
           unit_number?: string | null
           units?: Json[] | null
