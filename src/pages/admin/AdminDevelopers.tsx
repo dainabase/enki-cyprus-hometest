@@ -157,7 +157,8 @@ const AdminDevelopers = () => {
     'olias': '/lovable-uploads/5f250fc3-45af-438f-810b-f701813bdd71.png',
     'olias homes': '/lovable-uploads/5f250fc3-45af-438f-810b-f701813bdd71.png',
     'cyfield': '/lovable-uploads/05694454-206c-437a-8d8f-0f611218a26f.png',
-    'cyfiled': '/lovable-uploads/05694454-206c-437a-8d8f-0f611218a26f.png'
+    'cyfiled': '/lovable-uploads/05694454-206c-437a-8d8f-0f611218a26f.png',
+    'island blue': '/lovable-uploads/861197ca-75d2-4e8d-aeb1-63050614bece.png'
   };
   const getLogo = (d: Partial<Developer>) => {
     const byName = (d.name || '').toLowerCase().trim();
