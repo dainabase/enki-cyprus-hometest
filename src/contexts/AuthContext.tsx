@@ -68,34 +68,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Initialize auth state
   useEffect(() => {
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('🔐 Auth state changed:', event, session?.user?.email);
-        
-        setSession(session);
-        setUser(session?.user ?? null);
+    // Set up auth state listener FIRST (no async in callback to avoid deadlocks)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, nextSession) => {
+      console.log('🔐 Auth state changed:', event, nextSession?.user?.email);
 
-        // Fetch profile when user signs in
-        if (session?.user) {
-          await fetchProfile(session.user.id);
-        } else {
-          setProfile(null);
-        }
+      setSession(nextSession);
+      setUser(nextSession?.user ?? null);
 
-        setLoading(false);
+      if (nextSession?.user) {
+        // Defer Supabase calls with setTimeout to prevent deadlocks
+        setTimeout(() => {
+          fetchProfile(nextSession.user!.id);
+        }, 0);
+      } else {
+        setProfile(null);
       }
-    );
+
+      setLoading(false);
+    });
 
     // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      
+
       if (session?.user) {
-        fetchProfile(session.user.id);
+        // Defer profile load
+        setTimeout(() => {
+          fetchProfile(session.user!.id);
+        }, 0);
       }
-      
+
       setLoading(false);
     });
 
