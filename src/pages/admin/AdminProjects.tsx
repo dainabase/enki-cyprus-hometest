@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Plus, Filter, Trash2, CheckSquare } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useSupabaseQuery, getPaginationRange } from '@/hooks/useSupabaseQuery';
 import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
@@ -25,6 +26,7 @@ interface FilterState {
 }
 
 const AdminProjects = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<any>(null);
@@ -272,7 +274,7 @@ const AdminProjects = () => {
               <Filter className="w-4 h-4" />
               Filtres
             </Button>
-            <Button onClick={openCreateModal} className="gap-2">
+            <Button onClick={() => navigate('/admin/projects/new')} className="gap-2">
               <Plus className="w-4 h-4" />
               Nouveau Projet
             </Button>
