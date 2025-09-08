@@ -300,9 +300,19 @@ export const AdminProjectForm: React.FC = () => {
     saveProjectMutation.mutate(data);
   };
 
-  const nextStep = () => {
-    if (currentStepIndex < projectFormSteps.length - 1) {
+  const nextStep = async () => {
+    // Valider les champs requis de l'étape actuelle avant de passer à la suivante
+    const fieldsToValidate = getFieldsForStep(currentStep.id);
+    const isValid = await form.trigger(fieldsToValidate);
+    
+    if (isValid && currentStepIndex < projectFormSteps.length - 1) {
       setCurrentStepIndex(currentStepIndex + 1);
+    } else if (!isValid) {
+      toast({
+        title: "Champs obligatoires manquants",
+        description: "Veuillez remplir tous les champs obligatoires avant de continuer.",
+        variant: "destructive"
+      });
     }
   };
 
@@ -312,8 +322,52 @@ export const AdminProjectForm: React.FC = () => {
     }
   };
 
-  const goToStep = (index: number) => {
+  const goToStep = async (index: number) => {
+    // Si on va vers une étape ultérieure, valider les étapes intermédiaires
+    if (index > currentStepIndex) {
+      let allValid = true;
+      for (let i = currentStepIndex; i < index; i++) {
+        const stepFields = getFieldsForStep(projectFormSteps[i].id);
+        const isValid = await form.trigger(stepFields);
+        if (!isValid) {
+          allValid = false;
+          break;
+        }
+      }
+      
+      if (!allValid) {
+        toast({
+          title: "Validation requise",
+          description: "Veuillez compléter les étapes précédentes avant de continuer.",
+          variant: "destructive"
+        });
+        return;
+      }
+    }
+    
     setCurrentStepIndex(index);
+  };
+
+  // Fonction pour obtenir les champs à valider selon l'étape
+  const getFieldsForStep = (stepId: string): (keyof ProjectFormData)[] => {
+    switch (stepId) {
+      case 'basics':
+        return ['title', 'description', 'property_category', 'developer_id'];
+      case 'location':
+        return ['city'];
+      case 'specifications':
+        return [];
+      case 'pricing':
+        return ['price'];
+      case 'features':
+        return [];
+      case 'media':
+        return [];
+      case 'marketing':
+        return [];
+      default:
+        return [];
+    }
   };
 
   const renderIcon = (iconName: string) => {
