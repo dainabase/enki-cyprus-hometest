@@ -528,7 +528,7 @@ const AdminProjects = () => {
                                   </div>
                                 </div>
                                 <Badge variant="outline" className="text-xs ml-2 flex-shrink-0">
-                                  {project.type}
+                                  {project.property_category || 'Résidentiel'}
                                 </Badge>
                               </div>
                               

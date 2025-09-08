@@ -424,7 +424,7 @@ const Dashboard = () => {
                                   €{favorite.projects.price?.toLocaleString()}
                                 </span>
                                 <Badge variant="outline" className="text-xs">
-                                  {favorite.projects.type}
+                                  {favorite.projects.property_category || 'Résidentiel'}
                                 </Badge>
                               </div>
                             </CardContent>

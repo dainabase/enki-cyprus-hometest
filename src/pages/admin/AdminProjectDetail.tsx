@@ -265,7 +265,7 @@ const AdminProjectDetail = () => {
 
               <div className="space-y-2">
                 <h4 className="font-medium text-sm text-muted-foreground">TYPE</h4>
-                <p className="font-semibold capitalize">{project.type}</p>
+                <p className="font-semibold capitalize">{project.property_category || 'Résidentiel'}</p>
               </div>
             </div>
 

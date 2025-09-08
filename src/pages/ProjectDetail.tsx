@@ -175,7 +175,10 @@ const ProjectDetail = () => {
     },
     { 
       label: "Type", 
-      value: project.type === 'residential' ? 'Résidentiel' : project.type,
+      value: project.property_category === 'residential' ? 'Résidentiel' : 
+             project.property_category === 'commercial' ? 'Commercial' :
+             project.property_category === 'mixed' ? 'Mixte' :
+             project.property_category === 'industrial' ? 'Industriel' : 'Résidentiel',
       icon: Home 
     },
     { 

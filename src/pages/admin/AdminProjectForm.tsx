@@ -30,6 +30,12 @@ export const AdminProjectForm: React.FC = () => {
   const form = useForm<ProjectFormData>({
     resolver: zodResolver(projectSchema),
     defaultValues: {
+      title: '',
+      description: '',
+      city: '',
+      full_address: '',
+      region: '',
+      neighborhood: '',
       photos: [],
       features: [],
       amenities: [],
