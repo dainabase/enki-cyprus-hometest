@@ -35,6 +35,18 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({
     return <Navigate to="/" replace />;
   }
 
+  // Wait for profile to load before deciding admin access
+  if (adminOnly && isAuthenticated && !profile) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <p className="text-muted-foreground">Chargement du profil...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (adminOnly && !isAdmin) {
     return <Navigate to="/dashboard" replace />;
   }
