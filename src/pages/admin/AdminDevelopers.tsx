@@ -152,7 +152,8 @@ const AdminDevelopers = () => {
     'medousa': '/lovable-uploads/edb7101f-e806-45b7-ae7b-9ec23b49eb91.png',
     'property gallery': '/lovable-uploads/bfdd449f-6c80-4e3b-a300-b4450619c6c7.png',
     'crona': '/lovable-uploads/2699123d-495f-4d53-a300-95fb50be8462.png',
-    'crona group': '/lovable-uploads/2699123d-495f-4d53-a300-95fb50be8462.png'
+    'crona group': '/lovable-uploads/2699123d-495f-4d53-a300-95fb50be8462.png',
+    'imperio': '/lovable-uploads/4a34f6c2-8c82-436d-a40c-a4c0a956923b.png'
   };
   const getLogo = (d: Partial<Developer>) => {
     const byName = (d.name || '').toLowerCase().trim();
