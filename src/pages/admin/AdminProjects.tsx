@@ -147,6 +147,46 @@ const AdminProjects = () => {
     });
   };
 
+  // Debug helper: create a minimal test project and refetch
+  const createTestProject = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('projects')
+        .insert([{ 
+          title: 'Projet Test (debug)',
+          subtitle: 'Insertion manuelle',
+          description: 'Projet de test pour validation admin',
+          detailed_description: 'Créé automatiquement pour vérifier l’affichage dans la liste.',
+          developer_id: null,
+          cyprus_zone: 'limassol',
+          status: 'under_construction',
+          type: 'apartment',
+          property_types: ['apartment'],
+          price: 150000,
+          price_from: null,
+          vat_rate: 5,
+          completion_date: null,
+          golden_visa_eligible: false,
+          units_available: 0,
+          total_units: 0,
+          location: { city: 'Limassol', address: 'Debug', lat: 34.7768, lng: 32.4245 },
+          features: [],
+          photos: []
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      console.info('✅ Projet test créé:', data);
+      toast({ title: 'Projet test créé', description: `ID: ${data?.id}` });
+      refetch();
+    } catch (e: any) {
+      console.error('❌ Erreur création projet test:', e);
+      toast({ variant: 'destructive', title: 'Erreur création test', description: e?.message || 'Insertion impossible' });
+    }
+  };
+
   const stats = React.useMemo(() => {
     if (!projectsData) return { total: 0, available: 0, construction: 0, delivered: 0 };
     
@@ -179,6 +219,9 @@ const AdminProjects = () => {
             <Button onClick={openCreateModal} className="gap-2">
               <Plus className="w-4 h-4" />
               Nouveau Projet
+            </Button>
+            <Button variant="secondary" className="gap-2" onClick={createTestProject}>
+              Debug: Projet test
             </Button>
           </div>
         </div>
