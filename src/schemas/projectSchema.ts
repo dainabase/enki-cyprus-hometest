@@ -22,6 +22,7 @@ export const projectSchema = z.object({
   launch_date: z.string().optional(),
   completion_date_new: z.string().optional(),
   unique_selling_points: z.array(z.string()).optional(),
+  exclusive_commercialization: z.boolean().default(false),
   description: z.string().min(10, "Description trop courte"),
   detailed_description: z.string().optional(),
 

@@ -185,6 +185,29 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             />
           </div>
 
+          <FormField
+            control={form.control}
+            name="exclusive_commercialization"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                <div className="space-y-0.5">
+                  <FormLabel className="text-base font-medium">
+                    Commercialisation en exclusivité
+                  </FormLabel>
+                  <p className="text-sm text-muted-foreground">
+                    Ce projet est commercialisé exclusivement par votre agence
+                  </p>
+                </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
         </CardContent>
       </Card>
 

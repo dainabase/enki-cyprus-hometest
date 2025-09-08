@@ -48,6 +48,7 @@ export const AdminProjectForm: React.FC = () => {
       cyprus_zone: 'limassol',
       property_category: 'residential',
       property_sub_type: [],
+      exclusive_commercialization: false,
       project_phase: 'off-plan',
       price: 0
     }
@@ -99,6 +100,7 @@ export const AdminProjectForm: React.FC = () => {
           project_phase: projectData.project_phase as ProjectFormData['project_phase'],
         launch_date: projectData.launch_date,
         completion_date_new: projectData.completion_date_new,
+        exclusive_commercialization: projectData.exclusive_commercialization || false,
         
         // Location
         full_address: projectData.full_address,
@@ -178,6 +180,7 @@ export const AdminProjectForm: React.FC = () => {
         project_phase: data.project_phase,
         launch_date: data.launch_date,
         completion_date_new: data.completion_date_new,
+        exclusive_commercialization: data.exclusive_commercialization,
         unique_selling_points: data.unique_selling_points,
         
         // Location

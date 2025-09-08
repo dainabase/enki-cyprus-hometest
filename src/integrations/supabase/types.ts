@@ -997,6 +997,7 @@ export type Database = {
           developer_id: string | null
           drone_footage_urls: string[] | null
           energy_rating: string | null
+          exclusive_commercialization: boolean | null
           favorite_count: number | null
           featured_new: boolean | null
           featured_property: boolean | null
@@ -1148,6 +1149,7 @@ export type Database = {
           developer_id?: string | null
           drone_footage_urls?: string[] | null
           energy_rating?: string | null
+          exclusive_commercialization?: boolean | null
           favorite_count?: number | null
           featured_new?: boolean | null
           featured_property?: boolean | null
@@ -1299,6 +1301,7 @@ export type Database = {
           developer_id?: string | null
           drone_footage_urls?: string[] | null
           energy_rating?: string | null
+          exclusive_commercialization?: boolean | null
           favorite_count?: number | null
           featured_new?: boolean | null
           featured_property?: boolean | null
