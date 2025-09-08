@@ -100,7 +100,6 @@ export const projectSchema = z.object({
   // STATUS
   status: z.enum(['available', 'under_construction', 'delivered', 'sold']).default('available'),
   featured_new: z.boolean().default(false),
-  type: z.string().min(1, "Type requis"),
 
   // LOCATION OBJECT (legacy compatibility)
   location: z.object({
@@ -143,7 +142,7 @@ export const projectFormSteps = [
     fields: [
       'title', 'project_code', 'developer_id', 'property_category', 
       'property_sub_type', 'project_phase', 'launch_date', 
-      'completion_date_new', 'description', 'detailed_description', 'type'
+      'completion_date_new', 'description', 'detailed_description'
     ]
   },
   {

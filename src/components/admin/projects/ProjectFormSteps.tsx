@@ -183,19 +183,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             />
           </div>
 
-          <FormField
-            control={form.control}
-            name="type"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Type *</FormLabel>
-                <FormControl>
-                  <Input placeholder="Ex: apartment, villa, penthouse" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
         </CardContent>
       </Card>
 
