@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Building2, Plus, Pencil, Trash2, Mail, Phone, Globe, MapPin, Star, MoreVertical } from 'lucide-react';
+import { Building2, Plus, Pencil, Trash2, Mail, Phone, Globe, MapPin, Star, MoreVertical, Eye, Calendar, Building, Award, TrendingUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
@@ -28,6 +28,18 @@ interface Developer {
   status: 'active' | 'inactive';
   created_at: string;
   updated_at: string;
+  // Champs détaillés supplémentaires
+  founded_year?: number;
+  years_experience?: number;
+  total_projects?: number;
+  main_activities?: string;
+  key_projects?: string;
+  rating_justification?: string;
+  reputation_reviews?: string;
+  financial_stability?: string;
+  history?: string;
+  payment_terms?: string;
+  contact_info?: any;
 }
 
 interface DeveloperFormData {
@@ -43,6 +55,8 @@ interface DeveloperFormData {
 
 const AdminDevelopers = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [selectedDeveloper, setSelectedDeveloper] = useState<Developer | null>(null);
   const [editingDeveloper, setEditingDeveloper] = useState<Developer | null>(null);
   const [formData, setFormData] = useState<DeveloperFormData>({
     name: '',
@@ -65,7 +79,7 @@ const AdminDevelopers = () => {
       console.log('🔄 Fetching developers...');
       const { data, error } = await supabase
         .from('developers')
-        .select('id, name, website, logo, phone_numbers, addresses, email_primary, main_city, rating_score, commission_rate, status, contact_info, created_at, updated_at')
+        .select('*') // Récupérer toutes les colonnes pour les détails complets
         .order('name', { ascending: true }); // Tri par nom alphabétique au lieu de created_at
       
       if (error) throw error;
@@ -197,6 +211,11 @@ const AdminDevelopers = () => {
     saveDevMutation.mutate(formData);
   };
 
+  const openDetailModal = (developer: Developer) => {
+    setSelectedDeveloper(developer);
+    setIsDetailModalOpen(true);
+  };
+
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -326,6 +345,10 @@ const AdminDevelopers = () => {
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={() => openDetailModal(developer)}>
+                                  <Eye className="w-4 h-4 mr-2" />
+                                  Voir détails
+                                </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => openEditModal(developer)}>
                                   <Pencil className="w-4 h-4 mr-2" />
                                   Modifier
@@ -514,6 +537,248 @@ const AdminDevelopers = () => {
               {saveDevMutation.isPending ? 'Sauvegarde...' : 'Sauvegarder'}
             </Button>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Developer Details Modal */}
+      <Dialog open={isDetailModalOpen} onOpenChange={setIsDetailModalOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-3">
+              <Building2 className="w-6 h-6 text-primary" />
+              Fiche complète - {selectedDeveloper?.name}
+            </DialogTitle>
+          </DialogHeader>
+          
+          {selectedDeveloper && (
+            <div className="space-y-6">
+              {/* Informations générales */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
+                    <Building className="w-5 h-5" />
+                    Informations générales
+                  </h3>
+                  
+                  <div className="space-y-3">
+                    <div>
+                      <Label className="text-sm font-medium text-muted-foreground">Nom</Label>
+                      <p className="text-sm">{selectedDeveloper.name}</p>
+                    </div>
+                    
+                    {selectedDeveloper.founded_year && (
+                      <div>
+                        <Label className="text-sm font-medium text-muted-foreground">Année de fondation</Label>
+                        <p className="text-sm flex items-center gap-2">
+                          <Calendar className="w-4 h-4" />
+                          {selectedDeveloper.founded_year}
+                        </p>
+                      </div>
+                    )}
+                    
+                    {selectedDeveloper.years_experience && (
+                      <div>
+                        <Label className="text-sm font-medium text-muted-foreground">Années d'expérience</Label>
+                        <p className="text-sm">{selectedDeveloper.years_experience} ans</p>
+                      </div>
+                    )}
+                    
+                    {selectedDeveloper.total_projects && (
+                      <div>
+                        <Label className="text-sm font-medium text-muted-foreground">Nombre total de projets</Label>
+                        <p className="text-sm">{selectedDeveloper.total_projects}</p>
+                      </div>
+                    )}
+                    
+                    <div>
+                      <Label className="text-sm font-medium text-muted-foreground">Statut</Label>
+                      <Badge variant={selectedDeveloper.status === 'active' ? 'default' : 'secondary'} className="ml-2">
+                        {selectedDeveloper.status === 'active' ? 'Actif' : 'Inactif'}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Contact et localisation */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
+                    <Phone className="w-5 h-5" />
+                    Contact & Localisation
+                  </h3>
+                  
+                  <div className="space-y-3">
+                    {selectedDeveloper.main_city && (
+                      <div>
+                        <Label className="text-sm font-medium text-muted-foreground">Ville principale</Label>
+                        <p className="text-sm flex items-center gap-2">
+                          <MapPin className="w-4 h-4" />
+                          {selectedDeveloper.main_city}
+                        </p>
+                      </div>
+                    )}
+                    
+                    {selectedDeveloper.email_primary && (
+                      <div>
+                        <Label className="text-sm font-medium text-muted-foreground">Email principal</Label>
+                        <p className="text-sm flex items-center gap-2">
+                          <Mail className="w-4 h-4" />
+                          {selectedDeveloper.email_primary}
+                        </p>
+                      </div>
+                    )}
+                    
+                    {selectedDeveloper.phone_numbers && selectedDeveloper.phone_numbers.length > 0 && (
+                      <div>
+                        <Label className="text-sm font-medium text-muted-foreground">Téléphones</Label>
+                        {selectedDeveloper.phone_numbers.map((phone, index) => (
+                          <p key={index} className="text-sm flex items-center gap-2">
+                            <Phone className="w-4 h-4" />
+                            {phone}
+                          </p>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {selectedDeveloper.addresses && selectedDeveloper.addresses.length > 0 && (
+                      <div>
+                        <Label className="text-sm font-medium text-muted-foreground">Adresses</Label>
+                        {selectedDeveloper.addresses.map((address, index) => (
+                          <p key={index} className="text-sm flex items-center gap-2">
+                            <MapPin className="w-4 h-4" />
+                            {address}
+                          </p>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {selectedDeveloper.website && (
+                      <div>
+                        <Label className="text-sm font-medium text-muted-foreground">Site web</Label>
+                        <a 
+                          href={selectedDeveloper.website} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-sm text-primary hover:underline flex items-center gap-2"
+                        >
+                          <Globe className="w-4 h-4" />
+                          {selectedDeveloper.website.replace(/^https?:\/\//, '')}
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Activités et projets */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
+                  <Building className="w-5 h-5" />
+                  Activités & Projets
+                </h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {selectedDeveloper.main_activities && (
+                    <div>
+                      <Label className="text-sm font-medium text-muted-foreground">Activités principales</Label>
+                      <p className="text-sm mt-1">{selectedDeveloper.main_activities}</p>
+                    </div>
+                  )}
+                  
+                  {selectedDeveloper.key_projects && (
+                    <div>
+                      <Label className="text-sm font-medium text-muted-foreground">Projets clés</Label>
+                      <p className="text-sm mt-1">{selectedDeveloper.key_projects}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Évaluation et réputation */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
+                  <Award className="w-5 h-5" />
+                  Évaluation & Réputation
+                </h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {selectedDeveloper.rating_score && (
+                    <div>
+                      <Label className="text-sm font-medium text-muted-foreground">Score de notation</Label>
+                      <p className="text-sm flex items-center gap-2 mt-1">
+                        <Star className="w-4 h-4 text-yellow-500" />
+                        {selectedDeveloper.rating_score}/10
+                      </p>
+                    </div>
+                  )}
+                  
+                  {selectedDeveloper.commission_rate && (
+                    <div>
+                      <Label className="text-sm font-medium text-muted-foreground">Taux de commission</Label>
+                      <p className="text-sm flex items-center gap-2 mt-1">
+                        <TrendingUp className="w-4 h-4" />
+                        {selectedDeveloper.commission_rate}%
+                      </p>
+                    </div>
+                  )}
+                </div>
+                
+                {selectedDeveloper.rating_justification && (
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Justification du score</Label>
+                    <p className="text-sm mt-1 p-3 bg-muted/50 rounded-md">{selectedDeveloper.rating_justification}</p>
+                  </div>
+                )}
+                
+                {selectedDeveloper.reputation_reviews && (
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Réputation et avis</Label>
+                    <p className="text-sm mt-1 p-3 bg-muted/50 rounded-md">{selectedDeveloper.reputation_reviews}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Stabilité financière et historique */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5" />
+                  Stabilité & Historique
+                </h3>
+                
+                {selectedDeveloper.financial_stability && (
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Stabilité financière</Label>
+                    <p className="text-sm mt-1 p-3 bg-muted/50 rounded-md">{selectedDeveloper.financial_stability}</p>
+                  </div>
+                )}
+                
+                {selectedDeveloper.history && (
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Historique</Label>
+                    <p className="text-sm mt-1 p-3 bg-muted/50 rounded-md">{selectedDeveloper.history}</p>
+                  </div>
+                )}
+                
+                {selectedDeveloper.payment_terms && (
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Conditions de paiement</Label>
+                    <p className="text-sm mt-1">{selectedDeveloper.payment_terms}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Dates */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
+                <div>
+                  <Label className="text-sm font-medium text-muted-foreground">Créé le</Label>
+                  <p className="text-sm">{new Date(selectedDeveloper.created_at).toLocaleDateString('fr-FR')}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-muted-foreground">Modifié le</Label>
+                  <p className="text-sm">{new Date(selectedDeveloper.updated_at).toLocaleDateString('fr-FR')}</p>
+                </div>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>
