@@ -53,7 +53,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
     detailed_description: '',
     developer_id: '',
     cyprus_zone: 'limassol',
-    status: 'planning',
+    status: 'under_construction',
     type: 'apartment',
     price: 0,
     price_from: '',
@@ -251,10 +251,10 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="planning">Planification</SelectItem>
               <SelectItem value="under_construction">En construction</SelectItem>
-              <SelectItem value="delivered">Livré</SelectItem>
-              <SelectItem value="available">Disponible</SelectItem>
+              <SelectItem value="completed">Terminé</SelectItem>
+              <SelectItem value="ready_to_move">Prêt à emménager</SelectItem>
+              <SelectItem value="sold_out">Vendu</SelectItem>
             </SelectContent>
           </Select>
         </div>
