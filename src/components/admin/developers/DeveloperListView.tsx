@@ -84,7 +84,14 @@ export const DeveloperListView = ({
                 {dev.website && (
                   <div className="flex items-center space-x-1">
                     <Building className="h-3 w-3" />
-                    <span className="truncate max-w-32">{dev.website}</span>
+                    <a 
+                      href={dev.website.startsWith('http') ? dev.website : `https://${dev.website}`}
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline truncate max-w-32"
+                    >
+                      {dev.website}
+                    </a>
                   </div>
                 )}
               </div>

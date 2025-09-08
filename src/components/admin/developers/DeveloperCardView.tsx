@@ -108,7 +108,14 @@ export const DeveloperCardView = ({
                     {dev.website && (
                       <div className="truncate flex items-center">
                         <span className="mr-1">🌐</span>
-                        {dev.website}
+                        <a 
+                          href={dev.website.startsWith('http') ? dev.website : `https://${dev.website}`}
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-primary hover:underline truncate"
+                        >
+                          {dev.website}
+                        </a>
                       </div>
                     )}
                   </div>
