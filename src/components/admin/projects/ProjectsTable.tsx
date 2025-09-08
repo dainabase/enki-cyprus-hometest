@@ -23,26 +23,31 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
   const { t } = useTranslation();
   const navigate = useNavigate();
   
-  // Gestion de la sélection
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      const allProjectIds = projects.map(project => project.id);
-      onSelectionChange(allProjectIds);
+  // Gestion de la sélection (par groupe + tri-state)
+  const projectIdsSet = React.useMemo(() => new Set(projects.map(p => p.id)), [projects]);
+  const selectedInGroup = React.useMemo(() => selectedProjects.filter(id => projectIdsSet.has(id)), [selectedProjects, projectIdsSet]);
+
+  const handleSelectAll = (checked: boolean | 'indeterminate') => {
+    const others = selectedProjects.filter(id => !projectIdsSet.has(id));
+    if (checked === true) {
+      onSelectionChange([...others, ...Array.from(projectIdsSet)]);
     } else {
-      onSelectionChange([]);
+      onSelectionChange(others);
     }
   };
 
   const handleSelectProject = (projectId: string, checked: boolean) => {
     if (checked) {
-      onSelectionChange([...selectedProjects, projectId]);
+      const next = new Set(selectedProjects);
+      next.add(projectId);
+      onSelectionChange(Array.from(next));
     } else {
       onSelectionChange(selectedProjects.filter(id => id !== projectId));
     }
   };
 
-  const isAllSelected = projects.length > 0 && selectedProjects.length === projects.length;
-  const isIndeterminate = selectedProjects.length > 0 && selectedProjects.length < projects.length;
+  const isAllSelected = projects.length > 0 && selectedInGroup.length === projects.length;
+  const isIndeterminate = selectedInGroup.length > 0 && selectedInGroup.length < projects.length;
   const handleDelete = async (projectId: string, projectTitle: string) => {
     try {
       // Check for dependencies first
@@ -140,7 +145,7 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
               <Checkbox
                 aria-label={t('actions.selectAll') || 'Tout sélectionner'}
                 checked={isAllSelected ? true : isIndeterminate ? "indeterminate" : false}
-                onCheckedChange={(checked) => handleSelectAll(checked === true)}
+                onCheckedChange={(checked) => handleSelectAll(checked)}
               />
             </TableHead>
             <TableHead>{t('fields.name')}</TableHead>
