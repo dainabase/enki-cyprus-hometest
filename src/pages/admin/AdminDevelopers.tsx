@@ -108,7 +108,9 @@ const AdminDevelopers = () => {
     'lemon maria': '/lovable-uploads/9900cf2b-b687-4cb0-b136-afbf6ea3e24a.png',
     'aristo developers': '/lovable-uploads/451fcc7c-10f6-44de-958b-7d7bebd86ac4.png',
     'aristo developer': '/lovable-uploads/451fcc7c-10f6-44de-958b-7d7bebd86ac4.png',
-    'aristo': '/lovable-uploads/451fcc7c-10f6-44de-958b-7d7bebd86ac4.png'
+    'aristo': '/lovable-uploads/451fcc7c-10f6-44de-958b-7d7bebd86ac4.png',
+    'karma group': '/lovable-uploads/aec5ed87-7930-4b41-954b-9e598b9fcb57.png',
+    'karma': '/lovable-uploads/aec5ed87-7930-4b41-954b-9e598b9fcb57.png'
   };
   const getLogo = (d: Partial<Developer>) => {
     const byName = (d.name || '').toLowerCase();
@@ -343,7 +345,7 @@ const AdminDevelopers = () => {
                            <div className="flex-1 min-w-0">
                              {/* Logo en haut à gauche */}
                              <div className="flex justify-start mb-4">
-                               <div className="w-20 h-20 rounded-md overflow-hidden bg-card border border-border/50 flex items-center justify-center shrink-0">
+                               <div className="w-32 h-32 rounded-md overflow-hidden bg-card border border-border/50 flex items-center justify-center shrink-0">
                                  {getLogo(developer) ? (
                                    <img
                                      src={getLogo(developer)!}
