@@ -138,7 +138,10 @@ const AdminDevelopers = () => {
     'bbf': '/lovable-uploads/b5ced174-3c3d-4a14-ac08-3d9c466c25c0.png',
     'd. zavos group': '/lovable-uploads/ecbada79-fdcc-4174-9a11-f5d951be818f.png',
     'zavos group': '/lovable-uploads/ecbada79-fdcc-4174-9a11-f5d951be818f.png',
-    'zavos': '/lovable-uploads/ecbada79-fdcc-4174-9a11-f5d951be818f.png'
+    'zavos': '/lovable-uploads/ecbada79-fdcc-4174-9a11-f5d951be818f.png',
+    'agg luxury homes ltd': '/lovable-uploads/da9e2335-cbce-4b91-91e9-9ab0079032c6.png',
+    'agg luxury homes': '/lovable-uploads/da9e2335-cbce-4b91-91e9-9ab0079032c6.png',
+    'agg': '/lovable-uploads/da9e2335-cbce-4b91-91e9-9ab0079032c6.png'
   };
   const getLogo = (d: Partial<Developer>) => {
     const byName = (d.name || '').toLowerCase().trim();
