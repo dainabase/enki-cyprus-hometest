@@ -158,111 +158,158 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
     return (
       <div className="space-y-4">
         {/* Upload Zone */}
-        <div
-          className={`border-2 border-dashed rounded-lg p-6 transition-colors ${
-            dragOver && selectedCategory === category
-              ? 'border-primary bg-primary/5' 
-              : 'border-border hover:border-primary/50'
-          }`}
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-        >
-          <div className="flex flex-col items-center justify-center space-y-3">
-            <Icon className="w-8 h-8 text-muted-foreground" />
-            <div className="text-center">
-              <p className="text-sm font-medium">{categoryInfo?.label}</p>
-              <p className="text-xs text-muted-foreground mb-2">
-                {categoryInfo?.description}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Glissez-déposez vos photos ici ou
-              </p>
-              <Label htmlFor={`file-upload-${category}`} className="cursor-pointer">
-                <span className="text-primary hover:text-primary/80 font-medium">
-                  parcourez vos fichiers
-                </span>
-                <Input
-                  id={`file-upload-${category}`}
-                  type="file"
-                  accept="image/*"
-                  multiple={category !== 'hero'}
-                  className="hidden"
-                  onChange={(e) => {
-                    setSelectedCategory(category);
-                    handleUpload(Array.from(e.target.files || []), category);
-                  }}
-                  disabled={uploading}
-                />
-              </Label>
+        <Card className="overflow-hidden">
+          <div
+            className={`relative border-2 border-dashed rounded-lg p-8 transition-all duration-200 ${
+              dragOver && selectedCategory === category
+                ? 'border-primary bg-primary/5 scale-[1.02]' 
+                : 'border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/30'
+            }`}
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+          >
+            <div className="flex flex-col items-center justify-center space-y-4">
+              <div className="relative">
+                <Icon className="w-12 h-12 text-muted-foreground" />
+                {uploading && selectedCategory === category && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-12 h-12 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                  </div>
+                )}
+              </div>
+              
+              <div className="text-center space-y-2">
+                <h3 className="text-lg font-semibold text-foreground">{categoryInfo?.label}</h3>
+                <p className="text-sm text-muted-foreground max-w-xs">
+                  {categoryInfo?.description}
+                </p>
+              </div>
+              
+              <div className="flex flex-col items-center space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Glissez-déposez vos photos ici
+                </p>
+                
+                <div className="relative">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="relative bg-background hover:bg-muted"
+                    disabled={uploading}
+                    onClick={() => document.getElementById(`file-upload-${category}`)?.click()}
+                  >
+                    <Upload className="w-4 h-4 mr-2" />
+                    Parcourir les fichiers
+                  </Button>
+                  
+                  <Input
+                    id={`file-upload-${category}`}
+                    type="file"
+                    accept="image/*"
+                    multiple={category !== 'hero'}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    onChange={(e) => {
+                      setSelectedCategory(category);
+                      handleUpload(Array.from(e.target.files || []), category);
+                    }}
+                    disabled={uploading}
+                  />
+                </div>
+                
+                {uploading && selectedCategory === category && (
+                  <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                    <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                    <span>Upload en cours...</span>
+                  </div>
+                )}
+              </div>
             </div>
-            {uploading && selectedCategory === category && (
-              <Badge variant="secondary" className="animate-pulse">
-                Upload en cours...
-              </Badge>
-            )}
           </div>
-        </div>
+        </Card>
 
         {/* Photos Grid */}
         {photos.length > 0 && (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <Label className="text-sm font-medium">
-                {photos.length} photo{photos.length > 1 ? 's' : ''}
-              </Label>
-              {category === 'hero' && photos.length > 1 && (
-                <Badge variant="outline" className="text-xs">
-                  Une seule photo principale recommandée
-                </Badge>
-              )}
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {photos.map((photo, photoIndex) => {
-                const globalIndex = field.value.findIndex(p => p.url === photo.url);
-                return (
-                  <Card key={photo.url} className="overflow-hidden">
-                    <div className="relative aspect-video">
-                      <img 
-                        src={photo.url} 
-                        alt={photo.caption || `${categoryInfo?.label} ${photoIndex + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                      {category === 'hero' && (
-                        <div className="absolute top-2 left-2">
+          <Card>
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Icon className="w-5 h-5 text-muted-foreground" />
+                  <h4 className="text-sm font-semibold">
+                    {photos.length} photo{photos.length > 1 ? 's' : ''} ajoutée{photos.length > 1 ? 's' : ''}
+                  </h4>
+                </div>
+                {category === 'hero' && photos.length > 1 && (
+                  <Badge variant="outline" className="text-xs">
+                    Une seule photo principale recommandée
+                  </Badge>
+                )}
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {photos.map((photo, photoIndex) => {
+                  const globalIndex = field.value.findIndex(p => p.url === photo.url);
+                  return (
+                    <Card key={photo.url} className="overflow-hidden group hover:shadow-md transition-all duration-200">
+                      <div className="relative aspect-video">
+                        <img 
+                          src={photo.url} 
+                          alt={photo.caption || `${categoryInfo?.label} ${photoIndex + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                        
+                        {/* Actions overlay */}
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center space-x-2">
+                          {category === 'hero' && (
+                            <Button
+                              size="sm"
+                              variant={photo.isPrimary ? "default" : "secondary"}
+                              className="h-8 px-3"
+                              onClick={() => setPrimary(globalIndex)}
+                              title={photo.isPrimary ? "Photo principale" : "Définir comme principale"}
+                            >
+                              <Star className={`w-3 h-3 mr-1 ${photo.isPrimary ? 'fill-current' : ''}`} />
+                              {photo.isPrimary ? 'Principale' : 'Définir'}
+                            </Button>
+                          )}
+                          
                           <Button
                             size="sm"
-                            variant={photo.isPrimary ? "default" : "secondary"}
-                            className="w-8 h-8 p-0 rounded-full"
-                            onClick={() => setPrimary(globalIndex)}
-                            title={photo.isPrimary ? "Photo principale" : "Définir comme principale"}
+                            variant="destructive"
+                            className="h-8 px-3"
+                            onClick={() => removePhoto(globalIndex)}
                           >
-                            <Star className={`w-3 h-3 ${photo.isPrimary ? 'fill-current' : ''}`} />
+                            <X className="w-3 h-3 mr-1" />
+                            Supprimer
                           </Button>
                         </div>
-                      )}
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        className="absolute top-2 right-2 w-6 h-6 p-0 rounded-full"
-                        onClick={() => removePhoto(globalIndex)}
-                      >
-                        <X className="w-3 h-3" />
-                      </Button>
-                    </div>
-                    <CardContent className="p-3">
-                      <Input
-                        placeholder="Légende (optionnel)"
-                        value={photo.caption || ''}
-                        onChange={(e) => updateCaption(globalIndex, e.target.value)}
-                        className="text-xs"
-                      />
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          </div>
+                        
+                        {/* Primary badge */}
+                        {category === 'hero' && photo.isPrimary && (
+                          <div className="absolute top-2 left-2">
+                            <Badge className="bg-primary text-primary-foreground">
+                              <Star className="w-3 h-3 mr-1 fill-current" />
+                              Principale
+                            </Badge>
+                          </div>
+                        )}
+                      </div>
+                      
+                      <CardContent className="p-3">
+                        <Input
+                          placeholder="Légende (optionnel)"
+                          value={photo.caption || ''}
+                          onChange={(e) => updateCaption(globalIndex, e.target.value)}
+                          className="text-sm border-0 bg-muted/30 focus:bg-background transition-colors"
+                        />
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
         )}
       </div>
     );
