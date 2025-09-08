@@ -12,6 +12,7 @@ interface Developer {
   contact_info?: any;
   total_projects?: number;
   rating_score?: number;
+  website?: string;
 }
 
 interface DeveloperListViewProps {
@@ -56,11 +57,6 @@ export const DeveloperListView = ({
                 <Badge variant={dev.status === 'active' ? 'default' : 'secondary'}>
                   {dev.status === 'active' ? 'Actif' : 'Inactif'}
                 </Badge>
-                {dev.rating_score && (
-                  <span className="text-sm text-muted-foreground">
-                    ⭐ {dev.rating_score}/5
-                  </span>
-                )}
               </div>
               
               <div className="flex items-center space-x-4 mt-1 text-sm text-muted-foreground">
@@ -84,19 +80,24 @@ export const DeveloperListView = ({
                     <span>{dev.contact_info.phone}</span>
                   </div>
                 )}
+                
+                {dev.website && (
+                  <div className="flex items-center space-x-1">
+                    <Building className="h-3 w-3" />
+                    <span className="truncate max-w-32">Site web</span>
+                  </div>
+                )}
               </div>
             </div>
             
-            <div className="flex items-center space-x-6 text-sm">
-              <div className="text-center">
-                <div className="font-medium">{dev.commission_rate || 3}%</div>
-                <div className="text-xs text-muted-foreground">Commission</div>
+            {dev.rating_score && (
+              <div className="flex items-center space-x-6 text-sm">
+                <div className="text-center">
+                  <div className="font-medium">⭐ {dev.rating_score}/10</div>
+                  <div className="text-xs text-muted-foreground">Note</div>
+                </div>
               </div>
-              <div className="text-center">
-                <div className="font-medium">{dev.total_projects || 0}</div>
-                <div className="text-xs text-muted-foreground">Projets</div>
-              </div>
-            </div>
+            )}
           </div>
           
           <div className="flex space-x-1 ml-4">

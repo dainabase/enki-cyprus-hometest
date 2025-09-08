@@ -86,16 +86,29 @@ export const DeveloperCardView = ({
                     </Badge>
                     {dev.rating_score && (
                       <span className="text-xs text-muted-foreground">
-                        ⭐ {dev.rating_score}/5
+                        ⭐ {dev.rating_score}/10
                       </span>
                     )}
                   </div>
                   
                   <div className="text-xs text-muted-foreground space-y-1">
-                    <div>Commission: {dev.commission_rate || 3}%</div>
-                    <div>Projets: {dev.total_projects || 0}</div>
                     {dev.contact_info?.email && (
-                      <div className="truncate">{dev.contact_info.email}</div>
+                      <div className="truncate flex items-center">
+                        <span className="mr-1">📧</span>
+                        {dev.contact_info.email}
+                      </div>
+                    )}
+                    {dev.contact_info?.phone && (
+                      <div className="truncate flex items-center">
+                        <span className="mr-1">📞</span>
+                        {dev.contact_info.phone}
+                      </div>
+                    )}
+                    {dev.contact_info?.address && (
+                      <div className="truncate flex items-center">
+                        <span className="mr-1">📍</span>
+                        {dev.contact_info.address}
+                      </div>
                     )}
                   </div>
                 </CardContent>

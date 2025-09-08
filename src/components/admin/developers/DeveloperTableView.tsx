@@ -14,6 +14,7 @@ interface Developer {
   contact_info?: any;
   total_projects?: number;
   rating_score?: number;
+  website?: string;
 }
 
 interface DeveloperTableViewProps {
@@ -116,24 +117,7 @@ export const DeveloperTableView = ({
                 Statut <SortIcon field="status" />
               </Button>
             </TableHead>
-            <TableHead>
-              <Button 
-                variant="ghost" 
-                className="h-auto p-0 font-semibold hover:bg-transparent"
-                onClick={() => handleSort('commission_rate')}
-              >
-                Commission <SortIcon field="commission_rate" />
-              </Button>
-            </TableHead>
-            <TableHead>
-              <Button 
-                variant="ghost" 
-                className="h-auto p-0 font-semibold hover:bg-transparent"
-                onClick={() => handleSort('total_projects')}
-              >
-                Projets <SortIcon field="total_projects" />
-              </Button>
-            </TableHead>
+            <TableHead>Site web</TableHead>
             <TableHead>
               <Button 
                 variant="ghost" 
@@ -172,10 +156,15 @@ export const DeveloperTableView = ({
                   {dev.status === 'active' ? 'Actif' : 'Inactif'}
                 </Badge>
               </TableCell>
-              <TableCell>{dev.commission_rate || 3}%</TableCell>
-              <TableCell>{dev.total_projects || 0}</TableCell>
               <TableCell>
-                {dev.rating_score ? `⭐ ${dev.rating_score}/5` : '-'}
+                {dev.website ? (
+                  <a href={dev.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline truncate max-w-32 block">
+                    {dev.website}
+                  </a>
+                ) : '-'}
+              </TableCell>
+              <TableCell>
+                {dev.rating_score ? `⭐ ${dev.rating_score}/10` : '-'}
               </TableCell>
               <TableCell className="max-w-48">
                 <div className="text-sm space-y-1">

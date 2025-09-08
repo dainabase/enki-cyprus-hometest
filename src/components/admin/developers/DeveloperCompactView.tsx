@@ -64,10 +64,8 @@ export const DeveloperCompactView = ({
               {dev.main_city && (
                 <span className="hidden sm:inline">{dev.main_city}</span>
               )}
-              <span>{dev.commission_rate || 3}%</span>
-              <span>{dev.total_projects || 0}P</span>
               {dev.rating_score && (
-                <span>⭐{dev.rating_score}</span>
+                <span>⭐{dev.rating_score}/10</span>
               )}
             </div>
           </div>

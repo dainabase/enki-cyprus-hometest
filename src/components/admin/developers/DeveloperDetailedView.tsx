@@ -69,7 +69,7 @@ export const DeveloperDetailedView = ({
                     {dev.rating_score && (
                       <div className="flex items-center space-x-1">
                         <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                        <span className="font-medium">{dev.rating_score}/5</span>
+                        <span className="font-medium">{dev.rating_score}/10</span>
                       </div>
                     )}
                   </div>
@@ -165,17 +165,15 @@ export const DeveloperDetailedView = ({
                 <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">Statistiques</h4>
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span>Commission:</span>
-                    <span className="font-medium">{dev.commission_rate || 3}%</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span>Projets totaux:</span>
-                    <span className="font-medium">{dev.total_projects || 0}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
                     <span>Stabilité financière:</span>
                     <span className="font-medium">{dev.financial_stability || 'N/A'}</span>
                   </div>
+                  {dev.rating_score && (
+                    <div className="flex justify-between text-sm">
+                      <span>Note:</span>
+                      <span className="font-medium">⭐ {dev.rating_score}/10</span>
+                    </div>
+                  )}
                 </div>
               </div>
               

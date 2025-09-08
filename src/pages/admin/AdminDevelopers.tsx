@@ -120,7 +120,7 @@ export default function AdminDevelopers() {
 
   // Logo fallbacks mapping
   const logoFallbacks: Record<string, string> = {
-    'leptos estates': '/lovable-uploads/b5ced174-3c3d-4a14-ac08-3d9c466c25c0.png',
+    'leptos estates main': '/lovable-uploads/b5ced174-3c3d-4a14-ac08-3d9c466c25c0.png',
     'leptos': '/lovable-uploads/b5ced174-3c3d-4a14-ac08-3d9c466c25c0.png',
     'aristo developers': '/lovable-uploads/aec5ed87-7930-4b41-954b-9e598b9fcb57.png',
     'aristo': '/lovable-uploads/aec5ed87-7930-4b41-954b-9e598b9fcb57.png',
@@ -147,7 +147,7 @@ export default function AdminDevelopers() {
     'domenica group': '/lovable-uploads/96899468-63cb-42e9-90b6-c3aeaf5a51ea.png',
     'dominica': '/lovable-uploads/96899468-63cb-42e9-90b6-c3aeaf5a51ea.png',
     'dominica group': '/lovable-uploads/96899468-63cb-42e9-90b6-c3aeaf5a51ea.png',
-    'leptos': '/lovable-uploads/86a9b95e-ea6a-47e2-a82e-e9761d09f788.png',
+    'leptos estates': '/lovable-uploads/86a9b95e-ea6a-47e2-a82e-e9761d09f788.png',
     'pafilia': '/lovable-uploads/3843a2de-ff9f-4d55-98b2-4e5cfaf6958d.png',
     'cybarco': '/lovable-uploads/532a60af-fea7-4b6d-a8ec-c334447e2196.png'
   };
@@ -230,7 +230,7 @@ export default function AdminDevelopers() {
       key_projects: developer.key_projects || '',
       financial_stability: developer.financial_stability || '',
       payment_terms: developer.payment_terms || '',
-      status: developer.status,
+      status: developer.status as 'active' | 'inactive',
       rating_score: developer.rating_score
     });
     setIsModalOpen(true);
