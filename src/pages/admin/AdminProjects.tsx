@@ -48,10 +48,9 @@ const AdminProjects = () => {
       let query = supabase
         .from('projects')
         .select(`
-          id, title, status, cyprus_zone, golden_visa_eligible, price_from,
+          id, title, status, cyprus_zone, golden_visa_eligible, price, price_from,
           completion_date, units_available, units_sold, total_units, developer_id,
-          developer:developers(id, name),
-          buildings(count)
+          developer:developers(id, name)
         `, { count: 'exact' })
         .order('developer_id', { ascending: true })
         .order('title', { ascending: true })
@@ -73,6 +72,7 @@ const AdminProjects = () => {
 
       const { data, error, count } = await query;
       if (error) throw error;
+      console.info('🔎 AdminProjects fetch', { totalCount: count, length: data?.length, first: data?.[0]?.id });
       return { data, count };
     }
   );
