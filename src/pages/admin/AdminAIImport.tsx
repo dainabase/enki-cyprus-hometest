@@ -102,7 +102,7 @@ export default function AdminAIImport() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-6">
+    <div className="container mx-auto px-4 py-6 pt-20">
       <div className="mb-6">
         <div className="flex items-center space-x-3 mb-4">
           <Brain className="h-8 w-8 text-primary" />
