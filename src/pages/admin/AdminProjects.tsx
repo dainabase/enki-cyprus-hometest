@@ -40,8 +40,7 @@ const AdminProjects = () => {
     goldenVisaOnly: false
   });
 
-  // Fetch projects with developer data with pagination
-  const { data: projectsResponse, isLoading, refetch } = useSupabaseQuery(
+  const { data: projectsResponse, isLoading, error, refetch } = useSupabaseQuery(
     ['admin-projects', filters, pagination],
     async () => {
       const { from, to } = getPaginationRange(pagination);
@@ -77,6 +76,17 @@ const AdminProjects = () => {
       return { data, count };
     }
   );
+
+  React.useEffect(() => {
+    if (error) {
+      console.error('Erreur chargement projets:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Erreur de chargement',
+        description: (error as any).message || 'Impossible de charger les projets'
+      });
+    }
+  }, [error, toast]);
 
   const projectsData = projectsResponse?.data || [];
   const totalCount = projectsResponse?.count || 0;

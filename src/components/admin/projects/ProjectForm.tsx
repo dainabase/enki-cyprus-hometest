@@ -413,6 +413,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
             placeholder="Description du projet"
             rows={3}
             required
+            sanitize={false}
           />
         </div>
         <div className="space-y-2">
@@ -423,6 +424,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
             onChange={(e) => setFormData(prev => ({ ...prev, detailed_description: e.target.value }))}
             placeholder="Description détaillée du projet"
             rows={4}
+            sanitize={false}
           />
         </div>
       </div>
