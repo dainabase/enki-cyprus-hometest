@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from '@/components/ui/sonner';
 import SimpleImageUploader from '@/components/admin/common/SimpleImageUploader';
 import { createProjectImage, fetchProjectImages, ProjectImage } from '@/lib/supabase/images';
 
@@ -42,7 +42,7 @@ interface ProjectFormData {
 }
 
 const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, onCancel }) => {
-  const { toast } = useToast();
+  // Using Sonner toast directly
   const [isLoading, setIsLoading] = useState(false);
   const [existingImages, setExistingImages] = useState<ProjectImage[]>([]);
   
@@ -154,20 +154,20 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
         
         if (error) throw error;
         
-        toast({
-          title: 'Projet mis à jour',
+        toast.success('Projet mis à jour', {
           description: 'Le projet a été mis à jour avec succès'
         });
       } else {
         // Create new project
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('projects')
-          .insert([projectData]);
+          .insert([projectData])
+          .select()
+          .single();
         
         if (error) throw error;
         
-        toast({
-          title: 'Projet créé',
+        toast.success('Projet créé', {
           description: 'Le nouveau projet a été créé avec succès'
         });
       }
@@ -175,10 +175,10 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
       onSave();
     } catch (error) {
       console.error('Error saving project:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Erreur',
-        description: 'Impossible de sauvegarder le projet'
+      // Log detailed error for debugging
+      console.error('Supabase error while saving project:', error);
+      toast.error('Erreur', {
+        description: (error as any)?.message || 'Impossible de sauvegarder le projet'
       });
     } finally {
       setIsLoading(false);
@@ -262,13 +262,10 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="planning">Planification</SelectItem>
               <SelectItem value="under_construction">En construction</SelectItem>
-              <SelectItem value="completed">Terminé</SelectItem>
               <SelectItem value="ready_to_move">Prêt à emménager</SelectItem>
+              <SelectItem value="completed">Terminé</SelectItem>
               <SelectItem value="sold_out">Vendu</SelectItem>
-              <SelectItem value="on_hold">En pause</SelectItem>
-              <SelectItem value="delivered">Livré</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -317,6 +314,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
             id="price"
             type="number"
             value={formData.price === 0 ? '' : formData.price}
+            onFocus={(e) => { if (e.currentTarget.value === '0') e.currentTarget.value = ''; }}
             onChange={(e) => setFormData(prev => ({ ...prev, price: Number(e.target.value) || 0 }))}
             placeholder="Prix minimum"
             required
@@ -356,6 +354,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
             id="units_available"
             type="number"
             value={formData.units_available === 0 ? '' : formData.units_available}
+            onFocus={(e) => { if (e.currentTarget.value === '0') e.currentTarget.value = ''; }}
             onChange={(e) => setFormData(prev => ({ ...prev, units_available: Number(e.target.value) || 0 }))}
             placeholder="Nombre d'unités disponibles"
             min="0"
@@ -367,6 +366,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
             id="total_units"
             type="number"
             value={formData.total_units === 0 ? '' : formData.total_units}
+            onFocus={(e) => { if (e.currentTarget.value === '0') e.currentTarget.value = ''; }}
             onChange={(e) => setFormData(prev => ({ ...prev, total_units: Number(e.target.value) || 0 }))}
             placeholder="Nombre total d'unités"
             min="0"
@@ -464,14 +464,11 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
                 }
                 // Reload images
                 await loadExistingImages(project.id);
-                toast({
-                  title: "Images uploadées",
+                toast.success("Images uploadées", {
                   description: `${urls.length} image(s) ajoutée(s) avec succès`
                 });
               } catch (error) {
-                toast({
-                  variant: "destructive",
-                  title: "Erreur",
+                toast.error("Erreur", {
                   description: "Impossible de sauvegarder les images"
                 });
               }
