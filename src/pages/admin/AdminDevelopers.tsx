@@ -61,12 +61,14 @@ const AdminDevelopers = () => {
   const { data: developers = [], isLoading } = useQuery({
     queryKey: ['developers'],
     queryFn: async () => {
+      console.log('🔄 Fetching developers...');
       const { data, error } = await supabase
         .from('developers')
         .select('id, name, website, phone_numbers, addresses, email_primary, main_city, rating_score, commission_rate, status, created_at, updated_at')
         .order('created_at', { ascending: false });
       
       if (error) throw error;
+      console.log(`✅ Fetched ${data?.length || 0} developers:`, data?.map(d => ({ name: d.name, status: d.status })));
       return data as Developer[];
     }
   });
@@ -101,6 +103,7 @@ const AdminDevelopers = () => {
       }
     },
     onSuccess: () => {
+      console.log('✅ Developer saved successfully, invalidating cache...');
       queryClient.invalidateQueries({ queryKey: ['developers'] });
       setIsModalOpen(false);
       resetForm();
@@ -249,6 +252,11 @@ const AdminDevelopers = () => {
 
       {/* Developers Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {developers.length === 0 && (
+          <div className="col-span-full text-center py-8 text-muted-foreground">
+            Aucun développeur trouvé
+          </div>
+        )}
         {developers.map((developer) => (
           <Card key={developer.id} className="relative">
             <CardHeader>
