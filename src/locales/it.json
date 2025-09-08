@@ -181,5 +181,61 @@
     "date": "Data",
     "noProjects": "Nessun progetto trovato",
     "noCommissions": "Nessuna commissione trovata"
+  },
+  "admin": {
+    "sidebar": {
+      "dashboard": "Pannello di Controllo",
+      "gestionImmobiliere": "Gestione Immobiliare",
+      "developers": "Sviluppatori",
+      "projects": "Progetti",
+      "units": "Unità",
+      "ventesCRM": "Vendite e CRM",
+      "prospects": "Prospetti",
+      "commissions": "Commissioni",
+      "analytics": "Analisi",
+      "analyses": "Analisi",
+      "segmentation": "Segmentazione",
+      "performance": "Prestazioni",
+      "reports": "Rapporti",
+      "administration": "Amministrazione",
+      "documentation": "Documentazione",
+      "settings": "Impostazioni",
+      "tests": "Test"
+    },
+    "titles": {
+      "projectManagement": "Gestione Progetti",
+      "projectManagementSubtitle": "Gestire progetti immobiliari",
+      "developerManagement": "Gestione Sviluppatori",
+      "developerManagementSubtitle": "Gestire sviluppatori immobiliari"
+    },
+    "buttons": {
+      "newProject": "Nuovo Progetto",
+      "filters": "Filtri",
+      "sortBy": "Ordina per"
+    },
+    "status": {
+      "available": "Disponibile",
+      "underConstruction": "In Costruzione",
+      "delivered": "Consegnato",
+      "totalProjects": "Totale Progetti"
+    },
+    "views": {
+      "cards": "Schede",
+      "list": "Lista",
+      "table": "Tabella",
+      "compact": "Compatto",
+      "detailed": "Dettagliato"
+    },
+    "sorting": {
+      "title": "Nome progetto",
+      "developer": "Sviluppatore",
+      "city": "Città",
+      "neighborhood": "Quartiere",
+      "price": "Prezzo",
+      "status": "Stato",
+      "zone": "Zona di Cipro",
+      "completionDate": "Data di completamento",
+      "createdDate": "Data di creazione"
+    }
   }
 }

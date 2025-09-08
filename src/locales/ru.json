@@ -236,6 +236,87 @@
       "zone": "Зона Кипра",
       "completionDate": "Дата завершения",
       "createdDate": "Дата создания"
+    },
+    "fields": {
+      "exclusiveCommercialization": "Эксклюзивность Enki Reality",
+      "projectCode": "Код проекта",
+      "projectName": "Название проекта",
+      "category": "Категория",
+      "subTypes": "Подтипы",
+      "projectPhase": "Фаза проекта",
+      "developer": "Застройщик",
+      "launchDate": "Дата запуска",
+      "deliveryDate": "Дата сдачи",
+      "shortDescription": "Краткое описание",
+      "detailedDescription": "Подробное описание",
+      "fullAddress": "Полный адрес",
+      "city": "Город",
+      "region": "Регион",
+      "neighborhood": "Район",
+      "cyprusZone": "Зона Кипра",
+      "latitude": "Широта",
+      "longitude": "Долгота",
+      "proximityToSea": "Море",
+      "proximityToAirport": "Аэропорт",
+      "proximityToCityCenter": "Центр города",
+      "proximityToHighway": "Автомагистраль"
+    },
+    "messages": {
+      "projectsDeleted": "Проекты удалены",
+      "projectsDeletedDesc": "{{count}} проект(ов) было успешно удалено.",
+      "allProjectsSelected": "Все проекты выбраны",
+      "allProjectsSelectedDesc": "{{count}} проект(ов) выбрано.",
+      "projectsSelected": "{{count}} проект(ов) выбрано",
+      "noSelection": "Нет выбранных",
+      "noSelectionDesc": "Пожалуйста, выберите хотя бы один проект для удаления.",
+      "error": "Ошибка",
+      "errorDeletingProjects": "Невозможно удалить проекты"
+    },
+    "steps": {
+      "step": "Шаг",
+      "of": "из",
+      "basicInfo": "Основная информация",
+      "location": "Местоположение",
+      "specifications": "Спецификации",
+      "pricing": "Цены и инвестиции",
+      "media": "Медиа",
+      "amenities": "Удобства",
+      "marketing": "Маркетинг и SEO"
+    },
+    "categories": {
+      "residential": "Жилой",
+      "commercial": "Коммерческий",
+      "mixed": "Смешанный",
+      "industrial": "Промышленный"
+    },
+    "phases": {
+      "offPlan": "По проекту",
+      "underConstruction": "В строительстве",
+      "completed": "Завершено",
+      "readyToMove": "Готово к заселению"
+    },
+    "zones": {
+      "limassol": "Лимасол",
+      "paphos": "Пафос",
+      "larnaca": "Ларнака",
+      "nicosia": "Никосия",
+      "famagusta": "Фамагуста"
     }
+  },
+  "tests": {
+    "title": "Тесты и Проверка",
+    "description": "Ручное тестирование и проверка целостности данных",
+    "generateData": "Создать Тестовые Данные",
+    "resetData": "Сбросить Тестовые Данные",
+    "systemHealth": "Здоровье Системы"
+  },
+  "documentation": {
+    "title": "Документация",
+    "subtitle": "Полное руководство по панели администратора",
+    "quickStart": "Быстрый Старт",
+    "features": "Ключевые Функции",
+    "shortcuts": "Горячие Клавиши",
+    "api": "Справочник API",
+    "external": "Внешние Ссылки"
   }
 }

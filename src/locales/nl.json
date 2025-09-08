@@ -181,5 +181,61 @@
     "date": "Datum",
     "noProjects": "Geen projecten gevonden",
     "noCommissions": "Geen commissies gevonden"
+  },
+  "admin": {
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "gestionImmobiliere": "Vastgoedbeheer",
+      "developers": "Ontwikkelaars",
+      "projects": "Projecten",
+      "units": "Eenheden",
+      "ventesCRM": "Verkoop & CRM",
+      "prospects": "Prospects",
+      "commissions": "Commissies",
+      "analytics": "Analytics",
+      "analyses": "Analyses",
+      "segmentation": "Segmentatie",
+      "performance": "Prestaties",
+      "reports": "Rapporten",
+      "administration": "Administratie",
+      "documentation": "Documentatie",
+      "settings": "Instellingen",
+      "tests": "Tests"
+    },
+    "titles": {
+      "projectManagement": "Projectbeheer",
+      "projectManagementSubtitle": "Vastgoedprojecten beheren",
+      "developerManagement": "Ontwikkelaarsbeheer",
+      "developerManagementSubtitle": "Vastgoedontwikkelaars beheren"
+    },
+    "buttons": {
+      "newProject": "Nieuw Project",
+      "filters": "Filters",
+      "sortBy": "Sorteren op"
+    },
+    "status": {
+      "available": "Beschikbaar",
+      "underConstruction": "In Aanbouw",
+      "delivered": "Opgeleverd",
+      "totalProjects": "Totaal Projecten"
+    },
+    "views": {
+      "cards": "Kaarten",
+      "list": "Lijst",
+      "table": "Tabel",
+      "compact": "Compact",
+      "detailed": "Gedetailleerd"
+    },
+    "sorting": {
+      "title": "Projectnaam",
+      "developer": "Ontwikkelaar",
+      "city": "Stad",
+      "neighborhood": "Buurt",
+      "price": "Prijs",
+      "status": "Status",
+      "zone": "Cyprus Zone",
+      "completionDate": "Opleverdatum",
+      "createdDate": "Aanmaakdatum"
+    }
   }
 }

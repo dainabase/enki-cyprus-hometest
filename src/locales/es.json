@@ -358,5 +358,61 @@
     "date": "Fecha",
     "noProjects": "No se encontraron proyectos",
     "noCommissions": "No se encontraron comisiones"
+  },
+  "admin": {
+    "sidebar": {
+      "dashboard": "Panel de Control",
+      "gestionImmobiliere": "Gestión Inmobiliaria",
+      "developers": "Desarrolladores",
+      "projects": "Proyectos",
+      "units": "Unidades",
+      "ventesCRM": "Ventas y CRM",
+      "prospects": "Prospectos",
+      "commissions": "Comisiones",
+      "analytics": "Análisis",
+      "analyses": "Análisis",
+      "segmentation": "Segmentación",
+      "performance": "Rendimiento",
+      "reports": "Informes",
+      "administration": "Administración",
+      "documentation": "Documentación",
+      "settings": "Configuración",
+      "tests": "Pruebas"
+    },
+    "titles": {
+      "projectManagement": "Gestión de Proyectos",
+      "projectManagementSubtitle": "Gestionar proyectos inmobiliarios",
+      "developerManagement": "Gestión de Desarrolladores",
+      "developerManagementSubtitle": "Gestionar desarrolladores inmobiliarios"
+    },
+    "buttons": {
+      "newProject": "Nuevo Proyecto",
+      "filters": "Filtros",
+      "sortBy": "Ordenar por"
+    },
+    "status": {
+      "available": "Disponible",
+      "underConstruction": "En Construcción",
+      "delivered": "Entregado",
+      "totalProjects": "Total Proyectos"
+    },
+    "views": {
+      "cards": "Tarjetas",
+      "list": "Lista",
+      "table": "Tabla",
+      "compact": "Compacto",
+      "detailed": "Detallado"
+    },
+    "sorting": {
+      "title": "Nombre del proyecto",
+      "developer": "Desarrollador",
+      "city": "Ciudad",
+      "neighborhood": "Barrio",
+      "price": "Precio",
+      "status": "Estado",
+      "zone": "Zona de Chipre",
+      "completionDate": "Fecha de finalización",
+      "createdDate": "Fecha de creación"
+    }
   }
 }

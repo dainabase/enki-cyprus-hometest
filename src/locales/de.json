@@ -181,5 +181,61 @@
     "date": "Datum",
     "noProjects": "Keine Projekte gefunden",
     "noCommissions": "Keine Provisionen gefunden"
+  },
+  "admin": {
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "gestionImmobiliere": "Immobilienverwaltung",
+      "developers": "Entwickler",
+      "projects": "Projekte",
+      "units": "Einheiten",
+      "ventesCRM": "Verkauf & CRM",
+      "prospects": "Interessenten",
+      "commissions": "Provisionen",
+      "analytics": "Analytik",
+      "analyses": "Analysen",
+      "segmentation": "Segmentierung",
+      "performance": "Leistung",
+      "reports": "Berichte",
+      "administration": "Verwaltung",
+      "documentation": "Dokumentation",
+      "settings": "Einstellungen",
+      "tests": "Tests"
+    },
+    "titles": {
+      "projectManagement": "Projektverwaltung",
+      "projectManagementSubtitle": "Immobilienprojekte verwalten",
+      "developerManagement": "Entwicklerverwaltung",
+      "developerManagementSubtitle": "Immobilienentwickler verwalten"
+    },
+    "buttons": {
+      "newProject": "Neues Projekt",
+      "filters": "Filter",
+      "sortBy": "Sortieren nach"
+    },
+    "status": {
+      "available": "Verfügbar",
+      "underConstruction": "Im Bau",
+      "delivered": "Geliefert",
+      "totalProjects": "Gesamtprojekte"
+    },
+    "views": {
+      "cards": "Karten",
+      "list": "Liste",
+      "table": "Tabelle",
+      "compact": "Kompakt",
+      "detailed": "Detailliert"
+    },
+    "sorting": {
+      "title": "Projektname",
+      "developer": "Entwickler",
+      "city": "Stadt",
+      "neighborhood": "Stadtteil",
+      "price": "Preis",
+      "status": "Status",
+      "zone": "Zypern Zone",
+      "completionDate": "Fertigstellungsdatum",
+      "createdDate": "Erstellungsdatum"
+    }
   }
 }

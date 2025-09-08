@@ -494,10 +494,14 @@
       "underConstruction": "En construction", 
       "completed": "Terminé",
       "readyToMove": "Prêt à emménager"
-    },
-    "zones": {
-      "limassol": "Limassol",
-      "paphos": "Paphos",
+  },
+  "zones": {
+    "limassol": "Limassol",
+    "paphos": "Paphos",
+    "larnaca": "Larnaca",
+    "nicosia": "Nicosie",
+    "famagusta": "Famagouste"
+  }
       "larnaca": "Larnaca",
       "nicosia": "Nicosie",
       "famagusta": "Famagouste"
