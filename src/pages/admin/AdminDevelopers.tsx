@@ -48,6 +48,7 @@ interface DeveloperFormData {
   phone: string;
   address: string;
   website: string;
+  logo?: string;
   commission_rate: number;
   payment_terms: string;
   status: 'active' | 'inactive';
@@ -64,6 +65,7 @@ const AdminDevelopers = () => {
     phone: '',
     address: '',
     website: '',
+    logo: '',
     commission_rate: 3.00,
     payment_terms: '30 jours',
     status: 'active'
@@ -99,6 +101,17 @@ const AdminDevelopers = () => {
     return { ...d, phone_numbers, addresses, email_primary, status, main_city } as Developer;
   });
 
+  // Logo fallbacks for known developers (for immediate display if DB missing logo)
+  const logoFallbacks: Record<string, string> = {
+    'lemon maria developers': '/lovable-uploads/9900cf2b-b687-4cb0-b136-afbf6ea3e24a.png',
+    'lemon maria developer': '/lovable-uploads/9900cf2b-b687-4cb0-b136-afbf6ea3e24a.png',
+    'lemon maria': '/lovable-uploads/9900cf2b-b687-4cb0-b136-afbf6ea3e24a.png'
+  };
+  const getLogo = (d: Partial<Developer>) => {
+    const byName = (d.name || '').toLowerCase();
+    return d.logo || logoFallbacks[byName];
+  };
+
   // Save developer mutation
   const saveDevMutation = useMutation({
     mutationFn: async (data: DeveloperFormData) => {
@@ -110,6 +123,7 @@ const AdminDevelopers = () => {
           address: data.address
         },
         website: data.website,
+        logo: data.logo,
         commission_rate: data.commission_rate,
         payment_terms: data.payment_terms,
         status: data.status
@@ -172,6 +186,7 @@ const AdminDevelopers = () => {
       phone: '',
       address: '',
       website: '',
+      logo: '',
       commission_rate: 3.00,
       payment_terms: '30 jours',
       status: 'active'
@@ -192,6 +207,7 @@ const AdminDevelopers = () => {
       phone: developer.phone_numbers?.[0] || '',
       address: developer.addresses?.[0] || '',
       website: developer.website || '',
+      logo: developer.logo || '',
       commission_rate: developer.commission_rate,
       payment_terms: '',
       status: developer.status
@@ -321,14 +337,30 @@ const AdminDevelopers = () => {
                     <Card key={developer.id} className="relative">
                       <CardHeader className="pb-4">
                         <div className="flex justify-between items-start">
-                          <div className="flex-1">
-                            <CardTitle className="text-lg pr-2">{developer.name}</CardTitle>
-                            {developer.main_city && (
-                              <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-                                <MapPin className="w-3 h-3" />
-                                <span>{developer.main_city}</span>
-                              </div>
-                            )}
+                          <div className="flex-1 flex items-start gap-3 min-w-0">
+                            {/* Logo à gauche */}
+                            <div className="w-10 h-10 rounded-md overflow-hidden bg-card border border-border/50 flex items-center justify-center shrink-0">
+                              {getLogo(developer) ? (
+                                <img
+                                  src={getLogo(developer)!}
+                                  alt={`Logo ${developer.name}`}
+                                  className="max-w-full max-h-full object-contain"
+                                />
+                              ) : (
+                                <div className="text-xs font-semibold text-muted-foreground">
+                                  {developer.name?.split(' ').slice(0,2).map(w => w[0]).join('')}
+                                </div>
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <CardTitle className="text-lg pr-2 truncate">{developer.name}</CardTitle>
+                              {developer.main_city && (
+                                <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+                                  <MapPin className="w-3 h-3" />
+                                  <span className="truncate">{developer.main_city}</span>
+                                </div>
+                              )}
+                            </div>
                           </div>
                           
                           {/* Badge en haut à droite */}
@@ -506,6 +538,16 @@ const AdminDevelopers = () => {
             </div>
             
             <div className="space-y-2">
+              <Label htmlFor="logo">Logo (URL)</Label>
+              <Input
+                id="logo"
+                value={formData.logo}
+                onChange={(e) => setFormData(prev => ({ ...prev, logo: e.target.value }))}
+                placeholder="https://cdn.exemple.com/logo.png"
+              />
+            </div>
+            
+            <div className="space-y-2">
               <Label htmlFor="commission">Commission (%)</Label>
               <Input
                 id="commission"
@@ -547,11 +589,11 @@ const AdminDevelopers = () => {
             <DialogTitle className="flex items-center gap-3">
               <div className="flex items-center gap-4">
                 {/* Logo du développeur */}
-                {selectedDeveloper?.logo ? (
-                  <div className="w-16 h-16 rounded-lg overflow-hidden bg-white border border-border/20 flex items-center justify-center p-2">
+                {getLogo(selectedDeveloper || {}) ? (
+                  <div className="w-16 h-16 rounded-lg overflow-hidden bg-card border border-border/20 flex items-center justify-center p-2">
                     <img 
-                      src={selectedDeveloper.logo} 
-                      alt={`Logo ${selectedDeveloper.name}`}
+                      src={getLogo(selectedDeveloper || {})!} 
+                      alt={`Logo ${selectedDeveloper?.name}`}
                       className="max-w-full max-h-full object-contain"
                       onError={(e) => {
                         e.currentTarget.style.display = 'none';
