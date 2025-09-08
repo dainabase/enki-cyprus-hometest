@@ -25,7 +25,7 @@ interface ProjectFormData {
   developer_id: string;
   cyprus_zone: string;
   status: string;
-  type: string;
+  property_types: string[];
   price: number;
   price_from: string;
   vat_rate: number;
@@ -54,7 +54,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
     developer_id: '',
     cyprus_zone: 'limassol',
     status: 'under_construction',
-    type: 'apartment',
+    property_types: [],
     price: 0,
     price_from: '',
     vat_rate: 5,
@@ -79,8 +79,8 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
         detailed_description: project.detailed_description || '',
         developer_id: project.developer_id || '',
         cyprus_zone: project.cyprus_zone || 'limassol',
-        status: project.status || 'planning',
-        type: project.type || 'apartment',
+        status: project.status || 'under_construction',
+        property_types: project.property_types || [],
         price: project.price || 0,
         price_from: project.price_from || '',
         vat_rate: project.vat_rate || 5,
@@ -131,7 +131,8 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
         developer_id: formData.developer_id || null,
         cyprus_zone: formData.cyprus_zone,
         status: formData.status,
-        type: formData.type,
+        type: formData.property_types.length > 0 ? formData.property_types[0] : 'apartment',
+        property_types: formData.property_types,
         price: formData.price,
         price_from: formData.price_from || null,
         vat_rate: formData.vat_rate,
@@ -152,6 +153,11 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
           .eq('id', project.id);
         
         if (error) throw error;
+        
+        toast({
+          title: 'Projet mis à jour',
+          description: 'Le projet a été mis à jour avec succès'
+        });
       } else {
         // Create new project
         const { error } = await supabase
@@ -159,6 +165,11 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
           .insert([projectData]);
         
         if (error) throw error;
+        
+        toast({
+          title: 'Projet créé',
+          description: 'Le nouveau projet a été créé avec succès'
+        });
       }
 
       onSave();
@@ -251,30 +262,50 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="planning">Planification</SelectItem>
               <SelectItem value="under_construction">En construction</SelectItem>
               <SelectItem value="completed">Terminé</SelectItem>
               <SelectItem value="ready_to_move">Prêt à emménager</SelectItem>
               <SelectItem value="sold_out">Vendu</SelectItem>
+              <SelectItem value="on_hold">En pause</SelectItem>
+              <SelectItem value="delivered">Livré</SelectItem>
             </SelectContent>
           </Select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="type">Type *</Label>
-          <Select
-            value={formData.type}
-            onValueChange={(value) => setFormData(prev => ({ ...prev, type: value }))}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="apartment">Appartement</SelectItem>
-              <SelectItem value="villa">Villa</SelectItem>
-              <SelectItem value="penthouse">Penthouse</SelectItem>
-              <SelectItem value="commercial">Commercial</SelectItem>
-              <SelectItem value="land">Terrain</SelectItem>
-            </SelectContent>
-          </Select>
+          <Label htmlFor="property_types">Types de biens *</Label>
+          <div className="space-y-2">
+            {['apartment', 'villa', 'penthouse', 'commercial', 'land'].map((type) => (
+              <div key={type} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id={type}
+                  checked={formData.property_types.includes(type)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setFormData(prev => ({ 
+                        ...prev, 
+                        property_types: [...prev.property_types, type] 
+                      }));
+                    } else {
+                      setFormData(prev => ({ 
+                        ...prev, 
+                        property_types: prev.property_types.filter(t => t !== type) 
+                      }));
+                    }
+                  }}
+                  className="rounded border-gray-300"
+                />
+                <Label htmlFor={type} className="text-sm">
+                  {type === 'apartment' && 'Appartement'}
+                  {type === 'villa' && 'Villa'}
+                  {type === 'penthouse' && 'Penthouse'}
+                  {type === 'commercial' && 'Commercial'}
+                  {type === 'land' && 'Terrain'}
+                </Label>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -285,8 +316,8 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
           <Input
             id="price"
             type="number"
-            value={formData.price}
-            onChange={(e) => setFormData(prev => ({ ...prev, price: Number(e.target.value) }))}
+            value={formData.price === 0 ? '' : formData.price}
+            onChange={(e) => setFormData(prev => ({ ...prev, price: Number(e.target.value) || 0 }))}
             placeholder="Prix minimum"
             required
           />
@@ -324,8 +355,8 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
           <Input
             id="units_available"
             type="number"
-            value={formData.units_available}
-            onChange={(e) => setFormData(prev => ({ ...prev, units_available: Number(e.target.value) }))}
+            value={formData.units_available === 0 ? '' : formData.units_available}
+            onChange={(e) => setFormData(prev => ({ ...prev, units_available: Number(e.target.value) || 0 }))}
             placeholder="Nombre d'unités disponibles"
             min="0"
           />
@@ -335,8 +366,8 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
           <Input
             id="total_units"
             type="number"
-            value={formData.total_units}
-            onChange={(e) => setFormData(prev => ({ ...prev, total_units: Number(e.target.value) }))}
+            value={formData.total_units === 0 ? '' : formData.total_units}
+            onChange={(e) => setFormData(prev => ({ ...prev, total_units: Number(e.target.value) || 0 }))}
             placeholder="Nombre total d'unités"
             min="0"
           />

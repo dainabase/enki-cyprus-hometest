@@ -770,6 +770,7 @@ export type Database = {
           price: number
           price_from: string | null
           project_status: string | null
+          property_types: string[] | null
           reservation_status: string | null
           status: string
           subtitle: string | null
@@ -821,6 +822,7 @@ export type Database = {
           price: number
           price_from?: string | null
           project_status?: string | null
+          property_types?: string[] | null
           reservation_status?: string | null
           status?: string
           subtitle?: string | null
@@ -872,6 +874,7 @@ export type Database = {
           price?: number
           price_from?: string | null
           project_status?: string | null
+          property_types?: string[] | null
           reservation_status?: string | null
           status?: string
           subtitle?: string | null
