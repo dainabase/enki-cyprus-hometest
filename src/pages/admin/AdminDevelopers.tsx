@@ -147,7 +147,8 @@ const AdminDevelopers = () => {
     'kuutio homes': '/lovable-uploads/8acce094-0212-4562-9dff-42bd9d25efb0.png',
     'kuutio': '/lovable-uploads/8acce094-0212-4562-9dff-42bd9d25efb0.png',
     'quality group': '/lovable-uploads/2a8288f1-3cc0-4f74-8b35-98081859219e.png',
-    'quality': '/lovable-uploads/2a8288f1-3cc0-4f74-8b35-98081859219e.png'
+    'quality': '/lovable-uploads/2a8288f1-3cc0-4f74-8b35-98081859219e.png',
+    'inex': '/lovable-uploads/5f250fc3-45af-438f-810b-f701813bdd71.png'
   };
   const getLogo = (d: Partial<Developer>) => {
     const byName = (d.name || '').toLowerCase().trim();
