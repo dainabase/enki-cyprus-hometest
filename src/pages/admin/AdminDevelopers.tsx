@@ -149,7 +149,7 @@ const AdminDevelopers = () => {
     'quality group': '/lovable-uploads/2a8288f1-3cc0-4f74-8b35-98081859219e.png',
     'quality': '/lovable-uploads/2a8288f1-3cc0-4f74-8b35-98081859219e.png',
     'inex': '/lovable-uploads/5f250fc3-45af-438f-810b-f701813bdd71.png',
-    'medousa': '/lovable-uploads/edb7101f-e806-45b7-ae7b-9ec23b49eb91.png',
+    'medousa': '/lovable-uploads/843305e9-b36e-4505-b7e9-c3d3d77573a5.png',
     'property gallery': '/lovable-uploads/bfdd449f-6c80-4e3b-a300-b4450619c6c7.png',
     'crona': '/lovable-uploads/2699123d-495f-4d53-a300-95fb50be8462.png',
     'crona group': '/lovable-uploads/2699123d-495f-4d53-a300-95fb50be8462.png',
