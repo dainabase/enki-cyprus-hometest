@@ -118,6 +118,45 @@ export type Database = {
         }
         Relationships: []
       }
+      amenities: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string | null
+          icon: string
+          id: string
+          is_premium: boolean | null
+          name: string
+          name_el: string | null
+          name_ru: string | null
+          sort_order: number | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          description?: string | null
+          icon: string
+          id?: string
+          is_premium?: boolean | null
+          name: string
+          name_el?: string | null
+          name_ru?: string | null
+          sort_order?: number | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          icon?: string
+          id?: string
+          is_premium?: boolean | null
+          name?: string
+          name_el?: string | null
+          name_ru?: string | null
+          sort_order?: number | null
+        }
+        Relationships: []
+      }
       analytics_events: {
         Row: {
           created_at: string
@@ -748,6 +787,51 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      project_amenities: {
+        Row: {
+          amenity_id: string
+          created_at: string | null
+          details: string | null
+          id: string
+          is_available: boolean | null
+          is_paid: boolean | null
+          project_id: string
+        }
+        Insert: {
+          amenity_id: string
+          created_at?: string | null
+          details?: string | null
+          id?: string
+          is_available?: boolean | null
+          is_paid?: boolean | null
+          project_id: string
+        }
+        Update: {
+          amenity_id?: string
+          created_at?: string | null
+          details?: string | null
+          id?: string
+          is_available?: boolean | null
+          is_paid?: boolean | null
+          project_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_amenities_amenity_id_fkey"
+            columns: ["amenity_id"]
+            isOneToOne: false
+            referencedRelation: "amenities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_amenities_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       project_images: {
         Row: {
