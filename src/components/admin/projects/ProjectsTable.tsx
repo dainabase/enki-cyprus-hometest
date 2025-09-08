@@ -138,8 +138,8 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
           <TableRow>
             <TableHead className="w-12">
               <Checkbox
+                aria-label={t('actions.selectAll') || 'Tout sélectionner'}
                 checked={isAllSelected ? true : isIndeterminate ? "indeterminate" : false}
-                aria-checked={isAllSelected ? "true" : isIndeterminate ? "mixed" : "false"}
                 onCheckedChange={(checked) => handleSelectAll(checked === true)}
               />
             </TableHead>
@@ -155,9 +155,10 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
         </TableHeader>
         <TableBody>
           {projects.map((project) => (
-            <TableRow key={project.id}>
+            <TableRow key={project.id} className={selectedProjects.includes(project.id) ? "bg-primary/5" : undefined}>
               <TableCell>
                 <Checkbox
+                  aria-label={t('actions.selectItem') || 'Sélectionner'}
                   checked={selectedProjects.includes(project.id)}
                   onCheckedChange={(checked) => handleSelectProject(project.id, checked === true)}
                 />
