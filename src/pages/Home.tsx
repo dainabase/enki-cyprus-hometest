@@ -562,7 +562,7 @@ const Home = () => {
                         variant="outline" 
                         className="bg-white/10 text-white border-white/30 hover:bg-white/20 backdrop-blur-sm"
                       >
-                        🔧 Accès Admin (Test)
+                        🔧 Accès Admin Panel
                       </Button>
                     </Link>
                   </motion.div>
