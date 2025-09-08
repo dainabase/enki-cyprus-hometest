@@ -11,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Building2, Plus, Pencil, Trash2, Mail, Phone, Globe, Percent } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 interface Developer {
   id: string;
