@@ -14,7 +14,7 @@ import { ProjectFormSteps } from '@/components/admin/projects/ProjectFormSteps';
 import { DocumentManager } from '@/components/admin/projects/DocumentManager';
 import { projectSchema, ProjectFormData, projectFormSteps } from '@/schemas/projectSchema';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, ArrowRight, Save, Eye, CheckCircle, FileText, Brain } from 'lucide-react';
 import { extractPrefilledData, PrefilledFormData } from '@/lib/ai-import/mapper';
 import * as LucideIcons from 'lucide-react';
@@ -25,6 +25,7 @@ export const AdminProjectForm: React.FC = () => {
   const [searchParams] = useSearchParams();
   const isEdit = Boolean(id);
   const queryClient = useQueryClient();
+  const { toast } = useToast();
   
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [saveType, setSaveType] = useState<'draft' | 'publish'>('draft');
