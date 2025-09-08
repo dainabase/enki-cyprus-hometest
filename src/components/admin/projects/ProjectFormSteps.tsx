@@ -192,11 +192,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                 <div className="space-y-0.5">
                   <FormLabel className="text-base font-medium">
-                    Commercialisation en exclusivité
+                    Exclusivité Enki Reality
                   </FormLabel>
-                  <p className="text-sm text-muted-foreground">
-                    Ce projet est commercialisé exclusivement par votre agence
-                  </p>
                 </div>
                 <FormControl>
                   <Switch
