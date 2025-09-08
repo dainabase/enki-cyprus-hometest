@@ -247,7 +247,7 @@ const AdminProjects = () => {
               <CardContent>
                 <ProjectsTable
                   projects={group.projects}
-                  onEdit={openEditModal}
+                  onEdit={(project) => navigate(`/admin/projects/${project.id}/edit`)}
                   onRefetch={refetch}
                   selectedProjects={selectedProjects}
                   onSelectionChange={setSelectedProjects}
@@ -261,7 +261,7 @@ const AdminProjects = () => {
 
     const commonProps = {
       projects: projects || [],
-      onEdit: openEditModal,
+      onEdit: (project: any) => navigate(`/admin/projects/${project.id}/edit`),
       selectedProjects,
       onSelectionChange: setSelectedProjects
     };
