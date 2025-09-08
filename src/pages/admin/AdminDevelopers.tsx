@@ -105,7 +105,10 @@ const AdminDevelopers = () => {
   const logoFallbacks: Record<string, string> = {
     'lemon maria developers': '/lovable-uploads/9900cf2b-b687-4cb0-b136-afbf6ea3e24a.png',
     'lemon maria developer': '/lovable-uploads/9900cf2b-b687-4cb0-b136-afbf6ea3e24a.png',
-    'lemon maria': '/lovable-uploads/9900cf2b-b687-4cb0-b136-afbf6ea3e24a.png'
+    'lemon maria': '/lovable-uploads/9900cf2b-b687-4cb0-b136-afbf6ea3e24a.png',
+    'aristo developers': '/lovable-uploads/451fcc7c-10f6-44de-958b-7d7bebd86ac4.png',
+    'aristo developer': '/lovable-uploads/451fcc7c-10f6-44de-958b-7d7bebd86ac4.png',
+    'aristo': '/lovable-uploads/451fcc7c-10f6-44de-958b-7d7bebd86ac4.png'
   };
   const getLogo = (d: Partial<Developer>) => {
     const byName = (d.name || '').toLowerCase();
@@ -338,9 +341,9 @@ const AdminDevelopers = () => {
                        <CardHeader className="pb-4">
                          <div className="flex justify-between items-start">
                            <div className="flex-1 min-w-0">
-                             {/* Logo centré en haut */}
-                             <div className="flex justify-center mb-4">
-                               <div className="w-32 h-32 rounded-md overflow-hidden bg-card border border-border/50 flex items-center justify-center shrink-0">
+                             {/* Logo en haut à gauche */}
+                             <div className="flex justify-start mb-4">
+                               <div className="w-20 h-20 rounded-md overflow-hidden bg-card border border-border/50 flex items-center justify-center shrink-0">
                                  {getLogo(developer) ? (
                                    <img
                                      src={getLogo(developer)!}
@@ -355,14 +358,14 @@ const AdminDevelopers = () => {
                                </div>
                              </div>
                              
-                             {/* Nom centré */}
-                             <div className="text-center mb-2">
+                             {/* Nom aligné à gauche */}
+                             <div className="text-left mb-2">
                                <CardTitle className="text-lg">{developer.name}</CardTitle>
                              </div>
                              
-                             {/* Lieu centré */}
+                             {/* Lieu aligné à gauche */}
                              {developer.main_city && (
-                               <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mb-4">
+                               <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
                                  <MapPin className="w-4 h-4" />
                                  <span>{developer.main_city}</span>
                                </div>
