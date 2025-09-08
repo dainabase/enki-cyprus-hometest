@@ -355,37 +355,43 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
 
       {/* Categories Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-8 gap-1">
-          {PHOTO_CATEGORIES.map((cat) => {
-            const Icon = cat.icon;
-            const count = getPhotosByCategory(cat.value).length;
-            const isActive = activeTab === cat.value;
-            return (
-              <TabsTrigger 
-                key={cat.value} 
-                value={cat.value} 
-                className={`flex items-center gap-1 text-xs px-2 py-2 transition-all duration-200 ${
-                  isActive 
-                    ? 'bg-primary text-primary-foreground shadow-md ring-2 ring-primary/20 scale-105' 
-                    : 'hover:bg-muted/50'
-                }`}
-              >
-                <Icon className="w-3 h-3" />
-                <span className="hidden sm:inline text-xs font-medium">{cat.label}</span>
-                {count > 0 && (
-                  <Badge 
-                    variant={isActive ? "secondary" : "outline"} 
-                    className={`text-xs w-4 h-4 p-0 flex items-center justify-center ${
-                      isActive ? 'bg-primary-foreground/20 text-primary-foreground' : ''
-                    }`}
-                  >
-                    {count}
-                  </Badge>
-                )}
-              </TabsTrigger>
-            );
-          })}
-        </TabsList>
+        <Card className="mb-4">
+          <CardContent className="p-2">
+            <div className="overflow-x-auto">
+              <TabsList className="flex w-full flex-nowrap gap-2 whitespace-nowrap bg-background border rounded-md px-2 py-2">
+                {PHOTO_CATEGORIES.map((cat) => {
+                  const Icon = cat.icon;
+                  const count = getPhotosByCategory(cat.value).length;
+                  const isActive = activeTab === cat.value;
+                  return (
+                    <TabsTrigger 
+                      key={cat.value} 
+                      value={cat.value} 
+                      className={`shrink-0 flex items-center gap-1 text-xs px-3 py-2 rounded-md transition-all duration-200 ${
+                        isActive 
+                          ? 'bg-primary text-primary-foreground shadow-md ring-2 ring-primary/20 scale-105' 
+                          : 'hover:bg-muted/50'
+                      }`}
+                    >
+                      <Icon className="w-3 h-3" />
+                      <span className="hidden sm:inline text-xs font-medium">{cat.label}</span>
+                      {count > 0 && (
+                        <Badge 
+                          variant={isActive ? "secondary" : "outline"} 
+                          className={`text-[10px] w-4 h-4 p-0 flex items-center justify-center ${
+                            isActive ? 'bg-primary-foreground/20 text-primary-foreground' : ''
+                          }`}
+                        >
+                          {count}
+                        </Badge>
+                      )}
+                    </TabsTrigger>
+                  );
+                })}
+              </TabsList>
+            </div>
+          </CardContent>
+        </Card>
 
         {PHOTO_CATEGORIES.map((cat) => (
           <TabsContent key={cat.value} value={cat.value}>
