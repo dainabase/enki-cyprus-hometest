@@ -545,8 +545,34 @@ const AdminDevelopers = () => {
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-3">
-              <Building2 className="w-6 h-6 text-primary" />
-              Fiche complète - {selectedDeveloper?.name}
+              <div className="flex items-center gap-4">
+                {/* Logo du développeur */}
+                {selectedDeveloper?.logo ? (
+                  <div className="w-16 h-16 rounded-lg overflow-hidden bg-white border border-border/20 flex items-center justify-center p-2">
+                    <img 
+                      src={selectedDeveloper.logo} 
+                      alt={`Logo ${selectedDeveloper.name}`}
+                      className="max-w-full max-h-full object-contain"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                      }}
+                    />
+                    <div className="hidden w-full h-full bg-gradient-to-br from-primary/10 to-primary/20 rounded flex items-center justify-center">
+                      <Building2 className="w-8 h-8 text-primary/60" />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-primary/10 to-primary/20 flex items-center justify-center">
+                    <Building2 className="w-8 h-8 text-primary/60" />
+                  </div>
+                )}
+                
+                <div>
+                  <h2 className="text-xl font-semibold">Fiche complète</h2>
+                  <p className="text-lg font-medium text-primary">{selectedDeveloper?.name}</p>
+                </div>
+              </div>
             </DialogTitle>
           </DialogHeader>
           
