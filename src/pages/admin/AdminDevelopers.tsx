@@ -131,7 +131,14 @@ const AdminDevelopers = () => {
     'aristo developer': '/lovable-uploads/451fcc7c-10f6-44de-958b-7d7bebd86ac4.png',
     'aristo': '/lovable-uploads/451fcc7c-10f6-44de-958b-7d7bebd86ac4.png',
     'karma group': '/lovable-uploads/aec5ed87-7930-4b41-954b-9e598b9fcb57.png',
-    'karma': '/lovable-uploads/aec5ed87-7930-4b41-954b-9e598b9fcb57.png'
+    'karma': '/lovable-uploads/aec5ed87-7930-4b41-954b-9e598b9fcb57.png',
+    // Nouveaux fallback pour cohérence cartes ↔ base de données
+    'prime property group (incl. bbf)': '/lovable-uploads/b5ced174-3c3d-4a14-ac08-3d9c466c25c0.png',
+    'prime property group': '/lovable-uploads/b5ced174-3c3d-4a14-ac08-3d9c466c25c0.png',
+    'bbf': '/lovable-uploads/b5ced174-3c3d-4a14-ac08-3d9c466c25c0.png',
+    'd. zavos group': '/lovable-uploads/ecbada79-fdcc-4174-9a11-f5d951be818f.png',
+    'zavos group': '/lovable-uploads/ecbada79-fdcc-4174-9a11-f5d951be818f.png',
+    'zavos': '/lovable-uploads/ecbada79-fdcc-4174-9a11-f5d951be818f.png'
   };
   const getLogo = (d: Partial<Developer>) => {
     const byName = (d.name || '').toLowerCase().trim();
@@ -144,7 +151,6 @@ const AdminDevelopers = () => {
     const matchKey = Object.keys(logoFallbacks).find((k) => byName.includes(k));
     return matchKey ? logoFallbacks[matchKey] : undefined;
   };
-
   // Save developer mutation
   const saveDevMutation = useMutation({
     mutationFn: async (data: DeveloperFormData) => {
@@ -374,7 +380,7 @@ const AdminDevelopers = () => {
                              {/* Logo en haut à gauche */}
                              <div className="flex justify-start mb-4">
                                <div className="w-32 h-32 rounded-md overflow-hidden bg-card border border-border/50 flex items-center justify-center shrink-0">
-                                 {getLogo(developer) ? (
+                                  {getLogo(developer) ? (
                                     <img
                                       src={getLogo(developer) || ''}
                                       alt={`Logo ${developer.name}`}
@@ -383,17 +389,17 @@ const AdminDevelopers = () => {
                                         const byName = (developer.name || '').toLowerCase().trim();
                                         const exact = logoFallbacks[byName];
                                         const matchKey = Object.keys(logoFallbacks).find((k) => byName.includes(k));
-                                        const fallback = exact || (matchKey ? logoFallbacks[matchKey] : undefined);
-                                        if (fallback && e.currentTarget.src !== fallback) {
+                                        const fallback = exact || (matchKey ? logoFallbacks[matchKey] : undefined) || '/placeholder.svg';
+                                        if (e.currentTarget.src !== fallback) {
                                           e.currentTarget.src = fallback;
                                         }
                                       }}
                                     />
-                                 ) : (
-                                   <div className="text-xs font-semibold text-muted-foreground">
-                                     {developer.name?.split(' ').slice(0,2).map(w => w[0]).join('')}
-                                   </div>
-                                 )}
+                                  ) : (
+                                    <div className="text-xs font-semibold text-muted-foreground">
+                                      {developer.name?.split(' ').slice(0,2).map(w => w[0]).join('')}
+                                    </div>
+                                  )}
                                </div>
                              </div>
                              
