@@ -533,12 +533,12 @@ export default function AdminDevelopers() {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="rating_score">Note (1-5)</Label>
+              <Label htmlFor="rating_score">Note (1-10)</Label>
               <Input
                 id="rating_score"
                 type="number"
                 min="1"
-                max="5"
+                max="10"
                 step="0.1"
                 value={formData.rating_score || ''}
                 onChange={(e) => setFormData(prev => ({ ...prev, rating_score: e.target.value ? parseFloat(e.target.value) : undefined }))}
@@ -668,7 +668,7 @@ export default function AdminDevelopers() {
                     </div>
                     <div>
                       <span className="text-muted-foreground">Note:</span>
-                      <span className="ml-2 font-medium">{selectedDeveloper.rating_score ? `⭐ ${selectedDeveloper.rating_score}/5` : 'N/A'}</span>
+                      <span className="ml-2 font-medium">{selectedDeveloper.rating_score ? `⭐ ${selectedDeveloper.rating_score}/10` : 'N/A'}</span>
                     </div>
                   </div>
                 </div>
