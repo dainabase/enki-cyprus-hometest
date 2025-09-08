@@ -41,57 +41,57 @@ import LanguageSelector from './common/LanguageSelector';
 const getNavigationStructure = (t: any) => ({
   // Tableau de bord - standalone
   dashboard: {
-    title: "Tableau de bord",
+    title: t('admin.sidebar.dashboard'),
     url: '/admin',
     icon: LayoutDashboard
   },
 
   // Gestion Immobilière
   gestionImmobiliere: {
-    title: "Gestion Immobilière",
+    title: t('admin.sidebar.gestionImmobiliere'),
     icon: Building2,
     collapsed: false,
     items: [
-      { title: "Développeurs", url: '/admin/developers', icon: Users },
-      { title: "Projets", url: '/admin/projects', icon: FolderOpen },
-      { title: "Unités", url: '/admin/units', icon: Home }
+      { title: t('admin.sidebar.developers'), url: '/admin/developers', icon: Users },
+      { title: t('admin.sidebar.projects'), url: '/admin/projects', icon: FolderOpen },
+      { title: t('admin.sidebar.units'), url: '/admin/units', icon: Home }
     ]
   },
 
   // Ventes & CRM
   ventesCRM: {
-    title: "Ventes & CRM",
+    title: t('admin.sidebar.ventesCRM'),
     icon: TrendingUp,
     collapsed: false,
     items: [
-      { title: "Prospects", url: '/admin/leads', icon: UserPlus },
-      { title: "Commissions", url: '/admin/commissions', icon: DollarSign }
+      { title: t('admin.sidebar.prospects'), url: '/admin/leads', icon: UserPlus },
+      { title: t('admin.sidebar.commissions'), url: '/admin/commissions', icon: DollarSign }
     ]
   },
 
   // Analytics
   analytics: {
-    title: "Analytics",
+    title: t('admin.sidebar.analytics'),
     icon: BarChart3,
     collapsed: true,
     items: [
-      { title: "Analyses", url: '/admin/analytics', icon: ChartBar },
-      { title: "Segmentation", url: '/admin/segmentation', icon: Target },
-      { title: "Performance", url: '/admin/performance', icon: Activity },
-      { title: "Rapports", url: '/admin/reports', icon: FileText }
+      { title: t('admin.sidebar.analyses'), url: '/admin/analytics', icon: ChartBar },
+      { title: t('admin.sidebar.segmentation'), url: '/admin/segmentation', icon: Target },
+      { title: t('admin.sidebar.performance'), url: '/admin/performance', icon: Activity },
+      { title: t('admin.sidebar.reports'), url: '/admin/reports', icon: FileText }
     ]
   },
 
   // Administration
   administration: {
-    title: "Administration",
+    title: t('admin.sidebar.administration'),
     icon: Settings2,
     collapsed: true,
     items: [
-      { title: "Documentation", url: '/admin/documentation', icon: BookOpen },
-      { title: "Paramètres", url: '/admin/settings', icon: Settings },
+      { title: t('admin.sidebar.documentation'), url: '/admin/documentation', icon: BookOpen },
+      { title: t('admin.sidebar.settings'), url: '/admin/settings', icon: Settings },
       ...(process.env.NODE_ENV === 'development' ? [
-        { title: "Tests", url: '/admin/tests', icon: CheckSquare }
+        { title: t('admin.sidebar.tests'), url: '/admin/tests', icon: CheckSquare }
       ] : [])
     ]
   }

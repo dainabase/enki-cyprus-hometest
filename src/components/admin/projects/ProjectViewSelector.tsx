@@ -1,5 +1,6 @@
 import { Grid3X3, List, Table, AlignJustify, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useTranslation } from 'react-i18next';
 
 export type ProjectViewType = 'cards' | 'list' | 'table' | 'compact' | 'detailed';
 
@@ -9,12 +10,14 @@ interface ProjectViewSelectorProps {
 }
 
 export const ProjectViewSelector = ({ currentView, onViewChange }: ProjectViewSelectorProps) => {
+  const { t } = useTranslation();
+  
   const views = [
-    { id: 'cards' as ProjectViewType, icon: Grid3X3, label: 'Cartes' },
-    { id: 'list' as ProjectViewType, icon: List, label: 'Liste' },
-    { id: 'table' as ProjectViewType, icon: Table, label: 'Tableau' },
-    { id: 'compact' as ProjectViewType, icon: AlignJustify, label: 'Compact' },
-    { id: 'detailed' as ProjectViewType, icon: FileText, label: 'Détaillé' }
+    { id: 'cards' as ProjectViewType, icon: Grid3X3, label: t('admin.views.cards') },
+    { id: 'list' as ProjectViewType, icon: List, label: t('admin.views.list') },
+    { id: 'table' as ProjectViewType, icon: Table, label: t('admin.views.table') },
+    { id: 'compact' as ProjectViewType, icon: AlignJustify, label: t('admin.views.compact') },
+    { id: 'detailed' as ProjectViewType, icon: FileText, label: t('admin.views.detailed') }
   ];
 
   return (

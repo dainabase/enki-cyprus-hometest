@@ -374,5 +374,142 @@
     "shortcuts": "Keyboard Shortcuts",
     "api": "API Reference",
     "external": "External Links"
+  },
+  "admin": {
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "gestionImmobiliere": "Real Estate Management",
+      "developers": "Developers",
+      "projects": "Projects", 
+      "units": "Units",
+      "ventesCRM": "Sales & CRM",
+      "prospects": "Prospects",
+      "commissions": "Commissions",
+      "analytics": "Analytics",
+      "analyses": "Analytics",
+      "segmentation": "Segmentation",
+      "performance": "Performance",
+      "reports": "Reports",
+      "administration": "Administration",
+      "documentation": "Documentation",
+      "settings": "Settings",
+      "tests": "Tests"
+    },
+    "titles": {
+      "projectManagement": "Project Management",
+      "projectManagementSubtitle": "Manage real estate projects",
+      "developerManagement": "Developer Management",
+      "developerManagementSubtitle": "Manage real estate developers",
+      "createProject": "New Project",
+      "editProject": "Edit Project",
+      "createDeveloper": "New Developer",
+      "editDeveloper": "Edit Developer"
+    },
+    "buttons": {
+      "newProject": "New Project",
+      "newDeveloper": "New Developer",
+      "filters": "Filters",
+      "backToProjects": "Back to projects",
+      "backToDevelopers": "Back to developers",
+      "selectAll": "Select all",
+      "unselectAll": "Unselect all",
+      "deleteSelected": "Delete selection",
+      "save": "Save",
+      "cancel": "Cancel",
+      "create": "Create",
+      "modify": "Modify",
+      "sortBy": "Sort by"
+    },
+    "fields": {
+      "exclusiveCommercialization": "Enki Reality Exclusive",
+      "projectCode": "Project code",
+      "projectName": "Project name",
+      "category": "Category",
+      "subTypes": "Sub-types",
+      "projectPhase": "Project phase",
+      "developer": "Developer",
+      "launchDate": "Launch date",
+      "deliveryDate": "Delivery date",
+      "shortDescription": "Short description",
+      "detailedDescription": "Detailed description",
+      "fullAddress": "Full address",
+      "city": "City",
+      "region": "Region",
+      "neighborhood": "Neighborhood",
+      "cyprusZone": "Cyprus zone",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "proximityToSea": "Sea",
+      "proximityToAirport": "Airport",
+      "proximityToCityCenter": "City center",
+      "proximityToHighway": "Highway"
+    },
+    "status": {
+      "available": "Available",
+      "underConstruction": "Under Construction",
+      "delivered": "Delivered",
+      "sold": "Sold",
+      "total": "Total",
+      "totalProjects": "Total Projects"
+    },
+    "sorting": {
+      "title": "Project name",
+      "developer": "Developer",
+      "city": "City",
+      "neighborhood": "Neighborhood",
+      "price": "Price",
+      "status": "Status", 
+      "zone": "Cyprus zone",
+      "completionDate": "Completion date",
+      "createdDate": "Created date"
+    },
+    "views": {
+      "cards": "Cards",
+      "list": "List",
+      "table": "Table",
+      "compact": "Compact",
+      "detailed": "Detailed"
+    },
+    "messages": {
+      "projectsDeleted": "Projects deleted",
+      "projectsDeletedDesc": "{{count}} project(s) have been deleted successfully.",
+      "allProjectsSelected": "All projects selected",
+      "allProjectsSelectedDesc": "{{count}} project(s) selected.",
+      "projectsSelected": "{{count}} project(s) selected",
+      "noSelection": "No selection",
+      "noSelectionDesc": "Please select at least one project to delete.",
+      "error": "Error",
+      "errorDeletingProjects": "Unable to delete projects"
+    },
+    "steps": {
+      "step": "Step",
+      "of": "of",
+      "basicInfo": "Basic Information",
+      "location": "Location",
+      "specifications": "Specifications", 
+      "pricing": "Pricing & Investment",
+      "media": "Media",
+      "amenities": "Amenities",
+      "marketing": "Marketing & SEO"
+    },
+    "categories": {
+      "residential": "Residential",
+      "commercial": "Commercial",
+      "mixed": "Mixed",
+      "industrial": "Industrial"
+    },
+    "phases": {
+      "offPlan": "Off-plan",
+      "underConstruction": "Under construction",
+      "completed": "Completed",
+      "readyToMove": "Ready to move"
+    },
+    "zones": {
+      "limassol": "Limassol",
+      "paphos": "Paphos",
+      "larnaca": "Larnaca",
+      "nicosia": "Nicosia",
+      "famagusta": "Famagusta"
+    }
   }
 }

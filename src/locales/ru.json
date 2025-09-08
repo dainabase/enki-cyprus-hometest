@@ -181,5 +181,61 @@
     "date": "Дата",
     "noProjects": "Проекты не найдены",
     "noCommissions": "Комиссии не найдены"
+  },
+  "admin": {
+    "sidebar": {
+      "dashboard": "Панель управления",
+      "gestionImmobiliere": "Управление недвижимостью",
+      "developers": "Застройщики",
+      "projects": "Проекты",
+      "units": "Единицы",
+      "ventesCRM": "Продажи и CRM",
+      "prospects": "Проспекты",
+      "commissions": "Комиссии",
+      "analytics": "Аналитика",
+      "analyses": "Анализы",
+      "segmentation": "Сегментация",
+      "performance": "Производительность",
+      "reports": "Отчеты",
+      "administration": "Администрирование",
+      "documentation": "Документация",
+      "settings": "Настройки",
+      "tests": "Тесты"
+    },
+    "titles": {
+      "projectManagement": "Управление проектами",
+      "projectManagementSubtitle": "Управление проектами недвижимости",
+      "developerManagement": "Управление застройщиками",
+      "developerManagementSubtitle": "Управление застройщиками недвижимости"
+    },
+    "buttons": {
+      "newProject": "Новый проект",
+      "filters": "Фильтры",
+      "sortBy": "Сортировать по"
+    },
+    "status": {
+      "available": "Доступно",
+      "underConstruction": "В строительстве",
+      "delivered": "Сдано",
+      "totalProjects": "Всего проектов"
+    },
+    "views": {
+      "cards": "Карточки",
+      "list": "Список",
+      "table": "Таблица",
+      "compact": "Компактный",
+      "detailed": "Подробный"
+    },
+    "sorting": {
+      "title": "Название проекта",
+      "developer": "Застройщик",
+      "city": "Город",
+      "neighborhood": "Район",
+      "price": "Цена",
+      "status": "Статус",
+      "zone": "Зона Кипра",
+      "completionDate": "Дата завершения",
+      "createdDate": "Дата создания"
+    }
   }
 }

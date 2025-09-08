@@ -1,6 +1,7 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export type ProjectSortField = 'title' | 'developer' | 'city' | 'neighborhood' | 'price' | 'status' | 'zone' | 'completion_date' | 'created_at';
 export type SortDirection = 'asc' | 'desc';
@@ -12,16 +13,18 @@ interface ProjectSorterProps {
 }
 
 export const ProjectSorter = ({ sortField, sortDirection, onSortChange }: ProjectSorterProps) => {
+  const { t } = useTranslation();
+  
   const sortOptions = [
-    { value: 'title', label: 'Nom du projet' },
-    { value: 'developer', label: 'Développeur' },
-    { value: 'city', label: 'Ville' },
-    { value: 'neighborhood', label: 'Quartier' },
-    { value: 'price', label: 'Prix' },
-    { value: 'status', label: 'Statut' },
-    { value: 'zone', label: 'Zone de Chypre' },
-    { value: 'completion_date', label: 'Date de livraison' },
-    { value: 'created_at', label: 'Date de création' }
+    { value: 'title', label: t('admin.sorting.title') },
+    { value: 'developer', label: t('admin.sorting.developer') },
+    { value: 'city', label: t('admin.sorting.city') },
+    { value: 'neighborhood', label: t('admin.sorting.neighborhood') },
+    { value: 'price', label: t('admin.sorting.price') },
+    { value: 'status', label: t('admin.sorting.status') },
+    { value: 'zone', label: t('admin.sorting.zone') },
+    { value: 'completion_date', label: t('admin.sorting.completionDate') },
+    { value: 'created_at', label: t('admin.sorting.createdDate') }
   ];
 
   const toggleSortDirection = () => {
@@ -30,7 +33,7 @@ export const ProjectSorter = ({ sortField, sortDirection, onSortChange }: Projec
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm text-muted-foreground">Trier par:</span>
+      <span className="text-sm text-muted-foreground">{t('admin.buttons.sortBy')}:</span>
       <Select
         value={sortField}
         onValueChange={(value) => onSortChange(value as ProjectSortField, sortDirection)}

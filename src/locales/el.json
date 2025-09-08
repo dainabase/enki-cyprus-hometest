@@ -358,5 +358,61 @@
     "date": "Ημερομηνία",
     "noProjects": "Δεν βρέθηκαν έργα",
     "noCommissions": "Δεν βρέθηκαν προμήθειες"
+  },
+  "admin": {
+    "sidebar": {
+      "dashboard": "Πίνακας Ελέγχου",
+      "gestionImmobiliere": "Διαχείριση Ακινήτων",
+      "developers": "Κατασκευαστές",
+      "projects": "Έργα",
+      "units": "Μονάδες",
+      "ventesCRM": "Πωλήσεις & CRM",
+      "prospects": "Πιθανοί Πελάτες",
+      "commissions": "Προμήθειες",
+      "analytics": "Αναλυτικά",
+      "analyses": "Αναλύσεις",
+      "segmentation": "Κατηγοριοποίηση",
+      "performance": "Απόδοση",
+      "reports": "Αναφορές",
+      "administration": "Διοίκηση",
+      "documentation": "Τεκμηρίωση",
+      "settings": "Ρυθμίσεις",
+      "tests": "Δοκιμές"
+    },
+    "titles": {
+      "projectManagement": "Διαχείριση Έργων",
+      "projectManagementSubtitle": "Διαχειριστείτε ακίνητα έργα",
+      "developerManagement": "Διαχείριση Κατασκευαστών",
+      "developerManagementSubtitle": "Διαχειριστείτε κατασκευαστές ακινήτων"
+    },
+    "buttons": {
+      "newProject": "Νέο Έργο",
+      "filters": "Φίλτρα",
+      "sortBy": "Ταξινόμηση κατά"
+    },
+    "status": {
+      "available": "Διαθέσιμο",
+      "underConstruction": "Υπό Κατασκευή",
+      "delivered": "Παραδοθέν",
+      "totalProjects": "Συνολικά Έργα"
+    },
+    "views": {
+      "cards": "Κάρτες",
+      "list": "Λίστα",
+      "table": "Πίνακας",
+      "compact": "Συμπαγής",
+      "detailed": "Λεπτομερής"
+    },
+    "sorting": {
+      "title": "Όνομα έργου",
+      "developer": "Κατασκευαστής",
+      "city": "Πόλη",
+      "neighborhood": "Γειτονιά",
+      "price": "Τιμή",
+      "status": "Κατάσταση",
+      "zone": "Ζώνη Κύπρου",
+      "completionDate": "Ημερομηνία παράδοσης",
+      "createdDate": "Ημερομηνία δημιουργίας"
+    }
   }
 }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Filter, Trash2, CheckSquare } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useSupabaseQuery, getPaginationRange } from '@/hooks/useSupabaseQuery';
 import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
@@ -34,6 +35,7 @@ interface FilterState {
 const AdminProjects = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<any>(null);
   const [showFilters, setShowFilters] = useState(false);
@@ -304,8 +306,8 @@ const AdminProjects = () => {
       if (error) throw error;
 
       toast({
-        title: 'Projets supprimés',
-        description: `${selectedProjects.length} projet(s) ont été supprimés avec succès.`
+        title: t('admin.messages.projectsDeleted'),
+        description: t('admin.messages.projectsDeletedDesc', { count: selectedProjects.length })
       });
       
       setSelectedProjects([]);
@@ -314,8 +316,8 @@ const AdminProjects = () => {
       console.error('Error deleting projects:', error);
       toast({
         variant: 'destructive',
-        title: 'Erreur',
-        description: error.message || 'Impossible de supprimer les projets'
+        title: t('admin.messages.error'),
+        description: error.message || t('admin.messages.errorDeletingProjects')
       });
     }
   };
@@ -324,8 +326,8 @@ const AdminProjects = () => {
     const allProjectIds = sortedProjects.map(project => project.id);
     setSelectedProjects(allProjectIds);
     toast({
-      title: 'Tous les projets sélectionnés',
-      description: `${allProjectIds.length} projet(s) sélectionné(s).`
+      title: t('admin.messages.allProjectsSelected'),
+      description: t('admin.messages.allProjectsSelectedDesc', { count: allProjectIds.length })
     });
   };
 
@@ -350,8 +352,8 @@ const AdminProjects = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Gestion des Projets</h1>
-            <p className="text-muted-foreground mt-2">Gérer les projets immobiliers</p>
+            <h1 className="text-3xl font-bold text-foreground">{t('admin.titles.projectManagement')}</h1>
+            <p className="text-muted-foreground mt-2">{t('admin.titles.projectManagementSubtitle')}</p>
           </div>
           <div className="flex items-center gap-4">
             <Button
@@ -360,7 +362,7 @@ const AdminProjects = () => {
               className="gap-2"
             >
               <Filter className="w-4 h-4" />
-              Filtres
+              {t('admin.buttons.filters')}
             </Button>
             
             <ProjectViewSelector
@@ -376,7 +378,7 @@ const AdminProjects = () => {
             
             <Button onClick={() => navigate('/admin/projects/new')} className="gap-2">
               <Plus className="w-4 h-4" />
-              Nouveau Projet
+              {t('admin.buttons.newProject')}
             </Button>
           </div>
         </div>
@@ -385,7 +387,7 @@ const AdminProjects = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Projets</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('admin.status.totalProjects')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.total}</div>
@@ -393,7 +395,7 @@ const AdminProjects = () => {
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Disponibles</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('admin.status.available')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-green-600">{stats.available}</div>
@@ -401,7 +403,7 @@ const AdminProjects = () => {
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">En Construction</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('admin.status.underConstruction')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-orange-600">{stats.construction}</div>
@@ -409,7 +411,7 @@ const AdminProjects = () => {
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Livrés</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('admin.status.delivered')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-blue-600">{stats.delivered}</div>
