@@ -104,16 +104,7 @@ export default function AdminAIImport() {
   return (
     <div className="container mx-auto px-4 py-6">
       <div className="mb-6">
-        <Button 
-          variant="ghost" 
-          onClick={() => navigate('/admin/projects')}
-          className="mb-4"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Retour aux projets
-        </Button>
-        
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-3 mb-4">
           <Brain className="h-8 w-8 text-primary" />
           <div>
             <h1 className="text-3xl font-bold">Import IA de Projets</h1>
@@ -122,6 +113,15 @@ export default function AdminAIImport() {
             </p>
           </div>
         </div>
+        
+        <Button 
+          variant="ghost" 
+          onClick={() => navigate('/admin/projects')}
+          className="mb-4"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Retour aux projets
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
