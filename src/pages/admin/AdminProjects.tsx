@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Filter } from 'lucide-react';
+import { Plus, Filter, Trash2, CheckSquare } from 'lucide-react';
 import { useSupabaseQuery, getPaginationRange } from '@/hooks/useSupabaseQuery';
 import { Pagination } from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
@@ -29,6 +29,7 @@ const AdminProjects = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<any>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 25,
@@ -187,6 +188,61 @@ const AdminProjects = () => {
     }
   };
 
+  // Actions globales
+  const handleDeleteSelected = async () => {
+    if (selectedProjects.length === 0) {
+      toast({
+        variant: 'destructive',
+        title: 'Aucune sélection',
+        description: 'Veuillez sélectionner au moins un projet à supprimer.'
+      });
+      return;
+    }
+
+    const confirmMessage = `Êtes-vous sûr de vouloir supprimer ${selectedProjects.length} projet(s) sélectionné(s) ?\n\nCette action est irréversible.`;
+    
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('projects')
+        .delete()
+        .in('id', selectedProjects);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Projets supprimés',
+        description: `${selectedProjects.length} projet(s) ont été supprimés avec succès.`
+      });
+      
+      setSelectedProjects([]);
+      refetch();
+    } catch (error: any) {
+      console.error('Error deleting projects:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Erreur',
+        description: error.message || 'Impossible de supprimer les projets'
+      });
+    }
+  };
+
+  const handleSelectAllProjects = () => {
+    const allProjectIds = projectsData.map(project => project.id);
+    setSelectedProjects(allProjectIds);
+    toast({
+      title: 'Tous les projets sélectionnés',
+      description: `${allProjectIds.length} projet(s) sélectionné(s).`
+    });
+  };
+
+  const clearSelection = () => {
+    setSelectedProjects([]);
+  };
+
   const stats = React.useMemo(() => {
     if (!projectsData) return { total: 0, available: 0, construction: 0, delivered: 0 };
     
@@ -278,7 +334,46 @@ const AdminProjects = () => {
           </Card>
         )}
 
-        {/* Projects by Developer */}
+        {/* Barre d'actions globales */}
+        {selectedProjects.length > 0 && (
+          <Card className="border-l-4 border-l-primary">
+            <CardContent className="py-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <CheckSquare className="w-5 h-5 text-primary" />
+                    <span className="font-medium">
+                      {selectedProjects.length} projet(s) sélectionné(s)
+                    </span>
+                  </div>
+                  <Button variant="outline" size="sm" onClick={clearSelection}>
+                    Désélectionner tout
+                  </Button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={handleSelectAllProjects}
+                    className="gap-2"
+                  >
+                    <CheckSquare className="w-4 h-4" />
+                    Tout sélectionner
+                  </Button>
+                  <Button 
+                    variant="destructive" 
+                    size="sm" 
+                    onClick={handleDeleteSelected}
+                    className="gap-2"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Supprimer la sélection
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
         <div className="space-y-6">
           {Object.entries(groupedProjects).map(([developerId, group]) => (
             <Card key={developerId}>
@@ -295,6 +390,8 @@ const AdminProjects = () => {
                   projects={group.projects}
                   onEdit={openEditModal}
                   onRefetch={refetch}
+                  selectedProjects={selectedProjects}
+                  onSelectionChange={setSelectedProjects}
                 />
               </CardContent>
             </Card>

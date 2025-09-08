@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Edit, Trash2, Eye, MapPin, Building } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -13,13 +14,35 @@ interface ProjectsTableProps {
   projects: any[];
   onEdit: (project: any) => void;
   onRefetch: () => void;
+  selectedProjects: string[];
+  onSelectionChange: (selectedIds: string[]) => void;
 }
 
-const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEdit, onRefetch }) => {
+const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEdit, onRefetch, selectedProjects, onSelectionChange }) => {
   const { toast } = useToast();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  
+  // Gestion de la sélection
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      const allProjectIds = projects.map(project => project.id);
+      onSelectionChange(allProjectIds);
+    } else {
+      onSelectionChange([]);
+    }
+  };
 
+  const handleSelectProject = (projectId: string, checked: boolean) => {
+    if (checked) {
+      onSelectionChange([...selectedProjects, projectId]);
+    } else {
+      onSelectionChange(selectedProjects.filter(id => id !== projectId));
+    }
+  };
+
+  const isAllSelected = projects.length > 0 && selectedProjects.length === projects.length;
+  const isIndeterminate = selectedProjects.length > 0 && selectedProjects.length < projects.length;
   const handleDelete = async (projectId: string, projectTitle: string) => {
     try {
       // Check for dependencies first
@@ -113,6 +136,13 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead className="w-12">
+              <Checkbox
+                checked={isAllSelected}
+                onCheckedChange={handleSelectAll}
+                className={isIndeterminate ? "data-[state=checked]:bg-primary/50" : ""}
+              />
+            </TableHead>
             <TableHead>{t('fields.name')}</TableHead>
             <TableHead>{t('fields.developer')}</TableHead>
             <TableHead>{t('fields.zone')}</TableHead>
@@ -126,6 +156,12 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
         <TableBody>
           {projects.map((project) => (
             <TableRow key={project.id}>
+              <TableCell>
+                <Checkbox
+                  checked={selectedProjects.includes(project.id)}
+                  onCheckedChange={(checked) => handleSelectProject(project.id, checked as boolean)}
+                />
+              </TableCell>
               <TableCell className="font-medium">
                 <div className="flex items-center gap-2">
                   <Building className="w-4 h-4 text-muted-foreground" />
@@ -197,7 +233,7 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
           ))}
           {projects.length === 0 && (
             <TableRow>
-              <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
+              <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
                 Aucun projet trouvé
               </TableCell>
             </TableRow>
