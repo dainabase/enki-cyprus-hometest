@@ -81,8 +81,8 @@ export const AdminProjectForm: React.FC = () => {
          developer_id: projectData.developer_id,
          status: projectData.status as ProjectFormData['status'],
         price: projectData.price,
-         photos: Array.isArray(projectData.photos) && projectData.photos.length > 0 && typeof projectData.photos[0] === 'object' 
-           ? projectData.photos 
+         photos: Array.isArray(projectData.categorized_photos) && projectData.categorized_photos.length > 0 
+           ? projectData.categorized_photos as any[]
            : (projectData.photos || []).map((url: string) => ({
                url,
                category: 'hero' as const,
@@ -219,10 +219,14 @@ export const AdminProjectForm: React.FC = () => {
         incentives: data.incentives,
         
         // Media
+        categorized_photos: data.photos,
         photo_gallery_urls: data.photo_gallery_urls,
         video_tour_urls: data.video_tour_urls,
         floor_plan_urls: data.floor_plan_urls,
         virtual_tour_url_new: data.virtual_tour_url_new,
+        project_presentation_url: data.project_presentation_url,
+        youtube_tour_url: data.youtube_tour_url,
+        vimeo_tour_url: data.vimeo_tour_url,
         drone_footage_urls: data.drone_footage_urls,
         model_3d_urls: data.model_3d_urls,
         

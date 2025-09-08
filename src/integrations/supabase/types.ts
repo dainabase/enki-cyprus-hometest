@@ -888,6 +888,7 @@ export type Database = {
           builder_name: string | null
           building_id: string | null
           built_area_m2: number | null
+          categorized_photos: Json | null
           city: string | null
           commission_rate: number | null
           community_features: string[] | null
@@ -966,6 +967,7 @@ export type Database = {
           project_code: string | null
           project_narrative: string | null
           project_phase: string | null
+          project_presentation_url: string | null
           project_status: string | null
           property_category: string | null
           property_sub_type: string[] | null
@@ -1012,12 +1014,14 @@ export type Database = {
           video_url: string | null
           view_count: number | null
           view_count_new: number | null
+          vimeo_tour_url: string | null
           virtual_tour: string | null
           virtual_tour_url: string | null
           virtual_tour_url_new: string | null
           vr_tour_url: string | null
           warranty_years: number | null
           wellness_features: string[] | null
+          youtube_tour_url: string | null
         }
         Insert: {
           after_sales_service?: boolean | null
@@ -1035,6 +1039,7 @@ export type Database = {
           builder_name?: string | null
           building_id?: string | null
           built_area_m2?: number | null
+          categorized_photos?: Json | null
           city?: string | null
           commission_rate?: number | null
           community_features?: string[] | null
@@ -1113,6 +1118,7 @@ export type Database = {
           project_code?: string | null
           project_narrative?: string | null
           project_phase?: string | null
+          project_presentation_url?: string | null
           project_status?: string | null
           property_category?: string | null
           property_sub_type?: string[] | null
@@ -1159,12 +1165,14 @@ export type Database = {
           video_url?: string | null
           view_count?: number | null
           view_count_new?: number | null
+          vimeo_tour_url?: string | null
           virtual_tour?: string | null
           virtual_tour_url?: string | null
           virtual_tour_url_new?: string | null
           vr_tour_url?: string | null
           warranty_years?: number | null
           wellness_features?: string[] | null
+          youtube_tour_url?: string | null
         }
         Update: {
           after_sales_service?: boolean | null
@@ -1182,6 +1190,7 @@ export type Database = {
           builder_name?: string | null
           building_id?: string | null
           built_area_m2?: number | null
+          categorized_photos?: Json | null
           city?: string | null
           commission_rate?: number | null
           community_features?: string[] | null
@@ -1260,6 +1269,7 @@ export type Database = {
           project_code?: string | null
           project_narrative?: string | null
           project_phase?: string | null
+          project_presentation_url?: string | null
           project_status?: string | null
           property_category?: string | null
           property_sub_type?: string[] | null
@@ -1306,12 +1316,14 @@ export type Database = {
           video_url?: string | null
           view_count?: number | null
           view_count_new?: number | null
+          vimeo_tour_url?: string | null
           virtual_tour?: string | null
           virtual_tour_url?: string | null
           virtual_tour_url_new?: string | null
           vr_tour_url?: string | null
           warranty_years?: number | null
           wellness_features?: string[] | null
+          youtube_tour_url?: string | null
         }
         Relationships: [
           {
