@@ -145,7 +145,7 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
               <Checkbox
                 aria-label={t('actions.selectAll') || 'Tout sélectionner'}
                 checked={isAllSelected ? true : isIndeterminate ? "indeterminate" : false}
-                onCheckedChange={(checked) => handleSelectAll(checked)}
+                onCheckedChange={(checked) => handleSelectAll(checked === true)}
               />
             </TableHead>
             <TableHead>{t('fields.name')}</TableHead>
