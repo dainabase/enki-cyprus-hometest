@@ -138,9 +138,9 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
           <TableRow>
             <TableHead className="w-12">
               <Checkbox
-                checked={isAllSelected}
+                checked={isAllSelected || isIndeterminate}
                 onCheckedChange={handleSelectAll}
-                className={isIndeterminate ? "data-[state=checked]:bg-primary/50" : ""}
+                className={isIndeterminate ? "data-[state=indeterminate]:bg-primary/50" : ""}
               />
             </TableHead>
             <TableHead>{t('fields.name')}</TableHead>
