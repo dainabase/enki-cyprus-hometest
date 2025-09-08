@@ -327,17 +327,20 @@ export const AdminProjectForm: React.FC = () => {
   const nextStep = () => {
     if (currentStepIndex < projectFormSteps.length - 1) {
       setCurrentStepIndex(currentStepIndex + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   const prevStep = () => {
     if (currentStepIndex > 0) {
       setCurrentStepIndex(currentStepIndex - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   const goToStep = (index: number) => {
     setCurrentStepIndex(index);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const renderIcon = (iconName: string) => {
@@ -416,7 +419,13 @@ export const AdminProjectForm: React.FC = () => {
           {/* Form Content */}
           <div className="lg:col-span-3">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <form onSubmit={form.handleSubmit(onSubmit, () => {
+                toast({
+                  title: "Champs requis manquants",
+                  description: "Corrigez les erreurs du formulaire avant de publier.",
+                  variant: "destructive"
+                });
+              })} className="space-y-8">
                 {/* Current Step Content */}
                 <Card>
                   <CardHeader>
