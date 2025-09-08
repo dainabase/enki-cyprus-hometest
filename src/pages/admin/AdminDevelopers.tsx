@@ -143,7 +143,9 @@ const AdminDevelopers = () => {
     'agg luxury homes': '/lovable-uploads/da9e2335-cbce-4b91-91e9-9ab0079032c6.png',
     'agg': '/lovable-uploads/da9e2335-cbce-4b91-91e9-9ab0079032c6.png',
     'korantina homes': '/lovable-uploads/9d71fef3-c2c7-487a-ba21-6d18749b8b3b.png',
-    'korantina': '/lovable-uploads/9d71fef3-c2c7-487a-ba21-6d18749b8b3b.png'
+    'korantina': '/lovable-uploads/9d71fef3-c2c7-487a-ba21-6d18749b8b3b.png',
+    'kuutio homes': '/lovable-uploads/8acce094-0212-4562-9dff-42bd9d25efb0.png',
+    'kuutio': '/lovable-uploads/8acce094-0212-4562-9dff-42bd9d25efb0.png'
   };
   const getLogo = (d: Partial<Developer>) => {
     const byName = (d.name || '').toLowerCase().trim();
