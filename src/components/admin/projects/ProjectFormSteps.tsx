@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { MediaUploader } from './MediaUploader';
 import { CategorizedMediaUploader } from './CategorizedMediaUploader';
+import { NearbyAmenitiesSelector } from './NearbyAmenitiesSelector';
 import { AmenitiesSelector } from './AmenitiesSelector';
 import PropertySubTypeSelector from './PropertySubTypeSelector';
 import { ProjectFormData } from '@/schemas/projectSchema';
@@ -461,6 +462,12 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           </div>
         </CardContent>
       </Card>
+
+      {/* Commodités de proximité */}
+      <NearbyAmenitiesSelector
+        value={[]}
+        onChange={() => {}}
+      />
     </div>
   );
 

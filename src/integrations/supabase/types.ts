@@ -698,6 +698,45 @@ export type Database = {
           },
         ]
       }
+      nearby_amenities: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string | null
+          icon: string
+          id: string
+          importance_level: number | null
+          name: string
+          name_el: string | null
+          name_ru: string | null
+          sort_order: number | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          description?: string | null
+          icon: string
+          id?: string
+          importance_level?: number | null
+          name: string
+          name_el?: string | null
+          name_ru?: string | null
+          sort_order?: number | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          icon?: string
+          id?: string
+          importance_level?: number | null
+          name?: string
+          name_el?: string | null
+          name_ru?: string | null
+          sort_order?: number | null
+        }
+        Relationships: []
+      }
       notification_preferences: {
         Row: {
           analytics_tracking: boolean | null
@@ -864,6 +903,57 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "project_images_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_nearby_amenities: {
+        Row: {
+          created_at: string | null
+          details: string | null
+          distance_km: number | null
+          distance_minutes_drive: number | null
+          distance_minutes_walk: number | null
+          id: string
+          nearby_amenity_id: string
+          project_id: string
+          quantity: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          details?: string | null
+          distance_km?: number | null
+          distance_minutes_drive?: number | null
+          distance_minutes_walk?: number | null
+          id?: string
+          nearby_amenity_id: string
+          project_id: string
+          quantity?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          details?: string | null
+          distance_km?: number | null
+          distance_minutes_drive?: number | null
+          distance_minutes_walk?: number | null
+          id?: string
+          nearby_amenity_id?: string
+          project_id?: string
+          quantity?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_nearby_amenities_nearby_amenity_id_fkey"
+            columns: ["nearby_amenity_id"]
+            isOneToOne: false
+            referencedRelation: "nearby_amenities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_nearby_amenities_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
