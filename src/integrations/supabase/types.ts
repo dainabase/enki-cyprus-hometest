@@ -968,7 +968,7 @@ export type Database = {
           project_phase: string | null
           project_status: string | null
           property_category: string | null
-          property_sub_type: string | null
+          property_sub_type: string[] | null
           property_types: string[] | null
           proximity_airport_km: number | null
           proximity_city_center_km: number | null
@@ -1116,7 +1116,7 @@ export type Database = {
           project_phase?: string | null
           project_status?: string | null
           property_category?: string | null
-          property_sub_type?: string | null
+          property_sub_type?: string[] | null
           property_types?: string[] | null
           proximity_airport_km?: number | null
           proximity_city_center_km?: number | null
@@ -1264,7 +1264,7 @@ export type Database = {
           project_phase?: string | null
           project_status?: string | null
           property_category?: string | null
-          property_sub_type?: string | null
+          property_sub_type?: string[] | null
           property_types?: string[] | null
           proximity_airport_km?: number | null
           proximity_city_center_km?: number | null

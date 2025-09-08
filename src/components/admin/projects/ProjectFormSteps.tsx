@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { MediaUploader } from './MediaUploader';
 import { AmenitiesSelector } from './AmenitiesSelector';
+import PropertySubTypeSelector from './PropertySubTypeSelector';
 import { ProjectFormData } from '@/schemas/projectSchema';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -97,31 +98,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="property_sub_type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Sous-type *</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Sélectionnez" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="villa">Villa</SelectItem>
-                      <SelectItem value="apartment">Appartement</SelectItem>
-                      <SelectItem value="penthouse">Penthouse</SelectItem>
-                      <SelectItem value="townhouse">Maison de ville</SelectItem>
-                      <SelectItem value="studio">Studio</SelectItem>
-                      <SelectItem value="duplex">Duplex</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* Property Sub Type - Multiple Selection */}
+            <div className="md:col-span-2">
+              <PropertySubTypeSelector form={form} />
+            </div>
 
             <FormField
               control={form.control}

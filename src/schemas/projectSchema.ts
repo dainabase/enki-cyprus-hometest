@@ -6,7 +6,18 @@ export const projectSchema = z.object({
   project_code: z.string().optional(),
   developer_id: z.string().uuid("Sélectionnez un développeur"),
   property_category: z.enum(['residential', 'commercial', 'mixed', 'industrial']),
-  property_sub_type: z.enum(['villa', 'apartment', 'penthouse', 'townhouse', 'studio', 'duplex', 'office', 'retail', 'warehouse']),
+  property_sub_type: z.array(z.enum([
+    // Residential
+    'villa', 'apartment', 'penthouse', 'townhouse', 'studio', 'duplex', 'triplex', 'maisonette',
+    // Commercial
+    'office', 'retail', 'warehouse', 'showroom', 'restaurant', 'hotel', 'clinic', 'workshop',
+    // Industrial
+    'factory', 'logistics', 'storage', 'production',
+    // Land
+    'land_residential', 'land_commercial', 'land_agricultural',
+    // Other
+    'mixed_use', 'other'
+  ])).min(1, "Sélectionnez au moins un type"),
   project_phase: z.enum(['off-plan', 'under-construction', 'completed', 'ready-to-move']),
   launch_date: z.string().optional(),
   completion_date_new: z.string().optional(),

@@ -42,7 +42,7 @@ export const AdminProjectForm: React.FC = () => {
       type: 'apartment',
       cyprus_zone: 'limassol',
       property_category: 'residential',
-      property_sub_type: 'apartment',
+      property_sub_type: [],
       project_phase: 'off-plan',
       price: 0
     }
