@@ -84,7 +84,7 @@ export const DeveloperListView = ({
                 {dev.website && (
                   <div className="flex items-center space-x-1">
                     <Building className="h-3 w-3" />
-                    <span className="truncate max-w-32">Site web</span>
+                    <span className="truncate max-w-32">{dev.website}</span>
                   </div>
                 )}
               </div>

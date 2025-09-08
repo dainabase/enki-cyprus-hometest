@@ -13,6 +13,7 @@ interface Developer {
   contact_info?: any;
   total_projects?: number;
   rating_score?: number;
+  website?: string;
 }
 
 interface DeveloperCardViewProps {
@@ -104,10 +105,10 @@ export const DeveloperCardView = ({
                         {dev.contact_info.phone}
                       </div>
                     )}
-                    {dev.contact_info?.address && (
+                    {dev.website && (
                       <div className="truncate flex items-center">
-                        <span className="mr-1">📍</span>
-                        {dev.contact_info.address}
+                        <span className="mr-1">🌐</span>
+                        {dev.website}
                       </div>
                     )}
                   </div>
