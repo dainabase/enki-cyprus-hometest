@@ -339,19 +339,19 @@ const AdminDevelopers = () => {
                         <div className="flex justify-between items-start">
                           <div className="flex-1 flex items-start gap-3 min-w-0">
                             {/* Logo à gauche */}
-                            <div className="w-10 h-10 rounded-md overflow-hidden bg-card border border-border/50 flex items-center justify-center shrink-0">
-                              {getLogo(developer) ? (
-                                <img
-                                  src={getLogo(developer)!}
-                                  alt={`Logo ${developer.name}`}
-                                  className="max-w-full max-h-full object-contain"
-                                />
-                              ) : (
-                                <div className="text-xs font-semibold text-muted-foreground">
-                                  {developer.name?.split(' ').slice(0,2).map(w => w[0]).join('')}
-                                </div>
-                              )}
-                            </div>
+                            <div className="w-32 h-32 rounded-md overflow-hidden bg-card border border-border/50 flex items-center justify-center shrink-0">
+                               {getLogo(developer) ? (
+                                 <img
+                                   src={getLogo(developer)!}
+                                   alt={`Logo ${developer.name}`}
+                                   className="max-w-full max-h-full object-contain"
+                                 />
+                               ) : (
+                                 <div className="text-xs font-semibold text-muted-foreground">
+                                   {developer.name?.split(' ').slice(0,2).map(w => w[0]).join('')}
+                                 </div>
+                               )}
+                             </div>
                             <div className="min-w-0">
                               <CardTitle className="text-lg pr-2 truncate">{developer.name}</CardTitle>
                               {developer.main_city && (
@@ -589,26 +589,26 @@ const AdminDevelopers = () => {
             <DialogTitle className="flex items-center gap-3">
               <div className="flex items-center gap-4">
                 {/* Logo du développeur */}
-                {getLogo(selectedDeveloper || {}) ? (
-                  <div className="w-16 h-16 rounded-lg overflow-hidden bg-card border border-border/20 flex items-center justify-center p-2">
-                    <img 
-                      src={getLogo(selectedDeveloper || {})!} 
-                      alt={`Logo ${selectedDeveloper?.name}`}
-                      className="max-w-full max-h-full object-contain"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                        e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                      }}
-                    />
-                    <div className="hidden w-full h-full bg-gradient-to-br from-primary/10 to-primary/20 rounded flex items-center justify-center">
-                      <Building2 className="w-8 h-8 text-primary/60" />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-primary/10 to-primary/20 flex items-center justify-center">
-                    <Building2 className="w-8 h-8 text-primary/60" />
-                  </div>
-                )}
+                 {getLogo(selectedDeveloper || {}) ? (
+                   <div className="w-32 h-32 rounded-lg overflow-hidden bg-card border border-border/20 flex items-center justify-center p-2">
+                     <img 
+                       src={getLogo(selectedDeveloper || {})!} 
+                       alt={`Logo ${selectedDeveloper?.name}`}
+                       className="max-w-full max-h-full object-contain"
+                       onError={(e) => {
+                         e.currentTarget.style.display = 'none';
+                         e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                       }}
+                     />
+                     <div className="hidden w-full h-full bg-gradient-to-br from-primary/10 to-primary/20 rounded flex items-center justify-center">
+                       <Building2 className="w-16 w-16 text-primary/60" />
+                     </div>
+                   </div>
+                 ) : (
+                   <div className="w-32 h-32 rounded-lg bg-gradient-to-br from-primary/10 to-primary/20 flex items-center justify-center">
+                     <Building2 className="w-16 w-16 text-primary/60" />
+                   </div>
+                 )}
                 
                 <div>
                   <h2 className="text-xl font-semibold">Fiche complète</h2>
