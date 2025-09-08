@@ -12,7 +12,7 @@ import { toast } from '@/hooks/use-toast';
 
 interface CategorizedPhoto {
   url: string;
-  category: string;
+  category: 'hero' | 'exterior_1' | 'exterior_2' | 'interior_1' | 'interior_2' | 'panoramic_view' | 'sea_view' | 'mountain_view' | 'amenities' | 'plans' | 'kitchen' | 'bedroom' | 'bathroom' | 'balcony' | 'garden';
   isPrimary?: boolean;
   caption?: string;
 }
@@ -27,9 +27,18 @@ interface CategorizedMediaUploaderProps {
 
 const PHOTO_CATEGORIES = [
   { value: 'hero', label: 'Photo Principale', icon: Star, description: 'Image mise en avant sur les listes' },
-  { value: 'exterior', label: 'Extérieur', icon: Camera, description: 'Façades, jardins, terrasses' },
-  { value: 'interior', label: 'Intérieur', icon: ImageIcon, description: 'Salon, cuisine, chambres' },
-  { value: 'view', label: 'Vue', icon: Move, description: 'Panorama, vues depuis le bien' },
+  { value: 'exterior_1', label: 'Extérieur 1', icon: Camera, description: 'Façades principales, entrées' },
+  { value: 'exterior_2', label: 'Extérieur 2', icon: Camera, description: 'Jardins, terrasses, cours' },
+  { value: 'interior_1', label: 'Intérieur 1', icon: ImageIcon, description: 'Salon, séjour, espaces de vie' },
+  { value: 'interior_2', label: 'Intérieur 2', icon: ImageIcon, description: 'Chambres, bureaux' },
+  { value: 'kitchen', label: 'Cuisine', icon: ImageIcon, description: 'Cuisine équipée, coin repas' },
+  { value: 'bedroom', label: 'Chambres', icon: ImageIcon, description: 'Chambres à coucher' },
+  { value: 'bathroom', label: 'Salles de bain', icon: ImageIcon, description: 'Salles de bain, WC' },
+  { value: 'balcony', label: 'Balcons/Terrasses', icon: Camera, description: 'Balcons, terrasses, loggias' },
+  { value: 'garden', label: 'Jardin', icon: Camera, description: 'Espaces verts, piscine' },
+  { value: 'panoramic_view', label: 'Vue Panoramique', icon: Move, description: 'Vues d\'ensemble, panoramas' },
+  { value: 'sea_view', label: 'Vue Mer', icon: Move, description: 'Vues sur la mer' },
+  { value: 'mountain_view', label: 'Vue Montagne', icon: Move, description: 'Vues sur les montagnes' },
   { value: 'amenities', label: 'Prestations', icon: Star, description: 'Piscine, gym, espaces communs' },
   { value: 'plans', label: 'Plans', icon: ImageIcon, description: 'Plans d\'étage, techniques' },
 ];
@@ -73,7 +82,7 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
           
           newPhotos.push({
             url: publicUrl,
-            category,
+            category: category as CategorizedPhoto['category'],
             isPrimary: category === 'hero' && !field.value.find(p => p.category === 'hero'),
             caption: ''
           });
@@ -280,14 +289,14 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-8 xl:grid-cols-10 gap-3">
             {getTotalByCategory().map((cat) => {
               const Icon = cat.icon;
               return (
-                <div key={cat.value} className="text-center p-3 border rounded-lg">
-                  <Icon className="w-6 h-6 mx-auto mb-2 text-muted-foreground" />
-                  <p className="text-xs font-medium">{cat.label}</p>
-                  <Badge variant="secondary" className="text-xs mt-1">
+                <div key={cat.value} className="text-center p-2 border rounded-lg hover:bg-muted/30 transition-colors">
+                  <Icon className="w-4 h-4 mx-auto mb-1 text-muted-foreground" />
+                  <p className="text-xs font-medium mb-1 leading-tight">{cat.label}</p>
+                  <Badge variant="secondary" className="text-xs">
                     {cat.count}
                   </Badge>
                 </div>
@@ -299,16 +308,30 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
 
       {/* Categories Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-8 gap-1">
           {PHOTO_CATEGORIES.map((cat) => {
             const Icon = cat.icon;
             const count = getPhotosByCategory(cat.value).length;
+            const isActive = activeTab === cat.value;
             return (
-              <TabsTrigger key={cat.value} value={cat.value} className="flex items-center gap-1">
+              <TabsTrigger 
+                key={cat.value} 
+                value={cat.value} 
+                className={`flex items-center gap-1 text-xs px-2 py-2 transition-all duration-200 ${
+                  isActive 
+                    ? 'bg-primary text-primary-foreground shadow-md ring-2 ring-primary/20 scale-105' 
+                    : 'hover:bg-muted/50'
+                }`}
+              >
                 <Icon className="w-3 h-3" />
-                <span className="hidden sm:inline">{cat.label}</span>
+                <span className="hidden sm:inline text-xs font-medium">{cat.label}</span>
                 {count > 0 && (
-                  <Badge variant="secondary" className="text-xs w-5 h-5 p-0 flex items-center justify-center">
+                  <Badge 
+                    variant={isActive ? "secondary" : "outline"} 
+                    className={`text-xs w-4 h-4 p-0 flex items-center justify-center ${
+                      isActive ? 'bg-primary-foreground/20 text-primary-foreground' : ''
+                    }`}
+                  >
                     {count}
                   </Badge>
                 )}

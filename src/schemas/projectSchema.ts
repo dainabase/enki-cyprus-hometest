@@ -69,14 +69,17 @@ export const projectSchema = z.object({
   // MEDIA
   photos: z.array(z.object({
     url: z.string(),
-    category: z.enum(['hero', 'exterior', 'interior', 'view', 'amenities', 'plans']),
+    category: z.enum(['hero', 'exterior_1', 'exterior_2', 'interior_1', 'interior_2', 'panoramic_view', 'sea_view', 'mountain_view', 'amenities', 'plans', 'kitchen', 'bedroom', 'bathroom', 'balcony', 'garden']),
     isPrimary: z.boolean().optional(),
     caption: z.string().optional()
   })).default([]),
   photo_gallery_urls: z.array(z.string()).optional(),
   video_tour_urls: z.array(z.string()).optional(),
-  floor_plan_urls: z.array(z.string()).optional(),
   virtual_tour_url_new: z.string().optional(),
+  project_presentation_url: z.string().optional(),
+  youtube_tour_url: z.string().optional(),
+  vimeo_tour_url: z.string().optional(),
+  floor_plan_urls: z.array(z.string()).optional(),
   drone_footage_urls: z.array(z.string()).optional(),
   model_3d_urls: z.array(z.string()).optional(),
 
@@ -186,8 +189,9 @@ export const projectFormSteps = [
     title: 'Médias',
     icon: 'Image',
     fields: [
-      'photos', 'photo_gallery_urls', 'video_tour_urls', 'floor_plan_urls',
-      'virtual_tour_url_new', 'drone_footage_urls', 'model_3d_urls'
+      'photos', 'virtual_tour_url_new', 'project_presentation_url', 
+      'youtube_tour_url', 'vimeo_tour_url', 'photo_gallery_urls', 
+      'video_tour_urls', 'floor_plan_urls', 'drone_footage_urls', 'model_3d_urls'
     ]
   },
   {

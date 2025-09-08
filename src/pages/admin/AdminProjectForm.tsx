@@ -81,7 +81,14 @@ export const AdminProjectForm: React.FC = () => {
          developer_id: projectData.developer_id,
          status: projectData.status as ProjectFormData['status'],
         price: projectData.price,
-        photos: projectData.photos || [],
+         photos: Array.isArray(projectData.photos) && projectData.photos.length > 0 && typeof projectData.photos[0] === 'object' 
+           ? projectData.photos 
+           : (projectData.photos || []).map((url: string) => ({
+               url,
+               category: 'hero' as const,
+               isPrimary: false,
+               caption: ''
+             })),
         features: projectData.features || [],
         cyprus_zone: projectData.cyprus_zone || 'limassol',
         
