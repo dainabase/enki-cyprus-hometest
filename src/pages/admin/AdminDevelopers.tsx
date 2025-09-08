@@ -164,7 +164,8 @@ const AdminDevelopers = () => {
     'dominica': '/lovable-uploads/96899468-63cb-42e9-90b6-c3aeaf5a51ea.png',
     'dominica group': '/lovable-uploads/96899468-63cb-42e9-90b6-c3aeaf5a51ea.png',
     'leptos': '/lovable-uploads/86a9b95e-ea6a-47e2-a82e-e9761d09f788.png',
-    'pafilia': '/lovable-uploads/3843a2de-ff9f-4d55-98b2-4e5cfaf6958d.png'
+    'pafilia': '/lovable-uploads/3843a2de-ff9f-4d55-98b2-4e5cfaf6958d.png',
+    'cybarco': '/lovable-uploads/532a60af-fea7-4b6d-a8ec-c334447e2196.png'
   };
   const getLogo = (d: Partial<Developer>) => {
     const byName = (d.name || '').toLowerCase().trim();
