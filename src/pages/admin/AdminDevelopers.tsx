@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Plus, Users, Activity, DollarSign } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -10,7 +10,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useDebounceCallback } from '@/hooks/useDebounceCallback';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { useViewPreference } from '@/hooks/useViewPreference';
 import { DeveloperViewSelector } from '@/components/admin/developers/DeveloperViewSelector';
@@ -83,15 +82,6 @@ export default function AdminDevelopers() {
     }
   });
 
-  // Search and filtering
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCity, setSelectedCity] = useState<string>('all');
-  const [selectedStatus, setSelectedStatus] = useState<string>('all');
-
-  const debouncedSetSearchTerm = useDebounceCallback((value: string) => {
-    setSearchTerm(value);
-  }, 300);
-
   // Data normalization and processing
   const normalizedDevelopers = useMemo(() => {
     return developers.map(dev => ({
@@ -103,20 +93,6 @@ export default function AdminDevelopers() {
       }
     }));
   }, [developers]);
-
-  const filteredDevelopers = useMemo(() => {
-    return normalizedDevelopers.filter(dev => {
-      const matchesSearch = !searchTerm || 
-        dev.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        dev.main_city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        dev.contact_info?.email?.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      const matchesCity = selectedCity === 'all' || dev.main_city === selectedCity;
-      const matchesStatus = selectedStatus === 'all' || dev.status === selectedStatus;
-      
-      return matchesSearch && matchesCity && matchesStatus;
-    });
-  }, [normalizedDevelopers, searchTerm, selectedCity, selectedStatus]);
 
   // Logo fallbacks mapping
   const logoFallbacks: Record<string, string> = {
@@ -334,21 +310,6 @@ export default function AdminDevelopers() {
     }
   };
 
-  // Statistics
-  const stats = useMemo(() => {
-    const active = normalizedDevelopers.filter(d => d.status === 'active').length;
-    const inactive = normalizedDevelopers.filter(d => d.status === 'inactive').length;
-    const avgCommission = normalizedDevelopers.length > 0 
-      ? normalizedDevelopers.reduce((sum, d) => sum + (d.commission_rate || 3), 0) / normalizedDevelopers.length
-      : 0;
-
-    return { total: normalizedDevelopers.length, active, inactive, avgCommission };
-  }, [normalizedDevelopers]);
-
-  const cities = useMemo(() => {
-    const citySet = new Set(normalizedDevelopers.map(d => d.main_city).filter(Boolean));
-    return Array.from(citySet).sort();
-  }, [normalizedDevelopers]);
 
   if (isLoading) {
     return (
@@ -374,110 +335,17 @@ export default function AdminDevelopers() {
         </div>
       </div>
 
-      {/* Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Développeurs</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.total}</div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Actifs</CardTitle>
-            <Activity className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.active}</div>
-            <p className="text-xs text-muted-foreground">
-              {stats.inactive} inactifs
-            </p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Commission Moyenne</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.avgCommission.toFixed(1)}%</div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Villes Couvertes</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{cities.length}</div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Filters */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Filtres</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <Label htmlFor="search">Rechercher</Label>
-              <Input
-                id="search"
-                placeholder="Nom, ville, email..."
-                onChange={(e) => debouncedSetSearchTerm(e.target.value)}
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor="city-filter">Ville</Label>
-              <Select value={selectedCity} onValueChange={setSelectedCity}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Toutes les villes" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Toutes les villes</SelectItem>
-                  {cities.map(city => (
-                    <SelectItem key={city} value={city}>{city}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div>
-              <Label htmlFor="status-filter">Statut</Label>
-              <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Tous les statuts" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Tous les statuts</SelectItem>
-                  <SelectItem value="active">Actif</SelectItem>
-                  <SelectItem value="inactive">Inactif</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Developers Multi-view */}
       <Card>
         <CardHeader>
           <CardTitle>Développeurs</CardTitle>
           <CardDescription>
-            {filteredDevelopers.length} développeur{filteredDevelopers.length > 1 ? 's' : ''} trouvé{filteredDevelopers.length > 1 ? 's' : ''}
+            {normalizedDevelopers.length} développeur{normalizedDevelopers.length > 1 ? 's' : ''} trouvé{normalizedDevelopers.length > 1 ? 's' : ''}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {filteredDevelopers.length === 0 ? (
+          {normalizedDevelopers.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               Aucun développeur trouvé
             </div>
@@ -485,7 +353,7 @@ export default function AdminDevelopers() {
             <>
               {currentView === 'cards' && (
                 <DeveloperCardView
-                  developers={filteredDevelopers}
+                  developers={normalizedDevelopers}
                   getLogo={getLogo}
                   onEdit={openEditModal}
                   onDelete={deleteDeveloper}
@@ -493,45 +361,45 @@ export default function AdminDevelopers() {
                 />
               )}
               
-              {currentView === 'list' && (
-                <DeveloperListView
-                  developers={filteredDevelopers}
-                  getLogo={getLogo}
-                  onEdit={openEditModal}
-                  onDelete={deleteDeveloper}
-                  onViewDetails={openDetailModal}
-                />
-              )}
+      {currentView === 'list' && (
+        <DeveloperListView 
+          developers={normalizedDevelopers}
+          getLogo={getLogo}
+          onEdit={openEditModal}
+          onDelete={deleteDeveloper}
+          onViewDetails={openDetailModal}
+        />
+      )}
+
+      {currentView === 'table' && (
+        <DeveloperTableView 
+          developers={normalizedDevelopers}
+          getLogo={getLogo}
+          onEdit={openEditModal}
+          onDelete={deleteDeveloper}
+          onViewDetails={openDetailModal}
+        />
+      )}
               
-              {currentView === 'table' && (
-                <DeveloperTableView
-                  developers={filteredDevelopers}
-                  getLogo={getLogo}
-                  onEdit={openEditModal}
-                  onDelete={deleteDeveloper}
-                  onViewDetails={openDetailModal}
-                />
-              )}
-              
-              {currentView === 'compact' && (
-                <DeveloperCompactView
-                  developers={filteredDevelopers}
-                  getLogo={getLogo}
-                  onEdit={openEditModal}
-                  onDelete={deleteDeveloper}
-                  onViewDetails={openDetailModal}
-                />
-              )}
-              
-              {currentView === 'detailed' && (
-                <DeveloperDetailedView
-                  developers={filteredDevelopers}
-                  getLogo={getLogo}
-                  onEdit={openEditModal}
-                  onDelete={deleteDeveloper}
-                  onViewDetails={openDetailModal}
-                />
-              )}
+      {currentView === 'compact' && (
+        <DeveloperCompactView 
+          developers={normalizedDevelopers}
+          getLogo={getLogo}
+          onEdit={openEditModal}
+          onDelete={deleteDeveloper}
+          onViewDetails={openDetailModal}
+        />
+      )}
+
+      {currentView === 'detailed' && (
+        <DeveloperDetailedView 
+          developers={normalizedDevelopers}
+          getLogo={getLogo}
+          onEdit={openEditModal}
+          onDelete={deleteDeveloper}
+          onViewDetails={openDetailModal}
+        />
+      )}
             </>
           )}
         </CardContent>
