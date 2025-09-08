@@ -1,31 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Form } from '@/components/ui/form';
 import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Layout from '@/components/layout/Layout';
 import { ProjectFormSteps } from '@/components/admin/projects/ProjectFormSteps';
+import { DocumentManager } from '@/components/admin/projects/DocumentManager';
 import { projectSchema, ProjectFormData, projectFormSteps } from '@/schemas/projectSchema';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
-import { ArrowLeft, ArrowRight, Save, Eye, CheckCircle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Save, Eye, CheckCircle, FileText, Brain } from 'lucide-react';
+import { extractPrefilledData, PrefilledFormData } from '@/lib/ai-import/mapper';
 import * as LucideIcons from 'lucide-react';
 
 export const AdminProjectForm: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
   const isEdit = Boolean(id);
   const queryClient = useQueryClient();
   
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [saveType, setSaveType] = useState<'draft' | 'publish'>('draft');
+  const [prefilledData, setPrefilledData] = useState<PrefilledFormData>({});
+  const [showPrefilledBanner, setShowPrefilledBanner] = useState(false);
 
   const currentStep = projectFormSteps[currentStepIndex];
+
+  // Extract prefilled data from URL params
+  useEffect(() => {
+    const extracted = extractPrefilledData(searchParams);
+    if (Object.keys(extracted).length > 0) {
+      setPrefilledData(extracted);
+      setShowPrefilledBanner(true);
+      
+      // Pre-fill form with AI data
+      Object.entries(extracted).forEach(([fieldName, fieldData]) => {
+        form.setValue(fieldName as keyof ProjectFormData, fieldData.value);
+      });
+    }
+  }, [searchParams]);
 
   const form = useForm<ProjectFormData>({
     resolver: zodResolver(projectSchema),

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Filter, Trash2, CheckSquare } from 'lucide-react';
+import { Plus, Filter, Trash2, CheckSquare, Brain } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSupabaseQuery, getPaginationRange } from '@/hooks/useSupabaseQuery';
@@ -375,6 +375,15 @@ const AdminProjects = () => {
               sortDirection={sortDirection}
               onSortChange={handleSortChange}
             />
+            
+            <Button 
+              variant="outline"
+              onClick={() => navigate('/admin/projects/ai-import')} 
+              className="gap-2"
+            >
+              <Brain className="w-4 h-4" />
+              Import IA
+            </Button>
             
             <Button onClick={() => navigate('/admin/projects/new')} className="gap-2">
               <Plus className="w-4 h-4" />

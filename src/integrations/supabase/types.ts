@@ -827,6 +827,56 @@ export type Database = {
         }
         Relationships: []
       }
+      project_ai_imports: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          created_by: string | null
+          documents: Json[] | null
+          error_message: string | null
+          id: string
+          mapped_data: Json | null
+          project_id: string | null
+          raw_extraction: Json | null
+          session_id: string
+          status: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          documents?: Json[] | null
+          error_message?: string | null
+          id?: string
+          mapped_data?: Json | null
+          project_id?: string | null
+          raw_extraction?: Json | null
+          session_id: string
+          status?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          documents?: Json[] | null
+          error_message?: string | null
+          id?: string
+          mapped_data?: Json | null
+          project_id?: string | null
+          raw_extraction?: Json | null
+          session_id?: string
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_ai_imports_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       project_amenities: {
         Row: {
           amenity_id: string
@@ -865,6 +915,59 @@ export type Database = {
           },
           {
             foreignKeyName: "project_amenities_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_documents: {
+        Row: {
+          confidence_scores: Json | null
+          created_at: string | null
+          document_name: string
+          document_type: string | null
+          extracted_data: Json | null
+          file_size: number | null
+          file_url: string
+          id: string
+          mime_type: string | null
+          project_id: string | null
+          updated_at: string | null
+          uploaded_by: string | null
+        }
+        Insert: {
+          confidence_scores?: Json | null
+          created_at?: string | null
+          document_name: string
+          document_type?: string | null
+          extracted_data?: Json | null
+          file_size?: number | null
+          file_url: string
+          id?: string
+          mime_type?: string | null
+          project_id?: string | null
+          updated_at?: string | null
+          uploaded_by?: string | null
+        }
+        Update: {
+          confidence_scores?: Json | null
+          created_at?: string | null
+          document_name?: string
+          document_type?: string | null
+          extracted_data?: Json | null
+          file_size?: number | null
+          file_url?: string
+          id?: string
+          mime_type?: string | null
+          project_id?: string | null
+          updated_at?: string | null
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_documents_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"

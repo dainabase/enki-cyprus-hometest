@@ -33,6 +33,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 // Lazy load admin pages for better performance
 const AdminProjects = lazy(() => import("./pages/admin/AdminProjects"));
 const AdminProjectForm = lazy(() => import("./pages/admin/AdminProjectForm").then(module => ({ default: module.AdminProjectForm })));
+const AdminAIImport = lazy(() => import("./pages/admin/AdminAIImport"));
 const AdminBuildings = lazy(() => import("./pages/admin/AdminBuildings"));
 const AdminLeads = lazy(() => import("./pages/admin/AdminLeads"));
 const AdminPerformance = lazy(() => import("./pages/admin/AdminPerformance"));
@@ -82,6 +83,7 @@ const AppContent = () => {
                 <Route path="/lexaia" element={<LexaiaPage />} />
                 <Route path="/admin/*" element={<PrivateRoute adminOnly><AdminDashboard /></PrivateRoute>} />
                 <Route path="/admin/projects/new" element={<PrivateRoute adminOnly><AdminProjectForm /></PrivateRoute>} />
+                <Route path="/admin/projects/ai-import" element={<PrivateRoute adminOnly><AdminAIImport /></PrivateRoute>} />
                 <Route path="/admin/projects/:id/edit" element={<PrivateRoute adminOnly><AdminProjectForm /></PrivateRoute>} />
                 {/* Test integration route - dev mode only */}
                 <Route path="/admin-test" element={<PrivateRoute adminOnly><AdminTestIntegration /></PrivateRoute>} />
