@@ -158,7 +158,11 @@ const AdminDevelopers = () => {
     'olias homes': '/lovable-uploads/5f250fc3-45af-438f-810b-f701813bdd71.png',
     'cyfield': '/lovable-uploads/05694454-206c-437a-8d8f-0f611218a26f.png',
     'cyfiled': '/lovable-uploads/05694454-206c-437a-8d8f-0f611218a26f.png',
-    'island blue': '/lovable-uploads/861197ca-75d2-4e8d-aeb1-63050614bece.png'
+    'island blue': '/lovable-uploads/861197ca-75d2-4e8d-aeb1-63050614bece.png',
+    'domenica': '/lovable-uploads/96899468-63cb-42e9-90b6-c3aeaf5a51ea.png',
+    'domenica group': '/lovable-uploads/96899468-63cb-42e9-90b6-c3aeaf5a51ea.png',
+    'dominica': '/lovable-uploads/96899468-63cb-42e9-90b6-c3aeaf5a51ea.png',
+    'dominica group': '/lovable-uploads/96899468-63cb-42e9-90b6-c3aeaf5a51ea.png'
   };
   const getLogo = (d: Partial<Developer>) => {
     const byName = (d.name || '').toLowerCase().trim();
