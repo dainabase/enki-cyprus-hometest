@@ -5,11 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Building2, Plus, Pencil, Trash2, Mail, Phone, Globe, MapPin, Star, Percent } from 'lucide-react';
+import { Building2, Plus, Pencil, Trash2, Mail, Phone, Globe, MapPin, Star, MoreVertical } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
@@ -228,7 +229,7 @@ const AdminDevelopers = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Commission Moyenne</CardTitle>
-            <Percent className="h-4 w-4 text-muted-foreground" />
+            <Building2 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -288,39 +289,49 @@ const AdminDevelopers = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {developersByZone[zone].map((developer) => (
                     <Card key={developer.id} className="relative">
-                      <CardHeader>
+                      <CardHeader className="pb-4">
                         <div className="flex justify-between items-start">
-                          <div>
-                            <CardTitle className="text-lg">{developer.name}</CardTitle>
+                          <div className="flex-1">
+                            <CardTitle className="text-lg pr-2">{developer.name}</CardTitle>
                             {developer.main_city && (
                               <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
                                 <MapPin className="w-3 h-3" />
                                 <span>{developer.main_city}</span>
                               </div>
                             )}
-                            <Badge variant={developer.status === 'active' ? 'default' : 'secondary'} className="mt-2">
+                          </div>
+                          
+                          {/* Badge en haut à droite */}
+                          <div className="flex items-center gap-2">
+                            <Badge variant={developer.status === 'active' ? 'default' : 'secondary'} className="shrink-0">
                               {developer.status === 'active' ? 'Actif' : 'Inactif'}
                             </Badge>
-                          </div>
-                          <div className="flex gap-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => openEditModal(developer)}
-                            >
-                              <Pencil className="w-4 h-4" />
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => deleteDevMutation.mutate(developer.id)}
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
+                            
+                            {/* Menu à trois points */}
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                  <MoreVertical className="w-4 h-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={() => openEditModal(developer)}>
+                                  <Pencil className="w-4 h-4 mr-2" />
+                                  Modifier
+                                </DropdownMenuItem>
+                                <DropdownMenuItem 
+                                  onClick={() => deleteDevMutation.mutate(developer.id)}
+                                  className="text-destructive focus:text-destructive"
+                                >
+                                  <Trash2 className="w-4 h-4 mr-2" />
+                                  Supprimer
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </div>
                         </div>
                       </CardHeader>
-                      <CardContent className="space-y-3">
+                      <CardContent className="space-y-3 pt-0">
                         {/* Score de notation */}
                         {developer.rating_score && (
                           <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -367,12 +378,6 @@ const AdminDevelopers = () => {
                             </a>
                           </div>
                         )}
-                        
-                        {/* Commission rate */}
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Percent className="w-4 h-4" />
-                          <span>Commission: {developer.commission_rate}%</span>
-                        </div>
                       </CardContent>
                     </Card>
                   ))}

@@ -31,7 +31,8 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({
   }
 
   // Block access to client space (dashboard etc.) if profile flag is set
-  if (!adminOnly && profile?.profile?.blockedClient) {
+  // Admins are exempt from blockedClient restriction
+  if (!adminOnly && !isAdmin && profile?.profile?.blockedClient) {
     return <Navigate to="/" replace />;
   }
 
