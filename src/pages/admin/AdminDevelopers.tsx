@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Building2, Plus, Pencil, Trash2, Mail, Phone, Globe, Percent } from 'lucide-react';
+import { Building2, Plus, Pencil, Trash2, Mail, Phone, Globe, MapPin, Star, Percent } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
@@ -17,14 +17,13 @@ interface Developer {
   id: string;
   name: string;
   logo?: string;
-  contact_info: {
-    email?: string;
-    phone?: string;
-    address?: string;
-  };
   website?: string;
+  phone_numbers?: string[];
+  addresses?: string[];
+  email_primary?: string;
+  main_city?: string;
+  rating_score?: number;
   commission_rate: number;
-  payment_terms?: string;
   status: 'active' | 'inactive';
   created_at: string;
   updated_at: string;
@@ -64,7 +63,7 @@ const AdminDevelopers = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('developers')
-        .select('*')
+        .select('id, name, website, phone_numbers, addresses, email_primary, main_city, rating_score, commission_rate, status, created_at, updated_at')
         .order('created_at', { ascending: false });
       
       if (error) throw error;
@@ -160,12 +159,12 @@ const AdminDevelopers = () => {
     setEditingDeveloper(developer);
     setFormData({
       name: developer.name,
-      email: developer.contact_info.email || '',
-      phone: developer.contact_info.phone || '',
-      address: developer.contact_info.address || '',
+      email: developer.email_primary || '',
+      phone: developer.phone_numbers?.[0] || '',
+      address: developer.addresses?.[0] || '',
       website: developer.website || '',
       commission_rate: developer.commission_rate,
-      payment_terms: developer.payment_terms || '',
+      payment_terms: '',
       status: developer.status
     });
     setIsModalOpen(true);
@@ -279,29 +278,50 @@ const AdminDevelopers = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Percent className="w-4 h-4" />
-                <span>Commission: {developer.commission_rate}%</span>
-              </div>
-              
-              {developer.contact_info.email && (
+              {/* Ville du siège social */}
+              {developer.main_city && (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Mail className="w-4 h-4" />
-                  <span>{developer.contact_info.email}</span>
+                  <MapPin className="w-4 h-4" />
+                  <span>{developer.main_city}</span>
                 </div>
               )}
               
-              {developer.contact_info.phone && (
+              {/* Score de notation */}
+              {developer.rating_score && (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Star className="w-4 h-4" />
+                  <span>Score: {developer.rating_score}/10</span>
+                </div>
+              )}
+              
+              {/* Numéro de téléphone */}
+              {developer.phone_numbers && developer.phone_numbers.length > 0 && (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Phone className="w-4 h-4" />
-                  <span>{developer.contact_info.phone}</span>
+                  <span>{developer.phone_numbers[0]}</span>
                 </div>
               )}
               
+              {/* Adresse */}
+              {developer.addresses && developer.addresses.length > 0 && (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <MapPin className="w-4 h-4" />
+                  <span className="truncate">{developer.addresses[0]}</span>
+                </div>
+              )}
+              
+              {/* Site internet cliquable */}
               {developer.website && (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Globe className="w-4 h-4" />
-                  <span>{developer.website}</span>
+                  <a 
+                    href={developer.website} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline truncate"
+                  >
+                    {developer.website.replace(/^https?:\/\//, '')}
+                  </a>
                 </div>
               )}
             </CardContent>
