@@ -65,13 +65,24 @@ const AdminDevelopers = () => {
       console.log('🔄 Fetching developers...');
       const { data, error } = await supabase
         .from('developers')
-        .select('id, name, website, phone_numbers, addresses, email_primary, main_city, rating_score, commission_rate, status, created_at, updated_at')
+        .select('id, name, website, logo, phone_numbers, addresses, email_primary, main_city, rating_score, commission_rate, status, contact_info, created_at, updated_at')
         .order('name', { ascending: true }); // Tri par nom alphabétique au lieu de created_at
       
       if (error) throw error;
       console.log(`✅ Fetched ${data?.length || 0} developers:`, data?.map(d => ({ name: d.name, status: d.status, city: d.main_city })));
       return data as Developer[];
     }
+  });
+
+  // Normalize developers for display
+  const normalizedDevelopers = (developers as any[]).map((d: any) => {
+    const ci = d.contact_info || {};
+    const phone_numbers = (Array.isArray(d.phone_numbers) && d.phone_numbers.length) ? d.phone_numbers : (ci.phone ? [ci.phone] : []);
+    const addresses = (Array.isArray(d.addresses) && d.addresses.length) ? d.addresses : (ci.address ? [ci.address] : []);
+    const email_primary = d.email_primary || ci.email || ci.email_primary || null;
+    const status = d.status === 'inactive' ? 'inactive' : 'active';
+    const main_city = d.main_city || ci.city || ci.location || null;
+    return { ...d, phone_numbers, addresses, email_primary, status, main_city } as Developer;
   });
 
   // Save developer mutation
@@ -212,7 +223,7 @@ const AdminDevelopers = () => {
             <Building2 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{developers.length}</div>
+            <div className="text-2xl font-bold">{normalizedDevelopers.length}</div>
           </CardContent>
         </Card>
         
@@ -222,7 +233,7 @@ const AdminDevelopers = () => {
             <Building2 className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{developers.filter(d => d.status === 'active').length}</div>
+            <div className="text-2xl font-bold">{normalizedDevelopers.filter(d => d.status === 'active').length}</div>
           </CardContent>
         </Card>
 
@@ -233,8 +244,8 @@ const AdminDevelopers = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {developers.length > 0 
-                ? (developers.reduce((acc, dev) => acc + dev.commission_rate, 0) / developers.length).toFixed(2)
+              {normalizedDevelopers.length > 0 
+                ? (normalizedDevelopers.reduce((acc, dev) => acc + (dev.commission_rate || 0), 0) / normalizedDevelopers.length).toFixed(2)
                 : 0}%
             </div>
           </CardContent>
@@ -246,7 +257,7 @@ const AdminDevelopers = () => {
             <Building2 className="h-4 w-4 text-red-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{developers.filter(d => d.status === 'inactive').length}</div>
+            <div className="text-2xl font-bold">{normalizedDevelopers.filter(d => d.status === 'inactive').length}</div>
           </CardContent>
         </Card>
       </div>
@@ -254,7 +265,7 @@ const AdminDevelopers = () => {
       {/* Developers by Zone */}
       {(() => {
         // Grouper les développeurs par zone
-        const developersByZone = developers.reduce((acc, developer) => {
+        const developersByZone = normalizedDevelopers.reduce((acc, developer) => {
           const zone = developer.main_city || 'Non assigné';
           if (!acc[zone]) {
             acc[zone] = [];
@@ -385,7 +396,7 @@ const AdminDevelopers = () => {
               </div>
             ))}
             
-            {developers.length === 0 && (
+            {normalizedDevelopers.length === 0 && (
               <div className="text-center py-8 text-muted-foreground">
                 Aucun développeur trouvé
               </div>
