@@ -134,8 +134,15 @@ const AdminDevelopers = () => {
     'karma': '/lovable-uploads/aec5ed87-7930-4b41-954b-9e598b9fcb57.png'
   };
   const getLogo = (d: Partial<Developer>) => {
-    const byName = (d.name || '').toLowerCase();
-    return d.logo || logoFallbacks[byName];
+    const byName = (d.name || '').toLowerCase().trim();
+    // If a valid custom logo is set, use it first
+    if (d.logo && d.logo.trim()) return d.logo;
+    // Try exact match
+    const exact = logoFallbacks[byName];
+    if (exact) return exact;
+    // Try partial match (e.g., "karma group cyprus" should match "karma" or "karma group")
+    const matchKey = Object.keys(logoFallbacks).find((k) => byName.includes(k));
+    return matchKey ? logoFallbacks[matchKey] : undefined;
   };
 
   // Save developer mutation
@@ -368,11 +375,20 @@ const AdminDevelopers = () => {
                              <div className="flex justify-start mb-4">
                                <div className="w-32 h-32 rounded-md overflow-hidden bg-card border border-border/50 flex items-center justify-center shrink-0">
                                  {getLogo(developer) ? (
-                                   <img
-                                     src={getLogo(developer)!}
-                                     alt={`Logo ${developer.name}`}
-                                     className="max-w-full max-h-full object-contain"
-                                   />
+                                    <img
+                                      src={getLogo(developer) || ''}
+                                      alt={`Logo ${developer.name}`}
+                                      className="max-w-full max-h-full object-contain"
+                                      onError={(e) => {
+                                        const byName = (developer.name || '').toLowerCase().trim();
+                                        const exact = logoFallbacks[byName];
+                                        const matchKey = Object.keys(logoFallbacks).find((k) => byName.includes(k));
+                                        const fallback = exact || (matchKey ? logoFallbacks[matchKey] : undefined);
+                                        if (fallback && e.currentTarget.src !== fallback) {
+                                          e.currentTarget.src = fallback;
+                                        }
+                                      }}
+                                    />
                                  ) : (
                                    <div className="text-xs font-semibold text-muted-foreground">
                                      {developer.name?.split(' ').slice(0,2).map(w => w[0]).join('')}
