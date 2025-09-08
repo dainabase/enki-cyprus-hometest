@@ -65,10 +65,10 @@ const AdminDevelopers = () => {
       const { data, error } = await supabase
         .from('developers')
         .select('id, name, website, phone_numbers, addresses, email_primary, main_city, rating_score, commission_rate, status, created_at, updated_at')
-        .order('created_at', { ascending: false });
+        .order('name', { ascending: true }); // Tri par nom alphabétique au lieu de created_at
       
       if (error) throw error;
-      console.log(`✅ Fetched ${data?.length || 0} developers:`, data?.map(d => ({ name: d.name, status: d.status })));
+      console.log(`✅ Fetched ${data?.length || 0} developers:`, data?.map(d => ({ name: d.name, status: d.status, city: d.main_city })));
       return data as Developer[];
     }
   });
@@ -250,92 +250,138 @@ const AdminDevelopers = () => {
         </Card>
       </div>
 
-      {/* Developers Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {developers.length === 0 && (
-          <div className="col-span-full text-center py-8 text-muted-foreground">
-            Aucun développeur trouvé
-          </div>
-        )}
-        {developers.map((developer) => (
-          <Card key={developer.id} className="relative">
-            <CardHeader>
-              <div className="flex justify-between items-start">
-                <div>
-                  <CardTitle className="text-lg">{developer.name}</CardTitle>
-                  <Badge variant={developer.status === 'active' ? 'default' : 'secondary'} className="mt-2">
-                    {developer.status === 'active' ? 'Actif' : 'Inactif'}
+      {/* Developers by Zone */}
+      {(() => {
+        // Grouper les développeurs par zone
+        const developersByZone = developers.reduce((acc, developer) => {
+          const zone = developer.main_city || 'Non assigné';
+          if (!acc[zone]) {
+            acc[zone] = [];
+          }
+          acc[zone].push(developer);
+          return acc;
+        }, {} as Record<string, Developer[]>);
+
+        // Ordre des zones avec priorité
+        const zoneOrder = ['Limassol', 'Paphos', 'Les deux', 'Nicosia', 'Larnaca', 'Famagusta', 'Non assigné'];
+        const sortedZones = Object.keys(developersByZone).sort((a, b) => {
+          const indexA = zoneOrder.indexOf(a);
+          const indexB = zoneOrder.indexOf(b);
+          if (indexA === -1 && indexB === -1) return a.localeCompare(b);
+          if (indexA === -1) return 1;
+          if (indexB === -1) return -1;
+          return indexA - indexB;
+        });
+
+        return (
+          <div className="space-y-8">
+            {sortedZones.map((zone) => (
+              <div key={zone} className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <h2 className="text-xl font-semibold text-primary">{zone}</h2>
+                  <div className="h-px bg-border flex-1"></div>
+                  <Badge variant="outline" className="text-sm">
+                    {developersByZone[zone].length} développeur{developersByZone[zone].length > 1 ? 's' : ''}
                   </Badge>
                 </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => openEditModal(developer)}
-                  >
-                    <Pencil className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => deleteDevMutation.mutate(developer.id)}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {developersByZone[zone].map((developer) => (
+                    <Card key={developer.id} className="relative">
+                      <CardHeader>
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <CardTitle className="text-lg">{developer.name}</CardTitle>
+                            <Badge variant={developer.status === 'active' ? 'default' : 'secondary'} className="mt-2">
+                              {developer.status === 'active' ? 'Actif' : 'Inactif'}
+                            </Badge>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => openEditModal(developer)}
+                            >
+                              <Pencil className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => deleteDevMutation.mutate(developer.id)}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        {/* Score de notation */}
+                        {developer.rating_score && (
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Star className="w-4 h-4" />
+                            <span>Score: {developer.rating_score}/10</span>
+                          </div>
+                        )}
+                        
+                        {/* Numéro de téléphone */}
+                        {developer.phone_numbers && developer.phone_numbers.length > 0 && (
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Phone className="w-4 h-4" />
+                            <span>{developer.phone_numbers[0]}</span>
+                          </div>
+                        )}
+                        
+                        {/* Email */}
+                        {developer.email_primary && (
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Mail className="w-4 h-4" />
+                            <span className="truncate">{developer.email_primary}</span>
+                          </div>
+                        )}
+                        
+                        {/* Adresse */}
+                        {developer.addresses && developer.addresses.length > 0 && (
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <MapPin className="w-4 h-4" />
+                            <span className="truncate">{developer.addresses[0]}</span>
+                          </div>
+                        )}
+                        
+                        {/* Site internet cliquable */}
+                        {developer.website && (
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Globe className="w-4 h-4" />
+                            <a 
+                              href={developer.website} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-primary hover:underline truncate"
+                            >
+                              {developer.website.replace(/^https?:\/\//, '')}
+                            </a>
+                          </div>
+                        )}
+                        
+                        {/* Commission rate */}
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Percent className="w-4 h-4" />
+                          <span>Commission: {developer.commission_rate}%</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {/* Ville du siège social */}
-              {developer.main_city && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <MapPin className="w-4 h-4" />
-                  <span>{developer.main_city}</span>
-                </div>
-              )}
-              
-              {/* Score de notation */}
-              {developer.rating_score && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Star className="w-4 h-4" />
-                  <span>Score: {developer.rating_score}/10</span>
-                </div>
-              )}
-              
-              {/* Numéro de téléphone */}
-              {developer.phone_numbers && developer.phone_numbers.length > 0 && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Phone className="w-4 h-4" />
-                  <span>{developer.phone_numbers[0]}</span>
-                </div>
-              )}
-              
-              {/* Adresse */}
-              {developer.addresses && developer.addresses.length > 0 && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <MapPin className="w-4 h-4" />
-                  <span className="truncate">{developer.addresses[0]}</span>
-                </div>
-              )}
-              
-              {/* Site internet cliquable */}
-              {developer.website && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Globe className="w-4 h-4" />
-                  <a 
-                    href={developer.website} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline truncate"
-                  >
-                    {developer.website.replace(/^https?:\/\//, '')}
-                  </a>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+            ))}
+            
+            {developers.length === 0 && (
+              <div className="text-center py-8 text-muted-foreground">
+                Aucun développeur trouvé
+              </div>
+            )}
+          </div>
+        );
+      })()}
 
       {/* Create/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
