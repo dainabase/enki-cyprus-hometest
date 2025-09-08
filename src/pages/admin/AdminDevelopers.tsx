@@ -85,7 +85,15 @@ const AdminDevelopers = () => {
         .order('name', { ascending: true }); // Tri par nom alphabétique au lieu de created_at
       
       if (error) throw error;
-      console.log(`✅ Fetched ${data?.length || 0} developers:`, data?.map(d => ({ name: d.name, status: d.status, city: d.main_city })));
+      console.log(`✅ Fetched ${data?.length || 0} developers:`, data);
+      console.log('🔍 Developers details:', data?.map(d => ({ 
+        name: d.name, 
+        status: d.status, 
+        main_city: d.main_city,
+        phone_numbers: d.phone_numbers,
+        email_primary: d.email_primary,
+        contact_info: d.contact_info
+      })));
       return data as Developer[];
     }
   });
@@ -98,8 +106,21 @@ const AdminDevelopers = () => {
     const email_primary = d.email_primary || ci.email || ci.email_primary || null;
     const status = d.status === 'inactive' ? 'inactive' : 'active';
     const main_city = d.main_city || ci.city || ci.location || null;
+    
+    console.log(`🔧 Normalizing developer ${d.name}:`, {
+      original: { main_city: d.main_city, phone_numbers: d.phone_numbers, email_primary: d.email_primary },
+      normalized: { main_city, phone_numbers, email_primary, addresses }
+    });
+    
     return { ...d, phone_numbers, addresses, email_primary, status, main_city } as Developer;
   });
+
+  console.log('📊 Final normalized developers:', normalizedDevelopers?.map(d => ({
+    name: d.name,
+    main_city: d.main_city,
+    phone_numbers: d.phone_numbers,
+    email_primary: d.email_primary
+  })));
 
   // Logo fallbacks for known developers (for immediate display if DB missing logo)
   const logoFallbacks: Record<string, string> = {
