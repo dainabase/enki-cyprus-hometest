@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,17 @@ import {
   Settings,
   FileText,
   Home,
-  Target
+  Target,
+  LayoutDashboard,
+  FolderOpen,
+  UserPlus,
+  ChartBar,
+  Activity,
+  Settings2,
+  BookOpen,
+  CheckSquare,
+  ChevronDown,
+  ChevronRight
 } from 'lucide-react';
 import {
   Sidebar,
@@ -28,90 +38,64 @@ import {
 } from '@/components/ui/sidebar';
 import LanguageSelector from './common/LanguageSelector';
 
-const getAdminNavItems = (t: any) => [
-  {
-    title: t('nav.dashboard'),
+const getNavigationStructure = (t: any) => ({
+  // Tableau de bord - standalone
+  dashboard: {
+    title: "Tableau de bord",
     url: '/admin',
-    icon: BarChart3,
-    description: 'KPIs Enki Reality'
+    icon: LayoutDashboard
   },
-  {
-    title: t('nav.developers'),
-    url: '/admin/developers', 
+
+  // Gestion Immobilière
+  gestionImmobiliere: {
+    title: "Gestion Immobilière",
     icon: Building2,
-    description: 'Gestion développeurs'
+    collapsed: false,
+    items: [
+      { title: "Développeurs", url: '/admin/developers', icon: Users },
+      { title: "Projets", url: '/admin/projects', icon: FolderOpen },
+      { title: "Unités", url: '/admin/units', icon: Home }
+    ]
   },
-  {
-    title: t('nav.projects'),
-    url: '/admin/projects', 
-    icon: Building,
-    description: 'Hiérarchie projets'
-  },
-  {
-    title: t('nav.units'),
-    url: '/admin/units',
-    icon: Home,
-    description: 'Inventaire unités'
-  },
-  {
-    title: t('nav.leads'),
-    url: '/admin/leads',
-    icon: Users,
-    description: 'Pipeline ventes'
-  },
-  {
-    title: t('nav.commissions'),
-    url: '/admin/commissions',
-    icon: DollarSign,
-    description: 'Tracking financier'
-  },
-  {
-    title: t('nav.analytics'),
-    url: '/admin/analytics', 
+
+  // Ventes & CRM
+  ventesCRM: {
+    title: "Ventes & CRM",
     icon: TrendingUp,
-    description: 'Conversions & trafic'
+    collapsed: false,
+    items: [
+      { title: "Prospects", url: '/admin/leads', icon: UserPlus },
+      { title: "Commissions", url: '/admin/commissions', icon: DollarSign }
+    ]
   },
-  {
-    title: 'Segmentation',
-    url: '/admin/segmentation',
-    icon: Target,
-    description: 'Segmentation automatique'
+
+  // Analytics
+  analytics: {
+    title: "Analytics",
+    icon: BarChart3,
+    collapsed: true,
+    items: [
+      { title: "Analyses", url: '/admin/analytics', icon: ChartBar },
+      { title: "Segmentation", url: '/admin/segmentation', icon: Target },
+      { title: "Performance", url: '/admin/performance', icon: Activity },
+      { title: "Rapports", url: '/admin/reports', icon: FileText }
+    ]
   },
-  {
-    title: 'Performance',
-    url: '/admin/performance',
-    icon: TrendingUp,
-    description: 'Performance développeurs'
-  },
-  {
-    title: 'Rapports',
-    url: '/admin/reports',
-    icon: FileText,
-    description: 'Exports et rapports'
-  },
-  {
-    title: 'Documentation',
-    url: '/admin/documentation',
-    icon: FileText,
-    description: 'Guide et documentation'
-  },
-  {
-    title: t('nav.settings'),
-    url: '/admin/settings',
-    icon: Settings,
-    description: 'Configuration'
-  },
-  // Development section (only show in development mode)
-  ...(process.env.NODE_ENV === 'development' ? [
-    { 
-      title: 'Tests & Validation',
-      url: '/admin/tests',
-      icon: Settings,
-      description: 'Tests manuels et validation',
-      isDev: true 
-    }
-  ] : [])
-];
+
+  // Administration
+  administration: {
+    title: "Administration",
+    icon: Settings2,
+    collapsed: true,
+    items: [
+      { title: "Documentation", url: '/admin/documentation', icon: BookOpen },
+      { title: "Paramètres", url: '/admin/settings', icon: Settings },
+      ...(process.env.NODE_ENV === 'development' ? [
+        { title: "Tests", url: '/admin/tests', icon: CheckSquare }
+      ] : [])
+    ]
+  }
+});
 
 export function AdminSidebar() {
   const location = useLocation();
@@ -119,9 +103,129 @@ export function AdminSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   
-  const adminNavItems = getAdminNavItems(t);
+  const navigation = getNavigationStructure(t);
+  const [categoryStates, setCategoryStates] = useState(() => {
+    const saved = localStorage.getItem('admin-sidebar-categories');
+    return saved ? JSON.parse(saved) : {
+      gestionImmobiliere: !navigation.gestionImmobiliere.collapsed,
+      ventesCRM: !navigation.ventesCRM.collapsed,
+      analytics: !navigation.analytics.collapsed,
+      administration: !navigation.administration.collapsed
+    };
+  });
+
   const isActive = (path: string) => location.pathname === path;
-  const isAnyProjectsActive = adminNavItems.some((item) => isActive(item.url));
+
+  // Auto-expand category if it contains active route
+  React.useEffect(() => {
+    const currentPath = location.pathname;
+    const newStates = { ...categoryStates };
+    let hasChanged = false;
+
+    Object.entries(navigation).forEach(([key, section]: [string, any]) => {
+      if (key !== 'dashboard' && section.items) {
+        const hasActiveItem = section.items.some((item: any) => item.url === currentPath);
+        if (hasActiveItem && !categoryStates[key]) {
+          newStates[key] = true;
+          hasChanged = true;
+        }
+      }
+    });
+
+    if (hasChanged) {
+      setCategoryStates(newStates);
+    }
+  }, [location.pathname]);
+
+  const toggleCategory = (categoryKey: string) => {
+    const newStates = {
+      ...categoryStates,
+      [categoryKey]: !categoryStates[categoryKey]
+    };
+    setCategoryStates(newStates);
+    localStorage.setItem('admin-sidebar-categories', JSON.stringify(newStates));
+  };
+
+  const renderMenuItem = (item: any, isSubItem = false) => (
+    <SidebarMenuItem key={item.title}>
+      <SidebarMenuButton asChild>
+        <NavLink
+          to={item.url}
+          className={({ isActive }) =>
+            `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative ${
+              isSubItem ? 'ml-4' : ''
+            } ${
+              isActive
+                ? 'bg-primary/10 text-primary font-medium shadow-sm'
+                : 'text-secondary hover:bg-accent/50 hover:text-primary'
+            }`
+          }
+        >
+          <item.icon 
+            className={`w-5 h-5 transition-colors duration-200 ${
+              isActive(item.url) 
+                ? 'text-primary' 
+                : 'text-secondary group-hover:text-primary'
+            }`} 
+          />
+          
+          {!collapsed && (
+            <span className="text-sm font-medium truncate">
+              {item.title}
+            </span>
+          )}
+
+          {/* Active indicator */}
+          {isActive(item.url) && (
+            <motion.div
+              layoutId="activeIndicator"
+              className="absolute right-0 top-0 bottom-0 w-1 bg-primary rounded-l-full"
+              initial={false}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            />
+          )}
+        </NavLink>
+      </SidebarMenuButton>
+    </SidebarMenuItem>
+  );
+
+  const renderCategory = (categoryKey: string, category: any) => (
+    <div key={categoryKey}>
+      {/* Category separator */}
+      <div className="h-px bg-border/50 my-3" />
+      
+      {/* Category header */}
+      <div 
+        className={`flex items-center justify-between px-3 py-2 cursor-pointer text-xs font-semibold text-muted-foreground uppercase tracking-wider hover:text-foreground transition-colors ${
+          collapsed ? 'justify-center' : ''
+        }`}
+        onClick={() => !collapsed && toggleCategory(categoryKey)}
+      >
+        <div className="flex items-center gap-2">
+          <category.icon className="w-4 h-4" />
+          {!collapsed && <span>{category.title}</span>}
+        </div>
+        {!collapsed && (
+          categoryStates[categoryKey] ? 
+            <ChevronDown className="w-4 h-4" /> : 
+            <ChevronRight className="w-4 h-4" />
+        )}
+      </div>
+
+      {/* Category items */}
+      {(!collapsed && categoryStates[categoryKey]) && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.2 }}
+          className="space-y-1"
+        >
+          {category.items.map((item: any) => renderMenuItem(item, true))}
+        </motion.div>
+      )}
+    </div>
+  );
 
   return (
     <Sidebar
@@ -151,63 +255,16 @@ export function AdminSidebar() {
 
       <SidebarContent className="px-2 py-4">
         <SidebarGroup>
-          <SidebarGroupLabel className={collapsed ? "sr-only" : ""}>
-            Navigation
-          </SidebarGroupLabel>
-          
           <SidebarGroupContent>
             <SidebarMenu>
-              {adminNavItems.map((item, index) => (
-                <SidebarMenuItem key={item.title}>
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1, duration: 0.3 }}
-                  >
-                    <SidebarMenuButton asChild>
-                      <NavLink
-                        to={item.url}
-                        className={({ isActive }) =>
-                          `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group ${
-                            isActive
-                              ? 'bg-primary/10 text-primary font-medium shadow-sm'
-                              : 'text-secondary hover:bg-accent/50 hover:text-primary'
-                          }`
-                        }
-                      >
-                        <item.icon 
-                          className={`w-5 h-5 transition-colors duration-200 ${
-                            isActive(item.url) 
-                              ? 'text-primary' 
-                              : 'text-secondary group-hover:text-primary'
-                          }`} 
-                        />
-                        
-                        {!collapsed && (
-                          <div className="flex-1 min-w-0">
-                            <span className="text-sm font-medium truncate block">
-                              {item.title}
-                            </span>
-                            <span className="text-xs text-secondary/70 truncate block mt-0.5">
-                              {item.description}
-                            </span>
-                          </div>
-                        )}
+              {/* Dashboard - standalone */}
+              {renderMenuItem(navigation.dashboard)}
 
-                        {/* Active indicator */}
-                        {isActive(item.url) && (
-                          <motion.div
-                            layoutId="activeIndicator"
-                            className="absolute right-0 top-0 bottom-0 w-1 bg-primary rounded-l-full"
-                            initial={false}
-                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                          />
-                        )}
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </motion.div>
-                </SidebarMenuItem>
-              ))}
+              {/* Categories */}
+              {Object.entries(navigation).map(([key, section]) => {
+                if (key === 'dashboard') return null;
+                return renderCategory(key, section);
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
