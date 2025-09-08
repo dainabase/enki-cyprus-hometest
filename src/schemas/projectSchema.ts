@@ -67,7 +67,12 @@ export const projectSchema = z.object({
   incentives: z.array(z.string()).optional(),
 
   // MEDIA
-  photos: z.array(z.string()).default([]),
+  photos: z.array(z.object({
+    url: z.string(),
+    category: z.enum(['hero', 'exterior', 'interior', 'view', 'amenities', 'plans']),
+    isPrimary: z.boolean().optional(),
+    caption: z.string().optional()
+  })).default([]),
   photo_gallery_urls: z.array(z.string()).optional(),
   video_tour_urls: z.array(z.string()).optional(),
   floor_plan_urls: z.array(z.string()).optional(),

@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { MediaUploader } from './MediaUploader';
+import { CategorizedMediaUploader } from './CategorizedMediaUploader';
 import { AmenitiesSelector } from './AmenitiesSelector';
 import PropertySubTypeSelector from './PropertySubTypeSelector';
 import { ProjectFormData } from '@/schemas/projectSchema';
@@ -878,8 +879,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Galerie Photos</CardTitle>
-          <CardDescription>Uploadez les photos principales du projet</CardDescription>
+          <CardTitle>Photos du Projet</CardTitle>
+          <CardDescription>
+            Gérez vos photos par catégorie pour un affichage optimal
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <FormField
@@ -888,10 +891,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <MediaUploader
+                  <CategorizedMediaUploader
                     field={field}
-                    label="Photos du projet"
-                    accept="image/*"
                     bucketName="projects"
                   />
                 </FormControl>
