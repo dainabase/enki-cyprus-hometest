@@ -334,69 +334,75 @@ const AdminDevelopers = () => {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {developersByZone[zone].map((developer) => (
-                    <Card key={developer.id} className="relative">
-                      <CardHeader className="pb-4">
-                        <div className="flex justify-between items-start">
-                          <div className="flex-1 flex items-start gap-3 min-w-0">
-                            {/* Logo à gauche */}
-                            <div className="w-32 h-32 rounded-md overflow-hidden bg-card border border-border/50 flex items-center justify-center shrink-0">
-                               {getLogo(developer) ? (
-                                 <img
-                                   src={getLogo(developer)!}
-                                   alt={`Logo ${developer.name}`}
-                                   className="max-w-full max-h-full object-contain"
-                                 />
-                               ) : (
-                                 <div className="text-xs font-semibold text-muted-foreground">
-                                   {developer.name?.split(' ').slice(0,2).map(w => w[0]).join('')}
-                                 </div>
-                               )}
+                     <Card key={developer.id} className="relative">
+                       <CardHeader className="pb-4">
+                         <div className="flex justify-between items-start">
+                           <div className="flex-1 min-w-0">
+                             {/* Logo centré en haut */}
+                             <div className="flex justify-center mb-4">
+                               <div className="w-32 h-32 rounded-md overflow-hidden bg-card border border-border/50 flex items-center justify-center shrink-0">
+                                 {getLogo(developer) ? (
+                                   <img
+                                     src={getLogo(developer)!}
+                                     alt={`Logo ${developer.name}`}
+                                     className="max-w-full max-h-full object-contain"
+                                   />
+                                 ) : (
+                                   <div className="text-xs font-semibold text-muted-foreground">
+                                     {developer.name?.split(' ').slice(0,2).map(w => w[0]).join('')}
+                                   </div>
+                                 )}
+                               </div>
                              </div>
-                            <div className="min-w-0">
-                              <CardTitle className="text-lg pr-2 truncate">{developer.name}</CardTitle>
-                              {developer.main_city && (
-                                <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-                                  <MapPin className="w-3 h-3" />
-                                  <span className="truncate">{developer.main_city}</span>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                          
-                          {/* Badge en haut à droite */}
-                          <div className="flex items-center gap-2">
-                            <Badge variant={developer.status === 'active' ? 'default' : 'secondary'} className="shrink-0">
-                              {developer.status === 'active' ? 'Actif' : 'Inactif'}
-                            </Badge>
-                            
-                            {/* Menu à trois points */}
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                  <MoreVertical className="w-4 h-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={() => openDetailModal(developer)}>
-                                  <Eye className="w-4 h-4 mr-2" />
-                                  Voir détails
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => openEditModal(developer)}>
-                                  <Pencil className="w-4 h-4 mr-2" />
-                                  Modifier
-                                </DropdownMenuItem>
-                                <DropdownMenuItem 
-                                  onClick={() => deleteDevMutation.mutate(developer.id)}
-                                  className="text-destructive focus:text-destructive"
-                                >
-                                  <Trash2 className="w-4 h-4 mr-2" />
-                                  Supprimer
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </div>
-                        </div>
-                      </CardHeader>
+                             
+                             {/* Nom centré */}
+                             <div className="text-center mb-2">
+                               <CardTitle className="text-lg">{developer.name}</CardTitle>
+                             </div>
+                             
+                             {/* Lieu centré */}
+                             {developer.main_city && (
+                               <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mb-4">
+                                 <MapPin className="w-4 h-4" />
+                                 <span>{developer.main_city}</span>
+                               </div>
+                             )}
+                           </div>
+                           
+                           {/* Badge et menu en haut à droite */}
+                           <div className="flex items-center gap-2 absolute top-4 right-4">
+                             <Badge variant={developer.status === 'active' ? 'default' : 'secondary'} className="shrink-0">
+                               {developer.status === 'active' ? 'Actif' : 'Inactif'}
+                             </Badge>
+                             
+                             {/* Menu à trois points */}
+                             <DropdownMenu>
+                               <DropdownMenuTrigger asChild>
+                                 <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                   <MoreVertical className="w-4 h-4" />
+                                 </Button>
+                               </DropdownMenuTrigger>
+                               <DropdownMenuContent align="end">
+                                 <DropdownMenuItem onClick={() => openDetailModal(developer)}>
+                                   <Eye className="w-4 h-4 mr-2" />
+                                   Voir détails
+                                 </DropdownMenuItem>
+                                 <DropdownMenuItem onClick={() => openEditModal(developer)}>
+                                   <Pencil className="w-4 h-4 mr-2" />
+                                   Modifier
+                                 </DropdownMenuItem>
+                                 <DropdownMenuItem 
+                                   onClick={() => deleteDevMutation.mutate(developer.id)}
+                                   className="text-destructive focus:text-destructive"
+                                 >
+                                   <Trash2 className="w-4 h-4 mr-2" />
+                                   Supprimer
+                                 </DropdownMenuItem>
+                               </DropdownMenuContent>
+                             </DropdownMenu>
+                           </div>
+                         </div>
+                       </CardHeader>
                       <CardContent className="space-y-3 pt-0">
                         {/* Score de notation */}
                         {developer.rating_score && (
