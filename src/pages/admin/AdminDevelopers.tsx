@@ -292,6 +292,12 @@ const AdminDevelopers = () => {
                         <div className="flex justify-between items-start">
                           <div>
                             <CardTitle className="text-lg">{developer.name}</CardTitle>
+                            {developer.main_city && (
+                              <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+                                <MapPin className="w-3 h-3" />
+                                <span>{developer.main_city}</span>
+                              </div>
+                            )}
                             <Badge variant={developer.status === 'active' ? 'default' : 'secondary'} className="mt-2">
                               {developer.status === 'active' ? 'Actif' : 'Inactif'}
                             </Badge>
