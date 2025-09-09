@@ -53,10 +53,10 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
       // Check for dependencies first
       const dependencies = await checkProjectDependencies(projectId);
       
-      let confirmMessage = `Êtes-vous sûr de vouloir supprimer le projet "${projectTitle}" ?`;
+      let confirmMessage = t('messages.deleteProjectConfirm', { defaultValue: 'Are you sure you want to delete the project "{{title}}"?', title: projectTitle });
       
       if (dependencies.count > 0) {
-        confirmMessage = `⚠️ ATTENTION ⚠️\n\nLe projet "${projectTitle}" a des dépendances :\n${dependencies.details}\n\nLa suppression supprimera aussi ces éléments.\n\nÊtes-vous sûr de vouloir continuer ?`;
+        confirmMessage = t('messages.deleteProjectConfirmWithDeps', { defaultValue: '⚠️ WARNING ⚠️\n\nThe project "{{title}}" has dependencies:\n{{details}}\n\nDeleting it will also remove these items.\n\nAre you sure you want to continue?', title: projectTitle, details: dependencies.details });
       }
       
       if (!confirm(confirmMessage)) {
@@ -71,16 +71,16 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
       if (error) throw error;
 
       toast({
-        title: 'Projet supprimé',
-        description: 'Le projet a été supprimé avec succès'
+        title: t('messages.projectDeletedTitle', { defaultValue: 'Project deleted' }),
+        description: t('messages.projectDeleted', { defaultValue: 'The project has been deleted successfully' })
       });
       onRefetch();
     } catch (error: any) {
       console.error('Error deleting project:', error);
       toast({
         variant: 'destructive',
-        title: 'Erreur',
-        description: error.message || 'Impossible de supprimer le projet'
+        title: t('messages.error', { defaultValue: 'Error' }),
+        description: t('messages.deleteProjectError', { defaultValue: 'Unable to delete the project' })
       });
     }
   };
@@ -112,7 +112,7 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
     return (
       <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${colorClass}`}>
         <MapPin className="w-3 h-3 mr-1" />
-        {zone?.charAt(0).toUpperCase() + zone?.slice(1) || 'N/A'}
+        {t(`zones.${zone}`, { defaultValue: zone ? zone.charAt(0).toUpperCase() + zone.slice(1) : 'N/A' })}
       </span>
     );
   };
@@ -153,31 +153,31 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
           <TableRow>
             <TableHead className="w-12 flex-shrink-0">
               <Checkbox
-                aria-label={t('actions.selectAll') || 'Tout sélectionner'}
+                aria-label={t('actions.selectAll', { defaultValue: 'Select all' })}
                 checked={isAllSelected ? true : isIndeterminate ? "indeterminate" : false}
                 onCheckedChange={(checked) => handleSelectAll(checked === true)}
               />
             </TableHead>
-            <TableHead className="w-[250px]">{t('fields.name')}</TableHead>
-            <TableHead className="w-[150px]">{t('fields.developer')}</TableHead>
-            <TableHead className="w-[120px]">{t('fields.zone')}</TableHead>
-            <TableHead className="w-[120px]">Statut</TableHead>
-            <TableHead className="w-[80px] text-center">{t('fields.units')}</TableHead>
-            <TableHead className="w-[120px]">Prix max</TableHead>
-            <TableHead className="w-[60px] text-center">GV</TableHead>
-            <TableHead className="w-[120px] text-right">Actions</TableHead>
+            <TableHead className="w-[250px]">{t('fields.name', { defaultValue: 'Name' })}</TableHead>
+            <TableHead className="w-[150px]">{t('fields.developer', { defaultValue: 'Developer' })}</TableHead>
+            <TableHead className="w-[120px]">{t('fields.zone', { defaultValue: 'Zone' })}</TableHead>
+            <TableHead className="w-[120px]">{t('fields.status', { defaultValue: 'Status' })}</TableHead>
+            <TableHead className="w-[80px] text-center">{t('fields.units', { defaultValue: 'Units' })}</TableHead>
+            <TableHead className="w-[120px]">{t('fields.priceMax', { defaultValue: 'Max Price' })}</TableHead>
+            <TableHead className="w-[60px] text-center">{t('admin.projects.headers.gv', { defaultValue: 'GV' })}</TableHead>
+            <TableHead className="w-[120px] text-right">{t('actions.actions', { defaultValue: 'Actions' })}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {projects.map((project) => (
             <TableRow key={project.id} className={selectedProjects.includes(project.id) ? "bg-primary/5" : undefined}>
-              <TableCell className="w-12">
-                <Checkbox
-                  aria-label={t('actions.selectItem') || 'Sélectionner'}
-                  checked={selectedProjects.includes(project.id)}
-                  onCheckedChange={(checked) => handleSelectProject(project.id, checked === true)}
-                />
-              </TableCell>
+          <TableCell className="w-12">
+            <Checkbox
+              aria-label={t('actions.selectItem', { defaultValue: 'Select' })}
+              checked={selectedProjects.includes(project.id)}
+              onCheckedChange={(checked) => handleSelectProject(project.id, checked === true)}
+            />
+          </TableCell>
               <TableCell className="w-[250px]">
                 <div className="flex items-center gap-2">
                   <Building className="w-4 h-4 text-muted-foreground flex-shrink-0" />
@@ -193,11 +193,11 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
                   </div>
                 </div>
               </TableCell>
-              <TableCell className="w-[150px]">
-                <div className="text-sm font-medium truncate" title={project.developer?.name || 'Non assigné'}>
-                  {project.developer?.name || 'Non assigné'}
-                </div>
-              </TableCell>
+            <TableCell className="w-[150px]">
+              <div className="text-sm font-medium truncate" title={project.developer?.name || t('admin.common.unassigned', { defaultValue: 'Unassigned' })}>
+                {project.developer?.name || t('admin.common.unassigned', { defaultValue: 'Unassigned' })}
+              </div>
+            </TableCell>
               <TableCell className="w-[120px]">
                 {getZoneBadge(project.cyprus_zone)}
               </TableCell>
@@ -217,12 +217,12 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
               <TableCell className="w-[60px] text-center">
                 <div className="flex items-center justify-center gap-1">
                   {(project.golden_visa_eligible || project.golden_visa_eligible_new) && (
-                    <div title="Golden Visa Eligible">
+                    <div title={t('admin.projects.flags.goldenVisa', { defaultValue: 'Golden Visa Eligible' })}>
                       <Award className="w-4 h-4 text-yellow-600" />
                     </div>
                   )}
                   {project.exclusive_commercialization && (
-                    <div title="Commercialisation Exclusive">
+                    <div title={t('admin.projects.flags.exclusive', { defaultValue: 'Exclusive Commercialization' })}>
                       <Crown className="w-4 h-4 text-purple-600" />
                     </div>
                   )}

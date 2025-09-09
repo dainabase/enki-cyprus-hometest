@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface PaginationProps {
   pageIndex: number;
@@ -17,6 +18,7 @@ export const Pagination = React.memo<PaginationProps>(({
   onPageChange,
   onPageSizeChange
 }) => {
+  const { t } = useTranslation();
   const pageCount = Math.ceil(totalCount / pageSize);
   const canPreviousPage = pageIndex > 0;
   const canNextPage = pageIndex < pageCount - 1;
@@ -28,13 +30,13 @@ export const Pagination = React.memo<PaginationProps>(({
     <div className="flex items-center justify-between px-2 py-4">
       <div className="flex items-center space-x-2">
         <p className="text-sm text-muted-foreground">
-          Affichage de {startIndex} à {endIndex} sur {totalCount} résultats
+          {t('pagination.displaying', { defaultValue: 'Showing {{start}} to {{end}} of {{total}} results', start: startIndex, end: endIndex, total: totalCount })}
         </p>
       </div>
       
       <div className="flex items-center space-x-6">
         <div className="flex items-center space-x-2">
-          <p className="text-sm font-medium">Lignes par page</p>
+          <p className="text-sm font-medium">{t('pagination.rowsPerPage', { defaultValue: 'Rows per page' })}</p>
           <select
             value={pageSize}
             onChange={(e) => {
@@ -69,7 +71,7 @@ export const Pagination = React.memo<PaginationProps>(({
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <span className="text-sm font-medium">
-            Page {pageIndex + 1} sur {pageCount}
+            {t('pagination.pageOf', { defaultValue: 'Page {{current}} of {{count}}', current: pageIndex + 1, count: pageCount })}
           </span>
           <Button
             variant="outline"
