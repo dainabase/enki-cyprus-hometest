@@ -36,6 +36,7 @@ export const AdminProjectForm: React.FC = () => {
 
   // Extract prefilled data from URL params
   useEffect(() => {
+    if (isEdit) return; // Do not override existing data when editing
     const extracted = extractPrefilledData(searchParams);
     if (Object.keys(extracted).length > 0) {
       setPrefilledData(extracted);
@@ -46,13 +47,14 @@ export const AdminProjectForm: React.FC = () => {
         form.setValue(fieldName as keyof ProjectFormData, fieldData.value);
       });
     }
-  }, [searchParams]);
+  }, [searchParams, isEdit]);
 
   const form = useForm<ProjectFormData>({
     mode: 'onSubmit',
     defaultValues: {
       title: '',
       description: '',
+      developer_id: '',
       city: '',
       full_address: '',
       region: '',
