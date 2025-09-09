@@ -84,8 +84,7 @@ export const sanitizeString = (input: string): string => {
   return input
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
     .replace(/javascript:/gi, '')
-    .replace(/on\w+\s*=/gi, '')
-    .trim();
+    .replace(/on\w+\s*=/gi, '');
 };
 
 export const sanitizeHTML = (input: string): string => {

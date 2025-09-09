@@ -1030,6 +1030,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                   <Textarea 
                     placeholder="Description pour les moteurs de recherche (max 160 caractères)"
                     rows={3}
+                    sanitize={false}
                     {...field} 
                   />
                 </FormControl>
@@ -1048,6 +1049,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                   <Textarea 
                     placeholder="Histoire et positionnement marketing du projet"
                     rows={4}
+                    sanitize={false}
                     {...field} 
                   />
                 </FormControl>
