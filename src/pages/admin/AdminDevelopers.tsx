@@ -1,8 +1,9 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Plus } from 'lucide-react';
+import { useDebounceCallback } from '@/hooks/useDebounceCallback';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -68,6 +69,29 @@ export default function AdminDevelopers() {
   const queryClient = useQueryClient();
   const { currentView, changeView } = useViewPreference('developers-view', 'cards');
   
+  // Modal states first
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [selectedDeveloper, setSelectedDeveloper] = useState<Developer | null>(null);
+  const [editingDeveloper, setEditingDeveloper] = useState<Developer | null>(null);
+  const [formData, setFormData] = useState<DeveloperFormData>({
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    website: '',
+    main_city: '',
+    commission_rate: 3,
+    founded_year: undefined,
+    years_experience: undefined,
+    main_activities: '',
+    key_projects: '',
+    financial_stability: '',
+    payment_terms: '',
+    status: 'active',
+    rating_score: undefined
+  });
+  
   // Fetch developers
   const { data: developers = [], isLoading } = useQuery({
     queryKey: ['developers'],
@@ -80,6 +104,36 @@ export default function AdminDevelopers() {
       if (error) throw error;
       return data || [];
     }
+  });
+
+  // Fetch existing draft
+  const { data: existingDraft } = useQuery({
+    queryKey: ['developer-draft', editingDeveloper?.id],
+    queryFn: async () => {
+      const user = await supabase.auth.getUser();
+      if (!user.data.user) return null;
+
+      const query = supabase
+        .from('developer_drafts')
+        .select('*')
+        .eq('user_id', user.data.user.id);
+
+      if (editingDeveloper) {
+        query.eq('developer_id', editingDeveloper.id);
+      } else {
+        query.is('developer_id', null);
+      }
+
+      const { data, error } = await query.maybeSingle();
+      
+      if (error) {
+        console.error('Error fetching draft:', error);
+        return null;
+      }
+      
+      return data;
+    },
+    enabled: isModalOpen
   });
 
   // Data normalization and processing
@@ -140,28 +194,78 @@ export default function AdminDevelopers() {
     return matchKey ? logoFallbacks[matchKey] : undefined;
   };
 
-  // Modal states
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  const [selectedDeveloper, setSelectedDeveloper] = useState<Developer | null>(null);
-  const [editingDeveloper, setEditingDeveloper] = useState<Developer | null>(null);
-  const [formData, setFormData] = useState<DeveloperFormData>({
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
-    website: '',
-    main_city: '',
-    commission_rate: 3,
-    founded_year: undefined,
-    years_experience: undefined,
-    main_activities: '',
-    key_projects: '',
-    financial_stability: '',
-    payment_terms: '',
-    status: 'active',
-    rating_score: undefined
+
+  // Auto-save function
+  const saveDraftMutation = useMutation({
+    mutationFn: async (data: DeveloperFormData) => {
+      const user = await supabase.auth.getUser();
+      if (!user.data.user) return;
+
+      const draftData = {
+        user_id: user.data.user.id,
+        developer_id: editingDeveloper?.id || null,
+        form_data: data as any,
+        current_step: 'basics',
+        step_index: 0,
+        session_id: editingDeveloper ? null : crypto.randomUUID()
+      };
+
+      const { error } = await supabase
+        .from('developer_drafts')
+        .upsert(draftData, {
+          onConflict: editingDeveloper 
+            ? 'user_id,developer_id'
+            : 'user_id,session_id'
+        });
+
+      if (error) {
+        console.error('Error saving draft:', error);
+      }
+    },
+    onError: (error) => {
+      console.error('Error in auto-save:', error);
+    }
   });
+
+  // Debounced auto-save (800ms)
+  const debouncedSaveDraft = useDebounceCallback(
+    (data: DeveloperFormData) => {
+      saveDraftMutation.mutate(data);
+    },
+    800
+  );
+
+  // Auto-save on form changes
+  useEffect(() => {
+    if (isModalOpen && (formData.name || formData.email || formData.phone)) {
+      debouncedSaveDraft(formData);
+    }
+  }, [formData, isModalOpen, debouncedSaveDraft]);
+
+  // Load draft when modal opens
+  useEffect(() => {
+    if (existingDraft && isModalOpen) {
+      const draftFormData = existingDraft.form_data as any;
+      setFormData({
+        name: draftFormData?.name || '',
+        email: draftFormData?.email || '',
+        phone: draftFormData?.phone || '',
+        address: draftFormData?.address || '',
+        website: draftFormData?.website || '',
+        main_city: draftFormData?.main_city || '',
+        commission_rate: draftFormData?.commission_rate || 3,
+        founded_year: draftFormData?.founded_year,
+        years_experience: draftFormData?.years_experience,
+        main_activities: draftFormData?.main_activities || '',
+        key_projects: draftFormData?.key_projects || '',
+        financial_stability: draftFormData?.financial_stability || '',
+        payment_terms: draftFormData?.payment_terms || '',
+        status: draftFormData?.status || 'active',
+        rating_score: draftFormData?.rating_score
+      });
+      toast.info('Brouillon restauré');
+    }
+  }, [existingDraft, isModalOpen]);
 
   // Form handlers
   const resetForm = () => {
@@ -264,8 +368,30 @@ export default function AdminDevelopers() {
         return result;
       }
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['developers'] });
+      
+      // Clear draft after successful save
+      try {
+        const user = await supabase.auth.getUser();
+        if (user.data.user) {
+          const query = supabase
+            .from('developer_drafts')
+            .delete()
+            .eq('user_id', user.data.user.id);
+
+          if (editingDeveloper) {
+            query.eq('developer_id', editingDeveloper.id);
+          } else {
+            query.is('developer_id', null);
+          }
+
+          await query;
+        }
+      } catch (error) {
+        console.error('Error clearing draft:', error);
+      }
+
       setIsModalOpen(false);
       resetForm();
       toast.success(
