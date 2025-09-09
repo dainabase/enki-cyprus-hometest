@@ -975,6 +975,45 @@ export type Database = {
           },
         ]
       }
+      project_drafts: {
+        Row: {
+          auto_save_enabled: boolean
+          created_at: string
+          current_step: string
+          form_data: Json
+          id: string
+          project_id: string | null
+          session_id: string | null
+          step_index: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          auto_save_enabled?: boolean
+          created_at?: string
+          current_step?: string
+          form_data?: Json
+          id?: string
+          project_id?: string | null
+          session_id?: string | null
+          step_index?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          auto_save_enabled?: boolean
+          created_at?: string
+          current_step?: string
+          form_data?: Json
+          id?: string
+          project_id?: string | null
+          session_id?: string | null
+          step_index?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       project_images: {
         Row: {
           caption: string | null
@@ -1589,6 +1628,10 @@ export type Database = {
           p_window_minutes?: number
         }
         Returns: boolean
+      }
+      cleanup_old_drafts: {
+        Args: Record<PropertyKey, never>
+        Returns: number
       }
       get_audit_logs: {
         Args: { p_limit?: number; p_offset?: number }

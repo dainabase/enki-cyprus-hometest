@@ -15,6 +15,7 @@ import { DocumentManager } from '@/components/admin/projects/DocumentManager';
 import { projectSchema, ProjectFormData, projectFormSteps } from '@/schemas/projectSchema';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useDebounceCallback } from '@/hooks/useDebounceCallback';
 import { ArrowLeft, ArrowRight, Save, Eye, CheckCircle, FileText, Brain } from 'lucide-react';
 import { extractPrefilledData, PrefilledFormData } from '@/lib/ai-import/mapper';
 import * as LucideIcons from 'lucide-react';
@@ -30,7 +31,12 @@ export const AdminProjectForm: React.FC = () => {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [saveType, setSaveType] = useState<'draft' | 'publish'>('draft');
   const [prefilledData, setPrefilledData] = useState<PrefilledFormData>({});
-  const [showPrefilledBanner, setShowPrefilledBanner] = useState(false);
+const [showPrefilledBanner, setShowPrefilledBanner] = useState(false);
+
+  // Draft autosave state
+  const [draftId, setDraftId] = useState<string | null>(null);
+  const [draftLoaded, setDraftLoaded] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
 
   const currentStep = projectFormSteps[currentStepIndex];
 
@@ -47,7 +53,15 @@ export const AdminProjectForm: React.FC = () => {
         form.setValue(fieldName as keyof ProjectFormData, fieldData.value);
       });
     }
-  }, [searchParams, isEdit]);
+}, [searchParams, isEdit]);
+
+  // Load authenticated user id for drafts
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase.auth.getUser();
+      setUserId(data.user?.id ?? null);
+    })();
+  }, []);
 
   const form = useForm<ProjectFormData>({
     mode: 'onSubmit',
@@ -241,6 +255,50 @@ export const AdminProjectForm: React.FC = () => {
     }
   }, [projectData, isEdit, form]);
 
+  // Load existing draft (after project data to avoid overriding DB in edit)
+  useEffect(() => {
+    if (!userId) return;
+    const load = async () => {
+      let query = supabase
+        .from('project_drafts')
+        .select('*')
+        .eq('user_id', userId)
+        .order('updated_at', { ascending: false })
+        .limit(1);
+      if (isEdit && id) {
+        query = query.eq('project_id', id as string);
+      } else {
+        // drafts for new project (no project_id)
+        // @ts-ignore - supabase-js supports .is for null
+        query = query.is('project_id', null);
+      }
+      const { data, error } = await query;
+      if (error) {
+        console.error('Load draft error:', error);
+        return;
+      }
+      const d = data?.[0];
+      if (d) {
+        try {
+          // If editing, only apply draft if it's newer than DB record
+          const projectUpdatedAt = (projectData as any)?.updated_at ? new Date((projectData as any).updated_at) : null;
+          const draftUpdatedAt = d.updated_at ? new Date(d.updated_at) : null;
+          const shouldApply = !isEdit || !projectUpdatedAt || (draftUpdatedAt && draftUpdatedAt > projectUpdatedAt);
+          if (shouldApply) {
+            const currentValues = form.getValues() as any;
+            const draftValues = (d.form_data || {}) as any;
+            form.reset({ ...currentValues, ...draftValues } as any);
+            if (typeof d.step_index === 'number') setCurrentStepIndex(d.step_index);
+          }
+          setDraftId(d.id);
+        } catch (e) {
+          console.warn('Draft apply warning:', e);
+        }
+      }
+    };
+    load().finally(() => setDraftLoaded(true));
+  }, [userId, isEdit, id, projectData, form]);
+
   // Normalize month inputs to first day ISO
   const toFirstOfMonth = (val: any) => {
     if (!val) return null as any;
@@ -255,6 +313,46 @@ export const AdminProjectForm: React.FC = () => {
     }
     return val;
   };
+
+  // Autosave draft (debounced)
+  const debouncedSave = useDebounceCallback(async (values: ProjectFormData) => {
+    if (!userId) return;
+    try {
+      const payload: any = {
+        user_id: userId,
+        project_id: isEdit ? id : null,
+        form_data: values,
+        current_step: projectFormSteps[currentStepIndex].id,
+        step_index: currentStepIndex,
+        auto_save_enabled: true
+      };
+      if (draftId) {
+        await supabase.from('project_drafts').update(payload).eq('id', draftId);
+      } else {
+        const { data, error } = await supabase
+          .from('project_drafts')
+          .insert(payload)
+          .select('id')
+          .single();
+        if (!error && data) setDraftId(data.id);
+      }
+    } catch (e) {
+      console.warn('Autosave draft failed:', e);
+    }
+  }, 800);
+
+  // Watch form changes to autosave
+  useEffect(() => {
+    const subscription = form.watch(() => {
+      debouncedSave(form.getValues());
+    });
+    return () => subscription.unsubscribe();
+  }, [form, debouncedSave]);
+
+  // Save also on step change
+  useEffect(() => {
+    debouncedSave(form.getValues());
+  }, [currentStepIndex]);
 
   // Save project mutation
   const saveProjectMutation = useMutation({
