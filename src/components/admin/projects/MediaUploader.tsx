@@ -25,6 +25,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
 }) => {
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
+  const valueArray = Array.isArray(field.value) ? field.value : [];
 
   const handleUpload = async (files: File[]) => {
     if (!files || files.length === 0) return;
@@ -57,7 +58,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
         }
       }
       
-      field.onChange([...(field.value || []), ...urls]);
+      field.onChange([...(valueArray), ...urls]);
       
       if (urls.length > 0) {
         toast({
@@ -95,7 +96,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
   };
 
   const removeFile = (index: number) => {
-    const newFiles = field.value.filter((_, i) => i !== index);
+    const newFiles = valueArray.filter((_, i) => i !== index);
     field.onChange(newFiles);
   };
 
@@ -148,13 +149,13 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
       </div>
 
       {/* File List */}
-      {field.value && field.value.length > 0 && (
+      {valueArray.length > 0 && (
         <div className="space-y-3">
           <Label className="text-sm font-medium">
-            Fichiers uploadés ({field.value.length})
+            Fichiers uploadés ({valueArray.length})
           </Label>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {field.value.map((url, index) => (
+            {valueArray.map((url, index) => (
               <div key={index} className="relative group">
                 <div className="aspect-square rounded-lg overflow-hidden border bg-muted">
                   {isImage(url) ? (
