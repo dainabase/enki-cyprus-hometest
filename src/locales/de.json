@@ -76,19 +76,29 @@
     "phone": "Telefon",
     "address": "Adresse",
     "city": "Stadt",
+    "website": "Website",
     "price": "Preis",
+    "priceMax": "Max Preis",
+    "priceFrom": "Preis von",
+    "priceTo": "Preis bis",
     "minPrice": "Mindestpreis",
     "vat": "MwSt",
     "completion": "Fertigstellungsdatum",
     "developer": "Entwickler",
     "project": "Projekt",
     "building": "Gebäude",
+    "buildingName": "Gebäudename",
     "zone": "Zone",
     "type": "Typ",
     "floors": "Stockwerke",
     "units": "Einheiten",
     "totalUnits": "Einheiten Gesamt",
     "availableUnits": "Verfügbare Einheiten",
+    "available": "Verfügbar",
+    "contact": "Kontakt",
+    "rating": "Bewertung",
+    "constructionStatus": "Baustatus",
+    "status": "Status",
     "energyRating": "Energieklasse",
     "goldenVisa": "Golden Visa berechtigt"
   },
@@ -236,6 +246,41 @@
       "zone": "Zypern Zone",
       "completionDate": "Fertigstellungsdatum",
       "createdDate": "Erstellungsdatum"
+    }
+  },
+  "pagination": {
+    "displaying": "{{start}} bis {{end}} von {{total}} Ergebnissen",
+    "rowsPerPage": "Zeilen pro Seite",
+    "pageOf": "Seite {{current}} von {{count}}"
+  },
+  "actions": {
+    "selectAll": "Alle auswählen",
+    "selectItem": "Auswählen",
+    "actions": "Aktionen"
+  },
+  "admin": {
+    "common": {
+      "unassigned": "Nicht zugewiesen",
+      "noProjectsFound": "Keine Projekte gefunden",
+      "noBuildingsFound": "Keine Gebäude gefunden"
+    },
+    "projects": {
+      "headers": {
+        "gv": "GV"
+      },
+      "flags": {
+        "goldenVisa": "Golden Visa berechtigt",
+        "exclusive": "Exklusive Vermarktung"
+      }
+    },
+    "developers": {
+      "headers": {
+        "logo": "Logo"
+      }
+    },
+    "buildings": {
+      "soldOut": "AUSVERKAUFT",
+      "outOf": "von {{total}} ({{rate}}% belegt)"
     }
   }
 }

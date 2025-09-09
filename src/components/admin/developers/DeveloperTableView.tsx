@@ -3,6 +3,7 @@ import { Eye, Edit, Trash2, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useTranslation } from 'react-i18next';
 
 interface Developer {
   id: string;
@@ -35,6 +36,7 @@ export const DeveloperTableView = ({
   onDelete, 
   onViewDetails 
 }: DeveloperTableViewProps) => {
+  const { t } = useTranslation();
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
 
@@ -89,14 +91,14 @@ export const DeveloperTableView = ({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-12">Logo</TableHead>
+            <TableHead className="w-12">{t('admin.developers.headers.logo', { defaultValue: 'Logo' })}</TableHead>
             <TableHead>
               <Button 
                 variant="ghost" 
                 className="h-auto p-0 font-semibold hover:bg-transparent"
                 onClick={() => handleSort('name')}
               >
-                Nom <SortIcon field="name" />
+                {t('fields.name', { defaultValue: 'Name' })} <SortIcon field="name" />
               </Button>
             </TableHead>
             <TableHead>
@@ -105,7 +107,7 @@ export const DeveloperTableView = ({
                 className="h-auto p-0 font-semibold hover:bg-transparent"
                 onClick={() => handleSort('main_city')}
               >
-                Ville <SortIcon field="main_city" />
+                {t('fields.city', { defaultValue: 'City' })} <SortIcon field="main_city" />
               </Button>
             </TableHead>
             <TableHead>
@@ -114,21 +116,21 @@ export const DeveloperTableView = ({
                 className="h-auto p-0 font-semibold hover:bg-transparent"
                 onClick={() => handleSort('status')}
               >
-                Statut <SortIcon field="status" />
+                {t('fields.status', { defaultValue: 'Status' })} <SortIcon field="status" />
               </Button>
             </TableHead>
-            <TableHead>Site web</TableHead>
+            <TableHead>{t('fields.website', { defaultValue: 'Website' })}</TableHead>
             <TableHead>
               <Button 
                 variant="ghost" 
                 className="h-auto p-0 font-semibold hover:bg-transparent"
                 onClick={() => handleSort('rating_score')}
               >
-                Note <SortIcon field="rating_score" />
+                {t('fields.rating', { defaultValue: 'Rating' })} <SortIcon field="rating_score" />
               </Button>
             </TableHead>
-            <TableHead>Contact</TableHead>
-            <TableHead className="w-32">Actions</TableHead>
+            <TableHead>{t('fields.contact', { defaultValue: 'Contact' })}</TableHead>
+            <TableHead className="w-32">{t('actions.actions', { defaultValue: 'Actions' })}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -153,7 +155,7 @@ export const DeveloperTableView = ({
               <TableCell>{dev.main_city || '-'}</TableCell>
               <TableCell>
                 <Badge variant={dev.status === 'active' ? 'default' : 'secondary'}>
-                  {dev.status === 'active' ? 'Actif' : 'Inactif'}
+                  {t(`status.${dev.status}`, { defaultValue: dev.status === 'active' ? 'Active' : 'Inactive' })}
                 </Badge>
               </TableCell>
               <TableCell>

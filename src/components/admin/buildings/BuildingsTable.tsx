@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { checkBuildingDependencies } from '@/lib/supabase/integrity';
+import { useTranslation } from 'react-i18next';
 
 interface BuildingsTableProps {
   buildings: any[];
@@ -18,6 +19,7 @@ interface BuildingsTableProps {
 
 const BuildingsTable: React.FC<BuildingsTableProps> = React.memo(({ buildings, onEdit, onRefetch, isLoading }) => {
   const { toast } = useToast();
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleDelete = async (buildingId: string, buildingName: string) => {
@@ -25,10 +27,10 @@ const BuildingsTable: React.FC<BuildingsTableProps> = React.memo(({ buildings, o
       // Check for dependencies first
       const dependencies = await checkBuildingDependencies(buildingId);
       
-      let confirmMessage = `Êtes-vous sûr de vouloir supprimer le bâtiment "${buildingName}" ?`;
+      let confirmMessage = t('messages.deleteBuildingConfirm', { defaultValue: 'Are you sure you want to delete the building "{{name}}"?', name: buildingName });
       
       if (dependencies.count > 0) {
-        confirmMessage = `⚠️ ATTENTION ⚠️\n\nLe bâtiment "${buildingName}" a des dépendances :\n${dependencies.details}\n\nLa suppression supprimera aussi ces éléments.\n\nÊtes-vous sûr de vouloir continuer ?`;
+        confirmMessage = t('messages.deleteBuildingConfirmWithDeps', { defaultValue: '⚠️ WARNING ⚠️\n\nThe building "{{name}}" has dependencies:\n{{details}}\n\nDeleting it will also remove these items.\n\nAre you sure you want to continue?', name: buildingName, details: dependencies.details });
       }
       
       if (!confirm(confirmMessage)) {
@@ -43,27 +45,27 @@ const BuildingsTable: React.FC<BuildingsTableProps> = React.memo(({ buildings, o
       if (error) throw error;
 
       toast({
-        title: 'Bâtiment supprimé',
-        description: 'Le bâtiment a été supprimé avec succès'
+        title: t('messages.buildingDeletedTitle', { defaultValue: 'Building deleted' }),
+        description: t('messages.buildingDeleted', { defaultValue: 'The building has been deleted successfully' })
       });
       onRefetch();
     } catch (error: any) {
       console.error('Error deleting building:', error);
       toast({
         variant: 'destructive',
-        title: 'Erreur',
-        description: error.message || 'Impossible de supprimer le bâtiment'
+        title: t('messages.error', { defaultValue: 'Error' }),
+        description: t('messages.deleteBuildingError', { defaultValue: 'Unable to delete the building' })
       });
     }
   };
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
-      'planning': { label: 'Planification', variant: 'secondary' as const, color: 'bg-blue-100 text-blue-800' },
-      'foundation': { label: 'Fondations', variant: 'default' as const, color: 'bg-yellow-100 text-yellow-800' },
-      'structure': { label: 'Structure', variant: 'default' as const, color: 'bg-orange-100 text-orange-800' },
-      'finishing': { label: 'Finitions', variant: 'default' as const, color: 'bg-purple-100 text-purple-800' },
-      'completed': { label: 'Terminé', variant: 'outline' as const, color: 'bg-green-100 text-green-800' }
+      'planning': { label: t('status.planning', { defaultValue: 'Planning' }), variant: 'secondary' as const, color: 'bg-blue-100 text-blue-800' },
+      'foundation': { label: t('status.foundation', { defaultValue: 'Foundation' }), variant: 'default' as const, color: 'bg-yellow-100 text-yellow-800' },
+      'structure': { label: t('status.structure', { defaultValue: 'Structure' }), variant: 'default' as const, color: 'bg-orange-100 text-orange-800' },
+      'finishing': { label: t('status.finishing', { defaultValue: 'Finishing' }), variant: 'default' as const, color: 'bg-purple-100 text-purple-800' },
+      'completed': { label: t('status.completed', { defaultValue: 'Completed' }), variant: 'outline' as const, color: 'bg-green-100 text-green-800' }
     };
     
     const config = statusConfig[status as keyof typeof statusConfig] || { label: status, variant: 'secondary' as const, color: 'bg-gray-100 text-gray-800' };
@@ -75,7 +77,7 @@ const BuildingsTable: React.FC<BuildingsTableProps> = React.memo(({ buildings, o
   };
 
   const getProject = (project: any) => {
-    if (!project || typeof project !== 'object') return { title: 'Non assigné', zone: '' };
+    if (!project || typeof project !== 'object') return { title: t('admin.common.unassigned', { defaultValue: 'Unassigned' }), zone: '' };
     return project as { title?: string; cyprus_zone?: string; [key: string]: any };
   };
 
@@ -108,13 +110,13 @@ const BuildingsTable: React.FC<BuildingsTableProps> = React.memo(({ buildings, o
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Nom du bâtiment</TableHead>
-            <TableHead>Projet</TableHead>
-            <TableHead>Étages</TableHead>
-            <TableHead>Unités totales</TableHead>
-            <TableHead>Disponibles</TableHead>
-            <TableHead>Statut construction</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead>{t('fields.buildingName', { defaultValue: 'Building Name' })}</TableHead>
+            <TableHead>{t('fields.project', { defaultValue: 'Project' })}</TableHead>
+            <TableHead>{t('fields.floors', { defaultValue: 'Floors' })}</TableHead>
+            <TableHead>{t('fields.totalUnits', { defaultValue: 'Total Units' })}</TableHead>
+            <TableHead>{t('fields.available', { defaultValue: 'Available' })}</TableHead>
+            <TableHead>{t('fields.constructionStatus', { defaultValue: 'Construction Status' })}</TableHead>
+            <TableHead className="text-right">{t('actions.actions', { defaultValue: 'Actions' })}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -164,12 +166,12 @@ const BuildingsTable: React.FC<BuildingsTableProps> = React.memo(({ buildings, o
                       </span>
                       {units.isSoldOut && (
                         <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">
-                          SOLD OUT
+                          {t('admin.buildings.soldOut', { defaultValue: 'SOLD OUT' })}
                         </span>
                       )}
                     </div>
                     <div className="text-xs text-muted-foreground">
-                      sur {units.total} ({units.occupancyRate}% occupé)
+                      {t('admin.buildings.outOf', { defaultValue: 'of {{total}} ({{rate}}% occupied)', total: units.total, rate: units.occupancyRate })}
                     </div>
                   </div>
                 </TableCell>
@@ -210,7 +212,7 @@ const BuildingsTable: React.FC<BuildingsTableProps> = React.memo(({ buildings, o
           {buildings.length === 0 && (
             <TableRow>
               <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
-                Aucun bâtiment trouvé
+                {t('admin.common.noBuildingsFound', { defaultValue: 'No buildings found' })}
               </TableCell>
             </TableRow>
           )}

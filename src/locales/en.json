@@ -77,19 +77,29 @@
     "phone": "Phone",
     "address": "Address",
     "city": "City",
+    "website": "Website",
     "price": "Price",
+    "priceMax": "Max Price",
+    "priceFrom": "Price From",
+    "priceTo": "Price To",
     "minPrice": "Minimum Price",
     "vat": "VAT",
     "completion": "Completion Date",
     "developer": "Developer",
     "project": "Project",
     "building": "Building",
+    "buildingName": "Building Name",
     "zone": "Zone",
     "type": "Type",
     "floors": "Floors",
     "units": "Units",
     "totalUnits": "Total Units",
     "availableUnits": "Available Units",
+    "available": "Available",
+    "contact": "Contact",
+    "rating": "Rating",
+    "constructionStatus": "Construction Status",
+    "status": "Status",
     "energyRating": "Energy Rating",
     "goldenVisa": "Golden Visa Eligible"
   },
@@ -98,6 +108,16 @@
     "deleteSuccess": "Deleted successfully",
     "uploadSuccess": "Uploaded successfully",
     "deleteConfirm": "Are you sure you want to delete?",
+    "deleteProjectConfirm": "Are you sure you want to delete the project \"{{title}}\"?",
+    "deleteProjectConfirmWithDeps": "⚠️ WARNING ⚠️\n\nThe project \"{{title}}\" has dependencies:\n{{details}}\n\nDeleting it will also remove these items.\n\nAre you sure you want to continue?",
+    "deleteBuildingConfirm": "Are you sure you want to delete the building \"{{name}}\"?",
+    "deleteBuildingConfirmWithDeps": "⚠️ WARNING ⚠️\n\nThe building \"{{name}}\" has dependencies:\n{{details}}\n\nDeleting it will also remove these items.\n\nAre you sure you want to continue?",
+    "projectDeletedTitle": "Project deleted",
+    "projectDeleted": "The project has been deleted successfully",
+    "deleteProjectError": "Unable to delete the project",
+    "buildingDeletedTitle": "Building deleted", 
+    "buildingDeleted": "The building has been deleted successfully",
+    "deleteBuildingError": "Unable to delete the building",
     "deleteConfirmWithDeps": "Attention: {{count}} dependent item(s):\n{{details}}\n\nAre you sure you want to continue?",
     "required": "This field is required",
     "invalidEmail": "Invalid email address",
@@ -510,6 +530,41 @@
       "larnaca": "Larnaca",
       "nicosia": "Nicosia",
       "famagusta": "Famagusta"
+    }
+  },
+  "pagination": {
+    "displaying": "Showing {{start}} to {{end}} of {{total}} results",
+    "rowsPerPage": "Rows per page",
+    "pageOf": "Page {{current}} of {{count}}"
+  },
+  "actions": {
+    "selectAll": "Select all",
+    "selectItem": "Select",
+    "actions": "Actions"
+  },
+  "admin": {
+    "common": {
+      "unassigned": "Unassigned",
+      "noProjectsFound": "No projects found",
+      "noBuildingsFound": "No buildings found"
+    },
+    "projects": {
+      "headers": {
+        "gv": "GV"
+      },
+      "flags": {
+        "goldenVisa": "Golden Visa Eligible",
+        "exclusive": "Exclusive Commercialization"
+      }
+    },
+    "developers": {
+      "headers": {
+        "logo": "Logo"
+      }
+    },
+    "buildings": {
+      "soldOut": "SOLD OUT",
+      "outOf": "of {{total}} ({{rate}}% occupied)"
     }
   }
 }

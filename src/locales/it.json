@@ -76,19 +76,29 @@
     "phone": "Telefono",
     "address": "Indirizzo",
     "city": "Città",
+    "website": "Sito web",
     "price": "Prezzo",
+    "priceMax": "Prezzo max",
+    "priceFrom": "Prezzo da",
+    "priceTo": "Prezzo a",
     "minPrice": "Prezzo Minimo",
     "vat": "IVA",
     "completion": "Data di Consegna",
     "developer": "Sviluppatore",
     "project": "Progetto",
     "building": "Edificio",
+    "buildingName": "Nome edificio",
     "zone": "Zona",
     "type": "Tipo",
     "floors": "Piani",
     "units": "Unità",
     "totalUnits": "Unità Totali",
     "availableUnits": "Unità Disponibili",
+    "available": "Disponibile",
+    "contact": "Contatto",
+    "rating": "Valutazione",
+    "constructionStatus": "Stato costruzione",
+    "status": "Stato",
     "energyRating": "Classe Energetica",
     "goldenVisa": "Idoneo per Golden Visa"
   },
@@ -236,6 +246,41 @@
       "zone": "Zona di Cipro",
       "completionDate": "Data di completamento",
       "createdDate": "Data di creazione"
+    }
+  },
+  "pagination": {
+    "displaying": "Mostra {{start}} a {{end}} di {{total}} risultati",
+    "rowsPerPage": "Righe per pagina",
+    "pageOf": "Pagina {{current}} di {{count}}"
+  },
+  "actions": {
+    "selectAll": "Seleziona tutto",
+    "selectItem": "Seleziona",
+    "actions": "Azioni"
+  },
+  "admin": {
+    "common": {
+      "unassigned": "Non assegnato",
+      "noProjectsFound": "Nessun progetto trovato",
+      "noBuildingsFound": "Nessun edificio trovato"
+    },
+    "projects": {
+      "headers": {
+        "gv": "GV"
+      },
+      "flags": {
+        "goldenVisa": "Idoneo per Golden Visa",
+        "exclusive": "Commercializzazione Esclusiva"
+      }
+    },
+    "developers": {
+      "headers": {
+        "logo": "Logo"
+      }
+    },
+    "buildings": {
+      "soldOut": "ESAURITO",
+      "outOf": "di {{total}} ({{rate}}% occupato)"
     }
   }
 }

@@ -76,19 +76,29 @@
     "phone": "Телефон",
     "address": "Адрес",
     "city": "Город",
+    "website": "Веб-сайт",
     "price": "Цена",
+    "priceMax": "Макс цена",
+    "priceFrom": "Цена от",
+    "priceTo": "Цена до",
     "minPrice": "Минимальная цена",
     "vat": "НДС",
     "completion": "Дата сдачи",
     "developer": "Застройщик",
     "project": "Проект",
     "building": "Здание",
+    "buildingName": "Название здания",
     "zone": "Зона",
     "type": "Тип",
     "floors": "Этажи",
     "units": "Квартиры",
     "totalUnits": "Всего квартир",
     "availableUnits": "Доступные квартиры",
+    "available": "Доступно",
+    "contact": "Контакт",
+    "rating": "Рейтинг",
+    "constructionStatus": "Статус строительства",
+    "status": "Статус",
     "energyRating": "Энергетический класс",
     "goldenVisa": "Подходит для Golden Visa"
   },
@@ -97,6 +107,16 @@
     "deleteSuccess": "Успешно удалено",
     "uploadSuccess": "Успешно загружено",
     "deleteConfirm": "Вы уверены, что хотите удалить?",
+    "deleteProjectConfirm": "Вы уверены, что хотите удалить проект \"{{title}}\"?",
+    "deleteProjectConfirmWithDeps": "⚠️ ВНИМАНИЕ ⚠️\n\nПроект \"{{title}}\" имеет зависимости:\n{{details}}\n\nУдаление также удалит эти элементы.\n\nВы уверены, что хотите продолжить?",
+    "deleteBuildingConfirm": "Вы уверены, что хотите удалить здание \"{{name}}\"?",
+    "deleteBuildingConfirmWithDeps": "⚠️ ВНИМАНИЕ ⚠️\n\nЗдание \"{{name}}\" имеет зависимости:\n{{details}}\n\nУдаление также удалит эти элементы.\n\nВы уверены, что хотите продолжить?",
+    "projectDeletedTitle": "Проект удален",
+    "projectDeleted": "Проект был успешно удален",
+    "deleteProjectError": "Не удалось удалить проект",
+    "buildingDeletedTitle": "Здание удалено", 
+    "buildingDeleted": "Здание было успешно удалено",
+    "deleteBuildingError": "Не удалось удалить здание",
     "deleteConfirmWithDeps": "Внимание: {{count}} зависимых элементов:\n{{details}}\n\nВы уверены, что хотите продолжить?",
     "required": "Это поле обязательно",
     "invalidEmail": "Неверный адрес электронной почты",
@@ -318,5 +338,41 @@
     "shortcuts": "Горячие Клавиши",
     "api": "Справочник API",
     "external": "Внешние Ссылки"
+    }
+  },
+  "pagination": {
+    "displaying": "Показаны {{start}} - {{end}} из {{total}} результатов",
+    "rowsPerPage": "Строк на странице",
+    "pageOf": "Страница {{current}} из {{count}}"
+  },
+  "actions": {
+    "selectAll": "Выбрать все",
+    "selectItem": "Выбрать",
+    "actions": "Действия"
+  },
+  "admin": {
+    "common": {
+      "unassigned": "Не назначен",
+      "noProjectsFound": "Проекты не найдены",
+      "noBuildingsFound": "Здания не найдены"
+    },
+    "projects": {
+      "headers": {
+        "gv": "ЗВ"
+      },
+      "flags": {
+        "goldenVisa": "Подходит для Golden Visa",
+        "exclusive": "Эксклюзивная коммерциализация"
+      }
+    },
+    "developers": {
+      "headers": {
+        "logo": "Логотип"
+      }
+    },
+    "buildings": {
+      "soldOut": "ПРОДАНО",
+      "outOf": "из {{total}} ({{rate}}% занято)"
+    }
   }
 }

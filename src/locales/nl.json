@@ -76,19 +76,29 @@
     "phone": "Telefoon",
     "address": "Adres",
     "city": "Stad",
+    "website": "Website",
     "price": "Prijs",
+    "priceMax": "Max prijs",
+    "priceFrom": "Prijs vanaf",
+    "priceTo": "Prijs tot",
     "minPrice": "Minimumprijs",
     "vat": "BTW",
     "completion": "Opleverdatum",
     "developer": "Ontwikkelaar",
     "project": "Project",
     "building": "Gebouw",
+    "buildingName": "Gebouwnaam",
     "zone": "Zone",
     "type": "Type",
     "floors": "Verdiepingen",
     "units": "Eenheden",
     "totalUnits": "Totaal Eenheden",
     "availableUnits": "Beschikbare Eenheden",
+    "available": "Beschikbaar",
+    "contact": "Contact",
+    "rating": "Waardering",
+    "constructionStatus": "Bouwstatus",
+    "status": "Status",
     "energyRating": "Energielabel",
     "goldenVisa": "Golden Visa Geschikt"
   },
@@ -236,6 +246,41 @@
       "zone": "Cyprus Zone",
       "completionDate": "Opleverdatum",
       "createdDate": "Aanmaakdatum"
+    }
+  },
+  "pagination": {
+    "displaying": "{{start}} tot {{end}} van {{total}} resultaten",
+    "rowsPerPage": "Rijen per pagina",
+    "pageOf": "Pagina {{current}} van {{count}}"
+  },
+  "actions": {
+    "selectAll": "Alles selecteren",
+    "selectItem": "Selecteren",
+    "actions": "Acties"
+  },
+  "admin": {
+    "common": {
+      "unassigned": "Niet toegewezen",
+      "noProjectsFound": "Geen projecten gevonden",
+      "noBuildingsFound": "Geen gebouwen gevonden"
+    },
+    "projects": {
+      "headers": {
+        "gv": "GV"
+      },
+      "flags": {
+        "goldenVisa": "Golden Visa Geschikt",
+        "exclusive": "Exclusieve Commercialisatie"
+      }
+    },
+    "developers": {
+      "headers": {
+        "logo": "Logo"
+      }
+    },
+    "buildings": {
+      "soldOut": "UITVERKOCHT",
+      "outOf": "van {{total}} ({{rate}}% bezet)"
     }
   }
 }

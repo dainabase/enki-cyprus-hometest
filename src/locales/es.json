@@ -77,19 +77,29 @@
     "phone": "Teléfono",
     "address": "Dirección",
     "city": "Ciudad",
+    "website": "Sitio web",
     "price": "Precio",
+    "priceMax": "Precio máx",
+    "priceFrom": "Precio desde",
+    "priceTo": "Precio hasta",
     "minPrice": "Precio Mínimo",
     "vat": "IVA",
     "completion": "Fecha de Entrega",
     "developer": "Desarrollador",
     "project": "Proyecto",
     "building": "Edificio",
+    "buildingName": "Nombre del edificio",
     "zone": "Zona",
     "type": "Tipo",
     "floors": "Plantas",
     "units": "Unidades",
     "totalUnits": "Unidades Totales",
     "availableUnits": "Unidades Disponibles",
+    "available": "Disponible",
+    "contact": "Contacto",
+    "rating": "Calificación",
+    "constructionStatus": "Estado construcción",
+    "status": "Estado",
     "energyRating": "Calificación Energética",
     "goldenVisa": "Elegible para Golden Visa"
   },
@@ -413,6 +423,41 @@
       "zone": "Zona de Chipre",
       "completionDate": "Fecha de finalización",
       "createdDate": "Fecha de creación"
+    }
+  },
+  "pagination": {
+    "displaying": "Mostrando {{start}} a {{end}} de {{total}} resultados",
+    "rowsPerPage": "Filas por página",
+    "pageOf": "Página {{current}} de {{count}}"
+  },
+  "actions": {
+    "selectAll": "Seleccionar todo",
+    "selectItem": "Seleccionar",
+    "actions": "Acciones"
+  },
+  "admin": {
+    "common": {
+      "unassigned": "Sin asignar",
+      "noProjectsFound": "No se encontraron proyectos",
+      "noBuildingsFound": "No se encontraron edificios"
+    },
+    "projects": {
+      "headers": {
+        "gv": "GV"
+      },
+      "flags": {
+        "goldenVisa": "Elegible para Golden Visa",
+        "exclusive": "Comercialización Exclusiva"
+      }
+    },
+    "developers": {
+      "headers": {
+        "logo": "Logo"
+      }
+    },
+    "buildings": {
+      "soldOut": "AGOTADO",
+      "outOf": "de {{total}} ({{rate}}% ocupado)"
     }
   }
 }

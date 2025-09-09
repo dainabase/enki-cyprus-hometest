@@ -502,5 +502,40 @@
       "nicosia": "Nicosie",
       "famagusta": "Famagouste"
     }
+  },
+  "pagination": {
+    "displaying": "Affichage de {{start}} à {{end}} sur {{total}} résultats",
+    "rowsPerPage": "Lignes par page",
+    "pageOf": "Page {{current}} sur {{count}}"
+  },
+  "actions": {
+    "selectAll": "Tout sélectionner",
+    "selectItem": "Sélectionner",
+    "actions": "Actions"
+  },
+  "admin": {
+    "common": {
+      "unassigned": "Non assigné",
+      "noProjectsFound": "Aucun projet trouvé",
+      "noBuildingsFound": "Aucun bâtiment trouvé"
+    },
+    "projects": {
+      "headers": {
+        "gv": "GV"
+      },
+      "flags": {
+        "goldenVisa": "Éligible Golden Visa",
+        "exclusive": "Commercialisation Exclusive"
+      }
+    },
+    "developers": {
+      "headers": {
+        "logo": "Logo"
+      }
+    },
+    "buildings": {
+      "soldOut": "SOLD OUT",
+      "outOf": "sur {{total}} ({{rate}}% occupé)"
+    }
   }
 }
