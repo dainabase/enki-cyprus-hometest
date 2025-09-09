@@ -369,10 +369,10 @@
   "admin": {
     "sidebar": {
       "dashboard": "Tableau de bord",
-      "gestionImmobiliere": "Gestion Immobilière",
+      "gestionImmobiliere": "Gestion Immobilière", 
       "developers": "Développeurs",
       "projects": "Projets",
-      "units": "Unités", 
+      "units": "Unités",
       "ventesCRM": "Ventes & CRM",
       "prospects": "Prospects",
       "commissions": "Commissions",

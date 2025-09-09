@@ -355,6 +355,25 @@
       "noProjectsFound": "Проекты не найдены",
       "noBuildingsFound": "Здания не найдены"
     },
+    "sidebar": {
+      "dashboard": "Панель управления",
+      "gestionImmobiliere": "Управление недвижимостью",
+      "developers": "Застройщики",
+      "projects": "Проекты",
+      "units": "Квартиры",
+      "ventesCRM": "Продажи и CRM",
+      "prospects": "Перспективы",
+      "commissions": "Комиссии",
+      "analytics": "Аналитика",
+      "analyses": "Анализы",
+      "segmentation": "Сегментация",
+      "performance": "Производительность",
+      "reports": "Отчеты",
+      "administration": "Администрирование",
+      "documentation": "Документация",
+      "settings": "Настройки",
+      "tests": "Тесты"
+    },
     "projects": {
       "headers": {
         "gv": "ЗВ"
