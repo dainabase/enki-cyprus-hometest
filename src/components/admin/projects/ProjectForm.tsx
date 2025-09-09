@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/sonner';
 import SimpleImageUploader from '@/components/admin/common/SimpleImageUploader';
 import { createProjectImage, fetchProjectImages, ProjectImage } from '@/lib/supabase/images';
+import { useTranslation } from 'react-i18next';
 
 interface ProjectFormProps {
   project?: any;
@@ -42,7 +43,7 @@ interface ProjectFormData {
 }
 
 const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, onCancel }) => {
-  // Using Sonner toast directly
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [existingImages, setExistingImages] = useState<ProjectImage[]>([]);
   
@@ -154,8 +155,8 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
         
         if (error) throw error;
         
-        toast.success('Projet mis à jour', {
-          description: 'Le projet a été mis à jour avec succès'
+        toast.success(t('projectForm.projectUpdated'), {
+          description: t('projectForm.projectUpdatedSuccessfully')
         });
       } else {
         // Create new project
@@ -167,8 +168,8 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
         
         if (error) throw error;
         
-        toast.success('Projet créé', {
-          description: 'Le nouveau projet a été créé avec succès'
+        toast.success(t('projectForm.projectCreated'), {
+          description: t('projectForm.newProjectCreatedSuccessfully')
         });
       }
 
@@ -177,8 +178,8 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
       console.error('Error saving project:', error);
       // Log detailed error for debugging
       console.error('Supabase error while saving project:', error);
-      toast.error('Erreur', {
-        description: (error as any)?.message || 'Impossible de sauvegarder le projet'
+      toast.error(t('messages.error'), {
+        description: (error as any)?.message || t('messages.error')
       });
     } finally {
       setIsLoading(false);
@@ -190,22 +191,22 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
       {/* Basic Information */}
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="title">Nom du projet *</Label>
+          <Label htmlFor="title">{t('projectForm.projectName')} *</Label>
           <Input
             id="title"
             value={formData.title}
             onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-            placeholder="Nom du projet"
+            placeholder={t('projectForm.projectName')}
             required
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="subtitle">Sous-titre</Label>
+          <Label htmlFor="subtitle">{t('projectForm.subtitle')}</Label>
           <Input
             id="subtitle"
             value={formData.subtitle}
             onChange={(e) => setFormData(prev => ({ ...prev, subtitle: e.target.value }))}
-            placeholder="Sous-titre du projet"
+            placeholder={t('projectForm.subtitle')}
           />
         </div>
       </div>
@@ -213,13 +214,13 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
       {/* Developer and Zone */}
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="developer">Développeur</Label>
+          <Label htmlFor="developer">{t('projectForm.developer')}</Label>
           <Select
             value={formData.developer_id}
             onValueChange={(value) => setFormData(prev => ({ ...prev, developer_id: value }))}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Sélectionner un développeur" />
+              <SelectValue placeholder={t('projectForm.selectDeveloper')} />
             </SelectTrigger>
             <SelectContent>
               {developers.map((developer) => (
@@ -231,7 +232,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
           </Select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="zone">Zone *</Label>
+          <Label htmlFor="zone">{t('fields.zone')} *</Label>
           <Select
             value={formData.cyprus_zone}
             onValueChange={(value) => setFormData(prev => ({ ...prev, cyprus_zone: value }))}
@@ -240,11 +241,11 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="limassol">Limassol</SelectItem>
-              <SelectItem value="paphos">Paphos</SelectItem>
-              <SelectItem value="larnaca">Larnaca</SelectItem>
-              <SelectItem value="nicosia">Nicosia</SelectItem>
-              <SelectItem value="famagusta">Famagusta</SelectItem>
+              <SelectItem value="limassol">{t('zones.limassol')}</SelectItem>
+              <SelectItem value="paphos">{t('zones.paphos')}</SelectItem>
+              <SelectItem value="larnaca">{t('zones.larnaca')}</SelectItem>
+              <SelectItem value="nicosia">{t('zones.nicosia')}</SelectItem>
+              <SelectItem value="famagusta">{t('zones.famagusta')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -253,7 +254,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
       {/* Status and Type */}
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="status">Statut *</Label>
+          <Label htmlFor="status">{t('fields.status')} *</Label>
           <Select
             value={formData.status}
             onValueChange={(value) => setFormData(prev => ({ ...prev, status: value }))}
@@ -262,15 +263,15 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="under_construction">En construction</SelectItem>
-              <SelectItem value="ready_to_move">Prêt à emménager</SelectItem>
-              <SelectItem value="completed">Terminé</SelectItem>
-              <SelectItem value="sold_out">Vendu</SelectItem>
+              <SelectItem value="under_construction">{t('projectForm.underConstruction')}</SelectItem>
+              <SelectItem value="ready_to_move">{t('projectForm.readyToMove')}</SelectItem>
+              <SelectItem value="completed">{t('projectForm.completed')}</SelectItem>
+              <SelectItem value="sold_out">{t('projectForm.soldOut')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="property_types">Types de biens *</Label>
+          <Label htmlFor="property_types">{t('projectForm.propertyTypes')} *</Label>
           <div className="space-y-2">
             {['apartment', 'villa', 'penthouse', 'commercial', 'land'].map((type) => (
               <div key={type} className="flex items-center space-x-2">
@@ -294,11 +295,11 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
                   className="rounded border-gray-300"
                 />
                 <Label htmlFor={type} className="text-sm">
-                  {type === 'apartment' && 'Appartement'}
-                  {type === 'villa' && 'Villa'}
-                  {type === 'penthouse' && 'Penthouse'}
-                  {type === 'commercial' && 'Commercial'}
-                  {type === 'land' && 'Terrain'}
+                  {type === 'apartment' && t('projectForm.apartment')}
+                  {type === 'villa' && t('projectForm.villa')}
+                  {type === 'penthouse' && t('projectForm.penthouse')}
+                  {type === 'commercial' && t('types.commercial')}
+                  {type === 'land' && t('projectForm.land')}
                 </Label>
               </div>
             ))}
@@ -309,19 +310,19 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
       {/* Price Information */}
       <div className="grid grid-cols-3 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="price">Prix minimum (€) *</Label>
+          <Label htmlFor="price">{t('projectForm.minPrice')} *</Label>
           <Input
             id="price"
             type="number"
             value={formData.price === 0 ? '' : formData.price}
             onFocus={(e) => { if (e.currentTarget.value === '0') e.currentTarget.value = ''; }}
             onChange={(e) => setFormData(prev => ({ ...prev, price: Number(e.target.value) || 0 }))}
-            placeholder="Prix minimum"
+            placeholder={t('projectForm.minPrice')}
             required
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="vat_rate">TVA (%)</Label>
+          <Label htmlFor="vat_rate">{t('projectForm.vat')}</Label>
           <Select
             value={formData.vat_rate.toString()}
             onValueChange={(value) => setFormData(prev => ({ ...prev, vat_rate: Number(value) }))}
@@ -330,13 +331,13 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="5">5% (Résidentiel)</SelectItem>
-              <SelectItem value="19">19% (Commercial)</SelectItem>
+              <SelectItem value="5">5% ({t('projectForm.residential')})</SelectItem>
+              <SelectItem value="19">19% ({t('types.commercial')})</SelectItem>
             </SelectContent>
           </Select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="completion_date">Date de livraison</Label>
+          <Label htmlFor="completion_date">{t('projectForm.completionDate')}</Label>
           <Input
             id="completion_date"
             type="date"
@@ -349,26 +350,26 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
       {/* Units */}
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="units_available">Unités disponibles</Label>
+          <Label htmlFor="units_available">{t('projectForm.unitsAvailable')}</Label>
           <Input
             id="units_available"
             type="number"
             value={formData.units_available === 0 ? '' : formData.units_available}
             onFocus={(e) => { if (e.currentTarget.value === '0') e.currentTarget.value = ''; }}
             onChange={(e) => setFormData(prev => ({ ...prev, units_available: Number(e.target.value) || 0 }))}
-            placeholder="Nombre d'unités disponibles"
+            placeholder={t('projectForm.unitsAvailable')}
             min="0"
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="total_units">Total unités</Label>
+          <Label htmlFor="total_units">{t('projectForm.totalUnits')}</Label>
           <Input
             id="total_units"
             type="number"
             value={formData.total_units === 0 ? '' : formData.total_units}
             onFocus={(e) => { if (e.currentTarget.value === '0') e.currentTarget.value = ''; }}
             onChange={(e) => setFormData(prev => ({ ...prev, total_units: Number(e.target.value) || 0 }))}
-            placeholder="Nombre total d'unités"
+            placeholder={t('projectForm.totalUnits')}
             min="0"
           />
         </div>
@@ -377,7 +378,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
       {/* Location */}
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="city">Ville</Label>
+          <Label htmlFor="city">{t('projectForm.city')}</Label>
           <Input
             id="city"
             value={formData.location.city}
@@ -385,11 +386,11 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
               ...prev, 
               location: { ...prev.location, city: e.target.value }
             }))}
-            placeholder="Ville"
+            placeholder={t('projectForm.city')}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="address">Adresse</Label>
+          <Label htmlFor="address">{t('projectForm.address')}</Label>
           <Input
             id="address"
             value={formData.location.address}
@@ -397,7 +398,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
               ...prev, 
               location: { ...prev.location, address: e.target.value }
             }))}
-            placeholder="Adresse complète"
+            placeholder={t('projectForm.fullAddress')}
           />
         </div>
       </div>
@@ -405,24 +406,24 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
       {/* Descriptions */}
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="description">Description *</Label>
+          <Label htmlFor="description">{t('projectForm.description')} *</Label>
           <Textarea
             id="description"
             value={formData.description}
             onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-            placeholder="Description du projet"
+            placeholder={t('projectForm.projectDescription')}
             rows={3}
             required
             sanitize={false}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="detailed_description">Description détaillée</Label>
+          <Label htmlFor="detailed_description">{t('projectForm.detailedDescription')}</Label>
           <Textarea
             id="detailed_description"
             value={formData.detailed_description}
             onChange={(e) => setFormData(prev => ({ ...prev, detailed_description: e.target.value }))}
-            placeholder="Description détaillée du projet"
+            placeholder={t('projectForm.detailedProjectDescription')}
             rows={4}
             sanitize={false}
           />
@@ -436,16 +437,16 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
           checked={formData.golden_visa_eligible}
           onCheckedChange={(checked) => setFormData(prev => ({ ...prev, golden_visa_eligible: checked }))}
         />
-        <Label htmlFor="golden_visa">Éligible Golden Visa (€300,000+)</Label>
+        <Label htmlFor="golden_visa">{t('projectForm.goldenVisaEligible')}</Label>
       </div>
 
       {/* Images Upload Section */}
       {project && (
         <div className="space-y-4">
           <div>
-            <Label>Images du projet (max 5)</Label>
+            <Label>{t('projectForm.projectImages')}</Label>
             <p className="text-sm text-muted-foreground mb-4">
-              Uploadez jusqu'à 5 images pour ce projet
+              {t('projectForm.uploadUpTo5Images')}
             </p>
           </div>
           <SimpleImageUploader
@@ -466,12 +467,12 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
                 }
                 // Reload images
                 await loadExistingImages(project.id);
-                toast.success("Images uploadées", {
-                  description: `${urls.length} image(s) ajoutée(s) avec succès`
+                toast.success(t('projectForm.imagesUploaded'), {
+                  description: t('projectForm.imagesAddedSuccessfully', { count: urls.length })
                 });
               } catch (error) {
-                toast.error("Erreur", {
-                  description: "Impossible de sauvegarder les images"
+                toast.error(t('messages.error'), {
+                  description: t('projectForm.errorSavingImages')
                 });
               }
             }}
@@ -482,10 +483,10 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
       {/* Actions */}
       <div className="flex items-center justify-end space-x-2 pt-4">
         <Button type="button" variant="outline" onClick={onCancel}>
-          Annuler
+          {t('form.cancel')}
         </Button>
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? 'Sauvegarde...' : 'Sauvegarder'}
+          {isLoading ? t('projectForm.saving') : t('form.save')}
         </Button>
       </div>
     </form>

@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Home, Search, Filter, Eye, Edit, Crown, MapPin, Euro } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import { useTranslation } from 'react-i18next';
 
 interface Unit {
   id: string;
@@ -32,6 +33,7 @@ interface Unit {
 }
 
 const AdminUnits = () => {
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [typeFilter, setTypeFilter] = useState<string>('all');
@@ -67,8 +69,8 @@ const AdminUnits = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-units'] });
       toast({
-        title: 'Statut modifié',
-        description: 'Le statut de l\'unité a été mis à jour.'
+        title: t('units.statusModified'),
+        description: t('units.unitStatusUpdated')
       });
     }
   });
@@ -131,8 +133,8 @@ const AdminUnits = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Inventaire Unités</h1>
-          <p className="text-muted-foreground">Gestion complète du portefeuille immobilier</p>
+          <h1 className="text-3xl font-bold">{t('units.title')}</h1>
+          <p className="text-muted-foreground">{t('units.subtitle')}</p>
         </div>
       </div>
 
@@ -140,7 +142,7 @@ const AdminUnits = () => {
       <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Unités</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('units.totalUnits')}</CardTitle>
             <Home className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -150,7 +152,7 @@ const AdminUnits = () => {
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Disponibles</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('units.available')}</CardTitle>
             <Home className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
@@ -160,7 +162,7 @@ const AdminUnits = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Réservées</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('units.reserved')}</CardTitle>
             <Home className="h-4 w-4 text-yellow-600" />
           </CardHeader>
           <CardContent>
@@ -170,7 +172,7 @@ const AdminUnits = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Vendues</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('units.sold')}</CardTitle>
             <Home className="h-4 w-4 text-red-600" />
           </CardHeader>
           <CardContent>
@@ -180,7 +182,7 @@ const AdminUnits = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Golden Visa</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('units.goldenVisa')}</CardTitle>
             <Crown className="h-4 w-4 text-amber-600" />
           </CardHeader>
           <CardContent>
@@ -190,7 +192,7 @@ const AdminUnits = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Valeur Totale</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('units.totalValue')}</CardTitle>
             <Euro className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -204,7 +206,7 @@ const AdminUnits = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Filter className="w-5 h-5" />
-            Filtres
+            {t('units.filters')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -212,7 +214,7 @@ const AdminUnits = () => {
             <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Rechercher..."
+                placeholder={t('units.search')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -221,52 +223,52 @@ const AdminUnits = () => {
             
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger>
-                <SelectValue placeholder="Statut" />
+                <SelectValue placeholder={t('fields.status')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tous statuts</SelectItem>
-                <SelectItem value="available">Disponible</SelectItem>
-                <SelectItem value="reserved">Réservé</SelectItem>
-                <SelectItem value="sold">Vendu</SelectItem>
+                <SelectItem value="all">{t('units.allStatuses')}</SelectItem>
+                <SelectItem value="available">{t('units.available')}</SelectItem>
+                <SelectItem value="reserved">{t('units.reserved')}</SelectItem>
+                <SelectItem value="sold">{t('units.sold')}</SelectItem>
               </SelectContent>
             </Select>
 
             <Select value={typeFilter} onValueChange={setTypeFilter}>
               <SelectTrigger>
-                <SelectValue placeholder="Type" />
+                <SelectValue placeholder={t('fields.type')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tous types</SelectItem>
-                <SelectItem value="apartment">Appartement</SelectItem>
-                <SelectItem value="villa">Villa</SelectItem>
-                <SelectItem value="penthouse">Penthouse</SelectItem>
-                <SelectItem value="commercial">Commercial</SelectItem>
+                <SelectItem value="all">{t('units.allTypes')}</SelectItem>
+                <SelectItem value="apartment">{t('units.apartment')}</SelectItem>
+                <SelectItem value="villa">{t('units.villa')}</SelectItem>
+                <SelectItem value="penthouse">{t('units.penthouse')}</SelectItem>
+                <SelectItem value="commercial">{t('units.commercial')}</SelectItem>
               </SelectContent>
             </Select>
 
             <Select value={zoneFilter} onValueChange={setZoneFilter}>
               <SelectTrigger>
-                <SelectValue placeholder="Zone" />
+                <SelectValue placeholder={t('fields.zone')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Toutes zones</SelectItem>
-                <SelectItem value="limassol">Limassol</SelectItem>
-                <SelectItem value="paphos">Paphos</SelectItem>
-                <SelectItem value="larnaca">Larnaca</SelectItem>
-                <SelectItem value="nicosia">Nicosia</SelectItem>
-                <SelectItem value="famagusta">Famagusta</SelectItem>
-                <SelectItem value="kyrenia">Kyrenia</SelectItem>
+                <SelectItem value="all">{t('units.allZones')}</SelectItem>
+                <SelectItem value="limassol">{t('units.limassol')}</SelectItem>
+                <SelectItem value="paphos">{t('units.paphos')}</SelectItem>
+                <SelectItem value="larnaca">{t('units.larnaca')}</SelectItem>
+                <SelectItem value="nicosia">{t('units.nicosia')}</SelectItem>
+                <SelectItem value="famagusta">{t('units.famagusta')}</SelectItem>
+                <SelectItem value="kyrenia">{t('units.kyrenia')}</SelectItem>
               </SelectContent>
             </Select>
 
             <Select value={goldenVisaFilter} onValueChange={setGoldenVisaFilter}>
               <SelectTrigger>
-                <SelectValue placeholder="Golden Visa" />
+                <SelectValue placeholder={t('units.goldenVisa')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tous</SelectItem>
-                <SelectItem value="true">Golden Visa</SelectItem>
-                <SelectItem value="false">Standard</SelectItem>
+                <SelectItem value="all">{t('units.all')}</SelectItem>
+                <SelectItem value="true">{t('units.goldenVisa')}</SelectItem>
+                <SelectItem value="false">{t('units.standard')}</SelectItem>
               </SelectContent>
             </Select>
 
@@ -280,7 +282,7 @@ const AdminUnits = () => {
                 setGoldenVisaFilter('all');
               }}
             >
-              Reset
+              {t('units.reset')}
             </Button>
           </div>
         </CardContent>
@@ -289,21 +291,21 @@ const AdminUnits = () => {
       {/* Units Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Unités ({filteredUnits.length})</CardTitle>
+          <CardTitle>{t('fields.units')} ({filteredUnits.length})</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Unité</TableHead>
-                <TableHead>Développeur</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Zone</TableHead>
-                <TableHead>Prix</TableHead>
-                <TableHead>TVA</TableHead>
-                <TableHead>Statut</TableHead>
-                <TableHead>Golden Visa</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead>{t('units.unit')}</TableHead>
+                <TableHead>{t('units.developer')}</TableHead>
+                <TableHead>{t('units.type')}</TableHead>
+                <TableHead>{t('units.zone')}</TableHead>
+                <TableHead>{t('units.price')}</TableHead>
+                <TableHead>{t('units.vat')}</TableHead>
+                <TableHead>{t('units.status')}</TableHead>
+                <TableHead>{t('units.goldenVisa')}</TableHead>
+                <TableHead>{t('units.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -322,7 +324,7 @@ const AdminUnits = () => {
                     <span className="text-sm">-</span>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline">{unit.property_category || 'Résidentiel'}</Badge>
+                    <Badge variant="outline">{unit.property_category || t('units.residential')}</Badge>
                   </TableCell>
                   <TableCell>
                     <span className="capitalize">{unit.cyprus_zone}</span>
@@ -342,9 +344,9 @@ const AdminUnits = () => {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="available">Disponible</SelectItem>
-                        <SelectItem value="reserved">Réservé</SelectItem>
-                        <SelectItem value="sold">Vendu</SelectItem>
+                        <SelectItem value="available">{t('units.available')}</SelectItem>
+                        <SelectItem value="reserved">{t('units.reserved')}</SelectItem>
+                        <SelectItem value="sold">{t('units.sold')}</SelectItem>
                       </SelectContent>
                     </Select>
                   </TableCell>
@@ -352,7 +354,7 @@ const AdminUnits = () => {
                     {unit.golden_visa_eligible ? (
                       <Badge className="bg-amber-100 text-amber-800">
                         <Crown className="w-3 h-3 mr-1" />
-                        Golden Visa
+                        {t('units.goldenVisa')}
                       </Badge>
                     ) : (
                       <span className="text-sm text-muted-foreground">-</span>
