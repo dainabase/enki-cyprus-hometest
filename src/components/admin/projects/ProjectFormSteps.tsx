@@ -139,13 +139,13 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{t('admin.fields.developer')} *</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Sélectionnez un développeur" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent>
+                  <SelectContent className="z-50 bg-background">
                     {developers?.map((dev) => (
                       <SelectItem key={dev.id} value={dev.id}>
                         {dev.name}
@@ -270,7 +270,21 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               <FormItem>
                 <FormLabel>Adresse complète</FormLabel>
                 <FormControl>
-                  <Input placeholder="123 Avenue de la Mer, Limassol" {...field} />
+                  <Input 
+                    placeholder="123 Avenue de la Mer, Limassol" 
+                    {...field}
+                    onBlur={(e) => {
+                      const v = (e.target.value || '').toLowerCase();
+                      const zones: Record<string, string> = { limassol: 'limassol', paphos: 'paphos', larnaca: 'larnaca', nicosia: 'nicosia', famagusta: 'famagusta' };
+                      for (const city of Object.keys(zones)) {
+                        if (v.includes(city)) {
+                          form.setValue('city', city.charAt(0).toUpperCase() + city.slice(1));
+                          form.setValue('cyprus_zone', zones[city]);
+                          break;
+                        }
+                      }
+                    }}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -327,13 +341,13 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Zone de Chypre</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Sélectionnez une zone" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent>
+                  <SelectContent className="z-50 bg-background">
                     <SelectItem value="limassol">Limassol</SelectItem>
                     <SelectItem value="paphos">Paphos</SelectItem>
                     <SelectItem value="larnaca">Larnaca</SelectItem>

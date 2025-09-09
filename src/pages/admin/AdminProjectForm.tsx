@@ -86,7 +86,12 @@ export const AdminProjectForm: React.FC = () => {
       if (!id) return null;
       const { data, error } = await supabase
         .from('projects')
-        .select('*')
+        .select(`
+          *,
+          project_amenities(amenity_id),
+          project_nearby_amenities(nearby_amenity_id, distance_km, distance_minutes_walk, distance_minutes_drive, quantity, details),
+          project_images(url, caption, is_primary, display_order)
+        `)
         .eq('id', id)
         .single();
       
@@ -107,24 +112,39 @@ export const AdminProjectForm: React.FC = () => {
          developer_id: projectData.developer_id,
          status: projectData.status as ProjectFormData['status'],
         price: projectData.price,
-         photos: Array.isArray(projectData.categorized_photos) && projectData.categorized_photos.length > 0 
-           ? (projectData.categorized_photos as any[]).filter(photo => photo && photo.url)
-           : (projectData.photos || []).map((url: string) => ({
-               url,
-               category: 'hero' as const,
-               isPrimary: false,
-               caption: ''
-             })),
-        features: projectData.features || [],
-        cyprus_zone: projectData.cyprus_zone || 'limassol',
+         photos: (() => {
+           const out: any[] = [];
+           const cp = projectData.categorized_photos as any;
+           if (Array.isArray(cp) && cp.length > 0) {
+             cp.forEach((item: any) => {
+               if (item?.url) out.push(item);
+               else if (Array.isArray(item?.urls)) {
+                 item.urls.forEach((u: string) => out.push({ url: u, category: item.category || 'gallery', isPrimary: false, caption: '' }));
+               }
+             });
+           }
+           if (out.length > 0) return out;
+           if (Array.isArray(projectData.project_images) && projectData.project_images.length > 0) {
+             return (projectData.project_images as any[])
+               .sort((a,b)=> (a.display_order??0)-(b.display_order??0))
+               .map((img:any) => ({ url: img.url, category: img.is_primary ? 'hero' : 'gallery', isPrimary: !!img.is_primary, caption: img.caption || '' }));
+           }
+           if (Array.isArray(projectData.photos) && projectData.photos.length > 0) {
+             return (projectData.photos as string[]).map((url: string) => ({ url, category: 'hero' as const, isPrimary: false, caption: '' }));
+           }
+           return [];
+         })(),
+         features: projectData.features || [],
+         amenities: Array.isArray(projectData.project_amenities) ? (projectData.project_amenities as any[]).map((pa:any) => pa.amenity_id).filter(Boolean) : (projectData.amenities || []),
+         cyprus_zone: projectData.cyprus_zone || 'limassol',
         
           // New fields
           project_code: projectData.project_code,
           property_category: projectData.property_category as ProjectFormData['property_category'],
           property_sub_type: Array.isArray(projectData.property_sub_type) && projectData.property_sub_type.length > 0 ? projectData.property_sub_type as ProjectFormData['property_sub_type'] : ['apartment'],
           project_phase: projectData.project_phase as ProjectFormData['project_phase'],
-        launch_date: projectData.launch_date,
-        completion_date_new: projectData.completion_date_new,
+        launch_date: projectData.launch_date ? String(projectData.launch_date).slice(0,7) : undefined,
+        completion_date_new: projectData.completion_date_new ? String(projectData.completion_date_new).slice(0,7) : undefined,
         exclusive_commercialization: projectData.exclusive_commercialization || false,
         
         // Location
