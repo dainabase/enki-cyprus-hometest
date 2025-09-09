@@ -115,11 +115,47 @@ export const AdminProjectForm: React.FC = () => {
          photos: (() => {
            const out: any[] = [];
            const cp = projectData.categorized_photos as any;
+           // Map possible legacy/localized categories to our enum
+           const mapCategory = (c: string): any => {
+             const k = (c || '').toLowerCase();
+             const dict: Record<string, any> = {
+               'principale': 'hero',
+               'principal': 'hero',
+               'hero': 'hero',
+               'exterieure': 'exterior_1',
+               'exterieur': 'exterior_1',
+               'exterior_1': 'exterior_1',
+               'exterior_2': 'exterior_2',
+               'interieure': 'interior_1',
+               'interieur': 'interior_1',
+               'interior_1': 'interior_1',
+               'interior_2': 'interior_2',
+               'chambre': 'bedroom',
+               'bedroom': 'bedroom',
+               'salle_de_bain': 'bathroom',
+               'bathroom': 'bathroom',
+               'balcon': 'balcony',
+               'balcony': 'balcony',
+               'jardin': 'garden',
+               'garden': 'garden',
+               'vue_panoramique': 'panoramic_view',
+               'panoramic_view': 'panoramic_view',
+               'vue_mer': 'sea_view',
+               'sea_view': 'sea_view',
+               'vue_montagne': 'mountain_view',
+               'mountain_view': 'mountain_view',
+               'prestations': 'amenities',
+               'amenities': 'amenities',
+               'plans': 'plans'
+             };
+             return dict[k] || 'interior_1';
+           };
            if (Array.isArray(cp) && cp.length > 0) {
              cp.forEach((item: any) => {
-               if (item?.url) out.push(item);
+               if (item?.url) out.push({ url: item.url, category: mapCategory(item.category), isPrimary: mapCategory(item.category) === 'hero', caption: item.caption || '' });
                else if (Array.isArray(item?.urls)) {
-                 item.urls.forEach((u: string) => out.push({ url: u, category: item.category || 'gallery', isPrimary: false, caption: '' }));
+                 const cat = mapCategory(item.category);
+                 item.urls.forEach((u: string, idx: number) => out.push({ url: u, category: cat, isPrimary: cat === 'hero' && idx === 0, caption: '' }));
                }
              });
            }
@@ -127,10 +163,10 @@ export const AdminProjectForm: React.FC = () => {
            if (Array.isArray(projectData.project_images) && projectData.project_images.length > 0) {
              return (projectData.project_images as any[])
                .sort((a,b)=> (a.display_order??0)-(b.display_order??0))
-               .map((img:any) => ({ url: img.url, category: img.is_primary ? 'hero' : 'gallery', isPrimary: !!img.is_primary, caption: img.caption || '' }));
+               .map((img:any, idx:number) => ({ url: img.url, category: img.is_primary ? 'hero' : 'interior_1', isPrimary: !!img.is_primary || idx===0, caption: img.caption || '' }));
            }
            if (Array.isArray(projectData.photos) && projectData.photos.length > 0) {
-             return (projectData.photos as string[]).map((url: string) => ({ url, category: 'hero' as const, isPrimary: false, caption: '' }));
+             return (projectData.photos as string[]).map((url: string, idx:number) => ({ url, category: idx===0 ? 'hero' : 'interior_1', isPrimary: idx===0, caption: '' }));
            }
            return [];
          })(),
@@ -493,7 +529,8 @@ export const AdminProjectForm: React.FC = () => {
                   <CardContent>
                     <ProjectFormSteps 
                       form={form} 
-                      currentStep={currentStep.id} 
+                      currentStep={currentStep.id}
+                      projectId={id}
                     />
                   </CardContent>
                 </Card>

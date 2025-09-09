@@ -22,9 +22,10 @@ import { supabase } from '@/integrations/supabase/client';
 interface ProjectFormStepsProps {
   form: UseFormReturn<ProjectFormData>;
   currentStep: string;
+  projectId?: string;
 }
 
-export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, currentStep }) => {
+export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, currentStep, projectId }) => {
   const { t } = useTranslation();
   
   const { data: developers } = useQuery({
@@ -502,6 +503,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
       {/* Commodités de proximité */}
       <NearbyAmenitiesSelector
+        projectId={projectId}
         value={[]}
         onChange={() => {}}
       />
