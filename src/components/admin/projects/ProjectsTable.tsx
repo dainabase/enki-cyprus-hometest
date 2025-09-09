@@ -140,73 +140,77 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-12">
+            <TableHead className="w-12 flex-shrink-0">
               <Checkbox
                 aria-label={t('actions.selectAll') || 'Tout sélectionner'}
                 checked={isAllSelected ? true : isIndeterminate ? "indeterminate" : false}
                 onCheckedChange={(checked) => handleSelectAll(checked === true)}
               />
             </TableHead>
-            <TableHead className="min-w-[200px]">{t('fields.name')}</TableHead>
-            <TableHead className="min-w-[140px]">{t('fields.developer')}</TableHead>
-            <TableHead className="min-w-[120px]">{t('fields.zone')}</TableHead>
-            <TableHead className="min-w-[120px]">Statut</TableHead>
-            <TableHead className="min-w-[80px]">{t('fields.units')}</TableHead>
-            <TableHead className="min-w-[120px]">{t('fields.minPrice')}</TableHead>
-            <TableHead className="min-w-[60px] text-center">GV</TableHead>
-            <TableHead className="text-right min-w-[120px]">Actions</TableHead>
+            <TableHead className="w-[250px]">{t('fields.name')}</TableHead>
+            <TableHead className="w-[150px]">{t('fields.developer')}</TableHead>
+            <TableHead className="w-[120px]">{t('fields.zone')}</TableHead>
+            <TableHead className="w-[120px]">Statut</TableHead>
+            <TableHead className="w-[80px] text-center">{t('fields.units')}</TableHead>
+            <TableHead className="w-[120px]">{t('fields.minPrice')}</TableHead>
+            <TableHead className="w-[60px] text-center">GV</TableHead>
+            <TableHead className="w-[120px] text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {projects.map((project) => (
             <TableRow key={project.id} className={selectedProjects.includes(project.id) ? "bg-primary/5" : undefined}>
-              <TableCell>
+              <TableCell className="w-12">
                 <Checkbox
                   aria-label={t('actions.selectItem') || 'Sélectionner'}
                   checked={selectedProjects.includes(project.id)}
                   onCheckedChange={(checked) => handleSelectProject(project.id, checked === true)}
                 />
               </TableCell>
-              <TableCell className="font-medium">
+              <TableCell className="w-[250px]">
                 <div className="flex items-center gap-2">
-                  <Building className="w-4 h-4 text-muted-foreground" />
-                  <div>
-                    <div className="font-semibold">{project.title}</div>
+                  <Building className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                  <div className="min-w-0 flex-1">
+                    <div className="font-semibold truncate" title={project.title}>
+                      {project.title}
+                    </div>
                     {project.subtitle && (
-                      <div className="text-sm text-muted-foreground">{project.subtitle}</div>
+                      <div className="text-sm text-muted-foreground truncate" title={project.subtitle}>
+                        {project.subtitle}
+                      </div>
                     )}
                   </div>
                 </div>
               </TableCell>
-              <TableCell>
+              <TableCell className="w-[150px]">
                 <div className="text-sm font-medium truncate" title={project.developer?.name || 'Non assigné'}>
                   {project.developer?.name || 'Non assigné'}
                 </div>
               </TableCell>
-              <TableCell>
+              <TableCell className="w-[120px]">
                 {getZoneBadge(project.cyprus_zone)}
               </TableCell>
-              <TableCell>
+              <TableCell className="w-[120px]">
                 {getStatusBadge(project.status)}
               </TableCell>
-              <TableCell>
+              <TableCell className="w-[80px] text-center">
                 <span className="font-mono text-sm">
                   {calculateUnits(project)}
                 </span>
               </TableCell>
-              <TableCell>
+              <TableCell className="w-[120px]">
                 <span className="font-semibold text-primary">
                   {formatPrice(project.price)}
                 </span>
               </TableCell>
-              <TableCell className="text-center">
+              <TableCell className="w-[60px] text-center">
                 {(project.golden_visa_eligible || project.golden_visa_eligible_new) && (
                   <div title="Golden Visa Eligible">
                     <Award className="w-5 h-5 text-yellow-600 mx-auto" />
                   </div>
                 )}
               </TableCell>
-              <TableCell className="text-right">
+              <TableCell className="w-[120px] text-right">
                 <div className="flex items-center justify-end gap-2">
                   <Button
                     variant="ghost"
