@@ -220,6 +220,42 @@ export type Database = {
         }
         Relationships: []
       }
+      building_drafts: {
+        Row: {
+          auto_save_enabled: boolean
+          building_id: string | null
+          created_at: string
+          current_step: string
+          form_data: Json
+          id: string
+          session_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          auto_save_enabled?: boolean
+          building_id?: string | null
+          created_at?: string
+          current_step?: string
+          form_data?: Json
+          id?: string
+          session_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          auto_save_enabled?: boolean
+          building_id?: string | null
+          created_at?: string
+          current_step?: string
+          form_data?: Json
+          id?: string
+          session_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       building_images: {
         Row: {
           building_id: string | null
@@ -422,6 +458,36 @@ export type Database = {
           project_id?: string
           promoter_id?: string
           status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      contact_drafts: {
+        Row: {
+          auto_save_enabled: boolean
+          created_at: string
+          form_data: Json
+          id: string
+          session_id: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          auto_save_enabled?: boolean
+          created_at?: string
+          form_data?: Json
+          id?: string
+          session_id: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          auto_save_enabled?: boolean
+          created_at?: string
+          form_data?: Json
+          id?: string
+          session_id?: string
           updated_at?: string
           user_id?: string | null
         }
@@ -736,6 +802,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      lexaia_drafts: {
+        Row: {
+          auto_save_enabled: boolean
+          created_at: string
+          form_data: Json
+          id: string
+          session_id: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          auto_save_enabled?: boolean
+          created_at?: string
+          form_data?: Json
+          id?: string
+          session_id: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          auto_save_enabled?: boolean
+          created_at?: string
+          form_data?: Json
+          id?: string
+          session_id?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
       }
       nearby_amenities: {
         Row: {
@@ -1643,6 +1739,66 @@ export type Database = {
           name?: string
           projects?: string[]
           updated_at?: string
+        }
+        Relationships: []
+      }
+      registration_drafts: {
+        Row: {
+          auto_save_enabled: boolean
+          created_at: string
+          email_attempted: string | null
+          form_data: Json
+          id: string
+          session_id: string
+          updated_at: string
+        }
+        Insert: {
+          auto_save_enabled?: boolean
+          created_at?: string
+          email_attempted?: string | null
+          form_data?: Json
+          id?: string
+          session_id: string
+          updated_at?: string
+        }
+        Update: {
+          auto_save_enabled?: boolean
+          created_at?: string
+          email_attempted?: string | null
+          form_data?: Json
+          id?: string
+          session_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      search_drafts: {
+        Row: {
+          auto_save_enabled: boolean
+          created_at: string
+          form_data: Json
+          id: string
+          session_id: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          auto_save_enabled?: boolean
+          created_at?: string
+          form_data?: Json
+          id?: string
+          session_id: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          auto_save_enabled?: boolean
+          created_at?: string
+          form_data?: Json
+          id?: string
+          session_id?: string
+          updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
