@@ -51,51 +51,67 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
   const [dragOver, setDragOver] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('hero');
 
+  // Enforce one photo per catégorie
+  React.useEffect(() => {
+    const seen = new Set<string>();
+    const normalized = (field.value || []).slice().reverse().filter((p) => {
+      if (seen.has(p.category)) return false;
+      seen.add(p.category);
+      return true;
+    }).reverse();
+    if (normalized.length !== (field.value || []).length) {
+      field.onChange(normalized);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(field.value)]);
+
+
   const handleUpload = async (files: File[], category: string) => {
     if (!files || files.length === 0) return;
-    
+
     setUploading(true);
-    const newPhotos: CategorizedPhoto[] = [];
-    
     try {
-      for (const file of files) {
-        const fileName = `${Date.now()}-${file.name}`;
-        const { data, error } = await supabase.storage
-          .from(bucketName)
-          .upload(fileName, file);
-        
-        if (error) {
-          console.error('Upload error:', error);
-          toast({
-            title: "Erreur d'upload",
-            description: `Impossible d'uploader ${file.name}`,
-            variant: "destructive"
-          });
-          continue;
-        }
-        
-        if (data) {
-          const { data: { publicUrl } } = supabase.storage
-            .from(bucketName)
-            .getPublicUrl(fileName);
-          
-          newPhotos.push({
-            url: publicUrl,
-            category: category as CategorizedPhoto['category'],
-            isPrimary: category === 'hero' && !field.value.find(p => p.category === 'hero'),
-            caption: ''
-          });
-        }
-      }
-      
-      field.onChange([...(field.value || []), ...newPhotos]);
-      
-      if (newPhotos.length > 0) {
+      const file = files[0];
+      if (files.length > 1) {
         toast({
-          title: "Upload réussi",
-          description: `${newPhotos.length} photo(s) ajoutée(s) à ${PHOTO_CATEGORIES.find(c => c.value === category)?.label}`,
+          title: "1 photo maximum par type",
+          description: "Seule la première image a été prise en compte.",
         });
       }
+
+      const fileName = `${Date.now()}-${file.name}`;
+      const { data, error } = await supabase.storage
+        .from(bucketName)
+        .upload(fileName, file);
+
+      if (error) {
+        console.error('Upload error:', error);
+        toast({
+          title: "Erreur d'upload",
+          description: `Impossible d'uploader ${file.name}`,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from(bucketName)
+        .getPublicUrl(fileName);
+
+      const newPhoto: CategorizedPhoto = {
+        url: publicUrl,
+        category: category as CategorizedPhoto['category'],
+        isPrimary: category === 'hero',
+        caption: ''
+      };
+
+      const withoutCategory = (field.value || []).filter(p => p.category !== category);
+      field.onChange([...withoutCategory, newPhoto]);
+
+      toast({
+        title: "Photo mise à jour",
+        description: `${PHOTO_CATEGORIES.find(c => c.value === category)?.label} remplacée`,
+      });
     } catch (error) {
       console.error('Upload error:', error);
       toast({
@@ -111,7 +127,7 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDragOver(false);
-    const files = Array.from(e.dataTransfer.files);
+    const files = Array.from(e.dataTransfer.files).slice(0, 1);
     handleUpload(files, selectedCategory);
   };
 
@@ -206,11 +222,11 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
                     id={`file-upload-${category}`}
                     type="file"
                     accept="image/*"
-                    multiple={category !== 'hero'}
+                    multiple={false}
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                     onChange={(e) => {
                       setSelectedCategory(category);
-                      handleUpload(Array.from(e.target.files || []), category);
+                      handleUpload(Array.from(e.target.files || []).slice(0, 1), category);
                     }}
                     disabled={uploading}
                   />
@@ -256,6 +272,7 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
                           src={photo.url} 
                           alt={photo.caption || `${categoryInfo?.label} ${photoIndex + 1}`}
                           className="w-full h-full object-cover"
+                          onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/placeholder.svg'; }}
                         />
                         
                         {/* Actions overlay */}
@@ -444,6 +461,7 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
                                 src={photo.url} 
                                 alt={photo.caption || `${cat.label} ${photoIndex + 1}`}
                                 className="w-full h-full object-cover"
+                                onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/placeholder.svg'; }}
                               />
                               
                               {/* Actions overlay */}
