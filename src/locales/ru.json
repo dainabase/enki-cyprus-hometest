@@ -338,7 +338,7 @@
     "shortcuts": "Горячие Клавиши",
     "api": "Справочник API",
     "external": "Внешние Ссылки"
-    }
+  },
   },
   "pagination": {
     "displaying": "Показаны {{start}} - {{end}} из {{total}} результатов",
