@@ -42,6 +42,20 @@ const AdminProjectDetail = () => {
             building_type,
             construction_status,
             energy_rating
+          ),
+          project_amenities:project_amenities(
+            is_available,
+            is_paid,
+            details,
+            amenity:amenities(id, name, category, icon)
+          ),
+          project_nearby_amenities:project_nearby_amenities(
+            distance_km,
+            distance_minutes_walk,
+            distance_minutes_drive,
+            quantity,
+            details,
+            nearby:nearby_amenities(id, name, category, icon)
           )
         `)
         .eq('id', id)
@@ -405,6 +419,138 @@ const AdminProjectDetail = () => {
                 <p>Aucune image pour ce projet</p>
                 <p className="text-sm">Utilisez le formulaire d'édition pour ajouter des images</p>
               </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Caractéristiques du projet */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Caractéristiques du projet</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+              <div>
+                <h4 className="text-muted-foreground text-xs">Développeur</h4>
+                <p className="font-medium">{getDeveloper(project.developer)?.name || 'Non défini'}</p>
+              </div>
+              <div>
+                <h4 className="text-muted-foreground text-xs">Lancement</h4>
+                <p className="font-medium">
+                  {project.launch_date ? new Date(project.launch_date).toLocaleDateString('fr-FR', { year: 'numeric', month: '2-digit' }) : '—'}
+                </p>
+              </div>
+              <div>
+                <h4 className="text-muted-foreground text-xs">Livraison prévue</h4>
+                <p className="font-medium">
+                  {(project.completion_date_new || project.completion_date) ? new Date(project.completion_date_new || project.completion_date).toLocaleDateString('fr-FR', { year: 'numeric', month: '2-digit' }) : '—'}
+                </p>
+              </div>
+              <div>
+                <h4 className="text-muted-foreground text-xs">Adresse</h4>
+                <p className="font-medium">{project.full_address || '—'}</p>
+              </div>
+              <div>
+                <h4 className="text-muted-foreground text-xs">Ville / Région / Quartier</h4>
+                <p className="font-medium">{[project.city, project.region, project.neighborhood].filter(Boolean).join(' · ') || '—'}</p>
+              </div>
+              <div>
+                <h4 className="text-muted-foreground text-xs">Zone de Chypre</h4>
+                <p className="font-medium capitalize">{project.cyprus_zone || '—'}</p>
+              </div>
+              <div>
+                <h4 className="text-muted-foreground text-xs">Proximité mer (km)</h4>
+                <p className="font-medium">{project.proximity_sea_km ?? '—'}</p>
+              </div>
+              <div>
+                <h4 className="text-muted-foreground text-xs">Proximité aéroport (km)</h4>
+                <p className="font-medium">{project.proximity_airport_km ?? '—'}</p>
+              </div>
+              <div>
+                <h4 className="text-muted-foreground text-xs">Centre-ville (km)</h4>
+                <p className="font-medium">{project.proximity_city_center_km ?? '—'}</p>
+              </div>
+              <div>
+                <h4 className="text-muted-foreground text-xs">Étages / Parkings / Caves</h4>
+                <p className="font-medium">{[project.floors_total && `${project.floors_total} ét.`, project.parking_spaces && `${project.parking_spaces} pk`, project.storage_spaces && `${project.storage_spaces} st`].filter(Boolean).join(' · ') || '—'}</p>
+              </div>
+              <div>
+                <h4 className="text-muted-foreground text-xs">Unités</h4>
+                <p className="font-medium">{[project.total_units_new && `${project.total_units_new} tot.`, project.units_available_new && `${project.units_available_new} disp.`].filter(Boolean).join(' · ') || '—'}</p>
+              </div>
+              <div>
+                <h4 className="text-muted-foreground text-xs">Prix / ROI / Rendement</h4>
+                <p className="font-medium">{[project.price && `${Number(project.price).toLocaleString('fr-FR')} €`, project.roi_estimate_percent && `${project.roi_estimate_percent}% ROI`, project.rental_yield_percent && `${project.rental_yield_percent}% locatif`].filter(Boolean).join(' · ') || '—'}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Prestations sélectionnées */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Prestations</CardTitle>
+            <CardDescription>Toutes les commodités sélectionnées pour ce projet</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {Array.isArray(project.project_amenities) && project.project_amenities.length > 0 ? (
+              <div className="space-y-6">
+                {Object.entries((project.project_amenities as any[]).reduce((acc: any, pa: any) => {
+                  if (!pa?.is_available || !pa?.amenity) return acc;
+                  const cat = pa.amenity.category || 'Autres';
+                  acc[cat] = acc[cat] || [];
+                  acc[cat].push(pa.amenity.name);
+                  return acc;
+                }, {} as Record<string, string[]>)).map(([cat, items]) => (
+                  <div key={cat}>
+                    <h4 className="text-sm font-medium mb-2 capitalize text-foreground">{cat}</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {(items as string[]).map((name) => (
+                        <Badge key={name} variant="outline">{name}</Badge>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">Aucune prestation sélectionnée</p>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* À proximité */}
+        <Card>
+          <CardHeader>
+            <CardTitle>À proximité</CardTitle>
+            <CardDescription>Commodités proches et distances</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {Array.isArray(project.project_nearby_amenities) && project.project_nearby_amenities.length > 0 ? (
+              <div className="space-y-6">
+                {Object.entries((project.project_nearby_amenities as any[]).reduce((acc: any, pna: any) => {
+                  if (!pna?.nearby) return acc;
+                  const cat = pna.nearby.category || 'Autres';
+                  acc[cat] = acc[cat] || [];
+                  acc[cat].push(pna);
+                  return acc;
+                }, {} as Record<string, any[]>)).map(([cat, items]) => (
+                  <div key={cat}>
+                    <h4 className="text-sm font-medium mb-2 capitalize text-foreground">{cat}</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {(items as any[]).map((it) => (
+                        <div key={it.nearby.id} className="rounded border p-3 text-sm">
+                          <div className="font-medium">{it.nearby.name}</div>
+                          <div className="text-muted-foreground mt-1">
+                            {it.distance_km ?? '—'} km · {it.distance_minutes_walk ?? '—'} min à pied · {it.distance_minutes_drive ?? '—'} min en voiture
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">Aucune donnée de proximité</p>
             )}
           </CardContent>
         </Card>
