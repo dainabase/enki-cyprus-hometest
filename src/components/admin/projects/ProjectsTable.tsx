@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Edit, Trash2, Eye, MapPin, Building } from 'lucide-react';
+import { Edit, Trash2, Eye, MapPin, Building, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -123,15 +123,14 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
   };
 
   const calculateUnits = (project: any) => {
-    // Calculate from buildings data if available
+    // Prioritize new fields, then buildings data, then legacy fields
     const buildings = Array.isArray(project.buildings) ? project.buildings : [];
     const totalFromBuildings = buildings.reduce((sum: number, building: any) => {
       return sum + (building.total_units || 0);
     }, 0);
     
-    // Use buildings data if available, otherwise fall back to project data
-    const available = project.units_available || Math.floor(totalFromBuildings * 0.3);
-    const total = totalFromBuildings || project.total_units || 0;
+    const available = project.units_available_new || project.units_available || Math.floor(totalFromBuildings * 0.3) || 0;
+    const total = project.total_units_new || totalFromBuildings || project.total_units || 0;
     
     return `${available}/${total}`;
   };
@@ -148,14 +147,14 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
                 onCheckedChange={(checked) => handleSelectAll(checked === true)}
               />
             </TableHead>
-            <TableHead>{t('fields.name')}</TableHead>
-            <TableHead>{t('fields.developer')}</TableHead>
-            <TableHead>{t('fields.zone')}</TableHead>
-            <TableHead>Statut</TableHead>
-            <TableHead>{t('fields.units')}</TableHead>
-            <TableHead>{t('fields.minPrice')}</TableHead>
-            <TableHead>Golden Visa</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead className="min-w-[200px]">{t('fields.name')}</TableHead>
+            <TableHead className="min-w-[140px]">{t('fields.developer')}</TableHead>
+            <TableHead className="min-w-[120px]">{t('fields.zone')}</TableHead>
+            <TableHead className="min-w-[120px]">Statut</TableHead>
+            <TableHead className="min-w-[80px]">{t('fields.units')}</TableHead>
+            <TableHead className="min-w-[120px]">{t('fields.minPrice')}</TableHead>
+            <TableHead className="min-w-[60px] text-center">GV</TableHead>
+            <TableHead className="text-right min-w-[120px]">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -180,7 +179,7 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
                 </div>
               </TableCell>
               <TableCell>
-                <div className="text-sm">
+                <div className="text-sm font-medium truncate" title={project.developer?.name || 'Non assigné'}>
                   {project.developer?.name || 'Non assigné'}
                 </div>
               </TableCell>
@@ -200,11 +199,11 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
                   {formatPrice(project.price)}
                 </span>
               </TableCell>
-              <TableCell>
-                {project.golden_visa_eligible && (
-                  <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
-                    ✨ {t('fields.goldenVisa')}
-                  </Badge>
+              <TableCell className="text-center">
+                {(project.golden_visa_eligible || project.golden_visa_eligible_new) && (
+                  <div title="Golden Visa Eligible">
+                    <Award className="w-5 h-5 text-yellow-600 mx-auto" />
+                  </div>
                 )}
               </TableCell>
               <TableCell className="text-right">
