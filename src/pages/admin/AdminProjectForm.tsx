@@ -49,7 +49,7 @@ export const AdminProjectForm: React.FC = () => {
   }, [searchParams]);
 
   const form = useForm<ProjectFormData>({
-    resolver: zodResolver(projectSchema),
+    mode: 'onSubmit',
     defaultValues: {
       title: '',
       description: '',
