@@ -245,24 +245,24 @@ export default function AdminDevelopers() {
   // Load draft when modal opens
   useEffect(() => {
     if (existingDraft && isModalOpen) {
-      const draftFormData = existingDraft.form_data as any;
-      setFormData({
-        name: draftFormData?.name || '',
-        email: draftFormData?.email || '',
-        phone: draftFormData?.phone || '',
-        address: draftFormData?.address || '',
-        website: draftFormData?.website || '',
-        main_city: draftFormData?.main_city || '',
-        commission_rate: draftFormData?.commission_rate || 3,
-        founded_year: draftFormData?.founded_year,
-        years_experience: draftFormData?.years_experience,
-        main_activities: draftFormData?.main_activities || '',
-        key_projects: draftFormData?.key_projects || '',
-        financial_stability: draftFormData?.financial_stability || '',
-        payment_terms: draftFormData?.payment_terms || '',
-        status: draftFormData?.status || 'active',
-        rating_score: draftFormData?.rating_score
-      });
+      const d = existingDraft.form_data as any;
+      setFormData(prev => ({
+        name: d?.name && d.name.trim() !== '' ? d.name : prev.name,
+        email: d?.email && d.email.trim() !== '' ? d.email : prev.email,
+        phone: d?.phone && d.phone.trim() !== '' ? d.phone : prev.phone,
+        address: d?.address && d.address.trim() !== '' ? d.address : prev.address,
+        website: d?.website && d.website.trim() !== '' ? d.website : prev.website,
+        main_city: d?.main_city && d.main_city.trim() !== '' ? d.main_city : prev.main_city,
+        commission_rate: (d?.commission_rate ?? prev.commission_rate),
+        founded_year: (d?.founded_year ?? prev.founded_year),
+        years_experience: (d?.years_experience ?? prev.years_experience),
+        main_activities: d?.main_activities && d.main_activities.trim() !== '' ? d.main_activities : prev.main_activities,
+        key_projects: d?.key_projects && d.key_projects.trim() !== '' ? d.key_projects : prev.key_projects,
+        financial_stability: d?.financial_stability && d.financial_stability.trim() !== '' ? d.financial_stability : prev.financial_stability,
+        payment_terms: d?.payment_terms && d.payment_terms.trim() !== '' ? d.payment_terms : prev.payment_terms,
+        status: (d?.status ?? prev.status),
+        rating_score: (d?.rating_score ?? prev.rating_score)
+      }));
       toast.info('Brouillon restauré');
     }
   }, [existingDraft, isModalOpen]);
@@ -324,33 +324,33 @@ export default function AdminDevelopers() {
   // Save developer mutation
   const saveDevMutation = useMutation({
     mutationFn: async (data: DeveloperFormData) => {
-      const developerData = {
-        name: data.name,
-        email_primary: data.email,
-        phone_numbers: data.phone ? [data.phone] : [],
-        addresses: data.address ? [data.address] : [],
-        website: data.website,
-        main_city: data.main_city,
-        commission_rate: data.commission_rate,
-        founded_year: data.founded_year,
-        years_experience: data.years_experience,
-        main_activities: data.main_activities,
-        key_projects: data.key_projects,
-        financial_stability: data.financial_stability,
-        payment_terms: data.payment_terms,
-        status: data.status,
-        rating_score: data.rating_score,
-        contact_info: {
-          email: data.email,
-          phone: data.phone,
-          address: data.address
-        }
-      };
-
       if (editingDeveloper) {
+        const updateData = {
+          name: data.name || editingDeveloper.name,
+          email_primary: data.email || editingDeveloper.email_primary,
+          phone_numbers: data.phone ? [data.phone] : (editingDeveloper.phone_numbers || []),
+          addresses: data.address ? [data.address] : (editingDeveloper.addresses || []),
+          website: data.website || editingDeveloper.website,
+          main_city: data.main_city || editingDeveloper.main_city,
+          commission_rate: (data.commission_rate ?? editingDeveloper.commission_rate),
+          founded_year: (data.founded_year ?? editingDeveloper.founded_year),
+          years_experience: (data.years_experience ?? editingDeveloper.years_experience),
+          main_activities: data.main_activities || editingDeveloper.main_activities,
+          key_projects: data.key_projects || editingDeveloper.key_projects,
+          financial_stability: data.financial_stability || editingDeveloper.financial_stability,
+          payment_terms: data.payment_terms || editingDeveloper.payment_terms,
+          status: data.status || (editingDeveloper.status as any),
+          rating_score: (data.rating_score ?? editingDeveloper.rating_score),
+          contact_info: {
+            email: data.email || editingDeveloper.contact_info?.email || editingDeveloper.email_primary || '',
+            phone: data.phone || editingDeveloper.contact_info?.phone || (editingDeveloper.phone_numbers?.[0] || ''),
+            address: data.address || editingDeveloper.contact_info?.address || (editingDeveloper.addresses?.[0] || '')
+          }
+        };
+
         const { data: result, error } = await supabase
           .from('developers')
-          .update(developerData)
+          .update(updateData)
           .eq('id', editingDeveloper.id)
           .select()
           .single();
@@ -358,9 +358,31 @@ export default function AdminDevelopers() {
         if (error) throw error;
         return result;
       } else {
+        const insertData = {
+          name: data.name,
+          email_primary: data.email,
+          phone_numbers: data.phone ? [data.phone] : [],
+          addresses: data.address ? [data.address] : [],
+          website: data.website,
+          main_city: data.main_city,
+          commission_rate: data.commission_rate,
+          founded_year: data.founded_year,
+          years_experience: data.years_experience,
+          main_activities: data.main_activities,
+          key_projects: data.key_projects,
+          financial_stability: data.financial_stability,
+          payment_terms: data.payment_terms,
+          status: data.status,
+          rating_score: data.rating_score,
+          contact_info: {
+            email: data.email,
+            phone: data.phone,
+            address: data.address
+          }
+        };
         const { data: result, error } = await supabase
           .from('developers')
-          .insert(developerData)
+          .insert(insertData)
           .select()
           .single();
         
