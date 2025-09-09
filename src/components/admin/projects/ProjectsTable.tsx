@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Edit, Trash2, Eye, MapPin, Building, Award } from 'lucide-react';
+import { Edit, Trash2, Eye, MapPin, Building, Award, Crown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -215,11 +215,18 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
                 </span>
               </TableCell>
               <TableCell className="w-[60px] text-center">
-                {(project.golden_visa_eligible || project.golden_visa_eligible_new) && (
-                  <div title="Golden Visa Eligible">
-                    <Award className="w-5 h-5 text-yellow-600 mx-auto" />
-                  </div>
-                )}
+                <div className="flex items-center justify-center gap-1">
+                  {(project.golden_visa_eligible || project.golden_visa_eligible_new) && (
+                    <div title="Golden Visa Eligible">
+                      <Award className="w-4 h-4 text-yellow-600" />
+                    </div>
+                  )}
+                  {project.exclusive_commercialization && (
+                    <div title="Commercialisation Exclusive">
+                      <Crown className="w-4 h-4 text-purple-600" />
+                    </div>
+                  )}
+                </div>
               </TableCell>
               <TableCell className="w-[120px] text-right">
                 <div className="flex items-center justify-end gap-2">

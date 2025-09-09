@@ -2,7 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
-import { Edit, MapPin, Building, Calendar, Euro, Star } from 'lucide-react';
+import { Edit, MapPin, Building, Calendar, Euro, Star, Crown } from 'lucide-react';
 
 interface ProjectListViewProps {
   projects: any[];
@@ -72,10 +72,15 @@ export const ProjectListView = ({
                     {project.status === 'delivered' && 'Livré'}
                     {project.status === 'sold' && 'Vendu'}
                   </Badge>
-                  {project.golden_visa_eligible && (
+                  {(project.golden_visa_eligible || project.golden_visa_eligible_new) && (
                     <div className="flex items-center gap-1 text-xs text-amber-600">
                       <Star className="h-3 w-3" />
                       <span>Golden Visa</span>
+                    </div>
+                  )}
+                  {project.exclusive_commercialization && (
+                    <div title="Exclusivité">
+                      <Crown className="h-4 w-4 text-purple-600" />
                     </div>
                   )}
                 </div>

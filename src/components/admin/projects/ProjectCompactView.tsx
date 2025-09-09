@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Edit, Star } from 'lucide-react';
+import { Edit, Star, Crown } from 'lucide-react';
 
 interface ProjectCompactViewProps {
   projects: any[];
@@ -87,8 +87,11 @@ export const ProjectCompactView = ({
                 {project.status === 'delivered' && 'Livré'}
                 {project.status === 'sold' && 'Vendu'}
               </Badge>
-              {project.golden_visa_eligible && (
+              {(project.golden_visa_eligible || project.golden_visa_eligible_new) && (
                 <Star className="h-3 w-3 text-amber-500" />
+              )}
+              {project.exclusive_commercialization && (
+                <Crown className="h-3 w-3 text-purple-500" />
               )}
             </div>
           </div>

@@ -14,7 +14,9 @@ import {
   Ruler,
   Users,
   Car,
-  Zap
+  Zap,
+  Crown,
+  Award
 } from 'lucide-react';
 
 interface ProjectDetailedViewProps {
@@ -86,12 +88,24 @@ export const ProjectDetailedView = ({
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Badge className={getStatusColor(project.status)}>
-                  {project.status === 'available' && 'Disponible'}
-                  {project.status === 'under_construction' && 'En construction'}
-                  {project.status === 'delivered' && 'Livré'}
-                  {project.status === 'sold' && 'Vendu'}
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <Badge className={getStatusColor(project.status)}>
+                    {project.status === 'available' && 'Disponible'}
+                    {project.status === 'under_construction' && 'En construction'}
+                    {project.status === 'delivered' && 'Livré'}
+                    {project.status === 'sold' && 'Vendu'}
+                  </Badge>
+                  {(project.golden_visa_eligible || project.golden_visa_eligible_new) && (
+                    <div title="Golden Visa Eligible">
+                      <Award className="h-4 w-4 text-yellow-600" />
+                    </div>
+                  )}
+                  {project.exclusive_commercialization && (
+                    <div title="Commercialisation Exclusive">
+                      <Crown className="h-4 w-4 text-purple-600" />
+                    </div>
+                  )}
+                </div>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -107,33 +121,33 @@ export const ProjectDetailedView = ({
           <CardContent className="space-y-4">
             {/* Informations principales */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div className="flex items-center gap-2">
-                <Building className="h-4 w-4 text-muted-foreground" />
-                <div>
-                  <span className="text-sm text-muted-foreground">Développeur</span>
-                  <p className="font-medium">{getDeveloperName(project.developer)}</p>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Building className="h-4 w-4 flex-shrink-0" />
+                  <span>Développeur</span>
                 </div>
+                <p className="font-medium pl-6">{getDeveloperName(project.developer)}</p>
               </div>
               
-              <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-muted-foreground" />
-                <div>
-                  <span className="text-sm text-muted-foreground">Localisation</span>
-                  <p className="font-medium">
-                    {project.city || 'Ville non définie'}
-                    {project.neighborhood && `, ${project.neighborhood}`}
-                  </p>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <MapPin className="h-4 w-4 flex-shrink-0" />
+                  <span>Localisation</span>
                 </div>
+                <p className="font-medium pl-6">
+                  {project.city || 'Ville non définie'}
+                  {project.neighborhood && `, ${project.neighborhood}`}
+                </p>
               </div>
               
-              <div className="flex items-center gap-2">
-                <Euro className="h-4 w-4 text-green-600" />
-                <div>
-                  <span className="text-sm text-muted-foreground">Prix</span>
-                  <p className="font-semibold text-green-600">
-                    {formatPrice(project.price || project.price_from || 0)}
-                  </p>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Euro className="h-4 w-4 flex-shrink-0 text-green-600" />
+                  <span>Prix</span>
                 </div>
+                <p className="font-semibold text-green-600 pl-6">
+                  {formatPrice(project.price || project.price_from || 0)}
+                </p>
               </div>
             </div>
 
@@ -142,44 +156,44 @@ export const ProjectDetailedView = ({
             {/* Détails techniques */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {project.bedrooms_range && (
-                <div className="flex items-center gap-2">
-                  <Home className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <span className="text-xs text-muted-foreground">Chambres</span>
-                    <p className="text-sm font-medium">{project.bedrooms_range}</p>
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Home className="h-4 w-4 flex-shrink-0" />
+                    <span>Chambres</span>
                   </div>
+                  <p className="text-sm font-medium pl-6">{project.bedrooms_range}</p>
                 </div>
               )}
               
               {project.built_area_m2 && (
-                <div className="flex items-center gap-2">
-                  <Ruler className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <span className="text-xs text-muted-foreground">Surface</span>
-                    <p className="text-sm font-medium">{project.built_area_m2} m²</p>
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Ruler className="h-4 w-4 flex-shrink-0" />
+                    <span>Surface</span>
                   </div>
+                  <p className="text-sm font-medium pl-6">{project.built_area_m2} m²</p>
                 </div>
               )}
               
               {(project.total_units || project.total_units_new) && (
-                <div className="flex items-center gap-2">
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <span className="text-xs text-muted-foreground">Total unités</span>
-                    <p className="text-sm font-medium">
-                      {project.total_units_new || project.total_units}
-                    </p>
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Users className="h-4 w-4 flex-shrink-0" />
+                    <span>Unités</span>
                   </div>
+                  <p className="text-sm font-medium pl-6">
+                    {project.total_units_new || project.total_units}
+                  </p>
                 </div>
               )}
               
               {project.parking_spaces && (
-                <div className="flex items-center gap-2">
-                  <Car className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <span className="text-xs text-muted-foreground">Parkings</span>
-                    <p className="text-sm font-medium">{project.parking_spaces}</p>
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Car className="h-4 w-4 flex-shrink-0" />
+                    <span>Parking</span>
                   </div>
+                  <p className="text-sm font-medium pl-6">{project.parking_spaces}</p>
                 </div>
               )}
             </div>
@@ -200,8 +214,8 @@ export const ProjectDetailedView = ({
                 </div>
               </div>
               
-              <div className="flex items-center gap-2">
-                {project.golden_visa_eligible && (
+              <div className="flex items-center gap-4">
+                {(project.golden_visa_eligible || project.golden_visa_eligible_new) && (
                   <div className="flex items-center gap-1 text-amber-600">
                     <Star className="h-4 w-4" />
                     <span className="text-sm">Golden Visa éligible</span>
@@ -211,7 +225,14 @@ export const ProjectDetailedView = ({
                 {project.energy_rating && (
                   <div className="flex items-center gap-1 text-green-600">
                     <Zap className="h-4 w-4" />
-                    <span className="text-sm">Classe {project.energy_rating}</span>
+                    <span className="text-sm">Classe énergétique {project.energy_rating}</span>
+                  </div>
+                )}
+                
+                {project.exclusive_commercialization && (
+                  <div className="flex items-center gap-1 text-purple-600">
+                    <Crown className="h-4 w-4" />
+                    <span className="text-sm">Exclusivité</span>
                   </div>
                 )}
               </div>

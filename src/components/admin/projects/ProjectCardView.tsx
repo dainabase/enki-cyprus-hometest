@@ -2,7 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Edit, MapPin, Building, Calendar, Euro, Star } from 'lucide-react';
+import { Edit, MapPin, Building, Calendar, Euro, Star, Crown } from 'lucide-react';
 
 interface ProjectCardViewProps {
   projects: any[];
@@ -111,12 +111,19 @@ export const ProjectCardView = ({
                 {project.status === 'sold' && 'Vendu'}
               </Badge>
               
-              {project.golden_visa_eligible && (
-                <div className="flex items-center gap-1 text-xs text-amber-600">
-                  <Star className="h-3 w-3" />
-                  <span>Golden Visa</span>
-                </div>
-              )}
+              <div className="flex items-center gap-2">
+                {(project.golden_visa_eligible || project.golden_visa_eligible_new) && (
+                  <div className="flex items-center gap-1 text-xs text-amber-600">
+                    <Star className="h-3 w-3" />
+                    <span>Golden Visa</span>
+                  </div>
+                )}
+                {project.exclusive_commercialization && (
+                  <div title="Exclusivité">
+                    <Crown className="h-4 w-4 text-purple-600" />
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="text-xs text-muted-foreground">
