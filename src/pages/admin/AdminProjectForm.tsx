@@ -71,7 +71,11 @@ export const AdminProjectForm: React.FC = () => {
       property_sub_type: [],
       exclusive_commercialization: false,
       project_phase: 'off-plan',
-      price: 0
+      price: 0,
+      // Marketing defaults to ensure placeholders show and no weird values
+      meta_title_new: '',
+      meta_description_new: '',
+      project_narrative: ''
     }
   });
 
@@ -264,9 +268,9 @@ export const AdminProjectForm: React.FC = () => {
         warranty_years: data.warranty_years,
         
         // Marketing
-        project_narrative: data.project_narrative,
-        meta_title_new: data.meta_title_new,
-        meta_description_new: data.meta_description_new,
+        project_narrative: typeof data.project_narrative === 'string' ? data.project_narrative : '',
+        meta_title_new: typeof data.meta_title_new === 'string' ? data.meta_title_new : '',
+        meta_description_new: typeof data.meta_description_new === 'string' ? data.meta_description_new : '',
         meta_keywords: data.meta_keywords,
         marketing_highlights: data.marketing_highlights,
         target_audience: data.target_audience,
@@ -302,13 +306,15 @@ export const AdminProjectForm: React.FC = () => {
         return result;
       }
     },
-    onSuccess: (data) => {
+  onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['projects'] });
       toast({
         title: isEdit ? "Projet mis à jour" : "Projet créé",
-        description: `Le projet "${data.title}" a été ${isEdit ? 'mis à jour' : 'créé'} avec succès.`,
+        description: `Le projet "${data.title}" a été ${isEdit ? 'mis à jour' : 'créé'} avec succès. Redirection...`,
       });
-      navigate('/admin/projects');
+      setTimeout(() => {
+        navigate('/admin/projects');
+      }, 900);
     },
     onError: (error) => {
       console.error('Save error:', error);

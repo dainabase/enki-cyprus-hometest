@@ -1045,6 +1045,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Récit marketing</FormLabel>
+                <p className="text-xs text-muted-foreground">Texte narratif pour convaincre: bénéfices, style de vie, preuves sociales. Utilisé sur la fiche projet et pour le SEO long.</p>
                 <FormControl>
                   <Textarea 
                     placeholder="Découvrez une adresse d’exception: architecture contemporaine, matériaux haut de gamme, espaces lumineux, terrasses panoramiques et services premium (conciergerie, fitness, spa). Un investissement sécurisé au cœur de Limassol, idéal pour résidence principale ou rendement locatif soutenu."
