@@ -262,29 +262,63 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
       <Card>
         <CardHeader>
           <CardTitle>Adresse & Localisation</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            L'adresse complète remplit automatiquement tous les champs ci-dessous
+          </p>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Smart Address Input - Improved version with auto-parsing */}
           <FormField
             control={form.control}
             name="full_address"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Adresse complète</FormLabel>
+                <FormLabel className="flex items-center gap-2">
+                  📍 Adresse complète *
+                  <span className="text-xs text-muted-foreground">(remplit automatiquement les champs ci-dessous)</span>
+                </FormLabel>
                 <FormControl>
                   <Input 
-                    placeholder="123 Avenue de la Mer, Limassol" 
+                    placeholder="Tapez l'adresse complète à Chypre... Ex: 28 Amathountos Avenue, Marina, Limassol"
                     {...field}
-                    onBlur={(e) => {
-                      const v = (e.target.value || '').toLowerCase();
-                      const zones: Record<string, string> = { limassol: 'limassol', paphos: 'paphos', larnaca: 'larnaca', nicosia: 'nicosia', famagusta: 'famagusta' };
-                      for (const city of Object.keys(zones)) {
-                        if (v.includes(city)) {
-                          form.setValue('city', city.charAt(0).toUpperCase() + city.slice(1));
-                          form.setValue('cyprus_zone', zones[city]);
-                          break;
-                        }
+                    onChange={(e) => {
+                      field.onChange(e);
+                      // Auto-parse pour remplir les autres champs
+                      const address = e.target.value.toLowerCase();
+                      
+                      // Parse city and set corresponding fields
+                      if (address.includes('limassol')) {
+                        form.setValue('city', 'Limassol');
+                        form.setValue('region', 'Limassol District');
+                        form.setValue('cyprus_zone', 'limassol');
+                      } else if (address.includes('paphos')) {
+                        form.setValue('city', 'Paphos');
+                        form.setValue('region', 'Paphos District');
+                        form.setValue('cyprus_zone', 'paphos');
+                      } else if (address.includes('larnaca')) {
+                        form.setValue('city', 'Larnaca');
+                        form.setValue('region', 'Larnaca District');
+                        form.setValue('cyprus_zone', 'larnaca');
+                      } else if (address.includes('nicosia') || address.includes('lefkosia')) {
+                        form.setValue('city', 'Nicosia');
+                        form.setValue('region', 'Nicosia District');
+                        form.setValue('cyprus_zone', 'nicosia');
+                      } else if (address.includes('famagusta')) {
+                        form.setValue('city', 'Famagusta');
+                        form.setValue('region', 'Famagusta District');
+                        form.setValue('cyprus_zone', 'famagusta');
+                      }
+                      
+                      // Parse neighborhood from common patterns
+                      if (address.includes('marina')) {
+                        form.setValue('neighborhood', 'Marina');
+                      } else if (address.includes('old town') || address.includes('old city')) {
+                        form.setValue('neighborhood', 'Old Town');
+                      } else if (address.includes('tourist area')) {
+                        form.setValue('neighborhood', 'Tourist Area');
                       }
                     }}
+                    className="text-base"
                   />
                 </FormControl>
                 <FormMessage />
@@ -292,15 +326,20 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             )}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Auto-filled fields */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <FormField
               control={form.control}
               name="city"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Ville *</FormLabel>
+                  <FormLabel>Ville * 🏙️</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: Limassol" {...field} />
+                    <Input 
+                      placeholder="Auto-rempli" 
+                      {...field}
+                      className="bg-green-50 border-green-200"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -312,9 +351,13 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="region"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Région</FormLabel>
+                  <FormLabel>Région 🗺️</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: Limassol District" {...field} />
+                    <Input 
+                      placeholder="Auto-rempli" 
+                      {...field}
+                      className="bg-green-50 border-green-200"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -326,36 +369,60 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="neighborhood"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Quartier</FormLabel>
+                  <FormLabel>Quartier 🏘️</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: Marina" {...field} />
+                    <Input 
+                      placeholder="Ex: Marina, Old Town..." 
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="cyprus_zone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Zone Chypre ⚡</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Auto-rempli" 
+                      {...field}
+                      className="bg-green-50 border-green-200"
+                      readOnly
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
           </div>
 
+          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-sm text-blue-700">
+              💡 <strong>Astuce :</strong> Plus l'adresse est précise, plus les champs se remplissent automatiquement ! 
+              Incluez le numéro, la rue, le quartier et la ville pour de meilleurs résultats.
+            </p>
+          </div>
+
+          {/* Additional location details */}
           <FormField
             control={form.control}
-            name="cyprus_zone"
+            name="neighborhood_description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Zone de Chypre</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Sélectionnez une zone" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent className="z-50 bg-background">
-                    <SelectItem value="limassol">Limassol</SelectItem>
-                    <SelectItem value="paphos">Paphos</SelectItem>
-                    <SelectItem value="larnaca">Larnaca</SelectItem>
-                    <SelectItem value="nicosia">Nicosia</SelectItem>
-                    <SelectItem value="famagusta">Famagusta</SelectItem>
-                  </SelectContent>
-                </Select>
+                <FormLabel>Description du quartier</FormLabel>
+                <FormControl>
+                  <Textarea 
+                    placeholder="Décrivez l'ambiance et les caractéristiques du quartier (optionnel)"
+                    rows={3}
+                    {...field} 
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
