@@ -106,7 +106,8 @@ const AdminProjects = () => {
       if (error) throw error;
       console.info('🔎 AdminProjects fetch', { totalCount: count, length: data?.length, first: data?.[0]?.id });
       return { data, count };
-    }
+    },
+    { staleTime: 0, refetchOnMount: 'always', refetchOnReconnect: 'always', refetchOnWindowFocus: true }
   );
 
   React.useEffect(() => {
@@ -134,7 +135,8 @@ const AdminProjects = () => {
         .order('name');
       if (error) throw error;
       return data;
-    }
+    },
+    { staleTime: 0, refetchOnMount: 'always', refetchOnReconnect: 'always', refetchOnWindowFocus: true }
   );
 
   // Sort projects based on current sort settings

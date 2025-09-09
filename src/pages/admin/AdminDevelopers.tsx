@@ -103,7 +103,11 @@ export default function AdminDevelopers() {
       
       if (error) throw error;
       return data || [];
-    }
+    },
+    staleTime: 0,
+    refetchOnMount: 'always',
+    refetchOnReconnect: 'always',
+    refetchOnWindowFocus: true
   });
 
   // Fetch existing draft
