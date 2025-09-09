@@ -40,7 +40,7 @@ export const fetchProjects = async (filters: ProjectFilters = {}) => {
     .select(`
       *,
       developer:developers(id, name, contact_info),
-      buildings(count)
+      buildings!fk_buildings_project_id(count)
     `)
     .order('developer_id', { ascending: true })
     .order('title', { ascending: true });
@@ -71,7 +71,7 @@ export const fetchProject = async (id: string) => {
     .select(`
       *,
       developer:developers(id, name, contact_info, logo, website),
-      buildings(
+      buildings!fk_buildings_project_id(
         id,
         name,
         total_floors,

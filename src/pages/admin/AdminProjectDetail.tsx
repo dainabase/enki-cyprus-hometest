@@ -34,7 +34,7 @@ const AdminProjectDetail = () => {
         .select(`
           *,
           developer:developers(id, name, contact_info, logo, website),
-          buildings(
+          buildings!fk_buildings_project_id(
             id,
             name,
             total_floors,
