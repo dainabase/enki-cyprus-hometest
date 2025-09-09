@@ -242,7 +242,7 @@ const AdminProjects = () => {
                 <CardTitle className="flex items-center justify-between">
                   <span>{group.developerName}</span>
                   <span className="text-sm font-normal text-muted-foreground">
-                    {group.projects.length} projet(s)
+                    {group.projects.length} {t('admin.projects.projectsFound')}
                   </span>
                 </CardTitle>
               </CardHeader>
@@ -434,7 +434,7 @@ const AdminProjects = () => {
         {showFilters && (
           <Card>
             <CardHeader>
-              <CardTitle>Filtres</CardTitle>
+              <CardTitle>{t('admin.filters.title')}</CardTitle>
             </CardHeader>
             <CardContent>
               <ProjectFilters
@@ -455,11 +455,11 @@ const AdminProjects = () => {
                   <div className="flex items-center gap-2">
                     <CheckSquare className="w-5 h-5 text-primary" />
                     <span className="font-medium">
-                      {selectedProjects.length} projet(s) sélectionné(s)
+                      {selectedProjects.length} {t('admin.projects.projectsSelected')}
                     </span>
                   </div>
                   <Button variant="outline" size="sm" onClick={clearSelection}>
-                    Désélectionner tout
+                    {t('admin.projects.deselectAll')}
                   </Button>
                 </div>
                 <div className="flex items-center gap-2">
@@ -470,7 +470,7 @@ const AdminProjects = () => {
                     className="gap-2"
                   >
                     <CheckSquare className="w-4 h-4" />
-                    Tout sélectionner
+                    {t('admin.projects.selectAll')}
                   </Button>
                   <Button 
                     variant="destructive" 
@@ -479,7 +479,7 @@ const AdminProjects = () => {
                     className="gap-2"
                   >
                     <Trash2 className="w-4 h-4" />
-                    Supprimer la sélection
+                    {t('admin.projects.deleteSelected')}
                   </Button>
                 </div>
               </div>

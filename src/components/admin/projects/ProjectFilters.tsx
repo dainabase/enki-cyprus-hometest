@@ -4,6 +4,7 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface FilterState {
   developerId: string;
@@ -19,6 +20,7 @@ interface ProjectFiltersProps {
 }
 
 const ProjectFilters: React.FC<ProjectFiltersProps> = ({ filters, onFiltersChange, developers }) => {
+  const { t } = useTranslation();
   const updateFilter = (key: keyof FilterState, value: any) => {
     onFiltersChange({ ...filters, [key]: value });
   };
@@ -39,11 +41,11 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({ filters, onFiltersChang
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-medium">Filtres</h3>
+        <h3 className="text-lg font-medium">{t('admin.filters.title')}</h3>
         {hasActiveFilters && (
           <Button variant="outline" size="sm" onClick={clearFilters} className="gap-2">
             <X className="w-4 h-4" />
-            Effacer les filtres
+            {t('admin.filters.clearFilters')}
           </Button>
         )}
       </div>
@@ -51,16 +53,16 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({ filters, onFiltersChang
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Developer Filter */}
         <div className="space-y-2">
-          <Label htmlFor="developer-filter">Développeur</Label>
+          <Label htmlFor="developer-filter">{t('admin.filters.developer')}</Label>
           <Select
             value={filters.developerId}
             onValueChange={(value) => updateFilter('developerId', value)}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Tous les développeurs" />
+              <SelectValue placeholder={t('admin.filters.allDevelopers')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Tous les développeurs</SelectItem>
+              <SelectItem value="">{t('admin.filters.allDevelopers')}</SelectItem>
               {developers.map((developer) => (
                 <SelectItem key={developer.id} value={developer.id}>
                   {developer.name}
@@ -72,48 +74,48 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({ filters, onFiltersChang
 
         {/* Zone Filter */}
         <div className="space-y-2">
-          <Label htmlFor="zone-filter">Zone</Label>
+          <Label htmlFor="zone-filter">{t('admin.filters.zone')}</Label>
           <Select
             value={filters.zone}
             onValueChange={(value) => updateFilter('zone', value)}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Toutes les zones" />
+              <SelectValue placeholder={t('admin.filters.allZones')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Toutes les zones</SelectItem>
-              <SelectItem value="limassol">Limassol</SelectItem>
-              <SelectItem value="paphos">Paphos</SelectItem>
-              <SelectItem value="larnaca">Larnaca</SelectItem>
-              <SelectItem value="nicosia">Nicosia</SelectItem>
-              <SelectItem value="famagusta">Famagusta</SelectItem>
+              <SelectItem value="">{t('admin.filters.allZones')}</SelectItem>
+              <SelectItem value="limassol">{t('zones.limassol')}</SelectItem>
+              <SelectItem value="paphos">{t('zones.paphos')}</SelectItem>
+              <SelectItem value="larnaca">{t('zones.larnaca')}</SelectItem>
+              <SelectItem value="nicosia">{t('zones.nicosia')}</SelectItem>
+              <SelectItem value="famagusta">{t('zones.famagusta')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         {/* Status Filter */}
         <div className="space-y-2">
-          <Label htmlFor="status-filter">Statut</Label>
+          <Label htmlFor="status-filter">{t('admin.filters.status')}</Label>
           <Select
             value={filters.status}
             onValueChange={(value) => updateFilter('status', value)}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Tous les statuts" />
+              <SelectValue placeholder={t('admin.filters.allStatuses')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Tous les statuts</SelectItem>
-              <SelectItem value="planning">Planification</SelectItem>
-              <SelectItem value="under_construction">En construction</SelectItem>
-              <SelectItem value="delivered">Livré</SelectItem>
-              <SelectItem value="available">Disponible</SelectItem>
+              <SelectItem value="">{t('admin.filters.allStatuses')}</SelectItem>
+              <SelectItem value="planning">{t('status.planning')}</SelectItem>
+              <SelectItem value="under_construction">{t('status.under_construction')}</SelectItem>
+              <SelectItem value="delivered">{t('status.delivered')}</SelectItem>
+              <SelectItem value="available">{t('status.available')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         {/* Golden Visa Filter */}
         <div className="space-y-2">
-          <Label htmlFor="golden-visa-filter">Golden Visa uniquement</Label>
+          <Label htmlFor="golden-visa-filter">{t('admin.filters.goldenVisaOnly')}</Label>
           <div className="flex items-center space-x-2 pt-2">
             <Switch
               id="golden-visa-filter"
@@ -121,7 +123,7 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({ filters, onFiltersChang
               onCheckedChange={(checked) => updateFilter('goldenVisaOnly', checked)}
             />
             <Label htmlFor="golden-visa-filter" className="text-sm">
-              Projets éligibles uniquement
+              {t('admin.filters.goldenVisaEligible')}
             </Label>
           </div>
         </div>
@@ -130,20 +132,20 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({ filters, onFiltersChang
       {/* Active Filters Summary */}
       {hasActiveFilters && (
         <div className="flex flex-wrap gap-2 pt-2 border-t">
-          <span className="text-sm text-muted-foreground">Filtres actifs:</span>
+          <span className="text-sm text-muted-foreground">{t('admin.filters.activeFilters')}:</span>
           {filters.developerId && (
             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-primary/10 text-primary">
-              Développeur: {developers.find(d => d.id === filters.developerId)?.name}
+              {t('admin.filters.developer')}: {developers.find(d => d.id === filters.developerId)?.name}
             </span>
           )}
           {filters.zone && (
             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-primary/10 text-primary">
-              Zone: {filters.zone.charAt(0).toUpperCase() + filters.zone.slice(1)}
+              {t('admin.filters.zone')}: {t(`zones.${filters.zone}`)}
             </span>
           )}
           {filters.status && (
             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-primary/10 text-primary">
-              Statut: {filters.status}
+              {t('admin.filters.status')}: {t(`status.${filters.status}`)}
             </span>
           )}
           {filters.goldenVisaOnly && (

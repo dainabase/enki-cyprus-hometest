@@ -424,13 +424,15 @@
     "buttons": {
       "newProject": "Νέο Έργο",
       "filters": "Φίλτρα",
-      "sortBy": "Ταξινόμηση κατά"
+      "sortBy": "Ταξινόμηση κατά",
+      "addDeveloper": "Προσθήκη Κατασκευαστή"
     },
     "status": {
       "available": "Διαθέσιμο",
       "underConstruction": "Υπό Κατασκευή",
       "delivered": "Παραδοθέν",
-      "totalProjects": "Συνολικά Έργα"
+      "totalProjects": "Συνολικά Έργα",
+      "planning": "Σχεδιασμός"
     },
     "views": {
       "cards": "Κάρτες",
@@ -450,33 +452,48 @@
       "completionDate": "Ημερομηνία παράδοσης",
       "createdDate": "Ημερομηνία δημιουργίας"
     },
-    "common": {
-      "unassigned": "Μη ανατεθειμένο",
-      "noProjectsFound": "Δε βρέθηκαν έργα",
-      "noBuildingsFound": "Δε βρέθηκαν κτίρια",
-      "noDevelopersFound": "Δε βρέθηκαν κατασκευαστές"
+    "filters": {
+      "title": "Φίλτρα",
+      "developer": "Κατασκευαστής",
+      "zone": "Ζώνη",
+      "status": "Κατάσταση",
+      "goldenVisaOnly": "Μόνο Golden Visa",
+      "clearFilters": "Καθαρισμός φίλτρων",
+      "allDevelopers": "Όλοι οι κατασκευαστές",
+      "allZones": "Όλες οι ζώνες",
+      "allStatuses": "Όλες οι καταστάσεις",
+      "goldenVisaEligible": "Έργα επιλέξιμα μόνο",
+      "activeFilters": "Ενεργά φίλτρα"
+    },
+    "projects": {
+      "projectsSelected": "έργα επιλεγμένα",
+      "deselectAll": "Αποεπιλογή όλων",
+      "selectAll": "Επιλογή όλων",
+      "deleteSelected": "Διαγραφή επιλογής",
+      "projectsFound": "έργα βρέθηκαν",
+      "noProjectsFound": "Δε βρέθηκαν έργα"
     },
     "developers": {
-      "title": "Διαχείριση Κατασκευαστών",
+      "title": "Διαχείριση Κατασκευαστών", 
       "subtitle": "Διαχειριστείτε κατασκευαστές ακινήτων",
       "developersFound": "{{count}} κατασκευαστές βρέθηκαν",
       "addDeveloper": "Προσθήκη κατασκευαστή",
       "headers": {
-        "logo": "Λογότυπο"
+        "logo": "Λογότυπο",
+        "status": "Κατάσταση",
+        "website": "Ιστοσελίδα",
+        "rating": "Αξιολόγηση",
+        "contact": "Επικοινωνία",
+        "actions": "Ενέργειες"
       }
     },
-    "projects": {
-      "headers": {
-        "gv": "GV"
-      },
-      "flags": {
-        "goldenVisa": "Επιλέξιμο για Golden Visa",
-        "exclusive": "Αποκλειστική εμπορευματοποίηση"
-      }
-    },
-    "buildings": {
-      "soldOut": "ΕΞΑΝΤΛΗΘΗΚΕ",
-      "outOf": "από {{total}} ({{rate}}% κατειλημμένα)"
+    "messages": {
+      "projectsDeleted": "Έργα διαγράφηκαν",
+      "projectsDeletedDesc": "{{count}} έργα διαγράφηκαν επιτυχώς",
+      "error": "Σφάλμα",
+      "errorDeletingProjects": "Σφάλμα κατά τη διαγραφή έργων",
+      "allProjectsSelected": "Όλα τα έργα επιλέχθηκαν",
+      "allProjectsSelectedDesc": "{{count}} έργα επιλέχθηκαν"
     }
   },
   "pagination": {
