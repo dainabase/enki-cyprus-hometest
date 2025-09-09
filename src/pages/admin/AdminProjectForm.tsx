@@ -132,40 +132,42 @@ const [showPrefilledBanner, setShowPrefilledBanner] = useState(false);
            const out: any[] = [];
            const cp = projectData.categorized_photos as any;
            // Map possible legacy/localized categories to our enum
-           const mapCategory = (c: string): any => {
-             const k = (c || '').toLowerCase();
-             const dict: Record<string, any> = {
-               'principale': 'hero',
-               'principal': 'hero',
-               'hero': 'hero',
-               'exterieure': 'exterior_1',
-               'exterieur': 'exterior_1',
-               'exterior_1': 'exterior_1',
-               'exterior_2': 'exterior_2',
-               'interieure': 'interior_1',
-               'interieur': 'interior_1',
-               'interior_1': 'interior_1',
-               'interior_2': 'interior_2',
-               'chambre': 'bedroom',
-               'bedroom': 'bedroom',
-               'salle_de_bain': 'bathroom',
-               'bathroom': 'bathroom',
-               'balcon': 'balcony',
-               'balcony': 'balcony',
-               'jardin': 'garden',
-               'garden': 'garden',
-               'vue_panoramique': 'panoramic_view',
-               'panoramic_view': 'panoramic_view',
-               'vue_mer': 'sea_view',
-               'sea_view': 'sea_view',
-               'vue_montagne': 'mountain_view',
-               'mountain_view': 'mountain_view',
-               'prestations': 'amenities',
-               'amenities': 'amenities',
-               'plans': 'plans'
-             };
-             return dict[k] || 'interior_1';
-           };
+            const mapCategory = (c: string): any => {
+              const k = (c || '').toLowerCase();
+              const dict: Record<string, any> = {
+                'principale': 'hero',
+                'principal': 'hero',
+                'hero': 'hero',
+                'exterieure': 'exterior_1',
+                'exterieur': 'exterior_1',
+                'exterior_1': 'exterior_1',
+                'exterior_2': 'exterior_2',
+                'interieure': 'interior_1',
+                'interieur': 'interior_1',
+                'interior_1': 'interior_1',
+                'interior_2': 'interior_2',
+                'cuisine': 'kitchen',
+                'kitchen': 'kitchen',
+                'chambre': 'bedroom',
+                'bedroom': 'bedroom',
+                'salle_de_bain': 'bathroom',
+                'bathroom': 'bathroom',
+                'balcon': 'balcony',
+                'balcony': 'balcony',
+                'jardin': 'garden',
+                'garden': 'garden',
+                'vue_panoramique': 'panoramic_view',
+                'panoramic_view': 'panoramic_view',
+                'vue_mer': 'sea_view',
+                'sea_view': 'sea_view',
+                'vue_montagne': 'mountain_view',
+                'mountain_view': 'mountain_view',
+                'prestations': 'amenities',
+                'amenities': 'amenities',
+                'plans': 'plans'
+              };
+              return dict[k] || 'interior_1';
+            };
            if (Array.isArray(cp) && cp.length > 0) {
              cp.forEach((item: any) => {
                if (item?.url) out.push({ url: item.url, category: mapCategory(item.category), isPrimary: mapCategory(item.category) === 'hero', caption: item.caption || '' });
@@ -308,6 +310,7 @@ const [showPrefilledBanner, setShowPrefilledBanner] = useState(false);
           'principale': 'hero', 'principal': 'hero', 'hero': 'hero',
           'exterieure': 'exterior_1','exterieur':'exterior_1','exterior_1':'exterior_1','exterior_2':'exterior_2',
           'interieure':'interior_1','interieur':'interior_1','interior_1':'interior_1','interior_2':'interior_2',
+          'cuisine':'kitchen','kitchen':'kitchen',
           'chambre':'bedroom','bedroom':'bedroom','salle_de_bain':'bathroom','bathroom':'bathroom',
           'balcon':'balcony','balcony':'balcony','jardin':'garden','garden':'garden',
           'vue_panoramique':'panoramic_view','panoramic_view':'panoramic_view',
