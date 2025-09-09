@@ -78,6 +78,10 @@ export default function Gallery({ project }: GalleryProps) {
                   alt={`${project.title} - Image ${currentIndex + 1}`}
                   className="w-full h-full object-cover cursor-pointer"
                   onClick={() => setIsFullscreen(true)}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = `https://picsum.photos/1200/675?random=${currentIndex + 1}`;
+                  }}
                 />
                 
                 {/* Navigation Arrows */}
@@ -149,19 +153,14 @@ export default function Gallery({ project }: GalleryProps) {
                   src={image}
                   alt={`Thumbnail ${index + 1}`}
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = `https://picsum.photos/200/200?random=${index + 1}`;
+                  }}
                 />
               </button>
             ))}
             
-            {/* More Images Indicator */}
-            {totalImages > 10 && (
-              <button
-                onClick={() => goToImage(10)}
-                className="relative aspect-square rounded-lg overflow-hidden border border-muted bg-muted hover:bg-muted/80 flex items-center justify-center"
-              >
-                <span className="text-xs font-medium">+{totalImages - 10}</span>
-              </button>
-            )}
           </div>
         </div>
 

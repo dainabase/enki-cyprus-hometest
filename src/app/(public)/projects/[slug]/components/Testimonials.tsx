@@ -189,29 +189,6 @@ export default function Testimonials({ project }: TestimonialsProps) {
           </div>
         )}
 
-        {/* Developer Rating */}
-        {project.developer?.rating_score && (
-          <div className="mt-12 text-center">
-            <Card className="inline-block">
-              <CardContent className="p-6">
-                <div className="flex items-center space-x-4">
-                  <div>
-                    <div className="text-sm text-muted-foreground">Developer Rating</div>
-                    <div className="font-semibold">{project.developer.name}</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-bold text-primary">
-                      {project.developer.rating_score}/5
-                    </div>
-                    <div className="flex space-x-1">
-                      {renderStars(Math.round(project.developer.rating_score))}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
 
         {/* Trust Indicators */}
         <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">

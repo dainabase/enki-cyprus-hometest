@@ -12,8 +12,13 @@ interface HeroSectionProps {
 
 export default function HeroSection({ project }: HeroSectionProps) {
   const [videoError, setVideoError] = useState(false);
+  const [imageFallback, setImageFallback] = useState<string | null>(null);
   
-  const heroImage = project.photos?.[0] || project.photo_gallery_urls?.[0];
+  const heroImage =
+    project.project_images?.find((i: any) => i.is_primary)?.url ||
+    project.photos?.[0] ||
+    project.photo_gallery_urls?.[0] ||
+    null;
   const videoUrl = project.video_url || project.drone_footage_urls?.[0];
 
   const specs = [
@@ -53,9 +58,16 @@ export default function HeroSection({ project }: HeroSectionProps) {
           </video>
         ) : heroImage ? (
           <img
-            src={heroImage}
+            src={imageFallback || heroImage}
             alt={project.title}
             className="w-full h-full object-cover"
+            onError={(e) => {
+              if (!imageFallback) {
+                setImageFallback('/og-image.jpg');
+              } else {
+                e.currentTarget.onerror = null;
+              }
+            }}
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20" />
@@ -117,6 +129,13 @@ export default function HeroSection({ project }: HeroSectionProps) {
           Book a Viewing
         </Button>
 
+        
+        {/* Scroll Indicator (same placement as homepage) */}
+        <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2">
+          <div className="w-7 h-11 border-2 border-white/70 rounded-full flex items-start justify-center backdrop-blur-sm animate-bounce">
+            <div className="w-1.5 h-1.5 bg-white rounded-full mt-1.5" />
+          </div>
+        </div>
       </div>
     </section>
   );
