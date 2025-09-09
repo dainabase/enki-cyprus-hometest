@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useFormAutosave } from '@/hooks/useFormAutosave';
+import { toast } from 'sonner';
 import { 
   MapPin, 
   Phone, 
@@ -28,6 +30,37 @@ const Contact = () => {
     propertyType: '',
     budget: ''
   });
+
+  // Initialize autosave for contact form
+  const { isAutoSaving, loadDraft, clearDraft } = useFormAutosave({
+    table: 'contact_drafts',
+    formData,
+    enabled: true,
+    showToasts: false
+  });
+
+  // Load draft on component mount
+  useEffect(() => {
+    const loadContactDraft = async () => {
+      const draft = await loadDraft();
+      if (draft && draft.form_data) {
+        const draftData = draft.form_data as any;
+        setFormData({
+          firstName: draftData.firstName || '',
+          lastName: draftData.lastName || '',
+          email: draftData.email || '',
+          phone: draftData.phone || '',
+          subject: draftData.subject || '',
+          message: draftData.message || '',
+          propertyType: draftData.propertyType || '',
+          budget: draftData.budget || ''
+        });
+        toast.info('Brouillon de contact restauré');
+      }
+    };
+
+    loadContactDraft();
+  }, [loadDraft]);
 
   const contactInfo = [
     {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ConsentManager } from '@/components/ConsentManager';
 import { motion } from 'framer-motion';
@@ -9,6 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { useFormAutosave } from '@/hooks/useFormAutosave';
+import { toast } from 'sonner';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -25,6 +27,39 @@ const Register = () => {
   const { signUp, isAuthenticated } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Initialize autosave for registration form
+  const { isAutoSaving, loadDraft, clearDraft } = useFormAutosave({
+    table: 'registration_drafts',
+    formData,
+    enabled: !isAuthenticated,
+    showToasts: false
+  });
+
+  // Load draft on component mount (only for non-authenticated users)
+  useEffect(() => {
+    if (!isAuthenticated) {
+      const loadRegisterDraft = async () => {
+        const draft = await loadDraft();
+        if (draft && draft.form_data) {
+          const draftData = draft.form_data as any;
+          setFormData({
+            email: draftData.email || '',
+            password: draftData.password || '',
+            confirmPassword: draftData.confirmPassword || '',
+            name: draftData.name || '',
+            country: draftData.country || ''
+          });
+          toast({
+            title: "Brouillon restauré",
+            description: "Vos données d'inscription ont été restaurées"
+          });
+        }
+      };
+
+      loadRegisterDraft();
+    }
+  }, [loadDraft, isAuthenticated]);
 
   // Redirect if already authenticated
   React.useEffect(() => {

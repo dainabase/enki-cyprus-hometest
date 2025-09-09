@@ -8,6 +8,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import SimpleImageUploader from '@/components/admin/common/SimpleImageUploader';
 import { createBuildingImage, fetchBuildingImages, BuildingImage } from '@/lib/supabase/images';
+import { useFormAutosave } from '@/hooks/useFormAutosave';
+import { toast } from 'sonner';
 
 interface BuildingFormProps {
   building?: any;
