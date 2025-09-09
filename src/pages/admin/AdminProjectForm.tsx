@@ -187,6 +187,16 @@ export const AdminProjectForm: React.FC = () => {
   const saveProjectMutation = useMutation({
     mutationFn: async (data: ProjectFormData) => {
       // Transform form data to database format
+      // Generate marketing defaults if empty
+      const featuresList = Array.isArray(data.features) ? data.features.slice(0, 3).join(', ') : '';
+      const city = data.city || '';
+      const baseTitle = data.title || 'Projet immobilier';
+      const priceFrom = (typeof data.price_from_new === 'number' ? data.price_from_new : (typeof data.price === 'number' ? data.price : undefined));
+      const defaultMetaTitle = `${baseTitle} à ${city}${featuresList ? ` – ${featuresList}` : ''}${priceFrom ? ` | Prix dès ${Math.round(Number(priceFrom)).toLocaleString('fr-FR')} €` : ''} | ENKI Realty`;
+      const defaultMetaDescriptionRaw = `Découvrez ${baseTitle} à ${city}: prestations haut de gamme, ${featuresList || 'emplacement d’exception'}, éligible Golden Visa. Visite et brochure sur demande.`;
+      const metaDescription = (data.meta_description_new?.trim() || defaultMetaDescriptionRaw).slice(0, 160);
+      const narrativeDefault = `${baseTitle} propose une expérience de vie premium à ${city}. Architecture contemporaine, matériaux soignés et services exclusifs (sécurité, fitness, espaces extérieurs) en font une adresse idéale pour habiter ou investir. Contactez ENKI Realty pour un accompagnement personnalisé.`;
+
       const projectData = {
         title: data.title,
         description: data.description,
@@ -268,9 +278,9 @@ export const AdminProjectForm: React.FC = () => {
         warranty_years: data.warranty_years,
         
         // Marketing
-        project_narrative: typeof data.project_narrative === 'string' ? data.project_narrative : '',
-        meta_title_new: typeof data.meta_title_new === 'string' ? data.meta_title_new : '',
-        meta_description_new: typeof data.meta_description_new === 'string' ? data.meta_description_new : '',
+        project_narrative: (typeof data.project_narrative === 'string' && data.project_narrative.trim().length > 0) ? data.project_narrative : narrativeDefault,
+        meta_title_new: (data.meta_title_new?.trim() || defaultMetaTitle),
+        meta_description_new: metaDescription,
         meta_keywords: data.meta_keywords,
         marketing_highlights: data.marketing_highlights,
         target_audience: data.target_audience,
@@ -474,7 +484,7 @@ export const AdminProjectForm: React.FC = () => {
                               type="submit"
                               variant="outline"
                               disabled={saveProjectMutation.isPending}
-                              onClick={() => setSaveType('draft')}
+                              onClick={() => { setSaveType('draft'); form.handleSubmit(onSubmit)(); }}
                             >
                               <Save className="w-4 h-4 mr-2" />
                               Sauvegarder brouillon
@@ -482,7 +492,7 @@ export const AdminProjectForm: React.FC = () => {
                             <Button
                               type="submit"
                               disabled={saveProjectMutation.isPending}
-                              onClick={() => setSaveType('publish')}
+                              onClick={() => { setSaveType('publish'); form.handleSubmit(onSubmit)(); }}
                             >
                               <Eye className="w-4 h-4 mr-2" />
                               {isEdit ? 'Mettre à jour' : 'Publier'}
