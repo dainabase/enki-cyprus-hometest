@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useRef } from 'react';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
@@ -9,7 +9,7 @@ import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import ZoomablePlans from '@/components/ui/ZoomablePlans';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { buildGalleryFromProject, getHeroImage, getGalleryUrls } from '@/utils/gallery';
@@ -25,39 +25,18 @@ import {
   Download,
   Heart,
   Share2,
-  Play
+  Play,
+  MessageCircle,
+  Phone,
+  Bed,
+  Bath,
+  Square
 } from 'lucide-react';
-import Slider from 'react-slick';
-import type { Settings } from 'react-slick';
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-
-// Animation variants
-const fadeInUp = {
-  initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, ease: "easeOut" }
-};
-
-const staggerContainer = {
-  initial: {},
-  animate: {
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-};
-
-const scaleHover = {
-  whileHover: { 
-    scale: 1.05, 
-    transition: { duration: 0.2 } 
-  }
-};
 
 const ProjectDetail = () => {
   const { id } = useParams<{ id: string }>();
   const heroRef = useRef<HTMLElement>(null);
+  const [isStickyCTAVisible, setIsStickyCTAVisible] = useState(false);
   
   const { data: project, isLoading, error } = useQuery({
     queryKey: ['project', id],
@@ -76,11 +55,15 @@ const ProjectDetail = () => {
   });
 
   const { scrollY } = useScroll();
-  const parallaxY = useTransform(scrollY, [0, 600], [0, -100]);
-  const parallaxScale = useTransform(scrollY, [0, 600], [1, 1.1]);
-  const parallaxOpacity = useTransform(scrollY, [0, 600], [1, 0.9]);
-  
   const heroInView = useInView(heroRef, { once: true });
+
+  // Sticky CTA visibility on scroll
+  useEffect(() => {
+    const unsubscribe = scrollY.onChange((latest) => {
+      setIsStickyCTAVisible(latest > window.innerHeight * 0.3);
+    });
+    return () => unsubscribe();
+  }, [scrollY]);
 
   useEffect(() => {
     if (project) {
@@ -123,30 +106,11 @@ const ProjectDetail = () => {
   const heroImage = getHeroImage(project);
   const galleryUrls = getGalleryUrls(project);
 
-  const sliderSettings: Settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 4000,
-    arrows: true,
-    lazyLoad: 'ondemand',
-    fade: true,
-    customPaging: () => (
-      <div className="w-3 h-3 bg-white/50 hover:bg-white rounded-full transition-all duration-300" />
-    ),
-    dotsClass: "slick-dots !bottom-8"
-  };
+  // Location data
+  const locationData = project.location as { ville?: string; adresse?: string; lat?: number; lng?: number };
+  const fullAddress = [locationData?.adresse, locationData?.ville].filter(Boolean).join(', ');
 
-  const planSliderSettings: Settings = {
-    ...sliderSettings,
-    fade: false,
-    adaptiveHeight: true,
-  };
-
-  // Process units data
+  // Units data
   type Unit = {
     type?: string;
     price?: string | number;
@@ -158,43 +122,39 @@ const ProjectDetail = () => {
   };
   
   const units: Unit[] = Array.isArray(project.units) ? (project.units as unknown as Unit[]) : [];
-  
-  // Process plans for ZoomablePlans component
-  const planImages = (project.plans || []).map((plan: string, index: number) => ({
-    url: plan,
-    title: `Plan ${index + 1}`,
-    type: (index === 0 ? 'floor_plan' : index === 1 ? 'site_plan' : '3d_view') as 'floor_plan' | 'site_plan' | '3d_view'
-  }));
 
-  // Location data
-  const locationData = project.location as { ville?: string; adresse?: string; lat?: number; lng?: number };
-  const fullAddress = [locationData?.adresse, locationData?.ville].filter(Boolean).join(', ');
-
-  // Key stats for hero
-  const keyStats = [
-    { 
-      label: "À partir de", 
-      value: project.price_from || `€${project.price?.toLocaleString()}`,
-      icon: Euro 
+  // Room data for alternating cards
+  const roomData = [
+    {
+      name: "Living Room",
+      image: project.photos?.[0] || heroImage,
+      description: "The living room is the heart of the home—a space designed for comfort, relaxation, & gathering.",
+      specs: {
+        size: project.built_area_m2 ? `${Math.round(project.built_area_m2 * 0.3)}` : "250",
+        type: "Living Room",
+        color: "White"
+      }
     },
-    { 
-      label: "Localisation", 
-      value: locationData?.ville || "Chypre",
-      icon: MapPin 
+    {
+      name: "Master Bedroom", 
+      image: project.photos?.[1] || heroImage,
+      description: "A sanctuary of comfort with panoramic views and luxury finishes throughout.",
+      specs: {
+        size: project.built_area_m2 ? `${Math.round(project.built_area_m2 * 0.2)}` : "180",
+        type: "Bedroom",
+        color: "Neutral"
+      }
     },
-    { 
-      label: "Type", 
-      value: project.property_category === 'residential' ? 'Résidentiel' : 
-             project.property_category === 'commercial' ? 'Commercial' :
-             project.property_category === 'mixed' ? 'Mixte' :
-             project.property_category === 'industrial' ? 'Industriel' : 'Résidentiel',
-      icon: Home 
-    },
-    { 
-      label: "Livraison", 
-      value: project.completion_date || "2025",
-      icon: Calendar 
-    },
+    {
+      name: "Kitchen",
+      image: project.photos?.[2] || heroImage,
+      description: "Modern culinary space with premium appliances and elegant design.",
+      specs: {
+        size: project.built_area_m2 ? `${Math.round(project.built_area_m2 * 0.15)}` : "120",
+        type: "Kitchen",
+        color: "Modern"
+      }
+    }
   ];
 
   return (
@@ -210,614 +170,686 @@ const ProjectDetail = () => {
         />
         
         <main className="bg-background min-h-screen">
-          {/* Hero Section - 100vh immersive */}
+          {/* 1. HERO SECTION - Design Premium OneArc */}
           <motion.section 
             ref={heroRef}
-            className="relative h-screen flex items-center justify-center overflow-hidden"
+            className="relative h-screen overflow-hidden bg-black"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
           >
-            {/* Parallax Background */}
-            <motion.div 
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ 
-                backgroundImage: `url(${heroImage || 'https://picsum.photos/1920/1080'})`,
-                y: parallaxY,
-                scale: parallaxScale,
-                opacity: parallaxOpacity
-              }}
-            >
-              {/* Hero Gradient Overlay */}
-              <div 
-                className="absolute inset-0"
-                style={{
-                  background: "linear-gradient(135deg, hsl(200, 100%, 45%) 0%, hsl(190, 85%, 50%) 100%)",
-                  opacity: 0.7
-                }}
-              />
-            </motion.div>
-            
-            {/* Hero Content */}
-            <div className="relative z-10 text-center text-primary-foreground space-y-6 px-4 max-w-6xl mx-auto">
-              <motion.h1 
-                className="text-6xl sm:text-7xl lg:text-8xl font-light tracking-tight"
-                style={{ letterSpacing: "-0.02em" }}
-                initial={{ y: 50, opacity: 0 }}
-                animate={heroInView ? { y: 0, opacity: 1 } : {}}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-              >
-                {project.title}
-              </motion.h1>
-              
-              <motion.p 
-                className="text-lg sm:text-xl md:text-2xl font-normal leading-relaxed max-w-3xl mx-auto"
-                style={{ letterSpacing: "-0.005em" }}
-                initial={{ y: 50, opacity: 0 }}
-                animate={heroInView ? { y: 0, opacity: 1 } : {}}
-                transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-              >
-                {project.subtitle || project.description}
-              </motion.p>
-
-              {/* Key Project Info */}
-              <motion.div 
-                className="flex flex-wrap justify-center gap-4 mt-8"
-                initial={{ y: 50, opacity: 0 }}
-                animate={heroInView ? { y: 0, opacity: 1 } : {}}
-                transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-              >
-                <Badge 
-                  variant={project.status === 'available' ? 'default' : 'secondary'}
-                  className="px-4 py-2 text-base font-medium"
+            {/* Video/Image Background */}
+            <div className="absolute inset-0">
+              {project.video_url ? (
+                <video 
+                  className="w-full h-full object-cover opacity-70"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
                 >
-                  {project.status === 'available' ? 'Disponible' : 
-                   project.status === 'under_construction' ? 'En Construction' : 
-                   project.status === 'completed' ? 'Livré' : project.status}
-                </Badge>
-                <Badge variant="outline" className="px-4 py-2 text-base font-medium border-white/30 text-white">
-                  {fullAddress}
-                </Badge>
-              </motion.div>
-
-              {/* CTA Button */}
-              <motion.div
-                className="pt-8"
-                initial={{ y: 50, opacity: 0 }}
-                animate={heroInView ? { y: 0, opacity: 1 } : {}}
-                transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-              >
-                <Button 
-                  size="lg" 
-                  className="bg-primary hover:bg-primary-hover text-primary-foreground px-8 py-4 text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-premium"
-                  aria-label="Demander une visite du projet"
-                >
-                  Demander une Visite
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </motion.div>
+                  <source src={project.video_url} type="video/mp4" />
+                </video>
+              ) : (
+                <img 
+                  src={heroImage || 'https://picsum.photos/1920/1080'}
+                  alt={`Hero image of ${project.title}`}
+                  className="w-full h-full object-cover opacity-70"
+                />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60" />
             </div>
             
-            {/* Key Stats - Bottom Glass Panel */}
-            <motion.div 
-              className="absolute bottom-0 left-0 right-0 z-20 backdrop-blur-xl border-t border-white/20"
-              style={{
-                background: "hsla(0, 0%, 100%, 0.1)"
-              }}
-              initial={{ y: 100, opacity: 0 }}
-              animate={heroInView ? { y: 0, opacity: 1 } : {}}
-              transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
-            >
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 max-w-7xl mx-auto">
-                {keyStats.map((stat, index) => {
-                  const IconComponent = stat.icon;
-                  return (
-                    <motion.div 
-                      key={index}
-                      className="text-center p-4 rounded-lg backdrop-blur-sm border border-white/10"
-                      style={{
-                        background: "hsla(0, 0%, 100%, 0.1)"
-                      }}
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={heroInView ? { opacity: 1, scale: 1 } : {}}
-                      transition={{ delay: 1 + index * 0.1, duration: 0.4 }}
-                      whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
-                    >
-                      <IconComponent className="h-6 w-6 text-primary-foreground mx-auto mb-2" />
-                      <p className="text-2xl lg:text-3xl font-light text-primary-foreground">{stat.value}</p>
-                      <p className="text-sm text-primary-foreground/80">{stat.label}</p>
-                    </motion.div>
-                  );
-                })}
+            {/* Content Grid */}
+            <div className="relative z-10 h-full flex items-end pb-20">
+              <div className="container mx-auto px-8">
+                {/* Address Bar */}
+                <motion.div 
+                  className="mb-6"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={heroInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                >
+                  <p className="text-white/60 text-sm font-light tracking-wider uppercase">
+                    {locationData?.ville || 'Chypre'}, {locationData?.adresse?.split(',')[0] || 'Premium Location'}
+                  </p>
+                </motion.div>
+                
+                {/* Title */}
+                <motion.h1 
+                  className="text-white font-bold text-7xl mb-8 max-w-4xl"
+                  style={{ fontFamily: "'Inter', sans-serif", letterSpacing: "-0.02em" }}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={heroInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                >
+                  {project.title}
+                </motion.h1>
+                
+                {/* Specs Grid - 3 colonnes */}
+                <motion.div 
+                  className="grid grid-cols-3 gap-x-12 max-w-2xl"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={heroInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.8, delay: 0.6 }}
+                >
+                  <div className="border-t border-white/20 pt-4">
+                    <p className="text-white text-4xl font-light">
+                      {project.built_area_m2 || '250'}
+                    </p>
+                    <p className="text-white/60 text-sm mt-1">Property size</p>
+                  </div>
+                  <div className="border-t border-white/20 pt-4">
+                    <p className="text-white text-4xl font-light">
+                      {(project as any).bedrooms || '3'}+
+                    </p>
+                    <p className="text-white/60 text-sm mt-1">Beds</p>
+                  </div>
+                  <div className="border-t border-white/20 pt-4">
+                    <p className="text-white text-4xl font-light">
+                      {(project as any).bathrooms || '2'}+
+                    </p>
+                    <p className="text-white/60 text-sm mt-1">Bath tab</p>
+                  </div>
+                </motion.div>
               </div>
-            </motion.div>
+            </div>
+            
+            {/* Scroll Indicator */}
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
+              <div className="w-[1px] h-16 bg-white/30 animate-pulse" />
+            </div>
           </motion.section>
 
-          {/* Overview Section - 2 column */}
-          <section className="py-16 bg-background">
-            <div className="max-w-7xl mx-auto px-4">
+          {/* 2. MARQUEE TICKER - Texte Défilant Infini */}
+          <div className="bg-[#F7F3F0] py-16 overflow-hidden">
+            <div className="marquee-container">
+              <div className="marquee-content animate-marquee flex gap-x-20 text-6xl font-light text-black">
+                <span>Modern living upgrades</span>
+                <span className="text-gray-400">•</span>
+                <span>Smart home innovations</span>
+                <span className="text-gray-400">•</span>
+                <span>Intelligent living solutions</span>
+                <span className="text-gray-400">•</span>
+                <span>Modern living upgrades</span>
+                <span className="text-gray-400">•</span>
+                <span>Smart home innovations</span>
+                <span className="text-gray-400">•</span>
+                <span>Intelligent living solutions</span>
+                <span className="text-gray-400">•</span>
+              </div>
+            </div>
+          </div>
+
+          {/* 3. OVERVIEW SECTION - Split Design Moderne */}
+          <section className="py-32 bg-white">
+            <div className="container mx-auto px-8">
+              {/* Section Title */}
               <motion.div 
-                className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start"
-                variants={staggerContainer}
-                initial="initial"
-                whileInView="animate"
-                viewport={{ once: true }}
-              >
-                {/* Description */}
-                <motion.div variants={fadeInUp} className="space-y-6">
-                  <h2 className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight text-primary">
-                    Aperçu
-                  </h2>
-                  <p className="text-lg leading-relaxed text-foreground">
-                    {project.description}
-                  </p>
-                  {project.developer_id && (
-                    <div className="pt-4">
-                      <Button variant="outline" className="group">
-                        Voir le Promoteur
-                        <ExternalLink className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                      </Button>
-                    </div>
-                  )}
-                </motion.div>
-
-                {/* Stats Grid */}
-                <motion.div 
-                  variants={fadeInUp} 
-                  className="grid grid-cols-2 gap-6"
-                >
-                  <div className="p-6 bg-card rounded-lg border border-border/50 hover:border-primary/50 transition-all">
-                    <Euro className="h-8 w-8 text-primary mb-4" />
-                    <h3 className="text-2xl lg:text-3xl font-medium tracking-tight text-foreground">
-                      {project.price?.toLocaleString() || 'Sur demande'}
-                    </h3>
-                    <p className="text-secondary text-sm">Prix moyen</p>
-                  </div>
-                  
-                  <div className="p-6 bg-card rounded-lg border border-border/50 hover:border-primary/50 transition-all">
-                    <Calendar className="h-8 w-8 text-primary mb-4" />
-                    <h3 className="text-2xl lg:text-3xl font-medium tracking-tight text-foreground">
-                      {project.completion_date || '2025'}
-                    </h3>
-                    <p className="text-secondary text-sm">Livraison</p>
-                  </div>
-                  
-                  <div className="p-6 bg-card rounded-lg border border-border/50 hover:border-primary/50 transition-all">
-                    <Home className="h-8 w-8 text-primary mb-4" />
-                    <h3 className="text-2xl lg:text-3xl font-medium tracking-tight text-foreground">
-                      {project.furniture_status || 'Meublé'}
-                    </h3>
-                    <p className="text-secondary text-sm">État</p>
-                  </div>
-                  
-                  <div className="p-6 bg-card rounded-lg border border-border/50 hover:border-primary/50 transition-all">
-                    <Users className="h-8 w-8 text-primary mb-4" />
-                    <h3 className="text-2xl lg:text-3xl font-medium tracking-tight text-foreground">
-                      {project.livability ? 'Oui' : 'Non'}
-                    </h3>
-                    <p className="text-secondary text-sm">Habitabilité</p>
-                  </div>
-                </motion.div>
-              </motion.div>
-            </div>
-          </section>
-
-          {/* Detailed Description */}
-          <section className="py-16 bg-muted/30">
-            <div className="max-w-4xl mx-auto px-4">
-              <motion.div
+                className="mb-20"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
-                className="space-y-8"
               >
-                <h2 className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight text-primary">
-                  Description Détaillée
+                <p className="text-sm uppercase tracking-wider text-gray-500 mb-4">
+                  Why choose our property?
+                </p>
+                <h2 className="text-5xl font-light max-w-3xl text-black">
+                  Discover the story behind this beautiful property.
                 </h2>
-                <div className="prose prose-lg max-w-none">
-                  <p className="text-lg leading-relaxed text-foreground">
-                    {project.detailed_description || project.description}
-                  </p>
-                </div>
-                <div className="pt-6">
-                  <Button className="bg-primary hover:bg-primary-hover transition-all duration-300 hover:scale-105">
-                    Personnaliser l'Optimisation Fiscale
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </div>
               </motion.div>
+              
+              {/* Content Grid */}
+              <div className="grid grid-cols-2 gap-20 items-center">
+                {/* Left: Text Content */}
+                <motion.div
+                  initial={{ opacity: 0, x: -30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <div className="space-y-8">
+                    <p className="text-lg leading-relaxed text-gray-700">
+                      {project.detailed_description || project.description}
+                    </p>
+                    
+                    {/* Feature Pills */}
+                    <div className="flex flex-wrap gap-3 mt-8">
+                      {project.golden_visa_eligible && (
+                        <span className="px-5 py-2 bg-black text-white text-sm rounded-full">
+                          Golden Visa Eligible
+                        </span>
+                      )}
+                      <span className="px-5 py-2 bg-gray-100 text-black text-sm rounded-full">
+                        Cutting-Edge Architecture
+                      </span>
+                      <span className="px-5 py-2 bg-gray-100 text-black text-sm rounded-full">
+                        Next-Gen Living
+                      </span>
+                      <span className="px-5 py-2 bg-gray-100 text-black text-sm rounded-full">
+                        Quality Living
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+                
+                {/* Right: Image with rounded corners */}
+                <motion.div 
+                  className="relative"
+                  initial={{ opacity: 0, x: 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <img 
+                    src={project.photos?.[0] || heroImage}
+                    alt={`Overview image of ${project.title}`}
+                    className="w-full h-[600px] object-cover image-hover"
+                    style={{ borderRadius: '40px' }}
+                  />
+                  {/* Floating Card Overlay */}
+                  <div className="absolute -bottom-10 -left-10 bg-white p-8 rounded-3xl shadow-2xl">
+                    <p className="text-4xl font-light mb-2 text-black">
+                      €{project.price_from?.toLocaleString() || project.price?.toLocaleString() || 'Sur demande'}
+                    </p>
+                    <p className="text-sm text-gray-500">Starting price</p>
+                  </div>
+                </motion.div>
+              </div>
             </div>
           </section>
 
-          {/* Features & Amenities */}
-          <section className="py-16 bg-background">
-            <div className="max-w-7xl mx-auto px-4">
-              <motion.h2 
-                className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight text-primary mb-12 text-center"
+          {/* 4. ROOM CARDS - Design Alterné Sophistiqué */}
+          <section className="py-32 bg-[#F5F5F5]">
+            <div className="container mx-auto px-8">
+              {/* Title */}
+              <motion.div 
+                className="text-center mb-20"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
               >
-                Équipements & Services
+                <h2 className="text-5xl font-light mb-4 text-black">Room overview</h2>
+                <p className="text-gray-600">with dope look</p>
+              </motion.div>
+              
+              {/* Room Cards - Alternance gauche/droite */}
+              <div className="space-y-32">
+                {roomData.map((room, index) => (
+                  <motion.div 
+                    key={index}
+                    className={`grid grid-cols-2 gap-16 items-center ${index % 2 === 1 ? 'direction-rtl' : ''}`}
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: index * 0.2 }}
+                  >
+                    {index % 2 === 0 ? (
+                      <>
+                        {/* Image à gauche pour les index pairs */}
+                        <div className="relative group">
+                          <img 
+                            src={room.image}
+                            alt={`${room.name} in ${project.title}`}
+                            className="w-full h-[500px] object-cover image-hover"
+                            style={{ borderRadius: '40px' }}
+                          />
+                          {/* Badge overlay */}
+                          <div className="absolute top-8 left-8 bg-white/90 backdrop-blur px-6 py-3 rounded-full">
+                            <p className="text-sm font-medium text-black">{room.name}</p>
+                          </div>
+                        </div>
+                        
+                        <div className="pl-12">
+                          <h3 className="text-4xl font-light mb-6 text-black">{room.name}</h3>
+                          <p className="text-gray-600 text-lg leading-relaxed mb-8">
+                            {room.description}
+                          </p>
+                          
+                          {/* Specs Grid */}
+                          <div className="grid grid-cols-3 gap-8">
+                            <div>
+                              <p className="text-3xl font-light text-black">{room.specs.size}</p>
+                              <p className="text-sm text-gray-500 mt-1">m²</p>
+                            </div>
+                            <div>
+                              <p className="text-lg text-black">{room.specs.type}</p>
+                              <p className="text-sm text-gray-500 mt-1">Type</p>
+                            </div>
+                            <div>
+                              <p className="text-lg text-black">{room.specs.color}</p>
+                              <p className="text-sm text-gray-500 mt-1">Style</p>
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        {/* Text à gauche pour les index impairs */}
+                        <div className="pr-12">
+                          <h3 className="text-4xl font-light mb-6 text-black">{room.name}</h3>
+                          <p className="text-gray-600 text-lg leading-relaxed mb-8">
+                            {room.description}
+                          </p>
+                          
+                          {/* Specs Grid */}
+                          <div className="grid grid-cols-3 gap-8">
+                            <div>
+                              <p className="text-3xl font-light text-black">{room.specs.size}</p>
+                              <p className="text-sm text-gray-500 mt-1">m²</p>
+                            </div>
+                            <div>
+                              <p className="text-lg text-black">{room.specs.type}</p>
+                              <p className="text-sm text-gray-500 mt-1">Type</p>
+                            </div>
+                            <div>
+                              <p className="text-lg text-black">{room.specs.color}</p>
+                              <p className="text-sm text-gray-500 mt-1">Style</p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Image à droite pour les index impairs */}
+                        <div className="relative group">
+                          <img 
+                            src={room.image}
+                            alt={`${room.name} in ${project.title}`}
+                            className="w-full h-[500px] object-cover image-hover"
+                            style={{ borderRadius: '40px' }}
+                          />
+                          {/* Badge overlay */}
+                          <div className="absolute top-8 left-8 bg-white/90 backdrop-blur px-6 py-3 rounded-full">
+                            <p className="text-sm font-medium text-black">{room.name}</p>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* 5. PROPERTY GALLERY - Grid Moderne */}
+          <section className="py-32 bg-white">
+            <div className="container mx-auto px-8">
+              <motion.h2 
+                className="text-5xl font-light text-center mb-20 text-black"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+              >
+                Property overview
               </motion.h2>
               
+              {/* Masonry Grid */}
               <motion.div 
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                variants={staggerContainer}
-                initial="initial"
-                whileInView="animate"
+                className="grid grid-cols-3 gap-6"
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
               >
-                {[...(project.amenities || []), ...(project.features || []), ...(project.detailed_features || [])].map((feature, index) => (
-                  <motion.div
-                    key={index}
-                    variants={fadeInUp}
-                    className="p-6 bg-card rounded-lg border border-border/50 hover:border-primary/50 transition-all hover:-translate-y-2 hover:shadow-lg"
-                    {...scaleHover}
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div className="w-3 h-3 bg-success rounded-full flex-shrink-0" />
-                      <h3 className="text-lg font-medium text-foreground">{feature}</h3>
-                    </div>
-                  </motion.div>
+                {/* Large Image */}
+                <div className="col-span-2 row-span-2">
+                  <img 
+                    src={project.photos?.[0] || heroImage}
+                    alt={`Gallery image 1 of ${project.title}`}
+                    className="w-full h-full object-cover image-hover"
+                    style={{ borderRadius: '30px' }}
+                  />
+                </div>
+                
+                {/* Small Images */}
+                <div className="space-y-6">
+                  <img 
+                    src={project.photos?.[1] || heroImage}
+                    alt={`Gallery image 2 of ${project.title}`}
+                    className="w-full h-[250px] object-cover image-hover"
+                    style={{ borderRadius: '30px' }}
+                  />
+                  <img 
+                    src={project.photos?.[2] || heroImage}
+                    alt={`Gallery image 3 of ${project.title}`}
+                    className="w-full h-[250px] object-cover image-hover"
+                    style={{ borderRadius: '30px' }}
+                  />
+                </div>
+                
+                {/* Bottom row images */}
+                {project.photos?.slice(3, 6).map((photo, index) => (
+                  <img 
+                    key={index + 3}
+                    src={photo}
+                    alt={`Gallery image ${index + 4} of ${project.title}`}
+                    className="w-full h-[200px] object-cover image-hover"
+                    style={{ borderRadius: '30px' }}
+                  />
                 ))}
               </motion.div>
             </div>
           </section>
 
-          {/* Media Gallery */}
-          <section className="py-16 bg-muted/30">
-            <div className="max-w-7xl mx-auto px-4">
-              <motion.h2 
-                className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight text-primary mb-12 text-center"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-              >
-                Galerie Média
-              </motion.h2>
-              
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-                className="space-y-8"
-              >
-                {/* Photo Slider */}
-                {project.photos && project.photos.length > 0 && (
-                  <div className="relative">
-                    <Slider {...sliderSettings}>
-                      {project.photos.map((photo, index) => (
-                        <div key={index} className="relative">
-                          <img 
-                            src={photo}
-                            alt={`Photo ${index + 1} du projet ${project.title}`}
-                            className="w-full h-[70vh] object-cover rounded-lg"
-                            loading={index === 0 ? "eager" : "lazy"}
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-lg" />
-                        </div>
-                      ))}
-                    </Slider>
-                  </div>
-                )}
-
-                {/* Video */}
-                {project.video_url && (
-                  <div className="relative">
-                    <video 
-                      className="w-full h-[60vh] rounded-lg object-cover"
-                      controls
-                      poster={project.photos?.[0]}
-                      preload="metadata"
-                    >
-                      <source src={project.video_url} type="video/mp4" />
-                      <track 
-                        kind="captions" 
-                        src="/captions.vtt" 
-                        srcLang="fr" 
-                        label="Français"
-                      />
-                      Votre navigateur ne supporte pas la lecture vidéo.
-                    </video>
-                    <div className="absolute top-4 left-4">
-                      <Badge className="bg-black/50 text-white border-white/30">
-                        <Play className="w-4 h-4 mr-1" />
-                        Présentation Vidéo
-                      </Badge>
-                    </div>
-                  </div>
-                )}
-
-                {/* Virtual Tour */}
-                {project.virtual_tour_url && (
-                  <div className="relative h-[60vh] rounded-lg overflow-hidden">
-                    <Suspense fallback={<LoadingSpinner />}>
-                      <iframe
-                        src={project.virtual_tour_url}
-                        className="w-full h-full border-0"
-                        title={`Visite virtuelle du projet ${project.title}`}
-                        loading="lazy"
-                        aria-label={`Visite virtuelle interactive du projet ${project.title}`}
-                      />
-                    </Suspense>
-                    <div className="absolute top-4 left-4">
-                      <Badge className="bg-black/50 text-white border-white/30">
-                        Visite Virtuelle 360°
-                      </Badge>
-                    </div>
-                  </div>
-                )}
-              </motion.div>
+          {/* 6. MAP SECTION - Carte Interactive Premium */}
+          <section className="relative h-[600px] bg-black overflow-hidden">
+            {/* Map Background */}
+            <div className="absolute inset-0 opacity-60">
+              <img 
+                src={project.map_image || 'https://picsum.photos/1920/600'}
+                alt={`Map location of ${project.title}`}
+                className="w-full h-full object-cover"
+              />
             </div>
-          </section>
-
-          {/* Plans & Units */}
-          <section className="py-16 bg-background">
-            <div className="max-w-7xl mx-auto px-4 space-y-16">
-              {/* Zoomable Plans */}
-              {planImages.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+            
+            {/* Points of Interest Overlay */}
+            <div className="relative z-10 h-full flex items-center">
+              <div className="container mx-auto px-8">
+                {/* Location Cards flottantes */}
+                <motion.div 
+                  className="absolute top-20 left-[20%]"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.6 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
                 >
-                  <h2 className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight text-primary mb-12 text-center">
-                    Plans & Vues
-                  </h2>
-                  <ZoomablePlans 
-                    plans={planImages}
-                    className="max-w-6xl mx-auto"
-                  />
+                  <div className="bg-white px-6 py-4 rounded-2xl shadow-xl">
+                    <p className="font-medium text-black">Restaurant</p>
+                    <p className="text-sm text-gray-500">0.5 km</p>
+                  </div>
                 </motion.div>
-              )}
-
-              {/* Available Units */}
-              {units.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                
+                <motion.div 
+                  className="absolute top-40 right-[30%]"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.6 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
                 >
-                  <h2 className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight text-primary mb-12 text-center">
-                    Unités Disponibles
-                  </h2>
-                  <motion.div 
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-                    variants={staggerContainer}
-                    initial="initial"
-                    whileInView="animate"
-                    viewport={{ once: true }}
-                  >
-                    {units.map((unit, index) => (
-                      <motion.div
-                        key={index}
-                        variants={fadeInUp}
-                        className="bg-card rounded-lg overflow-hidden shadow-md hover:shadow-premium transition-all duration-300"
-                        {...scaleHover}
-                      >
-                        <div className="relative">
-                          <img 
-                            src={unit.image || 'https://picsum.photos/400/300'}
-                            alt={`Unité ${unit.type} - Hero image of ${unit.type} in ${project.title}`}
-                            className="w-full h-48 object-cover"
-                            loading="lazy"
-                          />
-                          <div className="absolute top-4 right-4">
-                            <Badge variant={unit.status === 'available' ? 'default' : 'destructive'}>
-                              {unit.status === 'available' ? 'Disponible' : 
-                               unit.status === 'sold' ? 'Vendu' : unit.status}
-                            </Badge>
-                          </div>
-                        </div>
-                        <div className="p-6 space-y-4">
-                          <div>
-                            <h3 className="text-2xl lg:text-3xl font-medium tracking-tight text-foreground">
-                              {unit.type}
-                            </h3>
-                            {unit.surface && (
-                              <p className="text-secondary">{unit.surface}</p>
-                            )}
-                          </div>
-                          
-                          {unit.status !== 'sold' && (
-                            <>
-                              <p className="text-2xl font-medium text-success">
-                                €{typeof unit.price === 'number' ? unit.price.toLocaleString() : unit.price}
-                              </p>
-                              
-                              {unit.description && (
-                                <p className="text-secondary">{unit.description}</p>
-                              )}
-                              
-                              <Button className="w-full mt-4" variant="outline">
-                                Voir les Détails
-                              </Button>
-                            </>
-                          )}
-                        </div>
-                      </motion.div>
-                    ))}
-                  </motion.div>
+                  <div className="bg-white px-6 py-4 rounded-2xl shadow-xl">
+                    <p className="font-medium text-black">School</p>
+                    <p className="text-sm text-gray-500">1.5 km</p>
+                  </div>
                 </motion.div>
-              )}
-            </div>
-          </section>
 
-          {/* Location & Interests */}
-          <section className="py-16 bg-muted/30">
-            <div className="max-w-7xl mx-auto px-4">
-              <motion.h2 
-                className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight text-primary mb-12 text-center"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-              >
-                Localisation & Environs
-              </motion.h2>
-              
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                {/* Map */}
-                <motion.div
-                  className="relative rounded-lg overflow-hidden shadow-lg"
-                  initial={{ opacity: 0, scale: 0.95 }}
+                <motion.div 
+                  className="absolute bottom-20 left-[30%]"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.6 }}
+                >
+                  <div className="bg-white px-6 py-4 rounded-2xl shadow-xl">
+                    <p className="font-medium text-black">Beach</p>
+                    <p className="text-sm text-gray-500">2.0 km</p>
+                  </div>
+                </motion.div>
+                
+                {/* Central Property Marker */}
+                <motion.div 
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                  initial={{ opacity: 0, scale: 0.5 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6 }}
                 >
-                  <img 
-                    src={project.map_image || 'https://picsum.photos/800/600'}
-                    alt={`Carte de localisation du projet ${project.title}`}
-                    className="w-full h-[400px] object-cover"
-                    loading="lazy"
-                  />
-                  <div className="absolute top-4 left-4">
-                    <Badge className="bg-black/50 text-white border-white/30">
-                      <MapPin className="w-4 h-4 mr-1" />
-                      {fullAddress}
-                    </Badge>
-                  </div>
-                </motion.div>
-
-                {/* Points of Interest */}
-                <motion.div 
-                  className="space-y-6"
-                  variants={staggerContainer}
-                  initial="initial"
-                  whileInView="animate"
-                  viewport={{ once: true }}
-                >
-                  <motion.h3
-                    variants={fadeInUp}
-                    className="text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight text-foreground"
-                  >
-                    Points d'Intérêt
-                  </motion.h3>
-                  
-                  <div className="space-y-4">
-                    {(project.interests || []).map((interest: any, index) => (
-                      <motion.div
-                        key={index}
-                        variants={fadeInUp}
-                        className="p-6 bg-card rounded-lg border border-border/50 hover:border-primary/50 transition-all hover:shadow-lg group cursor-pointer"
-                        onClick={() => interest.link && window.open(interest.link, '_blank')}
-                        {...scaleHover}
-                      >
-                        <div className="flex justify-between items-start">
-                          <div className="flex-1">
-                            <h4 className="text-xl font-medium text-foreground group-hover:text-primary transition-colors">
-                              {interest.name}
-                            </h4>
-                            <p className="text-secondary mt-1">{interest.desc}</p>
-                            {interest.distance && (
-                              <p className="text-sm text-primary mt-2">{interest.distance}</p>
-                            )}
-                          </div>
-                          {interest.link && (
-                            <ExternalLink className="w-5 h-5 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                          )}
-                        </div>
-                      </motion.div>
-                    ))}
+                  <div className="w-20 h-20 bg-black rounded-full flex items-center justify-center">
+                    <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
+                      <span className="text-xs font-bold text-black">ENKI</span>
+                    </div>
                   </div>
                 </motion.div>
               </div>
             </div>
           </section>
 
-          {/* Final CTA */}
-          <section 
-            className="py-16 text-primary-foreground relative overflow-hidden"
-            style={{
-              background: "linear-gradient(135deg, hsl(200, 100%, 45%) 0%, hsl(210, 85%, 40%) 50%, hsl(190, 80%, 45%) 100%)"
-            }}
-          >
-            <div className="max-w-4xl mx-auto px-4 text-center space-y-8">
-              <motion.h2 
-                className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight"
+          {/* 7. FLOOR PLANNING - Tabs Modernes */}
+          <section className="py-32 bg-[#F7F3F0]">
+            <div className="container mx-auto px-8">
+              <motion.div
+                className="text-center mb-16"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
               >
-                Intéressé par ce projet ?
-              </motion.h2>
+                <h2 className="text-5xl font-light text-center mb-4 text-black">Floor planning</h2>
+                <p className="text-center text-gray-600">
+                  Explore every level with our detailed floor planning
+                </p>
+              </motion.div>
               
-              <motion.p
-                className="text-xl leading-relaxed max-w-2xl mx-auto"
+              <Tabs defaultValue="apartment" className="w-full">
+                {/* Tab Navigation */}
+                <div className="flex justify-center mb-16">
+                  <TabsList className="bg-white p-2 rounded-full">
+                    <TabsTrigger value="apartment" className="px-8 py-3 rounded-full text-sm font-medium data-[state=active]:bg-black data-[state=active]:text-white">
+                      Apartment
+                    </TabsTrigger>
+                    <TabsTrigger value="simplex" className="px-8 py-3 rounded-full text-sm font-medium data-[state=active]:bg-black data-[state=active]:text-white">
+                      Simplex
+                    </TabsTrigger>
+                    <TabsTrigger value="duplex" className="px-8 py-3 rounded-full text-sm font-medium data-[state=active]:bg-black data-[state=active]:text-white">
+                      Duplex
+                    </TabsTrigger>
+                    <TabsTrigger value="studio" className="px-8 py-3 rounded-full text-sm font-medium data-[state=active]:bg-black data-[state=active]:text-white">
+                      Studio
+                    </TabsTrigger>
+                  </TabsList>
+                </div>
+                
+                {/* Content Grid */}
+                <TabsContent value="apartment" className="grid grid-cols-2 gap-20 items-center">
+                  {/* Floor Plan Image */}
+                  <motion.div
+                    initial={{ opacity: 0, x: -30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <img 
+                      src={project.plans?.[0] || 'https://picsum.photos/600/400'}
+                      alt={`Floor plan of ${project.title}`}
+                      className="w-full image-hover"
+                      style={{ borderRadius: '40px' }}
+                    />
+                  </motion.div>
+                  
+                  {/* Details */}
+                  <motion.div
+                    initial={{ opacity: 0, x: 30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <p className="text-lg leading-relaxed mb-12 text-gray-700">
+                      The living room is the heart of the home—a space designed for comfort, relaxation, and gathering with loved ones.
+                    </p>
+                    
+                    {/* Specs List */}
+                    <div className="space-y-6">
+                      <div className="flex justify-between py-4 border-b border-gray-200">
+                        <span className="text-gray-600">Apartments:</span>
+                        <span className="font-medium text-black">{units.length || 4}</span>
+                      </div>
+                      <div className="flex justify-between py-4 border-b border-gray-200">
+                        <span className="text-gray-600">Size:</span>
+                        <span className="font-medium text-black">{project.built_area_m2 || '2200'} m²</span>
+                      </div>
+                      <div className="flex justify-between py-4 border-b border-gray-200">
+                        <span className="text-gray-600">Architecture:</span>
+                        <span className="font-medium text-black">{project.architect_name || 'Premium Design'}</span>
+                      </div>
+                      <div className="flex justify-between py-4 border-b border-gray-200">
+                        <span className="text-gray-600">Completion:</span>
+                        <span className="font-medium text-black">{project.completion_date || '2025'}</span>
+                      </div>
+                    </div>
+                  </motion.div>
+                </TabsContent>
+
+                {/* Duplicate content for other tabs */}
+                {['simplex', 'duplex', 'studio'].map((tabValue) => (
+                  <TabsContent key={tabValue} value={tabValue} className="grid grid-cols-2 gap-20 items-center">
+                    <div>
+                      <img 
+                        src={project.plans?.[0] || 'https://picsum.photos/600/400'}
+                        alt={`${tabValue} floor plan of ${project.title}`}
+                        className="w-full image-hover"
+                        style={{ borderRadius: '40px' }}
+                      />
+                    </div>
+                    
+                    <div>
+                      <p className="text-lg leading-relaxed mb-12 text-gray-700">
+                        Discover our {tabValue} layout designed for modern living with premium finishes and thoughtful space planning.
+                      </p>
+                      
+                      <div className="space-y-6">
+                        <div className="flex justify-between py-4 border-b border-gray-200">
+                          <span className="text-gray-600">Type:</span>
+                          <span className="font-medium text-black capitalize">{tabValue}</span>
+                        </div>
+                        <div className="flex justify-between py-4 border-b border-gray-200">
+                          <span className="text-gray-600">Size:</span>
+                          <span className="font-medium text-black">{project.built_area_m2 || '2200'} m²</span>
+                        </div>
+                        <div className="flex justify-between py-4 border-b border-gray-200">
+                          <span className="text-gray-600">Architecture:</span>
+                          <span className="font-medium text-black">{project.architect_name || 'Premium Design'}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </TabsContent>
+                ))}
+              </Tabs>
+            </div>
+          </section>
+
+          {/* 8. CONTACT FORM - Design Minimaliste */}
+          <section className="py-32 bg-[#1A1A1A] text-white">
+            <div className="container mx-auto px-8 max-w-4xl">
+              <motion.div 
+                className="text-center mb-16"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+              >
+                <p className="text-sm uppercase tracking-wider text-gray-400 mb-4">
+                  Any inquiry
+                </p>
+                <h2 className="text-6xl font-light">Get in touch</h2>
+              </motion.div>
+              
+              {/* Form Design */}
+              <motion.form 
+                className="space-y-8"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
-                Contactez nos experts pour organiser une visite ou obtenir plus d'informations sur ce projet premium.
-              </motion.p>
-
-              <motion.div 
-                className="flex flex-wrap justify-center gap-4 pt-4"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-              >
-                <Button 
-                  size="lg" 
-                  variant="secondary"
-                  className="bg-white text-primary hover:bg-white/90 transition-all duration-300 hover:scale-105 hover:shadow-premium px-8 py-4"
-                >
-                  Réserver une Visite
-                  <Calendar className="ml-2 h-5 w-5" />
-                </Button>
+                <div className="grid grid-cols-2 gap-8">
+                  <input 
+                    className="bg-transparent border-b border-white/20 pb-4 
+                               placeholder-white/40 focus:border-white transition-colors
+                               text-lg font-light outline-none"
+                    placeholder="First name"
+                    type="text"
+                  />
+                  <input 
+                    className="bg-transparent border-b border-white/20 pb-4 
+                               placeholder-white/40 focus:border-white transition-colors
+                               text-lg font-light outline-none"
+                    placeholder="Last name"
+                    type="text"
+                  />
+                </div>
                 
-                <Button 
-                  size="lg" 
-                  variant="outline"
-                  className="border-white text-white hover:bg-white hover:text-primary transition-all duration-300 hover:scale-105 px-8 py-4"
-                >
-                  Télécharger la Brochure
-                  <Download className="ml-2 h-5 w-5" />
-                </Button>
+                <input 
+                  className="w-full bg-transparent border-b border-white/20 pb-4 
+                             placeholder-white/40 focus:border-white transition-colors
+                             text-lg font-light outline-none"
+                  placeholder="Email address"
+                  type="email"
+                />
                 
-                <Button 
-                  size="lg" 
-                  variant="ghost"
-                  className="text-white hover:bg-white/20 transition-all duration-300 hover:scale-105 px-8 py-4"
-                >
-                  Ajouter aux Favoris
-                  <Heart className="ml-2 h-5 w-5" />
-                </Button>
-              </motion.div>
-
-              {/* RGPD Consent */}
+                <input 
+                  className="w-full bg-transparent border-b border-white/20 pb-4 
+                             placeholder-white/40 focus:border-white transition-colors
+                             text-lg font-light outline-none"
+                  placeholder="Phone number"
+                  type="tel"
+                />
+                
+                <textarea 
+                  className="w-full bg-transparent border-b border-white/20 pb-4 
+                             placeholder-white/40 focus:border-white transition-colors
+                             text-lg font-light outline-none resize-none"
+                  rows={4}
+                  placeholder="Your message"
+                />
+                
+                <button className="w-full bg-white text-black py-6 rounded-full
+                                  text-lg font-medium hover:bg-gray-100 transition-colors button-hover">
+                  Send Message
+                </button>
+              </motion.form>
+              
+              {/* Contact Info */}
               <motion.div
-                className="pt-8 max-w-2xl mx-auto"
+                className="mt-20 pt-20 border-t border-white/10"
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.6 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
               >
-                <label className="flex items-start space-x-3 text-sm text-white/80 cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    className="mt-0.5 rounded border-white/30 text-primary focus:ring-primary focus:ring-offset-0"
-                    aria-label="Consentement RGPD pour le traitement des données personnelles"
-                  />
-                  <span>
-                    J'accepte que mes données personnelles soient traitées pour être recontacté concernant ce projet immobilier, conformément à notre politique de confidentialité.
-                  </span>
-                </label>
+                <p className="text-center text-gray-400">
+                  Monday – Sunday, 9am – 7pm EST
+                </p>
               </motion.div>
             </div>
           </section>
 
-          {/* Metadata */}
+          {/* 9. STICKY CTA BAR - Design Flottant */}
+          {isStickyCTAVisible && (
+            <motion.div 
+              className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50
+                         bg-black/90 backdrop-blur-lg rounded-full px-8 py-4
+                         flex items-center gap-6 shadow-2xl"
+              initial={{ opacity: 0, y: 100 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 100 }}
+              transition={{ duration: 0.3 }}
+            >
+              {/* WhatsApp */}
+              <button className="flex items-center gap-3 text-white hover:text-green-400 transition-colors">
+                <MessageCircle className="w-5 h-5" />
+                <span className="text-sm font-medium">WhatsApp</span>
+              </button>
+              
+              <div className="w-[1px] h-6 bg-white/20" />
+              
+              {/* Schedule Visit */}
+              <button className="px-6 py-2 bg-white text-black rounded-full text-sm font-medium
+                                 hover:bg-gray-100 transition-colors button-hover">
+                Schedule Visit
+              </button>
+              
+              <div className="w-[1px] h-6 bg-white/20" />
+              
+              {/* Call */}
+              <button className="flex items-center gap-3 text-white hover:text-blue-400 transition-colors">
+                <Phone className="w-5 h-5" />
+                <span className="text-sm font-medium">Call Now</span>
+              </button>
+            </motion.div>
+          )}
+
+          {/* Keep existing metadata section */}
           <section className="py-8 bg-muted/50">
             <div className="max-w-7xl mx-auto px-4">
               <motion.p 

@@ -198,6 +198,70 @@ All colors MUST be HSL.
     @apply font-inter text-base font-medium;
   }
 
+/* OneArc Design System Additions */
+  :root {
+    --primary-black: #000000;
+    --pure-white: #FFFFFF;
+    --soft-gray: #F5F5F5;
+    --medium-gray: #E0E0E0;
+    --dark-gray: #1A1A1A;
+    --accent-beige: #F7F3F0;
+    --text-primary: #000000;
+    --text-secondary: #666666;
+    --border-light: rgba(0,0,0,0.08);
+    --shadow-soft: 0 20px 40px rgba(0,0,0,0.08);
+    --shadow-hover: 0 30px 60px rgba(0,0,0,0.12);
+    
+    /* Typography Scale */
+    --font-hero: 72px/1.1 'Inter', sans-serif;
+    --font-h1: 56px/1.2 'Inter', sans-serif;
+    --font-h2: 40px/1.3 'Inter', sans-serif;
+    --font-h3: 32px/1.4 'Inter', sans-serif;
+    --font-body-lg: 18px/1.6 'Inter', sans-serif;
+    --font-body: 16px/1.7 'Inter', sans-serif;
+    --font-small: 14px/1.5 'Inter', sans-serif;
+    --font-micro: 12px/1.4 'Inter', sans-serif;
+    
+    /* Weights */
+    --weight-light: 300;
+    --weight-regular: 400;
+    --weight-medium: 500;
+    --weight-semibold: 600;
+    --weight-bold: 700;
+    
+    /* Border Radius */
+    --radius-small: 16px;
+    --radius-medium: 24px;
+    --radius-large: 40px;
+    --radius-full: 9999px;
+  }
+
+  /* Marquee Animation */
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .animate-marquee {
+    animation: marquee 30s linear infinite;
+  }
+
+  /* Image Hover Effects */
+  .image-hover {
+    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .image-hover:hover {
+    transform: scale(1.02);
+  }
+
+  /* Button Hover Effects */
+  .button-hover {
+    transition: all 0.3s ease;
+  }
+  .button-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  }
+
   /* Professional button variants */
   .btn-premium {
     @apply bg-gradient-to-r from-primary to-primary-hover text-primary-foreground px-8 py-3 rounded-lg font-semibold shadow-lg hover:shadow-premium transition-all duration-300 transform hover:scale-105;
