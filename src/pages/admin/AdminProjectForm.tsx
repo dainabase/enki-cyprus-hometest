@@ -290,6 +290,63 @@ const [showPrefilledBanner, setShowPrefilledBanner] = useState(false);
     }
   }, [projectData, isEdit, form]);
 
+  // Ensure fresh photos when entering Media step
+  useEffect(() => {
+    if (!isEdit || !id) return;
+    if (projectFormSteps[currentStepIndex]?.id !== 'media') return;
+    (async () => {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('categorized_photos, project_images(url, caption, is_primary, display_order), photos')
+        .eq('id', id)
+        .single();
+      if (error || !data) return;
+
+      const mapCategory = (c: string) => {
+        const k = (c || '').toLowerCase();
+        const dict: Record<string, string> = {
+          'principale': 'hero', 'principal': 'hero', 'hero': 'hero',
+          'exterieure': 'exterior_1','exterieur':'exterior_1','exterior_1':'exterior_1','exterior_2':'exterior_2',
+          'interieure':'interior_1','interieur':'interior_1','interior_1':'interior_1','interior_2':'interior_2',
+          'chambre':'bedroom','bedroom':'bedroom','salle_de_bain':'bathroom','bathroom':'bathroom',
+          'balcon':'balcony','balcony':'balcony','jardin':'garden','garden':'garden',
+          'vue_panoramique':'panoramic_view','panoramic_view':'panoramic_view',
+          'vue_mer':'sea_view','sea_view':'sea_view','vue_montagne':'mountain_view','mountain_view':'mountain_view',
+          'prestations':'amenities','amenities':'amenities','plans':'plans'
+        };
+        return (dict[k] as any) || 'interior_1';
+      };
+
+      let out: any[] = [];
+      const cp = (data as any).categorized_photos;
+      if (Array.isArray(cp) && cp.length > 0) {
+        cp.forEach((item: any) => {
+          if (item?.url) out.push({ url: item.url, category: mapCategory(item.category), isPrimary: mapCategory(item.category) === 'hero', caption: item.caption || '' });
+          else if (Array.isArray(item?.urls)) {
+            const cat = mapCategory(item.category);
+            item.urls.forEach((u: string, idx: number) => out.push({ url: u, category: cat, isPrimary: cat === 'hero' && idx === 0, caption: '' }));
+          }
+        });
+      } else if (Array.isArray((data as any).project_images) && (data as any).project_images.length > 0) {
+        out = ((data as any).project_images as any[])
+          .sort((a:any,b:any)=> (a.display_order??0)-(b.display_order??0))
+          .map((img:any, idx:number) => ({ url: img.url, category: img.is_primary ? 'hero' : 'interior_1', isPrimary: !!img.is_primary || idx===0, caption: img.caption || '' }));
+      } else if (Array.isArray((data as any).photos) && (data as any).photos.length > 0) {
+        out = ((data as any).photos as string[]).map((url: string, idx:number) => ({ url, category: idx===0 ? 'hero' : 'interior_1', isPrimary: idx===0, caption: '' }));
+      }
+
+      if (out.length > 0) {
+        const seen = new Set<string>();
+        const normalized = out.slice().reverse().filter((p) => {
+          if (seen.has(p.category)) return false;
+          seen.add(p.category);
+          return true;
+        }).reverse();
+        form.setValue('photos', normalized, { shouldDirty: false, shouldTouch: false, shouldValidate: false });
+      }
+    })();
+  }, [currentStepIndex, isEdit, id, form]);
+
   // Load existing draft (after project data to avoid overriding DB in edit)
   useEffect(() => {
     if (!userId) return;
