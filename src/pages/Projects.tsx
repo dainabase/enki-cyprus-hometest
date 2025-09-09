@@ -298,7 +298,7 @@ const Projects = () => {
                           asChild
                           className="bg-white text-primary hover:bg-white/90 mt-4"
                         >
-                          <Link to={`/project/${project.id}`}>
+                          <Link to={`/projects/${project.url_slug || project.id}`}>
                             Explorer le projet
                             <ArrowRight className="ml-2 h-4 w-4" />
                           </Link>
