@@ -1013,7 +1013,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               <FormItem>
                 <FormLabel>Titre SEO</FormLabel>
                 <FormControl>
-                  <Input placeholder="Titre optimisé pour les moteurs de recherche" {...field} />
+                  <Input placeholder="Appartements de luxe à Limassol – Vue mer, piscine, centre-ville | ENKI Realty" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -1028,7 +1028,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 <FormLabel>Description SEO</FormLabel>
                 <FormControl>
                   <Textarea 
-                    placeholder="Description pour les moteurs de recherche (max 160 caractères)"
+                    placeholder="Résidence premium à Limassol: appartements 2–4 pièces, vue mer, prestations 5★, proche écoles/commodités. Golden Visa, rentabilité jusqu’à 6%, prix dès 350 000€."
                     rows={3}
                     sanitize={false}
                     {...field} 
@@ -1047,7 +1047,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 <FormLabel>Récit marketing</FormLabel>
                 <FormControl>
                   <Textarea 
-                    placeholder="Histoire et positionnement marketing du projet"
+                    placeholder="Découvrez une adresse d’exception: architecture contemporaine, matériaux haut de gamme, espaces lumineux, terrasses panoramiques et services premium (conciergerie, fitness, spa). Un investissement sécurisé au cœur de Limassol, idéal pour résidence principale ou rendement locatif soutenu."
                     rows={4}
                     sanitize={false}
                     {...field} 
