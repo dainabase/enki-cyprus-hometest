@@ -29,9 +29,6 @@ interface ProjectNearbyAmenity {
   id?: string;
   nearby_amenity_id: string;
   distance_km?: number;
-  distance_minutes_walk?: number;
-  distance_minutes_drive?: number;
-  quantity?: number;
   details?: string;
 }
 
@@ -110,9 +107,6 @@ export const NearbyAmenitiesSelector: React.FC<NearbyAmenitiesSelectorProps> = (
         id: item.id,
         nearby_amenity_id: item.nearby_amenity_id,
         distance_km: item.distance_km,
-        distance_minutes_walk: item.distance_minutes_walk,
-        distance_minutes_drive: item.distance_minutes_drive,
-        quantity: item.quantity,
         details: item.details
       }));
       setSelectedAmenities(formattedAmenities);
@@ -137,9 +131,6 @@ export const NearbyAmenitiesSelector: React.FC<NearbyAmenitiesSelectorProps> = (
           project_id: projectId,
           nearby_amenity_id: amenity.nearby_amenity_id,
           distance_km: amenity.distance_km,
-          distance_minutes_walk: amenity.distance_minutes_walk,
-          distance_minutes_drive: amenity.distance_minutes_drive,
-          quantity: amenity.quantity || 1,
           details: amenity.details
         }));
 
@@ -189,9 +180,6 @@ export const NearbyAmenitiesSelector: React.FC<NearbyAmenitiesSelectorProps> = (
       const newAmenity = {
         nearby_amenity_id: amenityId,
         distance_km: undefined,
-        distance_minutes_walk: undefined,
-        distance_minutes_drive: undefined,
-        quantity: 1,
         details: ''
       };
       const updated = [...selectedAmenities, newAmenity];
@@ -309,7 +297,7 @@ export const NearbyAmenitiesSelector: React.FC<NearbyAmenitiesSelectorProps> = (
                       {/* Champs de distance/temps */}
                       {selected && (
                         <div className="ml-8 p-3 bg-muted/30 rounded-lg">
-                          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                          <div className="grid grid-cols-2 gap-3">
                             <div>
                               <Label className="text-xs">Distance (km)</Label>
                               <Input
@@ -325,49 +313,9 @@ export const NearbyAmenitiesSelector: React.FC<NearbyAmenitiesSelectorProps> = (
                             </div>
                             
                             <div>
-                              <Label className="text-xs">À pied (min)</Label>
-                              <Input
-                                type="number"
-                                placeholder="10"
-                                value={selected.distance_minutes_walk || ''}
-                                onChange={(e) => updateAmenity(amenity.id, {
-                                  distance_minutes_walk: e.target.value ? parseInt(e.target.value) : undefined
-                                })}
-                                className="h-8"
-                              />
-                            </div>
-                            
-                            <div>
-                              <Label className="text-xs">En voiture (min)</Label>
-                              <Input
-                                type="number"
-                                placeholder="3"
-                                value={selected.distance_minutes_drive || ''}
-                                onChange={(e) => updateAmenity(amenity.id, {
-                                  distance_minutes_drive: e.target.value ? parseInt(e.target.value) : undefined
-                                })}
-                                className="h-8"
-                              />
-                            </div>
-                            
-                            <div>
-                              <Label className="text-xs">Quantité</Label>
-                              <Input
-                                type="number"
-                                min="1"
-                                placeholder="1"
-                                value={selected.quantity || ''}
-                                onChange={(e) => updateAmenity(amenity.id, {
-                                  quantity: e.target.value ? parseInt(e.target.value) : 1
-                                })}
-                                className="h-8"
-                              />
-                            </div>
-                            
-                            <div>
                               <Label className="text-xs">Détails</Label>
                               <Input
-                                placeholder="Nom spécifique..."
+                                placeholder="Nom spécifique, infos..."
                                 value={selected.details || ''}
                                 onChange={(e) => updateAmenity(amenity.id, {
                                   details: e.target.value
