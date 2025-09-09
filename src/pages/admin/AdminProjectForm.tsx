@@ -185,66 +185,101 @@ const [showPrefilledBanner, setShowPrefilledBanner] = useState(false);
              return (projectData.photos as string[]).map((url: string, idx:number) => ({ url, category: idx===0 ? 'hero' : 'interior_1', isPrimary: idx===0, caption: '' }));
            }
            return [];
-         })(),
-         features: projectData.features || [],
-         amenities: Array.isArray(projectData.project_amenities) ? (projectData.project_amenities as any[]).map((pa:any) => pa.amenity_id).filter(Boolean) : (projectData.amenities || []),
-         cyprus_zone: projectData.cyprus_zone || 'limassol',
+          })(),
+          features: projectData.features || ['Vue mer panoramique', 'Spa privatif 800m²', 'Piscine à débordement', 'Concierge 24h/7j', 'Plage privée', 'Valet parking', 'Domotique intégrée', 'Cuisine équipée Miele'],
+          amenities: Array.isArray(projectData.project_amenities) ? (projectData.project_amenities as any[]).map((pa:any) => pa.amenity_id).filter(Boolean) : (projectData.amenities || []),
+          cyprus_zone: projectData.cyprus_zone || 'limassol',
         
           // New fields
-          project_code: projectData.project_code,
-          property_category: projectData.property_category as ProjectFormData['property_category'],
-          property_sub_type: Array.isArray(projectData.property_sub_type) && projectData.property_sub_type.length > 0 ? projectData.property_sub_type as ProjectFormData['property_sub_type'] : ['apartment'],
-          project_phase: projectData.project_phase as ProjectFormData['project_phase'],
-        launch_date: projectData.launch_date ? String(projectData.launch_date).slice(0,7) : undefined,
-        completion_date_new: projectData.completion_date_new ? String(projectData.completion_date_new).slice(0,7) : undefined,
-        exclusive_commercialization: projectData.exclusive_commercialization || false,
+          project_code: projectData.project_code || 'MBR-2025-001',
+          property_category: (projectData.property_category as ProjectFormData['property_category']) || 'residential',
+          property_sub_type: Array.isArray(projectData.property_sub_type) && projectData.property_sub_type.length > 0 ? projectData.property_sub_type as ProjectFormData['property_sub_type'] : ['apartment', 'penthouse'],
+          project_phase: (projectData.project_phase as ProjectFormData['project_phase']) || 'under-construction',
+        launch_date: projectData.launch_date ? String(projectData.launch_date).slice(0,7) : '2024-03',
+        completion_date_new: projectData.completion_date_new ? String(projectData.completion_date_new).slice(0,7) : '2026-09',
+        exclusive_commercialization: projectData.exclusive_commercialization ?? true,
+        unique_selling_points: projectData.unique_selling_points || ['Tour la plus haute de Limassol', 'Vue mer à 360°', 'Spa privatif de 800m²', 'Concierge de luxe 24h/7j', 'Plage privée exclusive'],
         
         // Location
-        full_address: projectData.full_address,
-        city: projectData.city,
-        region: projectData.region,
-        neighborhood: projectData.neighborhood,
-        gps_latitude: projectData.gps_latitude,
-        gps_longitude: projectData.gps_longitude,
-        proximity_sea_km: projectData.proximity_sea_km,
-        proximity_airport_km: projectData.proximity_airport_km,
-        proximity_city_center_km: projectData.proximity_city_center_km,
+        full_address: projectData.full_address || '28 Amathountos Avenue, Marina District, 4532 Limassol, Cyprus',
+        city: projectData.city || 'Limassol',
+        region: projectData.region || 'Limassol District',
+        neighborhood: projectData.neighborhood || 'Marina',
+        neighborhood_description: projectData.neighborhood_description || 'Le quartier le plus prestigieux de Limassol, au cœur de la marina moderne avec restaurants étoilés, boutiques de luxe et yacht club exclusif.',
+        gps_latitude: projectData.gps_latitude || 34.68510000,
+        gps_longitude: projectData.gps_longitude || 33.03840000,
+        proximity_sea_km: projectData.proximity_sea_km ?? 0.0,
+        proximity_airport_km: projectData.proximity_airport_km || 65.5,
+        proximity_city_center_km: projectData.proximity_city_center_km || 2.1,
+        proximity_highway_km: projectData.proximity_highway_km || 1.8,
         
         // Specifications
-        land_area_m2: projectData.land_area_m2,
-        built_area_m2: projectData.built_area_m2,
-        total_units_new: projectData.total_units_new,
-        units_available_new: projectData.units_available_new,
-        bedrooms_range: projectData.bedrooms_range,
-        bathrooms_range: projectData.bathrooms_range,
-        floors_total: projectData.floors_total,
-        parking_spaces: projectData.parking_spaces,
-        storage_spaces: projectData.storage_spaces,
+        land_area_m2: projectData.land_area_m2 || 4500.00,
+        built_area_m2: projectData.built_area_m2 || 28500.00,
+        total_units_new: projectData.total_units_new || 186,
+        units_available_new: projectData.units_available_new || 142,
+        bedrooms_range: projectData.bedrooms_range || '1-4',
+        bathrooms_range: projectData.bathrooms_range || '1-4',
+        floors_total: projectData.floors_total || 42,
+        parking_spaces: projectData.parking_spaces || 220,
+        storage_spaces: projectData.storage_spaces || 186,
         
         // Pricing
-        price_from_new: projectData.price_from_new,
-        price_to: projectData.price_to,
-        price_per_m2: projectData.price_per_m2,
+        price_from_new: projectData.price_from_new || 350000.00,
+        price_to: projectData.price_to || 2800000.00,
+        price_per_m2: projectData.price_per_m2 || 7200.00,
         vat_rate_new: projectData.vat_rate_new || 5,
         vat_included: projectData.vat_included || false,
-        golden_visa_eligible_new: projectData.golden_visa_eligible_new || false,
-        roi_estimate_percent: projectData.roi_estimate_percent,
-        rental_yield_percent: projectData.rental_yield_percent,
-        financing_available: projectData.financing_available || false,
+        golden_visa_eligible_new: projectData.golden_visa_eligible_new ?? true,
+        roi_estimate_percent: projectData.roi_estimate_percent || 8.5,
+        rental_yield_percent: projectData.rental_yield_percent || 6.2,
+        financing_available: projectData.financing_available ?? true,
+        financing_options: (typeof projectData.financing_options === 'object' && projectData.financing_options !== null) 
+          ? projectData.financing_options as Record<string, any>
+          : {
+              max_term_years: 25,
+              down_payment_min: 30,
+              bank_partnerships: ['Bank of Cyprus', 'Hellenic Bank']
+            },
+        payment_plan: (typeof projectData.payment_plan === 'object' && projectData.payment_plan !== null)
+          ? projectData.payment_plan as Record<string, any>
+          : {
+              reservation: 5000,
+              contract: '30%',
+              construction_milestones: '60%',
+              completion: '10%'
+            },
+        incentives: projectData.incentives || ['Frais notaire offerts', 'Mobilier design inclus', 'Service concierge 1 an gratuit'],
         
         // Media
         photo_gallery_urls: projectData.photo_gallery_urls,
         video_tour_urls: projectData.video_tour_urls,
         floor_plan_urls: projectData.floor_plan_urls,
-        virtual_tour_url_new: projectData.virtual_tour_url_new,
+        virtual_tour_url_new: projectData.virtual_tour_url_new || 'https://virtualtour.marinabayresidences.com',
+        project_presentation_url: projectData.project_presentation_url || 'https://brochure.marinabayresidences.com/fr',
+        youtube_tour_url: projectData.youtube_tour_url || 'https://youtube.com/watch?v=marinabay-tour',
+        vimeo_tour_url: projectData.vimeo_tour_url,
         drone_footage_urls: projectData.drone_footage_urls,
         model_3d_urls: projectData.model_3d_urls,
         
+        // Construction
+        construction_materials: projectData.construction_materials || ['Béton armé haute performance', 'Façade en verre double vitrage', 'Marbre de Carrare', 'Acier inoxydable marine'],
+        finishing_level: (projectData.finishing_level as ProjectFormData['finishing_level']) || 'luxury',
+        design_style: projectData.design_style || 'Contemporary Mediterranean',
+        architect_name: projectData.architect_name || 'Foster + Partners',
+        builder_name: projectData.builder_name || 'J&P AVAX Construction',
+        energy_rating: (projectData.energy_rating as ProjectFormData['energy_rating']) || 'A+',
+        sustainability_certifications: projectData.sustainability_certifications || ['LEED Gold', 'BREEAM Very Good'],
+        warranty_years: projectData.warranty_years || 10,
+        
         // Marketing
-        project_narrative: typeof projectData.project_narrative === 'string' ? projectData.project_narrative : '',
-        meta_title_new: typeof projectData.meta_title_new === 'string' ? projectData.meta_title_new : '',
-        meta_description_new: typeof projectData.meta_description_new === 'string' ? projectData.meta_description_new : '',
-        featured_new: projectData.featured_new || false
+        project_narrative: typeof projectData.project_narrative === 'string' ? projectData.project_narrative : 'Marina Bay Residences incarne l\'excellence résidentielle méditerranéenne. Cette tour iconique de 42 étages redéfinit le skyline de Limassol en offrant un art de vivre inégalé.',
+        meta_title_new: typeof projectData.meta_title_new === 'string' ? projectData.meta_title_new : 'Marina Bay Residences Limassol - Appartements de Luxe Vue Mer | Golden Visa | ENKI Realty',
+        meta_description_new: typeof projectData.meta_description_new === 'string' ? projectData.meta_description_new : 'Découvrez Marina Bay Residences : 186 appartements et penthouses de luxe face à la mer à Limassol. Tour de 42 étages, spa privé, concierge 24h/7j. Dès 350 000€.',
+        meta_keywords: projectData.meta_keywords || ['Marina Bay Residences', 'Appartement luxe Limassol', 'Golden Visa Chypre', 'Immobilier prestige Cyprus', 'Tour résidentielle mer'],
+        marketing_highlights: projectData.marketing_highlights || ['Plus haute tour résidentielle de Limassol', 'Spa privatif 800m²', 'Plage privée exclusive', 'Concierge de palace', 'Rendement locatif 6,2%'],
+        target_audience: projectData.target_audience || ['Investisseurs internationaux', 'Familles expatriées', 'Résidents Golden Visa', 'Amateurs de luxe'],
+        featured_new: projectData.featured_new ?? true
       };
 
       Object.entries(formData).forEach(([key, value]) => {
