@@ -121,33 +121,27 @@ export const ProjectDetailedView = ({
           <CardContent className="space-y-4">
             {/* Informations principales */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Building className="h-4 w-4 flex-shrink-0" />
-                  <span>Développeur</span>
-                </div>
-                <p className="font-medium pl-6">{getDeveloperName(project.developer)}</p>
+              <div className="flex items-center gap-2">
+                <Building className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                <span className="text-sm text-muted-foreground">Développeur :</span>
+                <span className="font-medium">{getDeveloperName(project.developer)}</span>
               </div>
               
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <MapPin className="h-4 w-4 flex-shrink-0" />
-                  <span>Localisation</span>
-                </div>
-                <p className="font-medium pl-6">
+              <div className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                <span className="text-sm text-muted-foreground">Localisation :</span>
+                <span className="font-medium">
                   {project.city || 'Ville non définie'}
                   {project.neighborhood && `, ${project.neighborhood}`}
-                </p>
+                </span>
               </div>
               
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Euro className="h-4 w-4 flex-shrink-0 text-green-600" />
-                  <span>Prix</span>
-                </div>
-                <p className="font-semibold text-green-600 pl-6">
+              <div className="flex items-center gap-2">
+                <Euro className="h-4 w-4 text-green-600 flex-shrink-0" />
+                <span className="text-sm text-muted-foreground">Prix :</span>
+                <span className="font-semibold text-green-600">
                   {formatPrice(project.price || project.price_from || 0)}
-                </p>
+                </span>
               </div>
             </div>
 
@@ -156,44 +150,36 @@ export const ProjectDetailedView = ({
             {/* Détails techniques */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {project.bedrooms_range && (
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Home className="h-4 w-4 flex-shrink-0" />
-                    <span>Chambres</span>
-                  </div>
-                  <p className="text-sm font-medium pl-6">{project.bedrooms_range}</p>
+                <div className="flex items-center gap-2">
+                  <Home className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                  <span className="text-xs text-muted-foreground">Chambres :</span>
+                  <span className="text-sm font-medium">{project.bedrooms_range}</span>
                 </div>
               )}
               
               {project.built_area_m2 && (
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Ruler className="h-4 w-4 flex-shrink-0" />
-                    <span>Surface</span>
-                  </div>
-                  <p className="text-sm font-medium pl-6">{project.built_area_m2} m²</p>
+                <div className="flex items-center gap-2">
+                  <Ruler className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                  <span className="text-xs text-muted-foreground">Surface :</span>
+                  <span className="text-sm font-medium">{project.built_area_m2} m²</span>
                 </div>
               )}
               
               {(project.total_units || project.total_units_new) && (
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Users className="h-4 w-4 flex-shrink-0" />
-                    <span>Unités</span>
-                  </div>
-                  <p className="text-sm font-medium pl-6">
+                <div className="flex items-center gap-2">
+                  <Users className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                  <span className="text-xs text-muted-foreground">Unités :</span>
+                  <span className="text-sm font-medium">
                     {project.total_units_new || project.total_units}
-                  </p>
+                  </span>
                 </div>
               )}
               
               {project.parking_spaces && (
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Car className="h-4 w-4 flex-shrink-0" />
-                    <span>Parking</span>
-                  </div>
-                  <p className="text-sm font-medium pl-6">{project.parking_spaces}</p>
+                <div className="flex items-center gap-2">
+                  <Car className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                  <span className="text-xs text-muted-foreground">Parking :</span>
+                  <span className="text-sm font-medium">{project.parking_spaces}</span>
                 </div>
               )}
             </div>
