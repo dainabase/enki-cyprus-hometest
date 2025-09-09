@@ -520,44 +520,49 @@ const Home = () => {
                 >
                   ENKI<span className="mx-2">-</span>REALTY
                   <motion.span
-                    className="text-xl sm:text-2xl lg:text-2xl font-normal ml-1 mt-2 text-white/90 relative"
+                    className="text-xl sm:text-2xl lg:text-2xl font-normal ml-1 mt-2 relative"
                     initial={{ opacity: 0, scale: 0 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.6, delay: 2.8, ease: "easeOut" }}
                   >
                     <motion.span
-                      className="relative"
-                      initial={{ textShadow: "0 0 0px transparent" }}
+                      className="relative z-10"
+                      initial={{ color: "rgba(255,255,255,0.9)" }}
                       animate={{ 
-                        textShadow: [
-                          "0 0 0px transparent",
-                          "0 0 20px #ffd700, 0 0 30px #ffd700, 0 0 40px #ffd700",
-                          "0 0 0px transparent"
+                        color: [
+                          "rgba(255,255,255,0.9)",
+                          "#ffd700",
+                          "rgba(255,255,255,0.9)"
                         ]
                       }}
                       transition={{ 
-                        duration: 1.5, 
-                        delay: 3.5, // After all other animations
-                        ease: "easeInOut"
+                        duration: 2.5, 
+                        delay: 3.5,
+                        ease: [0.4, 0, 0.2, 1],
+                        times: [0, 0.5, 1]
                       }}
                     >
-                      <motion.span
-                        className="absolute inset-0"
-                        initial={{ opacity: 0, scale: 1 }}
-                        animate={{ opacity: [0, 1, 0], scale: [1, 1.2, 1] }}
-                        transition={{ 
-                          duration: 1.5, 
-                          delay: 3.5,
-                          ease: "easeInOut"
-                        }}
-                        style={{
-                          background: "radial-gradient(circle, rgba(255,215,0,0.6) 0%, transparent 70%)",
-                          filter: "blur(8px)",
-                          borderRadius: "50%"
-                        }}
-                      />
                       AI
                     </motion.span>
+                    <motion.div
+                      className="absolute inset-0 -m-2"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ 
+                        opacity: [0, 0.8, 0], 
+                        scale: [0.8, 1.3, 0.8]
+                      }}
+                      transition={{ 
+                        duration: 2.5, 
+                        delay: 3.5,
+                        ease: [0.4, 0, 0.2, 1],
+                        times: [0, 0.5, 1]
+                      }}
+                      style={{
+                        background: "radial-gradient(circle, rgba(255,215,0,0.4) 0%, rgba(255,215,0,0.2) 50%, transparent 70%)",
+                        filter: "blur(6px)",
+                        borderRadius: "50%"
+                      }}
+                    />
                   </motion.span>
                 </motion.div>
 
