@@ -705,6 +705,182 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
       <Card>
         <CardHeader>
+          <CardTitle>Caractéristiques Techniques</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <FormField
+              control={form.control}
+              name="energy_rating"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Classe énergétique</FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Sélectionner" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="A+">A+</SelectItem>
+                        <SelectItem value="A">A</SelectItem>
+                        <SelectItem value="B">B</SelectItem>
+                        <SelectItem value="C">C</SelectItem>
+                        <SelectItem value="D">D</SelectItem>
+                        <SelectItem value="E">E</SelectItem>
+                        <SelectItem value="F">F</SelectItem>
+                        <SelectItem value="G">G</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="construction_year"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Année construction</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="number" 
+                      placeholder="2025"
+                      {...field}
+                      onChange={(e) => field.onChange(parseInt(e.target.value) || undefined)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="building_certification"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Certification bâtiment</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="LEED Gold, BREEAM..."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <FormField
+              control={form.control}
+              name="maintenance_fees_yearly"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Frais maintenance/an (€)</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="number" 
+                      placeholder="2500"
+                      {...field}
+                      onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="property_tax_yearly"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Taxe foncière/an (€)</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="number" 
+                      placeholder="1200"
+                      {...field}
+                      onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="hoa_fees_monthly"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Charges copropriété/mois (€)</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="number" 
+                      placeholder="150"
+                      {...field}
+                      onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="internet_speed_mbps"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Vitesse internet (Mbps)</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="number" 
+                      placeholder="100"
+                      {...field}
+                      onChange={(e) => field.onChange(parseInt(e.target.value) || undefined)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="pet_policy"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Politique animaux</FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Sélectionner" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="allowed">Autorisés</SelectItem>
+                        <SelectItem value="restricted">Restrictions</SelectItem>
+                        <SelectItem value="forbidden">Interdits</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
           <CardTitle>Équipements</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">

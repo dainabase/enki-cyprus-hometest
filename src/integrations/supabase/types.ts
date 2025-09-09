@@ -1240,6 +1240,7 @@ export type Database = {
       }
       projects: {
         Row: {
+          accessibility_features: string[] | null
           after_sales_service: boolean | null
           ai_chatbot_enabled: boolean | null
           ai_content_disclosure: string | null
@@ -1253,7 +1254,9 @@ export type Database = {
           bedrooms_range: string | null
           bim_model_url: string | null
           builder_name: string | null
+          building_certification: string | null
           building_id: string | null
+          building_insurance: string | null
           built_area_m2: number | null
           categorized_photos: Json | null
           city: string | null
@@ -1265,6 +1268,7 @@ export type Database = {
           construction_materials: string[] | null
           construction_phase: string | null
           construction_start: string | null
+          construction_year: number | null
           created_at: string
           cyprus_zone: string | null
           description: string
@@ -1293,11 +1297,13 @@ export type Database = {
           golden_visa_eligible_new: boolean | null
           gps_latitude: number | null
           gps_longitude: number | null
+          hoa_fees_monthly: number | null
           id: string
           incentives: string[] | null
           inquiry_count: number | null
           interactive_map_url: string | null
           interests: Json[] | null
+          internet_speed_mbps: number | null
           land_area_m2: number | null
           last_price_update: string | null
           launch_date: string | null
@@ -1305,6 +1311,7 @@ export type Database = {
           lifestyle_amenities: string[] | null
           livability: boolean | null
           location: Json
+          maintenance_fees_yearly: number | null
           map_image: string | null
           marketing_highlights: string[] | null
           marketing_strategy: Json | null
@@ -1322,6 +1329,7 @@ export type Database = {
           parking_spaces: number | null
           payment_plan: Json | null
           permits_obtained: string[] | null
+          pet_policy: string | null
           photo_count: number | null
           photo_gallery_urls: string[] | null
           photos: string[]
@@ -1339,18 +1347,22 @@ export type Database = {
           project_status: string | null
           property_category: string | null
           property_sub_type: string[] | null
+          property_tax_yearly: number | null
           property_types: string[] | null
           proximity_airport_km: number | null
           proximity_city_center_km: number | null
           proximity_highway_km: number | null
           proximity_sea_km: number | null
           region: string | null
+          renovation_year: number | null
           rental_yield_percent: number | null
           reservation_status: string | null
           roi_estimate_percent: number | null
           search_ranking_weight: number | null
           seasonal_features: Json | null
+          seismic_rating: string | null
           smart_home_features: Json | null
+          smoking_policy: string | null
           social_proof_stats: Json | null
           status: string
           storage_spaces: number | null
@@ -1392,6 +1404,7 @@ export type Database = {
           youtube_tour_url: string | null
         }
         Insert: {
+          accessibility_features?: string[] | null
           after_sales_service?: boolean | null
           ai_chatbot_enabled?: boolean | null
           ai_content_disclosure?: string | null
@@ -1405,7 +1418,9 @@ export type Database = {
           bedrooms_range?: string | null
           bim_model_url?: string | null
           builder_name?: string | null
+          building_certification?: string | null
           building_id?: string | null
+          building_insurance?: string | null
           built_area_m2?: number | null
           categorized_photos?: Json | null
           city?: string | null
@@ -1417,6 +1432,7 @@ export type Database = {
           construction_materials?: string[] | null
           construction_phase?: string | null
           construction_start?: string | null
+          construction_year?: number | null
           created_at?: string
           cyprus_zone?: string | null
           description: string
@@ -1445,11 +1461,13 @@ export type Database = {
           golden_visa_eligible_new?: boolean | null
           gps_latitude?: number | null
           gps_longitude?: number | null
+          hoa_fees_monthly?: number | null
           id?: string
           incentives?: string[] | null
           inquiry_count?: number | null
           interactive_map_url?: string | null
           interests?: Json[] | null
+          internet_speed_mbps?: number | null
           land_area_m2?: number | null
           last_price_update?: string | null
           launch_date?: string | null
@@ -1457,6 +1475,7 @@ export type Database = {
           lifestyle_amenities?: string[] | null
           livability?: boolean | null
           location: Json
+          maintenance_fees_yearly?: number | null
           map_image?: string | null
           marketing_highlights?: string[] | null
           marketing_strategy?: Json | null
@@ -1474,6 +1493,7 @@ export type Database = {
           parking_spaces?: number | null
           payment_plan?: Json | null
           permits_obtained?: string[] | null
+          pet_policy?: string | null
           photo_count?: number | null
           photo_gallery_urls?: string[] | null
           photos?: string[]
@@ -1491,18 +1511,22 @@ export type Database = {
           project_status?: string | null
           property_category?: string | null
           property_sub_type?: string[] | null
+          property_tax_yearly?: number | null
           property_types?: string[] | null
           proximity_airport_km?: number | null
           proximity_city_center_km?: number | null
           proximity_highway_km?: number | null
           proximity_sea_km?: number | null
           region?: string | null
+          renovation_year?: number | null
           rental_yield_percent?: number | null
           reservation_status?: string | null
           roi_estimate_percent?: number | null
           search_ranking_weight?: number | null
           seasonal_features?: Json | null
+          seismic_rating?: string | null
           smart_home_features?: Json | null
+          smoking_policy?: string | null
           social_proof_stats?: Json | null
           status?: string
           storage_spaces?: number | null
@@ -1544,6 +1568,7 @@ export type Database = {
           youtube_tour_url?: string | null
         }
         Update: {
+          accessibility_features?: string[] | null
           after_sales_service?: boolean | null
           ai_chatbot_enabled?: boolean | null
           ai_content_disclosure?: string | null
@@ -1557,7 +1582,9 @@ export type Database = {
           bedrooms_range?: string | null
           bim_model_url?: string | null
           builder_name?: string | null
+          building_certification?: string | null
           building_id?: string | null
+          building_insurance?: string | null
           built_area_m2?: number | null
           categorized_photos?: Json | null
           city?: string | null
@@ -1569,6 +1596,7 @@ export type Database = {
           construction_materials?: string[] | null
           construction_phase?: string | null
           construction_start?: string | null
+          construction_year?: number | null
           created_at?: string
           cyprus_zone?: string | null
           description?: string
@@ -1597,11 +1625,13 @@ export type Database = {
           golden_visa_eligible_new?: boolean | null
           gps_latitude?: number | null
           gps_longitude?: number | null
+          hoa_fees_monthly?: number | null
           id?: string
           incentives?: string[] | null
           inquiry_count?: number | null
           interactive_map_url?: string | null
           interests?: Json[] | null
+          internet_speed_mbps?: number | null
           land_area_m2?: number | null
           last_price_update?: string | null
           launch_date?: string | null
@@ -1609,6 +1639,7 @@ export type Database = {
           lifestyle_amenities?: string[] | null
           livability?: boolean | null
           location?: Json
+          maintenance_fees_yearly?: number | null
           map_image?: string | null
           marketing_highlights?: string[] | null
           marketing_strategy?: Json | null
@@ -1626,6 +1657,7 @@ export type Database = {
           parking_spaces?: number | null
           payment_plan?: Json | null
           permits_obtained?: string[] | null
+          pet_policy?: string | null
           photo_count?: number | null
           photo_gallery_urls?: string[] | null
           photos?: string[]
@@ -1643,18 +1675,22 @@ export type Database = {
           project_status?: string | null
           property_category?: string | null
           property_sub_type?: string[] | null
+          property_tax_yearly?: number | null
           property_types?: string[] | null
           proximity_airport_km?: number | null
           proximity_city_center_km?: number | null
           proximity_highway_km?: number | null
           proximity_sea_km?: number | null
           region?: string | null
+          renovation_year?: number | null
           rental_yield_percent?: number | null
           reservation_status?: string | null
           roi_estimate_percent?: number | null
           search_ranking_weight?: number | null
           seasonal_features?: Json | null
+          seismic_rating?: string | null
           smart_home_features?: Json | null
+          smoking_policy?: string | null
           social_proof_stats?: Json | null
           status?: string
           storage_spaces?: number | null
