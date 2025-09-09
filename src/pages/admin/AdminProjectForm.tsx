@@ -165,9 +165,9 @@ export const AdminProjectForm: React.FC = () => {
         model_3d_urls: projectData.model_3d_urls,
         
         // Marketing
-        project_narrative: projectData.project_narrative,
-        meta_title_new: projectData.meta_title_new,
-        meta_description_new: projectData.meta_description_new,
+        project_narrative: typeof projectData.project_narrative === 'string' ? projectData.project_narrative : '',
+        meta_title_new: typeof projectData.meta_title_new === 'string' ? projectData.meta_title_new : '',
+        meta_description_new: typeof projectData.meta_description_new === 'string' ? projectData.meta_description_new : '',
         featured_new: projectData.featured_new || false
       };
 
@@ -314,7 +314,7 @@ export const AdminProjectForm: React.FC = () => {
       console.error('Save error:', error);
       toast({
         title: "Erreur de sauvegarde",
-        description: "Impossible de sauvegarder le projet. Vérifiez les champs requis.",
+        description: error instanceof Error ? error.message : "Impossible de sauvegarder le projet. Vérifiez les champs requis.",
         variant: "destructive"
       });
     }
