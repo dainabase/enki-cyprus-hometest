@@ -68,7 +68,7 @@ export const AdminProjectForm: React.FC = () => {
       featured_new: false,
       cyprus_zone: 'limassol',
       property_category: 'residential',
-      property_sub_type: [],
+      property_sub_type: ['apartment'],
       exclusive_commercialization: false,
       project_phase: 'off-plan',
       price: 0,
@@ -121,7 +121,7 @@ export const AdminProjectForm: React.FC = () => {
           // New fields
           project_code: projectData.project_code,
           property_category: projectData.property_category as ProjectFormData['property_category'],
-          property_sub_type: projectData.property_sub_type as ProjectFormData['property_sub_type'],
+          property_sub_type: Array.isArray(projectData.property_sub_type) && projectData.property_sub_type.length > 0 ? projectData.property_sub_type as ProjectFormData['property_sub_type'] : ['apartment'],
           project_phase: projectData.project_phase as ProjectFormData['project_phase'],
         launch_date: projectData.launch_date,
         completion_date_new: projectData.completion_date_new,
