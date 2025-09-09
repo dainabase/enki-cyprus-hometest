@@ -339,7 +339,6 @@
     "api": "Справочник API",
     "external": "Внешние Ссылки"
   },
-  },
   "pagination": {
     "displaying": "Показаны {{start}} - {{end}} из {{total}} результатов",
     "rowsPerPage": "Строк на странице",
