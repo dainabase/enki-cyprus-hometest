@@ -130,11 +130,12 @@ export default function HeroSection({ project }: HeroSectionProps) {
         </Button>
 
         
-        {/* Scroll Indicator (same placement as homepage) */}
-        <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2">
-          <div className="w-7 h-11 border-2 border-white/70 rounded-full flex items-start justify-center backdrop-blur-sm animate-bounce">
-            <div className="w-1.5 h-1.5 bg-white rounded-full mt-1.5" />
-          </div>
+      </div>
+
+      {/* Scroll Indicator (same placement as homepage) */}
+      <div className="pointer-events-none absolute bottom-12 left-1/2 -translate-x-1/2 z-20">
+        <div className="w-7 h-11 border-2 border-white/70 rounded-full flex items-start justify-center backdrop-blur-sm animate-bounce">
+          <div className="w-1.5 h-1.5 bg-white rounded-full mt-1.5" />
         </div>
       </div>
     </section>
