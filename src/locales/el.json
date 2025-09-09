@@ -449,19 +449,7 @@
       "zone": "Ζώνη Κύπρου",
       "completionDate": "Ημερομηνία παράδοσης",
       "createdDate": "Ημερομηνία δημιουργίας"
-    }
-  },
-  "pagination": {
-    "displaying": "Εμφάνιση {{start}} έως {{end}} από {{total}} αποτελέσματα",
-    "rowsPerPage": "Γραμμές ανά σελίδα",
-    "pageOf": "Σελίδα {{current}} από {{count}}"
-  },
-  "actions": {
-    "selectAll": "Επιλογή όλων",
-    "selectItem": "Επιλογή",
-    "actions": "Ενέργειες"
-  },
-  "admin": {
+    },
     "common": {
       "unassigned": "Μη ανατεθειμένο",
       "noProjectsFound": "Δε βρέθηκαν έργα",
@@ -490,5 +478,15 @@
       "soldOut": "ΕΞΑΝΤΛΗΘΗΚΕ",
       "outOf": "από {{total}} ({{rate}}% κατειλημμένα)"
     }
+  },
+  "pagination": {
+    "displaying": "Εμφάνιση {{start}} έως {{end}} από {{total}} αποτελέσματα",
+    "rowsPerPage": "Γραμμές ανά σελίδα",
+    "pageOf": "Σελίδα {{current}} από {{count}}"
+  },
+  "actions": {
+    "selectAll": "Επιλογή όλων",
+    "selectItem": "Επιλογή",
+    "actions": "Ενέργειες"
   }
 }

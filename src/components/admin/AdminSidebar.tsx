@@ -246,7 +246,7 @@ export function AdminSidebar() {
             </div>
             <div>
               <h2 className="text-sm font-semibold text-primary">ENKI-REALTY</h2>
-              <p className="text-xs text-secondary">Administration</p>
+              <p className="text-xs text-secondary">{t('admin.sidebar.administration')}</p>
             </div>
           </motion.div>
         )}
