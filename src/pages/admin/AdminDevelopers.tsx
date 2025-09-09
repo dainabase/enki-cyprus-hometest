@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Plus } from 'lucide-react';
 import { useDebounceCallback } from '@/hooks/useDebounceCallback';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -66,6 +67,7 @@ interface DeveloperFormData {
 }
 
 export default function AdminDevelopers() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { currentView, changeView } = useViewPreference('developers-view', 'cards');
   
@@ -474,7 +476,7 @@ export default function AdminDevelopers() {
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Gestion des Développeurs</h1>
+        <h1 className="text-3xl font-bold">{t('admin.developers.title', { defaultValue: 'Developer Management' })}</h1>
         <div className="flex items-center space-x-4">
           <DeveloperViewSelector 
             currentView={currentView}
@@ -482,7 +484,7 @@ export default function AdminDevelopers() {
           />
           <Button onClick={openCreateModal} className="flex items-center space-x-2">
             <Plus className="h-4 w-4" />
-            <span>Ajouter un développeur</span>
+            <span>{t('admin.developers.addDeveloper', { defaultValue: 'Add Developer' })}</span>
           </Button>
         </div>
       </div>
@@ -491,9 +493,9 @@ export default function AdminDevelopers() {
       {/* Developers Multi-view */}
       <Card>
         <CardHeader>
-          <CardTitle>Développeurs</CardTitle>
+          <CardTitle>{t('fields.developer', { defaultValue: 'Developers' })}</CardTitle>
           <CardDescription>
-            {normalizedDevelopers.length} développeur{normalizedDevelopers.length > 1 ? 's' : ''} trouvé{normalizedDevelopers.length > 1 ? 's' : ''}
+            {t('admin.developers.developersFound', { defaultValue: '{{count}} developers found', count: normalizedDevelopers.length })}
           </CardDescription>
         </CardHeader>
         <CardContent>

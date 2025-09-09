@@ -7,7 +7,7 @@
     "properties": "Ακίνητα",
     "units": "Μονάδες",
     "leads": "Δυνητικοί Πελάτες/CRM",
-    "pipeline": "Pipeline",
+    "pipeline": "Διαδικασία Πωλήσεων",
     "commissions": "Προμήθειες",
     "analytics": "Αναλύσεις",
     "settings": "Ρυθμίσεις",
@@ -70,26 +70,36 @@
   "fields": {
     "name": "Όνομα",
     "title": "Τίτλος",
-    "subtitle": "Υπότιτλος",
+    "subtitle": "Υπότιτλος", 
     "description": "Περιγραφή",
     "detailedDescription": "Λεπτομερής Περιγραφή",
     "email": "Email",
     "phone": "Τηλέφωνο",
     "address": "Διεύθυνση",
     "city": "Πόλη",
+    "website": "Ιστοσελίδα",
     "price": "Τιμή",
+    "priceMax": "Μέγιστη τιμή",
+    "priceFrom": "Τιμή από",
+    "priceTo": "Τιμή έως",
     "minPrice": "Ελάχιστη Τιμή",
     "vat": "ΦΠΑ",
     "completion": "Ημερομηνία Παράδοσης",
     "developer": "Προγραμματιστής",
     "project": "Έργο",
     "building": "Κτίριο",
+    "buildingName": "Όνομα κτιρίου",
     "zone": "Ζώνη",
     "type": "Τύπος",
     "floors": "Όροφοι",
     "units": "Μονάδες",
     "totalUnits": "Σύνολο Μονάδων",
     "availableUnits": "Διαθέσιμες Μονάδες",
+    "available": "Διαθέσιμα",
+    "contact": "Επικοινωνία",
+    "rating": "Αξιολόγηση",
+    "constructionStatus": "Κατάσταση κατασκευής",
+    "status": "Κατάσταση",
     "energyRating": "Ενεργειακή Κλάση",
     "goldenVisa": "Επιλέξιμο για Golden Visa"
   },
@@ -98,6 +108,16 @@
     "deleteSuccess": "Διαγράφηκε επιτυχώς",
     "uploadSuccess": "Ανέβηκε επιτυχώς",
     "deleteConfirm": "Είστε σίγουροι ότι θέλετε να διαγράψετε;",
+    "deleteProjectConfirm": "Είστε σίγουροι ότι θέλετε να διαγράψετε το έργο \"{{title}}\";",
+    "deleteProjectConfirmWithDeps": "⚠️ ΠΡΟΣΟΧΗ ⚠️\n\nΤο έργο \"{{title}}\" έχει εξαρτήσεις:\n{{details}}\n\nΗ διαγραφή θα αφαιρέσει επίσης αυτά τα στοιχεία.\n\nΕίστε σίγουροι ότι θέλετε να συνεχίσετε;",
+    "deleteBuildingConfirm": "Είστε σίγουροι ότι θέλετε να διαγράψετε το κτίριο \"{{name}}\";",
+    "deleteBuildingConfirmWithDeps": "⚠️ ΠΡΟΣΟΧΗ ⚠️\n\nΤο κτίριο \"{{name}}\" έχει εξαρτήσεις:\n{{details}}\n\nΗ διαγραφή θα αφαιρέσει επίσης αυτά τα στοιχεία.\n\nΕίστε σίγουροι ότι θέλετε να συνεχίσετε;",
+    "projectDeletedTitle": "Έργο διαγράφηκε",
+    "projectDeleted": "Το έργο διαγράφηκε επιτυχώς",
+    "deleteProjectError": "Αδυναμία διαγραφής έργου",
+    "buildingDeletedTitle": "Κτίριο διαγράφηκε",
+    "buildingDeleted": "Το κτίριο διαγράφηκε επιτυχώς", 
+    "deleteBuildingError": "Αδυναμία διαγραφής κτιρίου",
     "deleteConfirmWithDeps": "Προσοχή: {{count}} εξαρτώμενα στοιχεία:\n{{details}}\n\nΕίστε σίγουροι ότι θέλετε να συνεχίσετε;",
     "required": "Αυτό το πεδίο είναι υποχρεωτικό",
     "invalidEmail": "Μη έγκυρη διεύθυνση email",
@@ -204,7 +224,7 @@
     "converted": "μετατράπηκαν",
     "conversionRate": "Ποσοστό μετατροπής",
     "leadToClient": "Lead σε πελάτη",
-    "goldenVisaLeads": "Leads Golden Visa",
+    "goldenVisaLeads": "Δυνητικοί Πελάτες Golden Visa",
     "interested": "ενδιαφερόμενοι",
     "avgConversion": "Μέσος χρόνος",
     "toConvert": "για μετατροπή",
@@ -429,6 +449,46 @@
       "zone": "Ζώνη Κύπρου",
       "completionDate": "Ημερομηνία παράδοσης",
       "createdDate": "Ημερομηνία δημιουργίας"
+    }
+  },
+  "pagination": {
+    "displaying": "Εμφάνιση {{start}} έως {{end}} από {{total}} αποτελέσματα",
+    "rowsPerPage": "Γραμμές ανά σελίδα",
+    "pageOf": "Σελίδα {{current}} από {{count}}"
+  },
+  "actions": {
+    "selectAll": "Επιλογή όλων",
+    "selectItem": "Επιλογή",
+    "actions": "Ενέργειες"
+  },
+  "admin": {
+    "common": {
+      "unassigned": "Μη ανατεθειμένο",
+      "noProjectsFound": "Δε βρέθηκαν έργα",
+      "noBuildingsFound": "Δε βρέθηκαν κτίρια",
+      "noDevelopersFound": "Δε βρέθηκαν κατασκευαστές"
+    },
+    "developers": {
+      "title": "Διαχείριση Κατασκευαστών",
+      "subtitle": "Διαχειριστείτε κατασκευαστές ακινήτων",
+      "developersFound": "{{count}} κατασκευαστές βρέθηκαν",
+      "addDeveloper": "Προσθήκη κατασκευαστή",
+      "headers": {
+        "logo": "Λογότυπο"
+      }
+    },
+    "projects": {
+      "headers": {
+        "gv": "GV"
+      },
+      "flags": {
+        "goldenVisa": "Επιλέξιμο για Golden Visa",
+        "exclusive": "Αποκλειστική εμπορευματοποίηση"
+      }
+    },
+    "buildings": {
+      "soldOut": "ΕΞΑΝΤΛΗΘΗΚΕ",
+      "outOf": "από {{total}} ({{rate}}% κατειλημμένα)"
     }
   }
 }
