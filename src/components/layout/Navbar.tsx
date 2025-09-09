@@ -69,14 +69,10 @@ const Navbar = () => {
     { name: 'Contact', href: '/contact', icon: Mail },
   ];
 
-  // Navigation utilisateur connecté
-  const userNavigation = [
-    { name: 'Mon Espace', href: '/dashboard', icon: User },
-  ];
 
   // Navigation admin
   const adminNavigation = [
-    { name: 'Admin Panel', href: '/admin', icon: UserCog },
+    { name: 'Admin', href: '/admin', icon: UserCog },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -117,7 +113,6 @@ const Navbar = () => {
 
   const allNavigation = [
     ...publicNavigation,
-    ...(isAuthenticated ? userNavigation : []),
     ...(isAdmin ? adminNavigation : [])
   ];
 
@@ -179,31 +174,6 @@ const Navbar = () => {
               <div className="w-8 h-8 animate-pulse bg-muted rounded-full" />
             ) : isAuthenticated ? (
               <>
-                {/* Navigation utilisateur connecté */}
-                {userNavigation.map((item) => (
-                  <motion.div
-                    key={item.name}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.98 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                  >
-                    <Link
-                      to={item.href}
-                      className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 text-white ${
-                        isActive(item.href)
-                          ? ''
-                          : 'hover:border hover:border-white/30'
-                      }`}
-                    >
-                      <item.icon className="w-4 h-4 mr-2" />
-                      {item.name}
-                      {isActive(item.href) && (
-                        <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-white rounded-full" />
-                      )}
-                    </Link>
-                  </motion.div>
-                ))}
-
                 {/* Navigation admin */}
                 {isAdmin && adminNavigation.map((item) => (
                   <motion.div

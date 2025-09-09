@@ -554,25 +554,7 @@ const Home = () => {
                   }}
                 />
 
-                {/* Admin Access Button (temporary for testing) */}
-                {isAuthenticated && user?.email === 'jmd@hypervisual.ch' && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 3.2, ease: "easeOut" }}
-                    className="mt-8"
-                  >
-                    <Link to="/admin">
-                      <Button 
-                        variant="outline" 
-                        className="bg-white/10 text-white border-white/30 hover:bg-white/20 backdrop-blur-sm"
-                      >
-                        🔧 Accès Admin Panel
-                      </Button>
-                    </Link>
-                  </motion.div>
-                )}
-
+                
                 {/* Cyprus Properties arrives from extreme right - SAME timing as ENKI REALTY */}
                 <motion.div
                   className="text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight text-white/90"
