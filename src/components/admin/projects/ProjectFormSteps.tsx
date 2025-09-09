@@ -166,7 +166,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 <FormItem>
                   <FormLabel>{t('admin.fields.launchDate')}</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <Input type="month" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -180,7 +180,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 <FormItem>
                   <FormLabel>{t('admin.fields.deliveryDate')}</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <Input type="month" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

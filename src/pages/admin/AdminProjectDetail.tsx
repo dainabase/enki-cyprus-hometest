@@ -305,8 +305,8 @@ const AdminProjectDetail = () => {
                   LIVRAISON
                 </h4>
                 <p className="font-semibold">
-                  {project.completion_date 
-                    ? new Date(project.completion_date).toLocaleDateString('fr-FR')
+                  {(project.completion_date_new || project.completion_date)
+                    ? new Date(project.completion_date_new || project.completion_date).toLocaleDateString('fr-FR', { year: 'numeric', month: '2-digit' })
                     : 'Non définie'
                   }
                 </p>

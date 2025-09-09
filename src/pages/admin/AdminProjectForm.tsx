@@ -183,6 +183,21 @@ export const AdminProjectForm: React.FC = () => {
     }
   }, [projectData, isEdit, form]);
 
+  // Normalize month inputs to first day ISO
+  const toFirstOfMonth = (val: any) => {
+    if (!val) return null as any;
+    if (typeof val === 'string') {
+      const m = val.match(/^\d{4}-\d{2}$/);
+      if (m) return `${val}-01`;
+      return val;
+    }
+    if (val instanceof Date) {
+      const d = new Date(val.getFullYear(), val.getMonth(), 1);
+      return d.toISOString().slice(0,10);
+    }
+    return val;
+  };
+
   // Save project mutation
   const saveProjectMutation = useMutation({
     mutationFn: async (data: ProjectFormData) => {
@@ -213,8 +228,8 @@ export const AdminProjectForm: React.FC = () => {
         property_category: data.property_category,
         property_sub_type: data.property_sub_type,
         project_phase: data.project_phase,
-        launch_date: data.launch_date,
-        completion_date_new: data.completion_date_new,
+        launch_date: toFirstOfMonth(data.launch_date),
+        completion_date_new: toFirstOfMonth(data.completion_date_new),
         exclusive_commercialization: data.exclusive_commercialization,
         unique_selling_points: data.unique_selling_points,
         
