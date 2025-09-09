@@ -248,81 +248,26 @@ export default function ContactForm({ project }: ContactFormProps) {
           {/* Contact Information */}
           <div className="space-y-6">
             
-            {/* WhatsApp CTA */}
-            <Card className="bg-green-50 border-green-200">
-              <CardContent className="p-6">
-                <div className="flex items-center space-x-4">
-                  <div className="bg-green-600 p-3 rounded-full">
-                    <MessageSquare className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-green-800">Quick Response</h3>
-                    <p className="text-green-700 text-sm">Get instant answers via WhatsApp</p>
-                  </div>
-                  <Button 
-                    asChild 
-                    className="bg-green-600 hover:bg-green-700"
-                  >
-                    <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-                      Chat Now
-                    </a>
-                  </Button>
+            {/* Property Information */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Property Information</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Property</span>
+                  <span className="font-medium">{project.title}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Location</span>
+                  <span className="font-medium">{project.city || project.cyprus_zone}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Price from</span>
+                  <span className="font-medium">€{project.price_from_new || project.price}</span>
                 </div>
               </CardContent>
             </Card>
-
-            {/* Developer Contact Info */}
-            {developer && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <User className="w-5 h-5" />
-                    <span>Developer Contact</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <h3 className="font-semibold">{developer.name}</h3>
-                    {developer.rating_score && (
-                      <p className="text-sm text-muted-foreground">
-                        Rating: {developer.rating_score}/5 ⭐
-                      </p>
-                    )}
-                  </div>
-
-                  {developer.email_primary && (
-                    <div className="flex items-center space-x-3">
-                      <Mail className="w-4 h-4 text-muted-foreground" />
-                      <a 
-                        href={`mailto:${developer.email_primary}`}
-                        className="text-primary hover:underline"
-                      >
-                        {developer.email_primary}
-                      </a>
-                    </div>
-                  )}
-
-                  {developer.phone_numbers?.[0] && (
-                    <div className="flex items-center space-x-3">
-                      <Phone className="w-4 h-4 text-muted-foreground" />
-                      <a 
-                        href={`tel:${developer.phone_numbers[0]}`}
-                        className="text-primary hover:underline"
-                      >
-                        {developer.phone_numbers[0]}
-                      </a>
-                    </div>
-                  )}
-
-                  {developer.main_city && (
-                    <div className="flex items-center space-x-3">
-                      <MapPin className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">{developer.main_city}</span>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            )}
 
             {/* Quick Schedule */}
             <Card>

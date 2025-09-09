@@ -95,8 +95,6 @@ export default function ProjectPage() {
       {/* 5. AMENITIES GRID */}
       <Amenities project={project} />
 
-      {/* 6. INVESTMENT/FINANCIAL BLOCK */}
-      <Investment project={project} />
 
       {/* 7. TESTIMONIALS SLIDER */}
       <Testimonials project={project} />
@@ -104,8 +102,6 @@ export default function ProjectPage() {
       {/* 8. FOOTER CONVERSION ZONE */}
       <ContactForm project={project} />
 
-      {/* 9. STICKY CTA BAR */}
-      <StickyBar project={project} />
     </div>
   );
 }
