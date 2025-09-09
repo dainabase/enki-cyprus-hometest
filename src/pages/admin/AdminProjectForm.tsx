@@ -663,6 +663,7 @@ const [showPrefilledBanner, setShowPrefilledBanner] = useState(false);
                   </CardHeader>
                   <CardContent>
                     <ProjectFormSteps 
+                      key={currentStep.id}
                       form={form} 
                       currentStep={currentStep.id}
                       projectId={id}
