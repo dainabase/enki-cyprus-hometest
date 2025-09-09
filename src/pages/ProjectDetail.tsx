@@ -12,6 +12,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import ZoomablePlans from '@/components/ui/ZoomablePlans';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import { buildGalleryFromProject, getHeroImage, getGalleryUrls } from '@/utils/gallery';
 import { 
   MapPin, 
   ArrowRight, 
@@ -63,7 +64,10 @@ const ProjectDetail = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('projects')
-        .select('*')
+        .select(`
+          *,
+          project_images(url, caption, is_primary, display_order)
+        `)
         .eq('id', id)
         .single();
       if (error) throw error;
@@ -113,6 +117,11 @@ const ProjectDetail = () => {
       </Layout>
     );
   }
+
+  // Process gallery from project data
+  const gallery = buildGalleryFromProject(project);
+  const heroImage = getHeroImage(project);
+  const galleryUrls = getGalleryUrls(project);
 
   const sliderSettings: Settings = {
     dots: true,
@@ -197,7 +206,7 @@ const ProjectDetail = () => {
           keywords={`projet immobilier ${project.title}, ${locationData?.ville || 'Chypre'}, investissement immobilier, résidence premium`}
           url={`https://enki-realty.com/project/${id}`}
           canonical={`https://enki-realty.com/project/${id}`}
-          image={project.photos?.[0] || '/og-image.jpg'}
+          image={heroImage || '/og-image.jpg'}
         />
         
         <main className="bg-background min-h-screen">
@@ -213,7 +222,7 @@ const ProjectDetail = () => {
             <motion.div 
               className="absolute inset-0 bg-cover bg-center"
               style={{ 
-                backgroundImage: `url(${project.photos?.[0] || project.video_url ? 'https://picsum.photos/1920/1080' : 'https://picsum.photos/1920/1080'})`,
+                backgroundImage: `url(${heroImage || 'https://picsum.photos/1920/1080'})`,
                 y: parallaxY,
                 scale: parallaxScale,
                 opacity: parallaxOpacity

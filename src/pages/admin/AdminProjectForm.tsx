@@ -463,6 +463,9 @@ const [showPrefilledBanner, setShowPrefilledBanner] = useState(false);
       const metaDescription = (data.meta_description_new?.trim() || defaultMetaDescriptionRaw).slice(0, 160);
       const narrativeDefault = `${baseTitle} propose une expérience de vie premium à ${city}. Architecture contemporaine, matériaux soignés et services exclusifs (sécurité, fitness, espaces extérieurs) en font une adresse idéale pour habiter ou investir. Contactez ENKI Realty pour un accompagnement personnalisé.`;
 
+      // Legacy compatibility: maintain photos array for old code paths
+      const legacyPhotos = Array.isArray(data.photos) ? data.photos.map(p => p.url).filter(Boolean) : [];
+
       const projectData = {
         title: data.title,
         description: data.description,
@@ -471,6 +474,7 @@ const [showPrefilledBanner, setShowPrefilledBanner] = useState(false);
          status: data.status,
         price: data.price,
         categorized_photos: data.photos,
+        photos: legacyPhotos, // Maintain legacy compatibility
         features: data.features,
         cyprus_zone: data.cyprus_zone,
         

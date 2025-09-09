@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Home, Euro, Eye } from 'lucide-react';
 import { FeaturedProject } from '@/data/mockData';
+import { getHeroImage } from '@/utils/gallery';
 
 interface FeaturedProjectCardProps {
   project: FeaturedProject;
@@ -11,6 +12,8 @@ interface FeaturedProjectCardProps {
 }
 
 const FeaturedProjectCard = ({ project, index }: FeaturedProjectCardProps) => {
+  // For FeaturedProject, use the image property directly (not using gallery utils since it's a different type)
+  const heroImage = project.image;
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('fr-FR', {
       style: 'currency',
@@ -62,9 +65,13 @@ const FeaturedProjectCard = ({ project, index }: FeaturedProjectCardProps) => {
           transition={{ duration: 0.3 }}
         >
           <img
-            src={project.image}
+            src={heroImage}
             alt={project.title}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = '/placeholder.svg';
+            }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
           

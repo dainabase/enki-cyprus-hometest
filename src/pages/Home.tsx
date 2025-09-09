@@ -26,6 +26,7 @@ import Carousel3D from '@/components/ui/Carousel3D';
 import PropertyModal from '@/components/PropertyModal';
 import FeaturedProjectsCarousel from '@/components/FeaturedProjectsCarousel';
 import { useIsClient } from '@/hooks/useIsClient';
+import { getHeroImage } from '@/utils/gallery';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 // Static background component to replace 3D elements (fixes runtime errors)
 const StaticBackground = () => (
@@ -100,15 +101,19 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.4, ease: "easeOut" }}
                   >
-                    <motion.img
-                      src={property.photos?.[0] || `https://picsum.photos/1200x800?random=${property.id}`}
-                      alt={`Image of ${property.title} in ${property.location}`} // Enhanced alt text
-                      className="w-full h-64 lg:h-full object-cover"
-                      loading="lazy"
-                      initial={{ scale: 1.2 }}
-                      animate={{ scale: 1 }}
-                      transition={{ duration: 1.2, ease: "easeOut" }}
-                    />
+                  <motion.img
+                    src={getHeroImage(property) || `https://picsum.photos/1200x800?random=${property.id}`}
+                    alt={`Image of ${property.title} in ${property.location}`} // Enhanced alt text
+                    className="w-full h-64 lg:h-full object-cover"
+                    loading="lazy"
+                    initial={{ scale: 1.2 }}
+                    animate={{ scale: 1 }}
+                    transition={{ duration: 1.2, ease: "easeOut" }}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = `https://picsum.photos/1200x800?random=${property.id}`;
+                    }}
+                  />
                     <motion.div
                       className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"
                       initial={{ opacity: 0 }}

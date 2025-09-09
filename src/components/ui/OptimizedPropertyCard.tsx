@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { MapPin, Bed, Bath, Square, Heart } from "lucide-react";
 import { motion } from "framer-motion";
 import { getOptimizedImageUrl } from "@/utils/performance";
+import { getHeroImage } from '@/utils/gallery';
 
 interface Property {
   id: string;
@@ -39,7 +40,8 @@ const OptimizedPropertyCard = memo<OptimizedPropertyCardProps>(({
   isFavorite = false,
   isSelected = false 
 }) => {
-  const mainImage = property.photos?.[0] || '/placeholder.svg';
+  const heroImage = getHeroImage(property);
+  const mainImage = heroImage || property.photos?.[0] || '/placeholder.svg';
   const optimizedImageUrl = getOptimizedImageUrl(mainImage, 400, 250);
 
   const handleSelect = React.useCallback(() => {

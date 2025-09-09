@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { MapPin, Bed, Bath, Square, Eye } from 'lucide-react';
 import { Property } from '@/lib/supabase';
 import OptimizedImage from '@/components/OptimizedImage';
+import { getHeroImage } from '@/utils/gallery';
 
 interface PropertyCardProps {
   property: Property;
@@ -16,6 +17,7 @@ interface PropertyCardProps {
 }
 
 const PropertyCard = memo(({ property, index = 0, onClick, className = '' }: PropertyCardProps) => {
+  const heroImage = getHeroImage(property);
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'available':
@@ -55,8 +57,8 @@ const PropertyCard = memo(({ property, index = 0, onClick, className = '' }: Pro
         {/* Image Container */}
       <div className="relative overflow-hidden">
         <OptimizedImage
-          src={property.photos?.[0] 
-            ? `https://ccsakftsslurjgnjwdci.supabase.co/functions/v1/image-proxy?url=${encodeURIComponent(property.photos[0])}`
+          src={heroImage 
+            ? `https://ccsakftsslurjgnjwdci.supabase.co/functions/v1/image-proxy?url=${encodeURIComponent(heroImage)}`
             : '/placeholder.svg'}
           alt={`Photo du bien: ${property.title} - ${property.location}`}
           aspectRatio="4/3"

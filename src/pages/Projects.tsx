@@ -16,6 +16,7 @@ import ErrorBoundary from '@/components/ErrorBoundary';
 import { SEOHead } from '@/components/SEOHead';
 import { trackPageView, trackCustomEvent } from '@/lib/analytics';
 import Layout from '@/components/layout/Layout';
+import { getHeroImage, getGalleryUrls } from '@/utils/gallery';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 const Projects = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -28,7 +29,10 @@ const Projects = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('projects')
-        .select('*')
+        .select(`
+          *,
+          project_images(url, caption, is_primary, display_order)
+        `)
         .order('created_at', { ascending: false });
      
       if (error) throw error;
@@ -255,7 +259,7 @@ const Projects = () => {
                     <motion.div 
                       className="absolute inset-0 z-0"
                       style={{
-                        backgroundImage: `url(${project.photos?.[0] || 'https://picsum.photos/1200/800?random=' + project.id})`,
+                        backgroundImage: `url(${getHeroImage(project) || 'https://picsum.photos/1200/800?random=' + project.id})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                       }}
@@ -319,7 +323,7 @@ const Projects = () => {
                           arrows: false,
                           fade: true,
                         }}>
-                          {(project.photos || [project.photos?.[0]]).map((photo: string, photoIndex: number) => (
+                          {getGalleryUrls(project).map((photo: string, photoIndex: number) => (
                             <motion.div 
                               key={photoIndex}
                               className="h-full"
@@ -331,6 +335,10 @@ const Projects = () => {
                                 alt={`Photo ${photoIndex + 1} du projet ${project.title}`}
                                 className="w-full h-full object-cover"
                                 loading="lazy"
+                                onError={(e) => {
+                                  e.currentTarget.onerror = null;
+                                  e.currentTarget.src = 'https://picsum.photos/800/500?random=' + photoIndex;
+                                }}
                               />
                             </motion.div>
                           ))}
