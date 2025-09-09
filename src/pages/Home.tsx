@@ -520,12 +520,44 @@ const Home = () => {
                 >
                   ENKI<span className="mx-2">-</span>REALTY
                   <motion.span
-                    className="text-xl sm:text-2xl lg:text-2xl font-normal ml-1 mt-2 text-white/90"
+                    className="text-xl sm:text-2xl lg:text-2xl font-normal ml-1 mt-2 text-white/90 relative"
                     initial={{ opacity: 0, scale: 0 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.6, delay: 2.8, ease: "easeOut" }}
                   >
-                    AI
+                    <motion.span
+                      className="relative"
+                      initial={{ textShadow: "0 0 0px transparent" }}
+                      animate={{ 
+                        textShadow: [
+                          "0 0 0px transparent",
+                          "0 0 20px #ffd700, 0 0 30px #ffd700, 0 0 40px #ffd700",
+                          "0 0 0px transparent"
+                        ]
+                      }}
+                      transition={{ 
+                        duration: 1.5, 
+                        delay: 3.5, // After all other animations
+                        ease: "easeInOut"
+                      }}
+                    >
+                      <motion.span
+                        className="absolute inset-0"
+                        initial={{ opacity: 0, scale: 1 }}
+                        animate={{ opacity: [0, 1, 0], scale: [1, 1.2, 1] }}
+                        transition={{ 
+                          duration: 1.5, 
+                          delay: 3.5,
+                          ease: "easeInOut"
+                        }}
+                        style={{
+                          background: "radial-gradient(circle, rgba(255,215,0,0.6) 0%, transparent 70%)",
+                          filter: "blur(8px)",
+                          borderRadius: "50%"
+                        }}
+                      />
+                      AI
+                    </motion.span>
                   </motion.span>
                 </motion.div>
 
