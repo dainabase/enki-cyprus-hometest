@@ -427,6 +427,45 @@ export type Database = {
         }
         Relationships: []
       }
+      developer_drafts: {
+        Row: {
+          auto_save_enabled: boolean
+          created_at: string
+          current_step: string
+          developer_id: string | null
+          form_data: Json
+          id: string
+          session_id: string | null
+          step_index: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          auto_save_enabled?: boolean
+          created_at?: string
+          current_step?: string
+          developer_id?: string | null
+          form_data?: Json
+          id?: string
+          session_id?: string | null
+          step_index?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          auto_save_enabled?: boolean
+          created_at?: string
+          current_step?: string
+          developer_id?: string | null
+          form_data?: Json
+          id?: string
+          session_id?: string | null
+          step_index?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       developers: {
         Row: {
           addresses: string[] | null
