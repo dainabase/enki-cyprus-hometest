@@ -137,7 +137,18 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
 
   return (
     <div className="rounded-md border">
-      <Table>
+      <Table className="table-fixed">
+        <colgroup>
+          <col style={{ width: "48px" }} />
+          <col style={{ width: "250px" }} />
+          <col style={{ width: "150px" }} />
+          <col style={{ width: "120px" }} />
+          <col style={{ width: "120px" }} />
+          <col style={{ width: "80px" }} />
+          <col style={{ width: "120px" }} />
+          <col style={{ width: "60px" }} />
+          <col style={{ width: "120px" }} />
+        </colgroup>
         <TableHeader>
           <TableRow>
             <TableHead className="w-12 flex-shrink-0">
@@ -152,7 +163,7 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
             <TableHead className="w-[120px]">{t('fields.zone')}</TableHead>
             <TableHead className="w-[120px]">Statut</TableHead>
             <TableHead className="w-[80px] text-center">{t('fields.units')}</TableHead>
-            <TableHead className="w-[120px]">{t('fields.minPrice')}</TableHead>
+            <TableHead className="w-[120px]">Prix max</TableHead>
             <TableHead className="w-[60px] text-center">GV</TableHead>
             <TableHead className="w-[120px] text-right">Actions</TableHead>
           </TableRow>
@@ -200,7 +211,7 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
               </TableCell>
               <TableCell className="w-[120px]">
                 <span className="font-semibold text-primary">
-                  {formatPrice(project.price)}
+                  {formatPrice((project.price_to ?? project.price) as number)}
                 </span>
               </TableCell>
               <TableCell className="w-[60px] text-center">
