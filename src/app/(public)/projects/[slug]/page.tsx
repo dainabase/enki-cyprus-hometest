@@ -27,7 +27,6 @@ export default function ProjectPage() {
           .select(`
             *,
             developer:developers(*),
-            buildings(*),
             project_amenities(
               amenity:amenities(*)
             ),
