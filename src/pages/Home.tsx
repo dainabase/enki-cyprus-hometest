@@ -33,6 +33,7 @@ import TabsFeaturesAlt3 from '@/components/TabsFeatures-Alternative3';
 import TabsFeaturesAlt4 from '@/components/TabsFeatures-Alternative4';
 import TabsFeaturesAlt5 from '@/components/TabsFeatures-Alternative5';
 import TabsFeaturesAlt6 from '@/components/TabsFeatures-Alternative6';
+import TabsFeaturesAlt5Accordion from '@/components/TabsFeatures-Alternative5-Accordion';
 import VerticalAccordion from '@/components/VerticalAccordion';
 import { getHeroImage } from '@/utils/gallery';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
@@ -769,7 +770,7 @@ const Home = () => {
                 <TabsFeaturesAlt4 />
               </motion.div>
 
-              {/* Alternative 5 - Premium Luxueux */}
+              {/* Alternative 5 - Premium Luxueux avec Accordéon */}
               <motion.div
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -777,10 +778,10 @@ const Home = () => {
                 viewport={{ once: true }}
               >
                 <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold text-primary mb-2">Alternative 5 - Premium Luxueux</h3>
+                  <h3 className="text-2xl font-bold text-primary mb-2">Alternative 5 - Premium Luxueux avec Accordéon</h3>
                   <div className="w-20 h-1 bg-primary mx-auto rounded-full"></div>
                 </div>
-                <TabsFeaturesAlt5 />
+                <TabsFeaturesAlt5Accordion />
               </motion.div>
 
               {/* Alternative 6 - Premium Sophistiqué */}
