@@ -92,8 +92,8 @@ export default function Gallery({ project }: GalleryProps) {
 
   return (
     <section className="py-16 bg-background">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8">
+      <div className="w-full">{/* Remove container to make full width */}
+        <div className="text-center mb-8 px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold mb-4">Photo Gallery</h2>
           <p className="text-muted-foreground">
             Explore {totalImages} high-quality images of the property
@@ -101,7 +101,7 @@ export default function Gallery({ project }: GalleryProps) {
         </div>
 
         {/* Main Gallery - Swipe Carousel */}
-        <div className="relative overflow-hidden bg-neutral-950 py-8 rounded-[40px]">
+        <div className="relative overflow-hidden bg-neutral-950 py-4">{/* Remove rounded corners and reduce padding */}
           <motion.div
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
@@ -121,7 +121,7 @@ export default function Gallery({ project }: GalleryProps) {
                 }}
                 animate={{ scale: imgIndex === idx ? 0.95 : 0.85 }}
                 transition={SPRING_OPTIONS}
-                className="aspect-video w-screen shrink-0 rounded-xl bg-neutral-800 object-cover"
+                className="h-[40vh] w-screen shrink-0 bg-neutral-800 object-cover"
               />
             ))}
           </motion.div>
