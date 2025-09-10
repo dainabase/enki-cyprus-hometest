@@ -51,12 +51,6 @@ const HeroAlternative5 = () => {
       key={animationKey}
       className="relative min-h-screen w-full flex items-center justify-center overflow-hidden"
     >
-      {/* Alternative Label */}
-      <div className="absolute top-4 left-4 z-50">
-        <div className="bg-primary/90 text-primary-foreground px-3 py-1 rounded-md text-sm font-medium">
-          Alternative 5
-        </div>
-      </div>
       {/* Bouton de relance d'animation */}
       <motion.button
         onClick={restartAnimation}
@@ -107,13 +101,6 @@ const HeroAlternative5 = () => {
           transition={{ duration: 3, delay: 1.5 }}
         />
         
-        {/* Ligne horizontale */}
-        <motion.div
-          className="absolute top-1/2 left-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"
-          initial={{ width: 0 }}
-          animate={{ width: "100vw" }}
-          transition={{ duration: 2, delay: 2.5 }}
-        />
       </div>
       
       {/* Contenu central ultra épuré */}
@@ -169,7 +156,7 @@ const HeroAlternative5 = () => {
 
         {/* Trait central ultra raffiné */}
         <motion.div
-          className="relative w-96 h-[1px] mx-auto mb-12"
+          className="relative w-96 h-[1px] mx-auto mb-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2 }}
