@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { buildGalleryFromProject, getHeroImage, getGalleryUrls } from '@/utils/gallery';
+import { SwipeCarousel } from '@/components/SwipeCarousel';
 import { 
   MapPin, 
   ArrowRight, 
@@ -472,66 +473,8 @@ const ProjectDetail = () => {
             </div>
           </section>
 
-          {/* 5. PROPERTY GALLERY - Grid Moderne */}
-          <section className="py-32 bg-white">
-            <div className="container mx-auto px-8">
-              <motion.h2 
-                className="text-5xl font-light text-center mb-20 text-black"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-              >
-                Property overview
-              </motion.h2>
-              
-              {/* Masonry Grid */}
-              <motion.div 
-                className="grid grid-cols-3 gap-6"
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-              >
-                {/* Large Image */}
-                <div className="col-span-2 row-span-2">
-                  <img 
-                    src={project.photos?.[0] || heroImage}
-                    alt={`Gallery image 1 of ${project.title}`}
-                    className="w-full h-full object-cover image-hover"
-                    style={{ borderRadius: '30px' }}
-                  />
-                </div>
-                
-                {/* Small Images */}
-                <div className="space-y-6">
-                  <img 
-                    src={project.photos?.[1] || heroImage}
-                    alt={`Gallery image 2 of ${project.title}`}
-                    className="w-full h-[250px] object-cover image-hover"
-                    style={{ borderRadius: '30px' }}
-                  />
-                  <img 
-                    src={project.photos?.[2] || heroImage}
-                    alt={`Gallery image 3 of ${project.title}`}
-                    className="w-full h-[250px] object-cover image-hover"
-                    style={{ borderRadius: '30px' }}
-                  />
-                </div>
-                
-                {/* Bottom row images */}
-                {project.photos?.slice(3, 6).map((photo, index) => (
-                  <img 
-                    key={index + 3}
-                    src={photo}
-                    alt={`Gallery image ${index + 4} of ${project.title}`}
-                    className="w-full h-[200px] object-cover image-hover"
-                    style={{ borderRadius: '30px' }}
-                  />
-                ))}
-              </motion.div>
-            </div>
-          </section>
+          {/* 5. PROPERTY GALLERY - Swipe Carousel */}
+          <SwipeCarousel project={project} />
 
           {/* 6. MAP SECTION - Carte Interactive Premium */}
           <section className="relative h-[600px] bg-black overflow-hidden">
