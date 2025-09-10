@@ -29,7 +29,6 @@ import { useIsClient } from '@/hooks/useIsClient';
 import TabsFeaturesAlt5Accordion from '@/components/TabsFeatures-Alternative5-Accordion';
 import { getHeroImage } from '@/utils/gallery';
 import HeroAlternative2 from '@/components/hero/HeroAlternative2';
-import HeroAlternative4 from '@/components/hero/HeroAlternative4';
 import HeroAlternative5 from '@/components/hero/HeroAlternative5';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 // Static background component to replace 3D elements (fixes runtime errors)
@@ -657,7 +656,6 @@ const Home = () => {
 
         <div className="space-y-0">
           <HeroAlternative2 />
-          <HeroAlternative4 />
           <HeroAlternative5 />
         </div>
         <section

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import HeroAlternative2 from './HeroAlternative2';
-import HeroAlternative4 from './HeroAlternative4';
 import HeroAlternative5 from './HeroAlternative5';
 
 const HeroSelector = () => {
@@ -13,12 +12,6 @@ const HeroSelector = () => {
       name: "Construction & Terminal", 
       description: "Lettres qui se construisent + style terminal",
       component: HeroAlternative2 
-    },
-    { 
-      id: 4, 
-      name: "Holographique & Mesh", 
-      description: "Effet holographique avec mesh gradient",
-      component: HeroAlternative4 
     },
     { 
       id: 5, 
