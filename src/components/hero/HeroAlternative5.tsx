@@ -206,15 +206,18 @@ const HeroAlternative5 = () => {
               />
               <span className="text-xs text-gray-500 font-mono">AI_SYSTEM_ONLINE</span>
             </div>
-            <div className="swaarg-body-large text-black font-mono">
-              &gt; {typewriterText}
-              <motion.span
-                animate={{ opacity: [0, 1, 0] }}
-                transition={{ duration: 0.8, repeat: Infinity }}
-                className="ml-1"
-              >
-                █
-              </motion.span>
+            <div className="swaarg-body-large text-black font-mono flex items-start">
+              <span className="mr-2">&gt;</span>
+              <div className="flex-1">
+                {typewriterText}
+                <motion.span
+                  animate={{ opacity: [0, 1, 0] }}
+                  transition={{ duration: 0.8, repeat: Infinity }}
+                  className="ml-1"
+                >
+                  █
+                </motion.span>
+              </div>
             </div>
           </div>
         </motion.div>
