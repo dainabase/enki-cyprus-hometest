@@ -1,6 +1,11 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import HeroAlternative5 from './HeroAlternative5';
+import HeroAlternative6 from './HeroAlternative6';
+import HeroAlternative7 from './HeroAlternative7';
+import HeroAlternative8 from './HeroAlternative8';
+import HeroAlternative9 from './HeroAlternative9';
+import HeroAlternative10 from './HeroAlternative10';
 
 const HeroSelector = () => {
   const [currentHero, setCurrentHero] = useState(5);
@@ -8,9 +13,39 @@ const HeroSelector = () => {
   const alternatives = [
     { 
       id: 5, 
-      name: "Minimaliste & Scanner", 
-      description: "Ultra épuré avec effet de scanner",
+      name: "Original", 
+      description: "Zone blanche épurée",
       component: HeroAlternative5 
+    },
+    { 
+      id: 6, 
+      name: "Terminal", 
+      description: "Style console/terminal",
+      component: HeroAlternative6 
+    },
+    { 
+      id: 7, 
+      name: "Chat Moderne", 
+      description: "Interface de chat IA",
+      component: HeroAlternative7 
+    },
+    { 
+      id: 8, 
+      name: "Holographique", 
+      description: "Effet hologramme futuriste",
+      component: HeroAlternative8 
+    },
+    { 
+      id: 9, 
+      name: "Matrix", 
+      description: "Style Matrix avec code",
+      component: HeroAlternative9 
+    },
+    { 
+      id: 10, 
+      name: "Clean", 
+      description: "Interface ultra propre",
+      component: HeroAlternative10 
     }
   ];
 
