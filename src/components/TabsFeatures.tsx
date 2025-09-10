@@ -168,7 +168,7 @@ const FEATURES = [
         Icon={Search}
         title="Recherche intelligente"
         description="Une IA qui comprend vos besoins et vous propose les biens les plus adaptés, sans perte de temps ni recherche complexe."
-        imageUrl="https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=1000&auto=format&fit=crop" // Placeholder - sera remplacé par l'image fournie
+        imageUrl="/lovable-uploads/9a75d696-69ab-4957-93c2-70b44f9fc985.png"
       />
     ),
   },
