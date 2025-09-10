@@ -55,7 +55,7 @@ const HeroAlternative11 = () => {
   ], 80);
 
   return (
-    <section className="relative h-screen overflow-hidden bg-gray-50 flex items-center justify-center"
+    <section className="relative h-screen overflow-hidden bg-background flex items-center justify-center"
       key={key}
     >
       {/* Label */}
@@ -63,14 +63,44 @@ const HeroAlternative11 = () => {
         Alternative 7 - Premium White
       </div>
 
-      {/* Background with subtle pattern */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-white">
-        <div className="absolute inset-0 opacity-[0.02]" 
-             style={{
-               backgroundImage: `radial-gradient(circle at 1px 1px, #0090E6 1px, transparent 0)`,
-               backgroundSize: '50px 50px'
-             }} 
+      {/* Background with animated gradients */}
+      <div className="absolute inset-0 bg-gradient-to-br from-background via-primary/5 to-accent/10">
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-tr from-primary/10 via-transparent to-accent/5"
+          animate={{
+            background: [
+              'linear-gradient(45deg, rgba(0,144,230,0.1) 0%, transparent 50%, rgba(0,144,230,0.05) 100%)',
+              'linear-gradient(45deg, rgba(0,144,230,0.05) 0%, transparent 50%, rgba(0,144,230,0.1) 100%)',
+              'linear-gradient(45deg, rgba(0,144,230,0.1) 0%, transparent 50%, rgba(0,144,230,0.05) 100%)'
+            ]
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         />
+      </div>
+
+      {/* Floating particles */}
+      <div className="absolute inset-0 pointer-events-none">
+        {[...Array(12)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1 h-1 bg-primary/30 rounded-full"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              y: [0, -20, 0],
+              opacity: [0.3, 0.8, 0.3],
+              scale: [1, 1.5, 1],
+            }}
+            transition={{
+              duration: 3 + Math.random() * 2,
+              repeat: Infinity,
+              delay: Math.random() * 2,
+              ease: "easeInOut"
+            }}
+          />
+        ))}
       </div>
 
       {/* Restart button */}
@@ -88,15 +118,16 @@ const HeroAlternative11 = () => {
         {/* Company name with reveal effect */}
         <div className="mb-8 overflow-hidden">
           <motion.h1
-            className="text-8xl md:text-9xl font-bold tracking-tighter text-gray-900"
+            className="text-8xl md:text-9xl font-bold tracking-tighter"
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 1.2, ease: "easeOut" }}
             style={{
-              background: 'linear-gradient(135deg, #1a1a1a 0%, #0090E6 50%, #1a1a1a 100%)',
+              background: 'linear-gradient(135deg, #FFFFFF 0%, #0090E6 50%, #FFFFFF 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
+              backgroundClip: 'text',
+              filter: 'drop-shadow(0 0 30px rgba(0,144,230,0.3))'
             }}
           >
             ΣNKI-REALTY
@@ -110,7 +141,7 @@ const HeroAlternative11 = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5 }}
         >
-          <h2 className="text-2xl md:text-3xl font-light tracking-wide text-gray-600">
+          <h2 className="text-2xl md:text-3xl font-light tracking-wide text-white/90">
             {'Cyprus Properties'.split('').map((letter, index) => (
               <motion.span
                 key={index}
