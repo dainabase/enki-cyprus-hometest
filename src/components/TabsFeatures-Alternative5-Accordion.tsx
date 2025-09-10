@@ -231,7 +231,7 @@ const Panel = ({
             animate="open"
             exit="closed"
             transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1] }}
-            className="w-full h-full overflow-hidden relative bg-card flex border-l-4 border-primary/20"
+            className="w-full h-full overflow-hidden relative bg-card flex"
           >
             {/* Layout à la Alternative 5 : Image 1/3 à gauche, contenu 2/3 à droite */}
             <div className="grid lg:grid-cols-5 w-full h-full">
