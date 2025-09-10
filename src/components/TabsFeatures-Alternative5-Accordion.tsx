@@ -99,26 +99,24 @@ const TabsFeaturesAlt5Accordion = () => {
           </div>
         </div>
 
-        {/* Accordéon sans boutons latéraux - contrôlé par les piliers ci-dessus */}
-        <div className="w-full max-w-6xl mx-auto shadow-elegant overflow-hidden rounded-3xl bg-card border border-border/20">
-          <AnimatePresence mode="wait">
-            {items.map((item) => {
-              return open === item.id ? (
-                <Panel
-                  key={item.id}
-                  open={open}
-                  setOpen={setOpen}
-                  id={item.id}
-                  Icon={item.Icon}
-                  title={item.title}
-                  fullTitle={item.fullTitle}
-                  description={item.description}
-                  imageUrl={item.imageUrl}
-                  features={item.features}
-                />
-              ) : null;
-            })}
-          </AnimatePresence>
+        {/* Accordéon premium avec boutons latéraux (animation d'origine) */}
+        <div className="flex flex-col lg:flex-row h-fit lg:h-[600px] w-full max-w-6xl mx-auto shadow-elegant overflow-hidden rounded-3xl bg-card border border-border/20">
+          {items.map((item) => {
+            return (
+              <Panel
+                key={item.id}
+                open={open}
+                setOpen={setOpen}
+                id={item.id}
+                Icon={item.Icon}
+                title={item.title}
+                fullTitle={item.fullTitle}
+                description={item.description}
+                imageUrl={item.imageUrl}
+                features={item.features}
+              />
+            );
+          })}
         </div>
       </div>
     </section>
@@ -137,6 +135,40 @@ interface PanelProps {
   features: string[];
 }
 
+// Variants pour l'animation d'accordéon (version d'origine)
+const panelVariants = {
+  open: {
+    width: "100%",
+    height: "100%",
+  },
+  closed: {
+    width: "0%",
+    height: "100%",
+  },
+};
+
+const panelVariantsSm = {
+  open: {
+    width: "100%",
+    height: "400px",
+  },
+  closed: {
+    width: "100%",
+    height: "0px",
+  },
+};
+
+const descriptionVariants = {
+  open: {
+    opacity: 1,
+    y: "0%",
+    transition: {
+      delay: 0.125,
+    },
+  },
+  closed: { opacity: 0, y: "100%" },
+};
+
 const Panel = ({
   open,
   setOpen,
@@ -148,98 +180,125 @@ const Panel = ({
   imageUrl,
   features,
 }: PanelProps) => {
+  const { width } = useWindowSize();
   const isOpen = open === id;
 
   return (
-    <motion.div
-      key={`panel-${id}`}
-      initial={{ opacity: 0, height: 0 }}
-      animate={{ opacity: 1, height: "auto" }}
-      exit={{ opacity: 0, height: 0 }}
-      transition={{ duration: 0.5, ease: "easeInOut" }}
-      className="w-full overflow-hidden bg-card"
-    >
-      {/* Layout à la Alternative 5 : Image 1/3 à gauche, contenu 2/3 à droite */}
-      <div className="grid lg:grid-cols-5 w-full min-h-[500px]">
-        {/* Image Section - 2/5 (similaire à 1/3) */}
-        <div className="lg:col-span-2 relative">
-          <motion.div 
-            className="w-full h-full relative overflow-hidden"
-            initial={{ scale: 1.1, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 1.2 }}
-          >
-            <img 
-              src={imageUrl} 
-              alt={fullTitle}
-              className="w-full h-full object-cover"
-              loading="lazy"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-          </motion.div>
+    <>
+      {/* Bouton latéral vertical conservé */}
+      <button
+        className="bg-card hover:bg-card/80 transition-colors p-6 border-r-[1px] border-b-[1px] border-border/20 flex flex-row-reverse lg:flex-col justify-end items-center gap-4 relative group"
+        onClick={() => setOpen(id)}
+      >
+        <span
+          style={{ writingMode: "vertical-lr" }}
+          className="hidden lg:block text-xl font-light rotate-180 text-muted-foreground"
+        >
+          {title}
+        </span>
+        <span className="block lg:hidden text-xl font-light text-muted-foreground">{title}</span>
+        <div className="w-12 lg:w-full aspect-square bg-primary text-primary-foreground grid place-items-center rounded-xl">
+          <Icon className="w-6 h-6" />
         </div>
-        
-        {/* Content Section - 3/5 (similaire à 2/3) */}
-        <div className="lg:col-span-3 p-8 lg:p-16 flex flex-col justify-center">
+        <span className="w-4 h-4 bg-card group-hover:bg-card/80 transition-colors border-r-[1px] border-b-[1px] lg:border-b-0 lg:border-t-[1px] border-border/20 rotate-45 absolute bottom-0 lg:bottom-[50%] right-[50%] lg:right-0 translate-y-[50%] translate-x-[50%] z-20" />
+      </button>
+
+      {/* Panneau animé avec swipe/resize d'origine */}
+      <AnimatePresence>
+        {isOpen && (
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            className="space-y-8 max-w-xl"
+            key={`panel-${id}`}
+            variants={width && width > 1024 ? panelVariants : panelVariantsSm}
+            initial="closed"
+            animate="open"
+            exit="closed"
+            className="w-full h-full overflow-hidden relative bg-card flex"
           >
-            <div className="space-y-6">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <Icon className="w-6 h-6 text-primary" />
-                </div>
-                <div className="flex-1 h-px bg-gradient-to-r from-primary/30 to-transparent" />
-              </div>
-              
-              <h3 className="text-4xl font-light text-foreground leading-tight tracking-tight">
-                {fullTitle}
-              </h3>
-            </div>
-            
-            <p className="text-xl text-muted-foreground leading-relaxed font-light">
-              {description}
-            </p>
-            
-            {/* Features list */}
-            <div className="space-y-4">
-              {features.map((feature, index) => (
-                <motion.div 
-                  key={feature}
-                  className="flex items-center gap-4"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.5 + index * 0.1 }}
+            {/* Layout à la Alternative 5 : Image 1/3 à gauche, contenu 2/3 à droite */}
+            <div className="grid lg:grid-cols-5 w-full h-full">
+              {/* Image Section - 2/5 (similaire à 1/3) */}
+              <div className="lg:col-span-2 relative">
+                <motion.div
+                  className="w-full h-full relative overflow-hidden"
+                  initial={{ scale: 1.1, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 1.2 }}
                 >
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                  <span className="text-muted-foreground font-light">{feature}</span>
+                  <img
+                    src={imageUrl}
+                    alt={fullTitle}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
                 </motion.div>
-              ))}
-            </div>
-            
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.8, duration: 0.8 }}
-            >
-              <button className="inline-flex items-center gap-3 px-8 py-4 border border-primary/20 rounded-full text-primary font-medium hover:bg-primary/5 transition-all duration-300 group">
-                <span>Explorer cette expertise</span>
-                <motion.span
-                  animate={{ x: [0, 4, 0] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="group-hover:translate-x-1 transition-transform"
+              </div>
+
+              {/* Content Section - 3/5 (similaire à 2/3) */}
+              <div className="lg:col-span-3 p-8 lg:p-16 flex flex-col justify-center">
+                <motion.div
+                  variants={descriptionVariants}
+                  initial="closed"
+                  animate="open"
+                  exit="closed"
+                  className="space-y-8 max-w-xl"
                 >
-                  →
-                </motion.span>
-              </button>
-            </motion.div>
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                        <Icon className="w-6 h-6 text-primary" />
+                      </div>
+                      <div className="flex-1 h-px bg-gradient-to-r from-primary/30 to-transparent" />
+                    </div>
+
+                    <h3 className="text-4xl font-light text-foreground leading-tight tracking-tight">
+                      {fullTitle}
+                    </h3>
+                  </div>
+
+                  <p className="text-xl text-muted-foreground leading-relaxed font-light">
+                    {description}
+                  </p>
+
+                  {/* Features list */}
+                  <div className="space-y-4">
+                    {features.map((feature, index) => (
+                      <motion.div
+                        key={feature}
+                        className="flex items-center gap-4"
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.5 + index * 0.1 }}
+                      >
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                        <span className="text-muted-foreground font-light">{feature}</span>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  <motion.div
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.8, duration: 0.8 }}
+                  >
+                    <button className="inline-flex items-center gap-3 px-8 py-4 border border-primary/20 rounded-full text-primary font-medium hover:bg-primary/5 transition-all duration-300 group">
+                      <span>Explorer cette expertise</span>
+                      <motion.span
+                        animate={{ x: [0, 4, 0] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                        className="group-hover:translate-x-1 transition-transform"
+                      >
+                        →
+                      </motion.span>
+                    </button>
+                  </motion.div>
+                </motion.div>
+              </div>
+            </div>
           </motion.div>
-        </div>
-      </div>
-    </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 
