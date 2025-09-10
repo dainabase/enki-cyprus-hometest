@@ -654,19 +654,14 @@ const Home = () => {
             </motion.div>
           </motion.div>
         </section>
-        {/* Pourquoi Choisir ENKI Realty */}
-        <motion.section
+        <section
           id="why-enki"
-          className="bg-gradient-to-br from-primary/5 via-background to-accent/5 py-2 px-4 sm:px-6 lg:px-8 relative"
-          initial={{ y: 20, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.4, ease: 'easeOut' }}
-          viewport={{ once: true }}
+          className="bg-background px-4 sm:px-6 lg:px-8"
         >
-          <div className="max-w-7xl mx-auto relative z-10">
+          <div className="max-w-7xl mx-auto">
             <TabsFeaturesAlt5Accordion />
           </div>
-        </motion.section>
+        </section>
         {/* Premium Video Section */}
         <motion.section
           id="premium-video"
