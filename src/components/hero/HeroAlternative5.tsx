@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { RotateCcw } from 'lucide-react';
-import cyprusHero from '@/assets/cyprus-hero.jpg';
 
 // Hook typewriter qui écrit et efface (adapté de l'Alternative 2)
 const useMultilingualTypewriter = (texts: string[], speed: number = 40) => {
@@ -67,15 +66,15 @@ const HeroAlternative5 = () => {
       {/* Background avec double exposition */}
       <div className="absolute inset-0">
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-110"
           style={{
-            backgroundImage: `url(${cyprusHero})`,
+            backgroundImage: `url(/lovable-uploads/7a1f4c1e-ed5d-401e-98a7-e7d380bb9d99.png)`,
           }}
         />
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat mix-blend-multiply opacity-60"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat mix-blend-multiply opacity-60 scale-110"
           style={{
-            backgroundImage: `url(${cyprusHero})`,
+            backgroundImage: `url(/lovable-uploads/7a1f4c1e-ed5d-401e-98a7-e7d380bb9d99.png)`,
           }}
         />
       </div>
