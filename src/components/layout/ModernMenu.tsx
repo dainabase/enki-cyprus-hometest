@@ -139,7 +139,7 @@ const ModernMenu = () => {
 
             {/* Links Container */}
             <div className="flex h-full items-center justify-start px-8 md:px-16">
-              <div className="space-y-4 md:space-y-6 max-w-sm">
+              <div className="space-y-4 md:space-y-6 w-full max-w-md">
                 {LINKS.map((link, idx) => (
                   <motion.div
                     key={link.title}
@@ -164,7 +164,7 @@ const ModernMenu = () => {
                       onClick={() => setActive(false)}
                       className="block group"
                     >
-                      <span className="swaarg-large-title text-white/70 hover:text-white transition-all duration-300">
+                      <span className="swaarg-large-title text-white/70 hover:text-white transition-all duration-300 whitespace-nowrap">
                         {link.title}
                         <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity">.</span>
                       </span>
