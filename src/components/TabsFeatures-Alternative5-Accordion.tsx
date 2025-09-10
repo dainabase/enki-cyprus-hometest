@@ -150,13 +150,14 @@ const Panel = ({
     <>
       {/* Bouton latéral vertical avec séparations très marquées */}
       <button
-        className="bg-card hover:bg-card/80 transition-colors duration-150 p-6 border-r-4 border-b-4 lg:border-b-0 border-border/60 flex flex-row-reverse lg:flex-col justify-end items-center gap-4 relative group shadow-lg"
+        className="bg-card hover:bg-card/80 hover:bg-muted/10 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] p-6 border-r-4 border-b-4 lg:border-b-0 border-border/60 flex flex-row-reverse lg:flex-col justify-end items-center gap-4 relative group shadow-lg"
         onClick={() => setOpen(id)}
         style={{
           borderRightColor: isOpen ? 'hsl(var(--border) / 0.8)' : 'hsl(var(--border) / 0.6)',
           borderBottomColor: isOpen ? 'hsl(var(--border) / 0.8)' : 'hsl(var(--border) / 0.6)',
           backgroundColor: isOpen ? 'hsl(var(--card))' : 'hsl(var(--card))',
           boxShadow: isOpen ? '0 4px 12px hsl(var(--border) / 0.25)' : '0 2px 4px hsl(var(--border) / 0.2)',
+          willChange: 'auto'
         }}
       >
         <span
@@ -180,8 +181,14 @@ const Panel = ({
       {isOpen && (
         <div
           key={`panel-${id}`}
-          className="w-full h-full overflow-hidden relative bg-card flex opacity-0 animate-fade-in"
-          style={{ opacity: 1, transition: 'opacity 0.2s ease-out' }}
+          className={`w-full h-full overflow-hidden relative bg-card flex transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+            isOpen ? 'opacity-100' : 'opacity-0'
+          }`}
+          style={{ 
+            willChange: 'auto',
+            maxHeight: isOpen ? '800px' : '0px',
+            transform: isOpen ? 'translateY(0)' : 'translateY(-10px)'
+          }}
         >
             {/* Layout à la Alternative 5 : Image 1/3 à gauche, contenu 2/3 à droite */}
             <div className="grid lg:grid-cols-5 w-full h-full">
@@ -191,9 +198,14 @@ const Panel = ({
                   <img
                     src={imageUrl}
                     alt={fullTitle}
-                    className="w-full h-full object-cover grayscale"
+                    className="w-full h-full object-cover grayscale transition-all duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]"
                     loading="lazy"
-                    style={{ opacity: 1 }}
+                    style={{ 
+                      opacity: isOpen ? 1 : 0.4,
+                      transform: isOpen ? 'scale(1)' : 'scale(0.98)',
+                      transitionDelay: '200ms',
+                      willChange: 'auto'
+                    }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
                 </div>
@@ -201,7 +213,15 @@ const Panel = ({
 
               {/* Content Section - 3/5 (similaire à 2/3) */}
               <div className="lg:col-span-3 p-8 lg:p-16 flex flex-col justify-center">
-                <div className="space-y-8 max-w-xl">
+                <div 
+                  className="space-y-8 max-w-xl transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)]"
+                  style={{
+                    opacity: isOpen ? 1 : 0,
+                    transform: isOpen ? 'translateX(0)' : 'translateX(-8px)',
+                    transitionDelay: '100ms',
+                    willChange: 'auto'
+                  }}
+                >
                   <div className="space-y-6">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -220,7 +240,15 @@ const Panel = ({
                   </p>
 
                   {/* Features list */}
-                  <div className="space-y-4">
+                  <div 
+                    className="space-y-4 transition-all duration-500 ease-out"
+                    style={{
+                      opacity: isOpen ? 1 : 0,
+                      transform: isOpen ? 'scale(1)' : 'scale(0.97)',
+                      transitionDelay: '300ms',
+                      willChange: 'auto'
+                    }}
+                  >
                     {features.map((feature) => (
                       <div
                         key={feature}
