@@ -3,29 +3,44 @@ import { useState, useEffect } from 'react';
 import { RotateCcw } from 'lucide-react';
 import cyprusHero from '@/assets/cyprus-hero.jpg';
 
-// Hook typewriter ultra smooth
-const useTypewriter = (text: string, speed: number = 50) => {
+// Hook typewriter qui écrit et efface (adapté de l'Alternative 2)
+const useMultilingualTypewriter = (texts: string[], speed: number = 40) => {
   const [displayText, setDisplayText] = useState('');
-  
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isTyping, setIsTyping] = useState(true);
+  const [charIndex, setCharIndex] = useState(0);
+
   useEffect(() => {
-    let index = 0;
+    const currentText = texts[currentIndex];
+    
     const timer = setInterval(() => {
-      if (index < text.length) {
-        setDisplayText(text.slice(0, index + 1));
-        index++;
+      if (isTyping) {
+        if (charIndex < currentText.length) {
+          setDisplayText(currentText.slice(0, charIndex + 1));
+          setCharIndex(charIndex + 1);
+        } else {
+          setTimeout(() => setIsTyping(false), 1500);
+        }
       } else {
-        clearInterval(timer);
+        if (charIndex > 0) {
+          setDisplayText(currentText.slice(0, charIndex - 1));
+          setCharIndex(charIndex - 1);
+        } else {
+          setCurrentIndex((currentIndex + 1) % texts.length);
+          setIsTyping(true);
+        }
       }
     }, speed);
+
     return () => clearInterval(timer);
-  }, [text, speed]);
+  }, [texts, currentIndex, isTyping, charIndex, speed]);
 
   return displayText;
 };
 
 const HeroAlternative5 = () => {
   const [animationKey, setAnimationKey] = useState(0);
-  const typewriterText = useTypewriter("the first AI-powered real estate platform", 75);
+  const typewriterText = useMultilingualTypewriter(["The first AI powered real estate platform"], 40);
 
   const restartAnimation = () => {
     setAnimationKey(prev => prev + 1);
@@ -216,7 +231,7 @@ const HeroAlternative5 = () => {
               />
               <span className="text-xs text-gray-400 font-mono">AI_SYSTEM_ONLINE</span>
             </div>
-            <div className="swaarg-body-large text-blue-400 font-mono">
+            <div className="swaarg-body-large text-white font-mono">
               &gt; {typewriterText}
               <motion.span
                 animate={{ opacity: [0, 1, 0] }}
