@@ -18,7 +18,7 @@ const TabsFeaturesAlt5Accordion = () => {
   }, []);
 
   return (
-    <section className="py-6 md:py-8 bg-background relative">
+    <section className="py-6 md:py-8 bg-transparent relative">
       <div className="relative mx-auto max-w-7xl px-12">
         <div className="text-center mb-24">
           <motion.div

@@ -475,7 +475,7 @@ const Home = () => {
         image="/og-image.jpg"
       />
      
-      <div className="min-h-screen overflow-x-hidden bg-background">
+      <div className="min-h-screen overflow-x-hidden bg-secondary">
         {/* Hero Section */}
         <section className="relative h-screen flex items-center justify-center overflow-hidden">
           <motion.div
@@ -653,7 +653,7 @@ const Home = () => {
         </section>
         <section
           id="why-enki"
-          className="bg-background -mt-px px-4 sm:px-6 lg:px-8"
+          className="bg-transparent -mt-px px-4 sm:px-6 lg:px-8"
         >
           <div className="max-w-7xl mx-auto">
             <TabsFeaturesAlt5Accordion />
