@@ -184,7 +184,7 @@ const Navbar = () => {
                   >
                     <Link
                       to={item.href}
-                      className={`flex items-center px-3 py-2 swaarg-nav rounded-md transition-all duration-200 text-white ${
+                      className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 text-white ${
                         isActive(item.href)
                           ? ''
                           : 'hover:border hover:border-white/30'
