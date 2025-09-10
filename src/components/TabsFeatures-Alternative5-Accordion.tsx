@@ -80,7 +80,7 @@ const TabsFeaturesAlt5Accordion = () => {
         </div>
 
         {/* Accordéon premium avec boutons latéraux (animation d'origine) */}
-        <div className="flex flex-col lg:flex-row h-fit lg:h-[600px] w-full max-w-6xl mx-auto shadow-elegant overflow-hidden rounded-3xl bg-card border border-border/20">
+        <div className="flex flex-col lg:flex-row overflow-hidden h-fit lg:h-[600px] w-full max-w-6xl mx-auto shadow-elegant rounded-3xl bg-card border border-border/20">
           {items.map((item) => {
             return (
               <Panel
@@ -115,32 +115,43 @@ interface PanelProps {
   features: string[];
 }
 
-// Variants pour l'animation d'accordéon (version plus fluide)
+// Variants exactement comme hover.dev
 const panelVariants = {
   open: {
     width: "100%",
     height: "100%",
+    transition: {
+      type: "tween" as const,
+      duration: 0.4,
+      ease: [0.4, 0, 0.2, 1] as const
+    }
   },
   closed: {
-    width: "0%",
+    width: "0%", 
     height: "100%",
-  },
+    transition: {
+      type: "tween" as const,
+      duration: 0.3,
+      ease: [0.4, 0, 0.2, 1] as const
+    }
+  }
 };
 
-const panelVariantsSm = {
+const contentVariants = {
   open: {
-    width: "100%",
-    height: "400px",
+    opacity: 1,
+    transition: {
+      delay: 0.125,
+      duration: 0.3,
+      ease: "easeOut" as const
+    }
   },
-  closed: {
-    width: "100%",
-    height: "0px",
-  },
-};
-
-const descriptionVariants = {
-  open: { opacity: 1 },
-  closed: { opacity: 0 }
+  closed: { 
+    opacity: 0,
+    transition: {
+      duration: 0.2
+    }
+  }
 };
 
 const Panel = ({
@@ -189,76 +200,87 @@ const Panel = ({
       </button>
 
       {/* Panneau animé avec swipe/resize d'origine */}
-      <AnimatePresence mode="sync">
+      <AnimatePresence mode="wait">
         {isOpen && (
           <motion.div
             key={`panel-${id}`}
-            className="w-full h-full overflow-hidden relative bg-card flex"
+            variants={panelVariants}
+            initial="closed"
+            animate="open"
+            exit="closed"
+            className="overflow-hidden relative w-full"
           >
-            {/* Layout à la Alternative 5 : Image 1/3 à gauche, contenu 2/3 à droite */}
-            <div className="grid lg:grid-cols-5 w-full h-full">
-              {/* Image Section - 2/5 (similaire à 1/3) */}
-              <div className="lg:col-span-2 relative">
-                <div className="w-full h-full relative overflow-hidden">
-                  <img
-                    src={imageUrl}
-                    alt={fullTitle}
-                    className="w-full h-full object-cover grayscale"
-                    loading="lazy"
-                    onLoad={(e) => {
-                      const img = e.currentTarget as HTMLImageElement;
-                      console.log('[Accordion] image loaded', { src: img.src, naturalWidth: img.naturalWidth, naturalHeight: img.naturalHeight });
-                    }}
-                    style={{ opacity: 1 }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+            <motion.div
+              variants={contentVariants}
+              initial="closed"
+              animate="open"
+              exit="closed"
+            >
+              {/* Layout à la Alternative 5 : Image 1/3 à gauche, contenu 2/3 à droite */}
+              <div className="grid lg:grid-cols-5 w-full h-full">
+                {/* Image Section - 2/5 (similaire à 1/3) */}
+                <div className="lg:col-span-2 relative">
+                  <div className="w-full h-full relative overflow-hidden">
+                    <img
+                      src={imageUrl}
+                      alt={fullTitle}
+                      className="w-full h-full object-cover grayscale"
+                      loading="lazy"
+                      onLoad={(e) => {
+                        const img = e.currentTarget as HTMLImageElement;
+                        console.log('[Accordion] image loaded', { src: img.src, naturalWidth: img.naturalWidth, naturalHeight: img.naturalHeight });
+                      }}
+                      style={{ opacity: 1 }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                  </div>
                 </div>
-              </div>
 
-              {/* Content Section - 3/5 (similaire à 2/3) */}
-              <div className="lg:col-span-3 p-8 lg:p-16 flex flex-col justify-center">
-                <div className="space-y-8 max-w-xl">
-                  <div className="space-y-6">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                        <Icon className="w-6 h-6 text-primary" />
+                {/* Content Section - 3/5 (similaire à 2/3) */}
+                <div className="lg:col-span-3 p-8 lg:p-16 flex flex-col justify-center">
+                  <div className="space-y-8 max-w-xl">
+                    <div className="space-y-6">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                          <Icon className="w-6 h-6 text-primary" />
+                        </div>
+                        <div className="flex-1 h-px bg-gradient-to-r from-primary/30 to-transparent" />
                       </div>
-                      <div className="flex-1 h-px bg-gradient-to-r from-primary/30 to-transparent" />
+
+                      <h3 className="text-4xl font-light text-foreground leading-tight tracking-tight">
+                        {fullTitle}
+                      </h3>
                     </div>
 
-                    <h3 className="text-4xl font-light text-foreground leading-tight tracking-tight">
-                      {fullTitle}
-                    </h3>
-                  </div>
+                    <p className="text-xl text-muted-foreground leading-relaxed font-light">
+                      {description}
+                    </p>
 
-                  <p className="text-xl text-muted-foreground leading-relaxed font-light">
-                    {description}
-                  </p>
+                    {/* Features list */}
+                    <div className="space-y-4">
+                      {features.map((feature) => (
+                        <div
+                          key={feature}
+                          className="flex items-center gap-4"
+                        >
+                          <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                          <span className="text-muted-foreground font-light">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
 
-                  {/* Features list */}
-                  <div className="space-y-4">
-                    {features.map((feature) => (
-                      <div
-                        key={feature}
-                        className="flex items-center gap-4"
-                      >
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                        <span className="text-muted-foreground font-light">{feature}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div>
-                    <button className="inline-flex items-center gap-3 px-8 py-4 border border-primary/20 rounded-full text-primary font-medium hover:bg-primary/5 duration-300 group">
-                      <span>Explorer cette expertise</span>
-                      <span className="group-hover:translate-x-1 duration-300">
-                        →
-                      </span>
-                    </button>
+                    <div>
+                      <button className="inline-flex items-center gap-3 px-8 py-4 border border-primary/20 rounded-full text-primary font-medium hover:bg-primary/5 duration-300 group">
+                        <span>Explorer cette expertise</span>
+                        <span className="group-hover:translate-x-1 duration-300">
+                          →
+                        </span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
