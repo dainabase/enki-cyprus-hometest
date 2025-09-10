@@ -5,10 +5,9 @@ import { ShieldCheck, Search, Calculator } from "lucide-react";
 export const DisappearingFeatures = () => {
   return (
     <>
-      <div className="relative h-fit bg-neutral-50">
+      <div className="relative h-[400vh] bg-neutral-50">
         <Features />
       </div>
-      <div className="h-[50vh] bg-white" />
     </>
   );
 };
@@ -24,7 +23,7 @@ const Features = () => {
 
 const Copy = () => {
   return (
-    <div className="flex h-fit w-full flex-col justify-center py-12 md:sticky md:top-0 md:h-screen">
+    <div className="flex h-fit w-full flex-col py-12 md:sticky md:top-0 md:h-screen md:pt-24">
       <span className="w-fit rounded-full bg-black px-4 py-2 text-sm uppercase text-white">
         Excellence · Innovation · Confiance
       </span>
@@ -42,13 +41,13 @@ const Carousel = () => {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start start", "end start"],
+    offset: ["start start", "end end"],
   });
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full h-full">
       <Gradient />
-      <div ref={ref} className="relative z-0 flex flex-col gap-6 md:gap-12">
+      <div ref={ref} className="relative z-0 flex flex-col gap-6 md:gap-12 md:py-24">
         <CarouselItem
           scrollYProgress={scrollYProgress}
           position={1}
@@ -96,17 +95,23 @@ const CarouselItem = ({
   title,
   description,
 }: CarouselItemProps) => {
-  const stepSize = 1 / numItems;
+  const stepSize = 1 / (numItems + 1);
   const end = stepSize * position;
   const start = end - stepSize;
-  const opacity = useTransform(scrollYProgress, [start, end], [1, 0]);
+  const opacity = useTransform(
+    scrollYProgress,
+    [start, start + stepSize * 0.5, end],
+    [1, 0.5, 0]
+  );
   const scale = useTransform(scrollYProgress, [start, end], [1, 0.75]);
+  const y = useTransform(scrollYProgress, [start, end], ["0vh", "-50vh"]);
 
   return (
     <motion.div
       style={{
         opacity,
         scale,
+        y,
       }}
       className="flex flex-col items-start justify-center aspect-video w-full shrink-0 rounded-2xl bg-black p-8"
     >
@@ -121,4 +126,4 @@ const Gradient = () => (
   <div className="sticky top-0 z-10 hidden h-24 w-full bg-gradient-to-b from-neutral-50 to-neutral-50/0 md:block" />
 );
 
-const Buffer = () => <div className="h-24 w-full md:h-48" />;
+const Buffer = () => <div className="h-[100vh]" />;
