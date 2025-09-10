@@ -6,6 +6,12 @@ import { IconType } from "react-icons";
 
 const TabsFeaturesAlt5Accordion = () => {
   const [open, setOpen] = useState(items[0].id);
+  console.time('Accordion Render');
+  useEffect(() => {
+    console.log('[Accordion] Component mounted/updated');
+    console.timeEnd('Accordion Render');
+    return () => console.log('[Accordion] Component cleanup');
+  });
   // Préchargement des images pour éviter les saccades
   useEffect(() => {
     items.forEach((it) => {
@@ -22,8 +28,6 @@ const TabsFeaturesAlt5Accordion = () => {
       <div className="relative mx-auto max-w-7xl px-12">
         <div className="text-center mb-24">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
             className="space-y-6"
           >
             <h2 className="text-5xl font-light text-foreground tracking-tight leading-tight">
@@ -44,13 +48,10 @@ const TabsFeaturesAlt5Accordion = () => {
                 key={item.id}
                 onClick={() => setOpen(item.id)}
                 className="relative z-10 flex flex-col items-center gap-4 group"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
               >
                 {/* Circle indicator - exactement comme Alternative 6 */}
                 <motion.div
-                  className={`w-16 h-16 rounded-full border-2 flex items-center justify-center duration-300 ${
+                  className={`w-16 h-16 rounded-full border-2 flex items-center justify-center ${
                     open === item.id
                       ? "bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/25"
                       : "bg-background border-border text-muted-foreground group-hover:border-primary/50"
@@ -61,13 +62,13 @@ const TabsFeaturesAlt5Accordion = () => {
                 
                 {/* Title - exactement comme Alternative 6 */}
                 <div className="text-center max-w-32">
-                  <h3 className={`text-sm font-medium leading-tight transition-colors ${
+                  <h3 className={`text-sm font-medium leading-tight ${
                     open === item.id ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"
                   }`}>
                     {item.title}
                   </h3>
                   
-                  <div className={`text-xs font-light mt-2 tracking-widest transition-colors ${
+                  <div className={`text-xs font-light mt-2 tracking-widest ${
                     open === item.id ? "text-primary" : "text-muted-foreground/50"
                   }`}>
                     ÉTAPE {index + 1}
@@ -154,12 +155,13 @@ const Panel = ({
   features,
 }: PanelProps) => {
   const isOpen = open === id;
+  console.log('[Accordion] Panel render', { id, isOpen });
 
   return (
     <>
       {/* Bouton latéral vertical avec séparations très marquées */}
       <button
-        className="bg-card hover:bg-card/80 duration-300 p-6 border-r-4 border-b-4 lg:border-b-0 border-border/60 flex flex-row-reverse lg:flex-col justify-end items-center gap-4 relative group shadow-lg"
+        className="bg-card hover:bg-card/80 p-6 border-r-4 border-b-4 lg:border-b-0 border-border/60 flex flex-row-reverse lg:flex-col justify-end items-center gap-4 relative group shadow-lg"
         onClick={() => setOpen(id)}
         style={{
           borderRightColor: isOpen ? 'hsl(var(--border) / 0.8)' : 'hsl(var(--border) / 0.6)',
@@ -170,16 +172,16 @@ const Panel = ({
       >
         <span
           style={{ writingMode: "vertical-lr" }}
-          className="hidden lg:block text-xl font-light rotate-180 text-muted-foreground group-hover:text-primary duration-300"
+          className="hidden lg:block text-xl font-light rotate-180 text-muted-foreground group-hover:text-primary"
         >
           {title}
         </span>
-        <span className="block lg:hidden text-xl font-light text-muted-foreground group-hover:text-primary duration-300">{title}</span>
+        <span className="block lg:hidden text-xl font-light text-muted-foreground group-hover:text-primary">{title}</span>
         <div className="w-12 lg:w-full aspect-square bg-primary text-primary-foreground grid place-items-center rounded-xl shadow-lg">
           <Icon className="w-6 h-6" />
         </div>
         <span 
-          className="w-5 h-5 bg-card group-hover:bg-card/80 duration-300 border-r-4 border-b-4 lg:border-b-0 lg:border-t-4 border-border/60 rotate-45 absolute bottom-0 lg:bottom-[50%] right-[50%] lg:right-0 translate-y-[50%] translate-x-[50%] z-20 shadow-lg" 
+          className="w-5 h-5 bg-card group-hover:bg-card/80 border-r-4 border-b-4 lg:border-b-0 lg:border-t-4 border-border/60 rotate-45 absolute bottom-0 lg:bottom-[50%] right-[50%] lg:right-0 translate-y-[50%] translate-x-[50%] z-20 shadow-lg" 
           style={{
             borderColor: isOpen ? 'hsl(var(--border) / 0.8)' : 'hsl(var(--border) / 0.6)',
           }}
@@ -191,10 +193,6 @@ const Panel = ({
         {isOpen && (
           <motion.div
             key={`panel-${id}`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
             className="w-full h-full overflow-hidden relative bg-card flex"
           >
             {/* Layout à la Alternative 5 : Image 1/3 à gauche, contenu 2/3 à droite */}
@@ -205,8 +203,12 @@ const Panel = ({
                   <img
                     src={imageUrl}
                     alt={fullTitle}
-                    className="w-full h-full object-cover grayscale duration-300"
+                    className="w-full h-full object-cover grayscale"
                     loading="lazy"
+                    onLoad={(e) => {
+                      const img = e.currentTarget as HTMLImageElement;
+                      console.log('[Accordion] image loaded', { src: img.src, naturalWidth: img.naturalWidth, naturalHeight: img.naturalHeight });
+                    }}
                     style={{ opacity: 1 }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
@@ -215,13 +217,7 @@ const Panel = ({
 
               {/* Content Section - 3/5 (similaire à 2/3) */}
               <div className="lg:col-span-3 p-8 lg:p-16 flex flex-col justify-center">
-                <motion.div
-                  variants={descriptionVariants}
-                  initial="closed"
-                  animate="open"
-                  exit="closed"
-                  className="space-y-8 max-w-xl"
-                >
+                <div className="space-y-8 max-w-xl">
                   <div className="space-y-6">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -241,33 +237,26 @@ const Panel = ({
 
                   {/* Features list */}
                   <div className="space-y-4">
-                    {features.map((feature, index) => (
-                      <motion.div
+                    {features.map((feature) => (
+                      <div
                         key={feature}
                         className="flex items-center gap-4"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.3 }}
                       >
                         <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                         <span className="text-muted-foreground font-light">{feature}</span>
-                      </motion.div>
+                      </div>
                     ))}
                   </div>
 
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.3 }}
-                  >
+                  <div>
                     <button className="inline-flex items-center gap-3 px-8 py-4 border border-primary/20 rounded-full text-primary font-medium hover:bg-primary/5 duration-300 group">
                       <span>Explorer cette expertise</span>
                       <span className="group-hover:translate-x-1 duration-300">
                         →
                       </span>
                     </button>
-                  </motion.div>
-                </motion.div>
+                  </div>
+                </div>
               </div>
             </div>
           </motion.div>
