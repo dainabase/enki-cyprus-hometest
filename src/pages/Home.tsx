@@ -489,7 +489,7 @@ const Home = () => {
           >
             <div
               className="w-full h-full bg-cover bg-center bg-no-repeat"
-              style={{ backgroundImage: `url('/lovable-uploads/marina-bay-panoramic.jpg')` }}
+              style={{ backgroundImage: `url(${cyprusHero})` }}
             />
             <div className="absolute inset-0 bg-gradient-to-br from-primary/50 via-primary/20 to-transparent" />
           </motion.div>

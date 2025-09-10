@@ -52,7 +52,7 @@ const HeroAlternative3 = () => {
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('/lovable-uploads/marina-bay-panoramic.jpg')`,
+          backgroundImage: `url('/src/assets/cyprus-hero.jpg')`,
         }}
       />
       

@@ -71,7 +71,7 @@ const HeroAlternative2 = () => {
       key={animationKey}
       className="relative min-h-screen w-full flex items-center justify-center bg-cover bg-center bg-no-repeat"
       style={{
-        backgroundImage: `url('/lovable-uploads/marina-bay-panoramic.jpg')`,
+        backgroundImage: `url('/src/assets/cyprus-hero.jpg')`,
       }}
     >
       {/* Bouton de relance d'animation */}

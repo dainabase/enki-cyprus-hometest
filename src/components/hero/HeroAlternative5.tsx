@@ -53,13 +53,13 @@ const HeroAlternative5 = () => {
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: `url('/lovable-uploads/marina-bay-panoramic.jpg')`,
+            backgroundImage: `url('/src/assets/cyprus-hero.jpg')`,
           }}
         />
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat mix-blend-multiply opacity-60"
           style={{
-            backgroundImage: `url('/lovable-uploads/marina-bay-panoramic.jpg')`,
+            backgroundImage: `url('/src/assets/cyprus-hero.jpg')`,
           }}
         />
       </div>

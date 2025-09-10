@@ -52,7 +52,7 @@ const HeroAlternative4 = () => {
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat mix-blend-overlay opacity-40"
         style={{
-          backgroundImage: `url('/lovable-uploads/marina-bay-panoramic.jpg')`,
+          backgroundImage: `url('/src/assets/cyprus-hero.jpg')`,
         }}
       />
       
