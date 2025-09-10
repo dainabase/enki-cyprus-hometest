@@ -77,7 +77,7 @@ const ModernMenu = () => {
         animate={active ? "open" : "closed"}
         variants={UNDERLAY_VARIANTS}
         style={{ top: 16, right: 16 }}
-        className="fixed z-40 rounded-xl bg-gradient-to-br from-[#0A0A0A] to-[#1A1A1A] shadow-2xl"
+        className="fixed z-30 rounded-xl bg-gradient-to-br from-[#0A0A0A] to-[#1A1A1A] shadow-2xl"
       />
       
       <motion.button
@@ -115,7 +115,7 @@ const ModernMenu = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-30 bg-[#0A0A0A]/98 backdrop-blur-2xl"
+            className="fixed inset-0 z-40 bg-[#0A0A0A]/98 backdrop-blur-2xl"
           >
             {/* Logo ENKI-REALTY */}
             <motion.div
