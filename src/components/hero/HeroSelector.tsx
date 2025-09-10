@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import HeroAlternative1 from './HeroAlternative1';
 import HeroAlternative2 from './HeroAlternative2';
-import HeroAlternative3 from './HeroAlternative3';
 import HeroAlternative4 from './HeroAlternative4';
 import HeroAlternative5 from './HeroAlternative5';
 
@@ -21,12 +20,6 @@ const HeroSelector = () => {
       name: "Construction & Terminal", 
       description: "Lettres qui se construisent + style terminal",
       component: HeroAlternative2 
-    },
-    { 
-      id: 3, 
-      name: "Révélation & Formes", 
-      description: "Révélation par masque avec géométrie flottante",
-      component: HeroAlternative3 
     },
     { 
       id: 4, 
