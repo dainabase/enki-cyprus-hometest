@@ -180,7 +180,7 @@ const FEATURES = [
         Icon={Calculator}
         title="Optimisation fiscale"
         description="En un clic, obtenez des scénarios personnalisés pour maximiser votre rentabilité et protéger votre patrimoine, avec des réponses immédiates et concrètes."
-        imageUrl="https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=1000&auto=format&fit=crop" // Placeholder - sera remplacé par l'image fournie
+        imageUrl="/lovable-uploads/fd97a015-cee3-4fa9-850b-433d2e7ba761.png"
       />
     ),
   },
