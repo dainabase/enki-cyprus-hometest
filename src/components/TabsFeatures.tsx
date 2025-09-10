@@ -113,9 +113,10 @@ const FeatureContent = ({ Icon, title, description, imageUrl }: FeatureContentPr
               <img 
                 src={imageUrl} 
                 alt={title}
-                className="w-full h-full object-contain object-center"
+                className="w-full h-full object-cover object-center"
                 loading="lazy"
-                style={{ imageRendering: 'crisp-edges' }}
+                decoding="async"
+                style={{ transform: 'scale(1.08)', transformOrigin: 'center', imageRendering: 'auto' }}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
