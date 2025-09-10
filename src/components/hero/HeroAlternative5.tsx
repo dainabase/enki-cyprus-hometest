@@ -93,7 +93,7 @@ const HeroAlternative5 = () => {
       <div className="relative z-10 text-center">
         
         {/* ENKI-REALTY avec effet de matérialisation */}
-        <motion.div className="mb-12">
+        <motion.div className="mb-4">
           <motion.h1
             className="swaarg-hero-title text-white relative overflow-hidden"
             initial={{ opacity: 0 }}
