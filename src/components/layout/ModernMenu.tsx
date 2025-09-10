@@ -84,26 +84,26 @@ const ModernMenu = () => {
         initial={false}
         animate={active ? "open" : "closed"}
         onClick={() => setActive(!active)}
-        className={`group fixed right-4 top-4 z-50 h-20 w-20 bg-white/0 transition-all hover:bg-white/5 ${
-          active ? "rounded-bl-xl rounded-tr-xl" : "rounded-xl"
+        className={`group fixed right-4 top-4 z-50 h-14 w-14 bg-white/0 transition-all hover:bg-white/5 ${
+          active ? "rounded-bl-lg rounded-tr-lg" : "rounded-lg"
         }`}
       >
         <motion.span
           animate={active ? { rotate: 45, top: "50%" } : { rotate: 0, top: "35%" }}
           transition={{ duration: 0.3 }}
-          className="absolute block h-[2px] w-10 bg-[#F5F5F0]"
+          className="absolute block h-[1.5px] w-8 bg-[#F5F5F0]"
           style={{ y: "-50%", left: "50%", x: "-50%" }}
         />
         <motion.span
           animate={active ? { rotate: -45, opacity: 1 } : { rotate: 0, opacity: 1 }}
           transition={{ duration: 0.3 }}
-          className="absolute block h-[2px] w-10 bg-[#F5F5F0]"
+          className="absolute block h-[1.5px] w-8 bg-[#F5F5F0]"
           style={{ left: "50%", x: "-50%", top: "50%", y: "-50%" }}
         />
         <motion.span
           animate={active ? { rotate: 45, bottom: "50%", opacity: 0 } : { rotate: 0, bottom: "35%", opacity: 1 }}
           transition={{ duration: 0.3 }}
-          className="absolute block h-[2px] w-5 bg-[#F5F5F0]"
+          className="absolute block h-[1.5px] w-4 bg-[#F5F5F0]"
           style={{ x: "-50%", y: "50%", left: "calc(50% + 10px)" }}
         />
       </motion.button>
@@ -115,7 +115,7 @@ const ModernMenu = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-[#0A0A0A]/98 backdrop-blur-2xl"
+            className="fixed inset-0 z-40 bg-gradient-to-br from-primary/95 via-primary/90 to-background/95 backdrop-blur-2xl"
           >
             {/* Logo ENKI-REALTY */}
             <motion.div
@@ -131,7 +131,7 @@ const ModernMenu = () => {
               <Link 
                 to="/" 
                 onClick={() => setActive(false)}
-                className="swaarg-card-title text-[#F5F5F0] hover:text-[#F5F5F0]/80 transition-colors"
+                className="swaarg-large-title text-white hover:text-white/80 transition-colors"
               >
                 ΣNKI<span className="mx-1">-</span>REALTY
               </Link>
@@ -164,9 +164,9 @@ const ModernMenu = () => {
                       onClick={() => setActive(false)}
                       className="block group"
                     >
-                      <span className="swaarg-hero-title text-[#F5F5F0]/70 hover:text-[#F5F5F0] transition-all duration-300">
+                      <span className="swaarg-large-title text-white/70 hover:text-white transition-all duration-300">
                         {link.title}
-                        <span className="text-[#F5F5F0] opacity-0 group-hover:opacity-100 transition-opacity">.</span>
+                        <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity">.</span>
                       </span>
                     </Link>
                   </motion.div>
@@ -198,9 +198,9 @@ const ModernMenu = () => {
                           onClick={() => setActive(false)}
                           className="block group"
                         >
-                          <span className="swaarg-hero-title text-[#F5F5F0]/70 hover:text-[#F5F5F0] transition-all duration-300">
+                          <span className="swaarg-card-title text-white/70 hover:text-white transition-all duration-300">
                             Admin
-                            <span className="text-[#F5F5F0] opacity-0 group-hover:opacity-100 transition-opacity">.</span>
+                            <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity">.</span>
                           </span>
                         </Link>
                       </motion.div>
@@ -224,9 +224,9 @@ const ModernMenu = () => {
                       }}
                       className="block group"
                     >
-                      <span className="swaarg-hero-title text-[#F5F5F0]/70 hover:text-[#F5F5F0] transition-all duration-300">
+                      <span className="swaarg-card-title text-white/70 hover:text-white transition-all duration-300">
                         Déconnexion
-                        <span className="text-[#F5F5F0] opacity-0 group-hover:opacity-100 transition-opacity">.</span>
+                        <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity">.</span>
                       </span>
                     </motion.button>
                   </>
@@ -253,9 +253,9 @@ const ModernMenu = () => {
                       onClick={() => setActive(false)}
                       className="block group"
                     >
-                      <span className="swaarg-hero-title text-[#F5F5F0]/70 hover:text-[#F5F5F0] transition-all duration-300">
+                      <span className="swaarg-card-title text-white/70 hover:text-white transition-all duration-300">
                         Connexion
-                        <span className="text-[#F5F5F0] opacity-0 group-hover:opacity-100 transition-opacity">.</span>
+                        <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity">.</span>
                       </span>
                     </Link>
                   </motion.div>
@@ -278,7 +278,7 @@ const ModernMenu = () => {
                 to="/contact"
                 onClick={() => setActive(false)}
               >
-                <button className="group flex items-center gap-3 bg-[#F5F5F0] text-[#0A0A0A] px-6 md:px-8 py-3 md:py-4 rounded-lg hover:bg-[#F5F5F0]/90 transition-all">
+                <button className="group flex items-center gap-3 bg-white text-primary px-6 md:px-8 py-3 md:py-4 rounded-lg hover:bg-white/90 transition-all">
                   <span className="swaarg-button">
                     Commencer votre projet
                   </span>
@@ -297,7 +297,7 @@ const ModernMenu = () => {
               exit={{ opacity: 0 }}
               className="absolute bottom-8 left-8 md:bottom-12 md:left-16"
             >
-              <p className="swaarg-body text-[#F5F5F0]/50">
+              <p className="swaarg-body text-white/50">
                 +357 99 123 456<br />
                 info@enki-realty.com
               </p>
