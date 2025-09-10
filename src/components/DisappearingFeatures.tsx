@@ -23,7 +23,7 @@ const Features = () => {
 
 const Copy = () => {
   return (
-    <div className="flex h-fit w-full flex-col justify-center py-12 md:sticky md:top-0 md:h-screen">
+    <div className="flex h-fit w-full flex-col justify-start py-12 md:py-24 md:sticky md:top-0 md:h-screen">
       <span className="w-fit rounded-full bg-primary px-4 py-2 text-sm uppercase text-primary-foreground">
         Excellence • Innovation • Confiance
       </span>
@@ -106,7 +106,7 @@ const CarouselItem = ({ scrollYProgress, position, numItems, title, description,
         opacity,
         scale,
       }}
-      className="grid aspect-video w-full shrink-0 place-content-center rounded-2xl bg-gradient-to-br from-card to-muted/30 border border-border/50 p-8 relative overflow-hidden"
+      className="grid h-[60vh] md:h-[70vh] w-full shrink-0 place-content-center rounded-2xl bg-gradient-to-br from-card to-muted/30 border border-border/50 p-8 relative overflow-hidden"
     >
       <motion.div
         className="absolute top-1/4 right-1/4 w-32 h-32 bg-primary/5 rounded-full blur-2xl"
