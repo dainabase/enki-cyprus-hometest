@@ -2,29 +2,63 @@ import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { RotateCcw } from 'lucide-react';
 
-// Hook typewriter
-const useTypewriter = (text: string, speed: number = 50) => {
+// Hook typewriter multilingue
+const useMultilingualTypewriter = (texts: string[], speed: number = 50) => {
   const [displayText, setDisplayText] = useState('');
+  const [currentTextIndex, setCurrentTextIndex] = useState(0);
+  const [isTyping, setIsTyping] = useState(true);
   
   useEffect(() => {
+    const currentText = texts[currentTextIndex];
     let index = 0;
-    const timer = setInterval(() => {
-      if (index < text.length) {
-        setDisplayText(text.slice(0, index + 1));
-        index++;
-      } else {
-        clearInterval(timer);
-      }
-    }, speed);
-    return () => clearInterval(timer);
-  }, [text, speed]);
+    
+    if (isTyping) {
+      // Phase d'écriture
+      const timer = setInterval(() => {
+        if (index < currentText.length) {
+          setDisplayText(currentText.slice(0, index + 1));
+          index++;
+        } else {
+          clearInterval(timer);
+          // Attendre 2 secondes avant d'effacer
+          setTimeout(() => setIsTyping(false), 2000);
+        }
+      }, speed);
+      return () => clearInterval(timer);
+    } else {
+      // Phase d'effacement
+      const timer = setInterval(() => {
+        if (index < currentText.length) {
+          setDisplayText(currentText.slice(0, currentText.length - index - 1));
+          index++;
+        } else {
+          clearInterval(timer);
+          setCurrentTextIndex((prev) => (prev + 1) % texts.length);
+          setIsTyping(true);
+        }
+      }, speed / 2);
+      return () => clearInterval(timer);
+    }
+  }, [texts, speed, currentTextIndex, isTyping]);
 
   return displayText;
 };
 
 const HeroAlternative2 = () => {
   const [animationKey, setAnimationKey] = useState(0);
-  const typewriterText = useTypewriter("the first AI-powered real estate platform", 80);
+  
+  const multilingualTexts = [
+    "the first AI-powered real estate platform",
+    "la première plateforme immobilière alimentée par l'IA",
+    "первая платформа недвижимости на базе ИИ",
+    "η πρώτη πλατφόρμα ακινήτων με τεχνητή νοημοσύνη",
+    "la primera plataforma inmobiliaria impulsada por IA",
+    "la prima piattaforma immobiliare alimentata dall'IA",
+    "die erste KI-gestützte Immobilienplattform",
+    "het eerste AI-aangedreven vastgoedplatform"
+  ];
+  
+  const typewriterText = useMultilingualTypewriter(multilingualTexts, 80);
 
   const restartAnimation = () => {
     setAnimationKey(prev => prev + 1);
@@ -32,6 +66,7 @@ const HeroAlternative2 = () => {
 
   return (
     <section 
+      key={animationKey}
       className="relative min-h-screen w-full flex items-center justify-center bg-cover bg-center bg-no-repeat"
       style={{
         backgroundImage: `url('/lovable-uploads/marina-bay-panoramic.jpg')`,
@@ -87,28 +122,20 @@ const HeroAlternative2 = () => {
       <div className="relative z-10 max-w-7xl mx-auto px-8 grid lg:grid-cols-2 gap-12 items-center">
         {/* Colonne gauche - Texte */}
         <div>
-          {/* ENKI-REALTY avec effet de construction lettre par lettre */}
+          {/* ENKI-REALTY sur une seule ligne */}
           <div className="mb-6">
-            {['Σ', 'N', 'K', 'I', '-', 'R', 'E', 'A', 'L', 'T', 'Y'].map((letter, index) => (
-              <motion.span
-                key={index}
-                className="swaarg-hero-title text-white inline-block"
-                initial={{ opacity: 0, y: 50, rotateX: -90 }}
-                animate={{ opacity: 1, y: 0, rotateX: 0 }}
-                transition={{
-                  duration: 0.6,
-                  delay: index * 0.1,
-                  ease: [0.25, 0.46, 0.45, 0.94]
-                }}
-                whileHover={{ 
-                  scale: 1.1,
-                  color: "#3b82f6",
-                  transition: { duration: 0.2 }
-                }}
-              >
-                {letter === '-' ? <span className="mx-2">-</span> : letter}
-              </motion.span>
-            ))}
+            <motion.h1
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white inline-block whitespace-nowrap"
+              initial={{ opacity: 0, x: "-100vw" }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{
+                duration: 2,
+                delay: 0.5,
+                ease: [0.25, 0.46, 0.45, 0.94]
+              }}
+            >
+              ΣNKI-REALTY
+            </motion.h1>
           </div>
 
           {/* Trait moderne avec segments */}
@@ -127,7 +154,7 @@ const HeroAlternative2 = () => {
 
           {/* Cyprus Properties */}
           <motion.h2
-            className="swaarg-large-title text-white/90 mb-8"
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-white/90 mb-8"
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1, delay: 2 }}
