@@ -156,7 +156,7 @@ const FEATURES = [
         Icon={ShieldCheck}
         title="Sélection rigoureuse"
         description="Tous les projets des promoteurs les plus fiables réunis en un seul endroit, soigneusement sélectionnés pour leur qualité et leur sérieux."
-        imageUrl="/lovable-uploads/a1dfce22-4751-4496-ad17-be349e5e3cea.png"
+        imageUrl="/lovable-uploads/908acac7-30e3-4ec8-a596-fceda857b322.png"
       />
     ),
   },
