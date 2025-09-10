@@ -135,7 +135,7 @@ interface PanelProps {
   features: string[];
 }
 
-// Variants pour l'animation d'accordéon (version d'origine)
+// Variants pour l'animation d'accordéon (version plus fluide)
 const panelVariants = {
   open: {
     width: "100%",
@@ -163,10 +163,17 @@ const descriptionVariants = {
     opacity: 1,
     y: "0%",
     transition: {
-      delay: 0.125,
+      delay: 0.4,
+      duration: 0.6,
     },
   },
-  closed: { opacity: 0, y: "100%" },
+  closed: { 
+    opacity: 0, 
+    y: "100%",
+    transition: {
+      duration: 0.3,
+    }
+  },
 };
 
 const Panel = ({
@@ -185,22 +192,32 @@ const Panel = ({
 
   return (
     <>
-      {/* Bouton latéral vertical conservé */}
+      {/* Bouton latéral vertical avec séparations marquées */}
       <button
-        className="bg-card hover:bg-card/80 transition-colors p-6 border-r-[1px] border-b-[1px] border-border/20 flex flex-row-reverse lg:flex-col justify-end items-center gap-4 relative group"
+        className="bg-card hover:bg-card/80 transition-all duration-300 p-6 border-r-2 border-b-2 lg:border-b-0 border-border/40 flex flex-row-reverse lg:flex-col justify-end items-center gap-4 relative group shadow-sm"
         onClick={() => setOpen(id)}
+        style={{
+          borderRightColor: isOpen ? 'hsl(var(--primary) / 0.3)' : 'hsl(var(--border) / 0.4)',
+          borderBottomColor: isOpen ? 'hsl(var(--primary) / 0.3)' : 'hsl(var(--border) / 0.4)',
+          backgroundColor: isOpen ? 'hsl(var(--primary) / 0.05)' : 'hsl(var(--card))',
+        }}
       >
         <span
           style={{ writingMode: "vertical-lr" }}
-          className="hidden lg:block text-xl font-light rotate-180 text-muted-foreground"
+          className="hidden lg:block text-xl font-light rotate-180 text-muted-foreground group-hover:text-primary transition-colors"
         >
           {title}
         </span>
-        <span className="block lg:hidden text-xl font-light text-muted-foreground">{title}</span>
-        <div className="w-12 lg:w-full aspect-square bg-primary text-primary-foreground grid place-items-center rounded-xl">
+        <span className="block lg:hidden text-xl font-light text-muted-foreground group-hover:text-primary transition-colors">{title}</span>
+        <div className="w-12 lg:w-full aspect-square bg-primary text-primary-foreground grid place-items-center rounded-xl shadow-lg">
           <Icon className="w-6 h-6" />
         </div>
-        <span className="w-4 h-4 bg-card group-hover:bg-card/80 transition-colors border-r-[1px] border-b-[1px] lg:border-b-0 lg:border-t-[1px] border-border/20 rotate-45 absolute bottom-0 lg:bottom-[50%] right-[50%] lg:right-0 translate-y-[50%] translate-x-[50%] z-20" />
+        <span 
+          className="w-4 h-4 bg-card group-hover:bg-card/80 transition-colors border-r-2 border-b-2 lg:border-b-0 lg:border-t-2 border-border/40 rotate-45 absolute bottom-0 lg:bottom-[50%] right-[50%] lg:right-0 translate-y-[50%] translate-x-[50%] z-20 shadow-sm" 
+          style={{
+            borderColor: isOpen ? 'hsl(var(--primary) / 0.3)' : 'hsl(var(--border) / 0.4)',
+          }}
+        />
       </button>
 
       {/* Panneau animé avec swipe/resize d'origine */}
@@ -212,6 +229,7 @@ const Panel = ({
             initial="closed"
             animate="open"
             exit="closed"
+            transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
             className="w-full h-full overflow-hidden relative bg-card flex"
           >
             {/* Layout à la Alternative 5 : Image 1/3 à gauche, contenu 2/3 à droite */}
