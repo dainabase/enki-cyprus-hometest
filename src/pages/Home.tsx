@@ -27,7 +27,6 @@ import PropertyModal from '@/components/PropertyModal';
 import FeaturedProjectsCarousel from '@/components/FeaturedProjectsCarousel';
 import { useIsClient } from '@/hooks/useIsClient';
 import { getHeroImage } from '@/utils/gallery';
-import { StickyCardsNKey } from '@/components/StickyCardsNKey';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 // Static background component to replace 3D elements (fixes runtime errors)
 const StaticBackground = () => (
@@ -654,27 +653,34 @@ const Home = () => {
             </motion.div>
           </motion.div>
         </section>
-        {/* Pourquoi Choisir NKey Realty - Animation Scroll */}
+        {/* Pourquoi Choisir ENKI Realty */}
         <motion.section
-          id="why-nkey"
-          className="relative"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+          id="why-enki"
+          className="bg-background py-24 md:py-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
+          initial={{ y: 100, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
           transition={{ duration: 1, ease: 'easeOut' }}
           viewport={{ once: true }}
         >
-          <div className="text-center py-24 bg-background">
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5"
+            initial={{ y: -50, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            transition={{ duration: 1.5, ease: 'easeOut' }}
+            viewport={{ once: true }}
+          />
+          <div className="max-w-7xl mx-auto relative z-10">
             <motion.h2
-              className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight -0.015em text-primary mb-6"
+              className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight -0.015em text-primary text-center mb-6"
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
               viewport={{ once: true }}
             >
-              Pourquoi choisir NKey Realty ?
+              Pourquoi choisir ENKI Realty ?
             </motion.h2>
             <motion.p
-              className="text-lg sm:text-xl font-normal leading-relaxed -0.005em text-muted-foreground max-w-4xl mx-auto"
+              className="text-lg sm:text-xl font-normal leading-relaxed -0.005em text-muted-foreground max-w-4xl mx-auto text-center mb-20"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
@@ -682,8 +688,87 @@ const Home = () => {
             >
               Une expérience d'investissement immobilier redéfinie, alliant expertise, technologie de pointe et service d'excellence pour des résultats exceptionnels.
             </motion.p>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 max-w-7xl mx-auto">
+              {[
+                {
+                  icon: (
+                    <svg className="w-16 h-16 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                  ),
+                  title: "Sélection rigoureuse",
+                  description: "Tous les projets des promoteurs les plus fiables réunis en un seul endroit, soigneusement sélectionnés pour leur qualité et leur sérieux.",
+                  gradient: "from-primary/10 to-accent/10",
+                },
+                {
+                  icon: (
+                    <svg className="w-16 h-16 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+                  ),
+                  title: "Recherche intelligente",
+                  description: "Une IA qui comprend vos besoins et vous propose les biens les plus adaptés, sans perte de temps ni recherche complexe.",
+                  gradient: "from-primary/10 to-accent/10",
+                },
+                {
+                  icon: (
+                    <svg className="w-16 h-16 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                  ),
+                  title: "Optimisation fiscale",
+                  description: "En un clic, obtenez des scénarios personnalisés pour maximiser votre rentabilité et protéger votre patrimoine, avec des réponses immédiates et concrètes.",
+                  gradient: "from-primary/10 to-accent/10",
+                },
+              ].map((item, index) => (
+                <motion.div
+                  key={index}
+                  className="relative group bg-card border border-border/50 rounded-3xl p-8 lg:p-10 hover:border-primary/30 transition-all duration-500 overflow-hidden cursor-pointer"
+                  initial={{ opacity: 0, y: 60, scale: 0.95 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1, transition: { duration: 0.7, delay: index * 0.2, ease: [0.21, 0.47, 0.32, 0.98] } }}
+                  viewport={{ once: true }}
+                  whileHover={{ y: -8, scale: 1.02, transition: { type: "spring", damping: 20, stiffness: 300 } }}
+                  onClick={() => {
+                    if (index === 0) document.getElementById('featured-projects')?.scrollIntoView({ behavior: 'smooth' });
+                    else if (index === 1) document.getElementById('start-experience')?.scrollIntoView({ behavior: 'smooth' });
+                    else window.location.href = '/lexaia';
+                  }}
+                >
+                  <motion.div
+                    className={`absolute inset-0 bg-gradient-to-br ${item.gradient}`}
+                    initial={{ opacity: 0, scale: 1.1 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 2 }}
+                    viewport={{ once: true }}
+                  />
+                  <motion.div
+                    className="absolute top-1/4 right-1/4 w-32 h-32 bg-primary/5 rounded-full blur-2xl"
+                    animate={{ x: [0, 20, -20, 0], y: [0, -10, 10, 0] }}
+                    transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl z-10"></div>
+                  <motion.div
+                    className="mb-8 flex justify-center lg:justify-start relative z-20"
+                    whileHover={{ scale: 1.1, rotate: 5, transition: { type: "spring", damping: 15 } }}
+                  >
+                    {item.icon}
+                  </motion.div>
+                  <h3 className="font-medium text-lg lg:text-xl xl:text-2xl tracking-tight -0.01em text-primary mb-6 leading-tight text-center lg:text-left relative z-20">
+                    {item.title}
+                  </h3>
+                  <p className="text-lg font-normal leading-relaxed -0.005em text-muted-foreground text-center lg:text-left relative z-20">
+                    {item.description}
+                  </p>
+                  <motion.div
+                    className="absolute bottom-0 left-8 right-8 h-0.5 bg-gradient-to-r from-primary/20 via-primary/60 to-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    initial={{ scaleX: 0 }}
+                    whileInView={{ scaleX: 1 }}
+                    transition={{ duration: 0.8, delay: 0.5 + index * 0.1 }}
+                  ></motion.div>
+                </motion.div>
+              ))}
+            </div>
           </div>
-          <StickyCardsNKey />
         </motion.section>
         {/* Premium Video Section */}
         <motion.section
