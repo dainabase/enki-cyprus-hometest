@@ -18,13 +18,7 @@ const TabsFeaturesAlt5Accordion = () => {
   }, []);
 
   return (
-    <section className="py-40 bg-gradient-to-b from-background to-muted/20 relative overflow-hidden">
-      {/* Subtle background pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 border border-primary/20 rounded-full" />
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 border border-accent/20 rounded-full" />
-      </div>
-      
+    <section className="py-6 md:py-8 bg-background relative">
       <div className="relative mx-auto max-w-7xl px-12">
         <div className="text-center mb-24">
           <motion.div
