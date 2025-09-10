@@ -39,7 +39,7 @@ const useMultilingualTypewriter = (texts: string[], speed: number = 40) => {
 
 const HeroAlternative5 = () => {
   const [animationKey, setAnimationKey] = useState(0);
-  const typewriterText = useMultilingualTypewriter(["The first AI powered real estate platform"], 80);
+  const typewriterText = useMultilingualTypewriter(["The first AI powered real estate platform"], 160);
 
   const restartAnimation = () => {
     setAnimationKey(prev => prev + 1);
@@ -179,7 +179,7 @@ const HeroAlternative5 = () => {
 
         {/* Typewriter dans un container futuriste */}
         <motion.div
-          className="relative w-full max-w-screen-2xl mx-auto mt-8 md:mt-12"
+          className="relative w-full mx-auto mt-24 md:mt-40 px-4"
           initial={{ opacity: 0, scale: 0.3, z: -100 }}
           animate={{ opacity: 1, scale: 1, z: 0 }}
           transition={{ 
@@ -188,7 +188,7 @@ const HeroAlternative5 = () => {
             ease: [0.25, 0.46, 0.45, 0.94]
           }}
         >
-          <div className="relative bg-white border border-gray-200 rounded-2xl p-8 min-h-[120px]">
+          <div className="relative w-full bg-white border border-gray-200 rounded-2xl p-8 min-h-[120px]">
             <div className="flex items-center gap-2 mb-4">
               <motion.div
                 className="w-2 h-2 rounded-full bg-green-400"
