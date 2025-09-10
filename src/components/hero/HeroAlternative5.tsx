@@ -189,40 +189,43 @@ const HeroAlternative5 = () => {
           Cyprus Properties
         </motion.h2>
 
-        {/* Typewriter minimaliste et élégant */}
+        {/* Typewriter dans un container futuriste */}
         <motion.div
-          className="relative"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          className="relative max-w-2xl mx-auto"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 3 }}
         >
           <motion.div
-            className="absolute inset-0 bg-primary/5 blur-3xl rounded-full"
+            className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl blur opacity-30"
             animate={{
-              scale: [1, 1.5, 1],
-              opacity: [0.2, 0.4, 0.2]
+              opacity: [0.3, 0.6, 0.3]
             }}
             transition={{
-              duration: 4,
+              duration: 2,
               repeat: Infinity,
               ease: "easeInOut"
             }}
           />
-          
-          <div className="relative swaarg-body-large text-primary/90 font-mono tracking-wider">
-            {typewriterText}
-            <motion.span
-              animate={{ 
-                opacity: [0, 1, 0],
-                scale: [1, 1.2, 1]
-              }}
-              transition={{ 
-                duration: 1.2, 
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-              className="ml-2 inline-block w-[2px] h-6 bg-primary"
-            />
+          <div className="relative bg-slate-900/80 backdrop-blur-xl border border-blue-500/30 rounded-2xl p-8">
+            <div className="flex items-center gap-2 mb-4">
+              <motion.div
+                className="w-2 h-2 rounded-full bg-green-400"
+                animate={{ opacity: [1, 0.5, 1] }}
+                transition={{ duration: 1, repeat: Infinity }}
+              />
+              <span className="text-xs text-gray-400 font-mono">AI_SYSTEM_ONLINE</span>
+            </div>
+            <div className="swaarg-body-large text-blue-400 font-mono">
+              &gt; {typewriterText}
+              <motion.span
+                animate={{ opacity: [0, 1, 0] }}
+                transition={{ duration: 0.8, repeat: Infinity }}
+                className="ml-1"
+              >
+                █
+              </motion.span>
+            </div>
           </div>
         </motion.div>
       </div>
