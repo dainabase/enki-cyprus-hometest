@@ -3,27 +3,22 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { ShieldCheck, Search, Calculator } from "lucide-react";
 
 export const DisappearingFeatures = () => {
-  const [isSticky, setIsSticky] = useState(false);
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [activeCard, setActiveCard] = useState(0);
   
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!sectionRef.current) return;
-      const rect = sectionRef.current.getBoundingClientRect();
-      // Le sticky est actif tant qu'on est dans la section
-      setIsSticky(rect.top <= 0 && rect.bottom >= window.innerHeight);
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Hook de scroll pour l'animation des cartes
   const { scrollYProgress } = useScroll({
-    target: sectionRef,
+    target: containerRef,
     offset: ["start start", "end start"]
   });
+
+  // Déterminer quelle carte est active basé sur le scroll
+  useEffect(() => {
+    const unsubscribe = scrollYProgress.onChange((latest) => {
+      const cardIndex = Math.min(Math.floor(latest * 3.5), 2);
+      setActiveCard(cardIndex);
+    });
+    return unsubscribe;
+  }, [scrollYProgress]);
 
   const cards = [
     {
@@ -42,84 +37,110 @@ export const DisappearingFeatures = () => {
       description: "Conseil expert sur la structuration de votre investissement pour maximiser les avantages fiscaux chypriotes et européens"
     }
   ];
-  
+
   return (
-    <div ref={sectionRef} className="relative h-[200vh] bg-neutral-50">
-      {/* Container principal avec grid */}
-      <div className="mx-auto max-w-7xl px-4 h-full">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 h-full relative">
-          
-          {/* COLONNE GAUCHE - Titre Sticky */}
-          <div className="relative">
-            <div className={`${isSticky ? 'md:fixed md:top-24' : 'md:absolute md:top-0'} md:w-[calc(50%-2rem)] md:max-w-[600px] transition-none`}>
-              <div className="py-12 md:py-24">
-                <span className="w-fit rounded-full bg-black px-4 py-2 text-sm uppercase text-white inline-block mb-4">
-                  Excellence immobilière
-                </span>
-                <h2 className="text-5xl font-medium leading-tight text-black mb-4">
-                  Pourquoi choisir ENKI Realty ?
-                </h2>
-                <p className="text-lg text-gray-700">
-                  Une expérience d'investissement immobilier exceptionnelle à Chypre, 
-                  combinant expertise locale et standards internationaux pour maximiser 
-                  votre retour sur investissement.
-                </p>
+    <>
+      {/* Container scrollable avec hauteur fixe */}
+      <div 
+        ref={containerRef}
+        className="relative h-[300vh] bg-neutral-50"
+      >
+        {/* Titre FIXED qui suit le scroll */}
+        <div className="sticky top-0 h-screen pointer-events-none">
+          <div className="h-full flex items-center">
+            <div className="max-w-7xl mx-auto px-4 w-full">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                
+                {/* Colonne gauche - Titre */}
+                <div className="pointer-events-auto">
+                  <span className="w-fit rounded-full bg-black px-4 py-2 text-sm uppercase text-white inline-block mb-4">
+                    Excellence immobilière
+                  </span>
+                  <h2 className="text-5xl font-medium leading-tight text-black mb-4">
+                    Pourquoi choisir ENKI Realty ?
+                  </h2>
+                  <p className="text-lg text-gray-700">
+                    Une expérience d'investissement immobilier exceptionnelle à Chypre, 
+                    combinant expertise locale et standards internationaux pour maximiser 
+                    votre retour sur investissement.
+                  </p>
+                </div>
+
+                {/* Colonne droite - Une seule carte visible à la fois */}
+                <div className="relative h-[60vh] flex items-center justify-center pointer-events-auto">
+                  {cards.map((card, index) => {
+                    const isActive = index === activeCard;
+                    const isPrev = index === activeCard - 1;
+                    const isNext = index === activeCard + 1;
+                    
+                    let opacity = 0;
+                    let scale = 0.8;
+                    let y = 100;
+                    
+                    if (isActive) {
+                      opacity = 1;
+                      scale = 1;
+                      y = 0;
+                    } else if (isPrev) {
+                      opacity = 0;
+                      scale = 0.9;
+                      y = -100;
+                    } else if (isNext) {
+                      opacity = 0;
+                      scale = 0.9;
+                      y = 100;
+                    }
+
+                    return (
+                      <motion.div
+                        key={index}
+                        className="absolute inset-0 flex items-center justify-center"
+                        initial={{ opacity: 0, scale: 0.8, y: 100 }}
+                        animate={{ 
+                          opacity,
+                          scale,
+                          y
+                        }}
+                        transition={{ 
+                          duration: 0.5,
+                          ease: "easeInOut"
+                        }}
+                      >
+                        <div className="w-full max-w-lg">
+                          <div className="flex flex-col items-start justify-center aspect-[16/10] w-full rounded-2xl bg-black p-8">
+                            <div className="mb-4">{card.icon}</div>
+                            <h3 className="text-2xl font-semibold text-white mb-3">
+                              {card.title}
+                            </h3>
+                            <p className="text-gray-300 leading-relaxed">
+                              {card.description}
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+
               </div>
             </div>
           </div>
-
-          {/* COLONNE DROITE - Cartes animées */}
-          <div className="relative md:py-24">
-            {/* Container pour aligner les cartes avec le titre */}
-            <div className="relative h-full flex items-start">
-              <div className="w-full space-y-8 relative">
-                {cards.map((card, index) => {
-                  // Animation timing pour chaque carte
-                  const cardStart = index * 0.25;
-                  const cardEnd = (index + 1) * 0.25;
-                  
-                  const opacity = useTransform(
-                    scrollYProgress,
-                    [cardStart, cardStart + 0.02, cardEnd - 0.02, cardEnd],
-                    [0, 1, 1, 0]
-                  );
-                  
-                  const y = useTransform(
-                    scrollYProgress,
-                    [cardStart, cardEnd],
-                    ["50px", "-50px"]
-                  );
-                  
-                  const scale = useTransform(
-                    scrollYProgress,
-                    [cardStart, cardStart + 0.02, cardEnd - 0.02, cardEnd],
-                    [0.9, 1, 1, 0.9]
-                  );
-
-                  return (
-                    <motion.div
-                      key={index}
-                      style={{ opacity, y, scale }}
-                      className="w-full"
-                    >
-                      <div className="flex flex-col items-start justify-center aspect-[16/10] w-full rounded-2xl bg-black p-8">
-                        <div className="mb-4">{card.icon}</div>
-                        <h3 className="text-2xl font-semibold text-white mb-3">
-                          {card.title}
-                        </h3>
-                        <p className="text-gray-300 leading-relaxed">
-                          {card.description}
-                        </p>
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-          
         </div>
       </div>
-    </div>
+
+      {/* Indicateurs de progression */}
+      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-50">
+        {cards.map((_, index) => (
+          <div
+            key={index}
+            className={`h-1 transition-all duration-300 ${
+              index === activeCard 
+                ? 'w-12 bg-black' 
+                : 'w-6 bg-gray-300'
+            }`}
+          />
+        ))}
+      </div>
+    </>
   );
 };
