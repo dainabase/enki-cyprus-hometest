@@ -671,34 +671,7 @@ const Home = () => {
             viewport={{ once: true }}
           />
           <div className="max-w-7xl mx-auto relative z-10">
-            <motion.h2
-              className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight -0.015em text-primary text-center mb-6"
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              viewport={{ once: true }}
-            >
-              Pourquoi choisir ENKI Realty ?
-            </motion.h2>
-            <motion.p
-              className="text-lg sm:text-xl font-normal leading-relaxed -0.005em text-muted-foreground max-w-4xl mx-auto text-center mb-20"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              viewport={{ once: true }}
-            >
-              Une expérience d'investissement immobilier redéfinie, alliant expertise, technologie de pointe et service d'excellence pour des résultats exceptionnels.
-            </motion.p>
-            
-            {/* Alternative 5 - Premium Luxueux avec Accordéon */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              viewport={{ once: true }}
-            >
-              <TabsFeaturesAlt5Accordion />
-            </motion.div>
+            <TabsFeaturesAlt5Accordion />
           </div>
         </motion.section>
         {/* Premium Video Section */}
