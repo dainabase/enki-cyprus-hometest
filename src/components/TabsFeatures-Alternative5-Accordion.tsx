@@ -7,29 +7,39 @@ import { IconType } from "react-icons";
 const TabsFeaturesAlt5Accordion = () => {
   const [open, setOpen] = useState(items[0].id);
   console.time('Accordion Render');
+  
   useEffect(() => {
     console.log('[Accordion] Component mounted/updated');
     console.timeEnd('Accordion Render');
     return () => console.log('[Accordion] Component cleanup');
-  });
+  }, []);
   // Préchargement des images pour éviter les saccades
   useEffect(() => {
-    items.forEach((it) => {
+    console.time('[Accordion] Images preload');
+    items.forEach((it, index) => {
       const img = new Image();
       img.src = it.imageUrl;
+      img.onload = () => {
+        console.log(`[Accordion] Image ${index + 1} preloaded:`, {
+          src: it.imageUrl,
+          naturalWidth: img.naturalWidth,
+          naturalHeight: img.naturalHeight,
+          fileSize: `${(img.naturalWidth * img.naturalHeight * 4 / 1024).toFixed(1)}KB estimated`
+        });
+      };
+      img.onerror = () => console.error(`[Accordion] Failed to preload image ${index + 1}:`, it.imageUrl);
       // hint decode when supported
       // @ts-ignore - not all browsers support decode
       img.decode?.();
     });
+    console.timeEnd('[Accordion] Images preload');
   }, []);
 
   return (
     <section className="py-6 md:py-8 bg-transparent relative">
       <div className="relative mx-auto max-w-7xl px-12">
         <div className="text-center mb-24">
-          <motion.div
-            className="space-y-6"
-          >
+          <div className="space-y-6">
             <h2 className="text-5xl font-light text-foreground tracking-tight leading-tight">
               Pourquoi nous faire confiance ?
             </h2>
@@ -37,20 +47,25 @@ const TabsFeaturesAlt5Accordion = () => {
             <p className="text-xl text-muted-foreground font-light max-w-2xl mx-auto leading-relaxed">
               Trois piliers d'excellence pour votre succès immobilier
             </p>
-          </motion.div>
+          </div>
         </div>
 
         {/* Design récupéré de l'Alternative 6 - rond + icône + texte */}
         <div className="mb-20">
           <div className="flex items-center justify-center gap-16 max-w-6xl mx-auto">
             {items.map((item, index) => (
-              <motion.button
+              <button
                 key={item.id}
-                onClick={() => setOpen(item.id)}
+                onClick={() => {
+                  console.log('[Accordion] Button clicked', { from: open, to: item.id });
+                  console.time('[Accordion] State change');
+                  setOpen(item.id);
+                  setTimeout(() => console.timeEnd('[Accordion] State change'), 100);
+                }}
                 className="relative z-10 flex flex-col items-center gap-4 group"
               >
                 {/* Circle indicator - exactement comme Alternative 6 */}
-                <motion.div
+                <div
                   className={`w-16 h-16 rounded-full border-2 flex items-center justify-center ${
                     open === item.id
                       ? "bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/25"
@@ -58,7 +73,7 @@ const TabsFeaturesAlt5Accordion = () => {
                   }`}
                 >
                   <item.Icon className="w-7 h-7" />
-                </motion.div>
+                </div>
                 
                 {/* Title - exactement comme Alternative 6 */}
                 <div className="text-center max-w-32">
@@ -74,7 +89,7 @@ const TabsFeaturesAlt5Accordion = () => {
                     ÉTAPE {index + 1}
                   </div>
                 </div>
-              </motion.button>
+              </button>
             ))}
           </div>
         </div>
@@ -189,12 +204,11 @@ const Panel = ({
       </button>
 
       {/* Panneau animé avec swipe/resize d'origine */}
-      <AnimatePresence mode="sync">
-        {isOpen && (
-          <motion.div
-            key={`panel-${id}`}
-            className="w-full h-full overflow-hidden relative bg-card flex"
-          >
+      {isOpen && (
+        <div
+          key={`panel-${id}`}
+          className="w-full h-full overflow-hidden relative bg-card flex"
+        >
             {/* Layout à la Alternative 5 : Image 1/3 à gauche, contenu 2/3 à droite */}
             <div className="grid lg:grid-cols-5 w-full h-full">
               {/* Image Section - 2/5 (similaire à 1/3) */}
@@ -207,7 +221,14 @@ const Panel = ({
                     loading="lazy"
                     onLoad={(e) => {
                       const img = e.currentTarget as HTMLImageElement;
-                      console.log('[Accordion] image loaded', { src: img.src, naturalWidth: img.naturalWidth, naturalHeight: img.naturalHeight });
+                      console.log('[Accordion] Panel image rendered', { 
+                        src: img.src, 
+                        naturalWidth: img.naturalWidth, 
+                        naturalHeight: img.naturalHeight,
+                        renderedWidth: img.clientWidth,
+                        renderedHeight: img.clientHeight,
+                        aspectRatio: (img.naturalWidth / img.naturalHeight).toFixed(2)
+                      });
                     }}
                     style={{ opacity: 1 }}
                   />
@@ -259,9 +280,8 @@ const Panel = ({
                 </div>
               </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        </div>
+      )}
     </>
   );
 };
