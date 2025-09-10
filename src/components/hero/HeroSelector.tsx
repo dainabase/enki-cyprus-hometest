@@ -1,22 +1,15 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import HeroAlternative1 from './HeroAlternative1';
 import HeroAlternative2 from './HeroAlternative2';
 import HeroAlternative4 from './HeroAlternative4';
 import HeroAlternative5 from './HeroAlternative5';
 
 const HeroSelector = () => {
-  const [currentHero, setCurrentHero] = useState(1);
+  const [currentHero, setCurrentHero] = useState(2);
 
   const alternatives = [
     { 
-      id: 1, 
-      name: "Glitch & Particules", 
-      description: "Effet de glitch moderne avec particules flottantes",
-      component: HeroAlternative1 
-    },
-    { 
-      id: 2, 
+      id: 2,
       name: "Construction & Terminal", 
       description: "Lettres qui se construisent + style terminal",
       component: HeroAlternative2 
@@ -35,7 +28,7 @@ const HeroSelector = () => {
     }
   ];
 
-  const CurrentComponent = alternatives.find(alt => alt.id === currentHero)?.component || HeroAlternative1;
+  const CurrentComponent = alternatives.find(alt => alt.id === currentHero)?.component || HeroAlternative2;
 
   return (
     <div className="relative">
