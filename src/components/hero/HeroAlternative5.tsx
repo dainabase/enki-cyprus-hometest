@@ -39,7 +39,7 @@ const useMultilingualTypewriter = (texts: string[], speed: number = 40) => {
 
 const HeroAlternative5 = () => {
   const [animationKey, setAnimationKey] = useState(0);
-  const typewriterText = useMultilingualTypewriter(["The first AI powered real estate platform"], 40);
+  const typewriterText = useMultilingualTypewriter(["The first AI powered real estate platform"], 80);
 
   const restartAnimation = () => {
     setAnimationKey(prev => prev + 1);
@@ -165,7 +165,7 @@ const HeroAlternative5 = () => {
 
         {/* Cyprus Properties avec timing parfait */}
         <motion.h2
-          className="swaarg-large-title text-white/90 mb-8"
+          className="swaarg-large-title text-white/90 mb-12"
           initial={{ opacity: 0, letterSpacing: "0.5em" }}
           animate={{ opacity: 1, letterSpacing: "-0.03em" }}
           transition={{ 
@@ -179,7 +179,7 @@ const HeroAlternative5 = () => {
 
         {/* Typewriter dans un container futuriste */}
         <motion.div
-          className="relative w-full max-w-4xl mx-auto"
+          className="relative w-full max-w-6xl mx-auto"
           initial={{ opacity: 0, scale: 0.3, z: -100 }}
           animate={{ opacity: 1, scale: 1, z: 0 }}
           transition={{ 
