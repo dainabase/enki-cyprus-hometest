@@ -1,11 +1,21 @@
 import { ShieldCheck, Search, Calculator } from "lucide-react";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useWindowSize } from "../hooks/useWindowSize";
 import { IconType } from "react-icons";
 
 const TabsFeaturesAlt5Accordion = () => {
   const [open, setOpen] = useState(items[0].id);
+  // Préchargement des images pour éviter les saccades
+  useEffect(() => {
+    items.forEach((it) => {
+      const img = new Image();
+      img.src = it.imageUrl;
+      // hint decode when supported
+      // @ts-ignore - not all browsers support decode
+      img.decode?.();
+    });
+  }, []);
 
   return (
     <section className="py-40 bg-gradient-to-b from-background to-muted/20 relative overflow-hidden">
