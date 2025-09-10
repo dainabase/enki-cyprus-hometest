@@ -7,39 +7,41 @@ const useMultilingualTypewriter = (texts: string[], speed: number = 50) => {
   const [displayText, setDisplayText] = useState('');
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(true);
+  const [charIndex, setCharIndex] = useState(0);
   
   useEffect(() => {
     const currentText = texts[currentTextIndex];
-    let index = 0;
     
-    if (isTyping) {
-      // Phase d'écriture
-      const timer = setInterval(() => {
-        if (index < currentText.length) {
-          setDisplayText(currentText.slice(0, index + 1));
-          index++;
+    const timer = setInterval(() => {
+      if (isTyping) {
+        // Phase d'écriture
+        if (charIndex < currentText.length) {
+          setDisplayText(currentText.slice(0, charIndex + 1));
+          setCharIndex(prev => prev + 1);
         } else {
-          clearInterval(timer);
           // Attendre 2 secondes avant d'effacer
-          setTimeout(() => setIsTyping(false), 2000);
+          setTimeout(() => {
+            setIsTyping(false);
+            setCharIndex(currentText.length);
+          }, 2000);
         }
-      }, speed);
-      return () => clearInterval(timer);
-    } else {
-      // Phase d'effacement
-      const timer = setInterval(() => {
-        if (index < currentText.length) {
-          setDisplayText(currentText.slice(0, currentText.length - index - 1));
-          index++;
+      } else {
+        // Phase d'effacement
+        if (charIndex > 0) {
+          setDisplayText(currentText.slice(0, charIndex - 1));
+          setCharIndex(prev => prev - 1);
         } else {
-          clearInterval(timer);
+          // Passer au texte suivant
           setCurrentTextIndex((prev) => (prev + 1) % texts.length);
           setIsTyping(true);
+          setCharIndex(0);
+          setDisplayText('');
         }
-      }, speed / 2);
-      return () => clearInterval(timer);
-    }
-  }, [texts, speed, currentTextIndex, isTyping]);
+      }
+    }, isTyping ? speed : speed / 2);
+
+    return () => clearInterval(timer);
+  }, [texts, speed, currentTextIndex, isTyping, charIndex]);
 
   return displayText;
 };
