@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import { RotateCcw } from 'lucide-react';
 
 // Hook typewriter
 const useTypewriter = (text: string, speed: number = 50) => {
@@ -22,7 +23,12 @@ const useTypewriter = (text: string, speed: number = 50) => {
 };
 
 const HeroAlternative2 = () => {
+  const [animationKey, setAnimationKey] = useState(0);
   const typewriterText = useTypewriter("the first AI-powered real estate platform", 80);
+
+  const restartAnimation = () => {
+    setAnimationKey(prev => prev + 1);
+  };
 
   return (
     <section 
@@ -31,6 +37,19 @@ const HeroAlternative2 = () => {
         backgroundImage: `url('/lovable-uploads/marina-bay-panoramic.jpg')`,
       }}
     >
+      {/* Bouton de relance d'animation */}
+      <motion.button
+        onClick={restartAnimation}
+        className="fixed top-4 right-4 z-50 p-3 bg-primary/90 hover:bg-primary rounded-full text-white shadow-lg backdrop-blur-sm border border-white/20 transition-all duration-300"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1 }}
+      >
+        <RotateCcw className="w-5 h-5" />
+      </motion.button>
+
       {/* Overlay géométrique moderne */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-primary/30" />

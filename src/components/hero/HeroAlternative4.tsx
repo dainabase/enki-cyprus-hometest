@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import { RotateCcw } from 'lucide-react';
 
 // Hook typewriter avec effet de scintillement
 const useTypewriter = (text: string, speed: number = 50) => {
@@ -22,10 +23,31 @@ const useTypewriter = (text: string, speed: number = 50) => {
 };
 
 const HeroAlternative4 = () => {
+  const [animationKey, setAnimationKey] = useState(0);
   const typewriterText = useTypewriter("the first AI-powered real estate platform", 90);
 
+  const restartAnimation = () => {
+    setAnimationKey(prev => prev + 1);
+  };
+
   return (
-    <section className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
+    <section 
+      key={animationKey}
+      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800"
+    >
+      {/* Bouton de relance d'animation */}
+      <motion.button
+        onClick={restartAnimation}
+        className="fixed top-4 right-4 z-50 p-3 bg-primary/90 hover:bg-primary rounded-full text-white shadow-lg backdrop-blur-sm border border-white/20 transition-all duration-300"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1 }}
+      >
+        <RotateCcw className="w-5 h-5" />
+      </motion.button>
+
       {/* Image de fond avec blend mode */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat mix-blend-overlay opacity-40"
