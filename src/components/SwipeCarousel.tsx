@@ -30,7 +30,7 @@ export const SwipeCarousel = ({ project }: SwipeCarouselProps) => {
   // Fallback images if no images available
   const displayImgs = imgs.length > 0 ? imgs : [
     "https://picsum.photos/1200/675?random=1",
-    "https://picsum.photos/1200/675?random=2",
+    "https://picsum.photos/1200/675?random=2", 
     "https://picsum.photos/1200/675?random=3",
     "https://picsum.photos/1200/675?random=4",
     "https://picsum.photos/1200/675?random=5"
@@ -62,6 +62,22 @@ export const SwipeCarousel = ({ project }: SwipeCarouselProps) => {
       setImgIndex((pv) => pv - 1);
     }
   };
+
+  // Debug: add a simple test render first
+  if (!project) {
+    return (
+      <section className="py-32 bg-white">
+        <div className="container mx-auto px-8">
+          <h2 className="text-5xl font-light text-center mb-20 text-black">
+            Property overview
+          </h2>
+          <div className="bg-red-100 p-8 rounded-lg text-center">
+            <p>No project data available</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-32 bg-white">
