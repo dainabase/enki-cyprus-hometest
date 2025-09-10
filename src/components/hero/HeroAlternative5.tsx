@@ -195,8 +195,8 @@ const HeroAlternative5 = () => {
             </div>
             <div className="swaarg-body-large text-black font-mono flex items-start">
               <span className="mr-2">&gt;</span>
-              <div className="flex-1">
-                {typewriterText}
+              <div className="flex-1 text-left">
+                <span>{typewriterText}</span>
                 <motion.span
                   animate={{ opacity: [0, 1, 0] }}
                   transition={{ duration: 0.8, repeat: Infinity }}
