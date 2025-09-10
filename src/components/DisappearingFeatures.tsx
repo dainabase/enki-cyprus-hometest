@@ -45,9 +45,9 @@ const Carousel = () => {
   });
 
   return (
-    <div className="relative w-full h-full">
+    <div ref={ref} className="relative w-full h-full">
       <Gradient />
-      <div ref={ref} className="relative z-0 flex flex-col gap-6 md:gap-12 md:py-24">
+      <div className="relative z-0 flex flex-col gap-6 md:gap-12 md:py-24">
         <CarouselItem
           scrollYProgress={scrollYProgress}
           position={1}
