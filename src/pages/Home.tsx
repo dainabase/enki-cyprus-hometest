@@ -657,10 +657,10 @@ const Home = () => {
         {/* Pourquoi Choisir ENKI Realty */}
         <motion.section
           id="why-enki"
-          className="bg-background py-8 px-4 sm:px-6 lg:px-8 relative"
-          initial={{ y: 30, opacity: 0 }}
+          className="bg-gradient-to-br from-primary/5 via-background to-accent/5 py-2 px-4 sm:px-6 lg:px-8 relative"
+          initial={{ y: 20, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
+          transition={{ duration: 0.4, ease: 'easeOut' }}
           viewport={{ once: true }}
         >
           <div className="max-w-7xl mx-auto relative z-10">
