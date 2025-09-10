@@ -487,6 +487,8 @@ const Home = () => {
               style={{ backgroundImage: `url(${cyprusHero})` }}
             />
             <div className="absolute inset-0 bg-gradient-to-br from-primary/50 via-primary/20 to-accent/30" />
+            {/* Blend hero bottom into page background to remove seam */}
+            <div className="absolute bottom-0 left-0 right-0 h-6 sm:h-8 md:h-10 bg-background" />
           </motion.div>
           <div className="absolute inset-0 bg-gradient-to-br from-accent/20 to-primary/20 opacity-20">
             <div className="absolute top-10 left-10 w-4 h-4 bg-white/20 rounded-full animate-pulse" />
