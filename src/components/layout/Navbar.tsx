@@ -131,7 +131,7 @@ const Navbar = () => {
                 filter: "drop-shadow(0 0 8px rgba(255, 255, 255, 0.4))"
               }}
               whileTap={{ scale: 0.98 }}
-              className="text-3xl font-bold text-white hover:text-blue-300 transition-colors duration-300"
+              className="swaarg-card-title text-white hover:text-blue-300 transition-colors duration-300"
             >
               ENKI-REALTY
             </motion.div>
@@ -148,7 +148,7 @@ const Navbar = () => {
               >
                 <Link
                   to={item.href}
-                  className={`relative px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 text-white ${
+                  className={`relative px-4 py-2 swaarg-nav rounded-md transition-all duration-200 text-white ${
                     isActive(item.href)
                       ? ''
                       : 'hover:border hover:border-white/30'

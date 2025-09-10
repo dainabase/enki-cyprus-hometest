@@ -749,7 +749,7 @@ const Home = () => {
             </motion.h2>
             
             <motion.p
-              className="text-lg sm:text-xl font-normal leading-relaxed -0.005em text-muted-foreground text-center mb-12"
+              className="swaarg-hero-subtitle text-center mb-12"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
@@ -882,7 +882,7 @@ const Home = () => {
                   }}
                 >
                   <motion.div
-                    className="text-6xl sm:text-7xl font-light tracking-tight -0.015em text-primary mb-6"
+                    className="swaarg-section-title text-primary mb-6"
                     initial={{ scale: 0, opacity: 0 }}
                     whileInView={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 1.5, delay: index * 0.2 + 0.5, ease: "easeOut", type: "spring", damping: 15 }}
@@ -891,7 +891,7 @@ const Home = () => {
                     {kpi.number}
                   </motion.div>
                   <motion.h3
-                    className="text-xl sm:text-2xl font-medium tracking-tight -0.01em text-primary mb-3"
+                    className="swaarg-card-title text-primary mb-3"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: index * 0.2 + 0.7 }}
@@ -934,7 +934,7 @@ const Home = () => {
               className="text-center mb-16"
             >
               <motion.h2
-                className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight -0.015em text-primary mb-6"
+                className="swaarg-section-title text-primary mb-6"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
@@ -943,7 +943,7 @@ const Home = () => {
                 Projets Vedette
               </motion.h2>
               <motion.p
-                className="text-lg sm:text-xl font-normal leading-relaxed -0.005em text-muted-foreground max-w-3xl mx-auto"
+                className="swaarg-body-large max-w-3xl mx-auto"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
@@ -974,7 +974,7 @@ const Home = () => {
               className="text-center mb-16"
             >
               <motion.h2
-                className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight -0.015em text-primary mb-6"
+                className="swaarg-section-title text-primary mb-6"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
@@ -983,7 +983,7 @@ const Home = () => {
                 Dernières Nouveautés
               </motion.h2>
               <motion.p
-                className="text-lg sm:text-xl font-normal leading-relaxed -0.005em text-muted-foreground max-w-3xl mx-auto"
+                className="swaarg-body-large max-w-3xl mx-auto"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
