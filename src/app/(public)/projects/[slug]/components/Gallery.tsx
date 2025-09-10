@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -12,6 +12,7 @@ import {
   Play,
   Eye
 } from 'lucide-react';
+import { motion, useMotionValue } from 'framer-motion';
 
 interface GalleryProps {
   project: any;
@@ -32,6 +33,39 @@ export default function Gallery({ project }: GalleryProps) {
   const totalImages = allImages.length;
   const hasVirtualTour = project.virtual_tour_url || project.virtual_tour_url_new;
 
+  // Swipe carousel setup (auto-advance + drag)
+  const ONE_SECOND = 1000;
+  const AUTO_DELAY = ONE_SECOND * 10;
+  const DRAG_BUFFER = 50;
+  const SPRING_OPTIONS = {
+    type: 'spring' as const,
+    mass: 3,
+    stiffness: 400,
+    damping: 50,
+  };
+  const [imgIndex, setImgIndex] = useState(0);
+  const dragX = useMotionValue(0);
+
+  useEffect(() => {
+    const intervalRef = setInterval(() => {
+      const x = dragX.get();
+      if (x === 0 && totalImages > 0) {
+        setImgIndex((pv) => (pv === totalImages - 1 ? 0 : pv + 1));
+      }
+    }, AUTO_DELAY);
+    return () => clearInterval(intervalRef);
+  }, [dragX, totalImages]);
+
+  const onDragEnd = () => {
+    const x = dragX.get();
+    if (x <= -DRAG_BUFFER && imgIndex < totalImages - 1) {
+      setImgIndex((pv) => pv + 1);
+    } else if (x >= DRAG_BUFFER && imgIndex > 0) {
+      setImgIndex((pv) => pv - 1);
+    }
+  };
+
+
   const nextImage = () => {
     setCurrentIndex((prev) => (prev + 1) % totalImages);
   };
@@ -43,7 +77,6 @@ export default function Gallery({ project }: GalleryProps) {
   const goToImage = (index: number) => {
     setCurrentIndex(index);
   };
-
   if (!totalImages || totalImages === 0) {
     return (
       <section className="py-16">
@@ -67,101 +100,49 @@ export default function Gallery({ project }: GalleryProps) {
           </p>
         </div>
 
-        {/* Main Gallery */}
-        <div className="relative">
-          {/* Main Image */}
-          <Card className="overflow-hidden">
-            <CardContent className="p-0">
-              <div className="relative aspect-video bg-muted">
-                <img
-                  src={allImages[currentIndex]}
-                  alt={`${project.title} - Image ${currentIndex + 1}`}
-                  className="w-full h-full object-cover cursor-pointer"
-                  onClick={() => setIsFullscreen(true)}
-                  onError={(e) => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.src = `https://picsum.photos/1200/675?random=${currentIndex + 1}`;
-                  }}
-                />
-                
-                {/* Navigation Arrows */}
-                {totalImages > 1 && (
-                  <>
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white"
-                      onClick={prevImage}
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white"
-                      onClick={nextImage}
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </Button>
-                  </>
-                )}
-
-                {/* Counter */}
-                <Badge className="absolute top-4 right-4 bg-black/70 text-white">
-                  {currentIndex + 1} / {totalImages}
-                </Badge>
-
-                {/* Fullscreen Button */}
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="absolute bottom-4 right-4 bg-black/50 hover:bg-black/70 text-white"
-                  onClick={() => setIsFullscreen(true)}
-                >
-                  <Maximize className="w-4 h-4" />
-                </Button>
-
-                {/* Virtual Tour Button */}
-                {hasVirtualTour && (
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    className="absolute bottom-4 left-4 bg-primary hover:bg-primary/90 text-white"
-                    onClick={() => setShowVirtualTour(true)}
-                  >
-                    <Eye className="w-4 h-4 mr-2" />
-                    Virtual Tour
-                  </Button>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Thumbnails */}
-          <div className="mt-4 grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2">
-            {allImages.slice(0, 10).map((image, index) => (
-              <button
-                key={index}
-                onClick={() => goToImage(index)}
-                className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
-                  index === currentIndex 
-                    ? 'border-primary shadow-lg' 
-                    : 'border-transparent hover:border-muted-foreground'
-                }`}
-              >
-                <img
-                  src={image}
-                  alt={`Thumbnail ${index + 1}`}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.src = `https://picsum.photos/200/200?random=${index + 1}`;
-                  }}
-                />
-              </button>
+        {/* Main Gallery - Swipe Carousel */}
+        <div className="relative overflow-hidden bg-neutral-950 py-8 rounded-[40px]">
+          <motion.div
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            style={{ x: dragX }}
+            animate={{ translateX: `-${imgIndex * 100}%` }}
+            transition={SPRING_OPTIONS}
+            onDragEnd={onDragEnd}
+            className="flex cursor-grab items-center active:cursor-grabbing"
+          >
+            {allImages.map((imgSrc, idx) => (
+              <motion.div
+                key={idx}
+                style={{
+                  backgroundImage: `url(${imgSrc})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+                animate={{ scale: imgIndex === idx ? 0.95 : 0.85 }}
+                transition={SPRING_OPTIONS}
+                className="aspect-video w-screen shrink-0 rounded-xl bg-neutral-800 object-cover"
+              />
             ))}
-            
+          </motion.div>
+
+          {/* Dots */}
+          <div className="mt-4 flex w-full justify-center gap-2">
+            {allImages.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setImgIndex(idx)}
+                className={`h-3 w-3 rounded-full transition-colors ${
+                  idx === imgIndex ? 'bg-neutral-50' : 'bg-neutral-500'
+                }`}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
+            ))}
           </div>
+
+          {/* Gradient Edges */}
+          <div className="pointer-events-none absolute bottom-0 left-0 top-0 w-[10vw] max-w-[100px] bg-gradient-to-r from-neutral-950/50 to-neutral-950/0" />
+          <div className="pointer-events-none absolute bottom-0 right-0 top-0 w-[10vw] max-w-[100px] bg-gradient-to-l from-neutral-950/50 to-neutral-950/0" />
         </div>
 
         {/* Fullscreen Modal */}
