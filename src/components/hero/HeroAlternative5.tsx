@@ -197,27 +197,16 @@ const HeroAlternative5 = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 3 }}
         >
-          <motion.div
-            className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl blur opacity-30"
-            animate={{
-              opacity: [0.3, 0.6, 0.3]
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          />
-          <div className="relative bg-slate-900/80 backdrop-blur-xl border border-blue-500/30 rounded-2xl p-8">
+          <div className="relative bg-white border border-gray-200 rounded-2xl p-8">
             <div className="flex items-center gap-2 mb-4">
               <motion.div
                 className="w-2 h-2 rounded-full bg-green-400"
                 animate={{ opacity: [1, 0.5, 1] }}
                 transition={{ duration: 1, repeat: Infinity }}
               />
-              <span className="text-xs text-gray-400 font-mono">AI_SYSTEM_ONLINE</span>
+              <span className="text-xs text-gray-500 font-mono">AI_SYSTEM_ONLINE</span>
             </div>
-            <div className="swaarg-body-large text-white font-mono">
+            <div className="swaarg-body-large text-black font-mono">
               &gt; {typewriterText}
               <motion.span
                 animate={{ opacity: [0, 1, 0] }}
