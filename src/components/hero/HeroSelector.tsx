@@ -8,41 +8,41 @@ import HeroAlternative9 from './HeroAlternative9';
 import HeroAlternative10 from './HeroAlternative10';
 
 const HeroSelector = () => {
-  const [currentHero, setCurrentHero] = useState(5);
+  const [currentHero, setCurrentHero] = useState(1);
 
   const alternatives = [
     { 
-      id: 5, 
+      id: 1, 
       name: "Original", 
       description: "Zone blanche épurée",
       component: HeroAlternative5 
     },
     { 
-      id: 6, 
+      id: 2, 
       name: "Terminal", 
       description: "Style console/terminal",
       component: HeroAlternative6 
     },
     { 
-      id: 7, 
+      id: 3, 
       name: "Chat Moderne", 
       description: "Interface de chat IA",
       component: HeroAlternative7 
     },
     { 
-      id: 8, 
+      id: 4, 
       name: "Holographique", 
       description: "Effet hologramme futuriste",
       component: HeroAlternative8 
     },
     { 
-      id: 9, 
+      id: 5, 
       name: "Matrix", 
       description: "Style Matrix avec code",
       component: HeroAlternative9 
     },
     { 
-      id: 10, 
+      id: 6, 
       name: "Clean", 
       description: "Interface ultra propre",
       component: HeroAlternative10 
