@@ -32,80 +32,52 @@ const TabsFeaturesAlt5Accordion = () => {
           </motion.div>
         </div>
 
-        {/* Présentation premium des trois piliers */}
+        {/* Design récupéré de l'Alternative 6 - rond + icône + texte */}
         <div className="mb-20">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mx-auto">
+          <div className="flex items-center justify-center gap-16 max-w-6xl mx-auto">
             {items.map((item, index) => (
               <motion.button
                 key={item.id}
                 onClick={() => setOpen(item.id)}
-                className={`group relative transition-all duration-700 ${
-                  open === item.id
-                    ? "scale-[1.02]"
-                    : "hover:scale-[1.01]"
-                }`}
+                className="relative z-10 flex flex-col items-center gap-4 group"
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.15, duration: 1, ease: [0.23, 1, 0.32, 1] }}
-                whileHover={{ y: open === item.id ? 0 : -4 }}
-                whileTap={{ scale: 0.99 }}
+                transition={{ delay: index * 0.15, duration: 0.8 }}
+                whileHover={{ scale: open === item.id ? 1 : 1.1 }}
+                whileTap={{ scale: 0.95 }}
               >
-                {/* Background minimaliste avec effet glassmorphism */}
-                <div className={`absolute inset-0 rounded-3xl transition-all duration-700 backdrop-blur-sm ${
-                  open === item.id 
-                    ? "bg-gradient-to-br from-card/90 to-card/70 border border-primary/10 shadow-[0_8px_32px_rgba(0,0,0,0.1)]" 
-                    : "bg-gradient-to-br from-card/40 to-card/20 border border-border/10 hover:border-primary/20 hover:shadow-[0_4px_20px_rgba(0,0,0,0.05)]"
-                }`} />
+                {/* Circle indicator - exactement comme Alternative 6 */}
+                <motion.div
+                  className={`w-16 h-16 rounded-full border-2 flex items-center justify-center transition-all duration-500 ${
+                    open === item.id
+                      ? "bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/25"
+                      : "bg-background border-border text-muted-foreground group-hover:border-primary/50"
+                  }`}
+                  whileHover={open !== item.id ? { borderColor: "hsl(var(--primary))" } : {}}
+                >
+                  <item.Icon className="w-7 h-7" />
+                </motion.div>
                 
-                {/* Contenu épuré */}
-                <div className="relative p-12 text-center space-y-8">
-                  {/* Icône minimaliste */}
-                  <motion.div
-                    className={`mx-auto w-20 h-20 rounded-2xl flex items-center justify-center transition-all duration-500 ${
-                      open === item.id 
-                        ? "bg-gradient-to-br from-primary/10 to-primary/5 text-primary shadow-lg" 
-                        : "bg-gradient-to-br from-muted/30 to-muted/10 text-muted-foreground group-hover:text-primary group-hover:bg-gradient-to-br group-hover:from-primary/10 group-hover:to-primary/5"
-                    }`}
-                    whileHover={{ rotate: open === item.id ? 0 : 3 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <item.Icon className="w-9 h-9" strokeWidth={1.5} />
-                  </motion.div>
+                {/* Title - exactement comme Alternative 6 */}
+                <div className="text-center max-w-32">
+                  <h3 className={`text-sm font-medium leading-tight transition-colors ${
+                    open === item.id ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"
+                  }`}>
+                    {item.title}
+                  </h3>
                   
-                  {/* Titre élégant */}
-                  <div className="space-y-4">
-                    <h3 className={`font-light text-2xl leading-tight tracking-wide transition-all duration-500 ${
-                      open === item.id 
-                        ? "text-foreground" 
-                        : "text-muted-foreground group-hover:text-foreground"
-                    }`}>
-                      {item.title}
-                    </h3>
-                    
-                    {/* Indicateur numérique discret */}
-                    <div className={`text-sm font-extralight tracking-[0.2em] transition-all duration-500 ${
-                      open === item.id 
-                        ? "text-primary" 
-                        : "text-muted-foreground/60 group-hover:text-primary/70"
-                    }`}>
-                      {String(index + 1).padStart(2, '0')}
-                    </div>
-                  </div>
+                  {/* Step number */}
+                  <motion.div 
+                    className={`text-xs font-light mt-2 tracking-widest transition-colors ${
+                      open === item.id ? "text-primary" : "text-muted-foreground/50"
+                    }`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                  >
+                    ÉTAPE {index + 1}
+                  </motion.div>
                 </div>
-                
-                {/* Indicateur de sélection ultra minimal */}
-                <AnimatePresence>
-                  {open === item.id && (
-                    <motion.div
-                      layoutId="selected-indicator-premium"
-                      className="absolute -bottom-2 left-1/2 w-16 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent rounded-full transform -translate-x-1/2"
-                      initial={{ opacity: 0, scaleX: 0 }}
-                      animate={{ opacity: 1, scaleX: 1 }}
-                      exit={{ opacity: 0, scaleX: 0 }}
-                      transition={{ type: "spring", bounce: 0.2, duration: 0.8 }}
-                    />
-                  )}
-                </AnimatePresence>
               </motion.button>
             ))}
           </div>
