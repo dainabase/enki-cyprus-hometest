@@ -57,8 +57,8 @@ const ModernMenu = () => {
       },
     },
     closed: {
-      width: "80px",
-      height: "80px",
+      width: "48px",
+      height: "48px",
       transition: { 
         delay: 0.75, 
         type: "spring" as const, 
@@ -77,33 +77,33 @@ const ModernMenu = () => {
         animate={active ? "open" : "closed"}
         variants={UNDERLAY_VARIANTS}
         style={{ top: 16, right: 16 }}
-        className="fixed z-30 rounded-xl bg-gradient-to-br from-[#0A0A0A] to-[#1A1A1A] shadow-2xl"
+        className="fixed z-30 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg"
       />
       
       <motion.button
         initial={false}
         animate={active ? "open" : "closed"}
         onClick={() => setActive(!active)}
-        className={`group fixed right-4 top-4 z-50 h-14 w-14 bg-white/0 transition-all hover:bg-white/5 ${
+        className={`group fixed right-4 top-4 z-50 h-12 w-12 bg-primary/10 hover:bg-primary/20 transition-all rounded-lg ${
           active ? "rounded-bl-lg rounded-tr-lg" : "rounded-lg"
         }`}
       >
         <motion.span
           animate={active ? { rotate: 45, top: "50%" } : { rotate: 0, top: "35%" }}
           transition={{ duration: 0.3 }}
-          className="absolute block h-[1.5px] w-8 bg-[#F5F5F0]"
+          className="absolute block h-[1px] w-6 bg-white"
           style={{ y: "-50%", left: "50%", x: "-50%" }}
         />
         <motion.span
           animate={active ? { rotate: -45, opacity: 1 } : { rotate: 0, opacity: 1 }}
           transition={{ duration: 0.3 }}
-          className="absolute block h-[1.5px] w-8 bg-[#F5F5F0]"
+          className="absolute block h-[1px] w-6 bg-white"
           style={{ left: "50%", x: "-50%", top: "50%", y: "-50%" }}
         />
         <motion.span
           animate={active ? { rotate: 45, bottom: "50%", opacity: 0 } : { rotate: 0, bottom: "35%", opacity: 1 }}
           transition={{ duration: 0.3 }}
-          className="absolute block h-[1.5px] w-4 bg-[#F5F5F0]"
+          className="absolute block h-[1px] w-3 bg-white"
           style={{ x: "-50%", y: "50%", left: "calc(50% + 10px)" }}
         />
       </motion.button>
