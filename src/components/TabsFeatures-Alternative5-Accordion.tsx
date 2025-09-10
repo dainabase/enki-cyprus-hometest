@@ -228,22 +228,22 @@ const Panel = ({
                   <motion.img
                     src={imageUrl}
                     alt={fullTitle}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover grayscale"
                     loading="lazy"
                     initial={{ 
                       scale: 1.2, 
                       opacity: 0,
-                      filter: "blur(8px)" 
+                      filter: "blur(8px) grayscale(1)" 
                     }}
                     animate={{ 
                       scale: 1, 
                       opacity: 1,
-                      filter: "blur(0px)"
+                      filter: "blur(0px) grayscale(1)"
                     }}
                     exit={{ 
                       scale: 1.1, 
                       opacity: 0,
-                      filter: "blur(4px)"
+                      filter: "blur(4px) grayscale(1)"
                     }}
                     transition={{ 
                       duration: 1.8, 
@@ -252,7 +252,7 @@ const Panel = ({
                     }}
                   />
                   <motion.div 
-                    className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"
+                    className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ 
@@ -337,29 +337,29 @@ export default TabsFeaturesAlt5Accordion;
 const items = [
   {
     id: 1,
-    title: "Excellence Analytique",
+    title: "Promoteurs Élite",
     fullTitle: "Sélection rigoureuse",
     Icon: ShieldCheck,
-    description: "Tous les projets des promoteurs les plus fiables réunis en un seul endroit, soigneusement sélectionnés pour leur qualité et leur sérieux.",
+    description: "Nous sélectionnons exclusivement les meilleurs promoteurs, développeurs et constructeurs de Chypre pour vous offrir un accès privilégié aux projets immobiliers d'exception. NK Realty centralise l'excellence immobilière chypriote en un seul endroit.",
     imageUrl: "/lovable-uploads/908acac7-30e3-4ec8-a596-fceda857b322.png",
-    features: ["Processus certifié", "Expertise reconnue", "Accompagnement personnalisé"],
+    features: ["Promoteurs certifiés et vérifiés", "Projets premium exclusifs", "Garantie qualité NK Realty"],
   },
   {
     id: 2,
-    title: "Intelligence Prédictive",
+    title: "Matching IA",
     fullTitle: "Recherche intelligente",
     Icon: Search,
-    description: "Une IA qui comprend vos besoins et vous propose les biens les plus adaptés, sans perte de temps ni recherche complexe.",
+    description: "Notre intelligence artificielle analyse vos critères de recherche pour vous proposer des biens qui matchent à 100% avec vos besoins. Recherche ultra-personnalisée, sans perte de temps, avec des recommandations précises et adaptées à votre profil d'investisseur.",
     imageUrl: "/lovable-uploads/9a75d696-69ab-4957-93c2-70b44f9fc985.png",
-    features: ["Processus certifié", "Expertise reconnue", "Accompagnement personnalisé"],
+    features: ["IA de recommandation avancée", "Matching à 100% avec vos critères", "Recommandations personnalisées"],
   },
   {
     id: 3,
-    title: "Optimisation Patrimoniale",
+    title: "Conseil Fiscal IA",
     fullTitle: "Optimisation fiscale",
     Icon: Calculator,
-    description: "En un clic, obtenez des scénarios personnalisés pour maximiser votre rentabilité et protéger votre patrimoine, avec des réponses immédiates et concrètes.",
+    description: "Notre IA experte en fiscalité européenne et suisse génère des scénarios d'optimisation fiscale personnalisés. Montages société, acquisition en nom propre, processus d'acquisition à Chypre : obtenez le meilleur conseil fiscal pour maximiser votre investissement.",
     imageUrl: "/lovable-uploads/fd97a015-cee3-4fa9-850b-433d2e7ba761.png",
-    features: ["Processus certifié", "Expertise reconnue", "Accompagnement personnalisé"],
+    features: ["IA fiscaliste européenne", "Scénarios de montage personnalisés", "Optimisation patrimoine garantie"],
   },
 ];
