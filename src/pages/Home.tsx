@@ -327,7 +327,8 @@ const Home = () => {
   const isClient = useIsClient();
   // Parallax transforms
   const heroY = useTransform(scrollY, [0, 600], [0, -100]);
-  const heroOpacity = useTransform(scrollY, [0, 400], [1, 0.3]);
+  const heroOpacity = useTransform(scrollY, [0, 400], [1, 0.9]);
+  const heroScale = useTransform(scrollY, [0, 600], [1, 1.1]);
 
   // Precompute floating particles once to avoid runtime errors from changing random props
   const floatingParticles = useMemo(() => (
@@ -478,15 +479,12 @@ const Home = () => {
         {/* Hero Section */}
         <section className="relative h-screen flex items-center justify-center overflow-hidden">
           <motion.div
-            style={{ y: heroY, opacity: heroOpacity }}
+            style={{ y: heroY, opacity: heroOpacity, scale: heroScale }}
             className="absolute inset-0 z-0"
           >
             <div
               className="w-full h-full bg-cover bg-center bg-no-repeat"
-              style={{ 
-                backgroundImage: `url(${cyprusHero})`,
-                transform: 'scale(1.1)'
-              }}
+              style={{ backgroundImage: `url(${cyprusHero})` }}
             />
             <div className="absolute inset-0 bg-gradient-to-br from-primary/50 via-primary/20 to-transparent" />
           </motion.div>
