@@ -181,10 +181,10 @@ const Panel = ({
         className="bg-card hover:bg-card/80 transition-all duration-300 p-6 border-r-4 border-b-4 lg:border-b-0 border-border/60 flex flex-row-reverse lg:flex-col justify-end items-center gap-4 relative group shadow-lg"
         onClick={() => setOpen(id)}
         style={{
-          borderRightColor: isOpen ? 'hsl(var(--primary) / 0.5)' : 'hsl(var(--border) / 0.6)',
-          borderBottomColor: isOpen ? 'hsl(var(--primary) / 0.5)' : 'hsl(var(--border) / 0.6)',
-          backgroundColor: isOpen ? 'hsl(var(--primary) / 0.08)' : 'hsl(var(--card))',
-          boxShadow: isOpen ? '0 4px 12px hsl(var(--primary) / 0.15)' : '0 2px 4px hsl(var(--border) / 0.2)',
+          borderRightColor: isOpen ? 'hsl(var(--border) / 0.8)' : 'hsl(var(--border) / 0.6)',
+          borderBottomColor: isOpen ? 'hsl(var(--border) / 0.8)' : 'hsl(var(--border) / 0.6)',
+          backgroundColor: isOpen ? 'hsl(var(--card))' : 'hsl(var(--card))',
+          boxShadow: isOpen ? '0 4px 12px hsl(var(--border) / 0.25)' : '0 2px 4px hsl(var(--border) / 0.2)',
         }}
       >
         <span
@@ -200,68 +200,36 @@ const Panel = ({
         <span 
           className="w-5 h-5 bg-card group-hover:bg-card/80 transition-colors border-r-4 border-b-4 lg:border-b-0 lg:border-t-4 border-border/60 rotate-45 absolute bottom-0 lg:bottom-[50%] right-[50%] lg:right-0 translate-y-[50%] translate-x-[50%] z-20 shadow-lg" 
           style={{
-            borderColor: isOpen ? 'hsl(var(--primary) / 0.5)' : 'hsl(var(--border) / 0.6)',
+            borderColor: isOpen ? 'hsl(var(--border) / 0.8)' : 'hsl(var(--border) / 0.6)',
           }}
         />
       </button>
 
       {/* Panneau animé avec swipe/resize d'origine */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {isOpen && (
           <motion.div
             key={`panel-${id}`}
-            variants={width && width > 1024 ? panelVariants : panelVariantsSm}
-            initial="closed"
-            animate="open"
-            exit="closed"
-            transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1] }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
             className="w-full h-full overflow-hidden relative bg-card flex"
           >
             {/* Layout à la Alternative 5 : Image 1/3 à gauche, contenu 2/3 à droite */}
             <div className="grid lg:grid-cols-5 w-full h-full">
               {/* Image Section - 2/5 (similaire à 1/3) */}
               <div className="lg:col-span-2 relative">
-                <motion.div
-                  className="w-full h-full relative overflow-hidden"
-                  key={`image-${id}`}
-                >
-                  <motion.img
+                <div className="w-full h-full relative overflow-hidden">
+                  <img
                     src={imageUrl}
                     alt={fullTitle}
-                    className="w-full h-full object-cover grayscale"
+                    className="w-full h-full object-cover grayscale transition-opacity duration-500"
                     loading="lazy"
-                    initial={{ 
-                      scale: 1.2, 
-                      opacity: 0,
-                      filter: "blur(8px) grayscale(1)" 
-                    }}
-                    animate={{ 
-                      scale: 1, 
-                      opacity: 1,
-                      filter: "blur(0px) grayscale(1)"
-                    }}
-                    exit={{ 
-                      scale: 1.1, 
-                      opacity: 0,
-                      filter: "blur(4px) grayscale(1)"
-                    }}
-                    transition={{ 
-                      duration: 1.8, 
-                      ease: [0.25, 0.1, 0.25, 1],
-                      delay: 0.2
-                    }}
+                    style={{ opacity: 1 }}
                   />
-                  <motion.div 
-                    className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ 
-                      duration: 1.5, 
-                      ease: [0.25, 0.1, 0.25, 1],
-                      delay: 0.6 
-                    }}
-                  />
-                </motion.div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                </div>
               </div>
 
               {/* Content Section - 3/5 (similaire à 2/3) */}
