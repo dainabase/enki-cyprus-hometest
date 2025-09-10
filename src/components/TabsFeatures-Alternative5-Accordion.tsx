@@ -246,13 +246,25 @@ const Panel = ({
                     alt={fullTitle}
                     className="w-full h-full object-cover"
                     loading="lazy"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
+                    initial={{ 
+                      scale: 1.2, 
+                      opacity: 0,
+                      filter: "blur(8px)" 
+                    }}
+                    animate={{ 
+                      scale: 1, 
+                      opacity: 1,
+                      filter: "blur(0px)"
+                    }}
+                    exit={{ 
+                      scale: 1.1, 
+                      opacity: 0,
+                      filter: "blur(4px)"
+                    }}
                     transition={{ 
-                      duration: 1.5, 
+                      duration: 1.8, 
                       ease: [0.25, 0.1, 0.25, 1],
-                      delay: 0.3 
+                      delay: 0.2
                     }}
                   />
                   <motion.div 
@@ -260,9 +272,9 @@ const Panel = ({
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ 
-                      duration: 1.2, 
+                      duration: 1.5, 
                       ease: [0.25, 0.1, 0.25, 1],
-                      delay: 0.5 
+                      delay: 0.6 
                     }}
                   />
                 </motion.div>
@@ -341,7 +353,7 @@ export default TabsFeaturesAlt5Accordion;
 const items = [
   {
     id: 1,
-    title: "Analyse approfondie",
+    title: "Excellence Analytique",
     fullTitle: "Sélection rigoureuse",
     Icon: ShieldCheck,
     description: "Tous les projets des promoteurs les plus fiables réunis en un seul endroit, soigneusement sélectionnés pour leur qualité et leur sérieux.",
@@ -350,7 +362,7 @@ const items = [
   },
   {
     id: 2,
-    title: "Matching personnalisé",
+    title: "Intelligence Prédictive",
     fullTitle: "Recherche intelligente",
     Icon: Search,
     description: "Une IA qui comprend vos besoins et vous propose les biens les plus adaptés, sans perte de temps ni recherche complexe.",
@@ -359,7 +371,7 @@ const items = [
   },
   {
     id: 3,
-    title: "Avantages fiscaux",
+    title: "Optimisation Patrimoniale",
     fullTitle: "Optimisation fiscale",
     Icon: Calculator,
     description: "En un clic, obtenez des scénarios personnalisés pour maximiser votre rentabilité et protéger votre patrimoine, avec des réponses immédiates et concrètes.",
