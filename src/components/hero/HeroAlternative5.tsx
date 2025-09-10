@@ -39,7 +39,7 @@ const useMultilingualTypewriter = (texts: string[], speed: number = 40) => {
 
 const HeroAlternative5 = () => {
   const [animationKey, setAnimationKey] = useState(0);
-  const typewriterText = useMultilingualTypewriter(["The first AI powered real estate platform"], 160);
+  const typewriterText = useMultilingualTypewriter(["The first AI powered real estate platform"], 80);
 
   const restartAnimation = () => {
     setAnimationKey(prev => prev + 1);
@@ -148,19 +148,6 @@ const HeroAlternative5 = () => {
           transition={{ delay: 2 }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent" />
-          <motion.div
-            className="absolute top-0 left-1/2 w-8 h-[3px] bg-primary rounded-full -translate-x-1/2 -translate-y-1"
-            animate={{
-              x: [-50, 150, -50],
-              opacity: [0.5, 1, 0.5]
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 3
-            }}
-          />
         </motion.div>
 
         {/* Cyprus Properties avec timing parfait */}
