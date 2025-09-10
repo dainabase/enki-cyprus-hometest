@@ -88,25 +88,6 @@ const HeroAlternative5 = () => {
       {/* Overlay minimaliste */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-black/45" />
       
-      {/* Lignes géométriques animées */}
-      <div className="absolute inset-0">
-        {/* Ligne verticale gauche */}
-        <motion.div
-          className="absolute left-20 top-0 w-[1px] bg-gradient-to-b from-transparent via-primary to-transparent opacity-30"
-          initial={{ height: 0 }}
-          animate={{ height: "100vh" }}
-          transition={{ duration: 3, delay: 1 }}
-        />
-        
-        {/* Ligne verticale droite */}
-        <motion.div
-          className="absolute right-20 top-0 w-[1px] bg-gradient-to-b from-transparent via-primary to-transparent opacity-30"
-          initial={{ height: 0 }}
-          animate={{ height: "100vh" }}
-          transition={{ duration: 3, delay: 1.5 }}
-        />
-        
-      </div>
       
       {/* Contenu central ultra épuré */}
       <div className="relative z-10 text-center">
