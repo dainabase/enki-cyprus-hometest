@@ -84,7 +84,7 @@ const ModernMenu = () => {
         initial={false}
         animate={active ? "open" : "closed"}
         onClick={() => setActive(!active)}
-        className={`group fixed right-4 top-4 z-50 h-12 w-12 bg-primary/10 hover:bg-primary/20 transition-all rounded-lg ${
+        className={`group fixed right-4 top-4 z-50 h-12 w-12 bg-primary hover:bg-primary-hover transition-all rounded-lg ${
           active ? "rounded-bl-lg rounded-tr-lg" : "rounded-lg"
         }`}
       >
