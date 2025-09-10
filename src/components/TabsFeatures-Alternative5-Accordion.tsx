@@ -178,16 +178,17 @@ const Panel = ({
         />
       </button>
 
-      {isOpen && (
+      <div
+        className={`w-full transition-all duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] ${
+          isOpen ? 'h-[600px] opacity-100' : 'h-0 opacity-0'
+        } overflow-hidden`}
+      >
         <div
-          key={`panel-${id}`}
-          className={`w-full h-full overflow-hidden relative bg-card flex transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
-            isOpen ? 'opacity-100' : 'opacity-0'
-          }`}
+          className="w-full h-full relative bg-card flex"
           style={{ 
-            willChange: 'auto',
-            maxHeight: isOpen ? '800px' : '0px',
-            transform: isOpen ? 'translateY(0)' : 'translateY(-10px)'
+            transform: isOpen ? 'translateY(0)' : 'translateY(-20px)',
+            transition: 'transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94)',
+            transitionDelay: isOpen ? '0.1s' : '0s'
           }}
         >
             {/* Layout à la Alternative 5 : Image 1/3 à gauche, contenu 2/3 à droite */}
@@ -198,13 +199,13 @@ const Panel = ({
                   <img
                     src={imageUrl}
                     alt={fullTitle}
-                    className="w-full h-full object-cover grayscale transition-all duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]"
+                    className="w-full h-full object-cover grayscale"
                     loading="lazy"
                     style={{ 
-                      opacity: isOpen ? 1 : 0.4,
-                      transform: isOpen ? 'scale(1)' : 'scale(0.98)',
-                      transitionDelay: '200ms',
-                      willChange: 'auto'
+                      opacity: isOpen ? 1 : 0.3,
+                      transform: isOpen ? 'scale(1)' : 'scale(0.95)',
+                      transition: 'all 0.8s cubic-bezier(0.25,0.46,0.45,0.94)',
+                      transitionDelay: isOpen ? '0.3s' : '0s'
                     }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
@@ -214,12 +215,12 @@ const Panel = ({
               {/* Content Section - 3/5 (similaire à 2/3) */}
               <div className="lg:col-span-3 p-8 lg:p-16 flex flex-col justify-center">
                 <div 
-                  className="space-y-8 max-w-xl transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)]"
+                  className="space-y-8 max-w-xl"
                   style={{
                     opacity: isOpen ? 1 : 0,
-                    transform: isOpen ? 'translateX(0)' : 'translateX(-8px)',
-                    transitionDelay: '100ms',
-                    willChange: 'auto'
+                    transform: isOpen ? 'translateX(0)' : 'translateX(-30px)',
+                    transition: 'all 0.7s cubic-bezier(0.25,0.46,0.45,0.94)',
+                    transitionDelay: isOpen ? '0.4s' : '0s'
                   }}
                 >
                   <div className="space-y-6">
@@ -241,12 +242,12 @@ const Panel = ({
 
                   {/* Features list */}
                   <div 
-                    className="space-y-4 transition-all duration-500 ease-out"
+                    className="space-y-4"
                     style={{
                       opacity: isOpen ? 1 : 0,
-                      transform: isOpen ? 'scale(1)' : 'scale(0.97)',
-                      transitionDelay: '300ms',
-                      willChange: 'auto'
+                      transform: isOpen ? 'translateY(0)' : 'translateY(20px)',
+                      transition: 'all 0.6s cubic-bezier(0.25,0.46,0.45,0.94)',
+                      transitionDelay: isOpen ? '0.6s' : '0s'
                     }}
                   >
                     {features.map((feature) => (
@@ -260,10 +261,17 @@ const Panel = ({
                     ))}
                   </div>
 
-                  <div>
-                    <button className="inline-flex items-center gap-3 px-8 py-4 border border-primary/20 rounded-full text-primary font-medium hover:bg-primary/5 transition-colors duration-150 group">
+                  <div
+                    style={{
+                      opacity: isOpen ? 1 : 0,
+                      transform: isOpen ? 'translateY(0)' : 'translateY(15px)',
+                      transition: 'all 0.5s cubic-bezier(0.25,0.46,0.45,0.94)',
+                      transitionDelay: isOpen ? '0.8s' : '0s'
+                    }}
+                  >
+                    <button className="inline-flex items-center gap-3 px-8 py-4 border border-primary/20 rounded-full text-primary font-medium hover:bg-primary/5 transition-colors duration-300 group">
                       <span>Explorer cette expertise</span>
-                      <span className="group-hover:translate-x-1 transition-transform duration-150">
+                      <span className="group-hover:translate-x-2 transition-transform duration-300">
                         →
                       </span>
                     </button>
@@ -271,8 +279,9 @@ const Panel = ({
                 </div>
               </div>
             </div>
+          </div>
         </div>
-      )}
+      </div>
     </>
   );
 };
