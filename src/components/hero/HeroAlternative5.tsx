@@ -179,7 +179,7 @@ const HeroAlternative5 = () => {
 
         {/* Typewriter dans un container futuriste */}
         <motion.div
-          className="relative w-full max-w-6xl mx-auto"
+          className="relative w-full max-w-screen-2xl mx-auto mt-8 md:mt-12"
           initial={{ opacity: 0, scale: 0.3, z: -100 }}
           animate={{ opacity: 1, scale: 1, z: 0 }}
           transition={{ 
