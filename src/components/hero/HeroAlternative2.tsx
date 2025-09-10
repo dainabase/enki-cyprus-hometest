@@ -75,6 +75,12 @@ const HeroAlternative2 = () => {
         backgroundImage: `url(${cyprusHero})`,
       }}
     >
+      {/* Alternative Label */}
+      <div className="absolute top-4 left-4 z-50">
+        <div className="bg-primary/90 text-primary-foreground px-3 py-1 rounded-md text-sm font-medium">
+          Alternative 2
+        </div>
+      </div>
       {/* Bouton de relance d'animation */}
       <motion.button
         onClick={restartAnimation}
