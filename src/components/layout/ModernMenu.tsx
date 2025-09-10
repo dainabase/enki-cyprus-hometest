@@ -138,8 +138,8 @@ const ModernMenu = () => {
             </motion.div>
 
             {/* Links Container */}
-            <div className="flex h-full items-center justify-center px-8 md:px-16">
-              <div className="space-y-4 md:space-y-6">
+            <div className="flex h-full items-center justify-start px-8 md:px-16">
+              <div className="space-y-4 md:space-y-6 max-w-sm">
                 {LINKS.map((link, idx) => (
                   <motion.div
                     key={link.title}
