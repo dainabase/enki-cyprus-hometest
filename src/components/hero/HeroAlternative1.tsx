@@ -31,7 +31,7 @@ const HeroAlternative1 = () => {
     <section 
       className="relative min-h-screen w-full flex items-center justify-center bg-cover bg-center bg-no-repeat"
       style={{
-        backgroundImage: `url('/lovable-uploads/marina-bay-hero.jpg')`,
+        backgroundImage: `url('/lovable-uploads/marina-bay-panoramic.jpg')`,
       }}
     >
       {/* Overlay moderne dégradé */}

@@ -481,7 +481,182 @@ const Home = () => {
       />
      
       <div className="min-h-screen overflow-x-hidden bg-secondary">
-        {/* Hero Alternatives */}
+        {/* Hero Section Original */}
+        <section className="relative h-screen flex items-center justify-center overflow-hidden">
+          <motion.div
+            style={{ y: heroY, opacity: heroOpacity, scale: heroScale }}
+            className="absolute inset-0 z-0"
+          >
+            <div
+              className="w-full h-full bg-cover bg-center bg-no-repeat"
+              style={{ backgroundImage: `url('/lovable-uploads/marina-bay-panoramic.jpg')` }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/50 via-primary/20 to-transparent" />
+          </motion.div>
+          <div className="absolute inset-0 bg-gradient-to-br from-accent/20 to-primary/20 opacity-20">
+          </div>
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 100 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.2, delay: 0.2, ease: "easeOut" }}
+              className="space-y-12 pt-20"
+            >
+              {/* Animated Logo Assembly */}
+              <motion.div
+                className="relative flex flex-col items-center justify-center space-y-3"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+              >
+                {/* ENKI REALTY arrives from extreme left - synchronized timing */}
+                <motion.div
+                  className="swaarg-hero-title text-white flex items-start"
+                  initial={{ opacity: 0, x: "-100vw" }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ 
+                    duration: 2, 
+                    delay: 0.5, 
+                    ease: [0.23, 1, 0.32, 1], // More fluid easing
+                    type: "tween"
+                  }}
+                >
+                  ΣNKI<span className="mx-2">-</span>REALTY
+                  <motion.span
+                    className="text-xl sm:text-2xl lg:text-2xl font-normal ml-1 mt-2 relative"
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.6, delay: 2.8, ease: "easeOut" }}
+                  >
+                    <motion.span
+                      className="relative z-10"
+                      initial={{ color: "rgba(255,255,255,0.9)" }}
+                      animate={{ 
+                        color: [
+                          "rgba(255,255,255,0.9)",
+                          "#ffd700",
+                          "rgba(255,255,255,0.9)"
+                        ]
+                      }}
+                      transition={{ 
+                        duration: 2.5, 
+                        delay: 3.5,
+                        ease: [0.4, 0, 0.2, 1],
+                        times: [0, 0.5, 1]
+                      }}
+                    >
+                      AI
+                    </motion.span>
+                    <motion.div
+                      className="absolute inset-0 -m-2"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ 
+                        opacity: [0, 0.8, 0], 
+                        scale: [0.8, 1.3, 0.8]
+                      }}
+                      transition={{ 
+                        duration: 2.5, 
+                        delay: 3.5,
+                        ease: [0.4, 0, 0.2, 1],
+                        times: [0, 0.5, 1]
+                      }}
+                      style={{
+                        background: "radial-gradient(circle, rgba(255,215,0,0.4) 0%, rgba(255,215,0,0.2) 50%, transparent 70%)",
+                        filter: "blur(6px)",
+                        borderRadius: "50%"
+                      }}
+                    />
+                  </motion.span>
+                </motion.div>
+
+                {/* Sharp separation line arrives from background (depth) */}
+                <motion.div
+                  className="relative w-48 h-0.5 bg-white"
+                  initial={{ 
+                    opacity: 0, 
+                    scaleX: 0,
+                    rotateX: 90
+                  }}
+                  animate={{ 
+                    opacity: 1, 
+                    scaleX: 1,
+                    rotateX: 0
+                  }}
+                  transition={{ 
+                    duration: 1.2, 
+                    delay: 1.8, 
+                    ease: [0.23, 1, 0.32, 1],
+                    type: "tween"
+                  }}
+                  style={{
+                    transformOrigin: "center",
+                    perspective: "1000px"
+                  }}
+                />
+
+                
+                {/* Cyprus Properties arrives from extreme right - SAME timing as ENKI REALTY */}
+                <motion.div
+                  className="swaarg-large-title text-white/90"
+                  initial={{ opacity: 0, x: "100vw" }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ 
+                    duration: 2, 
+                    delay: 0.5, // SAME delay as ENKI REALTY
+                    ease: [0.23, 1, 0.32, 1], // Same fluid easing
+                    type: "tween"
+                  }}
+                >
+                  Cyprus Properties
+                </motion.div>
+              </motion.div>
+
+            </motion.div>
+          </div>
+          {/* Bottom anchored subtitle + CTA (does not overlap titles) */}
+          <div className="absolute bottom-28 left-1/2 -translate-x-1/2 w-full px-4 z-20 pointer-events-none">
+            <motion.p
+              className="swaarg-hero-subtitle text-white/90 max-w-4xl mx-auto text-center mb-6"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 2, ease: "easeOut" }}
+            >
+              La nouvelle expérience de l'investissement immobilier
+            </motion.p>
+            <motion.div
+              className="flex justify-center items-center pointer-events-auto"
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 2.4, ease: "easeOut" }}
+            >
+              <Button
+                className="swaarg-button bg-primary hover:bg-primary-hover text-primary-foreground px-8 py-4 text-lg font-medium rounded-lg shadow-lg hover:shadow-premium transition-all duration-300 transform hover:scale-105"
+                onClick={() => document.getElementById('why-enki')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                Découvrez Pourquoi Nous Choisir
+              </Button>
+            </motion.div>
+          </div>
+          <motion.div
+            className="absolute bottom-12 left-1/2 transform -translate-x-1/2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 2 }}
+          >
+            <motion.div
+              className="w-7 h-11 border-2 border-white/70 rounded-full flex items-start justify-center backdrop-blur-sm"
+              animate={{ y: [0, 6, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <motion.div
+                className="w-1.5 h-1.5 bg-white rounded-full mt-1.5"
+                animate={{ y: [0, 12, 0], opacity: [1, 0.4, 1] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              />
+            </motion.div>
+          </motion.div>
+        </section>
+
         <div className="space-y-0">
           <HeroAlternative1 />
           <HeroAlternative2 />

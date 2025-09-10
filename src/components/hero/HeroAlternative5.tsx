@@ -31,13 +31,13 @@ const HeroAlternative5 = () => {
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: `url('/lovable-uploads/marina-bay-interior-1.jpg')`,
+            backgroundImage: `url('/lovable-uploads/marina-bay-panoramic.jpg')`,
           }}
         />
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat mix-blend-multiply opacity-60"
           style={{
-            backgroundImage: `url('/lovable-uploads/marina-bay-interior-2.jpg')`,
+            backgroundImage: `url('/lovable-uploads/marina-bay-panoramic.jpg')`,
           }}
         />
       </div>
