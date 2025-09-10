@@ -22,7 +22,7 @@ export const DisappearingFeatures = () => {
   }, []);
 
   return (
-    <div ref={sectionRef} className="relative min-h-[300vh] bg-neutral-50">
+    <div ref={sectionRef} className="relative min-h-[150vh] bg-neutral-50">
       {/* Titre fixé par JS sur desktop */}
       <div
         className={`hidden md:block ${isSticky ? "fixed top-24" : "relative"} left-0 w-full z-20 transition-none`}
@@ -106,38 +106,73 @@ const CarouselWithScroll = ({
   ];
 
   return (
-    <div className="space-y-12 pb-24">
+    <div className="relative h-[80vh] pb-24">
       {cards.map((card, index) => (
-        <AnimatedCard key={index} scrollYProgress={scrollYProgress} index={index}>
-          <CarouselItem {...card} />
-        </AnimatedCard>
+        <div key={index} className="absolute inset-0">
+          <AnimatedCard
+            scrollYProgress={scrollYProgress}
+            position={index + 1}
+            numItems={4}
+            {...card}
+          />
+        </div>
       ))}
     </div>
   );
 };
 
-// Animation pour chaque carte (opacity + translation Y)
 const AnimatedCard = ({
   scrollYProgress,
-  index,
-  children,
+  position,
+  numItems,
+  icon,
+  title,
+  description,
 }: {
   scrollYProgress: MotionValue<number>;
-  index: number;
-  children: React.ReactNode;
+  position: number;
+  numItems: number;
+  icon: React.ReactNode;
+  title: string;
+  description: string;
 }) => {
-  const start = index * 0.33;
-  const end = (index + 1) * 0.33;
-
-  const opacity = useTransform(
-    scrollYProgress,
-    [start, start + 0.05, end - 0.05, end],
-    [0, 1, 1, 0]
+  // Calcul EXACT du code original pour une animation fluide
+  const stepSize = 1 / numItems;
+  const end = stepSize * position;
+  const start = end - stepSize;
+  
+  // Opacity avec disparition progressive (comme l'original)
+  const opacity = useTransform(scrollYProgress, 
+    [start, end],
+    [1, 0]
   );
-
-  const y = useTransform(scrollYProgress, [start, end], ["40px", "-40px"]);
-
-  return <motion.div style={{ opacity, y }}>{children}</motion.div>;
+  
+  // Scale pour réduction progressive
+  const scale = useTransform(scrollYProgress,
+    [start, end],
+    [1, 0.75]
+  );
+  
+  // Translation verticale pour le mouvement de montée
+  const y = useTransform(scrollYProgress,
+    [start, end],
+    ["0vh", "-20vh"]
+  );
+  
+  return (
+    <motion.div 
+      style={{ 
+        opacity, 
+        scale,
+        y,
+      }}
+      className="h-full flex items-center justify-center"
+    >
+      <div className="w-full max-w-2xl">
+        <CarouselItem icon={icon} title={title} description={description} />
+      </div>
+    </motion.div>
+  );
 };
 
 interface CarouselItemProps {
