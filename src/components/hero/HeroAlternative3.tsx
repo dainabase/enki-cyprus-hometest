@@ -38,7 +38,7 @@ const HeroAlternative3 = () => {
       {/* Bouton de relance d'animation */}
       <motion.button
         onClick={restartAnimation}
-        className="fixed top-4 right-4 z-50 p-3 bg-primary/90 hover:bg-primary rounded-full text-white shadow-lg backdrop-blur-sm border border-white/20 transition-all duration-300"
+        className="fixed top-20 right-4 z-50 p-3 bg-primary/90 hover:bg-primary rounded-full text-white shadow-lg backdrop-blur-sm border border-white/20 transition-all duration-300"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         initial={{ opacity: 0 }}
