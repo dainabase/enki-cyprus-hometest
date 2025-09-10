@@ -179,7 +179,7 @@ const HeroAlternative5 = () => {
 
         {/* Typewriter dans un container futuriste */}
         <motion.div
-          className="relative w-full max-w-3xl mx-auto"
+          className="relative w-full max-w-4xl mx-auto"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 3 }}
@@ -193,7 +193,7 @@ const HeroAlternative5 = () => {
               />
               <span className="text-xs text-gray-500 font-mono">AI_SYSTEM_ONLINE</span>
             </div>
-            <div className="swaarg-body-large text-black font-mono flex items-start">
+            <div className="text-lg text-black font-mono flex items-start">
               <span className="mr-2">&gt;</span>
               <div className="flex-1 text-left">
                 <span>{typewriterText}</span>
