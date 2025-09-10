@@ -1,28 +1,55 @@
-import React, { useRef } from "react";
-import { useScroll, useTransform, motion, MotionValue } from "framer-motion";
+import React, { useRef, useEffect, useState } from "react";
+import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
 import { ShieldCheck, Search, Calculator } from "lucide-react";
 
 export const DisappearingFeatures = () => {
-  return (
-    <>
-      {/* Container avec hauteur = viewport × nombre de cartes */}
-      <div className="relative h-[300vh] bg-neutral-50">
-        <Features />
-      </div>
-    </>
-  );
-};
+  const [isSticky, setIsSticky] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
 
-const Features = () => {
-  const containerRef = useRef(null);
-  
+  // Détection manuelle du scroll pour activer le "fixed" sur desktop
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!sectionRef.current) return;
+      const rect = sectionRef.current.getBoundingClientRect();
+      setIsSticky(rect.top <= 100 && rect.bottom >= window.innerHeight);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    // Initial check
+    handleScroll();
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <div 
-      ref={containerRef}
-      className="relative mx-auto grid h-full w-full max-w-7xl grid-cols-1 gap-8 px-4 md:grid-cols-2"
-    >
-      <Copy />
-      <Carousel containerRef={containerRef} />
+    <div ref={sectionRef} className="relative min-h-[300vh] bg-neutral-50">
+      {/* Titre fixé par JS sur desktop */}
+      <div
+        className={`hidden md:block ${isSticky ? "fixed top-24" : "relative"} left-0 w-full z-20 transition-none`}
+      >
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="w-1/2">
+            <Copy />
+          </div>
+        </div>
+      </div>
+
+      {/* Spacer pour compenser le fixed (desktop uniquement) */}
+      {isSticky && <div className="hidden md:block h-[40vh]" />}
+
+      {/* Affichage normal du titre sur mobile */}
+      <div className="md:hidden">
+        <div className="mx-auto max-w-7xl px-4">
+          <Copy />
+        </div>
+      </div>
+
+      {/* Carousel avec animation au scroll */}
+      <div className="mx-auto max-w-7xl px-4">
+        <div className="md:ml-[50%] md:pl-8 pt-24">
+          <CarouselWithScroll sectionRef={sectionRef} />
+        </div>
+      </div>
     </div>
   );
 };
@@ -46,100 +73,86 @@ const Copy = () => {
   );
 };
 
-const Carousel = ({ containerRef }: { containerRef: React.RefObject<HTMLDivElement> }) => {
-  // IMPORTANT: Utiliser le container principal comme référence
+// Nouveau composant gérant l'animation des cartes avec la section complète comme référence
+const CarouselWithScroll = ({
+  sectionRef,
+}: {
+  sectionRef: React.RefObject<HTMLDivElement>;
+}) => {
   const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"], // Quand le container touche le haut et quitte par le haut
+    target: sectionRef,
+    offset: ["start start", "end start"],
   });
 
   const cards = [
     {
       icon: <ShieldCheck className="w-12 h-12 text-white" />,
       title: "Sélection Rigoureuse",
-      description: "Tous les projets des promoteurs les plus fiables, vérifiés et validés selon nos critères stricts de qualité et de rentabilité"
+      description:
+        "Tous les projets des promoteurs les plus fiables, vérifiés et validés selon nos critères stricts de qualité et de rentabilité",
     },
     {
       icon: <Search className="w-12 h-12 text-white" />,
       title: "Recherche Intelligente",
-      description: "Une IA qui comprend vos besoins et vous propose les meilleures opportunités d'investissement personnalisées"
+      description:
+        "Une IA qui comprend vos besoins et vous propose les meilleures opportunités d'investissement personnalisées",
     },
     {
       icon: <Calculator className="w-12 h-12 text-white" />,
       title: "Optimisation Fiscale",
-      description: "En un clic, obtenez des scénarios personnalisés pour maximiser vos avantages fiscaux à Chypre et en Europe"
-    }
+      description:
+        "En un clic, obtenez des scénarios personnalisés pour maximiser vos avantages fiscaux à Chypre et en Europe",
+    },
   ];
 
   return (
-    <div className="relative w-full flex items-center md:py-24">
-      <div className="w-full space-y-8">
-        {cards.map((card, index) => (
-          <CarouselItem
-            key={index}
-            scrollYProgress={scrollYProgress}
-            position={index + 1}
-            numItems={3}
-            {...card}
-          />
-        ))}
-      </div>
+    <div className="space-y-12 pb-24">
+      {cards.map((card, index) => (
+        <AnimatedCard key={index} scrollYProgress={scrollYProgress} index={index}>
+          <CarouselItem {...card} />
+        </AnimatedCard>
+      ))}
     </div>
   );
 };
 
-interface CarouselItemProps {
+// Animation pour chaque carte (opacity + translation Y)
+const AnimatedCard = ({
+  scrollYProgress,
+  index,
+  children,
+}: {
   scrollYProgress: MotionValue<number>;
-  position: number;
-  numItems: number;
+  index: number;
+  children: React.ReactNode;
+}) => {
+  const start = index * 0.33;
+  const end = (index + 1) * 0.33;
+
+  const opacity = useTransform(
+    scrollYProgress,
+    [start, start + 0.05, end - 0.05, end],
+    [0, 1, 1, 0]
+  );
+
+  const y = useTransform(scrollYProgress, [start, end], ["40px", "-40px"]);
+
+  return <motion.div style={{ opacity, y }}>{children}</motion.div>;
+};
+
+interface CarouselItemProps {
   icon: React.ReactNode;
   title: string;
   description: string;
 }
 
-const CarouselItem = ({
-  scrollYProgress,
-  position,
-  numItems,
-  icon,
-  title,
-  description,
-}: CarouselItemProps) => {
-  // Calcul simplifié pour 3 cartes
-  const start = (position - 1) / numItems;
-  const end = position / numItems;
-  
-  // Animations
-  const opacity = useTransform(
-    scrollYProgress, 
-    [start, start + 0.1, end - 0.1, end], 
-    [0, 1, 1, 0]
-  );
-  
-  const scale = useTransform(
-    scrollYProgress, 
-    [start, start + 0.1, end - 0.1, end], 
-    [0.8, 1, 1, 0.8]
-  );
-  
-  const y = useTransform(
-    scrollYProgress,
-    [start, end],
-    ["50px", "-50px"]
-  );
-
+// Contenu de la carte (inchangé, sans logique d'animation propre)
+const CarouselItem = ({ icon, title, description }: CarouselItemProps) => {
   return (
-    <motion.div
-      style={{
-        opacity,
-        scale,
-        y,
-      }}
-      className="flex flex-col items-start justify-center aspect-[16/10] w-full rounded-2xl bg-black p-8"
-    >
+    <div className="flex flex-col items-start justify-center aspect-[16/10] w-full rounded-2xl bg-black p-8">
       <div className="mb-4">{icon}</div>
       <h3 className="text-2xl font-semibold text-white mb-3">{title}</h3>
       <p className="text-gray-300 leading-relaxed">{description}</p>
-    </motion.div>
+    </div>
   );
 };
