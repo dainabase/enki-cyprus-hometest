@@ -80,7 +80,7 @@ const HeroAlternative5 = () => {
       </div>
       
       {/* Overlay minimaliste */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/60" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-black/45" />
       
       {/* Lignes géométriques animées */}
       <div className="absolute inset-0">
