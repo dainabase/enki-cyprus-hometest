@@ -1,20 +1,48 @@
 import { useState } from "react";
 import { AnimatePresence, motion, Variants } from "framer-motion";
-import { ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ArrowRight, LogIn, LogOut, User } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { useScrollLock } from "@/hooks/useScrollLock";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 const ModernMenu = () => {
   const [active, setActive] = useState(false);
+  const { isAuthenticated, isAdmin, signOut, user } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
   useScrollLock(active);
 
   const LINKS = [
     { title: "Accueil", href: "/" },
     { title: "Projets", href: "/projects" },
+    { title: "Recherche IA", href: "/search" },
+    { title: "Conseil Fiscal IA", href: "/lexaia" },
     { title: "À propos", href: "/about" },
-    { title: "Services", href: "/services" },
     { title: "Contact", href: "/contact" },
   ];
+
+  const handleLogout = async () => {
+    try {
+      const { error } = await signOut();
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Erreur de déconnexion",
+          description: error.message
+        });
+      } else {
+        toast({
+          title: "Déconnexion réussie",
+          description: "À bientôt sur ENKI-REALTY!"
+        });
+        navigate('/');
+        setActive(false);
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   // VARIANTS pour les animations
   const UNDERLAY_VARIANTS: Variants = {
@@ -143,6 +171,95 @@ const ModernMenu = () => {
                     </Link>
                   </motion.div>
                 ))}
+
+                {/* Auth Section */}
+                {isAuthenticated ? (
+                  <>
+                    {isAdmin && (
+                      <motion.div
+                        initial={{ opacity: 0, x: -60 }}
+                        animate={{
+                          opacity: 1,
+                          x: 0,
+                          transition: {
+                            delay: 0.4 + LINKS.length * 0.08,
+                            duration: 0.6,
+                            ease: [0.25, 0.46, 0.45, 0.94],
+                          },
+                        }}
+                        exit={{ 
+                          opacity: 0, 
+                          x: -60,
+                          transition: { duration: 0.3 }
+                        }}
+                      >
+                        <Link
+                          to="/admin"
+                          onClick={() => setActive(false)}
+                          className="block group"
+                        >
+                          <span className="swaarg-hero-title text-[#F5F5F0]/70 hover:text-[#F5F5F0] transition-all duration-300">
+                            Admin
+                            <span className="text-[#F5F5F0] opacity-0 group-hover:opacity-100 transition-opacity">.</span>
+                          </span>
+                        </Link>
+                      </motion.div>
+                    )}
+                    <motion.button
+                      onClick={handleLogout}
+                      initial={{ opacity: 0, x: -60 }}
+                      animate={{
+                        opacity: 1,
+                        x: 0,
+                        transition: {
+                          delay: 0.4 + (LINKS.length + 1) * 0.08,
+                          duration: 0.6,
+                          ease: [0.25, 0.46, 0.45, 0.94],
+                        },
+                      }}
+                      exit={{ 
+                        opacity: 0, 
+                        x: -60,
+                        transition: { duration: 0.3 }
+                      }}
+                      className="block group"
+                    >
+                      <span className="swaarg-hero-title text-[#F5F5F0]/70 hover:text-[#F5F5F0] transition-all duration-300">
+                        Déconnexion
+                        <span className="text-[#F5F5F0] opacity-0 group-hover:opacity-100 transition-opacity">.</span>
+                      </span>
+                    </motion.button>
+                  </>
+                ) : (
+                  <motion.div
+                    initial={{ opacity: 0, x: -60 }}
+                    animate={{
+                      opacity: 1,
+                      x: 0,
+                      transition: {
+                        delay: 0.4 + LINKS.length * 0.08,
+                        duration: 0.6,
+                        ease: [0.25, 0.46, 0.45, 0.94],
+                      },
+                    }}
+                    exit={{ 
+                      opacity: 0, 
+                      x: -60,
+                      transition: { duration: 0.3 }
+                    }}
+                  >
+                    <Link
+                      to="/login"
+                      onClick={() => setActive(false)}
+                      className="block group"
+                    >
+                      <span className="swaarg-hero-title text-[#F5F5F0]/70 hover:text-[#F5F5F0] transition-all duration-300">
+                        Connexion
+                        <span className="text-[#F5F5F0] opacity-0 group-hover:opacity-100 transition-opacity">.</span>
+                      </span>
+                    </Link>
+                  </motion.div>
+                )}
               </div>
             </div>
 
