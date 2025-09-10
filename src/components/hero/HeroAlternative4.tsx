@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { RotateCcw } from 'lucide-react';
+import cyprusHero from '@/assets/cyprus-hero.jpg';
 
 // Hook typewriter avec effet de scintillement
 const useTypewriter = (text: string, speed: number = 50) => {
@@ -52,7 +53,7 @@ const HeroAlternative4 = () => {
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat mix-blend-overlay opacity-40"
         style={{
-          backgroundImage: `url('/src/assets/cyprus-hero.jpg')`,
+          backgroundImage: `url(${cyprusHero})`,
         }}
       />
       

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { RotateCcw } from 'lucide-react';
+import cyprusHero from '@/assets/cyprus-hero.jpg';
 
 // Hook typewriter multilingue
 const useMultilingualTypewriter = (texts: string[], speed: number = 50) => {
@@ -71,7 +72,7 @@ const HeroAlternative2 = () => {
       key={animationKey}
       className="relative min-h-screen w-full flex items-center justify-center bg-cover bg-center bg-no-repeat"
       style={{
-        backgroundImage: `url('/src/assets/cyprus-hero.jpg')`,
+        backgroundImage: `url(${cyprusHero})`,
       }}
     >
       {/* Bouton de relance d'animation */}

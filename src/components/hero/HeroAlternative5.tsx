@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { RotateCcw } from 'lucide-react';
+import cyprusHero from '@/assets/cyprus-hero.jpg';
 
 // Hook typewriter ultra smooth
 const useTypewriter = (text: string, speed: number = 50) => {
@@ -53,13 +54,13 @@ const HeroAlternative5 = () => {
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: `url('/src/assets/cyprus-hero.jpg')`,
+            backgroundImage: `url(${cyprusHero})`,
           }}
         />
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat mix-blend-multiply opacity-60"
           style={{
-            backgroundImage: `url('/src/assets/cyprus-hero.jpg')`,
+            backgroundImage: `url(${cyprusHero})`,
           }}
         />
       </div>
