@@ -192,14 +192,15 @@ const Panel = ({
 
   return (
     <>
-      {/* Bouton latéral vertical avec séparations marquées */}
+      {/* Bouton latéral vertical avec séparations très marquées */}
       <button
-        className="bg-card hover:bg-card/80 transition-all duration-300 p-6 border-r-2 border-b-2 lg:border-b-0 border-border/40 flex flex-row-reverse lg:flex-col justify-end items-center gap-4 relative group shadow-sm"
+        className="bg-card hover:bg-card/80 transition-all duration-300 p-6 border-r-4 border-b-4 lg:border-b-0 border-border/60 flex flex-row-reverse lg:flex-col justify-end items-center gap-4 relative group shadow-lg"
         onClick={() => setOpen(id)}
         style={{
-          borderRightColor: isOpen ? 'hsl(var(--primary) / 0.3)' : 'hsl(var(--border) / 0.4)',
-          borderBottomColor: isOpen ? 'hsl(var(--primary) / 0.3)' : 'hsl(var(--border) / 0.4)',
-          backgroundColor: isOpen ? 'hsl(var(--primary) / 0.05)' : 'hsl(var(--card))',
+          borderRightColor: isOpen ? 'hsl(var(--primary) / 0.5)' : 'hsl(var(--border) / 0.6)',
+          borderBottomColor: isOpen ? 'hsl(var(--primary) / 0.5)' : 'hsl(var(--border) / 0.6)',
+          backgroundColor: isOpen ? 'hsl(var(--primary) / 0.08)' : 'hsl(var(--card))',
+          boxShadow: isOpen ? '0 4px 12px hsl(var(--primary) / 0.15)' : '0 2px 4px hsl(var(--border) / 0.2)',
         }}
       >
         <span
@@ -213,9 +214,9 @@ const Panel = ({
           <Icon className="w-6 h-6" />
         </div>
         <span 
-          className="w-4 h-4 bg-card group-hover:bg-card/80 transition-colors border-r-2 border-b-2 lg:border-b-0 lg:border-t-2 border-border/40 rotate-45 absolute bottom-0 lg:bottom-[50%] right-[50%] lg:right-0 translate-y-[50%] translate-x-[50%] z-20 shadow-sm" 
+          className="w-5 h-5 bg-card group-hover:bg-card/80 transition-colors border-r-4 border-b-4 lg:border-b-0 lg:border-t-4 border-border/60 rotate-45 absolute bottom-0 lg:bottom-[50%] right-[50%] lg:right-0 translate-y-[50%] translate-x-[50%] z-20 shadow-lg" 
           style={{
-            borderColor: isOpen ? 'hsl(var(--primary) / 0.3)' : 'hsl(var(--border) / 0.4)',
+            borderColor: isOpen ? 'hsl(var(--primary) / 0.5)' : 'hsl(var(--border) / 0.6)',
           }}
         />
       </button>
@@ -229,8 +230,8 @@ const Panel = ({
             initial="closed"
             animate="open"
             exit="closed"
-            transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
-            className="w-full h-full overflow-hidden relative bg-card flex"
+            transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1] }}
+            className="w-full h-full overflow-hidden relative bg-card flex border-l-4 border-primary/20"
           >
             {/* Layout à la Alternative 5 : Image 1/3 à gauche, contenu 2/3 à droite */}
             <div className="grid lg:grid-cols-5 w-full h-full">
@@ -238,17 +239,32 @@ const Panel = ({
               <div className="lg:col-span-2 relative">
                 <motion.div
                   className="w-full h-full relative overflow-hidden"
-                  initial={{ scale: 1.1, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 1.2 }}
+                  key={`image-${id}`}
                 >
-                  <img
+                  <motion.img
                     src={imageUrl}
                     alt={fullTitle}
                     className="w-full h-full object-cover"
                     loading="lazy"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ 
+                      duration: 1.5, 
+                      ease: [0.25, 0.1, 0.25, 1],
+                      delay: 0.3 
+                    }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+                  <motion.div 
+                    className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ 
+                      duration: 1.2, 
+                      ease: [0.25, 0.1, 0.25, 1],
+                      delay: 0.5 
+                    }}
+                  />
                 </motion.div>
               </div>
 
