@@ -26,15 +26,7 @@ import Carousel3D from '@/components/ui/Carousel3D';
 import PropertyModal from '@/components/PropertyModal';
 import FeaturedProjectsCarousel from '@/components/FeaturedProjectsCarousel';
 import { useIsClient } from '@/hooks/useIsClient';
-import TabsFeatures from '@/components/TabsFeatures';
-import TabsFeaturesAlt1 from '@/components/TabsFeatures-Alternative1';
-import TabsFeaturesAlt2 from '@/components/TabsFeatures-Alternative2';
-import TabsFeaturesAlt3 from '@/components/TabsFeatures-Alternative3';
-import TabsFeaturesAlt4 from '@/components/TabsFeatures-Alternative4';
-import TabsFeaturesAlt5 from '@/components/TabsFeatures-Alternative5';
-import TabsFeaturesAlt6 from '@/components/TabsFeatures-Alternative6';
 import TabsFeaturesAlt5Accordion from '@/components/TabsFeatures-Alternative5-Accordion';
-import VerticalAccordion from '@/components/VerticalAccordion';
 import { getHeroImage } from '@/utils/gallery';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 // Static background component to replace 3D elements (fixes runtime errors)
@@ -698,120 +690,15 @@ const Home = () => {
               Une expérience d'investissement immobilier redéfinie, alliant expertise, technologie de pointe et service d'excellence pour des résultats exceptionnels.
             </motion.p>
             
-            {/* Tabs Features Components - All Alternatives */}
-            <div className="space-y-16">
-              {/* Original */}
-              <motion.div
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.1 }}
-                viewport={{ once: true }}
-              >
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold text-primary mb-2">Version Originale</h3>
-                  <div className="w-20 h-1 bg-primary mx-auto rounded-full"></div>
-                </div>
-                <TabsFeatures />
-              </motion.div>
-
-              {/* Alternative 1 */}
-              <motion.div
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                viewport={{ once: true }}
-              >
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold text-primary mb-2">Alternative 1 - Premium</h3>
-                  <div className="w-20 h-1 bg-primary mx-auto rounded-full"></div>
-                </div>
-                <TabsFeaturesAlt1 />
-              </motion.div>
-
-              {/* Alternative 2 */}
-              <motion.div
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-                viewport={{ once: true }}
-              >
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold text-primary mb-2">Alternative 2 - Moderne</h3>
-                  <div className="w-20 h-1 bg-primary mx-auto rounded-full"></div>
-                </div>
-                <TabsFeaturesAlt2 />
-              </motion.div>
-
-              {/* Alternative 3 */}
-              <motion.div
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-                viewport={{ once: true }}
-              >
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold text-primary mb-2">Alternative 3 - Vertical</h3>
-                  <div className="w-20 h-1 bg-primary mx-auto rounded-full"></div>
-                </div>
-                <TabsFeaturesAlt3 />
-              </motion.div>
-
-              {/* Alternative 4 - Premium Minimaliste */}
-              <motion.div
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.1 }}
-                viewport={{ once: true }}
-              >
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold text-primary mb-2">Alternative 4 - Premium Minimaliste</h3>
-                  <div className="w-20 h-1 bg-primary mx-auto rounded-full"></div>
-                </div>
-                <TabsFeaturesAlt4 />
-              </motion.div>
-
-              {/* Alternative 5 - Premium Luxueux avec Accordéon */}
-              <motion.div
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                viewport={{ once: true }}
-              >
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold text-primary mb-2">Alternative 5 - Premium Luxueux avec Accordéon</h3>
-                  <div className="w-20 h-1 bg-primary mx-auto rounded-full"></div>
-                </div>
-                <TabsFeaturesAlt5Accordion />
-              </motion.div>
-
-              {/* Alternative 6 - Premium Sophistiqué */}
-              <motion.div
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-                viewport={{ once: true }}
-              >
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold text-primary mb-2">Alternative 6 - Premium Sophistiqué</h3>
-                  <div className="w-20 h-1 bg-primary mx-auto rounded-full"></div>
-                </div>
-                <TabsFeaturesAlt6 />
-              </motion.div>
-
-              {/* Accordéon Vertical Animé */}
-              <motion.div
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-                viewport={{ once: true }}
-              >
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold text-primary mb-2">Accordéon Vertical Animé</h3>
-                  <div className="w-20 h-1 bg-primary mx-auto rounded-full"></div>
-                </div>
-                <VerticalAccordion />
-              </motion.div>
-            </div>
+            {/* Alternative 5 - Premium Luxueux avec Accordéon */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              <TabsFeaturesAlt5Accordion />
+            </motion.div>
           </div>
         </motion.section>
         {/* Premium Video Section */}
