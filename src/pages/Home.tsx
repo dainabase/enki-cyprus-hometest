@@ -26,7 +26,7 @@ import Carousel3D from '@/components/ui/Carousel3D';
 import PropertyModal from '@/components/PropertyModal';
 import FeaturedProjectsCarousel from '@/components/FeaturedProjectsCarousel';
 import { useIsClient } from '@/hooks/useIsClient';
-import TabsFeaturesAlt5Accordion from '@/components/TabsFeatures-Alternative5-Accordion';
+import TabsFeatures from '@/components/TabsFeatures';
 import { getHeroImage } from '@/utils/gallery';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 // Static background component to replace 3D elements (fixes runtime errors)
@@ -656,7 +656,7 @@ const Home = () => {
           className="bg-transparent -mt-px px-4 sm:px-6 lg:px-8"
         >
           <div className="max-w-7xl mx-auto">
-            <TabsFeaturesAlt5Accordion />
+            <TabsFeatures />
           </div>
         </section>
         {/* Premium Video Section */}
