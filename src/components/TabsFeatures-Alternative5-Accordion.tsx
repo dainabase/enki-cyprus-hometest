@@ -1,38 +1,18 @@
 import { ShieldCheck, Search, Calculator } from "lucide-react";
 import { Dispatch, SetStateAction, useState, useEffect } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { useWindowSize } from "../hooks/useWindowSize";
 import { IconType } from "react-icons";
 
 const TabsFeaturesAlt5Accordion = () => {
   const [open, setOpen] = useState(items[0].id);
-  console.time('Accordion Render');
   
+  // Préchargement des images
   useEffect(() => {
-    console.log('[Accordion] Component mounted/updated');
-    console.timeEnd('Accordion Render');
-    return () => console.log('[Accordion] Component cleanup');
-  }, []);
-  // Préchargement des images pour éviter les saccades
-  useEffect(() => {
-    console.time('[Accordion] Images preload');
-    items.forEach((it, index) => {
+    items.forEach((it) => {
       const img = new Image();
       img.src = it.imageUrl;
-      img.onload = () => {
-        console.log(`[Accordion] Image ${index + 1} preloaded:`, {
-          src: it.imageUrl,
-          naturalWidth: img.naturalWidth,
-          naturalHeight: img.naturalHeight,
-          fileSize: `${(img.naturalWidth * img.naturalHeight * 4 / 1024).toFixed(1)}KB estimated`
-        });
-      };
-      img.onerror = () => console.error(`[Accordion] Failed to preload image ${index + 1}:`, it.imageUrl);
-      // hint decode when supported
       // @ts-ignore - not all browsers support decode
       img.decode?.();
     });
-    console.timeEnd('[Accordion] Images preload');
   }, []);
 
   return (
@@ -56,17 +36,12 @@ const TabsFeaturesAlt5Accordion = () => {
             {items.map((item, index) => (
               <button
                 key={item.id}
-                onClick={() => {
-                  console.log('[Accordion] Button clicked', { from: open, to: item.id });
-                  console.time('[Accordion] State change');
-                  setOpen(item.id);
-                  setTimeout(() => console.timeEnd('[Accordion] State change'), 100);
-                }}
-                className="relative z-10 flex flex-col items-center gap-4 group"
+                onClick={() => setOpen(item.id)}
+                className="relative z-10 flex flex-col items-center gap-4 group transition-opacity duration-200"
               >
                 {/* Circle indicator - exactement comme Alternative 6 */}
                 <div
-                  className={`w-16 h-16 rounded-full border-2 flex items-center justify-center ${
+                  className={`w-16 h-16 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
                     open === item.id
                       ? "bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/25"
                       : "bg-background border-border text-muted-foreground group-hover:border-primary/50"
@@ -77,13 +52,13 @@ const TabsFeaturesAlt5Accordion = () => {
                 
                 {/* Title - exactement comme Alternative 6 */}
                 <div className="text-center max-w-32">
-                  <h3 className={`text-sm font-medium leading-tight ${
+                  <h3 className={`text-sm font-medium leading-tight transition-colors duration-200 ${
                     open === item.id ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"
                   }`}>
                     {item.title}
                   </h3>
                   
-                  <div className={`text-xs font-light mt-2 tracking-widest ${
+                  <div className={`text-xs font-light mt-2 tracking-widest transition-colors duration-200 ${
                     open === item.id ? "text-primary" : "text-muted-foreground/50"
                   }`}>
                     ÉTAPE {index + 1}
@@ -170,13 +145,12 @@ const Panel = ({
   features,
 }: PanelProps) => {
   const isOpen = open === id;
-  console.log('[Accordion] Panel render', { id, isOpen });
 
   return (
     <>
       {/* Bouton latéral vertical avec séparations très marquées */}
       <button
-        className="bg-card hover:bg-card/80 p-6 border-r-4 border-b-4 lg:border-b-0 border-border/60 flex flex-row-reverse lg:flex-col justify-end items-center gap-4 relative group shadow-lg"
+        className="bg-card hover:bg-card/80 transition-colors duration-150 p-6 border-r-4 border-b-4 lg:border-b-0 border-border/60 flex flex-row-reverse lg:flex-col justify-end items-center gap-4 relative group shadow-lg"
         onClick={() => setOpen(id)}
         style={{
           borderRightColor: isOpen ? 'hsl(var(--border) / 0.8)' : 'hsl(var(--border) / 0.6)',
@@ -187,27 +161,27 @@ const Panel = ({
       >
         <span
           style={{ writingMode: "vertical-lr" }}
-          className="hidden lg:block text-xl font-light rotate-180 text-muted-foreground group-hover:text-primary"
+          className="hidden lg:block text-xl font-light rotate-180 text-muted-foreground group-hover:text-primary transition-colors duration-150"
         >
           {title}
         </span>
-        <span className="block lg:hidden text-xl font-light text-muted-foreground group-hover:text-primary">{title}</span>
+        <span className="block lg:hidden text-xl font-light text-muted-foreground group-hover:text-primary transition-colors duration-150">{title}</span>
         <div className="w-12 lg:w-full aspect-square bg-primary text-primary-foreground grid place-items-center rounded-xl shadow-lg">
           <Icon className="w-6 h-6" />
         </div>
         <span 
-          className="w-5 h-5 bg-card group-hover:bg-card/80 border-r-4 border-b-4 lg:border-b-0 lg:border-t-4 border-border/60 rotate-45 absolute bottom-0 lg:bottom-[50%] right-[50%] lg:right-0 translate-y-[50%] translate-x-[50%] z-20 shadow-lg" 
+          className="w-5 h-5 bg-card group-hover:bg-card/80 transition-colors duration-150 border-r-4 border-b-4 lg:border-b-0 lg:border-t-4 border-border/60 rotate-45 absolute bottom-0 lg:bottom-[50%] right-[50%] lg:right-0 translate-y-[50%] translate-x-[50%] z-20 shadow-lg" 
           style={{
             borderColor: isOpen ? 'hsl(var(--border) / 0.8)' : 'hsl(var(--border) / 0.6)',
           }}
         />
       </button>
 
-      {/* Panneau animé avec swipe/resize d'origine */}
       {isOpen && (
         <div
           key={`panel-${id}`}
-          className="w-full h-full overflow-hidden relative bg-card flex"
+          className="w-full h-full overflow-hidden relative bg-card flex opacity-0 animate-fade-in"
+          style={{ opacity: 1, transition: 'opacity 0.2s ease-out' }}
         >
             {/* Layout à la Alternative 5 : Image 1/3 à gauche, contenu 2/3 à droite */}
             <div className="grid lg:grid-cols-5 w-full h-full">
@@ -219,17 +193,6 @@ const Panel = ({
                     alt={fullTitle}
                     className="w-full h-full object-cover grayscale"
                     loading="lazy"
-                    onLoad={(e) => {
-                      const img = e.currentTarget as HTMLImageElement;
-                      console.log('[Accordion] Panel image rendered', { 
-                        src: img.src, 
-                        naturalWidth: img.naturalWidth, 
-                        naturalHeight: img.naturalHeight,
-                        renderedWidth: img.clientWidth,
-                        renderedHeight: img.clientHeight,
-                        aspectRatio: (img.naturalWidth / img.naturalHeight).toFixed(2)
-                      });
-                    }}
                     style={{ opacity: 1 }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
@@ -270,9 +233,9 @@ const Panel = ({
                   </div>
 
                   <div>
-                    <button className="inline-flex items-center gap-3 px-8 py-4 border border-primary/20 rounded-full text-primary font-medium hover:bg-primary/5 duration-300 group">
+                    <button className="inline-flex items-center gap-3 px-8 py-4 border border-primary/20 rounded-full text-primary font-medium hover:bg-primary/5 transition-colors duration-150 group">
                       <span>Explorer cette expertise</span>
-                      <span className="group-hover:translate-x-1 duration-300">
+                      <span className="group-hover:translate-x-1 transition-transform duration-150">
                         →
                       </span>
                     </button>

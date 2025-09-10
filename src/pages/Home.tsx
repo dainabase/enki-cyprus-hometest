@@ -327,8 +327,7 @@ const Home = () => {
   const isClient = useIsClient();
   // Parallax transforms
   const heroY = useTransform(scrollY, [0, 600], [0, -100]);
-  const heroOpacity = useTransform(scrollY, [0, 400], [1, 0.9]);
-  const heroScale = useTransform(scrollY, [0, 600], [1, 1.1]);
+  const heroOpacity = useTransform(scrollY, [0, 400], [1, 0]);
 
   // Precompute floating particles once to avoid runtime errors from changing random props
   const floatingParticles = useMemo(() => (
@@ -477,9 +476,12 @@ const Home = () => {
      
       <div className="min-h-screen overflow-x-hidden bg-secondary">
         {/* Hero Section */}
-        <section className="relative h-screen flex items-center justify-center overflow-hidden">
+        <section 
+          className="relative h-screen flex items-center justify-center overflow-hidden"
+          style={{ clipPath: 'inset(0)' }}
+        >
           <motion.div
-            style={{ y: heroY, opacity: heroOpacity, scale: heroScale }}
+            style={{ y: heroY, opacity: heroOpacity }}
             className="absolute inset-0 z-0"
           >
             <div
