@@ -151,15 +151,17 @@ const descriptionVariants = {
     opacity: 1,
     y: "0%",
     transition: {
-      delay: 0.4,
-      duration: 0.6,
+      delay: 0.1,
+      duration: 0.8,
+      ease: "easeOut",
     },
   },
   closed: { 
     opacity: 0, 
     y: "100%",
     transition: {
-      duration: 0.3,
+      duration: 0.6,
+      ease: "easeOut",
     }
   },
 };
@@ -239,10 +241,14 @@ const Panel = ({
               {/* Content Section - 3/5 (similaire à 2/3) */}
               <div className="lg:col-span-3 p-8 lg:p-16 flex flex-col justify-center">
                 <motion.div
-                  variants={descriptionVariants}
-                  initial="closed"
-                  animate="open"
-                  exit="closed"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 20 }}
+                  transition={{ 
+                    delay: 0.1,
+                    duration: 0.8,
+                    ease: "easeOut"
+                  }}
                   className="space-y-8 max-w-xl"
                 >
                   <div className="space-y-6">
