@@ -22,7 +22,7 @@ export const DisappearingFeatures = () => {
   }, []);
 
   return (
-    <div ref={sectionRef} className="relative min-h-[150vh] bg-neutral-50">
+    <div ref={sectionRef} className="relative min-h-[100vh] bg-neutral-50">
       {/* Titre fixé par JS sur desktop */}
       <div
         className={`hidden md:block ${isSticky ? "fixed top-24" : "relative"} left-0 w-full z-20 transition-none`}
@@ -106,7 +106,7 @@ const CarouselWithScroll = ({
   ];
 
   return (
-    <div className="relative h-[80vh] pb-24">
+    <div className="relative h-[60vh] pb-12">
       {cards.map((card, index) => (
         <div key={index} className="absolute inset-0">
           <AnimatedCard
