@@ -114,6 +114,10 @@ const FeatureContent = ({ Icon, title, description, imageUrl }: FeatureContentPr
                 src={imageUrl} 
                 alt={title}
                 className="w-full h-full object-cover"
+                loading="lazy"
+                width="400"
+                height="300"
+                style={{ maxWidth: '100%', height: 'auto' }}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
@@ -153,7 +157,7 @@ const FEATURES = [
         Icon={ShieldCheck}
         title="Sélection rigoureuse"
         description="Tous les projets des promoteurs les plus fiables réunis en un seul endroit, soigneusement sélectionnés pour leur qualité et leur sérieux."
-        imageUrl="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?q=80&w=1000&auto=format&fit=crop" // Placeholder - sera remplacé par l'image fournie
+        imageUrl="/lovable-uploads/a1dfce22-4751-4496-ad17-be349e5e3cea.png"
       />
     ),
   },
