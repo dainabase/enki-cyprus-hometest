@@ -69,7 +69,7 @@ const Tab = ({ selected, Icon, title, setSelected, tabNum }: TabProps) => {
         className="relative z-0 flex w-full flex-row items-center justify-center gap-4 bg-card p-6 transition-colors hover:bg-muted/50 md:flex-col"
       >
         <span
-          className={`rounded-lg bg-gradient-to-br from-primary to-primary/80 p-3 text-2xl text-white shadow-lg transition-all duration-300 ${
+          className={`rounded-lg bg-gradient-to-br from-primary to-primary/80 p-6 text-5xl text-white shadow-lg transition-all duration-300 ${
             selected
               ? "scale-100 opacity-100 shadow-lg"
               : "scale-90 opacity-50 shadow"
@@ -99,19 +99,40 @@ interface FeatureContentProps {
   Icon: any;
   title: string;
   description: string;
+  imageUrl?: string;
 }
 
-const FeatureContent = ({ Icon, title, description }: FeatureContentProps) => (
+const FeatureContent = ({ Icon, title, description, imageUrl }: FeatureContentProps) => (
   <div className="w-full px-0 py-8 md:px-8">
     <div className="relative w-full rounded-2xl bg-card border border-border/50 p-8 shadow-xl">
-      <div className="flex items-start gap-6">
-        <div className="text-primary flex-shrink-0">
-          <Icon className="w-16 h-16" />
+      <div className="flex items-start gap-8 flex-col md:flex-row">
+        {/* Image section - 1/3 width */}
+        <div className="w-full md:w-1/3 flex-shrink-0">
+          <div className="aspect-[4/3] rounded-xl overflow-hidden bg-muted/20 border border-border/30">
+            {imageUrl ? (
+              <img 
+                src={imageUrl} 
+                alt={title}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
+                <Icon className="w-24 h-24 text-primary/40" />
+              </div>
+            )}
+          </div>
         </div>
-        <div>
-          <h3 className="text-2xl font-semibold text-primary mb-4">
-            {title}
-          </h3>
+        
+        {/* Content section - 2/3 width */}
+        <div className="w-full md:w-2/3">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="text-primary flex-shrink-0">
+              <Icon className="w-12 h-12" />
+            </div>
+            <h3 className="text-2xl font-semibold text-primary">
+              {title}
+            </h3>
+          </div>
           <p className="text-muted-foreground leading-relaxed text-lg">
             {description}
           </p>
@@ -132,6 +153,7 @@ const FEATURES = [
         Icon={ShieldCheck}
         title="Sélection rigoureuse"
         description="Tous les projets des promoteurs les plus fiables réunis en un seul endroit, soigneusement sélectionnés pour leur qualité et leur sérieux."
+        imageUrl="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?q=80&w=1000&auto=format&fit=crop" // Placeholder - sera remplacé par l'image fournie
       />
     ),
   },
@@ -143,6 +165,7 @@ const FEATURES = [
         Icon={Search}
         title="Recherche intelligente"
         description="Une IA qui comprend vos besoins et vous propose les biens les plus adaptés, sans perte de temps ni recherche complexe."
+        imageUrl="https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=1000&auto=format&fit=crop" // Placeholder - sera remplacé par l'image fournie
       />
     ),
   },
@@ -154,6 +177,7 @@ const FEATURES = [
         Icon={Calculator}
         title="Optimisation fiscale"
         description="En un clic, obtenez des scénarios personnalisés pour maximiser votre rentabilité et protéger votre patrimoine, avec des réponses immédiates et concrètes."
+        imageUrl="https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=1000&auto=format&fit=crop" // Placeholder - sera remplacé par l'image fournie
       />
     ),
   },
