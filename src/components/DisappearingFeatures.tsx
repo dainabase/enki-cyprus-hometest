@@ -5,7 +5,8 @@ import { ShieldCheck, Search, Calculator } from "lucide-react";
 export const DisappearingFeatures = () => {
   return (
     <>
-      <div className="relative h-[400vh] bg-neutral-50">
+      {/* Container avec hauteur = viewport × nombre de cartes */}
+      <div className="relative h-[300vh] bg-neutral-50">
         <Features />
       </div>
     </>
@@ -13,67 +14,76 @@ export const DisappearingFeatures = () => {
 };
 
 const Features = () => {
+  const containerRef = useRef(null);
+  
   return (
-    <div className="relative mx-auto grid h-full w-full max-w-7xl grid-cols-1 gap-8 px-4 md:grid-cols-2">
+    <div 
+      ref={containerRef}
+      className="relative mx-auto grid h-full w-full max-w-7xl grid-cols-1 gap-8 px-4 md:grid-cols-2"
+    >
       <Copy />
-      <Carousel />
+      <Carousel containerRef={containerRef} />
     </div>
   );
 };
 
 const Copy = () => {
   return (
-    <div className="flex h-fit w-full flex-col py-12 md:sticky md:top-0 md:h-screen md:pt-24">
+    <div className="flex h-fit w-full flex-col py-12 md:sticky md:top-24 md:h-fit">
+      {/* IMPORTANT: md:top-24 pour positionner en haut avec un peu d'espace */}
       <span className="w-fit rounded-full bg-black px-4 py-2 text-sm uppercase text-white">
         Excellence · Innovation · Confiance
       </span>
       <h2 className="mb-4 mt-2 text-5xl font-medium leading-tight text-black">
         Pourquoi choisir ENKI Realty ?
       </h2>
-      <p className="text-lg text-neutral-700">
-        Une expérience d'investissement immobilier exceptionnelle à Chypre, combinant expertise locale et standards internationaux pour maximiser votre retour sur investissement.
+      <p className="text-lg text-gray-700">
+        Une expérience d'investissement immobilier exceptionnelle à Chypre, 
+        combinant expertise locale et standards internationaux pour maximiser 
+        votre retour sur investissement.
       </p>
     </div>
   );
 };
 
-const Carousel = () => {
-  const ref = useRef(null);
+const Carousel = ({ containerRef }: { containerRef: React.RefObject<HTMLDivElement> }) => {
+  // IMPORTANT: Utiliser le container principal comme référence
   const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end end"],
+    target: containerRef,
+    offset: ["start start", "end start"], // Quand le container touche le haut et quitte par le haut
   });
 
+  const cards = [
+    {
+      icon: <ShieldCheck className="w-12 h-12 text-white" />,
+      title: "Sélection Rigoureuse",
+      description: "Tous les projets des promoteurs les plus fiables, vérifiés et validés selon nos critères stricts de qualité et de rentabilité"
+    },
+    {
+      icon: <Search className="w-12 h-12 text-white" />,
+      title: "Recherche Intelligente",
+      description: "Une IA qui comprend vos besoins et vous propose les meilleures opportunités d'investissement personnalisées"
+    },
+    {
+      icon: <Calculator className="w-12 h-12 text-white" />,
+      title: "Optimisation Fiscale",
+      description: "En un clic, obtenez des scénarios personnalisés pour maximiser vos avantages fiscaux à Chypre et en Europe"
+    }
+  ];
+
   return (
-    <div ref={ref} className="relative w-full h-full">
-      <Gradient />
-      <div className="relative z-0 flex flex-col gap-6 md:gap-12 md:py-24">
-        <CarouselItem
-          scrollYProgress={scrollYProgress}
-          position={1}
-          numItems={3}
-          icon={<ShieldCheck className="w-12 h-12 text-white" />}
-          title="Sélection rigoureuse"
-          description="Tous les projets des promoteurs les plus fiables réunis en un seul endroit, soigneusement sélectionnés pour leur qualité et leur sérieux."
-        />
-        <CarouselItem
-          scrollYProgress={scrollYProgress}
-          position={2}
-          numItems={3}
-          icon={<Search className="w-12 h-12 text-white" />}
-          title="Recherche intelligente"
-          description="Une IA qui comprend vos besoins et vous propose les biens les plus adaptés, sans perte de temps ni recherche complexe."
-        />
-        <CarouselItem
-          scrollYProgress={scrollYProgress}
-          position={3}
-          numItems={3}
-          icon={<Calculator className="w-12 h-12 text-white" />}
-          title="Optimisation fiscale"
-          description="En un clic, obtenez des scénarios personnalisés pour maximiser votre rentabilité et protéger votre patrimoine, avec des réponses immédiates et concrètes."
-        />
+    <div className="relative w-full flex items-center md:py-24">
+      <div className="w-full space-y-8">
+        {cards.map((card, index) => (
+          <CarouselItem
+            key={index}
+            scrollYProgress={scrollYProgress}
+            position={index + 1}
+            numItems={3}
+            {...card}
+          />
+        ))}
       </div>
-      <Buffer />
     </div>
   );
 };
@@ -95,16 +105,28 @@ const CarouselItem = ({
   title,
   description,
 }: CarouselItemProps) => {
-  const stepSize = 1 / (numItems + 1);
-  const end = stepSize * position;
-  const start = end - stepSize;
+  // Calcul simplifié pour 3 cartes
+  const start = (position - 1) / numItems;
+  const end = position / numItems;
+  
+  // Animations
   const opacity = useTransform(
-    scrollYProgress,
-    [start, start + stepSize * 0.5, end],
-    [1, 0.5, 0]
+    scrollYProgress, 
+    [start, start + 0.1, end - 0.1, end], 
+    [0, 1, 1, 0]
   );
-  const scale = useTransform(scrollYProgress, [start, end], [1, 0.75]);
-  const y = useTransform(scrollYProgress, [start, end], ["0vh", "-50vh"]);
+  
+  const scale = useTransform(
+    scrollYProgress, 
+    [start, start + 0.1, end - 0.1, end], 
+    [0.8, 1, 1, 0.8]
+  );
+  
+  const y = useTransform(
+    scrollYProgress,
+    [start, end],
+    ["50px", "-50px"]
+  );
 
   return (
     <motion.div
@@ -113,17 +135,11 @@ const CarouselItem = ({
         scale,
         y,
       }}
-      className="flex flex-col items-start justify-center aspect-video w-full shrink-0 rounded-2xl bg-black p-8"
+      className="flex flex-col items-start justify-center aspect-[16/10] w-full rounded-2xl bg-black p-8"
     >
       <div className="mb-4">{icon}</div>
       <h3 className="text-2xl font-semibold text-white mb-3">{title}</h3>
-      <p className="text-neutral-300 leading-relaxed">{description}</p>
+      <p className="text-gray-300 leading-relaxed">{description}</p>
     </motion.div>
   );
 };
-
-const Gradient = () => (
-  <div className="sticky top-0 z-10 hidden h-24 w-full bg-gradient-to-b from-neutral-50 to-neutral-50/0 md:block" />
-);
-
-const Buffer = () => <div className="h-[100vh]" />;
