@@ -29,6 +29,11 @@ import { useIsClient } from '@/hooks/useIsClient';
 import TabsFeaturesAlt5Accordion from '@/components/TabsFeatures-Alternative5-Accordion';
 import { getHeroImage } from '@/utils/gallery';
 import HeroAlternative5 from '@/components/hero/HeroAlternative5';
+import HeroAlternative6 from '@/components/hero/HeroAlternative6';
+import HeroAlternative7 from '@/components/hero/HeroAlternative7';
+import HeroAlternative8 from '@/components/hero/HeroAlternative8';
+import HeroAlternative9 from '@/components/hero/HeroAlternative9';
+import HeroAlternative10 from '@/components/hero/HeroAlternative10';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 // Static background component to replace 3D elements (fixes runtime errors)
 const StaticBackground = () => (
@@ -479,6 +484,11 @@ const Home = () => {
       <div className="min-h-screen overflow-x-hidden bg-secondary">
         <div className="space-y-0">
           <HeroAlternative5 />
+          <HeroAlternative6 />
+          <HeroAlternative7 />
+          <HeroAlternative8 />
+          <HeroAlternative9 />
+          <HeroAlternative10 />
         </div>
         <section
           id="why-enki"
