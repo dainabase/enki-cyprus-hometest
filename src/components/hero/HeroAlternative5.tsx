@@ -142,7 +142,7 @@ const HeroAlternative5 = () => {
 
         {/* Trait central ultra raffiné */}
         <motion.div
-          className="relative w-96 h-[1px] mx-auto mb-8"
+          className="relative w-96 h-[1px] mx-auto mb-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2 }}
@@ -165,7 +165,7 @@ const HeroAlternative5 = () => {
 
         {/* Cyprus Properties avec timing parfait */}
         <motion.h2
-          className="swaarg-large-title text-white/90 mb-16"
+          className="swaarg-large-title text-white/90 mb-8"
           initial={{ opacity: 0, letterSpacing: "0.5em" }}
           animate={{ opacity: 1, letterSpacing: "-0.03em" }}
           transition={{ 
