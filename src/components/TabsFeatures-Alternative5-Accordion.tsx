@@ -115,14 +115,14 @@ interface PanelProps {
   features: string[];
 }
 
-// Variants exactement comme hover.dev
+// Variants exactement comme hover.dev - version ralentie pour fluidité parfaite
 const panelVariants = {
   open: {
     width: "100%",
     height: "100%",
     transition: {
       type: "tween" as const,
-      duration: 0.4,
+      duration: 0.6,
       ease: [0.4, 0, 0.2, 1] as const
     }
   },
@@ -131,7 +131,7 @@ const panelVariants = {
     height: "100%",
     transition: {
       type: "tween" as const,
-      duration: 0.3,
+      duration: 0.5,
       ease: [0.4, 0, 0.2, 1] as const
     }
   }
@@ -141,15 +141,15 @@ const contentVariants = {
   open: {
     opacity: 1,
     transition: {
-      delay: 0.125,
-      duration: 0.3,
+      delay: 0.2,
+      duration: 0.4,
       ease: "easeOut" as const
     }
   },
   closed: { 
     opacity: 0,
     transition: {
-      duration: 0.2
+      duration: 0.3
     }
   }
 };
