@@ -486,12 +486,9 @@ const Home = () => {
               className="w-full h-full bg-cover bg-center bg-no-repeat"
               style={{ backgroundImage: `url(${cyprusHero})` }}
             />
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/50 via-primary/20 to-accent/30" />
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/50 via-primary/20 to-transparent" />
           </motion.div>
           <div className="absolute inset-0 bg-gradient-to-br from-accent/20 to-primary/20 opacity-20">
-            <div className="absolute top-10 left-10 w-4 h-4 bg-white/20 rounded-full animate-pulse" />
-            <div className="absolute top-20 right-20 w-6 h-6 bg-accent/30 rounded-full animate-pulse delay-500" />
-            <div className="absolute bottom-20 left-20 w-3 h-3 bg-primary/40 rounded-full animate-pulse delay-1000" />
           </div>
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <motion.div
