@@ -1,18 +1,11 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import HeroAlternative2 from './HeroAlternative2';
 import HeroAlternative5 from './HeroAlternative5';
 
 const HeroSelector = () => {
-  const [currentHero, setCurrentHero] = useState(2);
+  const [currentHero, setCurrentHero] = useState(5);
 
   const alternatives = [
-    { 
-      id: 2,
-      name: "Construction & Terminal", 
-      description: "Lettres qui se construisent + style terminal",
-      component: HeroAlternative2 
-    },
     { 
       id: 5, 
       name: "Minimaliste & Scanner", 
@@ -21,7 +14,7 @@ const HeroSelector = () => {
     }
   ];
 
-  const CurrentComponent = alternatives.find(alt => alt.id === currentHero)?.component || HeroAlternative2;
+  const CurrentComponent = alternatives.find(alt => alt.id === currentHero)?.component || HeroAlternative5;
 
   return (
     <div className="relative">
