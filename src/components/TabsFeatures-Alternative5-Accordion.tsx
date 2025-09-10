@@ -32,68 +32,80 @@ const TabsFeaturesAlt5Accordion = () => {
           </motion.div>
         </div>
 
-        {/* Présentation des trois piliers */}
-        <div className="mb-16">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        {/* Présentation premium des trois piliers */}
+        <div className="mb-20">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mx-auto">
             {items.map((item, index) => (
               <motion.button
                 key={item.id}
                 onClick={() => setOpen(item.id)}
-                className={`group relative p-8 text-center transition-all duration-500 ${
+                className={`group relative transition-all duration-700 ${
                   open === item.id
-                    ? "scale-105"
-                    : "hover:scale-102"
+                    ? "scale-[1.02]"
+                    : "hover:scale-[1.01]"
                 }`}
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.2, duration: 0.8 }}
-                whileHover={{ y: open === item.id ? 0 : -8 }}
-                whileTap={{ scale: 0.98 }}
+                transition={{ delay: index * 0.15, duration: 1, ease: [0.23, 1, 0.32, 1] }}
+                whileHover={{ y: open === item.id ? 0 : -4 }}
+                whileTap={{ scale: 0.99 }}
               >
-                {/* Background */}
-                <div className={`absolute inset-0 rounded-2xl transition-all duration-500 ${
+                {/* Background minimaliste avec effet glassmorphism */}
+                <div className={`absolute inset-0 rounded-3xl transition-all duration-700 backdrop-blur-sm ${
                   open === item.id 
-                    ? "bg-primary/5 border-2 border-primary/20 shadow-elegant" 
-                    : "bg-card/50 border border-border/20 hover:border-primary/30"
+                    ? "bg-gradient-to-br from-card/90 to-card/70 border border-primary/10 shadow-[0_8px_32px_rgba(0,0,0,0.1)]" 
+                    : "bg-gradient-to-br from-card/40 to-card/20 border border-border/10 hover:border-primary/20 hover:shadow-[0_4px_20px_rgba(0,0,0,0.05)]"
                 }`} />
                 
-                {/* Content */}
-                <div className="relative space-y-6">
+                {/* Contenu épuré */}
+                <div className="relative p-12 text-center space-y-8">
+                  {/* Icône minimaliste */}
                   <motion.div
-                    className={`mx-auto w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-300 ${
+                    className={`mx-auto w-20 h-20 rounded-2xl flex items-center justify-center transition-all duration-500 ${
                       open === item.id 
-                        ? "bg-primary text-primary-foreground shadow-lg" 
-                        : "bg-primary/10 text-primary"
+                        ? "bg-gradient-to-br from-primary/10 to-primary/5 text-primary shadow-lg" 
+                        : "bg-gradient-to-br from-muted/30 to-muted/10 text-muted-foreground group-hover:text-primary group-hover:bg-gradient-to-br group-hover:from-primary/10 group-hover:to-primary/5"
                     }`}
-                    whileHover={{ rotate: open === item.id ? 0 : 5 }}
+                    whileHover={{ rotate: open === item.id ? 0 : 3 }}
+                    transition={{ duration: 0.3 }}
                   >
-                    <item.Icon className="w-8 h-8" />
+                    <item.Icon className="w-9 h-9" strokeWidth={1.5} />
                   </motion.div>
                   
-                  <div className="space-y-3">
-                    <h3 className={`font-medium text-lg leading-tight transition-colors ${
-                      open === item.id ? "text-primary" : "text-muted-foreground"
+                  {/* Titre élégant */}
+                  <div className="space-y-4">
+                    <h3 className={`font-light text-2xl leading-tight tracking-wide transition-all duration-500 ${
+                      open === item.id 
+                        ? "text-foreground" 
+                        : "text-muted-foreground group-hover:text-foreground"
                     }`}>
                       {item.title}
                     </h3>
                     
-                    {/* Number indicator */}
-                    <div className={`text-xs font-light tracking-wider transition-colors ${
-                      open === item.id ? "text-primary" : "text-muted-foreground/50"
+                    {/* Indicateur numérique discret */}
+                    <div className={`text-sm font-extralight tracking-[0.2em] transition-all duration-500 ${
+                      open === item.id 
+                        ? "text-primary" 
+                        : "text-muted-foreground/60 group-hover:text-primary/70"
                     }`}>
-                      0{index + 1}
+                      {String(index + 1).padStart(2, '0')}
                     </div>
                   </div>
                 </div>
                 
-                {/* Selection indicator */}
-                {open === item.id && (
-                  <motion.div
-                    layoutId="selected-indicator-accordion"
-                    className="absolute -bottom-1 left-1/2 w-12 h-1 bg-primary rounded-full transform -translate-x-1/2"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                  />
-                )}
+                {/* Indicateur de sélection ultra minimal */}
+                <AnimatePresence>
+                  {open === item.id && (
+                    <motion.div
+                      layoutId="selected-indicator-premium"
+                      className="absolute -bottom-2 left-1/2 w-16 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent rounded-full transform -translate-x-1/2"
+                      initial={{ opacity: 0, scaleX: 0 }}
+                      animate={{ opacity: 1, scaleX: 1 }}
+                      exit={{ opacity: 0, scaleX: 0 }}
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.8 }}
+                    />
+                  )}
+                </AnimatePresence>
               </motion.button>
             ))}
           </div>
