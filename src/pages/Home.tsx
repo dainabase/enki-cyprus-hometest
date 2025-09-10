@@ -137,7 +137,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
                         </div>
                       </motion.div>
                       <motion.h3
-                        className="text-3xl lg:text-4xl font-medium tracking-tight -0.01em mb-4 bg-gradient-to-r from-white to-accent bg-clip-text text-transparent"
+                        className="swaarg-card-title text-white mb-4"
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.8, duration: 0.6 }}
@@ -506,7 +506,7 @@ const Home = () => {
               >
                 {/* ENKI REALTY arrives from extreme left - synchronized timing */}
                 <motion.div
-                  className="text-7xl sm:text-8xl lg:text-9xl font-light tracking-tight text-white flex items-start"
+                  className="swaarg-hero-title text-white flex items-start"
                   initial={{ opacity: 0, x: "-100vw" }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ 
@@ -592,7 +592,7 @@ const Home = () => {
                 
                 {/* Cyprus Properties arrives from extreme right - SAME timing as ENKI REALTY */}
                 <motion.div
-                  className="text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight text-white/90"
+                  className="swaarg-large-title text-white/90"
                   initial={{ opacity: 0, x: "100vw" }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ 
@@ -703,13 +703,13 @@ const Home = () => {
             transition={{ duration: 0.8, delay: 0.3 }}
           />
           
-          <motion.div
-            className="absolute inset-0 flex items-center justify-center text-white text-4xl md:text-6xl font-bold text-center px-6"
-            initial={{ opacity: 0, x: 100 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
-          >
+           <motion.div
+             className="absolute inset-0 flex items-center justify-center text-white swaarg-section-title text-center px-6"
+             initial={{ opacity: 0, x: 100 }}
+             whileInView={{ opacity: 1, x: 0 }}
+             viewport={{ once: true }}
+             transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+           >
             Experience Timeless Elegance, Premium Living in your Dream Home
           </motion.div>
         </motion.section>
@@ -740,7 +740,7 @@ const Home = () => {
           
           <div className="max-w-3xl mx-auto relative z-10">
             <motion.h2
-              className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight -0.015em text-primary text-center mb-12"
+              className="swaarg-section-title text-primary text-center mb-12"
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}

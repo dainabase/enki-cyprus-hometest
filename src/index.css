@@ -12,56 +12,56 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Base colors - Black text for readability */
-    --background: 0 0% 99%;
-    --foreground: 0 0% 0%;
+    /* Swaarg-inspired modern elegance */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
     
-    /* Card system - Black text */
+    /* Card system - Clean modern */
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 0%;
+    --card-foreground: 0 0% 3.9%;
     
-    /* Interactive elements - Black text */
+    /* Interactive elements */
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 0%;
+    --popover-foreground: 0 0% 3.9%;
     
-    /* Primary brand color - From About page */
-    --primary: 200 100% 45%;
-    --primary-foreground: 0 0% 100%;
-    --primary-hover: 200 100% 40%;
+    /* Primary - Swaarg blue */
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --primary-hover: 221.2 83.2% 45%;
     
-    /* Elegant secondary palette - Black text */
-    --secondary: 210 20% 96%;
-    --secondary-foreground: 0 0% 0%;
+    /* Secondary palette */
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
     
-    /* Sophisticated muted tones - Black text */
-    --muted: 210 15% 97%;
-    --muted-foreground: 0 0% 0%;
+    /* Muted tones */
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
     
-    /* Refined accent colors - Better contrast */
-    --accent: 200 30% 95%;
-    --accent-foreground: 200 100% 25%;
+    /* Accent colors */
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
     
     /* Status colors */
-    --destructive: 0 85% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --success: 142 75% 45%;
-    --success-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --success: 142 71% 45%;
+    --success-foreground: 210 40% 98%;
     
     /* Borders and inputs */
-    --border: 210 20% 90%;
-    --input: 210 20% 94%;
-    --ring: 200 100% 45%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
     
-    /* Cyprus luxury gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(200 100% 45%) 0%, hsl(190 85% 50%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(210 15% 98%) 100%);
-    --gradient-premium: linear-gradient(135deg, hsl(200 100% 45%) 0%, hsl(210 85% 40%) 50%, hsl(190 80% 45%) 100%);
+    /* Swaarg-inspired gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(221.2 83.2% 60%) 100%);
+    --gradient-card: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(210 40% 98%) 100%);
+    --gradient-premium: linear-gradient(45deg, hsl(var(--primary)) 0%, hsl(221.2 90% 65%) 100%);
     
-    /* Elegant shadows */
-    --shadow-sm: 0 2px 4px hsl(215 25% 27% / 0.05);
-    --shadow-md: 0 4px 12px hsl(215 25% 27% / 0.08);
-    --shadow-lg: 0 8px 25px hsl(215 25% 27% / 0.12);
-    --shadow-premium: 0 12px 40px hsl(200 100% 45% / 0.15);
+    /* Modern shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    --shadow-premium: 0 25px 50px -12px rgb(var(--primary) / 0.25);
     
     /* Typography spacing */
     --spacing-xs: 0.25rem;
@@ -71,7 +71,7 @@ All colors MUST be HSL.
     --spacing-xl: 2rem;
     --spacing-2xl: 3rem;
     
-    --radius: 0.75rem;
+    --radius: 1rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -144,8 +144,9 @@ All colors MUST be HSL.
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     font-feature-settings: "cv05", "cv11", "ss01";
     font-variation-settings: "opsz" 14;
-    line-height: 1.6;
-    letter-spacing: -0.01em;
+    line-height: 1.5;
+    letter-spacing: -0.015em;
+    font-weight: 400;
   }
 
   html {
@@ -156,38 +157,38 @@ All colors MUST be HSL.
 @layer components {
   /* Swaarg-inspired Typography System */
   .swaarg-hero-title {
-    @apply font-inter text-6xl md:text-7xl lg:text-8xl font-light tracking-tight leading-none;
-    letter-spacing: -0.02em;
+    @apply font-inter text-7xl md:text-8xl lg:text-9xl font-extralight tracking-tighter leading-none;
+    letter-spacing: -0.05em;
   }
   
   .swaarg-hero-subtitle {
-    @apply font-inter text-lg md:text-xl lg:text-2xl font-normal leading-relaxed;
-    letter-spacing: -0.005em;
+    @apply font-inter text-lg md:text-xl font-normal leading-relaxed;
+    letter-spacing: -0.01em;
   }
   
   .swaarg-section-title {
-    @apply font-inter text-5xl md:text-6xl lg:text-7xl font-light tracking-tight;
-    letter-spacing: -0.015em;
+    @apply font-inter text-5xl md:text-6xl lg:text-7xl font-light tracking-tighter;
+    letter-spacing: -0.04em;
   }
   
   .swaarg-large-title {
     @apply font-inter text-4xl md:text-5xl lg:text-6xl font-light tracking-tight;
-    letter-spacing: -0.015em;
+    letter-spacing: -0.03em;
   }
   
   .swaarg-card-title {
-    @apply font-inter text-2xl md:text-3xl font-medium tracking-tight;
-    letter-spacing: -0.01em;
+    @apply font-inter text-2xl md:text-3xl font-normal tracking-tight;
+    letter-spacing: -0.02em;
   }
   
   .swaarg-body-large {
     @apply font-inter text-lg md:text-xl font-normal leading-relaxed;
-    letter-spacing: -0.005em;
+    letter-spacing: -0.01em;
   }
   
   .swaarg-body {
     @apply font-inter text-base font-normal leading-relaxed;
-    letter-spacing: -0.003em;
+    letter-spacing: -0.01em;
   }
   
   .swaarg-button {
