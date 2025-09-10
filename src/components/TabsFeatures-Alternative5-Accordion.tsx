@@ -22,16 +22,8 @@ const TabsFeaturesAlt5Accordion = () => {
             animate={{ opacity: 1, y: 0 }}
             className="space-y-6"
           >
-            <div className="inline-flex items-center gap-4 px-6 py-3 rounded-full border border-primary/20 bg-primary/5">
-              <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-              <span className="text-sm font-medium text-primary tracking-wide">EXCELLENCE</span>
-            </div>
-            
             <h2 className="text-5xl font-light text-foreground tracking-tight leading-tight">
-              Pourquoi nous
-              <span className="block font-medium mt-2">
-                faire confiance ?
-              </span>
+              Pourquoi nous faire confiance ?
             </h2>
             
             <p className="text-xl text-muted-foreground font-light max-w-2xl mx-auto leading-relaxed">
@@ -40,23 +32,93 @@ const TabsFeaturesAlt5Accordion = () => {
           </motion.div>
         </div>
 
-        <div className="flex flex-col lg:flex-row h-fit lg:h-[600px] w-full max-w-6xl mx-auto shadow-elegant overflow-hidden rounded-3xl bg-card border border-border/20">
-          {items.map((item) => {
-            return (
-              <Panel
+        {/* Présentation des trois piliers */}
+        <div className="mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {items.map((item, index) => (
+              <motion.button
                 key={item.id}
-                open={open}
-                setOpen={setOpen}
-                id={item.id}
-                Icon={item.Icon}
-                title={item.title}
-                fullTitle={item.fullTitle}
-                description={item.description}
-                imageUrl={item.imageUrl}
-                features={item.features}
-              />
-            );
-          })}
+                onClick={() => setOpen(item.id)}
+                className={`group relative p-8 text-center transition-all duration-500 ${
+                  open === item.id
+                    ? "scale-105"
+                    : "hover:scale-102"
+                }`}
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.2, duration: 0.8 }}
+                whileHover={{ y: open === item.id ? 0 : -8 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                {/* Background */}
+                <div className={`absolute inset-0 rounded-2xl transition-all duration-500 ${
+                  open === item.id 
+                    ? "bg-primary/5 border-2 border-primary/20 shadow-elegant" 
+                    : "bg-card/50 border border-border/20 hover:border-primary/30"
+                }`} />
+                
+                {/* Content */}
+                <div className="relative space-y-6">
+                  <motion.div
+                    className={`mx-auto w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-300 ${
+                      open === item.id 
+                        ? "bg-primary text-primary-foreground shadow-lg" 
+                        : "bg-primary/10 text-primary"
+                    }`}
+                    whileHover={{ rotate: open === item.id ? 0 : 5 }}
+                  >
+                    <item.Icon className="w-8 h-8" />
+                  </motion.div>
+                  
+                  <div className="space-y-3">
+                    <h3 className={`font-medium text-lg leading-tight transition-colors ${
+                      open === item.id ? "text-primary" : "text-muted-foreground"
+                    }`}>
+                      {item.title}
+                    </h3>
+                    
+                    {/* Number indicator */}
+                    <div className={`text-xs font-light tracking-wider transition-colors ${
+                      open === item.id ? "text-primary" : "text-muted-foreground/50"
+                    }`}>
+                      0{index + 1}
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Selection indicator */}
+                {open === item.id && (
+                  <motion.div
+                    layoutId="selected-indicator-accordion"
+                    className="absolute -bottom-1 left-1/2 w-12 h-1 bg-primary rounded-full transform -translate-x-1/2"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+              </motion.button>
+            ))}
+          </div>
+        </div>
+
+        {/* Accordéon sans boutons latéraux - contrôlé par les piliers ci-dessus */}
+        <div className="w-full max-w-6xl mx-auto shadow-elegant overflow-hidden rounded-3xl bg-card border border-border/20">
+          <AnimatePresence mode="wait">
+            {items.map((item) => {
+              return open === item.id ? (
+                <Panel
+                  key={item.id}
+                  open={open}
+                  setOpen={setOpen}
+                  id={item.id}
+                  Icon={item.Icon}
+                  title={item.title}
+                  fullTitle={item.fullTitle}
+                  description={item.description}
+                  imageUrl={item.imageUrl}
+                  features={item.features}
+                />
+              ) : null;
+            })}
+          </AnimatePresence>
         </div>
       </div>
     </section>
@@ -86,158 +148,102 @@ const Panel = ({
   imageUrl,
   features,
 }: PanelProps) => {
-  const { width } = useWindowSize();
   const isOpen = open === id;
 
   return (
-    <>
-      <button
-        className="bg-card hover:bg-card/80 transition-colors p-6 border-r-[1px] border-b-[1px] border-border/20 flex flex-row-reverse lg:flex-col justify-end items-center gap-4 relative group"
-        onClick={() => setOpen(id)}
-      >
-        <span
-          style={{
-            writingMode: "vertical-lr",
-          }}
-          className="hidden lg:block text-xl font-light rotate-180 text-muted-foreground"
-        >
-          {title}
-        </span>
-        <span className="block lg:hidden text-xl font-light text-muted-foreground">{title}</span>
-        <div className="w-12 lg:w-full aspect-square bg-primary text-primary-foreground grid place-items-center rounded-xl">
-          <Icon className="w-6 h-6" />
-        </div>
-        <span className="w-4 h-4 bg-card group-hover:bg-card/80 transition-colors border-r-[1px] border-b-[1px] lg:border-b-0 lg:border-t-[1px] border-border/20 rotate-45 absolute bottom-0 lg:bottom-[50%] right-[50%] lg:right-0 translate-y-[50%] translate-x-[50%] z-20" />
-      </button>
-
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            key={`panel-${id}`}
-            variants={width && width > 1024 ? panelVariants : panelVariantsSm}
-            initial="closed"
-            animate="open"
-            exit="closed"
-            className="w-full h-full overflow-hidden relative bg-card flex"
+    <motion.div
+      key={`panel-${id}`}
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: "auto" }}
+      exit={{ opacity: 0, height: 0 }}
+      transition={{ duration: 0.5, ease: "easeInOut" }}
+      className="w-full overflow-hidden bg-card"
+    >
+      {/* Layout à la Alternative 5 : Image 1/3 à gauche, contenu 2/3 à droite */}
+      <div className="grid lg:grid-cols-5 w-full min-h-[500px]">
+        {/* Image Section - 2/5 (similaire à 1/3) */}
+        <div className="lg:col-span-2 relative">
+          <motion.div 
+            className="w-full h-full relative overflow-hidden"
+            initial={{ scale: 1.1, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 1.2 }}
           >
-            {/* Layout à la Alternative 5 : Image 1/3 à gauche, contenu 2/3 à droite */}
-            <div className="grid lg:grid-cols-5 w-full h-full">
-              {/* Image Section - 2/5 (similaire à 1/3) */}
-              <div className="lg:col-span-2 relative">
-                <motion.div 
-                  className="w-full h-full relative overflow-hidden"
-                  initial={{ scale: 1.1 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 1.2 }}
-                >
-                  <img 
-                    src={imageUrl} 
-                    alt={fullTitle}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-                </motion.div>
+            <img 
+              src={imageUrl} 
+              alt={fullTitle}
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+          </motion.div>
+        </div>
+        
+        {/* Content Section - 3/5 (similaire à 2/3) */}
+        <div className="lg:col-span-3 p-8 lg:p-16 flex flex-col justify-center">
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            className="space-y-8 max-w-xl"
+          >
+            <div className="space-y-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <Icon className="w-6 h-6 text-primary" />
+                </div>
+                <div className="flex-1 h-px bg-gradient-to-r from-primary/30 to-transparent" />
               </div>
               
-              {/* Content Section - 3/5 (similaire à 2/3) */}
-              <div className="lg:col-span-3 p-8 lg:p-16 flex flex-col justify-center">
-                <motion.div
-                  variants={descriptionVariants}
-                  initial="closed"
-                  animate="open"
-                  exit="closed"
-                  className="space-y-8 max-w-xl"
-                >
-                  <div className="space-y-6">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                        <Icon className="w-6 h-6 text-primary" />
-                      </div>
-                      <div className="flex-1 h-px bg-gradient-to-r from-primary/30 to-transparent" />
-                    </div>
-                    
-                    <h3 className="text-4xl font-light text-foreground leading-tight tracking-tight">
-                      {fullTitle}
-                    </h3>
-                  </div>
-                  
-                  <p className="text-xl text-muted-foreground leading-relaxed font-light">
-                    {description}
-                  </p>
-                  
-                  {/* Features list */}
-                  <div className="space-y-4">
-                    {features.map((feature, index) => (
-                      <motion.div 
-                        key={feature}
-                        className="flex items-center gap-4"
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.2 + index * 0.1 }}
-                      >
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                        <span className="text-muted-foreground font-light">{feature}</span>
-                      </motion.div>
-                    ))}
-                  </div>
-                  
-                  <div>
-                    <button className="inline-flex items-center gap-3 px-8 py-4 border border-primary/20 rounded-full text-primary font-medium hover:bg-primary/5 transition-all duration-300 group">
-                      <span>Explorer cette expertise</span>
-                      <motion.span
-                        animate={{ x: [0, 4, 0] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                        className="group-hover:translate-x-1 transition-transform"
-                      >
-                        →
-                      </motion.span>
-                    </button>
-                  </div>
-                </motion.div>
-              </div>
+              <h3 className="text-4xl font-light text-foreground leading-tight tracking-tight">
+                {fullTitle}
+              </h3>
             </div>
+            
+            <p className="text-xl text-muted-foreground leading-relaxed font-light">
+              {description}
+            </p>
+            
+            {/* Features list */}
+            <div className="space-y-4">
+              {features.map((feature, index) => (
+                <motion.div 
+                  key={feature}
+                  className="flex items-center gap-4"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5 + index * 0.1 }}
+                >
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                  <span className="text-muted-foreground font-light">{feature}</span>
+                </motion.div>
+              ))}
+            </div>
+            
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.8, duration: 0.8 }}
+            >
+              <button className="inline-flex items-center gap-3 px-8 py-4 border border-primary/20 rounded-full text-primary font-medium hover:bg-primary/5 transition-all duration-300 group">
+                <span>Explorer cette expertise</span>
+                <motion.span
+                  animate={{ x: [0, 4, 0] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="group-hover:translate-x-1 transition-transform"
+                >
+                  →
+                </motion.span>
+              </button>
+            </motion.div>
           </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+        </div>
+      </div>
+    </motion.div>
   );
 };
 
 export default TabsFeaturesAlt5Accordion;
-
-const panelVariants = {
-  open: {
-    width: "100%",
-    height: "100%",
-  },
-  closed: {
-    width: "0%",
-    height: "100%",
-  },
-};
-
-const panelVariantsSm = {
-  open: {
-    width: "100%",
-    height: "400px",
-  },
-  closed: {
-    width: "100%",
-    height: "0px",
-  },
-};
-
-const descriptionVariants = {
-  open: {
-    opacity: 1,
-    y: "0%",
-    transition: {
-      delay: 0.125,
-    },
-  },
-  closed: { opacity: 0, y: "100%" },
-};
 
 const items = [
   {
