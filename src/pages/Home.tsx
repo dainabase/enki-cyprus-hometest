@@ -33,6 +33,7 @@ import TabsFeaturesAlt3 from '@/components/TabsFeatures-Alternative3';
 import TabsFeaturesAlt4 from '@/components/TabsFeatures-Alternative4';
 import TabsFeaturesAlt5 from '@/components/TabsFeatures-Alternative5';
 import TabsFeaturesAlt6 from '@/components/TabsFeatures-Alternative6';
+import VerticalAccordion from '@/components/VerticalAccordion';
 import { getHeroImage } from '@/utils/gallery';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 // Static background component to replace 3D elements (fixes runtime errors)
@@ -794,6 +795,20 @@ const Home = () => {
                   <div className="w-20 h-1 bg-primary mx-auto rounded-full"></div>
                 </div>
                 <TabsFeaturesAlt6 />
+              </motion.div>
+
+              {/* Accordéon Vertical Animé */}
+              <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+                viewport={{ once: true }}
+              >
+                <div className="text-center mb-8">
+                  <h3 className="text-2xl font-bold text-primary mb-2">Accordéon Vertical Animé</h3>
+                  <div className="w-20 h-1 bg-primary mx-auto rounded-full"></div>
+                </div>
+                <VerticalAccordion />
               </motion.div>
             </div>
           </div>
