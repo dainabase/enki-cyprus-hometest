@@ -657,19 +657,12 @@ const Home = () => {
         {/* Pourquoi Choisir ENKI Realty */}
         <motion.section
           id="why-enki"
-          className="bg-background py-24 md:py-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
-          initial={{ y: 100, opacity: 0 }}
+          className="bg-background py-8 px-4 sm:px-6 lg:px-8 relative"
+          initial={{ y: 30, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 1, ease: 'easeOut' }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
           viewport={{ once: true }}
         >
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5"
-            initial={{ y: -50, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ duration: 1.5, ease: 'easeOut' }}
-            viewport={{ once: true }}
-          />
           <div className="max-w-7xl mx-auto relative z-10">
             <TabsFeaturesAlt5Accordion />
           </div>
