@@ -179,12 +179,12 @@ const HeroAlternative5 = () => {
 
         {/* Typewriter dans un container futuriste */}
         <motion.div
-          className="relative max-w-2xl mx-auto"
+          className="relative w-full max-w-3xl mx-auto"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 3 }}
         >
-          <div className="relative bg-white border border-gray-200 rounded-2xl p-8">
+          <div className="relative bg-white border border-gray-200 rounded-2xl p-8 min-h-[120px]">
             <div className="flex items-center gap-2 mb-4">
               <motion.div
                 className="w-2 h-2 rounded-full bg-green-400"
