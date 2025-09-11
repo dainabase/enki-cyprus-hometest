@@ -24,21 +24,20 @@ const TabsFeaturesAlt5Accordion = () => {
   }, []);
 
   return (
-    <section className="py-6 md:py-8 bg-transparent relative">
-      <div className="relative mx-auto max-w-7xl px-12">
-        <div className="text-center mb-24">
-          <motion.div
-            className="space-y-6"
-          >
-            <h2 className="text-5xl font-light text-foreground tracking-tight leading-tight">
-              Pourquoi nous faire confiance ?
-            </h2>
-            
-            <p className="text-xl text-muted-foreground font-light max-w-2xl mx-auto leading-relaxed">
-              Trois piliers d'excellence pour votre succès immobilier
-            </p>
-          </motion.div>
-        </div>
+    <section className="py-24 bg-gradient-sand relative">
+      <div className="container mx-auto px-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-5xl font-bold text-muted mb-4">
+            Pourquoi Choisir ΣNKI-REALTY
+          </h2>
+          <p className="text-xl text-muted/70">
+            Excellence • Expertise • Expérience
+          </p>
+        </motion.div>
 
         {/* Design récupéré de l'Alternative 6 - rond + icône + texte */}
         <div className="mb-20">
