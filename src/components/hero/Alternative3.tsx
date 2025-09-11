@@ -57,22 +57,25 @@ const Alternative3 = () => {
       // Sauvegarder le texte pour transfert
       localStorage.setItem('pending-search', inputValue);
       
-      // Scroll vers la section chatbot avec un offset pour bien centrer
-      const chatSection = document.getElementById('start-experience');
-      if (chatSection) {
-        // Calculer la position avec un offset pour bien voir le titre
-        const offsetTop = chatSection.offsetTop - 100;
-        
-        window.scrollTo({ 
-          top: offsetTop,
-          behavior: 'smooth'
-        });
-        
-        // Déclencher le transfert après le scroll (1.2 secondes)
-        setTimeout(() => {
-          window.dispatchEvent(new CustomEvent('hero-search-transferred'));
-        }, 1200);
-      }
+      // Attendre un frame puis faire le scroll fluide
+      requestAnimationFrame(() => {
+        const chatSection = document.getElementById('start-experience');
+        if (chatSection) {
+          // Scroll fluide avec un léger offset pour bien voir le titre
+          const headerHeight = 80; // Hauteur approximative du header
+          const targetPosition = chatSection.offsetTop - headerHeight;
+          
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          });
+          
+          // Déclencher le transfert après le scroll (1.5 secondes pour être sûr)
+          setTimeout(() => {
+            window.dispatchEvent(new CustomEvent('hero-search-transferred'));
+          }, 1500);
+        }
+      });
       
       setInputValue('');
     }
