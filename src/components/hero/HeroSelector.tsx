@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ChatAlternative4 from './ChatAlternative4';
-import ChatVariant1 from './ChatVariant1';
-import ChatVariant2 from './ChatVariant2';
-import ChatVariant3 from './ChatVariant3';
-import ChatVariant4 from './ChatVariant4';
-import ChatVariant5 from './ChatVariant5';
+import Alternative1 from './Alternative1';
+import Alternative2 from './Alternative2';
+import Alternative3 from './Alternative3';
+import Alternative4 from './Alternative4';
+import Alternative5 from './Alternative5';
 
 const HeroSelector = () => {
   const [currentHero, setCurrentHero] = useState(1);
@@ -19,33 +19,33 @@ const HeroSelector = () => {
     },
     { 
       id: 2, 
-      name: "Input Intégré", 
-      description: "Bouton dans la zone de saisie",
-      component: ChatVariant1 
+      name: "Alternative 1", 
+      description: "Slogan + Input intégré ultra fin",
+      component: Alternative1 
     },
     { 
       id: 3, 
-      name: "Ultra Simple", 
-      description: "Sans header IA, épuré",
-      component: ChatVariant2 
+      name: "Alternative 2", 
+      description: "Sans header IA, ultra épuré",
+      component: Alternative2 
     },
     { 
       id: 4, 
-      name: "Circulaire", 
-      description: "Design rond premium",
-      component: ChatVariant3 
+      name: "Alternative 3", 
+      description: "Format horizontal ultra fin",
+      component: Alternative3 
     },
     { 
       id: 5, 
-      name: "Horizontal", 
-      description: "Layout en ligne",
-      component: ChatVariant4 
+      name: "Alternative 4", 
+      description: "Design circulaire premium",
+      component: Alternative4 
     },
     { 
       id: 6, 
-      name: "Minimaliste", 
-      description: "Bordure subtile, ultra sobre",
-      component: ChatVariant5 
+      name: "Alternative 5", 
+      description: "Ultra minimaliste avec bordure subtile",
+      component: Alternative5 
     }
   ];
 
