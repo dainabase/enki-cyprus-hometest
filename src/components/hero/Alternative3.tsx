@@ -211,7 +211,9 @@ const Alternative3 = () => {
 <button
   type="button"
   onClick={handleSendMessage}
-  className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 bg-transparent text-muted-foreground hover:text-foreground flex items-center justify-center transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed z-20 pointer-events-auto"
+  onPointerDown={() => { console.log('[Hero] pointerDown on search icon'); }}
+  onTouchEnd={(e) => { e.preventDefault(); handleSendMessage(); }}
+  className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 bg-transparent text-muted-foreground hover:text-foreground flex items-center justify-center transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed z-50 pointer-events-auto"
   disabled={!inputValue.trim()}
   aria-label="Lancer la recherche"
 >
