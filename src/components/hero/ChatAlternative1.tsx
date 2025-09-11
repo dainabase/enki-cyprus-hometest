@@ -61,7 +61,7 @@ const ChatAlternative1 = () => {
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowChat(true), 3000);
+    const timer = setTimeout(() => setShowChat(true), 2000);
     return () => clearTimeout(timer);
   }, [animationKey]);
 
@@ -188,7 +188,7 @@ const ChatAlternative1 = () => {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: showChat ? 1 : 0, y: showChat ? 0 : 50 }}
         transition={{ 
-          delay: 3.0, 
+          delay: 2.0, 
           duration: 1,
           ease: [0.25, 0.46, 0.45, 0.94]
         }}
@@ -208,7 +208,7 @@ const ChatAlternative1 = () => {
           </div>
 
           {/* Message du bot */}
-          <div className="mb-6 p-4 bg-gray-50 rounded-2xl">
+          <div className="mb-6 p-4 bg-gray-50 rounded-2xl h-32 overflow-y-auto">
             <div className="text-gray-800 font-medium flex items-start gap-3">
               <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-1">
                 <Sparkles className="w-4 h-4 text-primary" />

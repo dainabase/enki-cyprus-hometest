@@ -60,7 +60,7 @@ const ChatAlternative2 = () => {
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowChat(true), 3000);
+    const timer = setTimeout(() => setShowChat(true), 2000);
     return () => clearTimeout(timer);
   }, [animationKey]);
 
@@ -168,7 +168,7 @@ const ChatAlternative2 = () => {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: showChat ? 1 : 0, y: showChat ? 0 : 50 }}
         transition={{ 
-          delay: 3.0, 
+          delay: 2.0, 
           duration: 1,
           ease: [0.25, 0.46, 0.45, 0.94]
         }}
@@ -195,12 +195,12 @@ const ChatAlternative2 = () => {
           </div>
 
           {/* Zone de chat */}
-          <div className="p-6 min-h-[120px]">
-            <div className="flex gap-3 mb-4">
+          <div className="p-6 h-36">
+            <div className="flex gap-3 mb-4 h-full">
               <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
                 <Bot className="w-4 h-4 text-primary" />
               </div>
-              <div className="flex-1 bg-white/5 rounded-xl p-4">
+              <div className="flex-1 bg-white/5 rounded-xl p-4 overflow-y-auto">
                 <div className="text-white/90 text-sm">
                   {typewriterText}
                   <motion.span
