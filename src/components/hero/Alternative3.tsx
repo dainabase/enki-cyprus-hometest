@@ -40,7 +40,7 @@ const useMultilingualTypewriter = (texts: string[], speed: number = 35) => {
 // Alternative 3: Titre intégré dans le header de la fenêtre
 const Alternative3 = () => {
   const [inputValue, setInputValue] = useState('');
-  
+  const [showChat, setShowChat] = useState(false);
   const typewriterText = useMultilingualTypewriter([
     "Je suis suisse, 45 ans, budget 600 000 CHF. Je cherche un penthouse avec grande terrasse et vue mer.",
     "Je suis français, 38 ans, budget 200 000 €. Je recherche un appartement 2 pièces proche de la plage.",
@@ -54,6 +54,10 @@ const Alternative3 = () => {
     }
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => setShowChat(true), 2500); // Synchronisé avec Cyprus Properties
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <section className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden">
@@ -135,7 +139,16 @@ const Alternative3 = () => {
       </div>
 
       {/* Chat Interface avec titre intégré dans le header */}
-      <div className="relative w-full max-w-2xl mx-auto mb-24 px-4 z-10">
+      <motion.div
+        className="relative w-full max-w-2xl mx-auto mb-24 px-4 z-10"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: showChat ? 1 : 0 }}
+        transition={{ 
+          delay: 0, // Pas de délai supplémentaire car déjà géré par showChat
+          duration: 2, // Même durée que Cyprus Properties
+          ease: [0.25, 0.46, 0.45, 0.94]
+        }}
+      >
         <motion.div
           className="relative bg-white/96 border border-white/25 rounded-xl shadow-2xl overflow-hidden"
           style={{ backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', willChange: 'backdrop-filter' }}
@@ -184,7 +197,7 @@ const Alternative3 = () => {
             </div>
           </div>
         </motion.div>
-      </div>
+      </motion.div>
     </section>
   );
 };
