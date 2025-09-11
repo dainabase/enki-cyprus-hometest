@@ -53,29 +53,32 @@ const Alternative3 = () => {
   ], 35);
 
   const handleSendMessage = () => {
-    if (!inputValue.trim()) return;
+    const value = inputValue.trim();
+    if (!value) return;
+
+    // Log for debugging
+    console.log('[Hero] handleSendMessage triggered via', { value });
 
     // Sauvegarder le texte pour transfert
-    localStorage.setItem('pending-search', inputValue);
+    localStorage.setItem('pending-search', value);
 
-    const scrollToChat = () => {
-      const chatSection = document.getElementById('start-experience');
-      if (chatSection && 'scrollIntoView' in chatSection) {
-        chatSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        setTimeout(() => {
-          window.dispatchEvent(new CustomEvent('hero-search-transferred'));
-        }, 1200);
-      } else {
-        // Fallback ancre URL
-        window.location.hash = '#start-experience';
-        setTimeout(() => {
-          window.dispatchEvent(new CustomEvent('hero-search-transferred'));
-        }, 600);
-      }
+    const chatSection = document.getElementById('start-experience');
+
+    const dispatchTransfer = () => {
+      console.log('[Hero] dispatch hero-search-transferred');
+      window.dispatchEvent(new CustomEvent('hero-search-transferred'));
     };
 
-    // Lancer le scroll
-    scrollToChat();
+    if (chatSection) {
+      // Méthode robuste: calcule la position absolue et scroll lisse
+      const y = chatSection.getBoundingClientRect().top + window.pageYOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+      setTimeout(dispatchTransfer, 1000);
+    } else {
+      // Fallback ancre URL si l'élément n'est pas trouvé
+      window.location.hash = '#start-experience';
+      setTimeout(dispatchTransfer, 600);
+    }
 
     // Réinitialiser le champ
     setInputValue('');
