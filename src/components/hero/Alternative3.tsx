@@ -147,6 +147,7 @@ const Alternative3 = () => {
       >
         <motion.div
           className="relative bg-white/96 border border-white/25 rounded-xl shadow-2xl overflow-hidden"
+          style={{ backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
         >
           {/* Header avec titre intégré */}
           <div className="bg-gradient-to-r from-primary/10 to-primary/5 px-4 py-2 border-b border-gray-200/30">
