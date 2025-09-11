@@ -59,16 +59,23 @@ export default {
 				card: {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
+				},
+				'cyprus-terra': {
+					DEFAULT: 'hsl(var(--cyprus-terra))',
+					foreground: 'hsl(var(--cyprus-terra-foreground))'
 				}
 			},
 			boxShadow: {
 				'premium': 'var(--shadow-premium)',
 				'elegant': 'var(--shadow-lg)',
+				'cyprus': '0 10px 30px -10px hsl(199 63% 59% / 0.25)',
 			},
 			backgroundImage: {
 				'gradient-hero': 'var(--gradient-hero)',
 				'gradient-card': 'var(--gradient-card)',
 				'gradient-premium': 'var(--gradient-premium)',
+				'gradient-ocean': 'var(--gradient-ocean)',
+				'gradient-sand': 'var(--gradient-sand)',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
