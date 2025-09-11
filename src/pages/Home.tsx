@@ -34,7 +34,7 @@ import PropertyResultCard from '@/components/ui/PropertyResultCard';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 // Static background component to replace 3D elements (fixes runtime errors)
 const StaticBackground = () => (
-  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/20 opacity-50" />
+  <div className="absolute inset-0 bg-white opacity-50" />
 );
 // Advanced3DCarousel Component
 const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => {
@@ -62,7 +62,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
       onMouseEnter={() => setIsAutoPlaying(false)}
       onMouseLeave={() => setIsAutoPlaying(true)}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/20" />
+      <div className="absolute inset-0 bg-white/20" />
      
       <StaticBackground />
       <div
@@ -98,7 +98,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
               whileHover={{ scale: isActive ? 1.02 : 0.82, transition: { duration: 0.3 } }}
               style={{ zIndex: isActive ? 10 : 5 }}
             >
-              <Card className="mx-auto max-w-7xl h-[70vh] shadow-2xl overflow-hidden bg-gradient-to-br from-background/95 to-background/85 backdrop-blur-xl border border-border/20">
+              <Card className="mx-auto max-w-7xl h-[70vh] shadow-2xl overflow-hidden bg-white backdrop-blur-xl border border-border/20">
                 <CardContent className="p-0 h-full flex flex-col lg:flex-row">
                   <motion.div
                     className="lg:w-2/3 relative overflow-hidden"
@@ -192,7 +192,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
                     </motion.div>
                   </motion.div>
                   <motion.div
-                    className="lg:w-1/3 p-8 bg-gradient-to-br from-background via-muted/20 to-background backdrop-blur-xl border-l border-border/10"
+                    className="lg:w-1/3 p-8 bg-white backdrop-blur-xl border-l border-border/10"
                     initial={{ opacity: 0, x: 50 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.5, duration: 0.8 }}
@@ -232,7 +232,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
                           whileTap={{ scale: 0.98 }}
                           aria-label={`Explore ${interest.name}`}
                         >
-                          <div className="p-4 rounded-xl border border-border/50 hover:border-primary/50 bg-gradient-to-r from-background/50 to-muted/30 backdrop-blur-sm transition-all duration-300 group-hover:shadow-lg group-hover:shadow-primary/20">
+                          <div className="p-4 rounded-xl border border-border/50 hover:border-primary/50 bg-white/90 backdrop-blur-sm transition-all duration-300 group-hover:shadow-lg group-hover:shadow-primary/20">
                             <div className="flex items-start justify-between gap-3">
                               <div className="flex-1 text-left">
                                 <motion.h5
@@ -975,7 +975,7 @@ const Home = () => {
           </motion.div>
         </motion.section>
         {/* Projets Vedette */}
-        <section id="featured-projects" className="py-24 md:py-32 bg-gradient-to-br from-muted/30 to-background">
+        <section id="featured-projects" className="py-24 md:py-32 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 30 }}

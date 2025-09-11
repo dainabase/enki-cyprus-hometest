@@ -78,7 +78,7 @@ export const FeaturedProjectsCarousel = ({
           {properties.map((property, index) => (
             <div key={property.id} className="embla__slide flex-[0_0_100%] min-w-0 pl-4">
               <motion.div
-                className="relative bg-card border-border/50 rounded-3xl shadow-premium overflow-hidden backdrop-blur-sm h-[600px]"
+                className="relative bg-white border-cyprus-terra/20 rounded-3xl shadow-cyprus overflow-hidden backdrop-blur-sm h-[600px] border-2"
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
@@ -96,11 +96,11 @@ export const FeaturedProjectsCarousel = ({
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20" />
+                  <div className="absolute inset-0 bg-white/30" />
                 </motion.div>
                 
-                {/* Glassmorphism Overlay */}
-                <div className="relative z-10 p-8 lg:p-12 flex flex-col lg:flex-row items-center gap-8 backdrop-blur-sm bg-background/30 h-full">
+                {/* White Clean Overlay */}
+                <div className="relative z-10 p-8 lg:p-12 flex flex-col lg:flex-row items-center gap-8 backdrop-blur-md bg-white/95 h-full border border-cyprus-terra/10 rounded-3xl m-4">
                   {/* Property Info Column */}
                   <motion.div 
                     className="lg:w-1/2 space-y-6"
@@ -108,20 +108,20 @@ export const FeaturedProjectsCarousel = ({
                     whileInView={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
                   >
-                    <h3 className="text-3xl lg:text-5xl font-light tracking-tight text-white">{property.title}</h3>
-                    <div className="flex items-center gap-2 text-white/80">
-                      <MapPin className="w-5 h-5" />
+                    <h3 className="text-3xl lg:text-5xl font-light tracking-tight text-cyprus-terra">{property.title}</h3>
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <MapPin className="w-5 h-5 text-primary" />
                       <span>{property.location}</span>
                     </div>
-                    <Badge className="bg-white/20 text-white border-white/30">
+                    <Badge className="bg-primary text-white border-primary">
                       €{Number(property.priceValue || 0).toLocaleString()}
                     </Badge>
-                    <p className="text-white/90 leading-relaxed">
+                    <p className="text-foreground leading-relaxed">
                       {property.description || 'Une propriété premium offrant des équipements modernes et des vues exceptionnelles.'}
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {(property.features || []).slice(0, 4).map((feature: string, i: number) => (
-                        <Badge key={i} className="bg-white/10 text-white border-white/20">{feature}</Badge>
+                        <Badge key={i} className="bg-secondary text-secondary-foreground border-secondary">{feature}</Badge>
                       ))}
                     </div>
                     <Button 
@@ -134,7 +134,7 @@ export const FeaturedProjectsCarousel = ({
                         });
                         onPropertyClick(property);
                       }}
-                      className="bg-white text-primary hover:bg-white/90 mt-4"
+                      className="bg-primary text-white hover:bg-primary-hover mt-4"
                     >
                       Explorer la propriété
                       <ArrowRight className="ml-2 h-4 w-4" />
@@ -154,6 +154,11 @@ export const FeaturedProjectsCarousel = ({
                       className="w-full h-full object-cover"
                       whileHover={{ scale: 1.1 }}
                       transition={{ duration: 0.5 }}
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null;
+                        target.src = `https://picsum.photos/600/400?random=${Date.now()}`;
+                      }}
                     />
                   </motion.div>
                 </div>
@@ -168,7 +173,7 @@ export const FeaturedProjectsCarousel = ({
         <Button
           variant="outline"
           size="icon"
-          className="rounded-full bg-white/10 border-white/20 text-white hover:bg-white/20"
+          className="rounded-full bg-cyprus-terra/10 border-cyprus-terra/20 text-cyprus-terra hover:bg-cyprus-terra/20"
           onClick={scrollPrev}
           disabled={prevBtnDisabled}
         >
@@ -183,8 +188,8 @@ export const FeaturedProjectsCarousel = ({
               className={cn(
                 "w-3 h-3 rounded-full transition-all duration-300",
                 index === selectedIndex 
-                  ? "bg-white scale-125" 
-                  : "bg-white/40 hover:bg-white/60"
+                  ? "bg-primary scale-125" 
+                  : "bg-primary/40 hover:bg-primary/60"
               )}
               onClick={() => scrollTo(index)}
             />
@@ -194,7 +199,7 @@ export const FeaturedProjectsCarousel = ({
         <Button
           variant="outline"
           size="icon"
-          className="rounded-full bg-white/10 border-white/20 text-white hover:bg-white/20"
+          className="rounded-full bg-cyprus-terra/10 border-cyprus-terra/20 text-cyprus-terra hover:bg-cyprus-terra/20"
           onClick={scrollNext}
           disabled={nextBtnDisabled}
         >
