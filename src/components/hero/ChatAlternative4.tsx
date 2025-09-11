@@ -1,17 +1,10 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { RotateCcw, Send, Zap, TrendingUp } from 'lucide-react';
+import { RotateCcw, Send, MessageSquare } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
-// Exemples pour la version glassmorphism
-const searchExamples = [
-  "Je suis suisse, 45 ans, budget 600 000 CHF. Je cherche un penthouse avec grande terrasse et vue mer. Résidence: spa, salle de sport, jardin d’enfants, piscine. À moins de 2 km: banque, supermarché, école.",
-  "Je suis français, 38 ans, budget 200 000 €. Je recherche un appartement 2 pièces proche de la plage, avec balcon. Résidence: piscine et salle de sport. Commodités à moins de 2 km: supermarché, école, pharmacie.",
-  "Je suis italien, 52 ans, budget 1 000 000 €. Villa 4 chambres avec jardin et piscine privée. Résidence sécurisée avec spa et concierge. À moins de 2 km: banque, lycée international, centre commercial."
-];
-
-const useTypewriterExamples = (texts: string[], speed: number = 20) => {
+const useMultilingualTypewriter = (texts: string[], speed: number = 35) => {
   const [displayText, setDisplayText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(true);
@@ -26,7 +19,7 @@ const useTypewriterExamples = (texts: string[], speed: number = 20) => {
           setDisplayText(currentText.slice(0, charIndex + 1));
           setCharIndex(charIndex + 1);
         } else {
-          setTimeout(() => setIsTyping(false), 3500);
+          setTimeout(() => setIsTyping(false), 1500);
         }
       } else {
         if (charIndex > 0) {
@@ -49,7 +42,11 @@ const ChatAlternative4 = () => {
   const [animationKey, setAnimationKey] = useState(0);
   const [inputValue, setInputValue] = useState('');
   const [showChat, setShowChat] = useState(false);
-  const typewriterText = useTypewriterExamples(searchExamples, 25);
+  const typewriterText = useMultilingualTypewriter([
+    "Je suis suisse, 45 ans, budget 600 000 CHF. Je cherche un penthouse avec grande terrasse et vue mer. Résidence: spa, salle de sport, jardin d'enfants, piscine. À moins de 2 km: banque, supermarché, école.",
+    "Je suis français, 38 ans, budget 200 000 €. Je recherche un appartement 2 pièces proche de la plage, avec balcon. Résidence: piscine et salle de sport. Commodités à moins de 2 km: supermarché, école, pharmacie.",
+    "Je suis italien, 52 ans, budget 1 000 000 €. Villa 4 chambres avec jardin et piscine privée. Résidence sécurisée avec spa et concierge. À moins de 2 km: banque, lycée international, centre commercial."
+  ], 35);
 
   const restartAnimation = () => {
     setAnimationKey(prev => prev + 1);
@@ -63,7 +60,7 @@ const ChatAlternative4 = () => {
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowChat(true), 4000);
+    const timer = setTimeout(() => setShowChat(true), 3000);
     return () => clearTimeout(timer);
   }, [animationKey]);
 
@@ -75,8 +72,8 @@ const ChatAlternative4 = () => {
       {/* Bouton de relance d'animation */}
       <motion.button
         onClick={restartAnimation}
-        className="absolute top-24 md:top-28 right-4 z-50 p-3 bg-white/10 backdrop-blur-md hover:bg-white/20 rounded-full text-white shadow-lg border border-white/20 transition-all duration-300"
-        whileHover={{ scale: 1.1, rotate: 180 }}
+        className="absolute top-24 md:top-28 right-4 z-50 p-3 bg-primary/90 hover:bg-primary rounded-full text-white shadow-lg backdrop-blur-sm border border-white/20 transition-all duration-300"
+        whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -106,143 +103,119 @@ const ChatAlternative4 = () => {
           }}
         />
       </div>
+      
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-black/45" />
       
       {/* Contenu central */}
       <div className="relative z-10 text-center flex-1 flex flex-col justify-center">
         
-        {/* ENKI-REALTY avec effet cristal */}
+        {/* ENKI-REALTY */}
         <motion.div className="mb-4">
           <motion.h1
-            className="swaarg-hero-title text-white relative"
-            initial={{ opacity: 0, rotateY: -90 }}
-            animate={{ opacity: 1, rotateY: 0 }}
-            transition={{ duration: 2, ease: "easeOut" }}
+            className="swaarg-hero-title text-white relative overflow-hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 2 }}
           >
-            <motion.span
-              className="relative inline-block"
-              style={{
-                textShadow: "0 0 30px rgba(255,255,255,0.5), 0 0 60px rgba(59,130,246,0.3)",
-                filter: "drop-shadow(0 4px 10px rgba(0,0,0,0.3))"
-              }}
-              animate={{
-                textShadow: [
-                  "0 0 30px rgba(255,255,255,0.5), 0 0 60px rgba(59,130,246,0.3)",
-                  "0 0 40px rgba(255,255,255,0.8), 0 0 80px rgba(59,130,246,0.5)",
-                  "0 0 30px rgba(255,255,255,0.5), 0 0 60px rgba(59,130,246,0.3)"
-                ]
-              }}
+            <motion.div
+              className="absolute inset-0 bg-white"
+              initial={{ y: "100%" }}
+              animate={{ y: "-100%" }}
               transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut"
+                duration: 1.5,
+                delay: 0.5,
+                ease: [0.25, 0.46, 0.45, 0.94]
               }}
+            />
+            
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.8 }}
+              className="relative inline-block"
             >
               ΣNKI-REALTY
             </motion.span>
           </motion.h1>
         </motion.div>
 
-        {/* Trait cristallin */}
         <motion.div
-          className="relative w-96 h-[3px] mx-auto mb-4"
-          initial={{ opacity: 0, rotateX: 90 }}
-          animate={{ opacity: 1, rotateX: 0 }}
-          transition={{ delay: 2, duration: 1.5 }}
+          className="relative w-96 h-[1px] mx-auto mb-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2 }}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/80 to-transparent backdrop-blur-sm shadow-lg shadow-white/20" />
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-300/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent" />
         </motion.div>
 
-        {/* Cyprus Properties */}
         <motion.h2
-          className="swaarg-large-title text-white/95 mb-12"
-          initial={{ opacity: 0, z: -100 }}
-          animate={{ opacity: 1, z: 0 }}
+          className="swaarg-large-title text-white/90 mb-12"
+          initial={{ opacity: 0, letterSpacing: "0.5em" }}
+          animate={{ opacity: 1, letterSpacing: "-0.03em" }}
           transition={{ 
-            duration: 1.8, 
-            delay: 2.5
-          }}
-          style={{
-            textShadow: "0 0 20px rgba(255,255,255,0.3)",
-            filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.2))"
+            duration: 2, 
+            delay: 2.5,
+            ease: [0.25, 0.46, 0.45, 0.94]
           }}
         >
           Cyprus Properties
         </motion.h2>
       </div>
 
-      {/* Chat Interface - Style glassmorphism */}
+      {/* Chat Interface - Style minimaliste blanc */}
       <motion.div
-        className="relative w-full max-w-5xl mx-auto mb-24 px-4 z-10"
-        initial={{ opacity: 0, y: 50, rotateX: 45 }}
-        animate={{ opacity: showChat ? 1 : 0, y: showChat ? 0 : 50, rotateX: showChat ? 0 : 45 }}
+        className="relative w-full max-w-4xl mx-auto mb-24 px-4 z-10"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: showChat ? 1 : 0, y: showChat ? 0 : 50 }}
         transition={{ 
-          delay: 3.5, 
-          duration: 1.2,
-          ease: "easeOut"
+          delay: 3.0, 
+          duration: 1,
+          ease: [0.25, 0.46, 0.45, 0.94]
         }}
       >
-        <div className="relative bg-white/10 backdrop-blur-2xl border border-white/20 rounded-3xl p-8 shadow-2xl shadow-black/20">
-          {/* Effet de reflet sur le verre */}
-          <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent rounded-3xl pointer-events-none" />
-          
-          {/* Header glassmorphism */}
-          <div className="flex items-center gap-3 mb-6">
-            <div className="flex items-center gap-2">
-              <motion.div
-                className="w-4 h-4 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 shadow-lg shadow-cyan-400/50"
-                animate={{ 
-                  boxShadow: [
-                    "0 0 10px rgba(34, 211, 238, 0.5)",
-                    "0 0 20px rgba(34, 211, 238, 0.8)",
-                    "0 0 10px rgba(34, 211, 238, 0.5)"
-                  ]
-                }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
-              <Zap className="w-5 h-5 text-cyan-300" />
-              <span className="text-sm text-white/90 font-medium">ENKI-AI Quantum</span>
-              <TrendingUp className="w-4 h-4 text-green-400" />
+        <div className="relative bg-white/98 backdrop-blur-xl border border-white/30 rounded-2xl p-6 shadow-2xl">
+          {/* Header simple */}
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+              <MessageSquare className="w-4 h-4 text-gray-600" />
+            </div>
+            <div>
+              <div className="text-gray-900 font-medium text-sm">Assistant IA</div>
+              <div className="text-gray-500 text-xs">En ligne</div>
+            </div>
+            <motion.div
+              className="ml-auto w-2 h-2 rounded-full bg-green-400"
+              animate={{ opacity: [1, 0.5, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
+          </div>
+
+          {/* Message avec taille fixe */}
+          <div className="mb-4 p-4 bg-gray-50 rounded-xl border border-gray-100 h-24 overflow-hidden">
+            <div className="text-gray-800 text-sm leading-relaxed">
+              {typewriterText}
+              <motion.span
+                animate={{ opacity: [0, 1, 0] }}
+                transition={{ duration: 0.8, repeat: Infinity }}
+                className="ml-1"
+              >
+                |
+              </motion.span>
             </div>
           </div>
 
-          {/* Message du bot glassmorphism */}
-          <div className="mb-6 p-6 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10">
-            <div className="text-white/95 flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-400 to-blue-600 flex items-center justify-center flex-shrink-0 mt-1 shadow-lg shadow-cyan-400/30">
-                <Zap className="w-5 h-5 text-white" />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm mb-4 text-white/80 font-medium">
-                  Intelligence artificielle avancée • Analysez vos critères immobiliers :
-                </p>
-                <div className="text-white/95 text-sm leading-relaxed min-h-[120px] p-4 bg-black/20 backdrop-blur-sm rounded-xl border border-white/10">
-                  <span>{typewriterText}</span>
-                  <motion.span
-                    animate={{ opacity: [0, 1, 0] }}
-                    transition={{ duration: 0.8, repeat: Infinity }}
-                    className="ml-1 text-cyan-300"
-                  >
-                    |
-                  </motion.span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Input glassmorphism */}
+          {/* Input */}
           <div className="flex gap-3">
             <Input
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Décrivez votre vision immobilière parfaite..."
-              className="flex-1 h-12 bg-white/10 backdrop-blur-xl border-white/20 focus:border-cyan-300/50 text-white placeholder:text-white/60"
+              placeholder="Décrivez votre projet immobilier (budget, type, vue, équipements, commodités à 2 km)..."
+              className="flex-1 h-12 border-gray-200 focus:border-primary bg-white"
               onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
             />
             <Button
               onClick={handleSendMessage}
-              className="h-12 px-6 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white rounded-xl shadow-lg shadow-cyan-500/30"
+              className="h-12 px-6 bg-primary hover:bg-primary/90 text-white rounded-xl"
               disabled={!inputValue.trim()}
             >
               <Send className="w-4 h-4" />
@@ -251,7 +224,7 @@ const ChatAlternative4 = () => {
         </div>
       </motion.div>
 
-      {/* Indicateur scroll glassmorphism */}
+      {/* Indicateur scroll */}
       <motion.div
         className="absolute bottom-12 left-1/2 transform -translate-x-1/2"
         initial={{ opacity: 0 }}
@@ -262,15 +235,13 @@ const ChatAlternative4 = () => {
           className="relative group cursor-pointer"
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-          whileHover={{ scale: 1.1 }}
         >
-          <div className="w-6 h-10 border border-white/40 backdrop-blur-md rounded-full relative group-hover:border-white/70 transition-colors shadow-lg shadow-white/10">
+          <div className="w-6 h-10 border border-white/40 rounded-full relative backdrop-blur-sm">
             <motion.div
-              className="absolute top-2 left-1/2 transform -translate-x-1/2 w-[2px] h-3 bg-gradient-to-b from-white to-cyan-300 rounded-full shadow-lg shadow-cyan-300/50"
+              className="absolute top-2 left-1/2 transform -translate-x-1/2 w-[2px] h-3 bg-white/60 rounded-full"
               animate={{ 
                 y: [0, 12, 0], 
-                opacity: [0.6, 1, 0.6],
-                height: [12, 8, 12]
+                opacity: [0.6, 1, 0.6]
               }}
               transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
             />

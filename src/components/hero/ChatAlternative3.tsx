@@ -60,7 +60,7 @@ const ChatAlternative3 = () => {
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowChat(true), 4000);
+    const timer = setTimeout(() => setShowChat(true), 3000);
     return () => clearTimeout(timer);
   }, [animationKey]);
 
@@ -175,7 +175,7 @@ const ChatAlternative3 = () => {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: showChat ? 1 : 0, y: showChat ? 0 : 50 }}
         transition={{ 
-          delay: 3.5, 
+          delay: 3.0, 
           duration: 1,
           ease: [0.25, 0.46, 0.45, 0.94]
         }}
@@ -197,9 +197,9 @@ const ChatAlternative3 = () => {
             />
           </div>
 
-          {/* Message AI avec animation */}
+          {/* Message AI avec animation - Taille fixe */}
           <div className="mb-6 p-6 bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl border border-gray-100">
-            <div className="text-gray-800 text-lg leading-relaxed">
+            <div className="text-gray-800 text-lg leading-relaxed h-24 overflow-hidden">
               {typewriterText}
               <motion.span
                 animate={{ opacity: [0, 1, 0] }}
@@ -208,27 +208,6 @@ const ChatAlternative3 = () => {
               >
                 |
               </motion.span>
-            </div>
-          </div>
-
-          {/* Suggestions rapides */}
-          <div className="mb-6">
-            <p className="text-sm text-gray-600 mb-3 font-medium">Suggestions rapides :</p>
-            <div className="grid grid-cols-2 gap-2">
-              {suggestions.map((suggestion, index) => (
-                <motion.button
-                  key={index}
-                  className="text-left p-3 bg-gray-50 hover:bg-gray-100 rounded-xl border border-gray-200 transition-all duration-200 group"
-                  whileHover={{ scale: 1.02 }}
-                  onClick={() => setInputValue(suggestion)}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 4 + index * 0.1 }}
-                >
-                  <span className="text-sm text-gray-700 group-hover:text-gray-900">{suggestion}</span>
-                  <ArrowRight className="w-3 h-3 text-gray-400 group-hover:text-primary ml-2 inline" />
-                </motion.button>
-              ))}
             </div>
           </div>
 

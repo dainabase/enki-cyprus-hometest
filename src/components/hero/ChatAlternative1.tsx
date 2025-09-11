@@ -61,7 +61,7 @@ const ChatAlternative1 = () => {
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowChat(true), 4000);
+    const timer = setTimeout(() => setShowChat(true), 3000);
     return () => clearTimeout(timer);
   }, [animationKey]);
 
@@ -188,7 +188,7 @@ const ChatAlternative1 = () => {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: showChat ? 1 : 0, y: showChat ? 0 : 50 }}
         transition={{ 
-          delay: 3.5, 
+          delay: 3.0, 
           duration: 1,
           ease: [0.25, 0.46, 0.45, 0.94]
         }}
