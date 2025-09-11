@@ -29,16 +29,6 @@ import { useIsClient } from '@/hooks/useIsClient';
 import TabsFeaturesAlt5Accordion from '@/components/TabsFeatures-Alternative5-Accordion';
 import { getHeroImage } from '@/utils/gallery';
 import HeroAlternative5 from '@/components/hero/HeroAlternative5';
-import HeroAlternative6 from '@/components/hero/HeroAlternative6';
-import HeroAlternative7 from '@/components/hero/HeroAlternative7';
-import HeroAlternative8 from '@/components/hero/HeroAlternative8';
-import HeroAlternative9 from '@/components/hero/HeroAlternative9';
-import HeroAlternative10 from '@/components/hero/HeroAlternative10';
-import HeroAlternative11 from '@/components/hero/HeroAlternative11';
-import HeroAlternative12 from '@/components/hero/HeroAlternative12';
-import HeroAlternative13 from '@/components/hero/HeroAlternative13';
-import HeroAlternative14 from '@/components/hero/HeroAlternative14';
-import HeroAlternative15 from '@/components/hero/HeroAlternative15';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 // Static background component to replace 3D elements (fixes runtime errors)
 const StaticBackground = () => (
@@ -489,16 +479,6 @@ const Home = () => {
       <div className="min-h-screen overflow-x-hidden bg-secondary">
         <div className="space-y-0">
           <HeroAlternative5 />
-          <HeroAlternative6 />
-          <HeroAlternative7 />
-          <HeroAlternative8 />
-          <HeroAlternative9 />
-          <HeroAlternative10 />
-          <HeroAlternative11 />
-          <HeroAlternative12 />
-          <HeroAlternative13 />
-          <HeroAlternative14 />
-          <HeroAlternative15 />
         </div>
         <section
           id="why-enki"
