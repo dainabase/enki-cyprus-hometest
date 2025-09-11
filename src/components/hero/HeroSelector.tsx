@@ -13,26 +13,26 @@ const HeroSelector = () => {
   const alternatives = [
     { 
       id: 1, 
-      name: "Alternative 2 (Validée)", 
-      description: "Base validée - Sans header IA, ultra épuré",
+      name: "Alternative 1", 
+      description: "Design épuré sans header IA",
       component: Alternative2 
     },
     { 
       id: 2, 
-      name: "Alternative 1", 
+      name: "Alternative 2", 
       description: "Titre au-dessus + bouton intégré",
       component: Alternative1 
     },
     { 
       id: 3, 
       name: "Alternative 3", 
-      description: "Titre dans header + bouton intégré",
+      description: "Titre dans header avec point vert + bouton intégré",
       component: Alternative3 
     },
     { 
-      id: 5, 
-      name: "Alternative 5", 
-      description: "Ultra minimal + titre footnote",
+      id: 4, 
+      name: "Alternative 4", 
+      description: "Point vert à gauche + titre aligné gauche",
       component: Alternative5 
     }
   ];
