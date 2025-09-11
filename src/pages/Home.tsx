@@ -715,7 +715,7 @@ const Home = () => {
                 {/* Zone messages */}
                 <div 
                   ref={messagesContainerRef}
-                  className="messages-area h-[680px] overflow-y-auto p-6"
+                  className="messages-area h-[620px] overflow-y-auto p-6"
                 >
                   {messages.length === 0 ? (
                     <div className="text-center text-gray-500 pt-32">
