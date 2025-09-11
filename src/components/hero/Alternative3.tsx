@@ -133,62 +133,65 @@ const Alternative3 = () => {
         </motion.h2>
       </div>
 
-      {/* Chat Interface avec titre intégré dans le header */}
-      <motion.div
-        className="relative w-full max-w-2xl mx-auto mb-24 px-4 z-10"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2.5, duration: 2, ease: [0.25, 0.46, 0.45, 0.94] }}
-      >
-        <motion.div
-          className="relative bg-white/96 border border-white/25 rounded-xl shadow-2xl overflow-hidden"
-          style={{ backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', willChange: 'backdrop-filter' }}
-        >
-          {/* Header avec titre intégré */}
-          <div className="bg-gradient-to-r from-primary/10 to-primary/5 px-4 py-2 border-b border-gray-200/30">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <p className="text-white text-xs font-medium tracking-wide">
-                The First AI Powered Real Estate Platform
-              </p>
-            </div>
-          </div>
-
-          <div className="p-4">
-            {/* Message typewriter */}
-            <div className="mb-4 p-3 bg-gray-50/60 rounded-lg h-16 overflow-hidden">
-              <div className="text-gray-800 text-xs leading-relaxed font-light">
-                {typewriterText}
-                <motion.span
-                  animate={{ opacity: [0, 1, 0] }}
-                  transition={{ duration: 0.8, repeat: Infinity }}
-                  className="ml-1"
-                >
-                  |
-                </motion.span>
+      <div className="relative w-full max-w-2xl mx-auto mb-24 px-4 z-10">
+        <div className="relative rounded-xl shadow-2xl overflow-hidden">
+          <div
+            className="absolute inset-0 rounded-xl border border-white/25 bg-white/80 backdrop-blur-xl pointer-events-none"
+            style={{ WebkitBackdropFilter: 'blur(16px)' }}
+            aria-hidden="true"
+          />
+          <motion.div
+            className="relative"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2.5, duration: 2, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
+            {/* Header avec titre intégré */}
+            <div className="bg-gradient-to-r from-primary/10 to-primary/5 px-4 py-2 border-b border-gray-200/30">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <p className="text-white text-xs font-medium tracking-wide">
+                  The First AI Powered Real Estate Platform
+                </p>
               </div>
             </div>
 
-            {/* Input avec bouton intégré */}
-            <div className="relative">
-              <Input
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Votre recherche..."
-                className="h-10 border-gray-200/40 focus:border-primary bg-white/80 rounded-lg text-sm pr-12"
-                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-              />
-<motion.button
-  onClick={handleSendMessage}
-  className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 bg-primary hover:bg-primary/90 text-white rounded-md flex items-center justify-center transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
-  disabled={!inputValue.trim()}
->
-  <Send className="w-3 h-3" />
-</motion.button>
+            <div className="p-4">
+              {/* Message typewriter */}
+              <div className="mb-4 p-3 bg-gray-50/60 rounded-lg h-16 overflow-hidden">
+                <div className="text-gray-800 text-xs leading-relaxed font-light">
+                  {typewriterText}
+                  <motion.span
+                    animate={{ opacity: [0, 1, 0] }}
+                    transition={{ duration: 0.8, repeat: Infinity }}
+                    className="ml-1"
+                  >
+                    |
+                  </motion.span>
+                </div>
+              </div>
+
+              {/* Input avec bouton intégré */}
+              <div className="relative">
+                <Input
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  placeholder="Votre recherche..."
+                  className="h-10 border-gray-200/40 focus:border-primary bg-white/80 rounded-lg text-sm pr-12"
+                  onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                />
+                <motion.button
+                  onClick={handleSendMessage}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 bg-primary hover:bg-primary/90 text-white rounded-md flex items-center justify-center transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+                  disabled={!inputValue.trim()}
+                >
+                  <Send className="w-3 h-3" />
+                </motion.button>
+              </div>
             </div>
-          </div>
-        </motion.div>
-      </motion.div>
+          </motion.div>
+        </div>
+      </div>
     </section>
   );
 };
