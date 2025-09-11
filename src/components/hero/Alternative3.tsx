@@ -56,27 +56,18 @@ const Alternative3 = () => {
     if (inputValue.trim()) {
       // Sauvegarder le texte pour transfert
       localStorage.setItem('pending-search', inputValue);
-      
-      // Attendre un frame puis faire le scroll fluide
-      requestAnimationFrame(() => {
-        const chatSection = document.getElementById('start-experience');
-        if (chatSection) {
-          // Scroll fluide avec un léger offset pour bien voir le titre
-          const headerHeight = 80; // Hauteur approximative du header
-          const targetPosition = chatSection.offsetTop - headerHeight;
-          
-          window.scrollTo({
-            top: targetPosition,
-            behavior: 'smooth'
-          });
-          
-          // Déclencher le transfert après le scroll (1.5 secondes pour être sûr)
-          setTimeout(() => {
-            window.dispatchEvent(new CustomEvent('hero-search-transferred'));
-          }, 1500);
-        }
-      });
-      
+
+      const chatSection = document.getElementById('start-experience');
+      if (chatSection) {
+        // Scroll fluide directement vers la section (géré par scroll-margin-top côté section)
+        chatSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // Déclencher le transfert après le scroll
+        setTimeout(() => {
+          window.dispatchEvent(new CustomEvent('hero-search-transferred'));
+        }, 1000);
+      }
+
       setInputValue('');
     }
   };
