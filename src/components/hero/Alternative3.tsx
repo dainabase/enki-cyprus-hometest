@@ -152,9 +152,12 @@ const Alternative3 = () => {
         <div className="relative bg-white/96 backdrop-blur-xl border border-white/25 rounded-xl shadow-2xl overflow-hidden">
           {/* Header avec titre intégré */}
           <div className="bg-gradient-to-r from-primary/10 to-primary/5 px-4 py-2 border-b border-gray-200/30">
-            <p className="text-white text-xs font-medium text-center tracking-wide">
-              The First AI Powered Real Estate Platform
-            </p>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <p className="text-white text-xs font-medium tracking-wide">
+                The First AI Powered Real Estate Platform
+              </p>
+            </div>
           </div>
 
           <div className="p-4">
