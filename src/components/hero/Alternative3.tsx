@@ -141,13 +141,13 @@ const Alternative3 = () => {
       {/* Chat Interface avec titre intégré dans le header */}
       <motion.div
         className="relative w-full max-w-2xl mx-auto mb-24 px-4 z-10"
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: showChat ? 1 : 0, y: showChat ? 0 : 50 }}
-        transition={{ 
-          delay: 2.0, 
-          duration: 1,
-          ease: [0.25, 0.46, 0.45, 0.94]
-        }}
+initial={{ opacity: 0 }}
+animate={{ opacity: showChat ? 1 : 0 }}
+transition={{ 
+  delay: 2.0, 
+  duration: 1,
+  ease: [0.25, 0.46, 0.45, 0.94]
+}}
       >
         <motion.div
           className="relative bg-white/96 border border-white/25 rounded-xl shadow-2xl overflow-hidden"
@@ -187,15 +187,13 @@ const Alternative3 = () => {
                 className="h-10 border-gray-200/40 focus:border-primary bg-white/80 rounded-lg text-sm pr-12"
                 onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
               />
-              <motion.button
-                onClick={handleSendMessage}
-                className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 bg-primary hover:bg-primary/90 text-white rounded-md flex items-center justify-center transition-all duration-200"
-                disabled={!inputValue.trim()}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Send className="w-3 h-3" />
-              </motion.button>
+<motion.button
+  onClick={handleSendMessage}
+  className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 bg-primary hover:bg-primary/90 text-white rounded-md flex items-center justify-center transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+  disabled={!inputValue.trim()}
+>
+  <Send className="w-3 h-3" />
+</motion.button>
             </div>
           </div>
         </motion.div>
