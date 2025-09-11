@@ -141,7 +141,8 @@ const ChatAlternative5 = () => {
               className="relative inline-block bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-200 bg-clip-text text-transparent"
               style={{
                 textShadow: "0 0 40px rgba(245, 158, 11, 0.6)",
-                filter: "drop-shadow(0 4px 15px rgba(245, 158, 11, 0.4))"
+                filter: "drop-shadow(0 4px 15px rgba(245, 158, 11, 0.4))",
+                backgroundSize: "200% 200%"
               }}
               animate={{
                 backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
@@ -155,9 +156,6 @@ const ChatAlternative5 = () => {
                 duration: 4,
                 repeat: Infinity,
                 ease: "easeInOut"
-              }}
-              style={{
-                backgroundSize: "200% 200%"
               }}
             >
               ΣNKI-REALTY
