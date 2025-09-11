@@ -620,7 +620,7 @@ const Home = () => {
         {/* Interface Chatbot IA Complète */}
         <motion.section
           id="start-experience"
-          className="relative scroll-mt-24 md:scroll-mt-32 py-24 md:py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-secondary to-background/80 overflow-hidden"
+          className="relative scroll-mt-0 min-h-screen py-32 md:py-40 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-secondary to-background/80 overflow-hidden"
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, ease: 'easeInOut' }}

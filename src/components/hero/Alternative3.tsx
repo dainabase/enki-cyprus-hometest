@@ -200,6 +200,8 @@ const Alternative3 = () => {
   onClick={handleSendMessage}
   className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 bg-primary hover:bg-primary/90 text-white rounded-md flex items-center justify-center transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
   disabled={!inputValue.trim()}
+  whileHover={{ scale: 1.1 }}
+  whileTap={{ scale: 0.9 }}
 >
   <Send className="w-3 h-3" />
 </motion.button>
