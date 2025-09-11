@@ -54,16 +54,23 @@ const Alternative3 = () => {
 
   const handleSendMessage = () => {
     if (inputValue.trim()) {
-      // Sauvegarder dans localStorage pour transfert vers le chatbot
-      localStorage.setItem('hero-search-query', inputValue);
+      // Sauvegarder le texte pour transfert
+      localStorage.setItem('pending-search', inputValue);
       
       // Scroll vers la section chatbot
       const chatSection = document.getElementById('start-experience');
       if (chatSection) {
-        chatSection.scrollIntoView({ behavior: 'smooth' });
+        chatSection.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+        
+        // Déclencher le transfert après le scroll (1 seconde)
+        setTimeout(() => {
+          window.dispatchEvent(new CustomEvent('hero-search-transferred'));
+        }, 1000);
       }
       
-      console.log('Message sent:', inputValue);
       setInputValue('');
     }
   };

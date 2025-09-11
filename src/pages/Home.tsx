@@ -382,28 +382,32 @@ const Home = () => {
   // Use dynamic properties instead of hardcoded
   const featuredProperties = useMemo(() => properties.slice(0, 3), [properties]);
   const latestProperties = useMemo(() => properties.slice(3, 8), [properties]);
-  // Gestion du transfert depuis le Hero et auto-scroll
+  // Gestion du transfert depuis le Hero
   useEffect(() => {
-    // Récupérer le texte transféré depuis le Hero
-    const transferredText = localStorage.getItem('hero-search-query');
+    const handleTransfer = () => {
+      const pendingSearch = localStorage.getItem('pending-search');
+      
+      if (pendingSearch) {
+        // Mettre le texte dans le textarea du chat
+        setAgenticQuery(pendingSearch);
+        
+        // Message d'accueil de l'IA
+        setMessages([{
+          role: 'assistant',
+          content: `👋 Bonjour ! J'ai bien reçu votre recherche : "${pendingSearch}". Pour analyser vos besoins et vous proposer les meilleures options, j'ai besoin de votre consentement.`,
+          timestamp: new Date()
+        }]);
+        
+        // Mettre en évidence la checkbox RGPD
+        setShouldHighlightConsent(true);
+        
+        // Nettoyer le localStorage
+        localStorage.removeItem('pending-search');
+      }
+    };
     
-    if (transferredText) {
-      setAgenticQuery(transferredText);
-      
-      // Message d'accueil de l'IA
-      setMessages([{
-        role: 'assistant',
-        content: "Bonjour ! J'ai bien reçu votre recherche. Pour vous proposer les meilleures options, j'ai besoin de votre consentement pour traiter vos données personnelles.",
-        timestamp: new Date()
-      }]);
-      
-      // Mettre en surbrillance la checkbox
-      setShouldHighlightConsent(true);
-      setTimeout(() => setShouldHighlightConsent(false), 3000);
-      
-      // Nettoyer après utilisation
-      localStorage.removeItem('hero-search-query');
-    }
+    window.addEventListener('hero-search-transferred', handleTransfer);
+    return () => window.removeEventListener('hero-search-transferred', handleTransfer);
   }, []);
 
   // Auto-scroll vers le dernier message
@@ -474,15 +478,24 @@ const Home = () => {
     // Voice input functionality placeholder
   }, []);
 
+  // Gestion du consentement
+  const handleConsentChange = (checked: boolean) => {
+    setConsent(checked);
+    setShouldHighlightConsent(false);
+    
+    if (checked) {
+      // Message de l'IA
+      setMessages(prev => [...prev, {
+        role: 'assistant', 
+        content: "✅ Merci pour votre consentement ! Cliquez sur 'Lancer l'Analyse IA' pour que je recherche les meilleures propriétés selon vos critères.",
+        timestamp: new Date()
+      }]);
+    }
+  };
+
   const handleSendMessage = async () => {
     if (!consent && !consentGiven) {
-      // Animation shake sur la checkbox
-      const consentElement = document.querySelector('.consent-wrapper');
-      consentElement?.classList.add('animate-pulse');
-      setTimeout(() => {
-        consentElement?.classList.remove('animate-pulse');
-      }, 1000);
-      
+      setShouldHighlightConsent(true);
       toast({
         title: "Consentement requis",
         description: "Veuillez accepter le traitement de vos données",
@@ -690,7 +703,7 @@ const Home = () => {
                       <input 
                         type="checkbox" 
                         checked={consent}
-                        onChange={(e) => setConsent(e.target.checked)}
+                        onChange={(e) => handleConsentChange(e.target.checked)}
                         className="mt-1 rounded border-gray-300 focus:ring-primary"
                       />
                       <span className="text-sm text-gray-700">
@@ -719,7 +732,9 @@ const Home = () => {
                   <motion.button
                     onClick={handleSendMessage}
                     disabled={(!consentGiven && !consent) || !agenticQuery.trim() || isAnalyzing}
-                    className="h-20 px-6 bg-primary hover:bg-primary/90 text-white rounded-lg flex items-center justify-center transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed font-medium"
+                    className={`analyze-button h-20 px-6 bg-primary hover:bg-primary/90 text-white rounded-lg flex items-center justify-center transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed font-medium ${
+                      consent && agenticQuery.trim() && !isAnalyzing ? 'animate-bounce' : ''
+                    }`}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
