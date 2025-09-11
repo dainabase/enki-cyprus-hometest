@@ -1,20 +1,34 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import HeroAlternative5 from './HeroAlternative5';
+import ChatAlternative1 from './ChatAlternative1';
+import ChatAlternative2 from './ChatAlternative2';
+import ChatAlternative3 from './ChatAlternative3';
 
 const HeroSelector = () => {
-  const [currentHero, setCurrentHero] = useState(5);
+  const [currentHero, setCurrentHero] = useState(1);
 
   const alternatives = [
     { 
-      id: 5, 
-      name: "Minimaliste & Scanner", 
-      description: "Ultra épuré avec effet de scanner",
-      component: HeroAlternative5 
+      id: 1, 
+      name: "Chat Luxe Blanc", 
+      description: "Interface chat blanche élégante avec suggestions",
+      component: ChatAlternative1 
+    },
+    { 
+      id: 2, 
+      name: "Chat Minimaliste Noir", 
+      description: "Design sombre et épuré style terminal",
+      component: ChatAlternative2 
+    },
+    { 
+      id: 3, 
+      name: "Chat Interactif", 
+      description: "Interface complète avec suggestions rapides",
+      component: ChatAlternative3 
     }
   ];
 
-  const CurrentComponent = alternatives.find(alt => alt.id === currentHero)?.component || HeroAlternative5;
+  const CurrentComponent = alternatives.find(alt => alt.id === currentHero)?.component || ChatAlternative1;
 
   return (
     <div className="relative">
