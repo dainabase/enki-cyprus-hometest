@@ -30,6 +30,7 @@ import TabsFeaturesAlt5Accordion from '@/components/TabsFeatures-Alternative5-Ac
 import { getHeroImage } from '@/utils/gallery';
 import Alternative3 from '@/components/hero/Alternative3';
 import ChatMessageComponent from '@/components/ChatMessage';
+import PropertyResultCard from '@/components/ui/PropertyResultCard';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 // Static background component to replace 3D elements (fixes runtime errors)
 const StaticBackground = () => (
@@ -339,6 +340,8 @@ const Home = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [shouldHighlightConsent, setShouldHighlightConsent] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const [mockProperties, setMockProperties] = useState<any[]>([]);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
  
   const { isAuthenticated, user } = useAuth();
@@ -581,6 +584,84 @@ const Home = () => {
       setIsAnalyzing(false);
     }
   };
+
+  const handleAnalysis = async () => {
+    if (!consent || !agenticQuery.trim()) return;
+    
+    // Message utilisateur
+    setMessages(prev => [...prev, {
+      role: 'user',
+      content: agenticQuery,
+      timestamp: new Date()
+    }]);
+    
+    // Message IA avec typing
+    setMessages(prev => [...prev, {
+      role: 'assistant',
+      content: 'Analyse en cours de vos critères...',
+      isTyping: true,
+      timestamp: new Date()
+    }]);
+    
+    setIsAnalyzing(true);
+    
+    // Simuler l'analyse (2 secondes)
+    setTimeout(() => {
+      // Remplacer le message typing
+      setMessages(prev => {
+        const msgs = [...prev];
+        msgs[msgs.length - 1] = {
+          role: 'assistant',
+          content: "J'ai trouvé 3 propriétés correspondant à vos critères. Les résultats s'affichent dans le panneau de droite.",
+          timestamp: new Date()
+        };
+        return msgs;
+      });
+      
+      // OUVRIR LE PANNEAU LATÉRAL (animation slide)
+      setShowResults(true);
+      
+      // Charger les propriétés mock
+      setMockProperties([
+        {
+          id: 1,
+          title: "Appartement Vue Mer Limassol",
+          image: "/lovable-uploads/marina-bay-hero.jpg",
+          price: "245 000",
+          location: "Limassol Marina",
+          size: 85,
+          description: "Magnifique T3 avec vue mer, résidence avec piscine, parking inclus",
+          matching: 95,
+          missingFeatures: ["Salle de sport"]
+        },
+        {
+          id: 2,
+          title: "Penthouse Moderne Paphos",
+          image: "/lovable-uploads/marina-bay-interior-1.jpg",
+          price: "255 000",
+          location: "Paphos Centre", 
+          size: 92,
+          description: "Penthouse dernier étage, terrasse 30m², piscine et gym",
+          matching: 100,
+          missingFeatures: []
+        },
+        {
+          id: 3,
+          title: "Studio Investissement Larnaca",
+          image: "/lovable-uploads/marina-bay-bedroom.jpg",
+          price: "180 000",
+          location: "Larnaca Beach",
+          size: 45,
+          description: "Studio front de mer, parfait pour location touristique",
+          matching: 85,
+          missingFeatures: ["2 chambres", "Parking privé"]
+        }
+      ]);
+      
+      setIsAnalyzing(false);
+    }, 2000);
+  };
+
   const handleDownloadPDF = () => {
     if (searchResults?.pdf_url) {
       window.open(searchResults.pdf_url, '_blank');
@@ -617,143 +698,119 @@ const Home = () => {
         <div className="space-y-0">
           <Alternative3 />
         </div>
-        {/* Interface Chatbot IA Complète */}
-        <motion.section
-          id="start-experience"
-          className="relative scroll-mt-0 min-h-screen py-32 md:py-40 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-secondary to-background/80 overflow-hidden"
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.2, ease: 'easeInOut' }}
-          viewport={{ once: true }}
-        >
-          {/* Background Effects */}
-          <motion.div 
-            className="absolute inset-0 pointer-events-none"
-            animate={{
-              background: 'radial-gradient(circle at 50% 50%, rgba(0,144,230,0.1) 0%, transparent 70%)',
-            }}
-            transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", repeatType: "reverse" }}
-          />
-          
-          {/* Static Floating Particles */}
-          <div className="absolute inset-0 opacity-30">
-            <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-primary/60 rounded-full animate-bounce" />
-            <div className="absolute top-1/3 right-1/3 w-3 h-3 bg-accent/40 rounded-full animate-bounce delay-300" />
-            <div className="absolute bottom-1/3 left-1/2 w-1 h-1 bg-primary/80 rounded-full animate-bounce delay-700" />
-          </div>
-          
-          <div className="max-w-4xl mx-auto relative z-10">
-            <motion.h2
-              className="swaarg-section-title text-primary text-center mb-12"
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
+        {/* Interface Split-View : Chat + Panneau Résultats */}
+        <section id="start-experience" className="py-24 px-4">
+          <div className="container mx-auto max-w-7xl">
+            <h2 className="text-4xl font-bold text-center mb-8 text-primary">
               Votre Assistant IA Immobilier
-            </motion.h2>
+            </h2>
             
-            {/* Zone de Chat principale */}
-            <motion.div 
-              className="relative bg-white/96 border border-white/25 rounded-xl shadow-2xl overflow-hidden"
-              style={{ backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
-              initial={{ opacity: 0, scale: 0.95, rotateX: -10 }}
-              whileInView={{ opacity: 1, scale: 1, rotateX: 0 }}
-              transition={{ duration: 1, type: 'spring', damping: 15 }}
-              whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(0,144,230,0.2)' }}
-            >
-              {/* Header avec titre intégré */}
-              <div className="bg-gradient-to-r from-primary/10 to-primary/5 px-4 py-2 border-b border-gray-200/30">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <p className="text-primary text-xs font-medium tracking-wide">
-                    Assistant IA Immobilier - Analyse en temps réel
-                  </p>
+            {/* Container principal avec split view */}
+            <div className="relative flex gap-0 h-[700px] border rounded-xl overflow-hidden bg-background shadow-xl">
+              
+              {/* PANNEAU CHAT (gauche) */}
+              <div className={`chat-panel transition-all duration-500 ease-in-out ${
+                showResults ? 'w-1/2' : 'w-full'
+              }`}>
+                {/* Zone messages */}
+                <div 
+                  ref={messagesContainerRef}
+                  className="messages-area h-[580px] overflow-y-auto p-6"
+                >
+                  {messages.length === 0 ? (
+                    <div className="text-center text-gray-500 pt-32">
+                      <p className="text-lg mb-4">👋 Bonjour ! Je suis votre assistant IA immobilier</p>
+                      <p className="text-sm">Décrivez votre recherche pour commencer l'analyse personnalisée</p>
+                    </div>
+                  ) : (
+                    messages.map((message, index) => (
+                      <ChatMessageComponent key={index} message={message} />
+                    ))
+                  )}
                 </div>
-              </div>
-
-              {/* Zone des messages (scrollable) */}
-              <div 
-                ref={messagesContainerRef}
-                className="messages-area h-[500px] overflow-y-auto p-6 space-y-4"
-              >
-                {messages.length === 0 ? (
-                  <div className="text-center text-gray-500 pt-32">
-                    <p className="text-lg mb-4">👋 Bonjour ! Je suis votre assistant IA immobilier</p>
-                    <p className="text-sm">Décrivez votre recherche pour commencer l'analyse personnalisée</p>
+                
+                {/* Zone input en bas */}
+                <div className="input-area border-t p-4">
+                  {/* Consentement RGPD simple */}
+                  {!consentGiven && (
+                    <div className="consent-box mb-4 p-3 bg-amber-50 border border-amber-200 rounded">
+                      <label className="flex items-center gap-3">
+                        <input 
+                          type="checkbox" 
+                          checked={consent} 
+                          onChange={(e) => handleConsentChange(e.target.checked)} 
+                        />
+                        <span className="text-sm">
+                          J'accepte le traitement de mes données pour des recommandations personnalisées
+                        </span>
+                      </label>
+                    </div>
+                  )}
+                  
+                  <div className="flex gap-3">
+                    <textarea 
+                      value={agenticQuery}
+                      onChange={(e) => setAgenticQuery(e.target.value)}
+                      className="flex-1 p-3 border rounded-lg resize-none"
+                      rows={2}
+                      placeholder="Décrivez votre recherche immobilière idéale..."
+                      disabled={!consentGiven && !consent}
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleAnalysis();
+                        }
+                      }}
+                    />
+                    <button 
+                      onClick={handleAnalysis}
+                      disabled={!consent || !agenticQuery.trim() || isAnalyzing}
+                      className="px-6 py-3 bg-primary text-white rounded-lg disabled:opacity-50 font-medium"
+                    >
+                      {isAnalyzing ? 'Analyse...' : 'Analyser'}
+                    </button>
                   </div>
-                ) : (
-                  messages.map((message, index) => (
-                    <ChatMessageComponent key={index} message={message} />
-                  ))
-                )}
+                </div>
               </div>
               
-              {/* Zone de saisie en bas */}
-              <div className="input-area border-t border-gray-200/30 p-4">
-                
-                {/* Checkbox consentement (visible seulement si pas encore accepté) */}
-                {!consentGiven && (
-                  <motion.div 
-                    className={`consent-wrapper mb-4 p-3 bg-yellow-50/80 rounded-lg ${shouldHighlightConsent ? 'ring-2 ring-yellow-400 animate-pulse' : ''}`}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <label className="flex items-start gap-3 cursor-pointer">
-                      <input 
-                        type="checkbox" 
-                        checked={consent}
-                        onChange={(e) => handleConsentChange(e.target.checked)}
-                        className="mt-1 rounded border-gray-300 focus:ring-primary"
+              {/* PANNEAU RÉSULTATS (droite) - Slide depuis la droite */}
+              <div className={`results-panel border-l bg-gray-50 transition-all duration-500 ease-in-out overflow-hidden ${
+                showResults ? 'w-1/2' : 'w-0'
+              }`}>
+                <div className="p-6 h-full overflow-y-auto">
+                  <h3 className="text-2xl font-bold mb-6">Propriétés Correspondantes</h3>
+                  
+                  {/* Propriétés */}
+                  <div className="space-y-4 mb-8">
+                    {mockProperties.map((property, idx) => (
+                      <PropertyResultCard 
+                        key={idx} 
+                        property={property}
+                        onClick={() => {
+                          setSelectedProperty(property as any);
+                          setIsModalOpen(true);
+                        }}
                       />
-                      <span className="text-sm text-gray-700">
-                        J'accepte le traitement de mes données pour des recommandations 
-                        personnalisées conformément à la politique de confidentialité
-                      </span>
-                    </label>
-                  </motion.div>
-                )}
-                
-                {/* Textarea + Bouton (MÊME STYLE QUE HERO) */}
-                <div className="flex gap-3">
-                  <textarea
-                    value={agenticQuery}
-                    onChange={(e) => setAgenticQuery(e.target.value)}
-                    placeholder="Décrivez votre recherche immobilière idéale..."
-                    className="flex-1 h-20 border-gray-200/40 focus:border-primary bg-white/80 rounded-lg text-sm p-3 resize-none focus:outline-none focus:ring-2 focus:ring-primary/50"
-                    disabled={!consentGiven && !consent}
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        handleSendMessage();
-                      }
-                    }}
-                  />
-                  <motion.button
-                    onClick={handleSendMessage}
-                    disabled={(!consentGiven && !consent) || !agenticQuery.trim() || isAnalyzing}
-                    className={`analyze-button h-20 px-6 bg-primary hover:bg-primary/90 text-white rounded-lg flex items-center justify-center transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed font-medium ${
-                      consent && agenticQuery.trim() && !isAnalyzing ? 'animate-bounce' : ''
-                    }`}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {isAnalyzing ? (
-                      <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                        Analyse...
-                      </div>
-                    ) : !consentGiven && !consent ? (
-                      "Acceptez d'abord"
-                    ) : (
-                      "Lancer l'Analyse IA"
-                    )}
-                  </motion.button>
+                    ))}
+                  </div>
+                  
+                  {/* Optimisation Fiscale */}
+                  <div className="fiscal-section bg-blue-50 p-6 rounded-lg">
+                    <h4 className="text-lg font-bold mb-3">
+                      📊 Scénario d'Optimisation Fiscale
+                    </h4>
+                    <p className="text-sm text-gray-700 mb-4">
+                      Basé sur votre profil de résident fiscal français avec un budget de 250 000€...
+                    </p>
+                    <button className="text-blue-600 font-medium underline">
+                      Créer un compte pour l'analyse complète →
+                    </button>
+                  </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
-        </motion.section>
+        </section>
 
         {/* KPIs Marché Immobilier */}
         <motion.section
