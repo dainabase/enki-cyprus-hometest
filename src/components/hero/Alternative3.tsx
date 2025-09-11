@@ -196,16 +196,15 @@ const Alternative3 = () => {
                 className="h-10 border-gray-200/40 focus:border-primary bg-white/80 rounded-lg text-sm pr-12"
                 onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
               />
-<motion.button
+<button
   type="button"
   onClick={handleSendMessage}
-  className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 bg-white/90 text-foreground border border-gray-300 rounded-md flex items-center justify-center shadow-sm transition-all duration-200 hover:bg-white disabled:opacity-60 disabled:cursor-not-allowed"
+  className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 bg-transparent text-muted-foreground hover:text-foreground flex items-center justify-center transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
   disabled={!inputValue.trim()}
-  whileHover={{ scale: 1.05 }}
-  whileTap={{ scale: 0.95 }}
+  aria-label="Lancer la recherche"
 >
   <Search className="w-4 h-4" />
-</motion.button>
+</button>
             </div>
           </div>
         </motion.div>
