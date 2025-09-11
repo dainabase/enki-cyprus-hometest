@@ -54,6 +54,15 @@ const Alternative3 = () => {
 
   const handleSendMessage = () => {
     if (inputValue.trim()) {
+      // Sauvegarder dans localStorage pour transfert vers le chatbot
+      localStorage.setItem('hero-search-query', inputValue);
+      
+      // Scroll vers la section chatbot
+      const chatSection = document.getElementById('start-experience');
+      if (chatSection) {
+        chatSection.scrollIntoView({ behavior: 'smooth' });
+      }
+      
       console.log('Message sent:', inputValue);
       setInputValue('');
     }

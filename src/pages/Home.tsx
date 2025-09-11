@@ -29,6 +29,7 @@ import { useIsClient } from '@/hooks/useIsClient';
 import TabsFeaturesAlt5Accordion from '@/components/TabsFeatures-Alternative5-Accordion';
 import { getHeroImage } from '@/utils/gallery';
 import Alternative3 from '@/components/hero/Alternative3';
+import ChatMessageComponent from '@/components/ChatMessage';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 // Static background component to replace 3D elements (fixes runtime errors)
 const StaticBackground = () => (
@@ -314,13 +315,31 @@ interface ProjectInterest {
   link: string;
   desc: string;
 }
+// Interface pour les messages du chat
+interface ChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: Date;
+  isTyping?: boolean;
+  properties?: Property[];
+  fiscalOptimization?: {
+    preview: string;
+    details?: any;
+  };
+}
+
 const Home = () => {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [agenticQuery, setAgenticQuery] = useState('');
   const [consent, setConsent] = useState(false);
+  const [consentGiven, setConsentGiven] = useState(false);
   const [searchResults, setSearchResults] = useState<any>(null);
   const [showResultsModal, setShowResultsModal] = useState(false);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [shouldHighlightConsent, setShouldHighlightConsent] = useState(false);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
  
   const { isAuthenticated, user } = useAuth();
   const { toast } = useToast();
@@ -363,6 +382,37 @@ const Home = () => {
   // Use dynamic properties instead of hardcoded
   const featuredProperties = useMemo(() => properties.slice(0, 3), [properties]);
   const latestProperties = useMemo(() => properties.slice(3, 8), [properties]);
+  // Gestion du transfert depuis le Hero et auto-scroll
+  useEffect(() => {
+    // Récupérer le texte transféré depuis le Hero
+    const transferredText = localStorage.getItem('hero-search-query');
+    
+    if (transferredText) {
+      setAgenticQuery(transferredText);
+      
+      // Message d'accueil de l'IA
+      setMessages([{
+        role: 'assistant',
+        content: "Bonjour ! J'ai bien reçu votre recherche. Pour vous proposer les meilleures options, j'ai besoin de votre consentement pour traiter vos données personnelles.",
+        timestamp: new Date()
+      }]);
+      
+      // Mettre en surbrillance la checkbox
+      setShouldHighlightConsent(true);
+      setTimeout(() => setShouldHighlightConsent(false), 3000);
+      
+      // Nettoyer après utilisation
+      localStorage.removeItem('hero-search-query');
+    }
+  }, []);
+
+  // Auto-scroll vers le dernier message
+  useEffect(() => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   useEffect(() => {
     trackPageView('/', 'Accueil - ENKI-REALTY Immobilier Premium Chypre');
     trackCustomEvent('home_viewed', { user_authenticated: !!isAuthenticated });
@@ -424,7 +474,23 @@ const Home = () => {
     // Voice input functionality placeholder
   }, []);
 
-  const handleAgenticSearch = () => {
+  const handleSendMessage = async () => {
+    if (!consent && !consentGiven) {
+      // Animation shake sur la checkbox
+      const consentElement = document.querySelector('.consent-wrapper');
+      consentElement?.classList.add('animate-pulse');
+      setTimeout(() => {
+        consentElement?.classList.remove('animate-pulse');
+      }, 1000);
+      
+      toast({
+        title: "Consentement requis",
+        description: "Veuillez accepter le traitement de vos données",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     if (!agenticQuery.trim()) {
       toast({
         title: "Erreur",
@@ -433,16 +499,74 @@ const Home = () => {
       });
       return;
     }
-    if (!consent) {
-      toast({
-        title: "Consentement requis",
-        description: "Veuillez accepter le traitement de vos données",
-        variant: "destructive",
-      });
-      return;
+
+    // Marquer le consentement comme donné
+    if (consent) {
+      setConsentGiven(true);
     }
-    trackCustomEvent('search_submitted', { query_length: agenticQuery.length });
-    agenticSearchMutation.mutate({ query: agenticQuery, consent });
+
+    // Ajouter le message utilisateur
+    const userMessage: ChatMessage = {
+      role: 'user',
+      content: agenticQuery,
+      timestamp: new Date()
+    };
+    
+    setMessages(prev => [...prev, userMessage]);
+
+    // Vider le champ
+    const currentQuery = agenticQuery;
+    setAgenticQuery('');
+    
+    // Afficher "IA en train d'analyser..."
+    const typingMessage: ChatMessage = {
+      role: 'assistant',
+      content: 'Analyse en cours de votre demande...',
+      isTyping: true,
+      timestamp: new Date()
+    };
+    
+    setMessages(prev => [...prev, typingMessage]);
+    setIsAnalyzing(true);
+
+    try {
+      trackCustomEvent('search_submitted', { query_length: currentQuery.length });
+      
+      const response = await agenticSearchMutation.mutateAsync({ 
+        query: currentQuery, 
+        consent: true 
+      });
+
+      // Remplacer le message "typing" par la vraie réponse
+      setMessages(prev => {
+        const newMessages = [...prev];
+        newMessages[newMessages.length - 1] = {
+          role: 'assistant',
+          content: response.analysis || `J'ai trouvé ${response.properties?.length || 0} propriétés correspondant à votre recherche. Voici les recommandations :`,
+          properties: response.properties,
+          fiscalOptimization: response.taxInfo ? {
+            preview: response.taxInfo.preview || "Analyse fiscale disponible - créez un compte pour plus de détails",
+            details: response.taxInfo
+          } : undefined,
+          timestamp: new Date()
+        };
+        return newMessages;
+      });
+
+    } catch (error) {
+      // Remplacer le message typing par un message d'erreur
+      setMessages(prev => {
+        const newMessages = [...prev];
+        newMessages[newMessages.length - 1] = {
+          role: 'assistant',
+          content: "Désolé, une erreur s'est produite lors de l'analyse. Veuillez réessayer.",
+          timestamp: new Date()
+        };
+        return newMessages;
+      });
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
   const handleDownloadPDF = () => {
     if (searchResults?.pdf_url) {
@@ -480,7 +604,7 @@ const Home = () => {
         <div className="space-y-0">
           <Alternative3 />
         </div>
-        {/* Commencer l'Expérience */}
+        {/* Interface Chatbot IA Complète */}
         <motion.section
           id="start-experience"
           className="relative py-24 md:py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-secondary to-background/80 overflow-hidden"
@@ -505,89 +629,111 @@ const Home = () => {
             <div className="absolute bottom-1/3 left-1/2 w-1 h-1 bg-primary/80 rounded-full animate-bounce delay-700" />
           </div>
           
-          <div className="max-w-3xl mx-auto relative z-10">
+          <div className="max-w-4xl mx-auto relative z-10">
             <motion.h2
               className="swaarg-section-title text-primary text-center mb-12"
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              Commencer l'Expérience
+              Votre Assistant IA Immobilier
             </motion.h2>
             
-            <motion.p
-              className="swaarg-hero-subtitle text-center mb-12"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
-              Laissez l'IA transformer votre vision en réalité immobilière parfaite
-            </motion.p>
-            
-            {/* Futuristic Input Container */}
+            {/* Zone de Chat principale */}
             <motion.div 
-              className="relative bg-card/50 backdrop-blur-xl border border-primary/20 rounded-3xl p-8 shadow-premium overflow-hidden"
+              className="relative bg-white/96 border border-white/25 rounded-xl shadow-2xl overflow-hidden"
+              style={{ backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
               initial={{ opacity: 0, scale: 0.95, rotateX: -10 }}
               whileInView={{ opacity: 1, scale: 1, rotateX: 0 }}
               transition={{ duration: 1, type: 'spring', damping: 15 }}
               whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(0,144,230,0.2)' }}
             >
-              {/* Glowing Border Effect */}
-              <motion.div
-                className="absolute inset-0 border-2 border-primary/0 rounded-3xl pointer-events-none"
-                animate={{
-                  borderColor: ['rgba(0,144,230,0)', 'rgba(0,144,230,0.3)', 'rgba(0,144,230,0)'],
-                }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-              />
-              
-              {/* AI Orb Indicator */}
-              <motion.div 
-                className="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-24 rounded-full bg-primary/20 blur-xl"
-                animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.5, 0.8, 0.5],
-                }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              {/* Header avec titre intégré */}
+              <div className="bg-gradient-to-r from-primary/10 to-primary/5 px-4 py-2 border-b border-gray-200/30">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <p className="text-primary text-xs font-medium tracking-wide">
+                    Assistant IA Immobilier - Analyse en temps réel
+                  </p>
+                </div>
+              </div>
+
+              {/* Zone des messages (scrollable) */}
+              <div 
+                ref={messagesContainerRef}
+                className="messages-area h-[500px] overflow-y-auto p-6 space-y-4"
               >
-                <motion.div 
-                  className="absolute inset-4 rounded-full bg-primary shadow-[0_0_20px_rgba(0,144,230,0.5)]"
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-                />
-              </motion.div>
+                {messages.length === 0 ? (
+                  <div className="text-center text-gray-500 pt-32">
+                    <p className="text-lg mb-4">👋 Bonjour ! Je suis votre assistant IA immobilier</p>
+                    <p className="text-sm">Décrivez votre recherche pour commencer l'analyse personnalisée</p>
+                  </div>
+                ) : (
+                  messages.map((message, index) => (
+                    <ChatMessageComponent key={index} message={message} />
+                  ))
+                )}
+              </div>
               
-              <Textarea
-                value={agenticQuery}
-                onChange={(e) => setAgenticQuery(e.target.value)}
-                placeholder="Décrivez votre projet idéal... (ex: Appartement vue mer à Limassol, budget 500k€, optimisation fiscale)"
-                className="w-full min-h-[120px] bg-transparent border-0 text-primary placeholder:text-muted-foreground/60 focus-visible:ring-0 resize-none text-lg"
-              />
-              
-              <div className="flex items-center justify-between mt-4">
-                <Label htmlFor="consent" className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
-                  <Checkbox id="consent" checked={consent} onCheckedChange={(checked) => setConsent(!!checked)} />
-                  Accepter le traitement des données pour recommandations personnalisées
-                </Label>
+              {/* Zone de saisie en bas */}
+              <div className="input-area border-t border-gray-200/30 p-4">
                 
-                <div className="flex gap-4">
-                  <motion.button 
-                    className="p-3 bg-primary/10 rounded-full hover:bg-primary/20 transition-colors"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={handleVoiceInput}
-                    aria-label="Voice input"
+                {/* Checkbox consentement (visible seulement si pas encore accepté) */}
+                {!consentGiven && (
+                  <motion.div 
+                    className={`consent-wrapper mb-4 p-3 bg-yellow-50/80 rounded-lg ${shouldHighlightConsent ? 'ring-2 ring-yellow-400 animate-pulse' : ''}`}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
                   >
-                    <Mic className="w-5 h-5 text-primary" />
+                    <label className="flex items-start gap-3 cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        checked={consent}
+                        onChange={(e) => setConsent(e.target.checked)}
+                        className="mt-1 rounded border-gray-300 focus:ring-primary"
+                      />
+                      <span className="text-sm text-gray-700">
+                        J'accepte le traitement de mes données pour des recommandations 
+                        personnalisées conformément à la politique de confidentialité
+                      </span>
+                    </label>
+                  </motion.div>
+                )}
+                
+                {/* Textarea + Bouton (MÊME STYLE QUE HERO) */}
+                <div className="flex gap-3">
+                  <textarea
+                    value={agenticQuery}
+                    onChange={(e) => setAgenticQuery(e.target.value)}
+                    placeholder="Décrivez votre recherche immobilière idéale..."
+                    className="flex-1 h-20 border-gray-200/40 focus:border-primary bg-white/80 rounded-lg text-sm p-3 resize-none focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    disabled={!consentGiven && !consent}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSendMessage();
+                      }
+                    }}
+                  />
+                  <motion.button
+                    onClick={handleSendMessage}
+                    disabled={(!consentGiven && !consent) || !agenticQuery.trim() || isAnalyzing}
+                    className="h-20 px-6 bg-primary hover:bg-primary/90 text-white rounded-lg flex items-center justify-center transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed font-medium"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {isAnalyzing ? (
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                        Analyse...
+                      </div>
+                    ) : !consentGiven && !consent ? (
+                      "Acceptez d'abord"
+                    ) : (
+                      "Lancer l'Analyse IA"
+                    )}
                   </motion.button>
-                  
-                  <Button 
-                    onClick={handleAgenticSearch}
-                    disabled={!agenticQuery.trim() || !consent}
-                    className="bg-primary hover:bg-primary-hover"
-                  >
-                    Lancer l'Analyse IA
-                  </Button>
                 </div>
               </div>
             </motion.div>
