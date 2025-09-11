@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { Send } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
 const useMultilingualTypewriter = (texts: string[], speed: number = 35) => {
@@ -197,13 +197,14 @@ const Alternative3 = () => {
                 onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
               />
 <motion.button
+  type="button"
   onClick={handleSendMessage}
-  className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 bg-primary hover:bg-primary/90 text-white rounded-md flex items-center justify-center transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+  className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 bg-white/90 text-foreground border border-gray-300 rounded-md flex items-center justify-center shadow-sm transition-all duration-200 hover:bg-white disabled:opacity-60 disabled:cursor-not-allowed"
   disabled={!inputValue.trim()}
-  whileHover={{ scale: 1.1 }}
-  whileTap={{ scale: 0.9 }}
+  whileHover={{ scale: 1.05 }}
+  whileTap={{ scale: 0.95 }}
 >
-  <Send className="w-3 h-3" />
+  <Search className="w-4 h-4" />
 </motion.button>
             </div>
           </div>
