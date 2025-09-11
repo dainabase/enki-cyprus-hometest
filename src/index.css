@@ -5,125 +5,134 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ========================================
-   SYSTÈME DE COULEURS ENKI REALTY CYPRUS
-   ======================================== */
+/* ENKI-REALTY Design System - Professional Real Estate Platform
+Inspired by Cyprus Mediterranean elegance with modern minimalism
+All colors MUST be HSL.
+*/
 
-:root {
-  /* COULEURS PRINCIPALES - Palette Méditerranéenne */
-  --primary: 197 61% 58%;              /* #57B9D6 - Turquoise Méditerranée */
-  --primary-rgb: 87, 185, 214;
-  --primary-foreground: 0 0% 100%;     /* Blanc sur turquoise */
-  --primary-hover: 197 61% 48%;        /* Turquoise plus foncé au hover */
-  --primary-light: 197 61% 68%;        /* Turquoise plus clair */
-  
-  --secondary: 204 46% 88%;            /* #D3E3F0 - Bleu ciel de Paphos */
-  --secondary-rgb: 211, 227, 240;
-  --secondary-foreground: 0 0% 20%;    /* Texte foncé sur bleu clair */
-  --secondary-hover: 204 46% 78%;      /* Plus foncé au hover */
-  
-  --accent: 31 50% 85%;                /* #FDF0E4 - Sable de Limassol */
-  --accent-rgb: 253, 240, 228;
-  --accent-foreground: 0 0% 20%;       /* Texte foncé sur beige */
-  --accent-hover: 31 50% 75%;          /* Plus foncé au hover */
-  
-  --muted: 20 20% 55%;                 /* #A17964 - Terre cuite chypriote */
-  --muted-rgb: 161, 121, 100;
-  --muted-foreground: 0 0% 100%;       /* Blanc sur brun */
-  --muted-hover: 20 20% 45%;           /* Plus foncé au hover */
-  
-  /* COULEURS NEUTRES */
-  --background: 0 0% 100%;             /* Blanc pur */
-  --foreground: 0 0% 13%;              /* Presque noir */
-  --card: 0 0% 100%;                   /* Fond des cartes */
-  --card-foreground: 0 0% 13%;         /* Texte des cartes */
-  --border: 204 46% 88%;               /* Bordures = secondary */
-  --input: 204 46% 95%;                /* Fond des inputs */
-  --ring: 197 61% 58%;                 /* Focus ring = primary */
-  
-  /* COULEURS SÉMANTIQUES */
-  --success: 142 76% 36%;              /* Vert méditerranéen */
-  --success-foreground: 0 0% 100%;
-  --warning: 25 95% 53%;               /* Orange chypriote */
-  --warning-foreground: 0 0% 100%;
-  --error: 0 84% 60%;                  /* Rouge corail */
-  --error-foreground: 0 0% 100%;
-  
-  /* GOLDEN VISA SPECIAL */
-  --golden: 45 100% 51%;               /* Or pour Golden Visa */
-  --golden-dark: 45 100% 35%;          /* Or foncé */
-  --golden-light: 45 100% 65%;         /* Or clair */
-  
-  /* GRADIENTS PREMIUM */
-  --gradient-hero: linear-gradient(135deg, 
-    hsl(var(--accent)) 0%, 
-    hsl(var(--secondary)) 50%, 
-    hsl(var(--primary)) 100%
-  );
-  
-  --gradient-sunset: linear-gradient(135deg,
-    hsl(var(--accent)) 0%,
-    hsl(var(--muted)) 45%,
-    hsl(var(--primary)) 100%
-  );
-  
-  --gradient-ocean: linear-gradient(180deg,
-    hsl(var(--primary-light)) 0%,
-    hsl(var(--primary)) 100%
-  );
-  
-  --gradient-sand: linear-gradient(135deg,
-    hsl(var(--accent)) 0%,
-    hsl(var(--accent-hover)) 100%
-  );
-  
-  --gradient-premium: linear-gradient(90deg,
-    hsl(var(--primary)) 0%,
-    hsl(var(--muted)) 100%
-  );
-  
-  /* OMBRES */
-  --shadow-sm: 0 1px 2px 0 rgba(87, 185, 214, 0.05);
-  --shadow: 0 4px 6px -1px rgba(87, 185, 214, 0.1);
-  --shadow-md: 0 10px 15px -3px rgba(87, 185, 214, 0.1);
-  --shadow-lg: 0 20px 25px -5px rgba(87, 185, 214, 0.15);
-  --shadow-xl: 0 25px 50px -12px rgba(87, 185, 214, 0.25);
-  
-  /* ANIMATIONS */
-  --transition-base: 200ms ease-in-out;
-  --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-bounce: 600ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  
-  /* ESPACEMENTS */
-  --radius: 0.5rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.5rem;
-  --radius-full: 9999px;
+@layer base {
+  :root {
+    /* Swaarg-inspired modern elegance */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    
+    /* Card system - Clean modern */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    
+    /* Interactive elements */
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    
+    /* Primary - Swaarg blue */
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --primary-hover: 221.2 83.2% 45%;
+    
+    /* Secondary palette */
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    
+    /* Muted tones */
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    
+    /* Accent colors */
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    
+    /* Status colors */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --success: 142 71% 45%;
+    --success-foreground: 210 40% 98%;
+    
+    /* Borders and inputs */
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    
+    /* Swaarg-inspired gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(221.2 83.2% 60%) 100%);
+    --gradient-card: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(210 40% 98%) 100%);
+    --gradient-premium: linear-gradient(45deg, hsl(var(--primary)) 0%, hsl(221.2 90% 65%) 100%);
+    
+    /* Modern shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    --shadow-premium: 0 25px 50px -12px rgb(var(--primary) / 0.25);
+    
+    /* Typography spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+    
+    --radius: 1rem;
 
-  /* SIDEBAR */
-  --sidebar-background: 0 0% 98%;
-  --sidebar-foreground: 240 5.3% 26.1%;
-  --sidebar-primary: 240 5.9% 10%;
-  --sidebar-primary-foreground: 0 0% 98%;
-  --sidebar-accent: 240 4.8% 95.9%;
-  --sidebar-accent-foreground: 240 5.9% 10%;
-  --sidebar-border: 220 13% 91%;
-  --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    /* Dark mode maintains professional elegance */
+    --background: 215 30% 8%;
+    --foreground: 210 15% 92%;
+    
+    --card: 215 25% 10%;
+    --card-foreground: 210 15% 92%;
+    
+    --popover: 215 25% 10%;
+    --popover-foreground: 210 15% 92%;
+    
+    --primary: 200 100% 55%;
+    --primary-foreground: 215 30% 8%;
+    --primary-hover: 200 100% 60%;
+    
+    --secondary: 215 20% 15%;
+    --secondary-foreground: 210 15% 92%;
+    
+    --muted: 215 20% 12%;
+    --muted-foreground: 215 15% 65%;
+    
+    --accent: 200 30% 15%;
+    --accent-foreground: 200 100% 65%;
+    
+    --destructive: 0 85% 65%;
+    --destructive-foreground: 215 30% 8%;
+    --success: 142 75% 55%;
+    --success-foreground: 215 30% 8%;
+    
+    --border: 215 20% 18%;
+    --input: 215 20% 15%;
+    --ring: 200 100% 55%;
+    
+    --gradient-hero: linear-gradient(135deg, hsl(200 100% 55%) 0%, hsl(190 85% 60%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(215 25% 10%) 0%, hsl(215 20% 12%) 100%);
+    --gradient-premium: linear-gradient(135deg, hsl(200 100% 55%) 0%, hsl(210 85% 50%) 50%, hsl(190 80% 55%) 100%);
+    
+    --shadow-sm: 0 2px 4px hsl(0 0% 0% / 0.2);
+    --shadow-md: 0 4px 12px hsl(0 0% 0% / 0.3);
+    --shadow-lg: 0 8px 25px hsl(0 0% 0% / 0.4);
+    --shadow-premium: 0 12px 40px hsl(200 100% 55% / 0.3);
+  }
 }
-
-/* Mode sombre (optionnel pour le futur) */
-.dark {
-  --background: 0 0% 7%;
-  --foreground: 0 0% 95%;
-  --primary: 197 61% 45%;
-  --secondary: 204 46% 20%;
-  --accent: 31 30% 25%;
-  --muted: 20 15% 35%;
-}
-
-/* ========================================
-   CLASSES UTILITAIRES PERSONNALISÉES
-   ======================================== */
 
 @layer base {
   * {
@@ -146,7 +155,7 @@
 }
 
 @layer components {
-  /* Typography System ENKI REALTY */
+  /* Swaarg-inspired Typography System */
   .swaarg-hero-title {
     @apply font-inter text-6xl md:text-7xl lg:text-8xl font-extralight tracking-tighter leading-none;
     letter-spacing: -0.05em;
@@ -190,75 +199,51 @@
     @apply font-inter text-base font-medium;
   }
 
-  /* Backgrounds avec gradients */
-  .bg-gradient-hero { background: var(--gradient-hero); }
-  .bg-gradient-sunset { background: var(--gradient-sunset); }
-  .bg-gradient-ocean { background: var(--gradient-ocean); }
-  .bg-gradient-sand { background: var(--gradient-sand); }
-  .bg-gradient-premium { background: var(--gradient-premium); }
-
-  /* Textures et patterns */
-  .texture-dots {
-    background-image: radial-gradient(circle, hsl(var(--primary) / 0.1) 1px, transparent 1px);
-    background-size: 20px 20px;
+/* OneArc Design System Additions */
+  :root {
+    --primary-black: #000000;
+    --pure-white: #FFFFFF;
+    --soft-gray: #F5F5F5;
+    --medium-gray: #E0E0E0;
+    --dark-gray: #1A1A1A;
+    --accent-beige: #F7F3F0;
+    --text-primary: #000000;
+    --text-secondary: #666666;
+    --border-light: rgba(0,0,0,0.08);
+    --shadow-soft: 0 20px 40px rgba(0,0,0,0.08);
+    --shadow-hover: 0 30px 60px rgba(0,0,0,0.12);
+    
+    /* Typography Scale */
+    --font-hero: 72px/1.1 'Inter', sans-serif;
+    --font-h1: 56px/1.2 'Inter', sans-serif;
+    --font-h2: 40px/1.3 'Inter', sans-serif;
+    --font-h3: 32px/1.4 'Inter', sans-serif;
+    --font-body-lg: 18px/1.6 'Inter', sans-serif;
+    --font-body: 16px/1.7 'Inter', sans-serif;
+    --font-small: 14px/1.5 'Inter', sans-serif;
+    --font-micro: 12px/1.4 'Inter', sans-serif;
+    
+    /* Weights */
+    --weight-light: 300;
+    --weight-regular: 400;
+    --weight-medium: 500;
+    --weight-semibold: 600;
+    --weight-bold: 700;
+    
+    /* Border Radius */
+    --radius-small: 16px;
+    --radius-medium: 24px;
+    --radius-large: 40px;
+    --radius-full: 9999px;
   }
 
-  .texture-lines {
-    background-image: repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent 10px,
-      hsl(var(--primary) / 0.05) 10px,
-      hsl(var(--primary) / 0.05) 20px
-    );
+  /* Marquee Animation */
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
   }
-
-  /* Formes géométriques */
-  .shape-triangle {
-    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-  }
-
-  .shape-circle {
-    clip-path: circle(50%);
-  }
-
-  .shape-hexagon {
-    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
-  }
-
-  .shape-arc-bottom {
-    border-radius: 0 0 50% 50%;
-  }
-
-  .shape-arc-top {
-    border-radius: 50% 50% 0 0;
-  }
-
-  /* Professional button variants */
-  .btn-premium {
-    @apply bg-gradient-to-r from-primary to-primary-hover text-primary-foreground px-8 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105;
-  }
-  
-  .btn-outline-premium {
-    @apply border-2 border-primary text-primary bg-transparent px-8 py-3 rounded-lg font-semibold hover:bg-primary hover:text-primary-foreground transition-all duration-300;
-  }
-  
-  /* Card hover effects */
-  .card-hover {
-    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
-  }
-
-  /* Text gradients */
-  .text-gradient {
-    @apply bg-gradient-to-r from-primary to-muted bg-clip-text text-transparent;
-  }
-  
-  .text-gradient-gold {
-    background: linear-gradient(135deg, hsl(var(--golden)) 0%, hsl(var(--golden-light)) 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
+  .animate-marquee {
+    animation: marquee 30s linear infinite;
   }
 
   /* Image Hover Effects */
@@ -275,13 +260,50 @@
   }
   .button-hover:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  }
+
+  /* Professional button variants */
+  .btn-premium {
+    @apply bg-gradient-to-r from-primary to-primary-hover text-primary-foreground px-8 py-3 rounded-lg font-semibold shadow-lg hover:shadow-premium transition-all duration-300 transform hover:scale-105;
+  }
+  
+  .btn-outline-premium {
+    @apply border-2 border-primary text-primary bg-transparent px-8 py-3 rounded-lg font-semibold hover:bg-primary hover:text-primary-foreground transition-all duration-300;
+  }
+  
+  /* Card hover effects */
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+  }
+  
+  /* Gradient backgrounds */
+  .bg-gradient-hero {
+    background: var(--gradient-hero);
+  }
+  
+  .bg-gradient-premium {
+    background: var(--gradient-premium);
+  }
+  
+  /* Text gradients */
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary to-accent-foreground bg-clip-text text-transparent;
+  }
+  
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #a17964 0%, #d4af7a 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
   }
 
   /* Admin all-black theme overrides */
   .admin-theme {
     --foreground: 0 0% 0%;
     --card-foreground: 0 0% 0%;
+    --popover-foreground: 0 0% 0%;
     --secondary-foreground: 0 0% 0%;
     --muted-foreground: 0 0% 0%;
     --accent-foreground: 0 0% 0%;
@@ -295,32 +317,4 @@
     color: hsl(0 0% 0%) !important;
     stroke: hsl(0 0% 0%) !important;
   }
-}
-
-@layer utilities {
-  /* Animations */
-  @keyframes float-slow {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-10px) rotate(2deg); }
-  }
-
-  @keyframes pulse-soft {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.8; }
-  }
-
-  @keyframes slide-in-right {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-  }
-
-  @keyframes marquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-
-  .animate-float { animation: float-slow 6s ease-in-out infinite; }
-  .animate-pulse-soft { animation: pulse-soft 3s ease-in-out infinite; }
-  .animate-slide-right { animation: slide-in-right 0.5s ease-out; }
-  .animate-marquee { animation: marquee 30s linear infinite; }
 }

@@ -698,137 +698,63 @@ const Home = () => {
         <div className="space-y-0">
           <Alternative3 />
         </div>
-        {/* Section Chat IA ENKI REALTY */}
-        <section id="start-experience" className="py-24 px-4 bg-gradient-sand">
+        {/* Interface Split-View : Chat + Panneau Résultats */}
+        <section id="start-experience" className="py-24 px-4 min-h-screen">
           <div className="container mx-auto max-w-7xl">
-            {/* Titre avec style */}
-            <motion.div 
-              initial={{ opacity: 0, y: -20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              className="text-center mb-12"
-            >
-              <h2 className="text-5xl font-bold text-muted mb-4">
-                Votre Assistant IA Immobilier
-              </h2>
-              <p className="text-xl text-muted/70">
-                Analyse intelligente • Matching précis • Optimisation fiscale
-              </p>
-            </motion.div>
-
-            {/* CONTAINER SPLIT-VIEW */}
-            <div className="relative flex gap-0 h-[700px] 
-                            bg-white rounded-3xl overflow-hidden 
-                            shadow-2xl border-2 border-secondary/20">
-              
-              {/* Pattern décoratif */}
-              <div className="absolute inset-0 texture-lines opacity-5 pointer-events-none" />
+            <h2 className="text-4xl font-bold text-center mb-8 text-primary">
+              Votre Assistant IA Immobilier
+            </h2>
+            
+            {/* Container principal avec split view */}
+            <div className="relative flex gap-0 h-[800px] border rounded-xl overflow-hidden bg-background shadow-xl">
               
               {/* PANNEAU CHAT (gauche) */}
-              <div className={`chat-panel transition-all duration-500 ease-in-out
-                              bg-gradient-to-br from-accent/30 to-white
-                              ${showResults ? 'w-1/2' : 'w-full'}`}>
-                
-                {/* En-tête du chat */}
-                <div className="p-6 border-b border-secondary/20 bg-white/50 backdrop-blur">
-                  <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 rounded-full bg-success animate-pulse" />
-                    <span className="font-semibold text-muted">Assistant IA en ligne</span>
-                  </div>
-                </div>
-                
-                {/* Zone des messages */}
+              <div className={`chat-panel transition-all duration-500 ease-in-out ${
+                showResults ? 'w-1/2' : 'w-full'
+              }`}>
+                {/* Zone messages */}
                 <div 
                   ref={messagesContainerRef}
-                  className="messages-area h-[520px] overflow-y-auto p-6 space-y-4"
+                  className="messages-area h-[620px] overflow-y-auto p-6"
                 >
                   {messages.length === 0 ? (
-                    <div className="text-center text-muted/70 pt-32">
+                    <div className="text-center text-gray-500 pt-32">
                       <p className="text-lg mb-4">👋 Bonjour ! Je suis votre assistant IA immobilier</p>
                       <p className="text-sm">Décrivez votre recherche pour commencer l'analyse personnalisée</p>
                     </div>
                   ) : (
                     messages.map((message, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                      >
-                        {message.role === 'user' ? (
-                          // Message utilisateur
-                          <div className="flex justify-end">
-                            <div className="max-w-[70%] px-6 py-4 
-                                          bg-gradient-ocean text-white 
-                                          rounded-3xl rounded-br-sm
-                                          shadow-md">
-                              {message.content}
-                            </div>
-                          </div>
-                        ) : (
-                          // Message IA
-                          <div className="flex justify-start">
-                            <div className="max-w-[70%]">
-                              <div className="px-6 py-4 
-                                            bg-white border-2 border-secondary
-                                            rounded-3xl rounded-bl-sm
-                                            shadow-sm">
-                                {message.isTyping ? (
-                                  <div className="flex gap-2">
-                                    <span className="w-2 h-2 bg-primary rounded-full animate-bounce" />
-                                    <span className="w-2 h-2 bg-primary rounded-full animate-bounce delay-100" />
-                                    <span className="w-2 h-2 bg-primary rounded-full animate-bounce delay-200" />
-                                  </div>
-                                ) : (
-                                  <p className="text-foreground">{message.content}</p>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </motion.div>
+                      <ChatMessageComponent key={index} message={message} />
                     ))
                   )}
                 </div>
                 
-                {/* Zone d'input */}
-                <div className="input-area border-t border-secondary/20 p-6 bg-white/70">
-                  {/* Consentement RGPD élégant */}
+                {/* Zone input en bas */}
+                <div className="input-area border-t p-4">
+                  {/* Consentement RGPD simple */}
                   {!consentGiven && (
-                    <motion.div 
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      className="consent-wrapper mb-4 p-4 
-                               bg-warning/10 border-2 border-warning/30 
-                               rounded-xl"
-                    >
-                      <label className="flex items-start gap-3 cursor-pointer">
+                    <div className="consent-box mb-4 p-3 bg-amber-50 border border-amber-200 rounded">
+                      <label className="flex items-center gap-3">
                         <input 
-                          type="checkbox"
-                          checked={consent}
-                          onChange={(e) => handleConsentChange(e.target.checked)}
-                          className="mt-1 w-5 h-5 accent-primary"
+                          type="checkbox" 
+                          checked={consent} 
+                          onChange={(e) => handleConsentChange(e.target.checked)} 
                         />
-                        <span className="text-sm text-foreground/80">
-                          J'accepte le traitement de mes données personnelles pour 
-                          recevoir des recommandations personnalisées conformément 
-                          à notre politique de confidentialité
+                        <span className="text-sm">
+                          J'accepte le traitement de mes données pour des recommandations personnalisées
                         </span>
                       </label>
-                    </motion.div>
+                    </div>
                   )}
                   
-                  {/* Textarea et bouton */}
                   <div className="flex gap-3">
-                    <textarea
+                    <textarea 
                       value={agenticQuery}
                       onChange={(e) => setAgenticQuery(e.target.value)}
-                      placeholder="Continuez votre recherche..."
-                      className="flex-1 p-4 rounded-2xl 
-                               bg-accent/20 border-2 border-accent/40
-                               focus:border-primary focus:bg-white
-                               transition-all duration-300
-                               resize-none"
+                      className="flex-1 p-3 border rounded-lg resize-none"
                       rows={2}
+                      placeholder="Décrivez votre recherche immobilière idéale..."
+                      disabled={!consentGiven && !consent}
                       onKeyPress={(e) => {
                         if (e.key === 'Enter' && !e.shiftKey) {
                           e.preventDefault();
@@ -836,40 +762,26 @@ const Home = () => {
                         }
                       }}
                     />
-                    <button
+                    <button 
                       onClick={handleAnalysis}
-                      disabled={!consent || !agenticQuery.trim()}
-                      className="px-8 py-4 
-                               bg-gradient-premium text-white font-bold
-                               rounded-2xl shadow-lg
-                               hover:shadow-xl hover:scale-105
-                               disabled:opacity-50 disabled:cursor-not-allowed
-                               transition-all duration-300"
+                      disabled={!consent || !agenticQuery.trim() || isAnalyzing}
+                      className="px-6 py-3 bg-primary text-white rounded-lg disabled:opacity-50 font-medium"
                     >
-                      Analyser
+                      {isAnalyzing ? 'Analyse...' : 'Analyser'}
                     </button>
                   </div>
                 </div>
               </div>
               
-              {/* PANNEAU RÉSULTATS (droite) */}
-              <div className={`results-panel transition-all duration-500
-                              bg-gradient-to-br from-secondary/30 to-white
-                              border-l-2 border-secondary/20
-                              ${showResults ? 'w-1/2 opacity-100' : 'w-0 opacity-0'}`}>
+              {/* PANNEAU RÉSULTATS (droite) - Slide depuis la droite */}
+              <div className={`results-panel border-l bg-gray-50 transition-all duration-500 ease-in-out overflow-hidden ${
+                showResults ? 'w-1/2' : 'w-0'
+              }`}>
                 <div className="p-6 h-full overflow-y-auto">
-                  {/* En-tête résultats */}
-                  <div className="mb-8">
-                    <h3 className="text-3xl font-bold text-muted mb-2">
-                      Propriétés Sélectionnées
-                    </h3>
-                    <p className="text-muted/70">
-                      Basées sur vos critères et préférences
-                    </p>
-                  </div>
+                  <h3 className="text-2xl font-bold mb-6">Propriétés Correspondantes</h3>
                   
-                  {/* Cards propriétés */}
-                  <div className="space-y-6">
+                  {/* Propriétés */}
+                  <div className="space-y-4 mb-8">
                     {mockProperties.map((property, idx) => (
                       <PropertyResultCard 
                         key={idx} 
@@ -882,19 +794,16 @@ const Home = () => {
                     ))}
                   </div>
                   
-                  {/* Section Optimisation Fiscale */}
-                  <div className="mt-8 p-6 bg-gradient-to-br from-golden/10 to-golden/5
-                                border-2 border-golden/30 rounded-2xl">
-                    <h4 className="text-xl font-bold text-muted mb-3">
-                      💰 Optimisation Fiscale Personnalisée
+                  {/* Optimisation Fiscale */}
+                  <div className="fiscal-section bg-blue-50 p-6 rounded-lg">
+                    <h4 className="text-lg font-bold mb-3">
+                      📊 Scénario d'Optimisation Fiscale
                     </h4>
-                    <p className="text-foreground/80 mb-4">
-                      Économie potentielle: <span className="font-bold text-primary">12,500€/an</span>
+                    <p className="text-sm text-gray-700 mb-4">
+                      Basé sur votre profil de résident fiscal français avec un budget de 250 000€...
                     </p>
-                    <button className="w-full py-3 bg-gradient-to-r from-golden to-golden-dark text-white 
-                                     font-bold rounded-xl hover:shadow-lg 
-                                     transition-all duration-300">
-                      Débloquer l'Analyse Complète →
+                    <button className="text-blue-600 font-medium underline">
+                      Créer un compte pour l'analyse complète →
                     </button>
                   </div>
                 </div>
@@ -903,77 +812,104 @@ const Home = () => {
           </div>
         </section>
 
-        {/* KPIs Section avec charte ENKI REALTY */}
+        {/* KPIs Marché Immobilier - masqués si chat actif */}
         {!showResults && (
-          <section className="py-24 bg-white relative overflow-hidden">
-            {/* Décoration géométrique */}
-            <div className="absolute top-0 right-0 w-64 h-64 
-                          bg-primary/5 shape-hexagon animate-float" />
-            
-            <div className="container mx-auto px-4">
-              <motion.h2 
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                className="text-4xl font-bold text-center text-muted mb-12"
-              >
-                Le Marché en Temps Réel
-              </motion.h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                {/* KPI Card 1 */}
+          <motion.section
+            id="market-kpis"
+            className="bg-background py-24 md:py-32 px-4 sm:px-6 lg:px-8"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+          <div className="max-w-7xl mx-auto">
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.8, staggerChildren: 0.2 }}
+              viewport={{ once: true }}
+            >
+              {[
+                {
+                  number: "+6,5%",
+                  title: "Appréciation annuelle des prix immobiliers",
+                  subtitle: "",
+                  source: "Sources : <a href='https://www.globalpropertyguide.com/Europe/Cyprus/Price-History' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Global Property Guide</a> · <a href='https://www.ceicdata.com/en/indicator/cyprus/house-prices-growth' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>CEIC Data</a>",
+                },
+                {
+                  number: "23,9K",
+                  title: "Transactions immobilières en 2024",
+                  subtitle: "",
+                  source: "Sources : <a href='https://www.pwc.com.cy/en/publications/cyprus-real-estate-market-review.html' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>PwC Cyprus Real Estate Market Review</a> · <a href='https://cyprus-mail.com/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Cyprus Mail</a>",
+                },
+                {
+                  number: "70%",
+                  title: "Taux d'occupation locative",
+                  subtitle: "",
+                  source: "Sources : <a href='https://airbtics.com/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Airbtics</a> · <a href='https://investropa.com/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Investropa</a>",
+                },
+                {
+                  number: "4,75%",
+                  title: "Rendement locatif brut moyen",
+                  subtitle: "",
+                  source: "Sources : <a href='https://www.globalcitizensolutions.com/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Global Citizens Solutions</a> · <a href='https://www.rics.org/cyprus/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>RICS Cyprus</a> · <a href='https://www.globalpropertyguide.com/Europe/Cyprus' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Global Property Guide</a>",
+                },
+              ].map((kpi, index) => (
                 <motion.div
-                  whileHover={{ y: -5 }}
-                  className="relative p-8 bg-gradient-to-br from-accent to-white 
-                           rounded-3xl shadow-lg border-2 border-accent/20"
+                  key={index}
+                  className="text-center group"
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.2, type: "spring", damping: 20 }}
+                  viewport={{ once: true }}
+                  whileHover={{ scale: 1.05, transition: { type: "spring", damping: 15 } }}
+                  onViewportEnter={() => {
+                    trackCustomEvent('kpi_viewed', { title: kpi.title, number: kpi.number, index });
+                  }}
                 >
-                  <div className="absolute top-4 right-4 w-12 h-12 
-                                bg-primary/20 rounded-full animate-pulse-soft" />
-                  <h3 className="text-muted/70 font-semibold mb-2">Propriétés Actives</h3>
-                  <p className="text-4xl font-bold text-primary">327</p>
-                  <span className="text-sm text-success">↑ 12% ce mois</span>
+                  <motion.div
+                    className="swaarg-section-title text-primary mb-6"
+                    initial={{ scale: 0, opacity: 0 }}
+                    whileInView={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 1.5, delay: index * 0.2 + 0.5, ease: "easeOut", type: "spring", damping: 15 }}
+                    viewport={{ once: true }}
+                  >
+                    {kpi.number}
+                  </motion.div>
+                  <motion.h3
+                    className="swaarg-card-title text-primary mb-3"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.2 + 0.7 }}
+                    viewport={{ once: true }}
+                  >
+                    {kpi.title}
+                  </motion.h3>
+                  <motion.p
+                    className="text-sm font-normal leading-relaxed -0.003em text-muted-foreground max-w-xs mx-auto mb-3"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.2 + 0.9 }}
+                    viewport={{ once: true }}
+                  >
+                    {kpi.subtitle}
+                  </motion.p>
+                  {kpi.source && (
+                    <motion.div
+                      className="text-xs"
+                      dangerouslySetInnerHTML={{ __html: kpi.source }}
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      transition={{ duration: 0.6, delay: index * 0.2 + 1.1 }}
+                      viewport={{ once: true }}
+                    />
+                  )}
                 </motion.div>
-                
-                {/* KPI Card 2 */}
-                <motion.div
-                  whileHover={{ y: -5 }}
-                  className="relative p-8 bg-gradient-to-br from-secondary to-white 
-                           rounded-3xl shadow-lg border-2 border-secondary/20"
-                >
-                  <div className="absolute top-4 right-4 w-12 h-12 
-                                bg-muted/20 shape-triangle animate-pulse-soft" />
-                  <h3 className="text-muted/70 font-semibold mb-2">Investissement Moyen</h3>
-                  <p className="text-4xl font-bold text-muted">€385K</p>
-                  <span className="text-sm text-foreground/60">Golden Visa éligible</span>
-                </motion.div>
-                
-                {/* KPI Card 3 */}
-                <motion.div
-                  whileHover={{ y: -5 }}
-                  className="relative p-8 bg-gradient-to-br from-primary/10 to-white 
-                           rounded-3xl shadow-lg border-2 border-primary/20"
-                >
-                  <div className="absolute top-4 right-4 w-12 h-12 
-                                bg-golden/30 rounded-full animate-pulse-soft" />
-                  <h3 className="text-muted/70 font-semibold mb-2">Taux de Conversion</h3>
-                  <p className="text-4xl font-bold text-primary">12.4%</p>
-                  <span className="text-sm text-success">Top performers</span>
-                </motion.div>
-                
-                {/* KPI Card 4 */}
-                <motion.div
-                  whileHover={{ y: -5 }}
-                  className="relative p-8 bg-gradient-to-br from-muted/10 to-white 
-                           rounded-3xl shadow-lg border-2 border-muted/20"
-                >
-                  <div className="absolute top-4 right-4 w-12 h-12 
-                                bg-accent/30 shape-arc-bottom animate-pulse-soft" />
-                  <h3 className="text-muted/70 font-semibold mb-2">Clients Satisfaits</h3>
-                  <p className="text-4xl font-bold text-muted">98%</p>
-                  <span className="text-sm text-foreground/60">Note 4.9/5</span>
-                </motion.div>
-              </div>
-            </div>
-          </section>
+              ))}
+            </motion.div>
+          </div>
+        </motion.section>
         )}
 
         <section
