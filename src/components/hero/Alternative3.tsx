@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
@@ -40,6 +40,7 @@ const useMultilingualTypewriter = (texts: string[], speed: number = 35) => {
 // Alternative 3: Titre intégré dans le header de la fenêtre
 const Alternative3 = () => {
   const [inputValue, setInputValue] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
   
   const typewriterText = useMultilingualTypewriter([
     "Résident fiscal français, budget 250 000€, appartement 2 chambres proche mer, maximum 500m de la plage, résidence avec piscine, parking privé, vue mer, climatisation, quartier Limassol",
@@ -56,11 +57,13 @@ const Alternative3 = () => {
     const value = inputValue.trim();
     if (!value) return;
 
-    // Log for debugging
     console.log('[Hero] handleSendMessage triggered via', { value });
 
     // Sauvegarder le texte pour transfert
     localStorage.setItem('pending-search', value);
+
+    // Blur pour assurer le scroll (mobile/clavier)
+    inputRef.current?.blur();
 
     const chatSection = document.getElementById('start-experience');
 
@@ -69,18 +72,22 @@ const Alternative3 = () => {
       window.dispatchEvent(new CustomEvent('hero-search-transferred'));
     };
 
+    const startY = window.scrollY;
     if (chatSection) {
-      // Méthode robuste: calcule la position absolue et scroll lisse
       const y = chatSection.getBoundingClientRect().top + window.pageYOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
-      setTimeout(dispatchTransfer, 1000);
+      setTimeout(() => {
+        const moved = Math.abs(window.scrollY - startY) > 20;
+        if (!moved) {
+          window.location.hash = '#start-experience';
+        }
+        dispatchTransfer();
+      }, 900);
     } else {
-      // Fallback ancre URL si l'élément n'est pas trouvé
       window.location.hash = '#start-experience';
-      setTimeout(dispatchTransfer, 600);
+      setTimeout(dispatchTransfer, 500);
     }
 
-    // Réinitialiser le champ
     setInputValue('');
   };
 
@@ -202,6 +209,7 @@ const Alternative3 = () => {
             {/* Input avec bouton intégré */}
             <div className="relative">
               <Input
+                ref={inputRef}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Votre recherche..."
