@@ -694,12 +694,12 @@ const Home = () => {
         image="/og-image.jpg"
       />
      
-      <div className="min-h-screen overflow-x-hidden bg-secondary">
+      <div className="min-h-screen overflow-x-hidden bg-gradient-ocean">
         <div className="space-y-0">
           <Alternative3 />
         </div>
         {/* Interface Split-View : Chat + Panneau Résultats */}
-        <section id="start-experience" className="py-24 px-4 min-h-screen">
+        <section id="start-experience" className="py-24 px-4 min-h-screen bg-white">
           <div className="container mx-auto max-w-7xl">
             <h2 className="text-4xl font-bold text-center mb-8 text-primary">
               Votre Assistant IA Immobilier
@@ -1015,7 +1015,7 @@ const Home = () => {
         </section>
         
         {/* Dernières Nouveautés */}
-        <section className="py-24 md:py-32 bg-background">
+        <section className="py-24 md:py-32 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
