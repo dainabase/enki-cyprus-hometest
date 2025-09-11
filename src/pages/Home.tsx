@@ -28,7 +28,7 @@ import FeaturedProjectsCarousel from '@/components/FeaturedProjectsCarousel';
 import { useIsClient } from '@/hooks/useIsClient';
 import TabsFeaturesAlt5Accordion from '@/components/TabsFeatures-Alternative5-Accordion';
 import { getHeroImage } from '@/utils/gallery';
-import HeroAlternative5 from '@/components/hero/HeroAlternative5';
+import HeroSelector from '@/components/hero/HeroSelector';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 // Static background component to replace 3D elements (fixes runtime errors)
 const StaticBackground = () => (
@@ -478,7 +478,7 @@ const Home = () => {
      
       <div className="min-h-screen overflow-x-hidden bg-secondary">
         <div className="space-y-0">
-          <HeroAlternative5 />
+          <HeroSelector />
         </div>
         <section
           id="why-enki"
