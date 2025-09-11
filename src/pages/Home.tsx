@@ -698,63 +698,137 @@ const Home = () => {
         <div className="space-y-0">
           <Alternative3 />
         </div>
-        {/* Interface Split-View : Chat + Panneau Résultats */}
-        <section id="start-experience" className="py-24 px-4 min-h-screen">
+        {/* Section Chat IA ENKI REALTY */}
+        <section id="start-experience" className="py-24 px-4 bg-gradient-sand">
           <div className="container mx-auto max-w-7xl">
-            <h2 className="text-4xl font-bold text-center mb-8 text-primary">
-              Votre Assistant IA Immobilier
-            </h2>
-            
-            {/* Container principal avec split view */}
-            <div className="relative flex gap-0 h-[800px] border rounded-xl overflow-hidden bg-background shadow-xl">
+            {/* Titre avec style */}
+            <motion.div 
+              initial={{ opacity: 0, y: -20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              className="text-center mb-12"
+            >
+              <h2 className="text-5xl font-bold text-muted mb-4">
+                Votre Assistant IA Immobilier
+              </h2>
+              <p className="text-xl text-muted/70">
+                Analyse intelligente • Matching précis • Optimisation fiscale
+              </p>
+            </motion.div>
+
+            {/* CONTAINER SPLIT-VIEW */}
+            <div className="relative flex gap-0 h-[700px] 
+                            bg-white rounded-3xl overflow-hidden 
+                            shadow-2xl border-2 border-secondary/20">
+              
+              {/* Pattern décoratif */}
+              <div className="absolute inset-0 texture-lines opacity-5 pointer-events-none" />
               
               {/* PANNEAU CHAT (gauche) */}
-              <div className={`chat-panel transition-all duration-500 ease-in-out ${
-                showResults ? 'w-1/2' : 'w-full'
-              }`}>
-                {/* Zone messages */}
+              <div className={`chat-panel transition-all duration-500 ease-in-out
+                              bg-gradient-to-br from-accent/30 to-white
+                              ${showResults ? 'w-1/2' : 'w-full'}`}>
+                
+                {/* En-tête du chat */}
+                <div className="p-6 border-b border-secondary/20 bg-white/50 backdrop-blur">
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 rounded-full bg-success animate-pulse" />
+                    <span className="font-semibold text-muted">Assistant IA en ligne</span>
+                  </div>
+                </div>
+                
+                {/* Zone des messages */}
                 <div 
                   ref={messagesContainerRef}
-                  className="messages-area h-[620px] overflow-y-auto p-6"
+                  className="messages-area h-[520px] overflow-y-auto p-6 space-y-4"
                 >
                   {messages.length === 0 ? (
-                    <div className="text-center text-gray-500 pt-32">
+                    <div className="text-center text-muted/70 pt-32">
                       <p className="text-lg mb-4">👋 Bonjour ! Je suis votre assistant IA immobilier</p>
                       <p className="text-sm">Décrivez votre recherche pour commencer l'analyse personnalisée</p>
                     </div>
                   ) : (
                     messages.map((message, index) => (
-                      <ChatMessageComponent key={index} message={message} />
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                      >
+                        {message.role === 'user' ? (
+                          // Message utilisateur
+                          <div className="flex justify-end">
+                            <div className="max-w-[70%] px-6 py-4 
+                                          bg-gradient-ocean text-white 
+                                          rounded-3xl rounded-br-sm
+                                          shadow-md">
+                              {message.content}
+                            </div>
+                          </div>
+                        ) : (
+                          // Message IA
+                          <div className="flex justify-start">
+                            <div className="max-w-[70%]">
+                              <div className="px-6 py-4 
+                                            bg-white border-2 border-secondary
+                                            rounded-3xl rounded-bl-sm
+                                            shadow-sm">
+                                {message.isTyping ? (
+                                  <div className="flex gap-2">
+                                    <span className="w-2 h-2 bg-primary rounded-full animate-bounce" />
+                                    <span className="w-2 h-2 bg-primary rounded-full animate-bounce delay-100" />
+                                    <span className="w-2 h-2 bg-primary rounded-full animate-bounce delay-200" />
+                                  </div>
+                                ) : (
+                                  <p className="text-foreground">{message.content}</p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </motion.div>
                     ))
                   )}
                 </div>
                 
-                {/* Zone input en bas */}
-                <div className="input-area border-t p-4">
-                  {/* Consentement RGPD simple */}
+                {/* Zone d'input */}
+                <div className="input-area border-t border-secondary/20 p-6 bg-white/70">
+                  {/* Consentement RGPD élégant */}
                   {!consentGiven && (
-                    <div className="consent-box mb-4 p-3 bg-amber-50 border border-amber-200 rounded">
-                      <label className="flex items-center gap-3">
+                    <motion.div 
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      className="consent-wrapper mb-4 p-4 
+                               bg-warning/10 border-2 border-warning/30 
+                               rounded-xl"
+                    >
+                      <label className="flex items-start gap-3 cursor-pointer">
                         <input 
-                          type="checkbox" 
-                          checked={consent} 
-                          onChange={(e) => handleConsentChange(e.target.checked)} 
+                          type="checkbox"
+                          checked={consent}
+                          onChange={(e) => handleConsentChange(e.target.checked)}
+                          className="mt-1 w-5 h-5 accent-primary"
                         />
-                        <span className="text-sm">
-                          J'accepte le traitement de mes données pour des recommandations personnalisées
+                        <span className="text-sm text-foreground/80">
+                          J'accepte le traitement de mes données personnelles pour 
+                          recevoir des recommandations personnalisées conformément 
+                          à notre politique de confidentialité
                         </span>
                       </label>
-                    </div>
+                    </motion.div>
                   )}
                   
+                  {/* Textarea et bouton */}
                   <div className="flex gap-3">
-                    <textarea 
+                    <textarea
                       value={agenticQuery}
                       onChange={(e) => setAgenticQuery(e.target.value)}
-                      className="flex-1 p-3 border rounded-lg resize-none"
+                      placeholder="Continuez votre recherche..."
+                      className="flex-1 p-4 rounded-2xl 
+                               bg-accent/20 border-2 border-accent/40
+                               focus:border-primary focus:bg-white
+                               transition-all duration-300
+                               resize-none"
                       rows={2}
-                      placeholder="Décrivez votre recherche immobilière idéale..."
-                      disabled={!consentGiven && !consent}
                       onKeyPress={(e) => {
                         if (e.key === 'Enter' && !e.shiftKey) {
                           e.preventDefault();
@@ -762,26 +836,40 @@ const Home = () => {
                         }
                       }}
                     />
-                    <button 
+                    <button
                       onClick={handleAnalysis}
-                      disabled={!consent || !agenticQuery.trim() || isAnalyzing}
-                      className="px-6 py-3 bg-primary text-white rounded-lg disabled:opacity-50 font-medium"
+                      disabled={!consent || !agenticQuery.trim()}
+                      className="px-8 py-4 
+                               bg-gradient-premium text-white font-bold
+                               rounded-2xl shadow-lg
+                               hover:shadow-xl hover:scale-105
+                               disabled:opacity-50 disabled:cursor-not-allowed
+                               transition-all duration-300"
                     >
-                      {isAnalyzing ? 'Analyse...' : 'Analyser'}
+                      Analyser
                     </button>
                   </div>
                 </div>
               </div>
               
-              {/* PANNEAU RÉSULTATS (droite) - Slide depuis la droite */}
-              <div className={`results-panel border-l bg-gray-50 transition-all duration-500 ease-in-out overflow-hidden ${
-                showResults ? 'w-1/2' : 'w-0'
-              }`}>
+              {/* PANNEAU RÉSULTATS (droite) */}
+              <div className={`results-panel transition-all duration-500
+                              bg-gradient-to-br from-secondary/30 to-white
+                              border-l-2 border-secondary/20
+                              ${showResults ? 'w-1/2 opacity-100' : 'w-0 opacity-0'}`}>
                 <div className="p-6 h-full overflow-y-auto">
-                  <h3 className="text-2xl font-bold mb-6">Propriétés Correspondantes</h3>
+                  {/* En-tête résultats */}
+                  <div className="mb-8">
+                    <h3 className="text-3xl font-bold text-muted mb-2">
+                      Propriétés Sélectionnées
+                    </h3>
+                    <p className="text-muted/70">
+                      Basées sur vos critères et préférences
+                    </p>
+                  </div>
                   
-                  {/* Propriétés */}
-                  <div className="space-y-4 mb-8">
+                  {/* Cards propriétés */}
+                  <div className="space-y-6">
                     {mockProperties.map((property, idx) => (
                       <PropertyResultCard 
                         key={idx} 
@@ -794,16 +882,19 @@ const Home = () => {
                     ))}
                   </div>
                   
-                  {/* Optimisation Fiscale */}
-                  <div className="fiscal-section bg-blue-50 p-6 rounded-lg">
-                    <h4 className="text-lg font-bold mb-3">
-                      📊 Scénario d'Optimisation Fiscale
+                  {/* Section Optimisation Fiscale */}
+                  <div className="mt-8 p-6 bg-gradient-to-br from-golden/10 to-golden/5
+                                border-2 border-golden/30 rounded-2xl">
+                    <h4 className="text-xl font-bold text-muted mb-3">
+                      💰 Optimisation Fiscale Personnalisée
                     </h4>
-                    <p className="text-sm text-gray-700 mb-4">
-                      Basé sur votre profil de résident fiscal français avec un budget de 250 000€...
+                    <p className="text-foreground/80 mb-4">
+                      Économie potentielle: <span className="font-bold text-primary">12,500€/an</span>
                     </p>
-                    <button className="text-blue-600 font-medium underline">
-                      Créer un compte pour l'analyse complète →
+                    <button className="w-full py-3 bg-gradient-to-r from-golden to-golden-dark text-white 
+                                     font-bold rounded-xl hover:shadow-lg 
+                                     transition-all duration-300">
+                      Débloquer l'Analyse Complète →
                     </button>
                   </div>
                 </div>

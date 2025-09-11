@@ -167,13 +167,18 @@ const PropertySearchResults: React.FC<PropertySearchResultsProps> = ({
               whileTap={{ scale: 0.98 }}
             >
               <PropertyCard
-                property={property}
-                index={index}
+                property={{
+                  id: parseInt(property.id) || index,
+                  title: property.title,
+                  image: property.photos?.[0] || '/lovable-uploads/marina-bay-hero.jpg',
+                  price: property.price,
+                  location: typeof property.location === 'string' ? property.location : (property.location as any)?.city || 'Chypre',
+                  size: 120,
+                  description: property.description,
+                  matching: 95,
+                  missingFeatures: []
+                }}
                 onClick={() => handlePropertyClick(property)}
-                className={cn(
-                  "transition-all duration-200",
-                  viewMode === 'list' && "grid grid-cols-1 md:grid-cols-3 gap-4"
-                )}
               />
             </motion.div>
           ))}
