@@ -699,14 +699,14 @@ const Home = () => {
           <Alternative3 />
         </div>
         {/* Interface Split-View : Chat + Panneau Résultats */}
-        <section id="start-experience" className="py-24 px-4">
+        <section id="start-experience" className="py-24 px-4 min-h-screen">
           <div className="container mx-auto max-w-7xl">
             <h2 className="text-4xl font-bold text-center mb-8 text-primary">
               Votre Assistant IA Immobilier
             </h2>
             
             {/* Container principal avec split view */}
-            <div className="relative flex gap-0 h-[700px] border rounded-xl overflow-hidden bg-background shadow-xl">
+            <div className="relative flex gap-0 h-[800px] border rounded-xl overflow-hidden bg-background shadow-xl">
               
               {/* PANNEAU CHAT (gauche) */}
               <div className={`chat-panel transition-all duration-500 ease-in-out ${
@@ -715,7 +715,7 @@ const Home = () => {
                 {/* Zone messages */}
                 <div 
                   ref={messagesContainerRef}
-                  className="messages-area h-[580px] overflow-y-auto p-6"
+                  className="messages-area h-[680px] overflow-y-auto p-6"
                 >
                   {messages.length === 0 ? (
                     <div className="text-center text-gray-500 pt-32">
@@ -812,15 +812,16 @@ const Home = () => {
           </div>
         </section>
 
-        {/* KPIs Marché Immobilier */}
-        <motion.section
-          id="market-kpis"
-          className="bg-background py-24 md:py-32 px-4 sm:px-6 lg:px-8"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
+        {/* KPIs Marché Immobilier - masqués si chat actif */}
+        {!showResults && (
+          <motion.section
+            id="market-kpis"
+            className="bg-background py-24 md:py-32 px-4 sm:px-6 lg:px-8"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
           <div className="max-w-7xl mx-auto">
             <motion.div
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12"
@@ -909,6 +910,7 @@ const Home = () => {
             </motion.div>
           </div>
         </motion.section>
+        )}
 
         <section
           id="why-enki"
