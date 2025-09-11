@@ -134,9 +134,11 @@ const Alternative3 = () => {
       </div>
 
       {/* Chat Interface avec titre intégré dans le header */}
-      <div
-        className="relative w-full max-w-2xl mx-auto mb-24 px-4 z-10 opacity-0 animate-fade-in"
-        style={{ animationDelay: '2.5s', animationDuration: '2s', animationFillMode: 'both' }}
+      <motion.div
+        className="relative w-full max-w-2xl mx-auto mb-24 px-4 z-10"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2.5, duration: 2, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
         <motion.div
           className="relative bg-white/96 border border-white/25 rounded-xl shadow-2xl overflow-hidden"
@@ -186,7 +188,7 @@ const Alternative3 = () => {
             </div>
           </div>
         </motion.div>
-      </div>
+      </motion.div>
     </section>
   );
 };
