@@ -480,68 +480,6 @@ const Home = () => {
         <div className="space-y-0">
           <Alternative3 />
         </div>
-        <section
-          id="why-enki"
-          className="bg-transparent -mt-px px-4 sm:px-6 lg:px-8"
-        >
-          <div className="max-w-7xl mx-auto">
-            <TabsFeaturesAlt5Accordion />
-          </div>
-        </section>
-        {/* Premium Video Section */}
-        <motion.section
-          id="premium-video"
-          className="py-0 bg-secondary w-full h-[45vh] relative overflow-hidden"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-        >
-          <motion.div
-            className="w-full h-full relative"
-            initial={{ x: -100, opacity: 0 }}
-            whileInView={{ x: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
-          >
-            <video
-              className="w-full h-full object-cover absolute inset-0"
-              autoPlay
-              muted
-              loop
-              playsInline
-              poster="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&h=1080&fit=crop&auto=format"
-              onLoadStart={() => {
-                trackCustomEvent('video_viewed', {
-                  section: 'premium-video',
-                  type: 'hero'
-                });
-              }}
-            >
-              <source src="https://videos.pexels.com/video-files/2507016/2507016-uhd_2560_1440_25fps.mp4" type="video/mp4" />
-              <source src="https://videos.pexels.com/video-files/3571264/3571264-uhd_2560_1440_30fps.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </motion.div>
-          
-          <motion.div
-            className="absolute inset-0 bg-black/40"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-          />
-          
-           <motion.div
-             className="absolute inset-0 flex items-center justify-center text-white swaarg-section-title text-center px-6"
-             initial={{ opacity: 0, x: 100 }}
-             whileInView={{ opacity: 1, x: 0 }}
-             viewport={{ once: true }}
-             transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
-           >
-            Experience Timeless Elegance, Premium Living in your Dream Home
-          </motion.div>
-        </motion.section>
         {/* Commencer l'Expérience */}
         <motion.section
           id="start-experience"
@@ -655,6 +593,7 @@ const Home = () => {
             </motion.div>
           </div>
         </motion.section>
+
         {/* KPIs Marché Immobilier */}
         <motion.section
           id="market-kpis"
@@ -751,6 +690,69 @@ const Home = () => {
               ))}
             </motion.div>
           </div>
+        </motion.section>
+
+        <section
+          id="why-enki"
+          className="bg-transparent -mt-px px-4 sm:px-6 lg:px-8"
+        >
+          <div className="max-w-7xl mx-auto">
+            <TabsFeaturesAlt5Accordion />
+          </div>
+        </section>
+        {/* Premium Video Section */}
+        <motion.section
+          id="premium-video"
+          className="py-0 bg-secondary w-full h-[45vh] relative overflow-hidden"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <motion.div
+            className="w-full h-full relative"
+            initial={{ x: -100, opacity: 0 }}
+            whileInView={{ x: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+          >
+            <video
+              className="w-full h-full object-cover absolute inset-0"
+              autoPlay
+              muted
+              loop
+              playsInline
+              poster="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&h=1080&fit=crop&auto=format"
+              onLoadStart={() => {
+                trackCustomEvent('video_viewed', {
+                  section: 'premium-video',
+                  type: 'hero'
+                });
+              }}
+            >
+              <source src="https://videos.pexels.com/video-files/2507016/2507016-uhd_2560_1440_25fps.mp4" type="video/mp4" />
+              <source src="https://videos.pexels.com/video-files/3571264/3571264-uhd_2560_1440_30fps.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </motion.div>
+          
+          <motion.div
+            className="absolute inset-0 bg-black/40"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          />
+          
+           <motion.div
+             className="absolute inset-0 flex items-center justify-center text-white swaarg-section-title text-center px-6"
+             initial={{ opacity: 0, x: 100 }}
+             whileInView={{ opacity: 1, x: 0 }}
+             viewport={{ once: true }}
+             transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+           >
+            Experience Timeless Elegance, Premium Living in your Dream Home
+          </motion.div>
         </motion.section>
         {/* Projets Vedette */}
         <section id="featured-projects" className="py-24 md:py-32 bg-gradient-to-br from-muted/30 to-background">

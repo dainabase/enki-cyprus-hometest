@@ -42,9 +42,14 @@ const Alternative3 = () => {
   const [inputValue, setInputValue] = useState('');
   
   const typewriterText = useMultilingualTypewriter([
-    "Je suis suisse, 45 ans, budget 600 000 CHF. Je cherche un penthouse avec grande terrasse et vue mer.",
-    "Je suis français, 38 ans, budget 200 000 €. Je recherche un appartement 2 pièces proche de la plage.",
-    "Je suis italien, 52 ans, budget 1 000 000 €. Villa 4 chambres avec jardin et piscine privée."
+    "Résident fiscal français, budget 250 000€, appartement 2 chambres proche mer, maximum 500m de la plage, résidence avec piscine, parking privé, vue mer, climatisation, quartier Limassol",
+    "UK tax resident, £200,000 budget, 2-bedroom flat near beach, walking distance to shops, communal pool and gym, parking space, balcony with sea view, modern kitchen, Paphos area",
+    "Residente fiscal español, 280.000€, piso 2 habitaciones en Limassol, cerca playa, piscina comunitaria, plaza de garaje, terraza grande, aire acondicionado, urbanización cerrada",
+    "Residente fiscale italiano, 300.000€, appartamento 2 camere vista mare, piano alto, aria condizionata, parcheggio coperto, residence con piscina, vicino centro Limassol, terrazzo 20m²",
+    "Έλληνας κάτοικος εξωτερικού, 250.000€, διαμέρισμα 2 υπνοδωμάτια Λεμεσός, κοντά σε παραλία, πάρκινγκ, ασανσέρ, μπαλκόνι με θέα θάλασσα, κλιματισμός, ανακαινισμένο",
+    "Резидент России, 350 000€ для Golden Visa, квартира 2 спальни у моря в Лимассоле, охраняемая территория, подземный паркинг, бассейн, спортзал, вид на море",
+    "中国投资者，35万欧元黄金签证，利马索尔海景公寓，2卧室，24小时保安，地下停车位，健身房和游泳池，可出租管理，高楼层，现代装修",
+    "Deutscher Steuerresident, 280.000€, 2-Zimmer-Wohnung Larnaca, Erdgeschoss mit Terrasse, Strandnähe max 500m, Pool, Klimaanlage, Parkplatz, ruhige Lage, Neubau oder renoviert"
   ], 35);
 
   const handleSendMessage = () => {
