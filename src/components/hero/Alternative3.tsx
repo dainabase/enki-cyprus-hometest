@@ -53,23 +53,32 @@ const Alternative3 = () => {
   ], 35);
 
   const handleSendMessage = () => {
-    if (inputValue.trim()) {
-      // Sauvegarder le texte pour transfert
-      localStorage.setItem('pending-search', inputValue);
+    if (!inputValue.trim()) return;
 
+    // Sauvegarder le texte pour transfert
+    localStorage.setItem('pending-search', inputValue);
+
+    const scrollToChat = () => {
       const chatSection = document.getElementById('start-experience');
-      if (chatSection) {
-        // Scroll fluide directement vers la section (géré par scroll-margin-top côté section)
+      if (chatSection && 'scrollIntoView' in chatSection) {
         chatSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-        // Déclencher le transfert après le scroll
         setTimeout(() => {
           window.dispatchEvent(new CustomEvent('hero-search-transferred'));
-        }, 1000);
+        }, 1200);
+      } else {
+        // Fallback ancre URL
+        window.location.hash = '#start-experience';
+        setTimeout(() => {
+          window.dispatchEvent(new CustomEvent('hero-search-transferred'));
+        }, 600);
       }
+    };
 
-      setInputValue('');
-    }
+    // Lancer le scroll
+    scrollToChat();
+
+    // Réinitialiser le champ
+    setInputValue('');
   };
 
   return (
@@ -199,7 +208,7 @@ const Alternative3 = () => {
 <button
   type="button"
   onClick={handleSendMessage}
-  className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 bg-transparent text-muted-foreground hover:text-foreground flex items-center justify-center transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+  className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 bg-transparent text-muted-foreground hover:text-foreground flex items-center justify-center transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed z-20 pointer-events-auto"
   disabled={!inputValue.trim()}
   aria-label="Lancer la recherche"
 >
