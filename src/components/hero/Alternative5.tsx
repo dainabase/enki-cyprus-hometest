@@ -150,6 +150,14 @@ const Alternative5 = () => {
         }}
       >
         <div className="relative bg-white/96 backdrop-blur-xl border border-white/25 rounded-xl p-4 shadow-2xl">
+          {/* Titre avec point vert "online" */}
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            <p className="text-gray-700 text-xs font-medium tracking-wide">
+              The First AI Powered Real Estate Platform
+            </p>
+          </div>
+
           {/* Message typewriter */}
           <div className="mb-4 p-3 bg-gray-50/60 rounded-lg h-16 overflow-hidden">
             <div className="text-gray-800 text-xs leading-relaxed font-light">
@@ -165,7 +173,7 @@ const Alternative5 = () => {
           </div>
 
           {/* Input avec bouton intégré */}
-          <div className="relative mb-3">
+          <div className="relative">
             <Input
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
@@ -182,13 +190,6 @@ const Alternative5 = () => {
             >
               <Send className="w-3 h-3" />
             </motion.button>
-          </div>
-
-          {/* Titre en footnote */}
-          <div className="text-center">
-            <p className="text-gray-500 text-[10px] font-light tracking-wider opacity-60">
-              The First AI Powered Real Estate Platform
-            </p>
           </div>
         </div>
       </motion.div>
