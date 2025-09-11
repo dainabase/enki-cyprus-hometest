@@ -37,7 +37,7 @@ const useMultilingualTypewriter = (texts: string[], speed: number = 35) => {
   return displayText;
 };
 
-// Alternative 5: Ultra minimaliste avec bordure subtile
+// Alternative 5: Version ultra minimaliste avec titre placé en footnote
 const Alternative5 = () => {
   const [inputValue, setInputValue] = useState('');
   const [showChat, setShowChat] = useState(false);
@@ -125,7 +125,7 @@ const Alternative5 = () => {
         </motion.div>
 
         <motion.h2
-          className="swaarg-large-title text-white/90 mb-12"
+          className="swaarg-large-title text-white/90 mb-16"
           initial={{ opacity: 0, letterSpacing: "0.5em" }}
           animate={{ opacity: 1, letterSpacing: "-0.03em" }}
           transition={{ 
@@ -138,7 +138,7 @@ const Alternative5 = () => {
         </motion.h2>
       </div>
 
-      {/* Chat Interface - Ultra épuré avec bordure subtile */}
+      {/* Chat Interface ultra minimaliste */}
       <motion.div
         className="relative w-full max-w-2xl mx-auto mb-24 px-4 z-10"
         initial={{ opacity: 0, y: 50 }}
@@ -149,10 +149,10 @@ const Alternative5 = () => {
           ease: [0.25, 0.46, 0.45, 0.94]
         }}
       >
-        <div className="relative bg-white/98 backdrop-blur-xl border border-white/10 rounded-lg p-4 shadow-2xl">
-          {/* Message ultra simple */}
-          <div className="mb-4 h-16 overflow-hidden flex items-center justify-center">
-            <div className="text-gray-700 text-xs leading-relaxed font-light text-center max-w-md">
+        <div className="relative bg-white/96 backdrop-blur-xl border border-white/25 rounded-xl p-4 shadow-2xl">
+          {/* Message typewriter */}
+          <div className="mb-4 p-3 bg-gray-50/60 rounded-lg h-16 overflow-hidden">
+            <div className="text-gray-800 text-xs leading-relaxed font-light">
               {typewriterText}
               <motion.span
                 animate={{ opacity: [0, 1, 0] }}
@@ -164,27 +164,31 @@ const Alternative5 = () => {
             </div>
           </div>
 
-          {/* Ligne de séparation subtile */}
-          <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent mb-4" />
-
-          {/* Input ultra simple */}
-          <div className="relative">
+          {/* Input avec bouton intégré */}
+          <div className="relative mb-3">
             <Input
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Tapez votre recherche..."
-              className="w-full h-10 pr-10 border-0 focus:ring-1 focus:ring-primary/30 bg-gray-50/50 backdrop-blur-sm rounded-md text-sm"
+              placeholder="Votre recherche..."
+              className="h-10 border-gray-200/40 focus:border-primary bg-white/80 rounded-lg text-sm pr-12"
               onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
             />
             <motion.button
               onClick={handleSendMessage}
-              className="absolute right-1 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-gray-800 hover:bg-primary text-white rounded-md flex items-center justify-center transition-all duration-300"
+              className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 bg-primary hover:bg-primary/90 text-white rounded-md flex items-center justify-center transition-all duration-200"
               disabled={!inputValue.trim()}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               <Send className="w-3 h-3" />
             </motion.button>
+          </div>
+
+          {/* Titre en footnote */}
+          <div className="text-center">
+            <p className="text-gray-500 text-[10px] font-light tracking-wider opacity-60">
+              The First AI Powered Real Estate Platform
+            </p>
           </div>
         </div>
       </motion.div>

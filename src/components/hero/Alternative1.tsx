@@ -37,7 +37,7 @@ const useMultilingualTypewriter = (texts: string[], speed: number = 35) => {
   return displayText;
 };
 
-// Alternative 1: Slogan + Input intégré ultra fin
+// Alternative 1: Titre au-dessus, bouton intégré dans l'input
 const Alternative1 = () => {
   const [inputValue, setInputValue] = useState('');
   const [showChat, setShowChat] = useState(false);
@@ -125,7 +125,7 @@ const Alternative1 = () => {
         </motion.div>
 
         <motion.h2
-          className="swaarg-large-title text-white/90 mb-12"
+          className="swaarg-large-title text-white/90 mb-16"
           initial={{ opacity: 0, letterSpacing: "0.5em" }}
           animate={{ opacity: 1, letterSpacing: "-0.03em" }}
           transition={{ 
@@ -138,21 +138,9 @@ const Alternative1 = () => {
         </motion.h2>
       </div>
 
-      {/* Slogan */}
+      {/* Chat Interface avec titre au-dessus */}
       <motion.div
-        className="relative w-full max-w-2xl mx-auto mb-6 px-4 z-10"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: showChat ? 1 : 0 }}
-        transition={{ delay: 1.8, duration: 0.8 }}
-      >
-        <p className="text-white/80 text-center text-sm font-light tracking-wide">
-          The first AI-powered real estate platform
-        </p>
-      </motion.div>
-
-      {/* Chat Interface - Ultra fin avec input intégré */}
-      <motion.div
-        className="relative w-full max-w-3xl mx-auto mb-24 px-4 z-10"
+        className="relative w-full max-w-2xl mx-auto mb-24 px-4 z-10"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: showChat ? 1 : 0, y: showChat ? 0 : 50 }}
         transition={{ 
@@ -161,10 +149,22 @@ const Alternative1 = () => {
           ease: [0.25, 0.46, 0.45, 0.94]
         }}
       >
-        <div className="relative bg-white/95 backdrop-blur-xl border border-white/20 rounded-2xl p-5 shadow-2xl">
-          {/* Message épuré */}
-          <div className="mb-5 p-4 bg-gray-50/70 rounded-xl h-20 overflow-hidden">
-            <div className="text-gray-800 text-sm leading-relaxed font-light">
+        {/* Titre au-dessus */}
+        <motion.div 
+          className="text-center mb-3"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 3.0 }}
+        >
+          <p className="text-white/80 text-sm font-light tracking-wide">
+            The First AI Powered Real Estate Platform
+          </p>
+        </motion.div>
+
+        <div className="relative bg-white/96 backdrop-blur-xl border border-white/25 rounded-xl p-4 shadow-2xl">
+          {/* Message typewriter */}
+          <div className="mb-4 p-3 bg-gray-50/60 rounded-lg h-16 overflow-hidden">
+            <div className="text-gray-800 text-xs leading-relaxed font-light">
               {typewriterText}
               <motion.span
                 animate={{ opacity: [0, 1, 0] }}
@@ -176,18 +176,18 @@ const Alternative1 = () => {
             </div>
           </div>
 
-          {/* Input avec bouton intégré ultra fin */}
+          {/* Input avec bouton intégré */}
           <div className="relative">
             <Input
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Décrivez votre projet..."
-              className="w-full h-11 pr-12 border-gray-200/50 focus:border-primary bg-white/90 rounded-xl text-sm"
+              placeholder="Votre recherche..."
+              className="h-10 border-gray-200/40 focus:border-primary bg-white/80 rounded-lg text-sm pr-12"
               onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
             />
             <motion.button
               onClick={handleSendMessage}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 w-7 h-7 bg-primary hover:bg-primary/90 text-white rounded-lg flex items-center justify-center transition-all duration-200"
+              className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 bg-primary hover:bg-primary/90 text-white rounded-md flex items-center justify-center transition-all duration-200"
               disabled={!inputValue.trim()}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}

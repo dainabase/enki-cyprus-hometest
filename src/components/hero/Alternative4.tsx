@@ -37,7 +37,7 @@ const useMultilingualTypewriter = (texts: string[], speed: number = 35) => {
   return displayText;
 };
 
-// Alternative 4: Design circulaire premium
+// Alternative 4: Format horizontal avec titre centré et input intégré
 const Alternative4 = () => {
   const [inputValue, setInputValue] = useState('');
   const [showChat, setShowChat] = useState(false);
@@ -125,7 +125,7 @@ const Alternative4 = () => {
         </motion.div>
 
         <motion.h2
-          className="swaarg-large-title text-white/90 mb-8"
+          className="swaarg-large-title text-white/90 mb-16"
           initial={{ opacity: 0, letterSpacing: "0.5em" }}
           animate={{ opacity: 1, letterSpacing: "-0.03em" }}
           transition={{ 
@@ -136,21 +136,11 @@ const Alternative4 = () => {
         >
           Cyprus Properties
         </motion.h2>
-
-        {/* Slogan intégré */}
-        <motion.p
-          className="text-white/70 text-sm font-light tracking-wide mb-16"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 3.2, duration: 1 }}
-        >
-          The first AI-powered real estate platform
-        </motion.p>
       </div>
 
-      {/* Chat Interface - Design circulaire premium */}
+      {/* Chat Interface format horizontal */}
       <motion.div
-        className="relative w-full max-w-xl mx-auto mb-24 px-4 z-10"
+        className="relative w-full max-w-4xl mx-auto mb-24 px-4 z-10"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: showChat ? 1 : 0, y: showChat ? 0 : 50 }}
         transition={{ 
@@ -159,39 +149,49 @@ const Alternative4 = () => {
           ease: [0.25, 0.46, 0.45, 0.94]
         }}
       >
-        <div className="relative bg-white/97 backdrop-blur-xl border border-white/30 rounded-full p-6 shadow-2xl">
-          {/* Message centré dans le cercle */}
-          <div className="mb-5 text-center">
-            <div className="text-gray-800 text-xs leading-relaxed font-light max-w-sm mx-auto h-16 overflow-hidden">
-              {typewriterText}
-              <motion.span
-                animate={{ opacity: [0, 1, 0] }}
-                transition={{ duration: 0.8, repeat: Infinity }}
-                className="ml-1"
-              >
-                |
-              </motion.span>
-            </div>
+        <div className="relative bg-white/96 backdrop-blur-xl border border-white/25 rounded-xl p-4 shadow-2xl">
+          {/* Titre centré */}
+          <div className="text-center mb-4">
+            <p className="text-gray-700 text-xs font-medium tracking-wide">
+              The First AI Powered Real Estate Platform
+            </p>
           </div>
 
-          {/* Input circulaire avec bouton intégré */}
-          <div className="relative max-w-sm mx-auto">
-            <Input
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Votre projet..."
-              className="w-full h-10 pr-12 border-gray-200/50 focus:border-primary bg-white/80 backdrop-blur-sm rounded-full text-center text-sm"
-              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-            />
-            <motion.button
-              onClick={handleSendMessage}
-              className="absolute right-1 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-primary hover:bg-primary/90 text-white rounded-full flex items-center justify-center transition-all duration-200"
-              disabled={!inputValue.trim()}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <Send className="w-3 h-3" />
-            </motion.button>
+          {/* Contenu horizontal */}
+          <div className="flex gap-4 items-end">
+            {/* Message typewriter - plus large */}
+            <div className="flex-1 p-3 bg-gray-50/60 rounded-lg h-16 overflow-hidden">
+              <div className="text-gray-800 text-xs leading-relaxed font-light">
+                {typewriterText}
+                <motion.span
+                  animate={{ opacity: [0, 1, 0] }}
+                  transition={{ duration: 0.8, repeat: Infinity }}
+                  className="ml-1"
+                >
+                  |
+                </motion.span>
+              </div>
+            </div>
+
+            {/* Input avec bouton intégré - plus compact */}
+            <div className="relative w-80">
+              <Input
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Votre recherche..."
+                className="h-10 border-gray-200/40 focus:border-primary bg-white/80 rounded-lg text-sm pr-12"
+                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+              />
+              <motion.button
+                onClick={handleSendMessage}
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 bg-primary hover:bg-primary/90 text-white rounded-md flex items-center justify-center transition-all duration-200"
+                disabled={!inputValue.trim()}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Send className="w-3 h-3" />
+              </motion.button>
+            </div>
           </div>
         </div>
       </motion.div>

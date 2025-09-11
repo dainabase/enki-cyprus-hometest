@@ -13,38 +13,32 @@ const HeroSelector = () => {
   const alternatives = [
     { 
       id: 1, 
-      name: "Original", 
-      description: "Version glassmorphisme originale",
-      component: ChatAlternative4 
+      name: "Alternative 2 (Validée)", 
+      description: "Base validée - Sans header IA, ultra épuré",
+      component: Alternative2 
     },
     { 
       id: 2, 
       name: "Alternative 1", 
-      description: "Slogan + Input intégré ultra fin",
+      description: "Titre au-dessus + bouton intégré",
       component: Alternative1 
     },
     { 
       id: 3, 
-      name: "Alternative 2", 
-      description: "Sans header IA, ultra épuré",
-      component: Alternative2 
-    },
-    { 
-      id: 4, 
       name: "Alternative 3", 
-      description: "Format horizontal ultra fin",
+      description: "Titre dans header + bouton intégré",
       component: Alternative3 
     },
     { 
-      id: 5, 
+      id: 4, 
       name: "Alternative 4", 
-      description: "Design circulaire premium",
+      description: "Format horizontal + bouton intégré",
       component: Alternative4 
     },
     { 
-      id: 6, 
+      id: 5, 
       name: "Alternative 5", 
-      description: "Ultra minimaliste avec bordure subtile",
+      description: "Ultra minimal + titre footnote",
       component: Alternative5 
     }
   ];

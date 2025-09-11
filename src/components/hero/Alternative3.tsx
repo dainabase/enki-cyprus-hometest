@@ -37,7 +37,7 @@ const useMultilingualTypewriter = (texts: string[], speed: number = 35) => {
   return displayText;
 };
 
-// Alternative 3: Format horizontal ultra fin
+// Alternative 3: Titre intégré dans le header de la fenêtre
 const Alternative3 = () => {
   const [inputValue, setInputValue] = useState('');
   const [showChat, setShowChat] = useState(false);
@@ -125,7 +125,7 @@ const Alternative3 = () => {
         </motion.div>
 
         <motion.h2
-          className="swaarg-large-title text-white/90 mb-12"
+          className="swaarg-large-title text-white/90 mb-16"
           initial={{ opacity: 0, letterSpacing: "0.5em" }}
           animate={{ opacity: 1, letterSpacing: "-0.03em" }}
           transition={{ 
@@ -138,9 +138,9 @@ const Alternative3 = () => {
         </motion.h2>
       </div>
 
-      {/* Chat Interface - Format horizontal avec ligne de message au-dessus */}
+      {/* Chat Interface avec titre intégré dans le header */}
       <motion.div
-        className="relative w-full max-w-4xl mx-auto mb-24 px-4 z-10"
+        className="relative w-full max-w-2xl mx-auto mb-24 px-4 z-10"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: showChat ? 1 : 0, y: showChat ? 0 : 50 }}
         transition={{ 
@@ -149,44 +149,48 @@ const Alternative3 = () => {
           ease: [0.25, 0.46, 0.45, 0.94]
         }}
       >
-        {/* Message séparé au-dessus */}
-        <div className="mb-3 p-3 bg-white/94 backdrop-blur-xl border border-white/25 rounded-lg shadow-xl">
-          <div className="text-gray-800 text-xs leading-relaxed font-light text-center h-12 overflow-hidden">
-            {typewriterText}
-            <motion.span
-              animate={{ opacity: [0, 1, 0] }}
-              transition={{ duration: 0.8, repeat: Infinity }}
-              className="ml-1"
-            >
-              |
-            </motion.span>
+        <div className="relative bg-white/96 backdrop-blur-xl border border-white/25 rounded-xl shadow-2xl overflow-hidden">
+          {/* Header avec titre intégré */}
+          <div className="bg-gradient-to-r from-primary/10 to-primary/5 px-4 py-2 border-b border-gray-200/30">
+            <p className="text-gray-700 text-xs font-medium text-center tracking-wide">
+              The First AI Powered Real Estate Platform
+            </p>
           </div>
-        </div>
 
-        {/* Input horizontal en bas */}
-        <div className="bg-white/94 backdrop-blur-xl border border-white/25 rounded-lg p-3 shadow-xl">
-          <div className="flex gap-3 items-center">
-            <div className="text-gray-600 text-xs font-medium whitespace-nowrap">
-              Powered by AI
+          <div className="p-4">
+            {/* Message typewriter */}
+            <div className="mb-4 p-3 bg-gray-50/60 rounded-lg h-16 overflow-hidden">
+              <div className="text-gray-800 text-xs leading-relaxed font-light">
+                {typewriterText}
+                <motion.span
+                  animate={{ opacity: [0, 1, 0] }}
+                  transition={{ duration: 0.8, repeat: Infinity }}
+                  className="ml-1"
+                >
+                  |
+                </motion.span>
+              </div>
             </div>
-            <div className="w-px h-4 bg-gray-300"></div>
-            <Input
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Décrivez votre projet..."
-              className="flex-1 h-9 border-gray-200/40 focus:border-primary bg-transparent rounded-md text-sm"
-              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-            />
-            <motion.button
-              onClick={handleSendMessage}
-              className="h-9 px-4 bg-primary hover:bg-primary/90 text-white rounded-md flex items-center gap-1 transition-all duration-200 text-xs font-medium"
-              disabled={!inputValue.trim()}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <Send className="w-3 h-3" />
-              Send
-            </motion.button>
+
+            {/* Input avec bouton intégré */}
+            <div className="relative">
+              <Input
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Votre recherche..."
+                className="h-10 border-gray-200/40 focus:border-primary bg-white/80 rounded-lg text-sm pr-12"
+                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+              />
+              <motion.button
+                onClick={handleSendMessage}
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 bg-primary hover:bg-primary/90 text-white rounded-md flex items-center justify-center transition-all duration-200"
+                disabled={!inputValue.trim()}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Send className="w-3 h-3" />
+              </motion.button>
+            </div>
           </div>
         </div>
       </motion.div>
