@@ -4,7 +4,7 @@ import ChatAlternative4 from './ChatAlternative4';
 import Alternative1 from './Alternative1';
 import Alternative2 from './Alternative2';
 import Alternative3 from './Alternative3';
-import Alternative4 from './Alternative4';
+
 import Alternative5 from './Alternative5';
 
 const HeroSelector = () => {
@@ -28,12 +28,6 @@ const HeroSelector = () => {
       name: "Alternative 3", 
       description: "Titre dans header + bouton intégré",
       component: Alternative3 
-    },
-    { 
-      id: 4, 
-      name: "Alternative 4", 
-      description: "Format horizontal + bouton intégré",
-      component: Alternative4 
     },
     { 
       id: 5, 
