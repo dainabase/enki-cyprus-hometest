@@ -42,7 +42,11 @@ const ChatAlternative3 = () => {
   const [animationKey, setAnimationKey] = useState(0);
   const [inputValue, setInputValue] = useState('');
   const [showChat, setShowChat] = useState(false);
-  const typewriterText = useMultilingualTypewriter(["Welcome to the future of real estate. What property are you looking for?"], 40);
+  const typewriterText = useMultilingualTypewriter([
+    "Je suis suisse, 45 ans, budget 600 000 CHF. Je cherche un penthouse avec grande terrasse et vue mer. Résidence: spa, salle de sport, jardin d’enfants, piscine. À moins de 2 km: banque, supermarché, école.",
+    "Je suis français, 38 ans, budget 200 000 €. Je recherche un appartement 2 pièces proche de la plage, avec balcon. Résidence: piscine et salle de sport. Commodités à moins de 2 km: supermarché, école, pharmacie.",
+    "Je suis italien, 52 ans, budget 1 000 000 €. Villa 4 chambres avec jardin et piscine privée. Résidence sécurisée avec spa et concierge. À moins de 2 km: banque, lycée international, centre commercial."
+  ], 35);
 
   const restartAnimation = () => {
     setAnimationKey(prev => prev + 1);
@@ -61,10 +65,10 @@ const ChatAlternative3 = () => {
   }, [animationKey]);
 
   const suggestions = [
-    "Show me luxury villas",
-    "Apartments near the sea",
-    "Investment opportunities",
-    "Properties under €500k"
+    "Je suis suisse — penthouse vue mer",
+    "Appartement 2 pièces — 200 000 €",
+    "Villa — 1 000 000 € avec piscine",
+    "Commodités à 2 km: banque, école, supermarché"
   ];
 
   return (
@@ -209,7 +213,7 @@ const ChatAlternative3 = () => {
 
           {/* Suggestions rapides */}
           <div className="mb-6">
-            <p className="text-sm text-gray-600 mb-3 font-medium">Quick suggestions:</p>
+            <p className="text-sm text-gray-600 mb-3 font-medium">Suggestions rapides :</p>
             <div className="grid grid-cols-2 gap-2">
               {suggestions.map((suggestion, index) => (
                 <motion.button
@@ -233,7 +237,7 @@ const ChatAlternative3 = () => {
             <Input
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Ask me anything about Cyprus real estate..."
+              placeholder="Décrivez votre projet immobilier (budget, type, vue, équipements, commodités à 2 km)..."
               className="flex-1 h-14 border-gray-200 focus:border-primary bg-white text-lg px-6"
               onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
             />
@@ -243,7 +247,7 @@ const ChatAlternative3 = () => {
               disabled={!inputValue.trim()}
             >
               <Send className="w-5 h-5 mr-2" />
-              Send
+              Envoyer
             </Button>
           </div>
         </div>

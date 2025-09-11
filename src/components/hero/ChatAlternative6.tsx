@@ -6,9 +6,9 @@ import { Button } from '@/components/ui/button';
 
 // Exemples pour la version futuriste/tech
 const searchExamples = [
-  "Tech entrepreneur, 32 ans, 1.5M€. Smart home avec IA intégrée et panneaux solaires transparents. Éco-tech résidence : bornes Tesla, laboratoire domotique, datacenter privé. Hub innovation : incubateur startup, fablabs, université tech à 2km.",
-  "Designer danois, 44 ans, 950k€. Loft minimaliste avec murs végétalisés et système aquaponique. Complexe bio-tech : jardins verticaux, recyclage d'air, énergie géothermique. Services : clinique médecine prédictive, école Steiner, ateliers créatifs.",
-  "Investisseur chinois, 37 ans, 2.8M yuan. Penthouse connecté avec hologrammes et réalité augmentée. Tour intelligente : ascenseurs quantiques, sécurité biométrique, robots assistants. Infrastructure : 5G privée, blockchain center, métaverse office."
+  "Je suis suisse, 45 ans, budget 600 000 CHF. Je cherche un penthouse avec grande terrasse et vue mer. Résidence: spa, salle de sport, jardin d’enfants, piscine. À moins de 2 km: banque, supermarché, école.",
+  "Je suis français, 38 ans, budget 200 000 €. Je recherche un appartement 2 pièces proche de la plage, avec balcon. Résidence: piscine et salle de sport. Commodités à moins de 2 km: supermarché, école, pharmacie.",
+  "Je suis italien, 52 ans, budget 1 000 000 €. Villa 4 chambres avec jardin et piscine privée. Résidence sécurisée avec spa et concierge. À moins de 2 km: banque, lycée international, centre commercial."
 ];
 
 const useTypewriterExamples = (texts: string[], speed: number = 18) => {
@@ -70,7 +70,7 @@ const ChatAlternative6 = () => {
   return (
     <section 
       key={animationKey}
-      className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900"
+      className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden"
     >
       {/* Bouton de relance d'animation */}
       <motion.button
@@ -85,10 +85,10 @@ const ChatAlternative6 = () => {
         <RotateCcw className="w-5 h-5" />
       </motion.button>
 
-      {/* Background futuriste */}
+      {/* Background */}
       <div className="absolute inset-0">
         <div 
-          className="absolute inset-0 w-full h-full object-cover opacity-15"
+          className="absolute inset-0 w-full h-full object-cover scale-125"
           style={{
             backgroundImage: `url(/lovable-uploads/7a1f4c1e-ed5d-401e-98a7-e7d380bb9d99.png)`,
             backgroundSize: 'cover',
@@ -96,133 +96,68 @@ const ChatAlternative6 = () => {
             backgroundRepeat: 'no-repeat'
           }}
         />
-        
-        {/* Grille technologique */}
-        <div className="absolute inset-0 opacity-20">
-          <div className="w-full h-full"
-               style={{
-                 backgroundImage: `
-                   linear-gradient(rgba(147, 51, 234, 0.1) 1px, transparent 1px),
-                   linear-gradient(90deg, rgba(147, 51, 234, 0.1) 1px, transparent 1px)
-                 `,
-                 backgroundSize: '40px 40px'
-               }}>
-          </div>
-        </div>
-        
-        {/* Cercles tech flottants */}
-        <div className="absolute inset-0">
-          {[...Array(12)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute rounded-full border border-purple-500/30"
-              style={{
-                width: `${Math.random() * 200 + 50}px`,
-                height: `${Math.random() * 200 + 50}px`,
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-              }}
-              animate={{
-                scale: [1, 1.2, 1],
-                rotate: [0, 360],
-                opacity: [0.1, 0.3, 0.1]
-              }}
-              transition={{
-                duration: 8 + Math.random() * 4,
-                repeat: Infinity,
-                delay: i * 0.5,
-                ease: "linear"
-              }}
-            />
-          ))}
-        </div>
+        <div 
+          className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-60 scale-125"
+          style={{
+            backgroundImage: `url(/lovable-uploads/7a1f4c1e-ed5d-401e-98a7-e7d380bb9d99.png)`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        />
       </div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-black/45" />
       
       {/* Contenu central */}
       <div className="relative z-10 text-center flex-1 flex flex-col justify-center">
         
-        {/* ENKI-REALTY avec effet cyber */}
+        {/* ENKI-REALTY */}
         <motion.div className="mb-4">
           <motion.h1
-            className="swaarg-hero-title relative"
-            initial={{ opacity: 0, scaleY: 0 }}
-            animate={{ opacity: 1, scaleY: 1 }}
-            transition={{ duration: 2, ease: "easeOut" }}
+            className="swaarg-hero-title text-white relative overflow-hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 2 }}
           >
-            <motion.span
-              className="relative inline-block bg-gradient-to-r from-purple-300 via-pink-300 to-purple-300 bg-clip-text text-transparent"
-              style={{
-                textShadow: "0 0 50px rgba(147, 51, 234, 0.8)",
-                filter: "drop-shadow(0 0 20px rgba(147, 51, 234, 0.5))",
-                backgroundSize: "200% 200%"
-              }}
-              animate={{
-                backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-                textShadow: [
-                  "0 0 50px rgba(147, 51, 234, 0.8), 0 0 100px rgba(236, 72, 153, 0.4)",
-                  "0 0 80px rgba(147, 51, 234, 1), 0 0 150px rgba(236, 72, 153, 0.6)",
-                  "0 0 50px rgba(147, 51, 234, 0.8), 0 0 100px rgba(236, 72, 153, 0.4)"
-                ]
-              }}
+            <motion.div
+              className="absolute inset-0 bg-white"
+              initial={{ y: "100%" }}
+              animate={{ y: "-100%" }}
               transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut"
+                duration: 1.5,
+                delay: 0.5,
+                ease: [0.25, 0.46, 0.45, 0.94]
               }}
+            />
+            
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.8 }}
+              className="relative inline-block"
             >
               ΣNKI-REALTY
             </motion.span>
-            
-            {/* Effet de scan */}
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-400/30 to-transparent"
-              animate={{
-                x: ["-100%", "200%"]
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                repeatDelay: 3,
-                ease: "easeInOut"
-              }}
-            />
           </motion.h1>
         </motion.div>
 
-        {/* Trait cyber */}
         <motion.div
-          className="relative w-96 h-[3px] mx-auto mb-4"
-          initial={{ opacity: 0, scaleX: 0 }}
-          animate={{ opacity: 1, scaleX: 1 }}
-          transition={{ delay: 2, duration: 1.5 }}
+          className="relative w-96 h-[1px] mx-auto mb-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2 }}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-400 to-transparent shadow-2xl shadow-purple-500/50" />
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-pink-400 to-transparent"
-            animate={{
-              opacity: [0.5, 1, 0.5],
-              scaleY: [1, 2, 1]
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          />
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent" />
         </motion.div>
 
-        {/* Cyprus Properties */}
         <motion.h2
-          className="swaarg-large-title text-purple-200 mb-12"
-          initial={{ opacity: 0, rotateX: 90 }}
-          animate={{ opacity: 1, rotateX: 0 }}
+          className="swaarg-large-title text-white/90 mb-12"
+          initial={{ opacity: 0, letterSpacing: "0.5em" }}
+          animate={{ opacity: 1, letterSpacing: "-0.03em" }}
           transition={{ 
-            duration: 1.5, 
-            delay: 2.5
-          }}
-          style={{
-            textShadow: "0 0 30px rgba(196, 181, 253, 0.6)",
-            filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.4))"
+            duration: 2, 
+            delay: 2.5,
+            ease: [0.25, 0.46, 0.45, 0.94]
           }}
         >
           Cyprus Properties
@@ -314,7 +249,7 @@ const ChatAlternative6 = () => {
               <Input
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder="ENTREZ_PARAMETRES_RECHERCHE_IMMOBILIERE..."
+                placeholder="ENTREZ_VOTRE_PROJET_IMMOBILIER (budget, type, vue, équipements, commodités à 2 km)..."
                 className="pl-8 h-12 bg-slate-800/50 border-purple-500/30 focus:border-purple-400 text-purple-100 placeholder:text-purple-400/70 font-mono"
                 onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
               />

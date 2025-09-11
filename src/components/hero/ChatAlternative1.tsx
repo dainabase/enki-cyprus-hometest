@@ -43,7 +43,11 @@ const ChatAlternative1 = () => {
   const [animationKey, setAnimationKey] = useState(0);
   const [inputValue, setInputValue] = useState('');
   const [showChat, setShowChat] = useState(false);
-  const typewriterText = useMultilingualTypewriter(["Ask me anything about Cyprus properties..."], 50);
+  const typewriterText = useMultilingualTypewriter([
+    "Je suis suisse, 45 ans, budget 600 000 CHF. Je cherche un penthouse avec grande terrasse et vue mer. Résidence: spa, salle de sport, jardin d’enfants, piscine. À moins de 2 km: banque, supermarché, école.",
+    "Je suis français, 38 ans, budget 200 000 €. Je recherche un appartement 2 pièces proche de la plage, avec balcon. Résidence: piscine et salle de sport. Commodités à moins de 2 km: supermarché, école, pharmacie.",
+    "Je suis italien, 52 ans, budget 1 000 000 €. Villa 4 chambres avec jardin et piscine privée. Résidence sécurisée avec spa et concierge. À moins de 2 km: banque, lycée international, centre commercial."
+  ], 35);
 
   const restartAnimation = () => {
     setAnimationKey(prev => prev + 1);
@@ -227,7 +231,7 @@ const ChatAlternative1 = () => {
             <Input
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Type your question about Cyprus properties..."
+              placeholder="Décrivez votre projet immobilier (budget, type, vue, équipements, commodités à 2 km)..."
               className="flex-1 h-12 border-gray-200 focus:border-primary bg-white"
               onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
             />

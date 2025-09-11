@@ -6,9 +6,9 @@ import { Button } from '@/components/ui/button';
 
 // Exemples pour la version luxury/premium
 const searchExamples = [
-  "Britannique, 55 ans, £2M. Manoir contemporain avec cave à vin et home cinéma. Domaine privé : piscine olympique, court de tennis éclairé, héliport personnel. Services VIP : majordomie, chef privé, chauffeur dans 500m.",
-  "Japonais, 39 ans, 1.8M€. Penthouse zen avec jardin japonais sur toit-terrasse. Résidence d'exception : onsen privé, dojo traditionnel, galerie d'art. Proximité : consulats, restaurants étoilés, boutiques de créateurs.",
-  "Émirati, 31 ans, 3M AED. Villa ultra-moderne avec piscine à débordement et spa hammam. Complexe royal : golf privé, écuries, marina personnelle. Infrastructure : clinique privée, école internationale premium, centres d'affaires."
+  "Je suis suisse, 45 ans, budget 600 000 CHF. Je cherche un penthouse avec grande terrasse et vue mer. Résidence: spa, salle de sport, jardin d’enfants, piscine. À moins de 2 km: banque, supermarché, école.",
+  "Je suis français, 38 ans, budget 200 000 €. Je recherche un appartement 2 pièces proche de la plage, avec balcon. Résidence: piscine et salle de sport. Commodités à moins de 2 km: supermarché, école, pharmacie.",
+  "Je suis italien, 52 ans, budget 1 000 000 €. Villa 4 chambres avec jardin et piscine privée. Résidence sécurisée avec spa et concierge. À moins de 2 km: banque, lycée international, centre commercial."
 ];
 
 const useTypewriterExamples = (texts: string[], speed: number = 15) => {
@@ -85,7 +85,7 @@ const ChatAlternative5 = () => {
         <RotateCcw className="w-5 h-5" />
       </motion.button>
 
-      {/* Background luxury avec or */}
+      {/* Background */}
       <div className="absolute inset-0">
         <div 
           className="absolute inset-0 w-full h-full object-cover"
@@ -96,107 +96,86 @@ const ChatAlternative5 = () => {
             backgroundRepeat: 'no-repeat'
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-900/40 via-yellow-900/30 to-orange-900/40" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-amber-900/30" />
-        
-        {/* Particules dorées */}
-        <div className="absolute inset-0">
-          {[...Array(8)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-2 h-2 bg-gradient-to-r from-amber-300 to-yellow-400 rounded-full shadow-lg shadow-amber-400/50"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-              }}
-              animate={{
-                y: [0, -40, 0],
-                x: [0, Math.random() * 20 - 10, 0],
-                scale: [0.8, 1.2, 0.8],
-                opacity: [0.4, 1, 0.4]
-              }}
-              transition={{
-                duration: 5 + Math.random() * 3,
-                repeat: Infinity,
-                delay: i * 0.7,
-                ease: "easeInOut"
-              }}
-            />
-          ))}
-        </div>
+        <div 
+          className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-60"
+          style={{
+            backgroundImage: `url(/lovable-uploads/7a1f4c1e-ed5d-401e-98a7-e7d380bb9d99.png)`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        />
       </div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-black/45" />
       
       {/* Contenu central */}
       <div className="relative z-10 text-center flex-1 flex flex-col justify-center">
         
-        {/* ENKI-REALTY avec effet or */}
+        {/* ENKI-REALTY avec effet de matérialisation */}
         <motion.div className="mb-4">
           <motion.h1
-            className="swaarg-hero-title relative"
-            initial={{ opacity: 0, scale: 0.5, rotateY: 180 }}
-            animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-            transition={{ duration: 2.5, ease: "easeOut" }}
+            className="swaarg-hero-title text-white relative overflow-hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 2 }}
           >
-            <motion.span
-              className="relative inline-block bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-200 bg-clip-text text-transparent"
-              style={{
-                textShadow: "0 0 40px rgba(245, 158, 11, 0.6)",
-                filter: "drop-shadow(0 4px 15px rgba(245, 158, 11, 0.4))",
-                backgroundSize: "200% 200%"
-              }}
-              animate={{
-                backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-                textShadow: [
-                  "0 0 40px rgba(245, 158, 11, 0.6)",
-                  "0 0 60px rgba(245, 158, 11, 0.9)",
-                  "0 0 40px rgba(245, 158, 11, 0.6)"
-                ]
-              }}
+            <motion.div
+              className="absolute inset-0 bg-white"
+              initial={{ y: "100%" }}
+              animate={{ y: "-100%" }}
               transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut"
+                duration: 1.5,
+                delay: 0.5,
+                ease: [0.25, 0.46, 0.45, 0.94]
               }}
+            />
+            
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.8 }}
+              className="relative inline-block"
             >
-              ΣNKI-REALTY
+              <motion.span
+                animate={{
+                  textShadow: [
+                    "0 0 0 rgba(59, 130, 246, 0)",
+                    "2px 0 0 rgba(59, 130, 246, 0.3), -2px 0 0 rgba(239, 68, 68, 0.3)",
+                    "0 0 0 rgba(59, 130, 246, 0)"
+                  ]
+                }}
+                transition={{
+                  duration: 0.2,
+                  repeat: Infinity,
+                  repeatDelay: 5,
+                  times: [0, 0.5, 1]
+                }}
+              >
+                ΣNKI-REALTY
+              </motion.span>
             </motion.span>
           </motion.h1>
         </motion.div>
 
-        {/* Trait doré luxueux */}
+        {/* Trait central ultra raffiné */}
         <motion.div
-          className="relative w-96 h-[4px] mx-auto mb-4"
-          initial={{ opacity: 0, scaleX: 0 }}
-          animate={{ opacity: 1, scaleX: 1 }}
-          transition={{ delay: 2, duration: 2 }}
+          className="relative w-96 h-[1px] mx-auto mb-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2 }}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-300 to-transparent shadow-2xl shadow-amber-400/50" />
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-200 to-transparent opacity-70" />
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-50"
-            animate={{
-              scaleX: [0, 1, 0]
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          />
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent" />
         </motion.div>
 
         {/* Cyprus Properties */}
         <motion.h2
-          className="swaarg-large-title text-amber-100 mb-12"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
+          className="swaarg-large-title text-white/90 mb-12"
+          initial={{ opacity: 0, letterSpacing: "0.5em" }}
+          animate={{ opacity: 1, letterSpacing: "-0.03em" }}
           transition={{ 
             duration: 2, 
-            delay: 2.5
-          }}
-          style={{
-            textShadow: "0 0 30px rgba(252, 211, 77, 0.5)",
-            filter: "drop-shadow(0 2px 10px rgba(0,0,0,0.3))"
+            delay: 2.5,
+            ease: [0.25, 0.46, 0.45, 0.94]
           }}
         >
           Cyprus Properties

@@ -6,9 +6,9 @@ import { Button } from '@/components/ui/button';
 
 // Exemples pour la version glassmorphism
 const searchExamples = [
-  "Américain, 41 ans, 900k USD. Penthouse high-tech avec domotique complète. Tour résidentielle premium : sky lounge, infinity pool, spa nordique. Infrastructure : fibre optique, data center, smart city à proximité.",
-  "Australien, 36 ans, 650k AUD. Maison écologique passive avec géothermie. Éco-village innovant : panneaux solaires, permaculture, mobilité électrique. Services : FabLab, coworking vert, école alternative dans 1km.",
-  "Singapourien, 29 ans, 1.5M SGD. Loft design avec terrasse suspendue et jacuzzi. Complexe futuriste : ascenseurs privatifs, robots de service, sécurité biométrique. Proximité : business district, startups, innovation hub."
+  "Je suis suisse, 45 ans, budget 600 000 CHF. Je cherche un penthouse avec grande terrasse et vue mer. Résidence: spa, salle de sport, jardin d’enfants, piscine. À moins de 2 km: banque, supermarché, école.",
+  "Je suis français, 38 ans, budget 200 000 €. Je recherche un appartement 2 pièces proche de la plage, avec balcon. Résidence: piscine et salle de sport. Commodités à moins de 2 km: supermarché, école, pharmacie.",
+  "Je suis italien, 52 ans, budget 1 000 000 €. Villa 4 chambres avec jardin et piscine privée. Résidence sécurisée avec spa et concierge. À moins de 2 km: banque, lycée international, centre commercial."
 ];
 
 const useTypewriterExamples = (texts: string[], speed: number = 20) => {
@@ -85,10 +85,10 @@ const ChatAlternative4 = () => {
         <RotateCcw className="w-5 h-5" />
       </motion.button>
 
-      {/* Background avec effet glassmorphism */}
+      {/* Background */}
       <div className="absolute inset-0">
         <div 
-          className="absolute inset-0 w-full h-full object-cover scale-110"
+          className="absolute inset-0 w-full h-full object-cover scale-125"
           style={{
             backgroundImage: `url(/lovable-uploads/7a1f4c1e-ed5d-401e-98a7-e7d380bb9d99.png)`,
             backgroundSize: 'cover',
@@ -96,35 +96,17 @@ const ChatAlternative4 = () => {
             backgroundRepeat: 'no-repeat'
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/30 via-blue-600/40 to-purple-700/30" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-blue-900/30" />
-        
-        {/* Bulles flottantes */}
-        <div className="absolute inset-0">
-          {[...Array(6)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute rounded-full bg-white/10 backdrop-blur-sm"
-              style={{
-                width: `${Math.random() * 100 + 50}px`,
-                height: `${Math.random() * 100 + 50}px`,
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-              }}
-              animate={{
-                y: [0, -30, 0],
-                scale: [1, 1.1, 1],
-                opacity: [0.3, 0.6, 0.3]
-              }}
-              transition={{
-                duration: 4 + Math.random() * 2,
-                repeat: Infinity,
-                delay: i * 0.5
-              }}
-            />
-          ))}
-        </div>
+        <div 
+          className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-60 scale-125"
+          style={{
+            backgroundImage: `url(/lovable-uploads/7a1f4c1e-ed5d-401e-98a7-e7d380bb9d99.png)`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        />
       </div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-black/45" />
       
       {/* Contenu central */}
       <div className="relative z-10 text-center flex-1 flex flex-col justify-center">
