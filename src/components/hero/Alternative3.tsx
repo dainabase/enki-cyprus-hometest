@@ -149,7 +149,7 @@ const Alternative3 = () => {
           ease: [0.25, 0.46, 0.45, 0.94]
         }}
       >
-        <div className="relative bg-white/96 backdrop-blur-xl border border-white/25 rounded-xl shadow-2xl overflow-hidden">
+        <div className="relative bg-white/96 backdrop-blur-xl border border-white/25 rounded-xl shadow-2xl overflow-hidden transition-all duration-1000">
           {/* Header avec titre intégré */}
           <div className="bg-gradient-to-r from-primary/10 to-primary/5 px-4 py-2 border-b border-gray-200/30">
             <div className="flex items-center gap-2">

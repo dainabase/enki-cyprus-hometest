@@ -149,7 +149,7 @@ const Alternative5 = () => {
           ease: [0.25, 0.46, 0.45, 0.94]
         }}
       >
-        <div className="relative bg-white/96 backdrop-blur-xl border border-white/25 rounded-xl p-4 shadow-2xl">
+        <div className="relative bg-white/96 backdrop-blur-xl border border-white/25 rounded-xl p-4 shadow-2xl transition-all duration-1000">
           {/* Titre avec point vert "online" */}
           <div className="flex items-center gap-2 mb-4">
             <div className="w-2 h-2 bg-green-500 rounded-full"></div>
