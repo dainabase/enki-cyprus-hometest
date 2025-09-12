@@ -80,7 +80,7 @@ const TabsFeaturesAlt5Accordion = () => {
         </div>
 
         {/* Accordéon premium avec boutons latéraux (animation d'origine) */}
-        <div className="flex flex-col lg:flex-row overflow-hidden h-fit lg:h-[600px] w-full max-w-6xl mx-auto shadow-elegant rounded-3xl bg-card border border-border/20">
+        <div className="flex flex-col lg:flex-row overflow-hidden h-fit lg:h-[600px] w-full max-w-6xl mx-auto shadow-elegant rounded-3xl bg-white border border-border/20">
           {items.map((item) => {
             return (
               <Panel
@@ -172,7 +172,7 @@ const Panel = ({
     <>
       {/* Bouton latéral vertical avec séparations très marquées */}
       <button
-        className="bg-card hover:bg-card/80 p-6 border-r-4 border-b-4 lg:border-b-0 border-border/60 flex flex-row-reverse lg:flex-col justify-end items-center gap-4 relative group shadow-lg"
+        className="bg-white hover:bg-white p-6 border-r-4 border-b-4 lg:border-b-0 border-border/60 flex flex-row-reverse lg:flex-col justify-end items-center gap-4 relative group shadow-lg"
         onClick={() => setOpen(id)}
         style={{
           borderRightColor: isOpen ? 'hsl(var(--border) / 0.8)' : 'hsl(var(--border) / 0.6)',
@@ -192,7 +192,7 @@ const Panel = ({
           <Icon className="w-6 h-6" />
         </div>
         <span 
-          className="w-5 h-5 bg-card group-hover:bg-card/80 border-r-4 border-b-4 lg:border-b-0 lg:border-t-4 border-border/60 rotate-45 absolute bottom-0 lg:bottom-[50%] right-[50%] lg:right-0 translate-y-[50%] translate-x-[50%] z-20 shadow-lg" 
+          className="w-5 h-5 bg-white group-hover:bg-white border-r-4 border-b-4 lg:border-b-0 lg:border-t-4 border-border/60 rotate-45 absolute bottom-0 lg:bottom-[50%] right-[50%] lg:right-0 translate-y-[50%] translate-x-[50%] z-20 shadow-lg" 
           style={{
             borderColor: isOpen ? 'hsl(var(--border) / 0.8)' : 'hsl(var(--border) / 0.6)',
           }}
