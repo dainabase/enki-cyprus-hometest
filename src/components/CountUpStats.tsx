@@ -29,7 +29,7 @@ export const CountUpStats = () => {
             suffix="%"
             prefix="+"
             decimals={1}
-            title="Appréciation annuelle des prix immobiliers"
+            title="Augmentation des prix en 2024"
             source="Sources : <a href='https://www.globalpropertyguide.com/Europe/Cyprus/Price-History' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Global Property Guide</a> · <a href='https://www.ceicdata.com/en/indicator/cyprus/house-prices-growth' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>CEIC Data</a>"
           />
           <div className="h-[2px] w-16 bg-border/60 sm:h-16 sm:w-[2px]" />
@@ -37,7 +37,7 @@ export const CountUpStats = () => {
             num={23.9}
             decimals={1}
             suffix="K"
-            title="Transactions immobilières en 2024"
+            title="Transactions en 2024"
             source="Sources : <a href='https://www.pwc.com.cy/en/publications/cyprus-real-estate-market-review.html' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>PwC Cyprus Real Estate Market Review</a> · <a href='https://cyprus-mail.com/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Cyprus Mail</a>"
           />
           <div className="h-[2px] w-16 bg-border/60 sm:h-16 sm:w-[2px]" />
@@ -45,7 +45,7 @@ export const CountUpStats = () => {
             num={70}
             suffix="%"
             title="Taux d'occupation locative"
-            source="Sources : <a href='https://airbtics.com/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Airbtics Analytics</a> · <a href='https://investropa.com/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Investropa Guide Service</a>"
+            source="Sources : <a href='https://airbtics.com/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Airbtics Analytics</a> · <a href='https://investropa.com/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Investropa Property Guide</a>"
           />
           <div className="h-[2px] w-16 bg-border/60 sm:h-16 sm:w-[2px]" />
           <Stat
