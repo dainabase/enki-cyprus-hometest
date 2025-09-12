@@ -695,7 +695,7 @@ const Home = () => {
         image="/og-image.jpg"
       />
      
-      <div className="min-h-screen overflow-x-hidden bg-gradient-ocean">
+      <div className="min-h-screen overflow-x-hidden bg-white">
         <div className="space-y-0">
           <Alternative3 />
         </div>
@@ -822,7 +822,7 @@ const Home = () => {
         {/* Premium Video Section */}
         <motion.section
           id="premium-video"
-          className="py-0 bg-secondary w-full h-[45vh] relative overflow-hidden mt-24 md:mt-32"
+          className="py-0 bg-white w-full h-[45vh] relative overflow-hidden mt-24 md:mt-32"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
