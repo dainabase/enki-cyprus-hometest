@@ -45,7 +45,7 @@ export const CountUpStats = () => {
             num={70}
             suffix="%"
             title="Taux d'occupation locative"
-            source="Sources : <a href='https://herptix.com/analytics' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Herptix Analytics</a> · <a href='https://investropa.com/guide' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Investropa Guide</a>"
+            source="Sources : <a href='https://airbtics.com/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Airbtics Analytics</a> · <a href='https://investropa.com/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Investropa Guide Service</a>"
           />
           <div className="h-[2px] w-16 bg-border/60 sm:h-16 sm:w-[2px]" />
           <Stat
