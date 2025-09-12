@@ -710,7 +710,7 @@ const Home = () => {
             <div className="relative flex gap-0 h-[800px] border rounded-xl overflow-hidden bg-background shadow-xl">
               
               {/* PANNEAU CHAT (gauche) */}
-              <div className={`chat-panel transition-all duration-1000 ease-in-out ${
+              <div className={`chat-panel transition-all duration-[1600ms] ease-in-out ${
                 showResults ? 'md:w-1/3 w-full' : 'w-full'
               }`}>
                 {/* Zone messages */}
@@ -775,7 +775,7 @@ const Home = () => {
               </div>
               
               {/* PANNEAU RÉSULTATS (droite) - Slide depuis la droite */}
-              <div className={`results-panel border-l bg-gray-50 transition-all duration-1000 ease-in-out overflow-hidden ${
+              <div className={`results-panel border-l bg-gray-50 transition-all duration-[1600ms] ease-in-out overflow-hidden ${
                 showResults ? 'md:w-2/3 w-full' : 'w-0'
               }`}>
                 <div className="p-6 h-full overflow-y-auto">

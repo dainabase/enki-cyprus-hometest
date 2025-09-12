@@ -68,14 +68,14 @@ const ChatMessage = ({ message }: ChatMessageProps) => {
             <p className="text-sm leading-relaxed text-gray-800 mb-3">{message.content}</p>
             
             {/* Layout optimisé pour tout voir sans scroll */}
-            <div className="mt-4 space-y-4">
+            <div className="mt-3 space-y-3">
               {/* Si propriétés trouvées */}
               {message.properties && message.properties.length > 0 && (
                 <div>
                   <h4 className="font-semibold text-primary text-sm mb-3">Propriétés recommandées :</h4>
                   <div className="grid gap-2">
                     {message.properties.slice(0, 3).map(property => (
-                      <div key={property.id} className="bg-white rounded-lg p-3 border border-gray-200/50 shadow-sm min-h-[100px] flex flex-col justify-between">
+                      <div key={property.id} className="bg-white rounded-lg p-3 border border-gray-200/50 shadow-sm h-24 flex flex-col justify-between">
                         <div>
                           <h5 className="font-semibold text-sm text-gray-800 mb-1 line-clamp-1">{property.title}</h5>
                           <p className="text-xs text-gray-600 mb-2 line-clamp-1">{typeof property.location === 'string' ? property.location : (property.location as any)?.city || 'Chypre'}</p>
