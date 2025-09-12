@@ -24,13 +24,13 @@ const TabsFeaturesAlt5Accordion = () => {
   }, []);
 
   return (
-    <section className="py-6 md:py-8 bg-transparent relative">
+    <section className="py-6 md:py-8 bg-white relative">
       <div className="relative mx-auto max-w-7xl px-12">
         <div className="text-center mb-24">
           <motion.div
             className="space-y-6"
           >
-            <h2 className="text-5xl font-light text-foreground tracking-tight leading-tight">
+            <h2 className="text-4xl md:text-5xl font-bold text-primary tracking-tight leading-tight">
               Pourquoi nous faire confiance ?
             </h2>
             

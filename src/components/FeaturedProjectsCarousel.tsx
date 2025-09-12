@@ -96,14 +96,14 @@ export const FeaturedProjectsCarousel = ({
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <div className="absolute inset-0 bg-white/30" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
                 </motion.div>
                 
                 {/* White Clean Overlay */}
-                <div className="relative z-10 p-8 lg:p-12 flex flex-col lg:flex-row items-center gap-8 backdrop-blur-md bg-white/95 h-full border border-cyprus-terra/10 rounded-3xl m-4">
+                <div className="relative z-10 p-8 lg:p-12 flex flex-col lg:flex-row items-center gap-8 backdrop-blur-sm bg-transparent h-full rounded-3xl m-4">
                   {/* Property Info Column */}
                   <motion.div 
-                    className="lg:w-1/2 space-y-6"
+                    className="lg:w-1/2 space-y-6 bg-background/80 backdrop-blur-sm rounded-2xl p-6"
                     initial={{ opacity: 0, x: -50 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
