@@ -75,13 +75,15 @@ const ChatMessage = ({ message }: ChatMessageProps) => {
                   <h4 className="font-semibold text-primary text-sm mb-3">Propriétés recommandées :</h4>
                   <div className="grid gap-2">
                     {message.properties.slice(0, 3).map(property => (
-                      <div key={property.id} className="bg-white rounded-lg p-3 border border-gray-200/50 shadow-sm h-24 flex flex-col justify-between">
-                        <div>
-                          <h5 className="font-semibold text-sm text-gray-800 mb-1 line-clamp-1">{property.title}</h5>
-                          <p className="text-xs text-gray-600 mb-2 line-clamp-1">{typeof property.location === 'string' ? property.location : (property.location as any)?.city || 'Chypre'}</p>
+                      <div key={property.id} className="bg-white rounded-lg p-3 border border-gray-200/50 shadow-sm h-20 flex">
+                        {/* Titre - Zone fixe */}
+                        <div className="flex-1 min-w-0">
+                          <h5 className="font-semibold text-sm text-gray-800 mb-1 truncate">{property.title}</h5>
+                          <p className="text-xs text-gray-600 truncate">{typeof property.location === 'string' ? property.location : (property.location as any)?.city || 'Chypre'}</p>
                         </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-primary font-bold text-sm">{property.price}</span>
+                        {/* Prix et Type - Zone fixe droite */}
+                        <div className="flex flex-col justify-center items-end w-24 ml-2">
+                          <span className="text-primary font-bold text-xs mb-1">{property.price}</span>
                           <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">{property.type}</span>
                         </div>
                       </div>
@@ -97,11 +99,11 @@ const ChatMessage = ({ message }: ChatMessageProps) => {
               
               {/* Si analyse fiscale - repositionnée pour être visible */}
               {message.fiscalOptimization && (
-                <div className="p-3 bg-blue-50/80 rounded-lg border border-blue-200/50">
-                  <h4 className="font-semibold text-blue-800 text-sm mb-2">💰 Optimisation Fiscale</h4>
-                  <p className="text-sm text-blue-700 mb-3 line-clamp-2">{message.fiscalOptimization.preview}</p>
-                  <button className="text-blue-600 hover:text-blue-800 underline text-sm font-medium transition-colors">
-                    Créer un compte pour l'analyse complète →
+                <div className="p-3 bg-blue-50/80 rounded-lg border border-blue-200/50 h-20 flex flex-col justify-between">
+                  <h4 className="font-semibold text-blue-800 text-sm">💰 Optimisation Fiscale</h4>
+                  <p className="text-xs text-blue-700 truncate">{message.fiscalOptimization.preview}</p>
+                  <button className="text-blue-600 hover:text-blue-800 underline text-xs font-medium transition-colors self-start">
+                    Analyse complète →
                   </button>
                 </div>
               )}
