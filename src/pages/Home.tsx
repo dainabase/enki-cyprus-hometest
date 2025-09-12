@@ -711,7 +711,7 @@ const Home = () => {
               
               {/* PANNEAU CHAT (gauche) */}
               <div className={`chat-panel transition-all duration-500 ease-in-out ${
-                showResults ? 'w-1/2' : 'w-full'
+                showResults ? 'md:w-1/3 w-full' : 'w-full'
               }`}>
                 {/* Zone messages */}
                 <div 
@@ -776,7 +776,7 @@ const Home = () => {
               
               {/* PANNEAU RÉSULTATS (droite) - Slide depuis la droite */}
               <div className={`results-panel border-l bg-gray-50 transition-all duration-500 ease-in-out overflow-hidden ${
-                showResults ? 'w-1/2' : 'w-0'
+                showResults ? 'md:w-2/3 w-full' : 'w-0'
               }`}>
                 <div className="p-6 h-full overflow-y-auto">
                   <h3 className="text-2xl font-bold mb-6">Propriétés Correspondantes</h3>
