@@ -5,7 +5,7 @@ export const CountUpStats = () => {
   return (
     <motion.section
       id="market-kpis"
-      className="bg-background py-24 md:py-32 px-4 sm:px-6 lg:px-8"
+      className="bg-white py-24 md:py-32 px-4 sm:px-6 lg:px-8"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
