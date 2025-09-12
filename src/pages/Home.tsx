@@ -816,6 +816,9 @@ const Home = () => {
         {/* KPIs Marché Immobilier - masqués si chat actif */}
         {!showResults && <CountUpStats />}
 
+        {/* Spacer between KPIs and Video */}
+        {!showResults && <div className="py-16 bg-white"></div>}
+
         {/* Premium Video Section */}
         <motion.section
           id="premium-video"
@@ -870,6 +873,9 @@ const Home = () => {
             Experience Timeless Elegance, Premium Living in your Dream Home
           </motion.div>
         </motion.section>
+
+        {/* Spacer between Video and Why Enki */}
+        <div className="py-16 bg-white"></div>
 
         <section
           id="why-enki"
