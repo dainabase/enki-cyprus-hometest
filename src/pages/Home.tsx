@@ -813,11 +813,11 @@ const Home = () => {
           </div>
         </section>
 
-        {/* KPIs Marché Immobilier - masqués si chat actif */}
-        {!showResults && <CountUpStats />}
+        {/* KPIs Marché Immobilier */}
+        <CountUpStats />
 
         {/* Spacer between KPIs and Video */}
-        {!showResults && <div className="py-16 bg-white"></div>}
+        <div className="py-16 bg-white"></div>
 
         {/* Premium Video Section */}
         <motion.section
