@@ -816,14 +816,6 @@ const Home = () => {
         {/* KPIs Marché Immobilier - masqués si chat actif */}
         {!showResults && <CountUpStats />}
 
-        <section
-          id="why-enki"
-          className="bg-background -mt-px px-4 sm:px-6 lg:px-8"
-        >
-          <div className="max-w-7xl mx-auto">
-            <TabsFeaturesAlt5Accordion />
-          </div>
-        </section>
         {/* Premium Video Section */}
         <motion.section
           id="premium-video"
@@ -878,6 +870,15 @@ const Home = () => {
             Experience Timeless Elegance, Premium Living in your Dream Home
           </motion.div>
         </motion.section>
+
+        <section
+          id="why-enki"
+          className="bg-background -mt-px px-4 sm:px-6 lg:px-8"
+        >
+          <div className="max-w-7xl mx-auto">
+            <TabsFeaturesAlt5Accordion />
+          </div>
+        </section>
         {/* Projets Vedette */}
         <section id="featured-projects" className="py-24 md:py-32 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
