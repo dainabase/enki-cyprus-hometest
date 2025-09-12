@@ -700,7 +700,7 @@ const Home = () => {
           <Alternative3 />
         </div>
         {/* Interface Split-View : Chat + Panneau Résultats */}
-        <section id="start-experience" className="py-24 px-4 min-h-screen bg-white">
+        <section id="start-experience" className="py-24 md:py-32 px-4 min-h-screen bg-white">
           <div className="container mx-auto max-w-7xl">
             <h2 className="swaarg-large-title text-center mb-8 text-primary">
               Votre Assistant IA Immobilier
@@ -819,7 +819,7 @@ const Home = () => {
         {/* Premium Video Section */}
         <motion.section
           id="premium-video"
-          className="py-0 bg-secondary w-full h-[45vh] relative overflow-hidden"
+          className="py-0 bg-secondary w-full h-[45vh] relative overflow-hidden mt-24 md:mt-32"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}

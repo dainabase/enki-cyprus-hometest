@@ -19,7 +19,7 @@ export const CountUpStats = () => {
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          UN MARCHÉ EN <span className="text-cyprus-terra">FORTE CROISSANCE</span>
+          Un marché en <span className="text-cyprus-terra">forte croissance</span>
         </motion.h2>
 
         <div className="flex flex-col items-center justify-center sm:flex-row">
