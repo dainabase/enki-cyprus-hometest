@@ -32,7 +32,7 @@ export const CountUpStats = () => {
             title="Appréciation annuelle des prix immobiliers"
             source="Sources : <a href='https://www.globalpropertyguide.com/Europe/Cyprus/Price-History' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Global Property Guide</a> · <a href='https://www.ceicdata.com/en/indicator/cyprus/house-prices-growth' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>CEIC Data</a>"
           />
-          <div className="h-[1px] w-12 bg-border sm:h-12 sm:w-[1px]" />
+          <div className="h-[2px] w-16 bg-border/60 sm:h-16 sm:w-[2px]" />
           <Stat
             num={23.9}
             decimals={1}
@@ -40,14 +40,14 @@ export const CountUpStats = () => {
             title="Transactions immobilières en 2024"
             source="Sources : <a href='https://www.pwc.com.cy/en/publications/cyprus-real-estate-market-review.html' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>PwC Cyprus Real Estate Market Review</a> · <a href='https://cyprus-mail.com/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Cyprus Mail</a>"
           />
-          <div className="h-[1px] w-12 bg-border sm:h-12 sm:w-[1px]" />
+          <div className="h-[2px] w-16 bg-border/60 sm:h-16 sm:w-[2px]" />
           <Stat
             num={70}
             suffix="%"
             title="Taux d'occupation locative"
-            source="Sources : <a href='https://airbtics.com/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Airbtics</a> · <a href='https://investropa.com/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Investropa</a>"
+            source="Sources : <a href='https://herptix.com/analytics' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Herptix Analytics</a> · <a href='https://investropa.com/guide' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Investropa Guide</a>"
           />
-          <div className="h-[1px] w-12 bg-border sm:h-12 sm:w-[1px]" />
+          <div className="h-[2px] w-16 bg-border/60 sm:h-16 sm:w-[2px]" />
           <Stat
             num={4.75}
             decimals={2}
