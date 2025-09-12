@@ -873,7 +873,7 @@ const Home = () => {
 
         <section
           id="why-enki"
-          className="bg-background -mt-px px-4 sm:px-6 lg:px-8 pt-24 md:pt-32"
+          className="bg-background -mt-px px-4 sm:px-6 lg:px-8"
         >
           <div className="max-w-7xl mx-auto">
             <TabsFeaturesAlt5Accordion />
