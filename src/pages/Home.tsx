@@ -27,6 +27,7 @@ import PropertyModal from '@/components/PropertyModal';
 import FeaturedProjectsCarousel from '@/components/FeaturedProjectsCarousel';
 import { useIsClient } from '@/hooks/useIsClient';
 import TabsFeaturesAlt5Accordion from '@/components/TabsFeatures-Alternative5-Accordion';
+import { CountUpStats } from '@/components/CountUpStats';
 import { getHeroImage } from '@/utils/gallery';
 import Alternative3 from '@/components/hero/Alternative3';
 import ChatMessageComponent from '@/components/ChatMessage';
@@ -813,104 +814,7 @@ const Home = () => {
         </section>
 
         {/* KPIs Marché Immobilier - masqués si chat actif */}
-        {!showResults && (
-          <motion.section
-            id="market-kpis"
-            className="bg-background py-24 md:py-32 px-4 sm:px-6 lg:px-8"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-          <div className="max-w-7xl mx-auto">
-            <motion.div
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ duration: 0.8, staggerChildren: 0.2 }}
-              viewport={{ once: true }}
-            >
-              {[
-                {
-                  number: "+6,5%",
-                  title: "Appréciation annuelle des prix immobiliers",
-                  subtitle: "",
-                  source: "Sources : <a href='https://www.globalpropertyguide.com/Europe/Cyprus/Price-History' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Global Property Guide</a> · <a href='https://www.ceicdata.com/en/indicator/cyprus/house-prices-growth' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>CEIC Data</a>",
-                },
-                {
-                  number: "23,9K",
-                  title: "Transactions immobilières en 2024",
-                  subtitle: "",
-                  source: "Sources : <a href='https://www.pwc.com.cy/en/publications/cyprus-real-estate-market-review.html' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>PwC Cyprus Real Estate Market Review</a> · <a href='https://cyprus-mail.com/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Cyprus Mail</a>",
-                },
-                {
-                  number: "70%",
-                  title: "Taux d'occupation locative",
-                  subtitle: "",
-                  source: "Sources : <a href='https://airbtics.com/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Airbtics</a> · <a href='https://investropa.com/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Investropa</a>",
-                },
-                {
-                  number: "4,75%",
-                  title: "Rendement locatif brut moyen",
-                  subtitle: "",
-                  source: "Sources : <a href='https://www.globalcitizensolutions.com/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Global Citizens Solutions</a> · <a href='https://www.rics.org/cyprus/' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>RICS Cyprus</a> · <a href='https://www.globalpropertyguide.com/Europe/Cyprus' target='_blank' class='text-muted-foreground hover:text-primary hover:underline transition-colors'>Global Property Guide</a>",
-                },
-              ].map((kpi, index) => (
-                <motion.div
-                  key={index}
-                  className="text-center group"
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.2, type: "spring", damping: 20 }}
-                  viewport={{ once: true }}
-                  whileHover={{ scale: 1.05, transition: { type: "spring", damping: 15 } }}
-                  onViewportEnter={() => {
-                    trackCustomEvent('kpi_viewed', { title: kpi.title, number: kpi.number, index });
-                  }}
-                >
-                  <motion.div
-                    className="swaarg-section-title text-primary mb-6"
-                    initial={{ scale: 0, opacity: 0 }}
-                    whileInView={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 1.5, delay: index * 0.2 + 0.5, ease: "easeOut", type: "spring", damping: 15 }}
-                    viewport={{ once: true }}
-                  >
-                    {kpi.number}
-                  </motion.div>
-                  <motion.h3
-                    className="swaarg-card-title text-primary mb-3"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.2 + 0.7 }}
-                    viewport={{ once: true }}
-                  >
-                    {kpi.title}
-                  </motion.h3>
-                  <motion.p
-                    className="text-sm font-normal leading-relaxed -0.003em text-muted-foreground max-w-xs mx-auto mb-3"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.2 + 0.9 }}
-                    viewport={{ once: true }}
-                  >
-                    {kpi.subtitle}
-                  </motion.p>
-                  {kpi.source && (
-                    <motion.div
-                      className="text-xs"
-                      dangerouslySetInnerHTML={{ __html: kpi.source }}
-                      initial={{ opacity: 0 }}
-                      whileInView={{ opacity: 1 }}
-                      transition={{ duration: 0.6, delay: index * 0.2 + 1.1 }}
-                      viewport={{ once: true }}
-                    />
-                  )}
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-        </motion.section>
-        )}
+        {!showResults && <CountUpStats />}
 
         <section
           id="why-enki"
