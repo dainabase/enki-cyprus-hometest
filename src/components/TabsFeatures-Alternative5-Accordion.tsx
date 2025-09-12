@@ -30,7 +30,7 @@ const TabsFeaturesAlt5Accordion = () => {
           <motion.div
             className="space-y-6"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-primary tracking-tight leading-tight">
+            <h2 className="swaarg-large-title text-primary tracking-tight leading-tight">
               Pourquoi nous faire confiance ?
             </h2>
             

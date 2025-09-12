@@ -702,7 +702,7 @@ const Home = () => {
         {/* Interface Split-View : Chat + Panneau Résultats */}
         <section id="start-experience" className="py-24 px-4 min-h-screen bg-white">
           <div className="container mx-auto max-w-7xl">
-            <h2 className="text-4xl font-bold text-center mb-8 text-primary">
+            <h2 className="swaarg-large-title text-center mb-8 text-primary">
               Votre Assistant IA Immobilier
             </h2>
             
@@ -869,7 +869,7 @@ const Home = () => {
           />
           
            <motion.div
-             className="absolute inset-0 flex items-center justify-center text-white swaarg-section-title text-center px-6"
+             className="absolute inset-0 flex items-center justify-center text-white swaarg-large-title text-center px-6"
              initial={{ opacity: 0, x: 100 }}
              whileInView={{ opacity: 1, x: 0 }}
              viewport={{ once: true }}
@@ -889,7 +889,7 @@ const Home = () => {
               className="text-center mb-16"
             >
               <motion.h2
-                className="swaarg-section-title text-primary mb-6"
+                className="swaarg-large-title text-primary mb-6"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
@@ -929,7 +929,7 @@ const Home = () => {
               className="text-center mb-16"
             >
               <motion.h2
-                className="swaarg-section-title text-primary mb-6"
+                className="swaarg-large-title text-primary mb-6"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
