@@ -19,8 +19,7 @@ export const CountUpStats = () => {
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          MARCHÉ IMMOBILIER CHYPRIOTE EN
-          <span className="text-cyprus-terra"> CROISSANCE CONSTANTE</span>
+          UN MARCHÉ EN <span className="text-cyprus-terra">FORTE CROISSANCE</span>
         </motion.h2>
 
         <div className="flex flex-col items-center justify-center sm:flex-row">
