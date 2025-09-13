@@ -7,10 +7,11 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Home, Search, Filter, Eye, Edit, Crown, MapPin, Euro } from 'lucide-react';
+import { Home, Search, Filter, Eye, Edit, Crown, MapPin, Euro, Plus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { useTranslation } from 'react-i18next';
+import PropertyWizard from '@/components/admin/properties/PropertyWizard';
 
 interface Unit {
   id: string;
@@ -55,6 +56,7 @@ const AdminUnits = () => {
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [zoneFilter, setZoneFilter] = useState<string>('all');
   const [goldenVisaFilter, setGoldenVisaFilter] = useState<string>('all');
+  const [showWizard, setShowWizard] = useState(false);
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -169,6 +171,10 @@ const AdminUnits = () => {
           <h1 className="text-3xl font-bold">{t('units.title')}</h1>
           <p className="text-muted-foreground">{t('units.subtitle')}</p>
         </div>
+        <Button onClick={() => setShowWizard(true)} className="flex items-center gap-2">
+          <Plus className="h-4 w-4" />
+          Créer Propriété(s)
+        </Button>
       </div>
 
       {/* Stats Cards */}
@@ -418,6 +424,15 @@ const AdminUnits = () => {
           </Table>
         </CardContent>
       </Card>
+
+      {/* PropertyWizard Modal */}
+      <PropertyWizard 
+        open={showWizard}
+        onClose={() => setShowWizard(false)}
+        onSuccess={() => {
+          queryClient.invalidateQueries({ queryKey: ['admin-units'] });
+        }}
+      />
     </div>
   );
 };
