@@ -172,6 +172,29 @@ export interface ExtractedProperty {
   floor_plan_url?: string;
   virtual_tour_url?: string;
   status: string;
+  
+  // NOUVEAUX CHAMPS CYPRUS (Étape 2)
+  title_deed_number?: string;
+  energy_certificate_rating?: string;
+  property_tax_yearly?: number;
+  transfer_fee_percentage?: number;
+  stamp_duty_percentage?: number;
+  legal_fees_percentage?: number;
+  immovable_property_tax?: number;
+  sewerage_levy?: number;
+  plot_m2?: number;
+  covered_veranda_m2?: number;
+  uncovered_veranda_m2?: number;
+  basement_m2?: number;
+  attic_m2?: number;
+  has_underfloor_heating?: boolean;
+  has_central_heating?: boolean;
+  has_air_conditioning?: boolean;
+  has_solar_panels?: boolean;
+  has_pressurized_water?: boolean;
+  has_electric_gates?: boolean;
+  has_alarm_system?: boolean;
+  internet_ready?: boolean;
 }
 
 export interface ExtractionResult {
@@ -373,7 +396,30 @@ export function mapPropertyToDatabase(
     gallery_images: extracted.gallery_images || null,
     floor_plan_url: extracted.floor_plan_url || null,
     virtual_tour_url: extracted.virtual_tour_url || null,
-    status: extracted.status || 'available'
+    status: extracted.status || 'available',
+    
+    // NOUVEAUX CHAMPS CYPRUS (Étape 2)
+    title_deed_number: extracted.title_deed_number || null,
+    energy_certificate_rating: extracted.energy_certificate_rating || null,
+    property_tax_yearly: extracted.property_tax_yearly || null,
+    transfer_fee_percentage: extracted.transfer_fee_percentage || 3.00,
+    stamp_duty_percentage: extracted.stamp_duty_percentage || 0.15,
+    legal_fees_percentage: extracted.legal_fees_percentage || 1.00,
+    immovable_property_tax: extracted.immovable_property_tax || null,
+    sewerage_levy: extracted.sewerage_levy || null,
+    plot_m2: extracted.plot_m2 || null,
+    covered_veranda_m2: extracted.covered_veranda_m2 || null,
+    uncovered_veranda_m2: extracted.uncovered_veranda_m2 || null,
+    basement_m2: extracted.basement_m2 || null,
+    attic_m2: extracted.attic_m2 || null,
+    has_underfloor_heating: extracted.has_underfloor_heating || false,
+    has_central_heating: extracted.has_central_heating || false,
+    has_air_conditioning: extracted.has_air_conditioning || false,
+    has_solar_panels: extracted.has_solar_panels || false,
+    has_pressurized_water: extracted.has_pressurized_water || false,
+    has_electric_gates: extracted.has_electric_gates || false,
+    has_alarm_system: extracted.has_alarm_system || false,
+    internet_ready: extracted.internet_ready ?? true
   };
 }
 

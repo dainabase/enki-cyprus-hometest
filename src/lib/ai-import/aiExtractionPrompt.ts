@@ -170,7 +170,7 @@ Extrait et mappe vers ces champs EXACTS :
   "energy_rating": "string - A/B/C/D/E/F/G"
 }
 
-### 4. PROPERTIES (32 champs essentiels)
+### 4. PROPERTIES (50+ champs - INCLUANT NOUVEAUX CHAMPS CYPRUS)
 {
   // IDENTIFICATION
   "unit_number": "string, REQUIS - Ex: A101, B205, PH01",
@@ -186,6 +186,11 @@ Extrait et mappe vers ces champs EXACTS :
   "balcony_m2": "number - Surface balcon",
   "terrace_m2": "number - Surface terrasse",
   "garden_m2": "number - Surface jardin",
+  "plot_m2": "number - Surface terrain privé",
+  "covered_veranda_m2": "number - Véranda couverte",
+  "uncovered_veranda_m2": "number - Véranda découverte",
+  "basement_m2": "number - Surface sous-sol",
+  "attic_m2": "number - Surface grenier",
   
   // PARKING & STOCKAGE
   "parking_spaces": "number - Places de parking",
@@ -193,10 +198,30 @@ Extrait et mappe vers ces champs EXACTS :
   
   // PRIX (CRITIQUE)
   "price": "number, REQUIS - Prix de base en EUR",
-  "vat_rate": "number - 5.00 ou 19.00",
+  "vat_rate": "number - 5.00 (résidentiel ≤200m²) ou 19.00 (>200m² ou commercial)",
   "price_with_vat": "number - Auto-calculé: price * (1 + vat_rate/100)",
   "commission_rate": "number - Défaut 3.00",
   "is_golden_visa": "boolean - Auto: price >= 300000",
+  
+  // CHAMPS LÉGAUX CYPRUS (NOUVEAUX)
+  "title_deed_number": "string - Numéro titre de propriété",
+  "energy_certificate_rating": "string - A/B/C/D/E/F/G - Certificat énergétique",
+  "property_tax_yearly": "number - Taxe foncière annuelle en EUR",
+  "transfer_fee_percentage": "number - Frais de transfert % (défaut 3.00)",
+  "stamp_duty_percentage": "number - Droit de timbre % (défaut 0.15)",
+  "legal_fees_percentage": "number - Frais légaux % (défaut 1.00)",
+  "immovable_property_tax": "number - Taxe propriété immobilière",
+  "sewerage_levy": "number - Taxe assainissement",
+  
+  // ÉQUIPEMENTS CYPRUS (NOUVEAUX)
+  "has_underfloor_heating": "boolean - Chauffage au sol",
+  "has_central_heating": "boolean - Chauffage central",
+  "has_air_conditioning": "boolean - Climatisation",
+  "has_solar_panels": "boolean - Panneaux solaires",
+  "has_pressurized_water": "boolean - Eau sous pression",
+  "has_electric_gates": "boolean - Portails électriques",
+  "has_alarm_system": "boolean - Système d'alarme",
+  "internet_ready": "boolean - Prêt Internet (défaut true)",
   
   // VUES & ORIENTATION
   "view_type": "string - sea/mountain/city/garden/pool",
@@ -270,11 +295,12 @@ Si document contient tableau de prix:
 
 ### ENRICHISSEMENT AUTOMATIQUE
 
-1. **TVA Cyprus**:
-   - Résidentiel neuf: 5%
+1. **TVA Cyprus (MISE À JOUR)**:
+   - Résidentiel neuf ≤200m²: 5%
    - Résidentiel >200m²: 19%
    - Commercial: 19%
    - price_with_vat = price * (1 + vat_rate/100)
+   - RÈGLE: Si size_m2 > 200 OU type = "commercial" → vat_rate = 19.00, sinon 5.00
 
 2. **Golden Visa**:
    - Si price >= 300000: is_golden_visa = true
@@ -364,7 +390,7 @@ Si document contient tableau de prix:
   ]
 }
 
-## ⚠️ RÈGLES CRITIQUES
+## ⚠️ RÈGLES CRITIQUES (MISES À JOUR CYPRUS)
 
 1. **JAMAIS inventer de données** - Si absent: null
 2. **TOUJOURS en EUR** - Convertir autres devises
@@ -372,6 +398,27 @@ Si document contient tableau de prix:
 4. **RESPECTER la hiérarchie** - Developer → Project → Building → Property
 5. **VALIDER les données** - Prix réalistes (50k-5M€)
 6. **LANGUE** - Extraire en ANGLAIS même si document en autre langue
+
+## 🇨🇾 RÈGLES SPÉCIFIQUES CYPRUS (NOUVELLES)
+
+7. **CALCUL VAT AUTOMATIQUE**:
+   - Si type = "commercial" → vat_rate = 19.00
+   - Si size_m2 > 200 → vat_rate = 19.00
+   - Sinon → vat_rate = 5.00
+
+8. **GOLDEN VISA CYPRUS**:
+   - Si price ≥ 300000 → is_golden_visa = true
+   - Si price_with_vat ≥ 300000 → is_golden_visa = true
+
+9. **CHAMPS CYPRUS PAR DÉFAUT**:
+   - energy_certificate_rating: "B" si non spécifié
+   - transfer_fee_percentage: 3.00 si non spécifié
+   - stamp_duty_percentage: 0.15 si non spécifié
+   - internet_ready: true par défaut
+
+10. **DÉTECTION PERMITS**:
+    - Chercher "planning permit", "building permit", "environmental permit"
+    - Extraire numéros de permis si mentionnés
 
 ## 🎯 PRIORITÉS D'EXTRACTION
 
