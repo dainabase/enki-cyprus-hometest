@@ -14,11 +14,8 @@ import { DEBUG_MODE, logDebug, logError, logSuccess, generateTestData } from './
 export async function extractFullHierarchy(fileUrls: string[]): Promise<ExtractionResult> {
   logDebug('extractFullHierarchy called', { urlCount: fileUrls.length, urls: fileUrls });
   
-  // FOR TESTING: Force return test data for Jardins de Maria
-  if (DEBUG_MODE && fileUrls.some(url => url.includes('jardins') || url.includes('maria'))) {
-    logDebug('🎭 DEBUG MODE: Detected Jardins de Maria, returning test data');
-    return generateTestData() as any;
-  }
+  // Désactiver le mode debug pour forcer l'extraction réelle
+  logDebug('🤖 REAL EXTRACTION MODE: Calling AI extraction service');
   
   try {
     logDebug('Calling Supabase edge function extract-full-hierarchy...');

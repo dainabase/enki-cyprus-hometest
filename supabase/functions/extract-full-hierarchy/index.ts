@@ -67,9 +67,26 @@ serve(async (req) => {
           let content = '';
           
           if (contentType.includes('pdf')) {
-            // For PDFs, we need to extract text - for now using basic fetch
-            const buffer = await response.arrayBuffer();
-            content = `PDF file processed (${buffer.byteLength} bytes)`;
+            // For PDFs, use document parsing service
+            console.log('📄 Processing PDF file...');
+            try {
+              const { data: parseData, error: parseError } = await supabase.functions.invoke('parse-document', {
+                body: { fileUrl: url }
+              });
+              
+              if (!parseError && parseData?.content) {
+                content = parseData.content;
+                console.log(`✅ PDF parsed successfully, content length: ${content.length}`);
+              } else {
+                console.warn('⚠️ PDF parsing failed, using fallback');
+                const buffer = await response.arrayBuffer();
+                content = `PDF file processed (${buffer.byteLength} bytes) - parsing failed`;
+              }
+            } catch (pdfError) {
+              console.error('❌ PDF parsing error:', pdfError);
+              const buffer = await response.arrayBuffer();
+              content = `PDF file processed (${buffer.byteLength} bytes) - error: ${pdfError.message}`;
+            }
           } else {
             content = await response.text();
           }
@@ -96,11 +113,14 @@ serve(async (req) => {
     })));
 
     // Prepare AI prompt for full hierarchy extraction
-    const prompt = `
-You are an expert real estate data extractor. Analyze the provided documents and extract a complete property development hierarchy.
+    const systemPrompt = `
+You are an expert real estate data extractor specialized in Cyprus properties. 
 
-Documents content:
-${extractedContents.map(doc => `File: ${doc.url}\nContent: ${doc.content}`).join('\n\n')}
+CRITICAL INSTRUCTIONS:
+1. Extract ALL property types: apartments, studios, penthouses, AND villas
+2. Extract complete developer contact information
+3. Extract accurate project details including location and status
+4. Be thorough in building identification
 
 Extract and return a JSON object with this exact structure:
 {
@@ -149,16 +169,28 @@ Extract and return a JSON object with this exact structure:
   ]
 }
 
-Focus on:
-- Extract developer contact information
-- Identify project name, location, and description
-- List all buildings with their specifications
-- Extract all individual properties with complete details
-- Ensure prices are in euros (convert if needed)
-- Be thorough but accurate - if information is missing, use reasonable defaults
-- Properties above €300,000 will automatically be flagged as Golden Visa eligible
+SPECIFIC EXTRACTION RULES:
+- Developer: Extract name (e.g., "Cyprus Premium Developments Ltd"), email, phone, website from contact sections
+- Project: Extract name (e.g., "Les Jardins de Maria"), location (e.g., "Limassol Marina"), status based on completion dates
+- Buildings: Include ALL building types - apartments buildings AND villas as separate building entries
+- Properties: Extract ALL units including apartments, studios, penthouses, AND individual villas
+- Villas should be treated as individual properties with type="villa"
+- Ensure accurate price extraction in euros
+- Properties ≥€300,000 are Golden Visa eligible
 
 Return only valid JSON, no explanations.
+`;
+
+    const userPrompt = `
+Analyze this real estate document content and extract the complete hierarchy:
+
+${extractedContents.map(doc => `=== FILE: ${doc.url} ===\n${doc.content}`).join('\n\n')}
+
+Pay special attention to:
+1. Contact information in developer sections
+2. Project name and location details  
+3. ALL property types including villas
+4. Detailed property specifications and prices
 `;
 
     // Configuration API avec fallback OpenAI
@@ -184,9 +216,12 @@ Return only valid JSON, no explanations.
         messages: [
           { 
             role: 'system', 
-            content: prompt // Utilise le prompt système complet avec 425+ champs
+            content: systemPrompt
           },
-          { role: 'user', content: `Analyse ces documents: ${extractedContents.map(d => d.content).join(' ')}` }
+          { 
+            role: 'user', 
+            content: userPrompt
+          }
         ],
         max_completion_tokens: 4000,
         temperature: 0.1,
