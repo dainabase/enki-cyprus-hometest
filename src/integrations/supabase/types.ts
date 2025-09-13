@@ -1778,6 +1778,149 @@ export type Database = {
         }
         Relationships: []
       }
+      properties: {
+        Row: {
+          assigned_agent_id: string | null
+          balcony_m2: number | null
+          bathrooms: number
+          bedrooms: number
+          building_id: string
+          commission_rate: number | null
+          created_at: string | null
+          developer_id: string
+          featured_image: string | null
+          floor: number
+          floor_plan_url: string | null
+          gallery_images: string[] | null
+          garden_m2: number | null
+          has_gym_access: boolean | null
+          has_mountain_view: boolean | null
+          has_pool_access: boolean | null
+          has_sea_view: boolean | null
+          id: string
+          is_furnished: boolean | null
+          is_golden_visa: boolean | null
+          orientation: string | null
+          parking_spaces: number | null
+          price: number
+          price_with_vat: number | null
+          project_id: string
+          size_m2: number
+          status: string | null
+          storage_units: number | null
+          terrace_m2: number | null
+          type: string
+          unit_number: string
+          updated_at: string | null
+          vat_rate: number | null
+          view_type: string | null
+          virtual_tour_url: string | null
+        }
+        Insert: {
+          assigned_agent_id?: string | null
+          balcony_m2?: number | null
+          bathrooms: number
+          bedrooms: number
+          building_id: string
+          commission_rate?: number | null
+          created_at?: string | null
+          developer_id: string
+          featured_image?: string | null
+          floor: number
+          floor_plan_url?: string | null
+          gallery_images?: string[] | null
+          garden_m2?: number | null
+          has_gym_access?: boolean | null
+          has_mountain_view?: boolean | null
+          has_pool_access?: boolean | null
+          has_sea_view?: boolean | null
+          id?: string
+          is_furnished?: boolean | null
+          is_golden_visa?: boolean | null
+          orientation?: string | null
+          parking_spaces?: number | null
+          price: number
+          price_with_vat?: number | null
+          project_id: string
+          size_m2: number
+          status?: string | null
+          storage_units?: number | null
+          terrace_m2?: number | null
+          type: string
+          unit_number: string
+          updated_at?: string | null
+          vat_rate?: number | null
+          view_type?: string | null
+          virtual_tour_url?: string | null
+        }
+        Update: {
+          assigned_agent_id?: string | null
+          balcony_m2?: number | null
+          bathrooms?: number
+          bedrooms?: number
+          building_id?: string
+          commission_rate?: number | null
+          created_at?: string | null
+          developer_id?: string
+          featured_image?: string | null
+          floor?: number
+          floor_plan_url?: string | null
+          gallery_images?: string[] | null
+          garden_m2?: number | null
+          has_gym_access?: boolean | null
+          has_mountain_view?: boolean | null
+          has_pool_access?: boolean | null
+          has_sea_view?: boolean | null
+          id?: string
+          is_furnished?: boolean | null
+          is_golden_visa?: boolean | null
+          orientation?: string | null
+          parking_spaces?: number | null
+          price?: number
+          price_with_vat?: number | null
+          project_id?: string
+          size_m2?: number
+          status?: string | null
+          storage_units?: number | null
+          terrace_m2?: number | null
+          type?: string
+          unit_number?: string
+          updated_at?: string | null
+          vat_rate?: number | null
+          view_type?: string | null
+          virtual_tour_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "properties_assigned_agent_id_fkey"
+            columns: ["assigned_agent_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "properties_building_id_fkey"
+            columns: ["building_id"]
+            isOneToOne: false
+            referencedRelation: "buildings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "properties_developer_id_fkey"
+            columns: ["developer_id"]
+            isOneToOne: false
+            referencedRelation: "developers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "properties_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       registration_drafts: {
         Row: {
           auto_save_enabled: boolean

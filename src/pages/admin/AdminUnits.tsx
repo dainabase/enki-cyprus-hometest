@@ -14,22 +14,38 @@ import { useTranslation } from 'react-i18next';
 
 interface Unit {
   id: string;
-  title: string;
+  unit_number: string;
+  floor: number;
+  type: string;
+  bedrooms: number;
+  bathrooms: number;
+  size_m2: number;
   price: number;
-  property_category: string;
-  property_sub_type: string[];
-  location: {
-    city?: string;
-    lat?: number;
-    lng?: number;
-  };
-  reservation_status?: 'available' | 'reserved' | 'sold';
-  golden_visa_eligible?: boolean;
+  price_with_vat: number;
+  status: 'available' | 'reserved' | 'sold';
+  is_golden_visa: boolean;
+  view_type?: string;
+  orientation?: string;
+  balcony_m2?: number;
+  parking_spaces?: number;
+  has_sea_view?: boolean;
   vat_rate?: number;
   commission_rate?: number;
-  cyprus_zone?: string;
-  photos?: string[];
   created_at: string;
+  project: {
+    id: string;
+    name: string;
+    city: string;
+    cyprus_zone?: string;
+  };
+  building: {
+    id: string;
+    name: string;
+  };
+  developer: {
+    id: string;
+    name: string;
+  };
 }
 
 const AdminUnits = () => {
@@ -43,17 +59,33 @@ const AdminUnits = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Fetch units with developer info
+  // Fetch units from properties table
   const { data: units = [], isLoading } = useQuery({
     queryKey: ['admin-units'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('projects')
-        .select('*')
+        .from('properties')
+        .select(`
+          *,
+          project:projects!inner(
+            id,
+            name,
+            city,
+            cyprus_zone
+          ),
+          building:buildings!inner(
+            id,
+            name
+          ),
+          developer:developers!inner(
+            id,
+            name
+          )
+        `)
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      return (data || []) as Unit[];
+      return (data || []) as any[];
     }
   });
 
@@ -61,8 +93,8 @@ const AdminUnits = () => {
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
       const { error } = await supabase
-        .from('projects')
-        .update({ reservation_status: status })
+        .from('properties')
+        .update({ status: status })
         .eq('id', id);
       if (error) throw error;
     },
@@ -77,24 +109,25 @@ const AdminUnits = () => {
 
   // Filter units
   const filteredUnits = units.filter(unit => {
-    const matchesSearch = unit.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         unit.location.city?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || unit.reservation_status === statusFilter;
-    const matchesType = typeFilter === 'all' || (unit.property_sub_type && unit.property_sub_type.includes(typeFilter));
-    const matchesZone = zoneFilter === 'all' || unit.cyprus_zone === zoneFilter;
+    const matchesSearch = unit.unit_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         unit.project.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         unit.project.name?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || unit.status === statusFilter;
+    const matchesType = typeFilter === 'all' || unit.type === typeFilter;
+    const matchesZone = zoneFilter === 'all' || unit.project.cyprus_zone === zoneFilter;
     const matchesGoldenVisa = goldenVisaFilter === 'all' || 
-                              (goldenVisaFilter === 'true' && unit.golden_visa_eligible) ||
-                              (goldenVisaFilter === 'false' && !unit.golden_visa_eligible);
+                              (goldenVisaFilter === 'true' && unit.is_golden_visa) ||
+                              (goldenVisaFilter === 'false' && !unit.is_golden_visa);
     
     return matchesSearch && matchesStatus && matchesType && matchesZone && matchesGoldenVisa;
   });
 
   const stats = {
     total: units.length,
-    available: units.filter(u => u.reservation_status === 'available').length,
-    reserved: units.filter(u => u.reservation_status === 'reserved').length,
-    sold: units.filter(u => u.reservation_status === 'sold').length,
-    goldenVisa: units.filter(u => u.golden_visa_eligible).length,
+    available: units.filter(u => u.status === 'available').length,
+    reserved: units.filter(u => u.status === 'reserved').length,
+    sold: units.filter(u => u.status === 'sold').length,
+    goldenVisa: units.filter(u => u.is_golden_visa).length,
     totalValue: units.reduce((acc, unit) => acc + (unit.price || 0), 0)
   };
 
@@ -313,31 +346,40 @@ const AdminUnits = () => {
                 <TableRow key={unit.id}>
                   <TableCell>
                     <div>
-                      <div className="font-medium">{unit.title}</div>
+                      <div className="font-medium">{unit.unit_number}</div>
+                      <div className="text-sm text-muted-foreground">
+                        {unit.building.name} - Étage {unit.floor}
+                      </div>
                       <div className="text-sm text-muted-foreground flex items-center gap-1">
                         <MapPin className="w-3 h-3" />
-                        {unit.location.city}
+                        {unit.project.city}
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <span className="text-sm">-</span>
+                    <span className="text-sm">{unit.developer.name}</span>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline">{unit.property_category || t('units.residential')}</Badge>
+                    <Badge variant="outline">{unit.type}</Badge>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      {unit.bedrooms}ch • {unit.bathrooms}sdb • {unit.size_m2}m²
+                    </div>
                   </TableCell>
                   <TableCell>
-                    <span className="capitalize">{unit.cyprus_zone}</span>
+                    <span className="capitalize">{unit.project.cyprus_zone}</span>
                   </TableCell>
                   <TableCell>
                     <div className="font-medium">{formatPrice(unit.price)}</div>
+                    <div className="text-xs text-muted-foreground">
+                      TTC: {formatPrice(unit.price_with_vat)}
+                    </div>
                   </TableCell>
                   <TableCell>
                     <span className="text-sm">{unit.vat_rate}%</span>
                   </TableCell>
                   <TableCell>
                     <Select
-                      value={unit.reservation_status}
+                      value={unit.status}
                       onValueChange={(value) => updateStatusMutation.mutate({ id: unit.id, status: value })}
                     >
                       <SelectTrigger className="w-32">
@@ -351,7 +393,7 @@ const AdminUnits = () => {
                     </Select>
                   </TableCell>
                   <TableCell>
-                    {unit.golden_visa_eligible ? (
+                    {unit.is_golden_visa ? (
                       <Badge className="bg-amber-100 text-amber-800">
                         <Crown className="w-3 h-3 mr-1" />
                         {t('units.goldenVisa')}
