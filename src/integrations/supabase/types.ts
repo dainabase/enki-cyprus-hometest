@@ -535,7 +535,9 @@ export type Database = {
       developers: {
         Row: {
           addresses: string[] | null
+          bank_guarantee: boolean | null
           commission_rate: number | null
+          company_registration_number: string | null
           contact_info: Json | null
           created_at: string | null
           email_marketing: string | null
@@ -545,7 +547,9 @@ export type Database = {
           founded_year: number | null
           history: string | null
           id: string
+          insurance_coverage: number | null
           key_projects: string | null
+          license_number: string | null
           logo: string | null
           main_activities: string | null
           main_city: string | null
@@ -558,12 +562,15 @@ export type Database = {
           status: string | null
           total_projects: number | null
           updated_at: string | null
+          vat_number: string | null
           website: string | null
           years_experience: number | null
         }
         Insert: {
           addresses?: string[] | null
+          bank_guarantee?: boolean | null
           commission_rate?: number | null
+          company_registration_number?: string | null
           contact_info?: Json | null
           created_at?: string | null
           email_marketing?: string | null
@@ -573,7 +580,9 @@ export type Database = {
           founded_year?: number | null
           history?: string | null
           id?: string
+          insurance_coverage?: number | null
           key_projects?: string | null
+          license_number?: string | null
           logo?: string | null
           main_activities?: string | null
           main_city?: string | null
@@ -586,12 +595,15 @@ export type Database = {
           status?: string | null
           total_projects?: number | null
           updated_at?: string | null
+          vat_number?: string | null
           website?: string | null
           years_experience?: number | null
         }
         Update: {
           addresses?: string[] | null
+          bank_guarantee?: boolean | null
           commission_rate?: number | null
+          company_registration_number?: string | null
           contact_info?: Json | null
           created_at?: string | null
           email_marketing?: string | null
@@ -601,7 +613,9 @@ export type Database = {
           founded_year?: number | null
           history?: string | null
           id?: string
+          insurance_coverage?: number | null
           key_projects?: string | null
+          license_number?: string | null
           logo?: string | null
           main_activities?: string | null
           main_city?: string | null
@@ -614,6 +628,7 @@ export type Database = {
           status?: string | null
           total_projects?: number | null
           updated_at?: string | null
+          vat_number?: string | null
           website?: string | null
           years_experience?: number | null
         }
@@ -1249,6 +1264,7 @@ export type Database = {
           ai_generated_content: Json | null
           amenities: string[] | null
           ar_experience_url: string | null
+          architect_license_number: string | null
           architect_name: string | null
           bathrooms_range: string | null
           bedrooms_range: string | null
@@ -1257,6 +1273,7 @@ export type Database = {
           building_certification: string | null
           building_id: string | null
           building_insurance: string | null
+          building_permit_number: string | null
           built_area_m2: number | null
           categorized_photos: Json | null
           city: string | null
@@ -1276,8 +1293,11 @@ export type Database = {
           detailed_description: string | null
           detailed_features: string[] | null
           developer_id: string | null
+          district: string | null
           drone_footage_urls: string[] | null
           energy_rating: string | null
+          engineer_license_number: string | null
+          environmental_permit: string | null
           exclusive_commercialization: boolean | null
           favorite_count: number | null
           featured_new: boolean | null
@@ -1322,6 +1342,7 @@ export type Database = {
           meta_title_new: string | null
           metaverse_preview_url: string | null
           model_3d_urls: string[] | null
+          municipality: string | null
           neighborhood: string | null
           neighborhood_description: string | null
           nft_ownership_available: boolean | null
@@ -1333,6 +1354,7 @@ export type Database = {
           photo_count: number | null
           photo_gallery_urls: string[] | null
           photos: string[]
+          planning_permit_number: string | null
           plans: string[] | null
           price: number
           price_from: string | null
@@ -1358,6 +1380,7 @@ export type Database = {
           rental_yield_percent: number | null
           reservation_status: string | null
           roi_estimate_percent: number | null
+          schema_markup: Json | null
           search_ranking_weight: number | null
           seasonal_features: Json | null
           seismic_rating: string | null
@@ -1413,6 +1436,7 @@ export type Database = {
           ai_generated_content?: Json | null
           amenities?: string[] | null
           ar_experience_url?: string | null
+          architect_license_number?: string | null
           architect_name?: string | null
           bathrooms_range?: string | null
           bedrooms_range?: string | null
@@ -1421,6 +1445,7 @@ export type Database = {
           building_certification?: string | null
           building_id?: string | null
           building_insurance?: string | null
+          building_permit_number?: string | null
           built_area_m2?: number | null
           categorized_photos?: Json | null
           city?: string | null
@@ -1440,8 +1465,11 @@ export type Database = {
           detailed_description?: string | null
           detailed_features?: string[] | null
           developer_id?: string | null
+          district?: string | null
           drone_footage_urls?: string[] | null
           energy_rating?: string | null
+          engineer_license_number?: string | null
+          environmental_permit?: string | null
           exclusive_commercialization?: boolean | null
           favorite_count?: number | null
           featured_new?: boolean | null
@@ -1486,6 +1514,7 @@ export type Database = {
           meta_title_new?: string | null
           metaverse_preview_url?: string | null
           model_3d_urls?: string[] | null
+          municipality?: string | null
           neighborhood?: string | null
           neighborhood_description?: string | null
           nft_ownership_available?: boolean | null
@@ -1497,6 +1526,7 @@ export type Database = {
           photo_count?: number | null
           photo_gallery_urls?: string[] | null
           photos?: string[]
+          planning_permit_number?: string | null
           plans?: string[] | null
           price: number
           price_from?: string | null
@@ -1522,6 +1552,7 @@ export type Database = {
           rental_yield_percent?: number | null
           reservation_status?: string | null
           roi_estimate_percent?: number | null
+          schema_markup?: Json | null
           search_ranking_weight?: number | null
           seasonal_features?: Json | null
           seismic_rating?: string | null
@@ -1577,6 +1608,7 @@ export type Database = {
           ai_generated_content?: Json | null
           amenities?: string[] | null
           ar_experience_url?: string | null
+          architect_license_number?: string | null
           architect_name?: string | null
           bathrooms_range?: string | null
           bedrooms_range?: string | null
@@ -1585,6 +1617,7 @@ export type Database = {
           building_certification?: string | null
           building_id?: string | null
           building_insurance?: string | null
+          building_permit_number?: string | null
           built_area_m2?: number | null
           categorized_photos?: Json | null
           city?: string | null
@@ -1604,8 +1637,11 @@ export type Database = {
           detailed_description?: string | null
           detailed_features?: string[] | null
           developer_id?: string | null
+          district?: string | null
           drone_footage_urls?: string[] | null
           energy_rating?: string | null
+          engineer_license_number?: string | null
+          environmental_permit?: string | null
           exclusive_commercialization?: boolean | null
           favorite_count?: number | null
           featured_new?: boolean | null
@@ -1650,6 +1686,7 @@ export type Database = {
           meta_title_new?: string | null
           metaverse_preview_url?: string | null
           model_3d_urls?: string[] | null
+          municipality?: string | null
           neighborhood?: string | null
           neighborhood_description?: string | null
           nft_ownership_available?: boolean | null
@@ -1661,6 +1698,7 @@ export type Database = {
           photo_count?: number | null
           photo_gallery_urls?: string[] | null
           photos?: string[]
+          planning_permit_number?: string | null
           plans?: string[] | null
           price?: number
           price_from?: string | null
@@ -1686,6 +1724,7 @@ export type Database = {
           rental_yield_percent?: number | null
           reservation_status?: string | null
           roi_estimate_percent?: number | null
+          schema_markup?: Json | null
           search_ranking_weight?: number | null
           seasonal_features?: Json | null
           seismic_rating?: string | null
@@ -1781,35 +1820,56 @@ export type Database = {
       properties: {
         Row: {
           assigned_agent_id: string | null
+          attic_m2: number | null
           balcony_m2: number | null
+          basement_m2: number | null
           bathrooms: number
           bedrooms: number
           building_id: string
           commission_rate: number | null
+          covered_veranda_m2: number | null
           created_at: string | null
           developer_id: string
+          energy_certificate_rating: string | null
           featured_image: string | null
           floor: number
           floor_plan_url: string | null
           gallery_images: string[] | null
           garden_m2: number | null
+          has_air_conditioning: boolean | null
+          has_alarm_system: boolean | null
+          has_central_heating: boolean | null
+          has_electric_gates: boolean | null
           has_gym_access: boolean | null
           has_mountain_view: boolean | null
           has_pool_access: boolean | null
+          has_pressurized_water: boolean | null
           has_sea_view: boolean | null
+          has_solar_panels: boolean | null
+          has_underfloor_heating: boolean | null
           id: string
+          immovable_property_tax: number | null
+          internet_ready: boolean | null
           is_furnished: boolean | null
           is_golden_visa: boolean | null
+          legal_fees_percentage: number | null
           orientation: string | null
           parking_spaces: number | null
+          plot_m2: number | null
           price: number
           price_with_vat: number | null
           project_id: string
+          property_tax_yearly: number | null
+          sewerage_levy: number | null
           size_m2: number
+          stamp_duty_percentage: number | null
           status: string | null
           storage_units: number | null
           terrace_m2: number | null
+          title_deed_number: string | null
+          transfer_fee_percentage: number | null
           type: string
+          uncovered_veranda_m2: number | null
           unit_number: string
           updated_at: string | null
           vat_rate: number | null
@@ -1818,35 +1878,56 @@ export type Database = {
         }
         Insert: {
           assigned_agent_id?: string | null
+          attic_m2?: number | null
           balcony_m2?: number | null
+          basement_m2?: number | null
           bathrooms: number
           bedrooms: number
           building_id: string
           commission_rate?: number | null
+          covered_veranda_m2?: number | null
           created_at?: string | null
           developer_id: string
+          energy_certificate_rating?: string | null
           featured_image?: string | null
           floor: number
           floor_plan_url?: string | null
           gallery_images?: string[] | null
           garden_m2?: number | null
+          has_air_conditioning?: boolean | null
+          has_alarm_system?: boolean | null
+          has_central_heating?: boolean | null
+          has_electric_gates?: boolean | null
           has_gym_access?: boolean | null
           has_mountain_view?: boolean | null
           has_pool_access?: boolean | null
+          has_pressurized_water?: boolean | null
           has_sea_view?: boolean | null
+          has_solar_panels?: boolean | null
+          has_underfloor_heating?: boolean | null
           id?: string
+          immovable_property_tax?: number | null
+          internet_ready?: boolean | null
           is_furnished?: boolean | null
           is_golden_visa?: boolean | null
+          legal_fees_percentage?: number | null
           orientation?: string | null
           parking_spaces?: number | null
+          plot_m2?: number | null
           price: number
           price_with_vat?: number | null
           project_id: string
+          property_tax_yearly?: number | null
+          sewerage_levy?: number | null
           size_m2: number
+          stamp_duty_percentage?: number | null
           status?: string | null
           storage_units?: number | null
           terrace_m2?: number | null
+          title_deed_number?: string | null
+          transfer_fee_percentage?: number | null
           type: string
+          uncovered_veranda_m2?: number | null
           unit_number: string
           updated_at?: string | null
           vat_rate?: number | null
@@ -1855,35 +1936,56 @@ export type Database = {
         }
         Update: {
           assigned_agent_id?: string | null
+          attic_m2?: number | null
           balcony_m2?: number | null
+          basement_m2?: number | null
           bathrooms?: number
           bedrooms?: number
           building_id?: string
           commission_rate?: number | null
+          covered_veranda_m2?: number | null
           created_at?: string | null
           developer_id?: string
+          energy_certificate_rating?: string | null
           featured_image?: string | null
           floor?: number
           floor_plan_url?: string | null
           gallery_images?: string[] | null
           garden_m2?: number | null
+          has_air_conditioning?: boolean | null
+          has_alarm_system?: boolean | null
+          has_central_heating?: boolean | null
+          has_electric_gates?: boolean | null
           has_gym_access?: boolean | null
           has_mountain_view?: boolean | null
           has_pool_access?: boolean | null
+          has_pressurized_water?: boolean | null
           has_sea_view?: boolean | null
+          has_solar_panels?: boolean | null
+          has_underfloor_heating?: boolean | null
           id?: string
+          immovable_property_tax?: number | null
+          internet_ready?: boolean | null
           is_furnished?: boolean | null
           is_golden_visa?: boolean | null
+          legal_fees_percentage?: number | null
           orientation?: string | null
           parking_spaces?: number | null
+          plot_m2?: number | null
           price?: number
           price_with_vat?: number | null
           project_id?: string
+          property_tax_yearly?: number | null
+          sewerage_levy?: number | null
           size_m2?: number
+          stamp_duty_percentage?: number | null
           status?: string | null
           storage_units?: number | null
           terrace_m2?: number | null
+          title_deed_number?: string | null
+          transfer_fee_percentage?: number | null
           type?: string
+          uncovered_veranda_m2?: number | null
           unit_number?: string
           updated_at?: string | null
           vat_rate?: number | null
