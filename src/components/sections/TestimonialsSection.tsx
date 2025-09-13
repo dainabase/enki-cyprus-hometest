@@ -35,14 +35,6 @@ const testimonials: Testimonial[] = [
       "Профессиональная команда с глубоким знанием рынка. Помогли с выбором недвижимости в Пафосе и оформлением всех документов. Сервис на высшем уровне."
   },
   {
-    initials: "L.M",
-    name: "Liu Ming",
-    title: "Investisseur, Chine",
-    country: "🇨🇳",
-    description:
-      "专业的团队，对塞浦路斯房地产市场了解深入。Golden Visa申请过程顺利，投资回报超出预期。强烈推荐ENKI Reality的服务。"
-  },
-  {
     initials: "G.R",
     name: "Giuseppe Rossi",
     title: "Retraité, Italie",
@@ -64,7 +56,7 @@ export default function TestimonialsSection() {
   const [selected, setSelected] = useState(0);
 
   return (
-    <section className="bg-gradient-to-br from-[#FDF0E4] via-white to-[#D3E3F0] py-24 px-4 lg:px-8 grid items-center grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-4 overflow-hidden">
+    <section className="bg-gradient-to-br from-[#FDF0E4] to-[#D3E3F0] py-24 px-4 lg:px-8 grid items-center grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-4 overflow-hidden">
       <div className="p-4">
         <h3 className="text-5xl font-semibold text-[#A17964]">
           Ce que disent nos clients
