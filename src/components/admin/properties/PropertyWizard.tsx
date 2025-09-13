@@ -3,11 +3,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Building2, Home, Package, Plus } from 'lucide-react';
+import { Building2, Home, Package, FileSpreadsheet } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import PropertyForm from './PropertyForm';
 import BulkPropertyCreator from './BulkPropertyCreator';
+import CSVImporter from './CSVImporter';
 import { toast } from 'sonner';
 
 interface PropertyWizardProps {
@@ -16,7 +17,7 @@ interface PropertyWizardProps {
   onSuccess: () => void;
 }
 
-type CreationMode = 'single' | 'bulk' | 'template';
+type CreationMode = 'single' | 'bulk' | 'import' | 'template';
 
 export default function PropertyWizard({ open, onClose, onSuccess }: PropertyWizardProps) {
   const [mode, setMode] = useState<CreationMode>('single');
@@ -179,18 +180,22 @@ export default function PropertyWizard({ open, onClose, onSuccess }: PropertyWiz
             <h3 className="font-semibold text-lg">Étape 2: Mode de création</h3>
             
             <Tabs value={mode} onValueChange={(v) => setMode(v as CreationMode)}>
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="single">
                   <Home className="h-4 w-4 mr-2" />
-                  Propriété Unique
+                  Unique
                 </TabsTrigger>
                 <TabsTrigger value="bulk">
                   <Package className="h-4 w-4 mr-2" />
-                  Création en Masse
+                  En Masse
+                </TabsTrigger>
+                <TabsTrigger value="import">
+                  <FileSpreadsheet className="h-4 w-4 mr-2" />
+                  Import CSV
                 </TabsTrigger>
                 <TabsTrigger value="template">
                   <Building2 className="h-4 w-4 mr-2" />
-                  Depuis Template
+                  Template
                 </TabsTrigger>
               </TabsList>
 
@@ -214,6 +219,19 @@ export default function PropertyWizard({ open, onClose, onSuccess }: PropertyWiz
                   buildingId={selectedBuilding}
                   onSuccess={(count) => {
                     toast.success(`${count} propriétés créées avec succès`);
+                    onSuccess();
+                    onClose();
+                  }}
+                />
+              </TabsContent>
+
+              <TabsContent value="import" className="mt-4">
+                <CSVImporter
+                  developerId={selectedDeveloper}
+                  projectId={selectedProject}
+                  buildingId={selectedBuilding}
+                  onSuccess={(count) => {
+                    toast.success(`${count} propriétés importées avec succès`);
                     onSuccess();
                     onClose();
                   }}
