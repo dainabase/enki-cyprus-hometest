@@ -143,6 +143,11 @@ export function UnifiedAIImporter() {
       
       console.log('✅ Extraction completed successfully!');
       
+      // Passer automatiquement en mode validation
+      setTimeout(() => {
+        setValidationMode(true);
+      }, 1000);
+      
     } catch (err: any) {
       console.error('💥 Extraction error:', err);
       console.error('Error stack:', err.stack);
