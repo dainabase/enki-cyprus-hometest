@@ -12,15 +12,69 @@ import {
 import { DEBUG_MODE, logDebug, logError, logSuccess, generateTestData } from './debugExtractor';
 
 export async function extractFullHierarchy(fileUrls: string[]): Promise<ExtractionResult> {
-  logDebug('extractFullHierarchy called', { urlCount: fileUrls.length, urls: fileUrls });
-  
-  // Désactiver le mode debug pour forcer l'extraction réelle
-  logDebug('🤖 REAL EXTRACTION MODE: Calling AI extraction service');
+  logDebug('🚀 Real AI Extraction System Starting', { urlCount: fileUrls.length, urls: fileUrls });
   
   try {
-    logDebug('Calling Supabase edge function extract-full-hierarchy...');
+    logDebug('🤖 Calling Advanced Document Parser...');
     
-    // Call Edge Function for full hierarchy extraction
+    // Call the new advanced document parser
+    const { data, error } = await supabase.functions.invoke('advanced-document-parser', {
+      body: {
+        fileUrls,
+        documentType: 'auto_detect'
+      }
+    });
+
+    logDebug('📊 Parser response', { hasData: !!data, hasError: !!error, dataKeys: data ? Object.keys(data) : [] });
+
+    if (error) {
+      logError('Advanced parser error', error);
+      throw error;
+    }
+
+    if (data && data.success && data.extractedData) {
+      logSuccess('✅ Real extraction successful', { 
+        documentType: data.documentType,
+        confidence: data.confidence,
+        propertiesCount: data.extractedData.properties?.length || 0 
+      });
+      
+      return {
+        ...data.extractedData,
+        extraction_metadata: {
+          confidence_score: data.confidence || 0.8,
+          document_type: data.documentType || 'real_estate_project',
+          pages_analyzed: data.metadata?.documentsProcessed || 1,
+          extraction_timestamp: new Date().toISOString(),
+          ai_model: 'advanced-parser',
+          warnings: []
+        },
+        statistics: calculateStatistics(data.extractedData),
+        validation_errors: []
+      };
+    } else {
+      logDebug('No valid data from advanced parser, falling back');
+      throw new Error('Advanced parsing returned no valid data');
+    }
+
+  } catch (error) {
+    logError('Real extraction failed', {
+      message: error.message,
+      stack: error.stack
+    });
+    
+    // Fallback to basic extraction
+    logDebug('🔄 Falling back to basic extraction');
+    return await basicExtractionFallback(fileUrls);
+  }
+}
+
+// Fallback extraction system
+async function basicExtractionFallback(fileUrls: string[]): Promise<ExtractionResult> {
+  logDebug('🔄 Basic extraction fallback activated');
+  
+  try {
+    // Call the existing edge function as fallback
     const { data, error } = await supabase.functions.invoke('extract-full-hierarchy', {
       body: {
         fileUrls,
@@ -28,81 +82,99 @@ export async function extractFullHierarchy(fileUrls: string[]): Promise<Extracti
       }
     });
 
-    logDebug('Edge function response', { hasData: !!data, hasError: !!error, dataKeys: data ? Object.keys(data) : [] });
+    if (error) throw error;
 
-    if (error) {
-      logError('Edge function error', error);
-      throw error;
-    }
-
-    logSuccess('Edge function success', { propertiesCount: data?.properties?.length || 0 });
-
-    // Check if we have actual data
     if (data && data.properties && data.properties.length > 0) {
-      logSuccess('Real data extracted, returning it', { count: data.properties.length });
-      return data;
-    } else {
-      logDebug('No properties in edge function response, falling back to mock');
-      return generateMockExtraction();
+      return {
+        ...data,
+        extraction_metadata: {
+          confidence_score: 0.6,
+          document_type: 'real_estate_project',
+          pages_analyzed: 1,
+          extraction_timestamp: new Date().toISOString(),
+          ai_model: 'fallback-extraction',
+          warnings: ['Used fallback extraction method']
+        },
+        statistics: calculateStatistics(data),
+        validation_errors: []
+      };
     }
-
-  } catch (error) {
-    logError('Error in extractFullHierarchy', {
-      message: error.message,
-      stack: error.stack,
-      cause: error.cause
-    });
     
-    // Return mock data for testing
-    logDebug('Returning mock data due to error');
-    return generateMockExtraction();
+    throw new Error('Fallback extraction failed');
+    
+  } catch (error) {
+    logError('Fallback extraction failed', error);
+    
+    // Last resort: generate minimal test data
+    return generateMinimalTestData();
   }
 }
 
-function generateMockProperties() {
-  const properties = [];
-  const buildings = ['Tower North', 'Tower South'];
-  const types = ['studio', 'apartment', 'penthouse'];
-  const orientations = ['north', 'south', 'east', 'west'];
-  const views = ['sea', 'city', 'mountain', 'pool'];
+function calculateStatistics(data: any) {
+  const properties = data.properties || [];
+  const goldenVisaCount = properties.filter((p: any) => p.price >= 300000).length;
+  const totalValue = properties.reduce((sum: number, p: any) => sum + (p.price || 0), 0);
+  
+  const typeDistribution: Record<string, number> = {};
+  properties.forEach((p: any) => {
+    typeDistribution[p.type] = (typeDistribution[p.type] || 0) + 1;
+  });
+  
+  return {
+    total_properties: properties.length,
+    golden_visa_eligible: goldenVisaCount,
+    total_portfolio_value: totalValue,
+    average_price: properties.length > 0 ? totalValue / properties.length : 0,
+    price_range: {
+      min: Math.min(...properties.map((p: any) => p.price || 0)),
+      max: Math.max(...properties.map((p: any) => p.price || 0))
+    },
+    types_distribution: typeDistribution,
+    availability: {
+      available: properties.filter((p: any) => p.status === 'available').length,
+      reserved: properties.filter((p: any) => p.status === 'reserved').length,
+      sold: properties.filter((p: any) => p.status === 'sold').length
+    }
+  };
+}
 
-  for (let i = 0; i < 85; i++) {
-    const building = buildings[i < 48 ? 0 : 1];
-    const floor = Math.floor(i / 4) + 1;
-    const unitInBuilding = building === 'Tower North' ? i + 1 : i - 47;
-    const type = i < 20 ? 'studio' : i < 65 ? 'apartment' : 'penthouse';
-    const bedrooms = type === 'studio' ? 0 : type === 'apartment' ? Math.floor(Math.random() * 3) + 1 : 3;
-    const size = type === 'studio' ? 45 + Math.random() * 20 : 
-                 type === 'apartment' ? 75 + Math.random() * 50 : 
-                 150 + Math.random() * 100;
-    const basePrice = type === 'studio' ? 180000 : type === 'apartment' ? 280000 : 550000;
-    const floorMultiplier = 1 + (floor * 0.02);
-    const viewMultiplier = views[i % views.length] === 'sea' ? 1.3 : 1.1;
-    const price = Math.round(basePrice * floorMultiplier * viewMultiplier);
-
-    properties.push({
-      building_name: building,
-      unit_number: `${building.charAt(0)}${unitInBuilding.toString().padStart(2, '0')}`,
-      floor,
-      type,
-      bedrooms,
-      bathrooms: Math.max(1, Math.floor(bedrooms * 0.8)),
-      size_m2: Math.round(size),
-      price,
-      view_type: views[i % views.length],
-      orientation: orientations[i % orientations.length],
-      has_sea_view: views[i % views.length] === 'sea',
-      is_golden_visa: price >= 300000,
-      status: 'available',
-      features: [
-        'Balcon',
-        'Climatisation',
-        'Chauffage au sol',
-        'Cuisine équipée',
-        ...(type === 'penthouse' ? ['Terrasse privée', 'Jacuzzi'] : [])
-      ]
-    });
-  }
-
-  return properties;
+function generateMinimalTestData(): ExtractionResult {
+  return {
+    extraction_metadata: {
+      confidence_score: 0.3,
+      document_type: 'unknown',
+      pages_analyzed: 0,
+      extraction_timestamp: new Date().toISOString(),
+      ai_model: 'minimal-fallback',
+      warnings: ['All extraction methods failed - using minimal test data']
+    },
+    developer: {
+      name: 'Unknown Developer',
+      email_primary: 'contact@unknown.com'
+    },
+    project: {
+      title: 'Unknown Project',
+      description: 'Project details could not be extracted',
+      city: 'Unknown',
+      price: 0,
+      status: 'unknown',
+      features: [],
+      photos: [],
+      location: { city: 'Unknown', address: 'Unknown' }
+    },
+    buildings: [],
+    properties: [],
+    statistics: {
+      total_properties: 0,
+      golden_visa_eligible: 0,
+      total_portfolio_value: 0,
+      average_price: 0,
+      price_range: { min: 0, max: 0 },
+      types_distribution: {},
+      availability: { available: 0, reserved: 0, sold: 0 }
+    },
+    validation_errors: [
+      { field: 'extraction', message: 'Complete extraction failure - manual data entry required' }
+    ]
+  };
 }

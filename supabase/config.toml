@@ -53,10 +53,16 @@ enable_confirmations = false
 enabled = true
 port = 54330
 
+[functions.advanced-document-parser]
+verify_jwt = false
+
 [functions.commission-trigger]
 verify_jwt = false
 
 [functions.db-trigger]
+verify_jwt = false
+
+[functions.extract-full-hierarchy]
 verify_jwt = false
 
 [functions.lexaia-call]
