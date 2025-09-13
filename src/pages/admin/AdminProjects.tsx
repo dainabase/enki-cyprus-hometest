@@ -381,11 +381,11 @@ const AdminProjects = () => {
             
             <Button 
               variant="outline"
-              onClick={() => navigate('/admin/projects/ai-import')} 
+              onClick={() => navigate('/admin/ai-import-unified')} 
               className="gap-2"
             >
               <Brain className="w-4 h-4" />
-              Import IA
+              Import IA Unifié
             </Button>
             
             <Button onClick={() => navigate('/admin/projects/new')} className="gap-2">
