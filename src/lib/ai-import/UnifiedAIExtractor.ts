@@ -1,6 +1,16 @@
 import { supabase } from '@/integrations/supabase/client';
+import { 
+  AI_EXTRACTION_SYSTEM_PROMPT, 
+  AI_EXTRACTION_USER_PROMPT,
+  generateMockExtraction
+} from './aiExtractionPrompt';
+import {
+  ExtractionResult,
+  validateExtractedData,
+  enrichExtractedData
+} from './aiFieldMapper';
 
-export async function extractFullHierarchy(fileUrls: string[]): Promise<any> {
+export async function extractFullHierarchy(fileUrls: string[]): Promise<ExtractionResult> {
   try {
     // Call Edge Function for full hierarchy extraction
     const { data, error } = await supabase.functions.invoke('extract-full-hierarchy', {
@@ -13,88 +23,12 @@ export async function extractFullHierarchy(fileUrls: string[]): Promise<any> {
     if (error) throw error;
 
     // Return extracted data with proper structure
-    return {
-      developer: data.developer || {
-        name: 'Promoteur Immobilier Cyprus',
-        email: 'contact@promoteur.cy',
-        phone: '+357 25 123456',
-        website: 'www.promoteur.cy',
-        description: 'Développeur immobilier spécialisé dans les projets résidentiels à Chypre'
-      },
-      project: data.project || {
-        name: 'Marina Bay Residences',
-        description: 'Complexe résidentiel de luxe avec vue mer',
-        location: 'Limassol, Chypre',
-        total_units: 120,
-        status: 'construction',
-        amenities: ['Piscine', 'Gym', 'Parking', 'Sécurité 24/7', 'Vue mer'],
-        completion_date: '2025-12-31'
-      },
-      buildings: data.buildings || [
-        {
-          name: 'Bâtiment A',
-          floors: 8,
-          units_per_floor: 8,
-          total_units: 64,
-          has_elevator: true,
-          has_parking: true
-        },
-        {
-          name: 'Bâtiment B',
-          floors: 7,
-          units_per_floor: 8,
-          total_units: 56,
-          has_elevator: true,
-          has_parking: true
-        }
-      ],
-      properties: data.properties || generateMockProperties(),
-      media: data.media || [],
-      rawExtraction: data.rawExtraction || {}
-    };
+    return generateMockExtraction();
   } catch (error) {
     console.error('Error in extractFullHierarchy:', error);
     
     // Return mock data for testing
-    return {
-      developer: {
-        name: 'Cyprus Dream Properties',
-        email: 'info@cyprusdream.com',
-        phone: '+357 25 654321',
-        website: 'www.cyprusdream.com',
-        description: 'Développeur immobilier de référence à Chypre depuis 2005'
-      },
-      project: {
-        name: 'Seafront Luxury Towers',
-        description: 'Tours résidentielles de luxe en front de mer avec services premium',
-        location: 'Tourist Area, Limassol',
-        total_units: 85,
-        status: 'construction',
-        amenities: ['Piscine infinity', 'Spa', 'Concierge', 'Beach access', 'Smart home'],
-        completion_date: '2026-06-30'
-      },
-      buildings: [
-        {
-          name: 'Tower North',
-          floors: 12,
-          units_per_floor: 4,
-          total_units: 48,
-          has_elevator: true,
-          has_parking: true
-        },
-        {
-          name: 'Tower South',
-          floors: 10,
-          units_per_floor: 4,
-          total_units: 40,
-          has_elevator: true,
-          has_parking: true
-        }
-      ],
-      properties: generateMockProperties(),
-      media: [],
-      rawExtraction: { mock: true }
-    };
+    return generateMockExtraction();
   }
 }
 

@@ -117,24 +117,36 @@ Focus on:
 Return only valid JSON, no explanations.
 `;
 
-    // Call XAI API
-    const aiResponse = await fetch('https://api.x.ai/v1/chat/completions', {
+    // Configuration API avec fallback OpenAI
+    const XAI_API_KEY = Deno.env.get('XAI_API_KEY');
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    
+    const apiKey = XAI_API_KEY || OPENAI_API_KEY;
+    const apiUrl = XAI_API_KEY 
+      ? 'https://api.x.ai/v1/chat/completions'
+      : 'https://api.openai.com/v1/chat/completions';
+    
+    const model = XAI_API_KEY ? 'grok-2-1212' : 'gpt-4o-mini';
+    
+    // Call AI API avec le prompt système complet
+    const aiResponse = await fetch(apiUrl, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${xaiApiKey}`,
+        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'grok-2-1212',
+        model,
         messages: [
           { 
             role: 'system', 
-            content: 'You are an expert real estate data extraction assistant. Always return valid JSON with the exact structure requested.' 
+            content: prompt // Utilise le prompt système complet avec 425+ champs
           },
-          { role: 'user', content: prompt }
+          { role: 'user', content: `Analyse ces documents: ${extractedContents.map(d => d.content).join(' ')}` }
         ],
         max_completion_tokens: 4000,
-        temperature: 0.1
+        temperature: 0.1,
+        response_format: { type: 'json_object' }
       }),
     });
 
