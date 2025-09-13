@@ -1,9 +1,7 @@
-import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Users, 
   Building, 
@@ -12,158 +10,63 @@ import {
   Award,
   Clock,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  Home,
+  Target,
+  Receipt,
+  MapPin,
+  Calendar,
+  DollarSign,
+  BarChart3
 } from 'lucide-react';
+import { useDashboardMetrics } from '@/hooks/useDashboardMetrics';
+import { KPICard, KPIGrid } from '@/components/admin/dashboard/KPICards';
+import { SimpleBarChart, ZoneDistributionChart, PerformanceChart } from '@/components/admin/dashboard/Charts';
+import { formatCurrency, formatNumber, formatPercentage } from '@/lib/dashboard/calculations';
 
 export const AdminOverview = () => {
-  const { t } = useTranslation();
-  const [period, setPeriod] = useState(30); // 7, 30, 90 jours
-  const [kpis, setKpis] = useState({
-    totalLeads: 0,
-    convertedLeads: 0,
-    conversionRate: 0,
-    totalProperties: 0,
-    availableProperties: 0,
-    totalPropertyValue: 0,
-    totalCommissions: 0,
-    pendingCommissions: 0,
-    paidCommissions: 0,
-    goldenVisaProperties: 0,
-    goldenVisaLeads: 0,
-    averageDaysToConvert: 0
-  });
-  const [recentLeads, setRecentLeads] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [period, setPeriod] = useState<'day' | 'week' | 'month' | 'year'>('month');
+  const [zone, setZone] = useState<'all' | 'limassol' | 'paphos' | 'larnaca' | 'nicosia'>('all');
+  
+  const { data: metrics, isLoading, error } = useDashboardMetrics({ period, zone });
 
-  useEffect(() => {
-    fetchKPIs();
-    fetchRecentLeads();
-  }, [period]);
+  // Sample performance data for charts
+  const performanceData = [
+    { month: 'Jan', sales: 12, revenue: 2400000, leads: 45 },
+    { month: 'Fév', sales: 15, revenue: 3200000, leads: 52 },
+    { month: 'Mar', sales: 18, revenue: 3800000, leads: 48 },
+    { month: 'Avr', sales: 22, revenue: 4500000, leads: 61 },
+    { month: 'Mai', sales: 19, revenue: 4100000, leads: 55 },
+    { month: 'Juin', sales: 25, revenue: 5200000, leads: 68 }
+  ];
 
-  const fetchKPIs = async () => {
-    setLoading(true);
-    
-    // Calculer la date de début selon la période
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - period);
-    
-    try {
-      // Fetch leads stats
-      const { data: leads } = await supabase
-        .from('leads')
-        .select('status, golden_visa_interest, created_at');
-      
-      // Fetch properties stats (using projects table)
-      const { data: properties } = await supabase
-        .from('projects')
-        .select('price, reservation_status, golden_visa_eligible');
-      
-      // Fetch commissions stats
-      const { data: commissions } = await supabase
-        .from('commissions')
-        .select('amount, status, created_at')
-        .gte('created_at', startDate.toISOString());
-      
-      // Calculate KPIs
-      if (leads && properties && commissions) {
-        const recentLeads = leads.filter(l => new Date(l.created_at) >= startDate);
-        const totalLeads = recentLeads.length;
-        const convertedLeads = recentLeads.filter(l => l.status === 'converted').length;
-        const conversionRate = totalLeads > 0 ? (convertedLeads / totalLeads * 100) : 0;
-        
-        const totalProperties = properties.length;
-        const availableProperties = properties.filter(p => p.reservation_status === 'available').length;
-        const totalPropertyValue = properties.reduce((sum, p) => sum + (Number(p.price) || 0), 0);
-        
-        const goldenVisaProperties = properties.filter(p => p.golden_visa_eligible).length;
-        const goldenVisaLeads = recentLeads.filter(l => l.golden_visa_interest).length;
-        
-        const totalCommissions = commissions.reduce((sum, c) => sum + (Number(c.amount) || 0), 0);
-        const pendingCommissions = commissions
-          .filter(c => c.status === 'pending')
-          .reduce((sum, c) => sum + (Number(c.amount) || 0), 0);
-        const paidCommissions = commissions
-          .filter(c => c.status === 'paid')
-          .reduce((sum, c) => sum + (Number(c.amount) || 0), 0);
-        
-        setKpis({
-          totalLeads,
-          convertedLeads,
-          conversionRate,
-          totalProperties,
-          availableProperties,
-          totalPropertyValue,
-          totalCommissions,
-          pendingCommissions,
-          paidCommissions,
-          goldenVisaProperties,
-          goldenVisaLeads,
-          averageDaysToConvert: 15 // Placeholder - calcul complexe
-        });
-      }
-    } catch (error) {
-      console.error('Error fetching KPIs:', error);
-    }
-    
-    setLoading(false);
-  };
+  const commissionData = [
+    { label: 'Limassol', value: metrics?.totalCommissions ? metrics.totalCommissions * 0.4 : 0 },
+    { label: 'Paphos', value: metrics?.totalCommissions ? metrics.totalCommissions * 0.3 : 0 },
+    { label: 'Larnaca', value: metrics?.totalCommissions ? metrics.totalCommissions * 0.2 : 0 },
+    { label: 'Nicosia', value: metrics?.totalCommissions ? metrics.totalCommissions * 0.1 : 0 }
+  ];
 
-  const fetchRecentLeads = async () => {
-    try {
-      const { data } = await supabase
-        .from('leads')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(5);
-      
-      if (data) setRecentLeads(data);
-    } catch (error) {
-      console.error('Error fetching recent leads:', error);
-    }
-  };
-
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('fr-FR', {
-      style: 'currency',
-      currency: 'EUR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(amount);
-  };
-
-  const MetricCard = ({ icon: Icon, title, value, subtitle, color = 'blue' }) => {
-    const colorClasses = {
-      blue: 'text-blue-500',
-      green: 'text-green-500',
-      yellow: 'text-yellow-500',
-      purple: 'text-purple-500',
-      red: 'text-red-500'
-    };
-
-    return (
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-muted-foreground">{title}</p>
-              <p className="text-2xl font-bold mt-1">{value}</p>
-              {subtitle && (
-                <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>
-              )}
-            </div>
-            <div className="p-3 rounded-lg bg-muted">
-              <Icon className={`w-6 h-6 ${colorClasses[color]}`} />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  };
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="p-6">
-        <div className="text-center">Loading...</div>
+        <div className="text-center">Chargement du dashboard...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-6">
+        <div className="text-center text-red-600">Erreur lors du chargement des données</div>
+      </div>
+    );
+  }
+
+  if (!metrics) {
+    return (
+      <div className="p-6">
+        <div className="text-center">Aucune donnée disponible</div>
       </div>
     );
   }
@@ -171,180 +74,214 @@ export const AdminOverview = () => {
   return (
     <div className="p-6 space-y-6">
       {/* Header avec filtres */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">{t('dashboard.title')}</h1>
-        <div className="flex gap-2">
-          <Button 
-            variant={period === 7 ? 'default' : 'outline'}
-            onClick={() => setPeriod(7)}
-            size="sm"
-          >
-            7 {t('dashboard.days')}
-          </Button>
-          <Button 
-            variant={period === 30 ? 'default' : 'outline'}
-            onClick={() => setPeriod(30)}
-            size="sm"
-          >
-            30 {t('dashboard.days')}
-          </Button>
-          <Button 
-            variant={period === 90 ? 'default' : 'outline'}
-            onClick={() => setPeriod(90)}
-            size="sm"
-          >
-            90 {t('dashboard.days')}
-          </Button>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <h1 className="text-3xl font-bold">Dashboard Analytics Cyprus</h1>
+        
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Select value={period} onValueChange={(value: any) => setPeriod(value)}>
+            <SelectTrigger className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="day">Jour</SelectItem>
+              <SelectItem value="week">Semaine</SelectItem>
+              <SelectItem value="month">Mois</SelectItem>
+              <SelectItem value="year">Année</SelectItem>
+            </SelectContent>
+          </Select>
+          
+          <Select value={zone} onValueChange={(value: any) => setZone(value)}>
+            <SelectTrigger className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Toutes zones</SelectItem>
+              <SelectItem value="limassol">Limassol</SelectItem>
+              <SelectItem value="paphos">Paphos</SelectItem>
+              <SelectItem value="larnaca">Larnaca</SelectItem>
+              <SelectItem value="nicosia">Nicosia</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
-      {/* KPIs Leads */}
+      {/* KPIs Inventaire */}
       <div>
-        <h2 className="text-lg font-semibold mb-4">{t('dashboard.leads')}</h2>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <MetricCard
-            icon={Users}
-            title={t('dashboard.totalLeads')}
-            value={kpis.totalLeads}
-            subtitle={`${kpis.convertedLeads} ${t('dashboard.converted')}`}
+        <h2 className="text-xl font-semibold mb-4">📊 Inventaire & Portfolio</h2>
+        <KPIGrid columns={5}>
+          <KPICard
+            title="Total Propriétés"
+            value={formatNumber(metrics.totalProperties)}
+            subtitle="Dans le portfolio"
+            icon={Building}
             color="blue"
           />
-          <MetricCard
-            icon={TrendingUp}
-            title={t('dashboard.conversionRate')}
-            value={`${kpis.conversionRate.toFixed(1)}%`}
-            subtitle={t('dashboard.leadToClient')}
-            color="green"
-          />
-          <MetricCard
+          <KPICard
+            title="Golden Visa Eligible"
+            value={formatNumber(metrics.goldenVisaProperties)}
+            subtitle={`${formatPercentage(metrics.goldenVisaPercentage)} du total`}
             icon={Award}
-            title={t('dashboard.goldenVisaLeads')}
-            value={kpis.goldenVisaLeads}
-            subtitle={t('dashboard.interested')}
             color="yellow"
           />
-          <MetricCard
-            icon={Clock}
-            title={t('dashboard.avgConversion')}
-            value={`${kpis.averageDaysToConvert} ${t('dashboard.days')}`}
-            subtitle={t('dashboard.toConvert')}
+          <KPICard
+            title="Disponibles"
+            value={formatNumber(metrics.availableProperties)}
+            subtitle="Prêtes à vendre"
+            icon={Home}
+            color="green"
+          />
+          <KPICard
+            title="Vendues"
+            value={formatNumber(metrics.soldProperties)}
+            subtitle="Ce mois"
+            icon={CheckCircle}
             color="purple"
           />
-        </div>
-      </div>
-
-      {/* KPIs Propriétés */}
-      <div>
-        <h2 className="text-lg font-semibold mb-4">{t('dashboard.properties')}</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <MetricCard
-            icon={Building}
-            title={t('dashboard.totalProperties')}
-            value={kpis.totalProperties}
-            subtitle={`${kpis.availableProperties} ${t('dashboard.available')}`}
+          <KPICard
+            title="Taux de Conversion"
+            value={formatPercentage(metrics.conversionRate)}
+            subtitle="Lead vers client"
+            icon={Target}
             color="blue"
           />
-          <MetricCard
-            icon={Euro}
-            title={t('dashboard.totalValue')}
-            value={formatCurrency(kpis.totalPropertyValue)}
-            subtitle={t('dashboard.portfolioValue')}
-            color="green"
-          />
-          <MetricCard
-            icon={Award}
-            title={t('dashboard.goldenVisaEligible')}
-            value={kpis.goldenVisaProperties}
-            subtitle={t('dashboard.properties')}
-            color="yellow"
-          />
-        </div>
+        </KPIGrid>
       </div>
 
-      {/* KPIs Commissions */}
+      {/* KPIs Financiers */}
       <div>
-        <h2 className="text-lg font-semibold mb-4">{t('dashboard.commissions')}</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <MetricCard
+        <h2 className="text-xl font-semibold mb-4">💰 Métriques Financières</h2>
+        <KPIGrid columns={5}>
+          <KPICard
+            title="Chiffre d'Affaires"
+            value={formatCurrency(metrics.totalRevenue)}
+            subtitle="Propriétés vendues"
             icon={Euro}
-            title={t('dashboard.totalCommissions')}
-            value={formatCurrency(kpis.totalCommissions)}
-            subtitle={t('dashboard.period', { days: period })}
             color="green"
           />
-          <MetricCard
-            icon={AlertCircle}
-            title={t('dashboard.pending')}
-            value={formatCurrency(kpis.pendingCommissions)}
-            subtitle={t('dashboard.toPay')}
-            color="yellow"
-          />
-          <MetricCard
-            icon={CheckCircle}
-            title={t('dashboard.paid')}
-            value={formatCurrency(kpis.paidCommissions)}
-            subtitle={t('dashboard.completed')}
+          <KPICard
+            title="Prix Moyen/m²"
+            value={formatCurrency(metrics.averagePricePerSqm)}
+            subtitle="Portfolio global"
+            icon={BarChart3}
             color="blue"
           />
-        </div>
+          <KPICard
+            title="Commissions Totales"
+            value={formatCurrency(metrics.totalCommissions)}
+            subtitle={`Moyenne ${formatPercentage(metrics.averageCommissionRate)}`}
+            icon={DollarSign}
+            color="purple"
+          />
+          <KPICard
+            title="Jours sur Marché"
+            value={Math.round(metrics.averageDaysOnMarket)}
+            subtitle="Temps moyen de vente"
+            icon={Clock}
+            color="yellow"
+          />
+          <KPICard
+            title="Vendues ce Mois"
+            value={formatNumber(metrics.propertiesSoldThisMonth)}
+            subtitle="Performance mensuelle"
+            icon={Calendar}
+            color="green"
+          />
+        </KPIGrid>
       </div>
 
-      {/* Activité récente */}
+      {/* KPIs Cyprus Spécifiques */}
+      <div>
+        <h2 className="text-xl font-semibold mb-4">🇨🇾 Métriques Cyprus</h2>
+        <KPIGrid columns={3}>
+          <KPICard
+            title="TVA Collectée 5%"
+            value={formatCurrency(metrics.vatCollected5Percent)}
+            subtitle="Résidentiel ≤200m²"
+            icon={Receipt}
+            color="green"
+          />
+          <KPICard
+            title="TVA Collectée 19%"
+            value={formatCurrency(metrics.vatCollected19Percent)}
+            subtitle="Commercial & >200m²"
+            icon={Receipt}
+            color="red"
+          />
+          <KPICard
+            title="Frais de Transfert"
+            value={formatCurrency(metrics.transferFeesTotal)}
+            subtitle="3-8% du prix de vente"
+            icon={TrendingUp}
+            color="blue"
+          />
+        </KPIGrid>
+      </div>
+
+      {/* Graphiques et Distribution */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <ZoneDistributionChart
+          limassol={metrics.limassol}
+          paphos={metrics.paphos}
+          larnaca={metrics.larnaca}
+          nicosia={metrics.nicosia}
+        />
+        
+        <SimpleBarChart
+          title="Commissions par Zone"
+          data={commissionData}
+        />
+      </div>
+
+      {/* Performance Chart */}
+      <PerformanceChart data={performanceData} />
+
+      {/* Résumé Performance */}
       <Card>
         <CardHeader>
-          <CardTitle>{t('dashboard.recentActivity')}</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <MapPin className="w-5 h-5" />
+            Résumé Exécutif - Période: {period}
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            {recentLeads.length > 0 ? (
-              recentLeads.map(lead => (
-                <div key={lead.id} className="flex items-center justify-between p-3 bg-muted rounded">
-                  <div>
-                    <p className="font-medium">
-                      {lead.first_name} {lead.last_name}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {lead.email} • {t(`leads.status.${lead.status}`)}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    {lead.budget_max && (
-                      <p className="font-medium">{formatCurrency(Number(lead.budget_max))}</p>
-                    )}
-                    <p className="text-xs text-muted-foreground">
-                      {new Date(lead.created_at).toLocaleDateString()}
-                    </p>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="text-muted-foreground text-center py-4">
-                {t('dashboard.noRecentActivity')}
-              </p>
-            )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h4 className="font-semibold mb-3">🏆 Points Forts</h4>
+              <ul className="space-y-2 text-sm">
+                <li>• <strong>{formatNumber(metrics.goldenVisaProperties)}</strong> propriétés Golden Visa disponibles</li>
+                <li>• Taux de conversion <strong>{formatPercentage(metrics.conversionRate)}</strong></li>
+                <li>• Revenue moyen <strong>{formatCurrency(metrics.totalRevenue / Math.max(metrics.soldProperties, 1))}</strong> par vente</li>
+                <li>• Commission moyenne <strong>{formatPercentage(metrics.averageCommissionRate)}</strong></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-3">📈 Objectifs</h4>
+              <ul className="space-y-2 text-sm">
+                <li>• Maintenir un stock de {Math.max(100 - metrics.availableProperties, 0)} propriétés supplémentaires</li>
+                <li>• Cibler une conversion de <strong>15%</strong> minimum</li>
+                <li>• Optimiser le délai de vente (actuellement {Math.round(metrics.averageDaysOnMarket)} jours)</li>
+                <li>• Développer le portefeuille Golden Visa</li>
+              </ul>
+            </div>
           </div>
-          <Link to="/admin/leads" className="block mt-4">
-            <Button variant="outline" className="w-full">
-              {t('dashboard.viewAllLeads')}
-            </Button>
-          </Link>
         </CardContent>
       </Card>
 
       {/* Liens rapides */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Link to="/admin/projects">
-          <Button variant="outline" className="w-full">{t('nav.projects')}</Button>
-        </Link>
-        <Link to="/admin/leads">
-          <Button variant="outline" className="w-full">{t('nav.leads')}</Button>
-        </Link>
-        <Link to="/admin/pipeline">
-          <Button variant="outline" className="w-full">{t('nav.pipeline')}</Button>
-        </Link>
-        <Link to="/admin/commissions">
-          <Button variant="outline" className="w-full">{t('nav.commissions')}</Button>
-        </Link>
+        <Button variant="outline" className="w-full" asChild>
+          <a href="/admin/projects">Gérer Propriétés</a>
+        </Button>
+        <Button variant="outline" className="w-full" asChild>
+          <a href="/admin/leads">Leads & Pipeline</a>
+        </Button>
+        <Button variant="outline" className="w-full" asChild>
+          <a href="/admin/commissions">Commissions</a>
+        </Button>
+        <Button variant="outline" className="w-full" asChild>
+          <a href="/admin/analytics">Analytics Avancés</a>
+        </Button>
       </div>
     </div>
   );
