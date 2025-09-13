@@ -56,7 +56,7 @@ export default function TestimonialsSection() {
   const [selected, setSelected] = useState(0);
 
   return (
-    <section className="bg-gradient-to-br from-[#FDF0E4] to-[#D3E3F0] py-24 px-4 lg:px-8 grid items-center grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-4 overflow-hidden">
+    <section className="py-24 px-4 lg:px-8 grid items-center grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-4 overflow-hidden">
       <div className="p-4">
         <h3 className="text-5xl font-semibold text-[#A17964]">
           Ce que disent nos clients
