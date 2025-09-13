@@ -424,10 +424,10 @@ export function UnifiedAIImporter() {
                     <tbody>
                       {extractedData.properties.slice(0, 20).map((prop, idx) => (
                         <tr key={idx} className="border-t">
-                          <td className="px-4 py-2">{prop.unit_number}</td>
-                          <td className="px-4 py-2">{prop.type}</td>
-                          <td className="px-4 py-2">{prop.size_m2} m²</td>
-                          <td className="px-4 py-2">€{prop.price.toLocaleString()}</td>
+                          <td className="px-4 py-2">{prop.unit_number || 'N/A'}</td>
+                          <td className="px-4 py-2">{prop.type || 'N/A'}</td>
+                          <td className="px-4 py-2">{prop.size_m2 ? `${prop.size_m2} m²` : 'N/A'}</td>
+                          <td className="px-4 py-2">{prop.price ? `€${prop.price.toLocaleString()}` : 'N/A'}</td>
                           <td className="px-4 py-2">
                             {prop.is_golden_visa && <Badge className="bg-yellow-500">✓</Badge>}
                           </td>
