@@ -512,23 +512,44 @@ async function validateAndEnrichData(data: any) {
 }
 
 async function callAI(prompt: string, apiKey: string): Promise<string> {
-  const isXAI = apiKey.startsWith('xai-');
-  const apiUrl = isXAI 
-    ? 'https://api.x.ai/v1/chat/completions'
-    : 'https://api.openai.com/v1/chat/completions';
+  // Préférer OpenAI car GROK ignore les instructions
+  const openaiKey = Deno.env.get('OPENAI_API_KEY');
+  const xaiKey = Deno.env.get('XAI_API_KEY');
   
-  const model = isXAI ? 'grok-2-1212' : 'gpt-4o-mini';
+  // Essayer OpenAI en premier si disponible
+  let useOpenAI = true;
+  let finalApiKey = openaiKey;
+  
+  if (!openaiKey && xaiKey) {
+    useOpenAI = false;
+    finalApiKey = xaiKey;
+  } else if (!openaiKey && !xaiKey) {
+    throw new Error('No AI API keys available');
+  }
+  
+  const apiUrl = useOpenAI 
+    ? 'https://api.openai.com/v1/chat/completions'
+    : 'https://api.x.ai/v1/chat/completions';
+  
+  const model = useOpenAI ? 'gpt-4o-mini' : 'grok-2-1212';
+  
+  console.log(`🤖 Using ${useOpenAI ? 'OpenAI' : 'XAI'} with model: ${model}`);
+  
+  // Prompt ultra strict pour forcer l'extraction réelle
+  const systemPrompt = useOpenAI 
+    ? 'You are a document extraction expert. NEVER generate fake data. Extract ONLY what exists in the document. If data is missing, use null.'
+    : 'CRITICAL: You MUST extract real data from documents. DO NOT generate examples. NO FAKE DATA. EXTRACT ONLY WHAT EXISTS.';
   
   const response = await fetch(apiUrl, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${apiKey}`,
+      'Authorization': `Bearer ${finalApiKey}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       model,
       messages: [
-        { role: 'system', content: 'You are an expert document analysis AI. Extract information accurately and return only valid JSON.' },
+        { role: 'system', content: systemPrompt },
         { role: 'user', content: prompt }
       ],
       max_completion_tokens: 4000,
@@ -538,6 +559,8 @@ async function callAI(prompt: string, apiKey: string): Promise<string> {
   });
 
   if (!response.ok) {
+    const errorText = await response.text();
+    console.error(`AI API failed: ${response.status} - ${errorText}`);
     throw new Error(`AI API failed: ${response.status}`);
   }
 
