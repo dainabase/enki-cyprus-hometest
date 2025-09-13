@@ -166,65 +166,73 @@ async function extractPDFContent(pdfData: Uint8Array) {
 
 async function extractTextFromPDF(pdfData: Uint8Array): Promise<string> {
   try {
-    // Convert PDF to string for analysis
+    // Convertir en string pour chercher le contenu texte
     const decoder = new TextDecoder('utf-8', { fatal: false });
     let rawText = decoder.decode(pdfData);
     
-    // Extract readable text using regex patterns for PDF structure
-    let extractedText = '';
+    console.log(`📋 PDF brut: ${rawText.length} caractères`);
     
-    // Pattern 1: Extract text between BT/ET blocks (BeginText/EndText)
-    const btEtPattern = /BT\s+.*?ET/gs;
-    const btEtMatches = rawText.match(btEtPattern) || [];
+    // Méthode 1: Extraire tout le texte visible entre parenthèses
+    const textMatches = rawText.match(/\((.*?)\)/g) || [];
+    let extractedText = textMatches
+      .map(match => match.slice(1, -1)) // Enlever les parenthèses
+      .filter(text => text.length > 1 && /[a-zA-Z]/.test(text)) // Garder seulement le texte avec lettres
+      .join(' ');
     
-    for (const block of btEtMatches) {
-      // Extract text showing operators
-      const textMatches = block.match(/\((.*?)\)\s*Tj/g) || [];
-      for (const match of textMatches) {
-        const text = match.replace(/\((.*?)\)\s*Tj/, '$1');
-        extractedText += text + ' ';
+    console.log(`🔤 Texte extrait méthode 1: ${extractedText.length} caractères`);
+    
+    // Méthode 2: Chercher des mots complets dans le PDF brut
+    if (extractedText.length < 100) {
+      const wordPattern = /[A-Za-z]{3,}(?:\s+[A-Za-z]{3,})*/g;
+      const words = rawText.match(wordPattern) || [];
+      const filteredWords = words
+        .filter(word => !word.includes('\\') && !word.includes('/'))
+        .filter(word => word.length > 3)
+        .slice(0, 200); // Limiter à 200 mots
+      
+      extractedText = filteredWords.join(' ');
+      console.log(`🔤 Texte extrait méthode 2: ${extractedText.length} caractères`);
+    }
+    
+    // Méthode 3: Recherche de patterns spécifiques immobiliers
+    if (extractedText.length < 50) {
+      const realEstatePatterns = [
+        /([A-Z][a-z]+\s+){2,}[A-Z][a-z]+/g, // Noms de projets
+        /\b\d+[\s]*m[²2]\b/g, // Surfaces
+        /\b\d+[\s]*€\b/g, // Prix
+        /\b\d+[\s]*bedroom[s]?\b/gi, // Chambres
+        /\b\d+[\s]*bathroom[s]?\b/gi, // Salles de bain
+        /\blimassol|paphos|larnaca|nicosia\b/gi, // Villes chypriotes
+        /\bapartment|villa|penthouse|studio\b/gi // Types de biens
+      ];
+      
+      let patternText = '';
+      for (const pattern of realEstatePatterns) {
+        const matches = rawText.match(pattern) || [];
+        patternText += matches.join(' ') + ' ';
+      }
+      
+      if (patternText.length > extractedText.length) {
+        extractedText = patternText;
+        console.log(`🔤 Texte extrait méthode 3: ${extractedText.length} caractères`);
       }
     }
     
-    // Pattern 2: Extract text from Tf and Tj operators
-    const tjPattern = /\((.*?)\)\s*Tj/g;
-    let match;
-    while ((match = tjPattern.exec(rawText)) !== null) {
-      extractedText += match[1] + ' ';
-    }
-    
-    // Pattern 3: Extract from TJ arrays
-    const tjArrayPattern = /\[\s*\((.*?)\)\s*\]\s*TJ/g;
-    while ((match = tjArrayPattern.exec(rawText)) !== null) {
-      extractedText += match[1] + ' ';
-    }
-    
-    // Clean up the extracted text
+    // Nettoyage final
     extractedText = extractedText
-      .replace(/\\([nrt])/g, ' ') // Replace escape sequences
-      .replace(/\s+/g, ' ') // Normalize whitespace
+      .replace(/\\[nrt]/g, ' ')
+      .replace(/\s+/g, ' ')
       .trim();
     
-    // If no text extracted using PDF patterns, try direct extraction
-    if (extractedText.length < 50) {
-      // Try to find readable ASCII text
-      const readableText = rawText
-        .replace(/[^\x20-\x7E\n\r\t]/g, ' ') // Keep only printable ASCII
-        .replace(/\s+/g, ' ')
-        .split(' ')
-        .filter(word => word.length > 2 && /[a-zA-Z]/.test(word))
-        .join(' ');
-      
-      if (readableText.length > extractedText.length) {
-        extractedText = readableText;
-      }
-    }
+    const finalLength = extractedText.length;
+    console.log(`✅ Texte final: ${finalLength} caractères`);
+    console.log(`📝 Aperçu: "${extractedText.substring(0, 200)}..."`);
     
-    return extractedText.length > 20 ? extractedText : 'Unable to extract text from PDF - OCR may be required for scanned documents';
+    return finalLength > 10 ? extractedText : 'PDF_EXTRACTION_FAILED_NO_TEXT_FOUND';
     
   } catch (error) {
-    console.error('PDF text extraction error:', error);
-    return 'PDF text extraction failed - please try with a text-based PDF';
+    console.error('❌ Erreur extraction PDF:', error);
+    return 'PDF_EXTRACTION_ERROR';
   }
 }
 
@@ -289,12 +297,36 @@ ${documents.map(doc => `Document: ${doc.url}\nContent: ${doc.content.substring(0
 async function extractInformationByType(documents: any[], classification: any, apiKey: string) {
   const { primaryType } = classification;
   
-  // First, log what we extracted from the PDF to see the actual content
-  console.log('📝 Extracted PDF content:', documents.map(doc => ({
-    url: doc.url,
-    contentLength: doc.content.length,
-    preview: doc.content.substring(0, 500) + '...'
-  })));
+  // Vérifier le contenu extrait
+  console.log('📝 Contenu des documents extraits:');
+  documents.forEach((doc, idx) => {
+    console.log(`  Document ${idx + 1}: ${doc.content.length} caractères`);
+    console.log(`  Aperçu: "${doc.content.substring(0, 200)}..."`);
+    
+    // Vérifier si c'est une erreur d'extraction
+    if (doc.content.includes('PDF_EXTRACTION_FAILED') || doc.content.includes('PDF_EXTRACTION_ERROR')) {
+      console.error(`❌ ERREUR: Échec extraction PDF pour ${doc.url}`);
+    }
+  });
+  
+  // Vérifier qu'on a du vrai contenu
+  const totalContent = documents.reduce((sum, doc) => sum + doc.content.length, 0);
+  if (totalContent < 50) {
+    console.error('❌ ERREUR: Pas assez de contenu extrait pour l\'analyse IA');
+    return {
+      error: 'INSUFFICIENT_CONTENT_EXTRACTED',
+      documentType: primaryType,
+      extractionConfidence: 0,
+      debug: {
+        totalContentLength: totalContent,
+        documents: documents.map(doc => ({
+          url: doc.url,
+          contentLength: doc.content.length,
+          contentPreview: doc.content.substring(0, 100)
+        }))
+      }
+    };
+  }
   
   let extractionPrompt = '';
   
@@ -310,7 +342,7 @@ async function extractInformationByType(documents: any[], classification: any, a
   
   const documentContent = documents.map(doc => `=== DOCUMENT: ${doc.url} ===\n${doc.content}`).join('\n\n');
   
-  console.log('🤖 Sending to AI:', {
+  console.log('🤖 Envoi vers IA:', {
     promptLength: extractionPrompt.length,
     contentLength: documentContent.length,
     model: apiKey.startsWith('xai-') ? 'grok-2-1212' : 'gpt-4o-mini'
@@ -325,7 +357,7 @@ ${documentContent}`;
 
   try {
     const response = await callAI(fullPrompt, apiKey);
-    console.log('🎯 AI Response received:', response.substring(0, 500) + '...');
+    console.log('🎯 Réponse IA reçue:', response.substring(0, 500) + '...');
     const parsed = JSON.parse(response);
     
     return {
@@ -334,7 +366,7 @@ ${documentContent}`;
       extractionConfidence: classification.confidence
     };
   } catch (error) {
-    console.error('Extraction error:', error);
+    console.error('❌ Erreur extraction IA:', error);
     return {
       documentType: primaryType,
       error: error.message,
@@ -345,68 +377,77 @@ ${documentContent}`;
 
 function getRealEstateExtractionPrompt(): string {
   return `
-You are an expert real estate document analyzer. Extract ONLY the information that exists in the provided document.
+Tu es un expert en analyse de documents immobiliers. Tu dois extraire SEULEMENT les informations qui existent dans le document fourni.
 
-CRITICAL INSTRUCTIONS:
-- DO NOT INVENT, ASSUME, OR GENERATE ANY INFORMATION
-- ONLY extract what is explicitly written in the document
-- If information is missing, use null or empty arrays
-- DO NOT use examples like "Jardins Maria" or any fake data
-- Extract ALL text, numbers, and details exactly as written
+RÈGLES CRITIQUES:
+- N'INVENTE AUCUNE DONNÉE
+- Si une information n'existe pas dans le document, utilise null
+- Cherche toutes les variations possibles (français, anglais, grec)
+- Sois intelligent avec les abréviations et formats
+- Extrait TOUT ce qui ressemble à de l'immobilier
 
-Return JSON with this EXACT structure:
+PATTERNS À CHERCHER:
+- Noms de projets/développeurs
+- Prix (€, EUR, euros, numbers followed by price indicators)  
+- Surfaces (m², m2, sq m, square meters)
+- Chambres/bathrooms (bed, bath, ch, sdb, bedroom, bathroom)
+- Adresses/villes (Limassol, Paphos, Larnaca, Nicosia, Cyprus)
+- Types de biens (apartment, villa, penthouse, studio)
+- Statuts (available, sold, under construction, completed)
+
+Retourne un JSON avec cette structure EXACTE:
 
 {
   "developer": {
-    "name": "EXACT company name from document or null",
-    "email_primary": "exact email or null",
-    "phone_numbers": ["exact phones found in document"],
-    "addresses": ["exact addresses found in document"],
-    "website": "exact website or null",
+    "name": "nom exact trouvé ou null",
+    "email_primary": "email exact ou null", 
+    "phone_numbers": ["téléphones trouvés"],
+    "addresses": ["adresses trouvées"],
+    "website": "site web ou null",
     "contact_info": {}
   },
   "project": {
-    "title": "EXACT project name from document",
-    "description": "EXACT description from document",
-    "city": "EXACT city name found",
-    "full_address": "EXACT address found",
-    "cyprus_zone": "limassol|paphos|larnaca|nicosia or null",
+    "title": "nom exact du projet",
+    "description": "description exacte trouvée",
+    "city": "ville exacte trouvée",
+    "full_address": "adresse complète",
+    "cyprus_zone": "limassol|paphos|larnaca|nicosia ou null",
     "gps_latitude": null,
     "gps_longitude": null,
-    "price": "EXACT starting price found as number or null",
-    "total_units_new": "EXACT number of units found or null",
-    "status": "available|under_construction|completed",
-    "property_types": ["EXACT types found: apartment, penthouse, villa"],
-    "features": ["EXACT features listed in document"],
-    "amenities": ["EXACT amenities listed in document"],
-    "completion_date_new": "EXACT date in YYYY-MM-DD format or null"
+    "price": "prix de départ en nombre ou null",
+    "total_units_new": "nombre total d'unités ou null",
+    "status": "statut trouvé ou null",
+    "property_types": ["types exacts trouvés"],
+    "features": ["caractéristiques exactes"],
+    "amenities": ["équipements exacts"],
+    "completion_date_new": "date au format YYYY-MM-DD ou null"
   },
   "buildings": [
     {
-      "name": "EXACT building name from document",
-      "building_type": "residential|commercial|villa",
-      "total_floors": "EXACT number found or null",
-      "total_units": "EXACT number found or null",
-      "construction_status": "planned|under_construction|completed"
+      "name": "nom exact du bâtiment",
+      "building_type": "type exact",
+      "total_floors": "nombre d'étages ou null",
+      "total_units": "nombre d'unités ou null", 
+      "construction_status": "statut exact"
     }
   ],
   "properties": [
     {
-      "unit_number": "EXACT unit number from document",
-      "building_name": "EXACT building name",
-      "type": "studio|apartment|penthouse|villa",
-      "floor": "EXACT floor number or null",
-      "bedrooms": "EXACT number or null",
-      "bathrooms": "EXACT number or null", 
-      "size_m2": "EXACT size in m2 or null",
-      "price": "EXACT price in euros or null",
-      "status": "available|reserved|sold",
-      "features": ["EXACT features for this unit"]
+      "unit_number": "numéro exact",
+      "building_name": "nom du bâtiment",
+      "type": "type exact",
+      "floor": "étage en nombre ou null",
+      "bedrooms": "nombre de chambres ou null",
+      "bathrooms": "nombre de salles de bain ou null",
+      "size_m2": "superficie en m2 ou null",
+      "price": "prix en euros ou null",
+      "status": "statut exact",
+      "features": ["caractéristiques exactes"]
     }
   ]
 }
 
-CRITICAL: DO NOT GENERATE EXAMPLE DATA. EXTRACT ONLY WHAT EXISTS IN THE DOCUMENT.
+IMPORTANT: Analyse intelligemment même si le texte est fragmenté ou mal formaté. Reconstitue les informations cohérentes.
 `;
 }
 
