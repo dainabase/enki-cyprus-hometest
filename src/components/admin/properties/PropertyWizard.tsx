@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import PropertyForm from './PropertyForm';
 import BulkPropertyCreator from './BulkPropertyCreator';
 import CSVImporter from './CSVImporter';
+import { PropertyOCRImporter } from './PropertyOCRImporter';
 import { toast } from 'sonner';
 
 interface PropertyWizardProps {
@@ -195,7 +196,7 @@ export default function PropertyWizard({ open, onClose, onSuccess }: PropertyWiz
                 </TabsTrigger>
                 <TabsTrigger value="template">
                   <Building2 className="h-4 w-4 mr-2" />
-                  Template
+                  OCR/IA
                 </TabsTrigger>
               </TabsList>
 
@@ -239,11 +240,16 @@ export default function PropertyWizard({ open, onClose, onSuccess }: PropertyWiz
               </TabsContent>
 
               <TabsContent value="template" className="mt-4">
-                <div className="text-center py-8 text-gray-500">
-                  <Building2 className="h-16 w-16 mx-auto mb-4 text-gray-300" />
-                  <p>Fonctionnalité de templates à venir</p>
-                  <p className="text-sm mt-2">Pourra créer des propriétés depuis des modèles prédéfinis</p>
-                </div>
+                <PropertyOCRImporter
+                  developerId={selectedDeveloper}
+                  projectId={selectedProject}
+                  buildingId={selectedBuilding}
+                  onPropertiesExtracted={(count) => {
+                    toast.success(`${count} propriétés importées via OCR/IA !`);
+                    onSuccess();
+                    onClose();
+                  }}
+                />
               </TabsContent>
             </Tabs>
           </div>
