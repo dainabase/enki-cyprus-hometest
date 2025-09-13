@@ -289,6 +289,13 @@ ${documents.map(doc => `Document: ${doc.url}\nContent: ${doc.content.substring(0
 async function extractInformationByType(documents: any[], classification: any, apiKey: string) {
   const { primaryType } = classification;
   
+  // First, log what we extracted from the PDF to see the actual content
+  console.log('📝 Extracted PDF content:', documents.map(doc => ({
+    url: doc.url,
+    contentLength: doc.content.length,
+    preview: doc.content.substring(0, 500) + '...'
+  })));
+  
   let extractionPrompt = '';
   
   if (primaryType === 'real_estate_project') {
@@ -301,13 +308,24 @@ async function extractInformationByType(documents: any[], classification: any, a
     extractionPrompt = getGenericExtractionPrompt();
   }
   
+  const documentContent = documents.map(doc => `=== DOCUMENT: ${doc.url} ===\n${doc.content}`).join('\n\n');
+  
+  console.log('🤖 Sending to AI:', {
+    promptLength: extractionPrompt.length,
+    contentLength: documentContent.length,
+    model: apiKey.startsWith('xai-') ? 'grok-2-1212' : 'gpt-4o-mini'
+  });
+  
   const fullPrompt = `${extractionPrompt}
 
+CRITICAL: You MUST extract information from the actual document content below. DO NOT generate fake data or examples.
+
 Documents content:
-${documents.map(doc => `=== DOCUMENT: ${doc.url} ===\n${doc.content}`).join('\n\n')}`;
+${documentContent}`;
 
   try {
     const response = await callAI(fullPrompt, apiKey);
+    console.log('🎯 AI Response received:', response.substring(0, 500) + '...');
     const parsed = JSON.parse(response);
     
     return {
@@ -327,66 +345,68 @@ ${documents.map(doc => `=== DOCUMENT: ${doc.url} ===\n${doc.content}`).join('\n\
 
 function getRealEstateExtractionPrompt(): string {
   return `
-Extract real estate project information. Return JSON with this EXACT structure:
+You are an expert real estate document analyzer. Extract ONLY the information that exists in the provided document.
+
+CRITICAL INSTRUCTIONS:
+- DO NOT INVENT, ASSUME, OR GENERATE ANY INFORMATION
+- ONLY extract what is explicitly written in the document
+- If information is missing, use null or empty arrays
+- DO NOT use examples like "Jardins Maria" or any fake data
+- Extract ALL text, numbers, and details exactly as written
+
+Return JSON with this EXACT structure:
 
 {
   "developer": {
-    "name": "string REQUIRED",
-    "email_primary": "string",
-    "phone_numbers": ["string"],
-    "addresses": ["string"],
-    "website": "string",
+    "name": "EXACT company name from document or null",
+    "email_primary": "exact email or null",
+    "phone_numbers": ["exact phones found in document"],
+    "addresses": ["exact addresses found in document"],
+    "website": "exact website or null",
     "contact_info": {}
   },
   "project": {
-    "title": "string REQUIRED",
-    "description": "string REQUIRED",
-    "city": "string REQUIRED",
-    "full_address": "string",
-    "cyprus_zone": "limassol|paphos|larnaca|nicosia",
-    "gps_latitude": number,
-    "gps_longitude": number,
-    "price": number REQUIRED,
-    "total_units_new": number,
+    "title": "EXACT project name from document",
+    "description": "EXACT description from document",
+    "city": "EXACT city name found",
+    "full_address": "EXACT address found",
+    "cyprus_zone": "limassol|paphos|larnaca|nicosia or null",
+    "gps_latitude": null,
+    "gps_longitude": null,
+    "price": "EXACT starting price found as number or null",
+    "total_units_new": "EXACT number of units found or null",
     "status": "available|under_construction|completed",
-    "property_types": ["apartment", "penthouse", "villa"],
-    "features": ["string"],
-    "amenities": ["string"],
-    "completion_date_new": "YYYY-MM-DD"
+    "property_types": ["EXACT types found: apartment, penthouse, villa"],
+    "features": ["EXACT features listed in document"],
+    "amenities": ["EXACT amenities listed in document"],
+    "completion_date_new": "EXACT date in YYYY-MM-DD format or null"
   },
   "buildings": [
     {
-      "name": "string REQUIRED",
+      "name": "EXACT building name from document",
       "building_type": "residential|commercial|villa",
-      "total_floors": number,
-      "total_units": number,
+      "total_floors": "EXACT number found or null",
+      "total_units": "EXACT number found or null",
       "construction_status": "planned|under_construction|completed"
     }
   ],
   "properties": [
     {
-      "unit_number": "string REQUIRED",
-      "building_name": "string",
+      "unit_number": "EXACT unit number from document",
+      "building_name": "EXACT building name",
       "type": "studio|apartment|penthouse|villa",
-      "floor": number,
-      "bedrooms": number,
-      "bathrooms": number,
-      "size_m2": number,
-      "price": number,
+      "floor": "EXACT floor number or null",
+      "bedrooms": "EXACT number or null",
+      "bathrooms": "EXACT number or null", 
+      "size_m2": "EXACT size in m2 or null",
+      "price": "EXACT price in euros or null",
       "status": "available|reserved|sold",
-      "features": ["string"]
+      "features": ["EXACT features for this unit"]
     }
   ]
 }
 
-EXTRACTION RULES:
-- Extract ALL property information with exact details
-- Count total units accurately 
-- Extract complete developer contact information
-- Identify all building types including villas
-- Parse all individual properties with specifications
-- Ensure prices are in euros
-- Return only valid JSON
+CRITICAL: DO NOT GENERATE EXAMPLE DATA. EXTRACT ONLY WHAT EXISTS IN THE DOCUMENT.
 `;
 }
 
