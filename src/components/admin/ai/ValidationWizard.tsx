@@ -168,7 +168,7 @@ export function ValidationWizard({
                 <div>
                   <Label>Nom de l'entreprise *</Label>
                   <Input
-                    value={editedData.developer.name}
+                    value={editedData.developer.name || ''}
                     disabled={!editMode.developer}
                     onChange={(e) => setEditedData({
                       ...editedData,
@@ -180,7 +180,7 @@ export function ValidationWizard({
                   <Label>Email</Label>
                   <Input
                     type="email"
-                    value={editedData.developer.email}
+                    value={editedData.developer.email || ''}
                     disabled={!editMode.developer}
                     onChange={(e) => setEditedData({
                       ...editedData,
@@ -191,7 +191,7 @@ export function ValidationWizard({
                 <div>
                   <Label>Téléphone</Label>
                   <Input
-                    value={editedData.developer.phone}
+                    value={editedData.developer.phone || ''}
                     disabled={!editMode.developer}
                     onChange={(e) => setEditedData({
                       ...editedData,
@@ -236,7 +236,7 @@ export function ValidationWizard({
                 <div>
                   <Label>Nom du projet *</Label>
                   <Input
-                    value={editedData.project.name}
+                    value={editedData.project.name || ''}
                     disabled={!editMode.project}
                     onChange={(e) => setEditedData({
                       ...editedData,
@@ -247,7 +247,7 @@ export function ValidationWizard({
                 <div>
                   <Label>Localisation</Label>
                   <Input
-                    value={editedData.project.location}
+                    value={editedData.project.location || ''}
                     disabled={!editMode.project}
                     onChange={(e) => setEditedData({
                       ...editedData,
@@ -259,7 +259,7 @@ export function ValidationWizard({
                   <Label>Unités totales</Label>
                   <Input
                     type="number"
-                    value={editedData.project.total_units}
+                    value={editedData.project.total_units || ''}
                     disabled={!editMode.project}
                     onChange={(e) => setEditedData({
                       ...editedData,
@@ -270,7 +270,7 @@ export function ValidationWizard({
                 <div>
                   <Label>Status</Label>
                   <select
-                    value={editedData.project.status}
+                    value={editedData.project.status || ''}
                     disabled={!editMode.project}
                     className="border rounded px-3 py-2 w-full"
                     onChange={(e) => setEditedData({
@@ -396,7 +396,7 @@ export function ValidationWizard({
                         <td className="px-4 py-2">
                           {editMode[`prop-${idx}`] ? (
                             <Input
-                              value={prop.unit_number}
+                              value={prop.unit_number || ''}
                               className="w-20"
                               onChange={(e) => handlePropertyEdit(idx, 'unit_number', e.target.value)}
                             />
@@ -407,7 +407,7 @@ export function ValidationWizard({
                         <td className="px-4 py-2">
                           {editMode[`prop-${idx}`] ? (
                             <select
-                              value={prop.type}
+                              value={prop.type || ''}
                               className="border rounded px-2 py-1"
                               onChange={(e) => handlePropertyEdit(idx, 'type', e.target.value)}
                             >
@@ -424,7 +424,7 @@ export function ValidationWizard({
                           {editMode[`prop-${idx}`] ? (
                             <Input
                               type="number"
-                              value={prop.bedrooms}
+                              value={prop.bedrooms || ''}
                               className="w-12"
                               onChange={(e) => handlePropertyEdit(idx, 'bedrooms', parseInt(e.target.value))}
                             />
@@ -436,7 +436,7 @@ export function ValidationWizard({
                           {editMode[`prop-${idx}`] ? (
                             <Input
                               type="number"
-                              value={prop.bathrooms}
+                              value={prop.bathrooms || ''}
                               className="w-12"
                               onChange={(e) => handlePropertyEdit(idx, 'bathrooms', parseInt(e.target.value))}
                             />
@@ -448,7 +448,7 @@ export function ValidationWizard({
                           {editMode[`prop-${idx}`] ? (
                             <Input
                               type="number"
-                              value={prop.size_m2}
+                              value={prop.size_m2 || ''}
                               className="w-16"
                               onChange={(e) => handlePropertyEdit(idx, 'size_m2', parseFloat(e.target.value))}
                             />
