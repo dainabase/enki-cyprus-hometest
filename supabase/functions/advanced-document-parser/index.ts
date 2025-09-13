@@ -42,10 +42,16 @@ serve(async (req) => {
         try {
           console.log(`📄 Processing: ${url}`);
           
-          // Download the file
-          const response = await fetch(url);
+          // Download the file with proper headers
+          const response = await fetch(url, {
+            headers: {
+              'User-Agent': 'Supabase-Edge-Function/1.0',
+              'Accept': '*/*'
+            }
+          });
           if (!response.ok) {
-            throw new Error(`Failed to download: ${response.status}`);
+            console.error(`Download failed: ${response.status} - ${response.statusText}`);
+            throw new Error(`Failed to download file: ${response.status}`);
           }
           
           const buffer = await response.arrayBuffer();
@@ -159,34 +165,67 @@ async function extractPDFContent(pdfData: Uint8Array) {
 }
 
 async function extractTextFromPDF(pdfData: Uint8Array): Promise<string> {
-  // Simplified PDF text extraction
-  // In production, use a proper PDF library like pdf-parse
-  const decoder = new TextDecoder('utf-8');
-  let text = decoder.decode(pdfData);
-  
-  // Basic PDF content detection patterns
-  const patterns = [
-    /BT\s+(.*?)\s+ET/gs, // Basic text objects
-    /Tj\s*\[(.*?)\]/gs,  // Text showing operators
-    /TJ\s*\[(.*?)\]/gs   // Text showing with spacing
-  ];
-  
-  let extractedText = '';
-  for (const pattern of patterns) {
-    const matches = text.match(pattern);
-    if (matches) {
-      extractedText += matches.join(' ') + '\n';
+  try {
+    // Convert PDF to string for analysis
+    const decoder = new TextDecoder('utf-8', { fatal: false });
+    let rawText = decoder.decode(pdfData);
+    
+    // Extract readable text using regex patterns for PDF structure
+    let extractedText = '';
+    
+    // Pattern 1: Extract text between BT/ET blocks (BeginText/EndText)
+    const btEtPattern = /BT\s+.*?ET/gs;
+    const btEtMatches = rawText.match(btEtPattern) || [];
+    
+    for (const block of btEtMatches) {
+      // Extract text showing operators
+      const textMatches = block.match(/\((.*?)\)\s*Tj/g) || [];
+      for (const match of textMatches) {
+        const text = match.replace(/\((.*?)\)\s*Tj/, '$1');
+        extractedText += text + ' ';
+      }
     }
+    
+    // Pattern 2: Extract text from Tf and Tj operators
+    const tjPattern = /\((.*?)\)\s*Tj/g;
+    let match;
+    while ((match = tjPattern.exec(rawText)) !== null) {
+      extractedText += match[1] + ' ';
+    }
+    
+    // Pattern 3: Extract from TJ arrays
+    const tjArrayPattern = /\[\s*\((.*?)\)\s*\]\s*TJ/g;
+    while ((match = tjArrayPattern.exec(rawText)) !== null) {
+      extractedText += match[1] + ' ';
+    }
+    
+    // Clean up the extracted text
+    extractedText = extractedText
+      .replace(/\\([nrt])/g, ' ') // Replace escape sequences
+      .replace(/\s+/g, ' ') // Normalize whitespace
+      .trim();
+    
+    // If no text extracted using PDF patterns, try direct extraction
+    if (extractedText.length < 50) {
+      // Try to find readable ASCII text
+      const readableText = rawText
+        .replace(/[^\x20-\x7E\n\r\t]/g, ' ') // Keep only printable ASCII
+        .replace(/\s+/g, ' ')
+        .split(' ')
+        .filter(word => word.length > 2 && /[a-zA-Z]/.test(word))
+        .join(' ');
+      
+      if (readableText.length > extractedText.length) {
+        extractedText = readableText;
+      }
+    }
+    
+    return extractedText.length > 20 ? extractedText : 'Unable to extract text from PDF - OCR may be required for scanned documents';
+    
+  } catch (error) {
+    console.error('PDF text extraction error:', error);
+    return 'PDF text extraction failed - please try with a text-based PDF';
   }
-  
-  // Fallback: try to extract readable text
-  if (extractedText.length < 100) {
-    extractedText = text.replace(/[^\x20-\x7E\n]/g, ' ')
-                       .replace(/\s+/g, ' ')
-                       .trim();
-  }
-  
-  return extractedText || 'PDF content extraction failed - consider using OCR';
 }
 
 function estimatePageCount(text: string): number {
