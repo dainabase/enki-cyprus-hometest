@@ -29,6 +29,8 @@ export const AdminOverview = () => {
   const [zone, setZone] = useState<'all' | 'limassol' | 'paphos' | 'larnaca' | 'nicosia'>('all');
   
   const { data: metrics, isLoading, error } = useDashboardMetrics({ period, zone });
+  
+  console.log('🎯 Dashboard State:', { metrics, isLoading, error, period, zone });
 
   // Sample performance data for charts
   const performanceData = [

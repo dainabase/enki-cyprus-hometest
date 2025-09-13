@@ -36,6 +36,8 @@ const fetchDashboardMetrics = async (options: UseMetricsOptions = {}): Promise<D
   }
   
   try {
+    console.log('🔍 Fetching dashboard metrics with options:', options);
+    
     // Fetch all data in parallel
     const [propertiesResult, leadsResult, commissionsResult] = await Promise.all([
       supabase
@@ -77,16 +79,26 @@ const fetchDashboardMetrics = async (options: UseMetricsOptions = {}): Promise<D
         .gte('created_at', startDate.toISOString())
     ]);
     
+    console.log('📊 Raw data fetched:', { 
+      properties: propertiesResult.data?.length || 0, 
+      leads: leadsResult.data?.length || 0, 
+      commissions: commissionsResult.data?.length || 0 
+    });
+    
     if (propertiesResult.error) throw propertiesResult.error;
     if (leadsResult.error) throw leadsResult.error;
     if (commissionsResult.error) throw commissionsResult.error;
     
     // Calculate KPIs
-    return calculateKPIs(
+    const calculatedMetrics = calculateKPIs(
       propertiesResult.data || [],
       leadsResult.data || [],
       commissionsResult.data || []
     );
+    
+    console.log('📈 Calculated metrics:', calculatedMetrics);
+    
+    return calculatedMetrics;
     
   } catch (error) {
     console.error('Error fetching dashboard metrics:', error);
