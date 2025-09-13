@@ -460,12 +460,12 @@ export function ValidationWizard({
                           {editMode[`prop-${idx}`] ? (
                             <Input
                               type="number"
-                              value={prop.price}
+                              value={prop.price || ''}
                               className="w-24"
-                              onChange={(e) => handlePropertyEdit(idx, 'price', parseFloat(e.target.value))}
+                              onChange={(e) => handlePropertyEdit(idx, 'price', parseFloat(e.target.value) || 0)}
                             />
                           ) : (
-                            `€${prop.price.toLocaleString()}`
+                            prop.price ? `€${prop.price.toLocaleString()}` : 'N/A'
                           )}
                         </td>
                         <td className="px-4 py-2">
