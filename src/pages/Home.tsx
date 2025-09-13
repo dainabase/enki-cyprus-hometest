@@ -32,6 +32,7 @@ import { getHeroImage } from '@/utils/gallery';
 import Alternative3 from '@/components/hero/Alternative3';
 import ChatMessageComponent from '@/components/ChatMessage';
 import PropertyResultCard from '@/components/ui/PropertyResultCard';
+import TestimonialsSection from '@/components/sections/TestimonialsSection';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 // Static background component to replace 3D elements (fixes runtime errors)
 const StaticBackground = () => (
@@ -973,6 +974,9 @@ const Home = () => {
             </div>
           </div>
         </section>
+
+        {/* Testimonials Section */}
+        <TestimonialsSection />
       </div>
 
       {/* Property Modal */}
