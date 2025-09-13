@@ -58,10 +58,10 @@ export default function TestimonialsSection() {
   return (
     <section className="py-24 px-4 lg:px-8 grid items-center grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-4 overflow-hidden">
       <div className="p-4">
-        <h3 className="text-5xl font-semibold text-[#A17964]">
+        <h3 className="swaarg-large-title text-primary">
           Ce que disent nos clients
         </h3>
-        <p className="text-gray-600 my-4">
+        <p className="swaarg-body-large text-muted-foreground my-4">
           Des investisseurs du monde entier nous font confiance pour leur projet immobilier à Chypre. 
           Découvrez leurs témoignages et rejoignez notre communauté internationale.
         </p>
@@ -96,11 +96,11 @@ const SelectBtns = ({
           <button
             key={n}
             onClick={() => setSelected(n)}
-            className="h-1.5 w-full bg-gray-300 relative"
+            className="h-1.5 w-full bg-muted relative"
           >
             {selected === n ? (
               <motion.span
-                className="absolute top-0 left-0 bottom-0 bg-[#57B9D6]"
+                className="absolute top-0 left-0 bottom-0 bg-primary"
                 initial={{
                   width: "0%",
                 }}
@@ -116,7 +116,7 @@ const SelectBtns = ({
               />
             ) : (
               <span
-                className="absolute top-0 left-0 bottom-0 bg-[#57B9D6]"
+                className="absolute top-0 left-0 bottom-0 bg-primary"
                 style={{
                   width: selected > n ? "100%" : "0%",
                 }}
@@ -171,8 +171,9 @@ const Card = ({
 }) => {
   const scale = position <= selected ? 1 : 1 + 0.015 * (position - selected);
   const offset = position <= selected ? 0 : 95 + (position - selected) * 3;
-  const background = position % 2 ? "#57B9D6" : "#FDF0E4";
-  const color = position % 2 ? "white" : "#A17964";
+  const isPrimary = position % 2;
+  const bgColor = isPrimary ? 'hsl(var(--primary))' : 'hsl(var(--accent))';
+  const textColor = isPrimary ? 'hsl(var(--primary-foreground))' : 'hsl(var(--foreground))';
 
   return (
     <motion.div
@@ -180,8 +181,8 @@ const Card = ({
       style={{
         zIndex: position,
         transformOrigin: "left bottom",
-        background,
-        color,
+        backgroundColor: bgColor,
+        color: textColor,
       }}
       animate={{
         x: `${offset}%`,
@@ -199,17 +200,17 @@ const Card = ({
     >
       <div className="flex items-center justify-center">
         <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center">
-          <span className="text-3xl font-bold">{initials}</span>
+          <span className="swaarg-card-title font-bold">{initials}</span>
         </div>
         <span className="ml-4 text-4xl">{country}</span>
       </div>
       
-      <p className="text-lg lg:text-xl font-light italic my-8">
+      <p className="swaarg-body-large font-light italic my-8">
         "{description}"
       </p>
       
       <div>
-        <span className="block font-semibold text-lg">{name}</span>
+        <span className="block swaarg-body font-semibold">{name}</span>
         <span className="block text-sm opacity-90">{title}</span>
       </div>
     </motion.div>
