@@ -18,6 +18,7 @@ import { ProjectCardView } from '@/components/admin/projects/ProjectCardView';
 import { ProjectListView } from '@/components/admin/projects/ProjectListView';
 import { ProjectCompactView } from '@/components/admin/projects/ProjectCompactView';
 import { ProjectDetailedView } from '@/components/admin/projects/ProjectDetailedView';
+import { PDFExportButton } from '@/components/admin/properties/PDFExportButton';
 
 // Helper function to safely access developer data
 const getDeveloper = (developer: any) => {
@@ -463,6 +464,11 @@ const AdminProjects = () => {
                   </Button>
                 </div>
                 <div className="flex items-center gap-2">
+                  <PDFExportButton 
+                    selectedPropertyIds={selectedProjects}
+                    variant="outline"
+                    size="sm"
+                  />
                   <Button 
                     variant="outline" 
                     size="sm" 

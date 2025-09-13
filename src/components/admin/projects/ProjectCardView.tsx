@@ -2,6 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import { PDFExportButton } from '@/components/admin/properties/PDFExportButton';
 import { Edit, MapPin, Building, Calendar, Euro, Star, Crown } from 'lucide-react';
 
 interface ProjectCardViewProps {
@@ -126,8 +127,15 @@ export const ProjectCardView = ({
               </div>
             </div>
 
-            <div className="text-xs text-muted-foreground">
-              Zone: {project.cyprus_zone || 'Non définie'}
+            <div className="flex items-center justify-between">
+              <div className="text-xs text-muted-foreground">
+                Zone: {project.cyprus_zone || 'Non définie'}
+              </div>
+              <PDFExportButton 
+                propertyId={project.id}
+                variant="outline"
+                size="sm"
+              />
             </div>
           </CardContent>
         </Card>
