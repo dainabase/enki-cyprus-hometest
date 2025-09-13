@@ -14,42 +14,86 @@ serve(async (req) => {
   }
 
   try {
-    const { fileUrls, extractionType } = await req.json();
+    console.log('📥 Edge function called with method:', req.method);
     
-    console.log('Starting full hierarchy extraction for:', fileUrls.length, 'files');
+    const requestBody = await req.json();
+    console.log('📋 Request body received:', requestBody);
+    
+    const { fileUrls, extractionType } = requestBody;
+    
+    console.log('🚀 Starting full hierarchy extraction for:', fileUrls?.length || 0, 'files');
+    console.log('📂 File URLs:', fileUrls);
+    console.log('🔧 Extraction type:', extractionType);
     
     // Initialize Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
     
-    // Get XAI API key
+    // Check API keys
     const xaiApiKey = Deno.env.get('XAI_API_KEY');
-    if (!xaiApiKey) {
-      throw new Error('XAI_API_KEY not configured');
+    const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
+    
+    console.log('🔑 API Keys status:', {
+      hasXAI: !!xaiApiKey,
+      hasOpenAI: !!openaiApiKey,
+      xaiLength: xaiApiKey?.length || 0,
+      openAILength: openaiApiKey?.length || 0
+    });
+
+    if (!xaiApiKey && !openaiApiKey) {
+      console.error('❌ No API keys configured');
+      throw new Error('Neither XAI_API_KEY nor OPENAI_API_KEY configured');
     }
 
     // Process each file and extract content
+    console.log('📥 Processing files...');
     const extractedContents = await Promise.all(
       fileUrls.map(async (url: string) => {
         try {
-          // Download file content (simplified for now)
-          const response = await fetch(url);
-          const content = await response.text();
+          console.log(`📄 Processing file: ${url}`);
           
-          // For now, return placeholder content
-          // In real implementation, this would use OCR for images/PDFs
+          // Download file content
+          const response = await fetch(url);
+          console.log(`📊 File response status: ${response.status}`);
+          
+          if (!response.ok) {
+            throw new Error(`Failed to fetch file: ${response.status}`);
+          }
+          
+          const contentType = response.headers.get('content-type') || '';
+          console.log(`📋 Content type: ${contentType}`);
+          
+          let content = '';
+          
+          if (contentType.includes('pdf')) {
+            // For PDFs, we need to extract text - for now using basic fetch
+            const buffer = await response.arrayBuffer();
+            content = `PDF file processed (${buffer.byteLength} bytes)`;
+          } else {
+            content = await response.text();
+          }
+          
+          console.log(`✅ File processed successfully, content length: ${content.length}`);
+          
           return {
             url,
-            content: content.substring(0, 1000), // Truncate for API limits
+            content: content.substring(0, 5000), // More content for better extraction
             type: url.includes('.pdf') ? 'pdf' : 'image'
           };
         } catch (error) {
-          console.error(`Failed to process ${url}:`, error);
+          console.error(`❌ Failed to process ${url}:`, error);
           return { url, content: '', type: 'unknown', error: error.message };
         }
       })
     );
+    
+    console.log('📊 Extracted contents summary:', extractedContents.map(c => ({
+      url: c.url,
+      contentLength: c.content.length,
+      type: c.type,
+      hasError: !!c.error
+    })));
 
     // Prepare AI prompt for full hierarchy extraction
     const prompt = `

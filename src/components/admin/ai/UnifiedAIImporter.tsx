@@ -85,6 +85,10 @@ export function UnifiedAIImporter() {
   const handleExtraction = async () => {
     if (files.length === 0) return;
     
+    console.log('🔍 Starting extraction...');
+    console.log('📄 Files to process:', files);
+    console.log('📊 Number of files:', files.length);
+    
     setIsExtracting(true);
     setError(null);
     setProgress(0);
@@ -94,7 +98,9 @@ export function UnifiedAIImporter() {
       setProgressMessage('Upload des documents...');
       setProgress(10);
       
+      console.log('🚀 Phase 1: Uploading files...');
       const uploadedUrls = await uploadFiles(files);
+      console.log('📤 Uploaded URLs:', uploadedUrls);
       
       // Phase 2: Extraction OCR
       setProgressMessage('Extraction OCR en cours...');
@@ -104,14 +110,28 @@ export function UnifiedAIImporter() {
       setProgressMessage('Analyse IA des données...');
       setProgress(50);
       
+      console.log('🤖 Phase 3: Calling AI extraction...');
+      console.log('🔗 URLs for extraction:', uploadedUrls);
+      
       const data = await extractFullHierarchy(uploadedUrls);
+      
+      console.log('📊 Raw extraction result:', data);
+      console.log('🏠 Properties count:', data?.properties?.length || 0);
+      console.log('🏢 Buildings count:', data?.buildings?.length || 0);
+      
+      if (!data || !data.properties || data.properties.length === 0) {
+        console.error('❌ No properties extracted!');
+        console.error('Full result object:', JSON.stringify(data, null, 2));
+        throw new Error('Aucune propriété extraite du document. Vérifiez le format du PDF.');
+      }
       
       // Phase 4: Enrichissement
       setProgressMessage('Enrichissement des données...');
       setProgress(70);
       
-      // Détection Golden Visa et calculs
+      console.log('💎 Phase 4: Enriching data...');
       const enrichedData = enrichData(data);
+      console.log('✨ Enriched data stats:', enrichedData.stats);
       
       // Phase 5: Validation
       setProgressMessage('Préparation de la validation...');
@@ -121,7 +141,15 @@ export function UnifiedAIImporter() {
       setProgress(100);
       setProgressMessage('Extraction terminée !');
       
+      console.log('✅ Extraction completed successfully!');
+      
     } catch (err: any) {
+      console.error('💥 Extraction error:', err);
+      console.error('Error stack:', err.stack);
+      if (err.response) {
+        console.error('Response data:', err.response.data);
+        console.error('Response status:', err.response.status);
+      }
       setError(err.message || 'Erreur lors de l\'extraction');
     } finally {
       setIsExtracting(false);
