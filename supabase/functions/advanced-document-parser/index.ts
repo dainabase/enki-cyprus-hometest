@@ -36,45 +36,62 @@ serve(async (req) => {
       hasOpenAI: !!openaiApiKey
     });
 
-    // Process each document with advanced parsing
+    // Process each document with advanced parsing using Supabase parse-document
     const parsedDocuments = await Promise.all(
       fileUrls.map(async (url: string) => {
         try {
           console.log(`📄 Processing: ${url}`);
           
-          // Download the file with proper headers and auth
-          const response = await fetch(url, {
-            headers: {
-              'User-Agent': 'Supabase-Edge-Function/1.0',
-              'Accept': '*/*',
-              'Authorization': `Bearer ${supabaseKey}`
-            }
+          // Use Supabase parse-document service for robust PDF extraction
+          const parseResponse = await supabase.functions.invoke('parse-document', {
+            body: { fileUrl: url }
           });
-          if (!response.ok) {
-            console.error(`Download failed: ${response.status} - ${response.statusText}`);
-            throw new Error(`Failed to download file: ${response.status}`);
+          
+          if (parseResponse.error) {
+            console.error('Parse document error:', parseResponse.error);
+            throw new Error(`Failed to parse document: ${parseResponse.error.message}`);
           }
           
-          const buffer = await response.arrayBuffer();
-          const uint8Array = new Uint8Array(buffer);
-          
-          console.log(`📊 File size: ${buffer.byteLength} bytes`);
-          
-          // Extract text content using advanced PDF parsing
+          const parseData = parseResponse.data;
           let extractedText = '';
           let metadata = {};
           
-          if (url.toLowerCase().includes('.pdf')) {
-            // Use PDF.js for text extraction
-            const result = await extractPDFContent(uint8Array);
-            extractedText = result.text;
-            metadata = result.metadata;
+          if (parseData && parseData.content) {
+            extractedText = parseData.content;
+            metadata = parseData.metadata || {};
+            console.log(`✅ Extracted ${extractedText.length} characters via parse-document`);
           } else {
-            // Handle other file types
-            extractedText = new TextDecoder().decode(uint8Array);
+            // Fallback to basic extraction if parse-document fails
+            console.log('📄 Falling back to basic extraction...');
+            
+            const response = await fetch(url, {
+              headers: {
+                'User-Agent': 'Supabase-Edge-Function/1.0',
+                'Accept': '*/*',
+                'Authorization': `Bearer ${supabaseKey}`
+              }
+            });
+            
+            if (!response.ok) {
+              console.error(`Download failed: ${response.status} - ${response.statusText}`);
+              throw new Error(`Failed to download file: ${response.status}`);
+            }
+            
+            const buffer = await response.arrayBuffer();
+            const uint8Array = new Uint8Array(buffer);
+            
+            console.log(`📊 File size: ${buffer.byteLength} bytes`);
+            
+            if (url.toLowerCase().includes('.pdf')) {
+              const result = await extractPDFContent(uint8Array);
+              extractedText = result.text;
+              metadata = result.metadata;
+            } else {
+              extractedText = new TextDecoder().decode(uint8Array);
+            }
+            
+            console.log(`✅ Fallback extracted ${extractedText.length} characters`);
           }
-          
-          console.log(`✅ Extracted ${extractedText.length} characters`);
           
           return {
             url,
