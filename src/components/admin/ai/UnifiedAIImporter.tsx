@@ -201,10 +201,65 @@ export function UnifiedAIImporter() {
     return urls;
   };
 
+  const generateAllProperties = (buildings: any[]) => {
+    const allProperties = [];
+    buildings.forEach((building, buildingIdx) => {
+      const totalUnits = building.total_units || 0;
+      console.log(`🏢 Generating ${totalUnits} units for ${building.name}`);
+      
+      for (let unit = 1; unit <= totalUnits; unit++) {
+        const floor = Math.ceil(unit / (totalUnits / (building.floors || building.total_floors || 1)));
+        const basePrice = building.name.toLowerCase().includes('villa') ? 800000 : 
+                         building.name.toLowerCase().includes('tower') ? 650000 : 450000;
+        const floorMultiplier = 1 + (floor - 1) * 0.1;
+        const price = Math.round(basePrice * floorMultiplier / 1000) * 1000;
+        
+        allProperties.push({
+          building_name: building.name,
+          unit_number: `${building.name}-${unit.toString().padStart(3, '0')}`,
+          floor: floor,
+          type: building.name.toLowerCase().includes('villa') ? 'villa' : 
+                floor === (building.floors || building.total_floors || 1) ? 'penthouse' : 'apartment',
+          bedrooms: building.name.toLowerCase().includes('villa') ? 3 + Math.floor(Math.random() * 2) :
+                   floor === (building.floors || building.total_floors || 1) ? 2 + Math.floor(Math.random() * 2) :
+                   1 + Math.floor(Math.random() * 3),
+          bathrooms: building.name.toLowerCase().includes('villa') ? 3 + Math.floor(Math.random() * 2) :
+                    floor === (building.floors || building.total_floors || 1) ? 2 + Math.floor(Math.random() * 2) :
+                    1 + Math.floor(Math.random() * 2),
+          size_m2: building.name.toLowerCase().includes('villa') ? 200 + Math.floor(Math.random() * 100) :
+                   floor === (building.floors || building.total_floors || 1) ? 120 + Math.floor(Math.random() * 80) :
+                   80 + Math.floor(Math.random() * 60),
+          price: price,
+          view_type: Math.random() > 0.5 ? 'sea' : 'city',
+          orientation: ['north', 'south', 'east', 'west'][Math.floor(Math.random() * 4)],
+          has_sea_view: Math.random() > 0.6,
+          is_golden_visa: price >= 300000,
+          status: 'available',
+          features: ['balcony', 'smart home', 'high-end finishes']
+        });
+      }
+    });
+    console.log(`🎯 Total generated properties: ${allProperties.length}`);
+    return allProperties;
+  };
+
   const enrichData = (data: any): ExtractedData => {
     console.log('🔧 Enriching data - input structure:', Object.keys(data));
     console.log('🔧 Developer data keys:', data.developer ? Object.keys(data.developer) : 'NO DEVELOPER');
     console.log('🔧 Project data keys:', data.project ? Object.keys(data.project) : 'NO PROJECT');
+    
+    // Mapper les bâtiments
+    const buildings = (data.buildings || []).map((building: any) => ({
+      name: building.name || 'Bâtiment',
+      floors: building.total_floors || building.floors || 1,
+      units_per_floor: Math.floor((building.total_units || 1) / (building.total_floors || building.floors || 1)),
+      total_units: building.total_units || 1,
+      has_elevator: building.has_elevator || true,
+      has_parking: building.has_parking || true
+    }));
+
+    // Générer toutes les propriétés à partir des bâtiments
+    const generatedProperties = generateAllProperties(buildings);
     
     // Mapper les données au format attendu par l'interface
     const enriched: ExtractedData = {
@@ -221,35 +276,13 @@ export function UnifiedAIImporter() {
         name: data.project?.title || data.project?.name || 'Non spécifié',
         description: data.project?.description || 'Projet immobilier de luxe',
         location: data.project?.full_address || data.project?.location || data.project?.city || 'Non spécifié',
-        total_units: data.project?.total_units_new || data.project?.total_units || 0,
+        total_units: data.project?.total_units_new || data.project?.total_units || generatedProperties.length,
         status: data.project?.status || 'En cours',
         amenities: data.project?.amenities || [],
         completion_date: data.project?.completion_date_new || data.project?.completion_date
       },
-      buildings: (data.buildings || []).map((building: any) => ({
-        name: building.name || 'Bâtiment',
-        floors: building.total_floors || building.floors || 1,
-        units_per_floor: Math.floor((building.total_units || 1) / (building.total_floors || 1)),
-        total_units: building.total_units || 1,
-        has_elevator: building.has_elevator || true,
-        has_parking: building.has_parking || true
-      })),
-      properties: (data.properties || []).map((prop: any) => ({
-        building_name: prop.building_name || 'Non spécifié',
-        unit_number: prop.unit_number || 'N/A',
-        floor: prop.floor || 1,
-        type: prop.type || 'apartment',
-        bedrooms: prop.bedrooms || 1,
-        bathrooms: prop.bathrooms || 1,
-        size_m2: prop.size_m2 || 50,
-        price: prop.price || 100000,
-        view_type: prop.view_type || 'city',
-        orientation: prop.orientation || 'south',
-        has_sea_view: prop.has_sea_view || false,
-        is_golden_visa: (prop.price || 100000) >= 300000,
-        status: prop.status || 'available',
-        features: prop.features || []
-      })),
+      buildings: buildings,
+      properties: generatedProperties, // Utiliser les propriétés générées
       media: data.media || [],
       stats: {
         total_properties: 0,
@@ -261,7 +294,7 @@ export function UnifiedAIImporter() {
       }
     };
     
-    // Calculer les statistiques après le mapping
+    // Calculer les statistiques avec les propriétés générées
     if (enriched.properties.length > 0) {
       enriched.stats = {
         total_properties: enriched.properties.length,
@@ -495,36 +528,7 @@ export function UnifiedAIImporter() {
               <TabsContent value="properties">
                 <div className="mb-4 p-3 bg-blue-50 rounded">
                   <p className="text-sm text-blue-700">
-                    Total des propriétés générées: {(() => {
-                      // Générer toutes les propriétés à partir des bâtiments
-                      const allProperties = [];
-                       extractedData.buildings.forEach((building, buildingIdx) => {
-                         // Correction: utiliser le bon nom de propriété
-                         const totalUnits = building.total_units || 0;
-                         console.log(`🏢 ${building.name}: ${totalUnits} unités (floors: ${building.floors})`);
-                         for (let unit = 1; unit <= totalUnits; unit++) {
-                           const floor = Math.ceil(unit / (totalUnits / (building.floors || 1)));
-                          const basePrice = building.name.toLowerCase().includes('villa') ? 800000 : 
-                                         building.name.toLowerCase().includes('tower') ? 650000 : 450000;
-                          const floorMultiplier = 1 + (floor - 1) * 0.1;
-                          const price = Math.round(basePrice * floorMultiplier / 1000) * 1000;
-                          
-                          allProperties.push({
-                            unit_number: `${building.name}-${unit.toString().padStart(3, '0')}`,
-                            type: building.name.toLowerCase().includes('villa') ? 'Villa' : 
-                                  floor === (building.floors || 1) ? 'Penthouse' : 'Apartment',
-                            size_m2: building.name.toLowerCase().includes('villa') ? 200 + Math.floor(Math.random() * 100) :
-                                     floor === (building.floors || 1) ? 120 + Math.floor(Math.random() * 80) :
-                                     80 + Math.floor(Math.random() * 60),
-                            price: price,
-                            floor: floor,
-                            building: building.name,
-                            is_golden_visa: price >= 300000
-                          });
-                        }
-                      });
-                      return allProperties.length;
-                    })()} propriétés ({extractedData.project.total_units || 127} attendues)
+                    Total des propriétés: {extractedData.properties.length} propriétés (basé sur {extractedData.buildings.length} bâtiments)
                   </p>
                 </div>
                 <div className="max-h-96 overflow-y-auto">
@@ -540,50 +544,21 @@ export function UnifiedAIImporter() {
                         <th className="px-4 py-2 text-left">Golden Visa</th>
                       </tr>
                     </thead>
-                    <tbody>
-                      {(() => {
-                        // Générer toutes les propriétés à partir des bâtiments
-                        const allProperties = [];
-                         extractedData.buildings.forEach((building, buildingIdx) => {
-                           // Correction: utiliser le bon nom de propriété
-                           const totalUnits = building.total_units || 0;
-                           for (let unit = 1; unit <= totalUnits; unit++) {
-                             const floor = Math.ceil(unit / (totalUnits / (building.floors || 1)));
-                            const basePrice = building.name.toLowerCase().includes('villa') ? 800000 : 
-                                           building.name.toLowerCase().includes('tower') ? 650000 : 450000;
-                            const floorMultiplier = 1 + (floor - 1) * 0.1;
-                            const price = Math.round(basePrice * floorMultiplier / 1000) * 1000;
-                            
-                            allProperties.push({
-                              unit_number: `${building.name}-${unit.toString().padStart(3, '0')}`,
-                              type: building.name.toLowerCase().includes('villa') ? 'Villa' : 
-                                    floor === (building.floors || 1) ? 'Penthouse' : 'Apartment',
-                              size_m2: building.name.toLowerCase().includes('villa') ? 200 + Math.floor(Math.random() * 100) :
-                                       floor === (building.floors || 1) ? 120 + Math.floor(Math.random() * 80) :
-                                       80 + Math.floor(Math.random() * 60),
-                              price: price,
-                              floor: floor,
-                              building: building.name,
-                              is_golden_visa: price >= 300000
-                            });
-                          }
-                         });
-                         console.log(`🎯 Total generated properties: ${allProperties.length}`);
-                         return allProperties;
-                       })().map((prop, idx) => (
-                        <tr key={idx} className="border-t hover:bg-gray-50">
-                          <td className="px-4 py-2 font-mono text-sm">{prop.unit_number}</td>
-                          <td className="px-4 py-2 text-sm">{prop.building}</td>
-                          <td className="px-4 py-2">{prop.type}</td>
-                          <td className="px-4 py-2">{prop.floor}</td>
-                          <td className="px-4 py-2">{prop.size_m2} m²</td>
-                          <td className="px-4 py-2 font-semibold">€{prop.price.toLocaleString()}</td>
-                          <td className="px-4 py-2">
-                            {prop.is_golden_visa && <Badge className="bg-yellow-500">✓</Badge>}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
+                     <tbody>
+                       {extractedData.properties.map((prop, idx) => (
+                         <tr key={idx} className="border-t hover:bg-gray-50">
+                           <td className="px-4 py-2 font-mono text-sm">{prop.unit_number}</td>
+                           <td className="px-4 py-2 text-sm">{prop.building_name}</td>
+                           <td className="px-4 py-2">{prop.type}</td>
+                           <td className="px-4 py-2">{prop.floor}</td>
+                           <td className="px-4 py-2">{prop.size_m2} m²</td>
+                           <td className="px-4 py-2 font-semibold">€{prop.price.toLocaleString()}</td>
+                           <td className="px-4 py-2">
+                             {prop.is_golden_visa && <Badge className="bg-yellow-500">✓</Badge>}
+                           </td>
+                         </tr>
+                       ))}
+                     </tbody>
                   </table>
                 </div>
               </TabsContent>
