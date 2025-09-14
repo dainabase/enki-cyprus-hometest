@@ -397,8 +397,21 @@ async function extractInformationByType(documents: any[], classification: any, a
   
   // Vérifier qu'on a du vrai contenu
   const totalContent = documents.reduce((sum, doc) => sum + doc.content.length, 0);
+  console.log(`📊 Total content length: ${totalContent} characters`);
+  
   if (totalContent < 50) {
     console.error('❌ ERREUR: Pas assez de contenu extrait pour l\'analyse IA');
+    console.log('🔍 DÉBOGAGE: Contenu trouvé dans chaque document:');
+    
+    documents.forEach((doc, idx) => {
+      console.log(`  Document ${idx + 1} (${doc.url}):`);
+      console.log(`    - Contenu: "${doc.content.substring(0, 200)}"`);
+      console.log(`    - Métadonnées:`, doc.metadata);
+      console.log(`    - Erreur:`, doc.error || 'aucune');
+    });
+    
+    // Au lieu de renvoyer une erreur, on va générer des données de test
+    console.log('🧪 Génération de données de test pour continuer...');
     return {
       error: 'INSUFFICIENT_CONTENT_EXTRACTED',
       documentType: primaryType,
@@ -408,9 +421,71 @@ async function extractInformationByType(documents: any[], classification: any, a
         documents: documents.map(doc => ({
           url: doc.url,
           contentLength: doc.content.length,
-          contentPreview: doc.content.substring(0, 100)
+          contentPreview: doc.content.substring(0, 100),
+          metadata: doc.metadata,
+          error: doc.error
         }))
-      }
+      },
+      // Générer des données de test minimales pour permettre à l'utilisateur de continuer
+      developer: {
+        name: "Test Developer (Données de test - extraction PDF échouée)",
+        email_primary: "test@example.com",
+        phone_numbers: [],
+        addresses: [],
+        website: null,
+        contact_info: {}
+      },
+      project: {
+        title: "Test Project (Veuillez modifier)",
+        description: "Projet de test généré car l'extraction PDF a échoué. Veuillez modifier ces données.",
+        city: "Limassol",
+        full_address: "Adresse à définir",
+        cyprus_zone: "limassol",
+        gps_latitude: null,
+        gps_longitude: null,
+        price: 300000,
+        total_units_new: 10,
+        status: "available",
+        property_types: ["apartment"],
+        features: ["Données de test"],
+        amenities: ["À définir"],
+        completion_date_new: "2024-12-31"
+      },
+      buildings: [
+        {
+          name: "Bâtiment A (Test)",
+          building_type: "residential",
+          total_floors: 3,
+          total_units: 10,
+          construction_status: "completed"
+        }
+      ],
+      properties: [
+        {
+          unit_number: "A101",
+          building_name: "Bâtiment A (Test)",
+          type: "apartment",
+          floor: 1,
+          bedrooms: 2,
+          bathrooms: 2,
+          size_m2: 80,
+          price: 300000,
+          status: "available",
+          features: ["Données de test - Veuillez modifier"]
+        },
+        {
+          unit_number: "A201",
+          building_name: "Bâtiment A (Test)",
+          type: "apartment",
+          floor: 2,
+          bedrooms: 3,
+          bathrooms: 2,
+          size_m2: 100,
+          price: 350000,
+          status: "available",
+          features: ["Données de test - Veuillez modifier"]
+        }
+      ]
     };
   }
   
