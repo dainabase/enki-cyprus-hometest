@@ -104,17 +104,47 @@ async function extractDeveloperInfo(fileUrl: string, apiKey: string) {
   }
 }
 
-// Extraction texte basique du PDF
+// Extraction texte améliorée du PDF
 async function extractTextFromPDF(pdfData: Uint8Array): Promise<string> {
   const decoder = new TextDecoder('utf-8', { fatal: false });
   const rawContent = decoder.decode(pdfData);
   
-  // Extraire les textes entre parenthèses (streams PDF)
+  console.log(`📄 PDF brut: ${rawContent.length} caractères`);
+  
+  let extractedText = '';
+  
+  // Méthode 1: Extraire les textes entre parenthèses (streams PDF)
   const textStreams = rawContent.match(/\((.*?)\)/g) || [];
-  let extractedText = textStreams
+  const streamText = textStreams
     .map(match => match.slice(1, -1))
-    .filter(text => text.length > 2 && /[a-zA-Z]/.test(text))
+    .filter(text => text.length > 2 && /[a-zA-Z0-9@.]/.test(text))
     .join(' ');
+  
+  // Méthode 2: Extraire les objets texte PDF
+  const textObjects = rawContent.match(/BT.*?ET/gs) || [];
+  const objectText = textObjects
+    .map(obj => {
+      const texts = obj.match(/\((.*?)\)/g) || [];
+      return texts.map(t => t.slice(1, -1)).join(' ');
+    })
+    .join(' ');
+  
+  // Méthode 3: Recherche directe de patterns email/téléphone/site web
+  const emailPattern = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+  const phonePattern = /[\+]?[0-9\s\-\(\)]{8,20}/g;
+  const webPattern = /www\.[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}|[a-zA-Z0-9.-]+\.com/g;
+  
+  const emails = rawContent.match(emailPattern) || [];
+  const phones = rawContent.match(phonePattern) || [];
+  const websites = rawContent.match(webPattern) || [];
+  
+  // Combiner tous les textes
+  extractedText = [streamText, objectText].join(' ');
+  
+  // Ajouter les patterns trouvés
+  if (emails.length > 0) extractedText += ' EMAILS: ' + emails.join(' ');
+  if (phones.length > 0) extractedText += ' PHONES: ' + phones.join(' ');
+  if (websites.length > 0) extractedText += ' WEBSITES: ' + websites.join(' ');
   
   // Nettoyer
   extractedText = extractedText
@@ -122,7 +152,13 @@ async function extractTextFromPDF(pdfData: Uint8Array): Promise<string> {
     .replace(/\\r/g, ' ')
     .replace(/\\t/g, ' ')
     .replace(/\s+/g, ' ')
+    .replace(/[^\w\s@.+-]/g, ' ')
     .trim();
+  
+  console.log(`📝 Texte extrait: ${extractedText.length} caractères`);
+  console.log(`📧 Emails trouvés: ${emails.length}`);
+  console.log(`📱 Téléphones trouvés: ${phones.length}`);
+  console.log(`🌐 Sites web trouvés: ${websites.length}`);
   
   return extractedText;
 }
