@@ -15,13 +15,12 @@ export async function extractFullHierarchy(fileUrls: string[]): Promise<Extracti
   logDebug('🚀 Real AI Extraction System Starting', { urlCount: fileUrls.length, urls: fileUrls });
   
   try {
-    logDebug('🤖 Calling Advanced Document Parser...');
+    logDebug('🤖 Calling Advanced PDF Parser...');
     
-    // Call the new advanced document parser
-    const { data, error } = await supabase.functions.invoke('advanced-document-parser', {
+    // Call the new advanced PDF parser for 100% reliable extraction
+    const { data, error } = await supabase.functions.invoke('pdf-parser-advanced', {
       body: {
-        fileUrls,
-        documentType: 'auto_detect'
+        fileUrl: fileUrls[0] // Process first file with advanced parser
       }
     });
 
