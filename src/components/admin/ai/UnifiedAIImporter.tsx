@@ -3,11 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Upload } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
-import type { ExtractionStep, DocumentUpload } from '@/lib/ai-import/types-v2';
+import type { ExtractionStep, DocumentUpload, ExtractedDeveloper } from '@/lib/ai-import/types-v2';
+import { supabase } from '@/integrations/supabase/client';
 
 export function UnifiedAIImporter() {
   const [document, setDocument] = useState<DocumentUpload | null>(null);
   const [currentStep, setCurrentStep] = useState<number>(2);
+  const [extractedDeveloper, setExtractedDeveloper] = useState<ExtractedDeveloper | null>(null);
   
   const steps: ExtractionStep[] = [
     { id: 'cleanup', name: '✅ Nettoyer ancien code', status: 'completed' },
@@ -39,23 +41,48 @@ export function UnifiedAIImporter() {
     maxFiles: 1
   });
 
-  const testStructure = async () => {
+  const extractDeveloper = async () => {
     if (!document) return;
     
     try {
       setDocument(prev => prev ? {...prev, status: 'processing'} : null);
       
-      // Test de la nouvelle structure
-      console.log('🧪 Test de la structure de base...');
+      console.log('🏢 ÉTAPE 3: Extraction développeur...');
       
-      // Simuler le test
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Upload du fichier vers Supabase storage
+      const fileName = `${Date.now()}-${document.file.name}`;
+      const { error: uploadError } = await supabase.storage
+        .from('project-documents')
+        .upload(`ai-imports/${fileName}`, document.file);
       
-      setDocument(prev => prev ? {...prev, status: 'completed'} : null);
-      setCurrentStep(3);
+      if (uploadError) throw uploadError;
+      
+      // URL publique du fichier
+      const { data: { publicUrl } } = supabase.storage
+        .from('project-documents')
+        .getPublicUrl(`ai-imports/${fileName}`);
+      
+      // Appel à l'edge function spécialisée développeur
+      const { data, error } = await supabase.functions.invoke('simple-pdf-extractor', {
+        body: {
+          fileUrl: publicUrl,
+          extractionType: 'developer'
+        }
+      });
+      
+      if (error) throw error;
+      
+      if (data.success && data.developer) {
+        setExtractedDeveloper(data.developer);
+        setDocument(prev => prev ? {...prev, status: 'completed'} : null);
+        setCurrentStep(4);
+        console.log('✅ Développeur extrait:', data.developer);
+      } else {
+        throw new Error('Échec extraction développeur');
+      }
       
     } catch (error) {
-      console.error('Erreur test structure:', error);
+      console.error('Erreur extraction développeur:', error);
       setDocument(prev => prev ? {...prev, status: 'error'} : null);
     }
   };
@@ -88,66 +115,114 @@ export function UnifiedAIImporter() {
               </div>
             </div>
 
-            {/* Zone d'upload */}
-            <div>
-              <h3 className="text-lg font-semibold text-blue-600 mb-4">
-                ÉTAPE 2 : Test de la structure de base
-              </h3>
-              
-              {!document ? (
-                <div
-                  {...getRootProps()}
-                  className={`border-2 border-dashed p-8 text-center cursor-pointer rounded-lg transition-colors ${
-                    isDragActive 
-                      ? 'border-blue-400 bg-blue-50' 
-                      : 'border-gray-300 hover:border-blue-400'
-                  }`}
-                >
-                  <input {...getInputProps()} />
-                  <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                  <p className="text-lg font-medium">
-                    Déposer un PDF pour tester la nouvelle structure
-                  </p>
-                  <p className="text-sm text-gray-500 mt-2">
-                    Glissez-déposez un fichier PDF ou cliquez pour sélectionner
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                    <span className="font-medium">{document.file.name}</span>
-                    <span className={`px-3 py-1 rounded-full text-sm ${
-                      document.status === 'uploaded' ? 'bg-blue-100 text-blue-700' :
-                      document.status === 'processing' ? 'bg-yellow-100 text-yellow-700' :
-                      document.status === 'completed' ? 'bg-green-100 text-green-700' :
-                      'bg-red-100 text-red-700'
-                    }`}>
-                      {document.status === 'uploaded' && 'Prêt'}
-                      {document.status === 'processing' && 'Test en cours...'}
-                      {document.status === 'completed' && 'Structure OK ✅'}
-                      {document.status === 'error' && 'Erreur'}
-                    </span>
+            {/* Zone principale */}
+            {currentStep === 2 && (
+              <div>
+                <h3 className="text-lg font-semibold text-blue-600 mb-4">
+                  ÉTAPE 2 : Test de la structure de base
+                </h3>
+                
+                {!document ? (
+                  <div
+                    {...getRootProps()}
+                    className={`border-2 border-dashed p-8 text-center cursor-pointer rounded-lg transition-colors ${
+                      isDragActive 
+                        ? 'border-blue-400 bg-blue-50' 
+                        : 'border-gray-300 hover:border-blue-400'
+                    }`}
+                  >
+                    <input {...getInputProps()} />
+                    <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                    <p className="text-lg font-medium">
+                      Déposer un PDF pour tester la nouvelle structure
+                    </p>
+                    <p className="text-sm text-gray-500 mt-2">
+                      Glissez-déposez un fichier PDF ou cliquez pour sélectionner
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                      <span className="font-medium">{document.file.name}</span>
+                      <Button onClick={() => setCurrentStep(3)} className="bg-green-600 hover:bg-green-700">
+                        ✅ Passer à l'ÉTAPE 3
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {currentStep === 3 && (
+              <div>
+                <h3 className="text-lg font-semibold text-green-600 mb-4">
+                  ÉTAPE 3 : Extraction développeur
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Extraction des 4 informations : nom entreprise, téléphone, email, site web
+                </p>
+                
+                {document && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                      <span className="font-medium">{document.file.name}</span>
+                      <span className={`px-3 py-1 rounded-full text-sm ${
+                        document.status === 'uploaded' ? 'bg-blue-100 text-blue-700' :
+                        document.status === 'processing' ? 'bg-yellow-100 text-yellow-700' :
+                        document.status === 'completed' ? 'bg-green-100 text-green-700' :
+                        'bg-red-100 text-red-700'
+                      }`}>
+                        {document.status === 'uploaded' && 'Prêt'}
+                        {document.status === 'processing' && 'Extraction en cours...'}
+                        {document.status === 'completed' && 'Développeur extrait ✅'}
+                        {document.status === 'error' && 'Erreur'}
+                      </span>
+                    </div>
+                    
+                    {document.status === 'uploaded' && (
+                      <Button onClick={extractDeveloper} className="w-full bg-green-600 hover:bg-green-700">
+                        🏢 Extraire les infos développeur
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {currentStep === 4 && extractedDeveloper && (
+              <div>
+                <h3 className="text-lg font-semibold text-green-600 mb-4">
+                  ✅ ÉTAPE 3 TERMINÉE - Développeur extrait !
+                </h3>
+                
+                <div className="bg-green-50 p-6 rounded-lg space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="font-medium text-gray-700">Nom entreprise :</label>
+                      <p className="text-lg">{extractedDeveloper.name}</p>
+                    </div>
+                    <div>
+                      <label className="font-medium text-gray-700">Téléphone :</label>
+                      <p className="text-lg">{extractedDeveloper.phone}</p>
+                    </div>
+                    <div>
+                      <label className="font-medium text-gray-700">Email :</label>
+                      <p className="text-lg">{extractedDeveloper.email}</p>
+                    </div>
+                    <div>
+                      <label className="font-medium text-gray-700">Site web :</label>
+                      <p className="text-lg">{extractedDeveloper.website}</p>
+                    </div>
                   </div>
                   
-                  {document.status === 'uploaded' && (
-                    <Button onClick={testStructure} className="w-full">
-                      🧪 Tester la structure de base
-                    </Button>
-                  )}
-                  
-                  {document.status === 'completed' && (
-                    <div className="bg-green-50 p-4 rounded-lg">
-                      <p className="text-green-800 font-medium">
-                        ✅ ÉTAPE 2 TERMINÉE - Structure de base fonctionnelle !
-                      </p>
-                      <p className="text-green-700 mt-2">
-                        Prêt pour l'ÉTAPE 3 : Extraction développeur
-                      </p>
-                    </div>
-                  )}
+                  <div className="pt-4 border-t">
+                    <p className="text-green-800 font-medium">
+                      Prêt pour l'ÉTAPE 4 : Test et validation développeur
+                    </p>
+                  </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
