@@ -202,28 +202,90 @@ export function UnifiedAIImporter() {
   };
 
   const enrichData = (data: any): ExtractedData => {
-    // Enrichissement avec Golden Visa, statistiques, etc.
-    const enriched = { ...data };
+    console.log('🔧 Enriching data - input structure:', Object.keys(data));
+    console.log('🔧 Developer data keys:', data.developer ? Object.keys(data.developer) : 'NO DEVELOPER');
+    console.log('🔧 Project data keys:', data.project ? Object.keys(data.project) : 'NO PROJECT');
     
-    enriched.properties = enriched.properties.map((prop: any) => ({
-      ...prop,
-      is_golden_visa: prop.price >= 300000
-    }));
-    
-    enriched.stats = {
-      total_properties: enriched.properties.length,
-      golden_visa_count: enriched.properties.filter((p: any) => p.is_golden_visa).length,
-      total_value: enriched.properties.reduce((sum: number, p: any) => sum + p.price, 0),
-      avg_price: enriched.properties.reduce((sum: number, p: any) => sum + p.price, 0) / enriched.properties.length,
-      price_range: {
-        min: Math.min(...enriched.properties.map((p: any) => p.price)),
-        max: Math.max(...enriched.properties.map((p: any) => p.price))
+    // Mapper les données au format attendu par l'interface
+    const enriched: ExtractedData = {
+      developer: {
+        name: data.developer?.name || 'Non spécifié',
+        email: data.developer?.email_primary || data.developer?.email || 'Non spécifié',
+        phone: Array.isArray(data.developer?.phone_numbers) 
+          ? data.developer.phone_numbers.join(', ')
+          : data.developer?.phone || 'Non spécifié',
+        website: data.developer?.website || 'Non spécifié',
+        description: data.developer?.description || 'Développeur immobilier professionnel'
       },
-      types_distribution: enriched.properties.reduce((acc: any, p: any) => {
-        acc[p.type] = (acc[p.type] || 0) + 1;
-        return acc;
-      }, {})
+      project: {
+        name: data.project?.title || data.project?.name || 'Non spécifié',
+        description: data.project?.description || 'Projet immobilier de luxe',
+        location: data.project?.full_address || data.project?.location || data.project?.city || 'Non spécifié',
+        total_units: data.project?.total_units_new || data.project?.total_units || 0,
+        status: data.project?.status || 'En cours',
+        amenities: data.project?.amenities || [],
+        completion_date: data.project?.completion_date_new || data.project?.completion_date
+      },
+      buildings: (data.buildings || []).map((building: any) => ({
+        name: building.name || 'Bâtiment',
+        floors: building.total_floors || building.floors || 1,
+        units_per_floor: Math.floor((building.total_units || 1) / (building.total_floors || 1)),
+        total_units: building.total_units || 1,
+        has_elevator: building.has_elevator || true,
+        has_parking: building.has_parking || true
+      })),
+      properties: (data.properties || []).map((prop: any) => ({
+        building_name: prop.building_name || 'Non spécifié',
+        unit_number: prop.unit_number || 'N/A',
+        floor: prop.floor || 1,
+        type: prop.type || 'apartment',
+        bedrooms: prop.bedrooms || 1,
+        bathrooms: prop.bathrooms || 1,
+        size_m2: prop.size_m2 || 50,
+        price: prop.price || 100000,
+        view_type: prop.view_type || 'city',
+        orientation: prop.orientation || 'south',
+        has_sea_view: prop.has_sea_view || false,
+        is_golden_visa: (prop.price || 100000) >= 300000,
+        status: prop.status || 'available',
+        features: prop.features || []
+      })),
+      media: data.media || [],
+      stats: {
+        total_properties: 0,
+        golden_visa_count: 0,
+        total_value: 0,
+        avg_price: 0,
+        price_range: { min: 0, max: 0 },
+        types_distribution: {}
+      }
     };
+    
+    // Calculer les statistiques après le mapping
+    if (enriched.properties.length > 0) {
+      enriched.stats = {
+        total_properties: enriched.properties.length,
+        golden_visa_count: enriched.properties.filter(p => p.is_golden_visa).length,
+        total_value: enriched.properties.reduce((sum, p) => sum + p.price, 0),
+        avg_price: enriched.properties.reduce((sum, p) => sum + p.price, 0) / enriched.properties.length,
+        price_range: {
+          min: Math.min(...enriched.properties.map(p => p.price)),
+          max: Math.max(...enriched.properties.map(p => p.price))
+        },
+        types_distribution: enriched.properties.reduce((acc: any, p) => {
+          acc[p.type] = (acc[p.type] || 0) + 1;
+          return acc;
+        }, {})
+      };
+    }
+    
+    console.log('✅ Enriched data structure:', {
+      developer_name: enriched.developer.name,
+      project_name: enriched.project.name,
+      buildings_count: enriched.buildings.length,
+      properties_count: enriched.properties.length,
+      stats: enriched.stats
+    });
     
     return enriched;
   };
