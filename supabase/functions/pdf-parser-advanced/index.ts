@@ -296,6 +296,141 @@ function scoreExtraction(text: string): number {
 async function intelligentRealEstateExtraction(content: string, apiKey: string) {
   console.log('🤖 Starting intelligent real estate extraction...');
   
+  const prompt = `Tu es un expert en analyse de documents immobiliers chypriotes. Tu dois extraire TOUTES les informations avec une précision de 100%.
+
+MISSION CRITIQUE : Extraire OBLIGATOIREMENT ces informations prioritaires :
+
+1. DÉVELOPPEUR/ENTREPRISE (PRIORITÉ ABSOLUE) :
+   - Nom de l'entreprise/société (cherche partout dans le document)
+   - TOUS les numéros de téléphone (fixe, mobile, bureau)
+   - TOUTES les adresses email (info@, sales@, contact@, etc.)
+   - Site web/URL (www., http, .com, .cy, etc.)
+   - Adresse physique complète
+   - Licence/registration numbers
+
+2. PROJET (PRIORITÉ ABSOLUE) :
+   - Nom exact du projet (titre principal, heading, nom en gras)
+   - Localisation complète (ville, quartier, adresse exacte)
+   - Nombre total d'unités dans TOUT le projet
+   - Statut général du projet (planifié, en construction, livré, etc.)
+   - Description du projet
+
+3. TECHNIQUE D'EXTRACTION AVANCÉE :
+   - Regarde en HAUT et en BAS de chaque page (headers/footers)
+   - Cherche dans les logos, watermarks, signatures
+   - Analyse les contacts dans les formulaires/applications
+   - Examine les disclaimers et mentions légales
+   - Regarde les QR codes, références, numéros de licences
+
+PATTERNS À CHERCHER ABSOLUMENT :
+- Entreprise : "Developed by", "By:", "Developer:", "Company:", etc.
+- Contact : "+357", "Tel:", "Phone:", "Mobile:", "@", "www.", ".com", ".cy"
+- Projet : "Project:", titre en gras, nom répété, "Development"
+- Total : "units", "apartments", "villas", "total", "properties"
+
+Si tu trouves 127 propriétés, le projet doit avoir un nom et un développeur quelque part !
+
+CHERCHE DANS CES SECTIONS :
+- Page de couverture/titre
+- Headers et footers
+- Signatures et contacts
+- Disclaimers légaux
+- Plans avec annotations
+- Formulaires de contact
+- Brochures marketing
+
+FORMAT JSON (OBLIGATOIRE) :
+{
+  "confidence": 0.98,
+  "developer": {
+    "name": "NOM EXACT DE L'ENTREPRISE TROUVÉ",
+    "email_primary": "email principal exact",
+    "phone_numbers": ["TOUS les téléphones trouvés"],
+    "addresses": ["adresses physiques complètes"],
+    "website": "site web exact si trouvé",
+    "contact_info": {
+      "license_number": "numéro de licence si trouvé",
+      "registration_number": "numéro d'enregistrement si trouvé"
+    }
+  },
+  "project": {
+    "title": "NOM EXACT DU PROJET",
+    "description": "description détaillée extraite",
+    "city": "ville exacte (Limassol/Paphos/Larnaca/Nicosia)",
+    "full_address": "adresse complète du projet",
+    "cyprus_zone": "limassol|paphos|larnaca|nicosia",
+    "total_units_new": 127,
+    "status": "statut exact du projet",
+    "property_types": ["tous les types trouvés"],
+    "features": ["caractéristiques du projet"],
+    "amenities": ["équipements du projet"],
+    "completion_date_new": "date si trouvée (YYYY-MM-DD)"
+  },
+  "buildings": [
+    // Garde les 10 bâtiments déjà détectés
+  ],
+  "properties": [
+    // Garde les 127 propriétés déjà détectées
+  ]
+}
+
+IMPORTANT : Tu as déjà détecté 10 bâtiments et 127 propriétés. Concentre-toi maintenant sur les DONNÉES MANQUANTES : développeur, projet, contacts !
+
+DOCUMENT À ANALYSER POUR EXTRACTION COMPLÈTE :
+${content}`;
+
+  try {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          { 
+            role: 'system', 
+            content: 'Tu es un expert en extraction de données immobilières avec 20 ans d\'expérience. Tu dois extraire TOUTES les informations disponibles, en particulier les données de contact et d\'entreprise. Tu ne génères JAMAIS de fausses données.' 
+          },
+          { role: 'user', content: prompt }
+        ],
+        max_tokens: 4000,
+        temperature: 0.05, // Température très basse pour plus de précision
+        response_format: { type: 'json_object' }
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`OpenAI API failed: ${response.status} - ${errorText}`);
+      throw new Error(`OpenAI API failed: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const result = JSON.parse(data.choices[0].message.content);
+    
+    console.log('🎯 AI Extraction completed with enhanced focus');
+    console.log('📊 Extracted data preview:', {
+      developer_name: result.developer?.name || 'MANQUANT',
+      developer_email: result.developer?.email_primary || 'MANQUANT',
+      developer_phones: result.developer?.phone_numbers?.length || 0,
+      project_title: result.project?.title || 'MANQUANT',
+      project_location: result.project?.full_address || result.project?.city || 'MANQUANT',
+      total_units: result.project?.total_units_new || 'MANQUANT',
+      buildings: result.buildings?.length || 0,
+      properties: result.properties?.length || 0
+    });
+    
+    return result;
+    
+  } catch (error) {
+    console.error('❌ AI Extraction Error:', error);
+    throw error;
+  }
+}
+  console.log('🤖 Starting intelligent real estate extraction...');
+  
   const prompt = `Tu es un expert en analyse de documents immobiliers chypriotes. Tu dois extraire TOUTES les informations possibles du document fourni.
 
 INSTRUCTIONS CRITIQUES:
