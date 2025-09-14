@@ -56,18 +56,17 @@ serve(async (req) => {
   }
 });
 
-// COPIE EXACTE du système Lovable pour analyser les PDFs
+// SYSTÈME LOVABLE ÉTAPE 3 - Extraction développeur PURE (sans OpenAI)
 async function extractDeveloperWithLovableSystem(fileUrl: string, apiKey: string) {
-  console.log('🤖 Utilisation du système d\'analyse Lovable...');
+  console.log('🏗️ ÉTAPE 3 - SYSTÈME LOVABLE PUR (sans OpenAI)');
   
   try {
     // ÉTAPE 1: Analyse complète du PDF avec le système Lovable
     const pdfContent = await analyzePDFWithLovableSystem(fileUrl);
     console.log(`📊 Contenu extrait: ${pdfContent.length} caractères`);
-    console.log('📄 Aperçu:', pdfContent.substring(0, 500));
     
-    // ÉTAPE 2: Extraction IA spécialisée développeur
-    const developerData = await extractDeveloperWithAI(pdfContent, apiKey);
+    // ÉTAPE 2: Extraction développeur avec SYSTÈME LOVABLE PUR
+    const developerData = await extractDeveloperWithLovableSystem_Pure(pdfContent);
     
     return new Response(JSON.stringify({
       success: true,
@@ -76,8 +75,8 @@ async function extractDeveloperWithLovableSystem(fileUrl: string, apiKey: string
       metadata: {
         contentLength: pdfContent.length,
         extractionStep: 3,
-        model: 'lovable-system',
-        system: 'SYSTÈME LOVABLE INTERNE'
+        model: 'lovable-pure-system',
+        system: 'SYSTÈME LOVABLE PUR - SANS API EXTERNE'
       }
     }), {
       headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' },
@@ -194,94 +193,107 @@ async function parseWithPDFJS(pdfBuffer: ArrayBuffer): Promise<string> {
   }
 }
 
-// IA pour extraction développeur optimisée avec gestion d'erreurs
-async function extractDeveloperWithAI(content: string, apiKey: string) {
-  console.log('🤖 Extraction IA développeur...');
+// SYSTÈME LOVABLE PUR - Extraction développeur sans API externe
+async function extractDeveloperWithLovableSystem_Pure(content: string) {
+  console.log('🧠 SYSTÈME LOVABLE PUR - Extraction par patterns');
   
-  // Tronquer le contenu pour éviter les erreurs de limite
-  const truncatedContent = content.length > 15000 ? content.substring(0, 15000) + "..." : content;
-  
-  const prompt = `Tu es le système d'analyse Lovable. Extrais les informations du DÉVELOPPEUR.
-
-MISSION: Trouver ces informations du développeur/entreprise:
-1. Nom de l'entreprise/société
-2. Numéro de téléphone  
-3. Adresse email
-4. Site web
-
-CHERCHE dans: en-têtes, pieds de page, contacts, signatures, logos.
-
-FORMAT JSON REQUIS:
-{
-  "name": "nom exact trouvé",
-  "phone": "téléphone exact",
-  "email": "email exact", 
-  "website": "site web exact"
-}
-
-Si pas trouvé, mets "NON TROUVÉ".
-
-CONTENU:
-${truncatedContent}`;
-
-  // Système de retry pour les erreurs 429
-  let retryCount = 0;
-  const maxRetries = 3;
-  
-  while (retryCount < maxRetries) {
-    try {
-      console.log(`🔄 Tentative ${retryCount + 1}/${maxRetries}`);
-      
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          messages: [
-            { role: 'system', content: 'Tu es le système Lovable d\'extraction de données. Extrais UNIQUEMENT les infos demandées.' },
-            { role: 'user', content: prompt }
-          ],
-          max_tokens: 500,
-          temperature: 0.1,
-          response_format: { type: 'json_object' }
-        }),
-      });
-
-      if (response.status === 429) {
-        retryCount++;
-        const delay = Math.pow(2, retryCount) * 1000; // Backoff exponentiel
-        console.log(`⚠️ Limite API atteinte, retry dans ${delay}ms...`);
-        await new Promise(resolve => setTimeout(resolve, delay));
-        continue;
-      }
-
-      if (!response.ok) {
-        throw new Error(`OpenAI API failed: ${response.status} - ${await response.text()}`);
-      }
-
-      const data = await response.json();
-      const result = JSON.parse(data.choices[0].message.content);
-      
-      console.log('🏢 Développeur extrait (Lovable):', result);
-      return result;
-      
-    } catch (error) {
-      if (retryCount === maxRetries - 1) {
-        console.error('❌ Échec final après retries:', error);
-        // Retourner des valeurs par défaut en cas d'échec total
-        return {
-          name: "EXTRACTION ÉCHOUÉE - Vérifiez manuellement",
-          phone: "NON TROUVÉ",
-          email: "NON TROUVÉ", 
-          website: "NON TROUVÉ"
-        };
-      }
-      retryCount++;
-      console.log(`⚠️ Erreur tentative ${retryCount}, retry...`, error.message);
-      await new Promise(resolve => setTimeout(resolve, 1000));
+  try {
+    // Patterns optimisés pour l'extraction de développeur
+    const companyPatterns = [
+      /(?:DÉVELOPPEUR|PROMOTEUR|SOCIÉTÉ|ENTREPRISE|COMPANY)[:\s]*([A-ZÀ-Ü][A-ZÀ-Ü\s&.-]{2,50})/gi,
+      /([A-ZÀ-Ü][A-ZÀ-Ü\s&.-]{3,30})\s*(?:DÉVELOPPEMENT|IMMOBILIER|CONSTRUCTION|REAL\s*ESTATE)/gi,
+      /(?:Réalisé par|Développé par|Construi par|Promoted by)[:\s]*([A-ZÀ-Ü][A-ZÀ-Ü\s&.-]{2,50})/gi,
+      /([A-ZÀ-Ü][A-ZÀ-Ü\s&.-]{3,40})\s*(?:S\.A\.|SARL|SAS|LLC|LTD|GROUP|GROUPE)/gi
+    ];
+    
+    const emailPatterns = [
+      /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
+      /contact[@\s]*[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/gi,
+      /info[@\s]*[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/gi
+    ];
+    
+    const phonePatterns = [
+      /(?:\+33|0033|0)[1-9](?:[\s.-]?\d{2}){4}/g,
+      /(?:\+357|00357)\s?\d{8}/g,
+      /[\+]?[0-9\s\-\(\)\.]{8,20}/g
+    ];
+    
+    const websitePatterns = [
+      /(?:www\.|https?:\/\/)[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
+      /[a-zA-Z0-9.-]+\.(?:com|net|org|fr|cy|eu|co\.uk)/g,
+      /(?:site|website|web)[:\s]*([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/gi
+    ];
+    
+    // Extraction avec priorité
+    let companies = [];
+    let emails = [];
+    let phones = [];
+    let websites = [];
+    
+    // Extraire companies
+    for (const pattern of companyPatterns) {
+      const matches = content.match(pattern) || [];
+      companies.push(...matches.map(m => m.replace(/^(DÉVELOPPEUR|PROMOTEUR|SOCIÉTÉ|ENTREPRISE|COMPANY)[:\s]*/, '').trim()));
     }
+    
+    // Extraire emails
+    for (const pattern of emailPatterns) {
+      const matches = content.match(pattern) || [];
+      emails.push(...matches.map(m => m.replace(/[@\s]/g, '@').toLowerCase()));
+    }
+    
+    // Extraire téléphones
+    for (const pattern of phonePatterns) {
+      const matches = content.match(pattern) || [];
+      phones.push(...matches.map(m => m.replace(/\s+/g, ' ').trim()));
+    }
+    
+    // Extraire websites
+    for (const pattern of websitePatterns) {
+      const matches = content.match(pattern) || [];
+      websites.push(...matches.map(m => m.replace(/^(site|website|web)[:\s]*/, '').toLowerCase()));
+    }
+    
+    // Filtrage et nettoyage
+    companies = [...new Set(companies)].filter(c => c.length > 3 && c.length < 60);
+    emails = [...new Set(emails)].filter(e => e.includes('@') && e.includes('.'));
+    phones = [...new Set(phones)].filter(p => p.length >= 8);
+    websites = [...new Set(websites)].filter(w => w.includes('.') && w.length > 5);
+    
+    console.log(`🏢 Companies trouvées: ${companies.length}`, companies.slice(0, 3));
+    console.log(`📧 Emails trouvés: ${emails.length}`, emails.slice(0, 3));
+    console.log(`📱 Téléphones trouvés: ${phones.length}`, phones.slice(0, 3));
+    console.log(`🌐 Sites web trouvés: ${websites.length}`, websites.slice(0, 3));
+    
+    // Sélection des meilleurs résultats
+    const bestCompany = companies.length > 0 ? companies[0] : "NON TROUVÉ";
+    const bestEmail = emails.length > 0 ? emails[0] : "NON TROUVÉ";
+    const bestPhone = phones.length > 0 ? phones[0] : "NON TROUVÉ";
+    const bestWebsite = websites.length > 0 ? websites[0] : "NON TROUVÉ";
+    
+    const result = {
+      name: bestCompany,
+      email: bestEmail,
+      phone: bestPhone,
+      website: bestWebsite,
+      alternatives: {
+        companies: companies.slice(1, 4),
+        emails: emails.slice(1, 4),
+        phones: phones.slice(1, 4),
+        websites: websites.slice(1, 4)
+      }
+    };
+    
+    console.log('🎯 SYSTÈME LOVABLE - Résultat final:', result);
+    return result;
+    
+  } catch (error) {
+    console.error('❌ Erreur extraction pure:', error);
+    return {
+      name: "ERREUR EXTRACTION",
+      email: "NON TROUVÉ",
+      phone: "NON TROUVÉ",
+      website: "NON TROUVÉ"
+    };
   }
 }
