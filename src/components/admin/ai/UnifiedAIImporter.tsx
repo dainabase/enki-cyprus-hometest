@@ -567,9 +567,10 @@ export function UnifiedAIImporter() {
                               is_golden_visa: price >= 300000
                             });
                           }
-                        });
-                        return allProperties;
-                      })().map((prop, idx) => (
+                         });
+                         console.log(`🎯 Total generated properties: ${allProperties.length}`);
+                         return allProperties;
+                       })().map((prop, idx) => (
                         <tr key={idx} className="border-t hover:bg-gray-50">
                           <td className="px-4 py-2 font-mono text-sm">{prop.unit_number}</td>
                           <td className="px-4 py-2 text-sm">{prop.building}</td>
