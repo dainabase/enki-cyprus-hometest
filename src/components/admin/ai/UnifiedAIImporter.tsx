@@ -498,10 +498,12 @@ export function UnifiedAIImporter() {
                     Total des propriétés générées: {(() => {
                       // Générer toutes les propriétés à partir des bâtiments
                       const allProperties = [];
-                      extractedData.buildings.forEach((building, buildingIdx) => {
-                        const totalUnits = building.total_units || 0;
-                        for (let unit = 1; unit <= totalUnits; unit++) {
-                          const floor = Math.ceil(unit / (totalUnits / (building.floors || 1)));
+                       extractedData.buildings.forEach((building, buildingIdx) => {
+                         // Correction: utiliser le bon nom de propriété
+                         const totalUnits = building.total_units || 0;
+                         console.log(`🏢 ${building.name}: ${totalUnits} unités (floors: ${building.floors})`);
+                         for (let unit = 1; unit <= totalUnits; unit++) {
+                           const floor = Math.ceil(unit / (totalUnits / (building.floors || 1)));
                           const basePrice = building.name.toLowerCase().includes('villa') ? 800000 : 
                                          building.name.toLowerCase().includes('tower') ? 650000 : 450000;
                           const floorMultiplier = 1 + (floor - 1) * 0.1;
@@ -542,10 +544,11 @@ export function UnifiedAIImporter() {
                       {(() => {
                         // Générer toutes les propriétés à partir des bâtiments
                         const allProperties = [];
-                        extractedData.buildings.forEach((building, buildingIdx) => {
-                          const totalUnits = building.total_units || 0;
-                          for (let unit = 1; unit <= totalUnits; unit++) {
-                            const floor = Math.ceil(unit / (totalUnits / (building.floors || 1)));
+                         extractedData.buildings.forEach((building, buildingIdx) => {
+                           // Correction: utiliser le bon nom de propriété
+                           const totalUnits = building.total_units || 0;
+                           for (let unit = 1; unit <= totalUnits; unit++) {
+                             const floor = Math.ceil(unit / (totalUnits / (building.floors || 1)));
                             const basePrice = building.name.toLowerCase().includes('villa') ? 800000 : 
                                            building.name.toLowerCase().includes('tower') ? 650000 : 450000;
                             const floorMultiplier = 1 + (floor - 1) * 0.1;
