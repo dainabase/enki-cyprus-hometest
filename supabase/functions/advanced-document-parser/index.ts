@@ -36,67 +36,135 @@ serve(async (req) => {
       hasOpenAI: !!openaiApiKey
     });
 
-    // Process each document with advanced parsing using Supabase parse-document
+    // Process each document with multiple extraction strategies
     const parsedDocuments = await Promise.all(
       fileUrls.map(async (url: string) => {
         try {
           console.log(`📄 Processing: ${url}`);
           
-          // Use Supabase parse-document service for robust PDF extraction
-          const parseResponse = await supabase.functions.invoke('parse-document', {
-            body: { fileUrl: url }
-          });
-          
-          if (parseResponse.error) {
-            console.error('Parse document error:', parseResponse.error);
-            throw new Error(`Failed to parse document: ${parseResponse.error.message}`);
-          }
-          
-          const parseData = parseResponse.data;
           let extractedText = '';
           let metadata = {};
+          let extractionMethod = 'unknown';
           
-          if (parseData && parseData.content) {
-            extractedText = parseData.content;
-            metadata = parseData.metadata || {};
-            console.log(`✅ Extracted ${extractedText.length} characters via parse-document`);
-          } else {
-            // Fallback to basic extraction if parse-document fails
-            console.log('📄 Falling back to basic extraction...');
-            
-            const response = await fetch(url, {
-              headers: {
-                'User-Agent': 'Supabase-Edge-Function/1.0',
-                'Accept': '*/*',
-                'Authorization': `Bearer ${supabaseKey}`
-              }
-            });
+          // Strategy 1: Direct file download and basic extraction
+          try {
+            console.log('🔄 Strategy 1: Direct file download...');
+            const response = await fetch(url);
             
             if (!response.ok) {
-              console.error(`Download failed: ${response.status} - ${response.statusText}`);
-              throw new Error(`Failed to download file: ${response.status}`);
+              throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
             
             const buffer = await response.arrayBuffer();
             const uint8Array = new Uint8Array(buffer);
             
-            console.log(`📊 File size: ${buffer.byteLength} bytes`);
+            console.log(`📊 Downloaded file size: ${buffer.byteLength} bytes`);
             
-            if (url.toLowerCase().includes('.pdf')) {
-              const result = await extractPDFContent(uint8Array);
-              extractedText = result.text;
-              metadata = result.metadata;
-            } else {
-              extractedText = new TextDecoder().decode(uint8Array);
+            if (buffer.byteLength === 0) {
+              throw new Error('Downloaded file is empty');
             }
             
-            console.log(`✅ Fallback extracted ${extractedText.length} characters`);
+            if (url.toLowerCase().includes('.pdf')) {
+              // Try multiple PDF extraction methods
+              console.log('🔍 Attempting PDF text extraction...');
+              
+              // Method 1: Try to extract text streams from PDF
+              const decoder = new TextDecoder('utf-8', { fatal: false });
+              let rawContent = decoder.decode(uint8Array);
+              
+              console.log(`📄 Raw PDF content length: ${rawContent.length}`);
+              
+              // Extract text between parentheses (common PDF text encoding)
+              const textMatches = rawContent.match(/\((.*?)\)/g) || [];
+              let textFromStreams = textMatches
+                .map(match => match.slice(1, -1))
+                .filter(text => text.length > 1 && /[a-zA-Z]/.test(text))
+                .join(' ');
+              
+              console.log(`📝 Text from streams: ${textFromStreams.length} chars`);
+              
+              // Method 2: Extract readable text patterns
+              const readablePattern = /[A-Za-z]{3,}(?:\s+[A-Za-z]{3,})*/g;
+              const readableText = (rawContent.match(readablePattern) || [])
+                .filter(text => !text.includes('\\') && !text.includes('/') && text.length > 3)
+                .slice(0, 300)
+                .join(' ');
+              
+              console.log(`📝 Readable patterns: ${readableText.length} chars`);
+              
+              // Method 3: Look for real estate specific terms
+              const realEstateTerms = [
+                /\b\d+[\s]*m[²2]\b/gi,           // Surface areas
+                /\b\d+[\s]*€\b/gi,              // Prices in euros  
+                /\b\d+[\s]*bedroom[s]?\b/gi,    // Bedrooms
+                /\b\d+[\s]*bathroom[s]?\b/gi,   // Bathrooms
+                /\blimassol|paphos|larnaca|nicosia|cyprus\b/gi, // Cyprus cities
+                /\bapartment|villa|penthouse|studio|house\b/gi,  // Property types
+                /\bavailable|sold|reserved|completed\b/gi,       // Status
+                /\bproject|development|developer\b/gi            // Project terms
+              ];
+              
+              let realEstateText = '';
+              realEstateTerms.forEach(pattern => {
+                const matches = rawContent.match(pattern) || [];
+                realEstateText += matches.join(' ') + ' ';
+              });
+              
+              console.log(`📝 Real estate terms: ${realEstateText.length} chars`);
+              
+              // Use the best extraction result
+              if (textFromStreams.length > 100) {
+                extractedText = textFromStreams;
+                extractionMethod = 'pdf-stream-extraction';
+              } else if (readableText.length > 50) {
+                extractedText = readableText;
+                extractionMethod = 'pdf-pattern-extraction';
+              } else if (realEstateText.length > 20) {
+                extractedText = realEstateText;
+                extractionMethod = 'pdf-realestate-extraction';
+              } else {
+                // Last resort: try to find any meaningful text
+                const allText = rawContent.replace(/[^\w\s€²]/g, ' ')
+                  .replace(/\s+/g, ' ')
+                  .trim();
+                extractedText = allText.substring(0, 1000);
+                extractionMethod = 'pdf-raw-extraction';
+              }
+              
+              metadata = {
+                fileSize: buffer.byteLength,
+                extractionMethod,
+                textFromStreams: textFromStreams.length,
+                readableText: readableText.length,
+                realEstateTerms: realEstateText.length
+              };
+              
+            } else {
+              // For non-PDF files
+              extractedText = new TextDecoder().decode(uint8Array);
+              extractionMethod = 'text-decode';
+            }
+            
+            console.log(`✅ Extraction successful: ${extractedText.length} chars via ${extractionMethod}`);
+            
+            if (extractedText.length > 0) {
+              console.log(`📋 Preview: "${extractedText.substring(0, 200)}..."`);
+            }
+            
+          } catch (error) {
+            console.error(`❌ Strategy 1 failed:`, error);
+            extractedText = `EXTRACTION_FAILED: ${error.message}`;
+            extractionMethod = 'failed';
           }
           
           return {
             url,
             content: extractedText,
-            metadata,
+            metadata: {
+              ...metadata,
+              extractionMethod,
+              success: extractedText.length > 0 && !extractedText.startsWith('EXTRACTION_FAILED')
+            },
             contentType: url.includes('.pdf') ? 'application/pdf' : 'text/plain'
           };
           
@@ -104,8 +172,8 @@ serve(async (req) => {
           console.error(`❌ Error processing ${url}:`, error);
           return {
             url,
-            content: '',
-            metadata: {},
+            content: `PROCESSING_ERROR: ${error.message}`,
+            metadata: { error: error.message },
             error: error.message
           };
         }
