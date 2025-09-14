@@ -182,6 +182,145 @@ export function UnifiedAIImporter() {
     }
   };
 
+  const importToDatabase = async (data: ExtractedData) => {
+    setProgress(10);
+    setProgressMessage('Création du développeur...');
+    
+    // 1. Créer ou récupérer le développeur
+    const { data: existingDev } = await supabase
+      .from('developers')
+      .select('id')
+      .eq('name', data.developer.name)
+      .maybeSingle();
+    
+    let developerId = existingDev?.id;
+    
+    if (!developerId) {
+      const { data: newDev, error: devError } = await supabase
+        .from('developers')
+        .insert({
+          name: data.developer.name,
+          email_primary: data.developer.email,
+          phone_numbers: [data.developer.phone],
+          website: data.developer.website,
+          status: 'active'
+        })
+        .select('id')
+        .single();
+      
+      if (devError) throw new Error(`Erreur création développeur: ${devError.message}`);
+      developerId = newDev.id;
+    }
+    
+    setProgress(25);
+    setProgressMessage('Création du projet principal...');
+    
+    // 2. Créer le projet principal
+    const { data: newProject, error: projectError } = await supabase
+      .from('projects')
+      .insert({
+        title: data.project.name,
+        description: data.project.description,
+        developer_id: developerId,
+        full_address: data.project.location,
+        total_units_new: data.project.total_units,
+        status: data.project.status === 'construction' ? 'under_construction' : data.project.status,
+        amenities: data.project.amenities,
+        completion_date_new: data.project.completion_date ? data.project.completion_date : null,
+        price: Math.min(...data.properties.map(p => p.price)),
+        price_from_new: Math.min(...data.properties.map(p => p.price)),
+        price_to: Math.max(...data.properties.map(p => p.price)),
+        golden_visa_eligible_new: data.properties.some(p => p.is_golden_visa),
+        cyprus_zone: 'limassol',
+        location: {
+          city: data.project.location.split(',')[0] || 'Limassol',
+          country: 'Cyprus'
+        },
+        features: [],
+        photos: []
+      })
+      .select('id')
+      .single();
+    
+    if (projectError) throw new Error(`Erreur création projet: ${projectError.message}`);
+    const projectId = newProject.id;
+    
+    setProgress(50);
+    setProgressMessage('Création des bâtiments...');
+    
+    // 3. Créer les bâtiments
+    const buildingPromises = data.buildings.map(building =>
+      supabase
+        .from('buildings')
+        .insert({
+          project_id: projectId,
+          name: building.name,
+          total_floors: building.floors,
+          total_units: building.total_units,
+          building_type: 'residential',
+          construction_status: 'under_construction'
+        })
+        .select('id, name')
+        .single()
+    );
+    
+    const buildingResults = await Promise.all(buildingPromises);
+    const buildingMap = new Map();
+    
+    buildingResults.forEach((result, index) => {
+      if (result.error) throw new Error(`Erreur création bâtiment: ${result.error.message}`);
+      buildingMap.set(data.buildings[index].name, result.data.id);
+    });
+    
+    setProgress(75);
+    setProgressMessage('Import des propriétés...');
+    
+    // 4. Créer les propriétés par batch de 50
+    const batchSize = 50;
+    const propertyBatches = [];
+    
+    for (let i = 0; i < data.properties.length; i += batchSize) {
+      propertyBatches.push(data.properties.slice(i, i + batchSize));
+    }
+    
+    for (let batchIndex = 0; batchIndex < propertyBatches.length; batchIndex++) {
+      const batch = propertyBatches[batchIndex];
+      const propertiesToInsert = batch.map(prop => ({
+        title: `${data.project.name} - ${prop.unit_number}`,
+        description: `${prop.type} de ${prop.bedrooms} chambres et ${prop.bathrooms} salles de bain`,
+        developer_id: developerId,
+        building_id: buildingMap.get(prop.building_name),
+        unit_number: prop.unit_number,
+        floor_number: prop.floor,
+        price: prop.price,
+        location: {
+          city: data.project.location.split(',')[0] || 'Limassol',
+          country: 'Cyprus'
+        },
+        status: prop.status === 'available' ? 'available' : 'under_construction',
+        property_sub_type: [prop.type],
+        golden_visa_eligible: prop.is_golden_visa,
+        built_area_m2: prop.size_m2,
+        features: prop.features || [],
+        photos: [],
+        amenities: []
+      }));
+      
+      const { error: propsError } = await supabase
+        .from('projects')
+        .insert(propertiesToInsert);
+      
+      if (propsError) throw new Error(`Erreur création propriétés batch ${batchIndex + 1}: ${propsError.message}`);
+      
+      setProgress(75 + (batchIndex + 1) / propertyBatches.length * 20);
+      setProgressMessage(`Import propriétés: ${Math.min((batchIndex + 1) * batchSize, data.properties.length)}/${data.properties.length}`);
+    }
+    
+    setProgress(100);
+    setProgressMessage('Import terminé avec succès !');
+  };
+  };
+
   const uploadFiles = async (files: File[]): Promise<string[]> => {
     const urls: string[] = [];
     for (const file of files) {
@@ -292,7 +431,145 @@ export function UnifiedAIImporter() {
         price_range: { min: 0, max: 0 },
         types_distribution: {}
       }
-    };
+  };
+
+  const importToDatabase = async (data: ExtractedData) => {
+    setProgress(10);
+    setProgressMessage('Création du développeur...');
+    
+    // 1. Créer ou récupérer le développeur
+    const { data: existingDev } = await supabase
+      .from('developers')
+      .select('id')
+      .eq('name', data.developer.name)
+      .single();
+    
+    let developerId = existingDev?.id;
+    
+    if (!developerId) {
+      const { data: newDev, error: devError } = await supabase
+        .from('developers')
+        .insert({
+          name: data.developer.name,
+          email_primary: data.developer.email,
+          phone_numbers: [data.developer.phone],
+          website: data.developer.website,
+          status: 'active'
+        })
+        .select('id')
+        .single();
+      
+      if (devError) throw new Error(`Erreur création développeur: ${devError.message}`);
+      developerId = newDev.id;
+    }
+    
+    setProgress(25);
+    setProgressMessage('Création du projet...');
+    
+    // 2. Créer le projet
+    const { data: newProject, error: projectError } = await supabase
+      .from('projects')
+      .insert({
+        title: data.project.name,
+        description: data.project.description,
+        developer_id: developerId,
+        full_address: data.project.location,
+        total_units_new: data.project.total_units,
+        status: data.project.status === 'construction' ? 'under_construction' : data.project.status,
+        amenities: data.project.amenities,
+        completion_date_new: data.project.completion_date ? data.project.completion_date : null,
+        price: Math.min(...data.properties.map(p => p.price)),
+        price_from_new: Math.min(...data.properties.map(p => p.price)),
+        price_to: Math.max(...data.properties.map(p => p.price)),
+        golden_visa_eligible_new: data.properties.some(p => p.is_golden_visa),
+        cyprus_zone: 'limassol',
+        location: {
+          city: data.project.location.split(',')[0] || 'Limassol',
+          country: 'Cyprus'
+        },
+        features: [],
+        photos: []
+      })
+      .select('id')
+      .single();
+    
+    if (projectError) throw new Error(`Erreur création projet: ${projectError.message}`);
+    const projectId = newProject.id;
+    
+    setProgress(50);
+    setProgressMessage('Création des bâtiments...');
+    
+    // 3. Créer les bâtiments
+    const buildingPromises = data.buildings.map(building =>
+      supabase
+        .from('buildings')
+        .insert({
+          project_id: projectId,
+          name: building.name,
+          total_floors: building.floors,
+          total_units: building.total_units,
+          building_type: 'residential',
+          construction_status: 'under_construction'
+        })
+        .select('id, name')
+        .single()
+    );
+    
+    const buildingResults = await Promise.all(buildingPromises);
+    const buildingMap = new Map();
+    
+    buildingResults.forEach((result, index) => {
+      if (result.error) throw new Error(`Erreur création bâtiment: ${result.error.message}`);
+      buildingMap.set(data.buildings[index].name, result.data.id);
+    });
+    
+    setProgress(75);
+    setProgressMessage('Import des propriétés...');
+    
+    // 4. Créer les propriétés par batch de 50 pour éviter les timeouts
+    const batchSize = 50;
+    const propertyBatches = [];
+    
+    for (let i = 0; i < data.properties.length; i += batchSize) {
+      propertyBatches.push(data.properties.slice(i, i + batchSize));
+    }
+    
+    for (let batchIndex = 0; batchIndex < propertyBatches.length; batchIndex++) {
+      const batch = propertyBatches[batchIndex];
+      const propertiesToInsert = batch.map(prop => ({
+        title: `${data.project.name} - ${prop.unit_number}`,
+        description: `${prop.type} de ${prop.bedrooms} chambres et ${prop.bathrooms} salles de bain`,
+        developer_id: developerId,
+        building_id: buildingMap.get(prop.building_name),
+        unit_number: prop.unit_number,
+        floor_number: prop.floor,
+        price: prop.price,
+        location: {
+          city: data.project.location.split(',')[0] || 'Limassol',
+          country: 'Cyprus'
+        },
+        status: prop.status === 'available' ? 'available' : 'under_construction',
+        property_sub_type: [prop.type],
+        golden_visa_eligible: prop.is_golden_visa,
+        built_area_m2: prop.size_m2,
+        features: prop.features || [],
+        photos: [],
+        amenities: []
+      }));
+      
+      const { error: propsError } = await supabase
+        .from('projects')
+        .insert(propertiesToInsert);
+      
+      if (propsError) throw new Error(`Erreur création propriétés batch ${batchIndex + 1}: ${propsError.message}`);
+      
+      setProgress(75 + (batchIndex + 1) / propertyBatches.length * 20);
+      setProgressMessage(`Import propriétés: ${(batchIndex + 1) * batchSize}/${data.properties.length}`);
+    }
+    
+    setProgress(100);
+    setProgressMessage('Import terminé avec succès !');
+  };
     
     // Calculer les statistiques avec les propriétés générées
     if (enriched.properties.length > 0) {
@@ -328,9 +605,24 @@ export function UnifiedAIImporter() {
       <ValidationWizard
         data={extractedData}
         onValidate={async (validatedData) => {
-          // Import final dans la base
-          console.log('Import validé:', validatedData);
-          // Logique d'import ici
+          setIsExtracting(true);
+          setProgress(0);
+          setProgressMessage('Import en cours...');
+          
+          try {
+            await importToDatabase(validatedData);
+            setProgressMessage('Import terminé avec succès !');
+            setProgress(100);
+            
+            // Rediriger vers la liste des projets après succès
+            setTimeout(() => {
+              window.location.href = '/admin/projects';
+            }, 2000);
+          } catch (error: any) {
+            console.error('Erreur durant l\'import:', error);
+            setError(error.message || 'Erreur lors de l\'import en base de données');
+            setIsExtracting(false);
+          }
         }}
         onCancel={() => {
           setValidationMode(false);
