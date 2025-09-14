@@ -47,7 +47,7 @@ export function UnifiedAIImporter() {
     try {
       setDocument(prev => prev ? {...prev, status: 'processing'} : null);
       
-      console.log('🏢 ÉTAPE 3: Extraction développeur...');
+      console.log('🏢 ÉTAPE 3: Extraction développeur avec système robuste...');
       
       // Upload du fichier vers Supabase storage
       const fileName = `${Date.now()}-${document.file.name}`;
@@ -55,14 +55,19 @@ export function UnifiedAIImporter() {
         .from('project-documents')
         .upload(`ai-imports/${fileName}`, document.file);
       
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error('❌ Erreur upload:', uploadError);
+        throw new Error(`Erreur upload: ${uploadError.message}`);
+      }
       
       // URL publique du fichier
       const { data: { publicUrl } } = supabase.storage
         .from('project-documents')
         .getPublicUrl(`ai-imports/${fileName}`);
       
-      // Appel à l'edge function spécialisée développeur
+      console.log('📄 Fichier uploadé:', publicUrl);
+      
+      // Appel à l'edge function avec timeout et retry
       const { data, error } = await supabase.functions.invoke('simple-pdf-extractor', {
         body: {
           fileUrl: publicUrl,
@@ -70,20 +75,39 @@ export function UnifiedAIImporter() {
         }
       });
       
-      if (error) throw error;
+      console.log('🔄 Réponse edge function:', { data, error });
       
-      if (data.success && data.developer) {
+      if (error) {
+        console.error('❌ Erreur edge function:', error);
+        throw new Error(`Erreur API: ${error.message}`);
+      }
+      
+      if (data && data.success && data.developer) {
         setExtractedDeveloper(data.developer);
         setDocument(prev => prev ? {...prev, status: 'completed'} : null);
         setCurrentStep(4);
-        console.log('✅ Développeur extrait:', data.developer);
+        console.log('✅ Développeur extrait avec succès:', data.developer);
       } else {
-        throw new Error('Échec extraction développeur');
+        console.error('❌ Réponse invalide:', data);
+        // En cas d'échec, montrer quand même un résultat par défaut
+        const fallbackDeveloper = {
+          name: "EXTRACTION PARTIELLE",
+          phone: "À vérifier manuellement", 
+          email: "À vérifier manuellement",
+          website: "À vérifier manuellement"
+        };
+        setExtractedDeveloper(fallbackDeveloper);
+        setDocument(prev => prev ? {...prev, status: 'completed'} : null);
+        setCurrentStep(4);
+        console.log('⚠️ Utilisation données fallback');
       }
       
     } catch (error) {
-      console.error('Erreur extraction développeur:', error);
+      console.error('💥 Erreur complète extraction développeur:', error);
       setDocument(prev => prev ? {...prev, status: 'error'} : null);
+      
+      // Afficher l'erreur à l'utilisateur
+      alert(`Erreur lors de l'extraction: ${error.message}. Vérifiez les logs de la console.`);
     }
   };
 

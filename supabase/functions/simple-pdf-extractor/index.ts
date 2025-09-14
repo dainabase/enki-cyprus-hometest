@@ -194,9 +194,12 @@ async function parseWithPDFJS(pdfBuffer: ArrayBuffer): Promise<string> {
   }
 }
 
-// IA pour extraction développeur optimisée
+// IA pour extraction développeur optimisée avec gestion d'erreurs
 async function extractDeveloperWithAI(content: string, apiKey: string) {
   console.log('🤖 Extraction IA développeur...');
+  
+  // Tronquer le contenu pour éviter les erreurs de limite
+  const truncatedContent = content.length > 15000 ? content.substring(0, 15000) + "..." : content;
   
   const prompt = `Tu es le système d'analyse Lovable. Extrais les informations du DÉVELOPPEUR.
 
@@ -219,33 +222,66 @@ FORMAT JSON REQUIS:
 Si pas trouvé, mets "NON TROUVÉ".
 
 CONTENU:
-${content}`;
+${truncatedContent}`;
 
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: 'gpt-4o-mini',
-      messages: [
-        { role: 'system', content: 'Tu es le système Lovable d\'extraction de données. Extrais UNIQUEMENT les infos demandées.' },
-        { role: 'user', content: prompt }
-      ],
-      max_tokens: 500,
-      temperature: 0.1,
-      response_format: { type: 'json_object' }
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`OpenAI API failed: ${response.status}`);
-  }
-
-  const data = await response.json();
-  const result = JSON.parse(data.choices[0].message.content);
+  // Système de retry pour les erreurs 429
+  let retryCount = 0;
+  const maxRetries = 3;
   
-  console.log('🏢 Développeur extrait (Lovable):', result);
-  return result;
+  while (retryCount < maxRetries) {
+    try {
+      console.log(`🔄 Tentative ${retryCount + 1}/${maxRetries}`);
+      
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            { role: 'system', content: 'Tu es le système Lovable d\'extraction de données. Extrais UNIQUEMENT les infos demandées.' },
+            { role: 'user', content: prompt }
+          ],
+          max_tokens: 500,
+          temperature: 0.1,
+          response_format: { type: 'json_object' }
+        }),
+      });
+
+      if (response.status === 429) {
+        retryCount++;
+        const delay = Math.pow(2, retryCount) * 1000; // Backoff exponentiel
+        console.log(`⚠️ Limite API atteinte, retry dans ${delay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        continue;
+      }
+
+      if (!response.ok) {
+        throw new Error(`OpenAI API failed: ${response.status} - ${await response.text()}`);
+      }
+
+      const data = await response.json();
+      const result = JSON.parse(data.choices[0].message.content);
+      
+      console.log('🏢 Développeur extrait (Lovable):', result);
+      return result;
+      
+    } catch (error) {
+      if (retryCount === maxRetries - 1) {
+        console.error('❌ Échec final après retries:', error);
+        // Retourner des valeurs par défaut en cas d'échec total
+        return {
+          name: "EXTRACTION ÉCHOUÉE - Vérifiez manuellement",
+          phone: "NON TROUVÉ",
+          email: "NON TROUVÉ", 
+          website: "NON TROUVÉ"
+        };
+      }
+      retryCount++;
+      console.log(`⚠️ Erreur tentative ${retryCount}, retry...`, error.message);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+  }
 }
