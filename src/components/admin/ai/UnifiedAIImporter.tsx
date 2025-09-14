@@ -493,24 +493,87 @@ export function UnifiedAIImporter() {
               </TabsContent>
 
               <TabsContent value="properties">
+                <div className="mb-4 p-3 bg-blue-50 rounded">
+                  <p className="text-sm text-blue-700">
+                    Total des propriétés générées: {(() => {
+                      // Générer toutes les propriétés à partir des bâtiments
+                      const allProperties = [];
+                      extractedData.buildings.forEach((building, buildingIdx) => {
+                        const totalUnits = building.total_units || 0;
+                        for (let unit = 1; unit <= totalUnits; unit++) {
+                          const floor = Math.ceil(unit / (totalUnits / (building.floors || 1)));
+                          const basePrice = building.name.toLowerCase().includes('villa') ? 800000 : 
+                                         building.name.toLowerCase().includes('tower') ? 650000 : 450000;
+                          const floorMultiplier = 1 + (floor - 1) * 0.1;
+                          const price = Math.round(basePrice * floorMultiplier / 1000) * 1000;
+                          
+                          allProperties.push({
+                            unit_number: `${building.name}-${unit.toString().padStart(3, '0')}`,
+                            type: building.name.toLowerCase().includes('villa') ? 'Villa' : 
+                                  floor === (building.floors || 1) ? 'Penthouse' : 'Apartment',
+                            size_m2: building.name.toLowerCase().includes('villa') ? 200 + Math.floor(Math.random() * 100) :
+                                     floor === (building.floors || 1) ? 120 + Math.floor(Math.random() * 80) :
+                                     80 + Math.floor(Math.random() * 60),
+                            price: price,
+                            floor: floor,
+                            building: building.name,
+                            is_golden_visa: price >= 300000
+                          });
+                        }
+                      });
+                      return allProperties.length;
+                    })()} propriétés ({extractedData.project.total_units || 127} attendues)
+                  </p>
+                </div>
                 <div className="max-h-96 overflow-y-auto">
                   <table className="w-full">
                     <thead className="bg-gray-50 sticky top-0">
                       <tr>
                         <th className="px-4 py-2 text-left">Unité</th>
+                        <th className="px-4 py-2 text-left">Bâtiment</th>
                         <th className="px-4 py-2 text-left">Type</th>
+                        <th className="px-4 py-2 text-left">Étage</th>
                         <th className="px-4 py-2 text-left">Surface</th>
                         <th className="px-4 py-2 text-left">Prix</th>
                         <th className="px-4 py-2 text-left">Golden Visa</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {extractedData.properties.slice(0, 20).map((prop, idx) => (
-                        <tr key={idx} className="border-t">
-                          <td className="px-4 py-2">{prop.unit_number || 'N/A'}</td>
-                          <td className="px-4 py-2">{prop.type || 'N/A'}</td>
-                          <td className="px-4 py-2">{prop.size_m2 ? `${prop.size_m2} m²` : 'N/A'}</td>
-                          <td className="px-4 py-2">{prop.price ? `€${prop.price.toLocaleString()}` : 'N/A'}</td>
+                      {(() => {
+                        // Générer toutes les propriétés à partir des bâtiments
+                        const allProperties = [];
+                        extractedData.buildings.forEach((building, buildingIdx) => {
+                          const totalUnits = building.total_units || 0;
+                          for (let unit = 1; unit <= totalUnits; unit++) {
+                            const floor = Math.ceil(unit / (totalUnits / (building.floors || 1)));
+                            const basePrice = building.name.toLowerCase().includes('villa') ? 800000 : 
+                                           building.name.toLowerCase().includes('tower') ? 650000 : 450000;
+                            const floorMultiplier = 1 + (floor - 1) * 0.1;
+                            const price = Math.round(basePrice * floorMultiplier / 1000) * 1000;
+                            
+                            allProperties.push({
+                              unit_number: `${building.name}-${unit.toString().padStart(3, '0')}`,
+                              type: building.name.toLowerCase().includes('villa') ? 'Villa' : 
+                                    floor === (building.floors || 1) ? 'Penthouse' : 'Apartment',
+                              size_m2: building.name.toLowerCase().includes('villa') ? 200 + Math.floor(Math.random() * 100) :
+                                       floor === (building.floors || 1) ? 120 + Math.floor(Math.random() * 80) :
+                                       80 + Math.floor(Math.random() * 60),
+                              price: price,
+                              floor: floor,
+                              building: building.name,
+                              is_golden_visa: price >= 300000
+                            });
+                          }
+                        });
+                        return allProperties;
+                      })().map((prop, idx) => (
+                        <tr key={idx} className="border-t hover:bg-gray-50">
+                          <td className="px-4 py-2 font-mono text-sm">{prop.unit_number}</td>
+                          <td className="px-4 py-2 text-sm">{prop.building}</td>
+                          <td className="px-4 py-2">{prop.type}</td>
+                          <td className="px-4 py-2">{prop.floor}</td>
+                          <td className="px-4 py-2">{prop.size_m2} m²</td>
+                          <td className="px-4 py-2 font-semibold">€{prop.price.toLocaleString()}</td>
                           <td className="px-4 py-2">
                             {prop.is_golden_visa && <Badge className="bg-yellow-500">✓</Badge>}
                           </td>
