@@ -110,7 +110,12 @@ async function advancedPDFExtraction(fileUrl: string, supabaseKey: string): Prom
     
     // Method 2: Direct PDF processing with multiple extraction techniques
     console.log('📄 Method 2: Direct PDF Processing');
-    const response = await fetch(fileUrl);
+    const response = await fetch(fileUrl, {
+      headers: {
+        'Authorization': `Bearer ${supabaseKey}`,
+        'User-Agent': 'Supabase-Edge-Function/1.0'
+      }
+    });
     
     if (!response.ok) {
       throw new Error(`Failed to download PDF: ${response.status}`);
@@ -227,34 +232,6 @@ async function extractPDFWithMultipleMethods(pdfData: Uint8Array): Promise<strin
     console.error('❌ Method B failed:', error);
   }
   
-  // Method C: Complete text reconstruction
-  try {
-    console.log('🔧 Method C: Complete Text Reconstruction');
-    
-    // Extract all readable text fragments
-    const textFragments = rawContent.match(/[A-Za-z0-9À-ÿ\s€.,;:!?()%-]+/g) || [];
-    let reconstructedText = textFragments
-      .filter(fragment => fragment.length > 3)
-      .filter(fragment => /[a-zA-Z]/.test(fragment))
-      .join(' ');
-    
-    // Clean and normalize
-    reconstructedText = reconstructedText
-      .replace(/\s+/g, ' ')
-      .replace(/([.!?])\s*([A-Z])/g, '$1 $2')
-      .trim();
-    
-    const score = scoreExtraction(reconstructedText);
-    console.log(`📊 Method C Score: ${score}, Length: ${reconstructedText.length}`);
-    
-    if (score > bestScore) {
-      bestExtraction = reconstructedText;
-      bestScore = score;
-    }
-  } catch (error) {
-    console.error('❌ Method C failed:', error);
-  }
-  
   console.log(`🏆 Best extraction method score: ${bestScore}`);
   console.log(`📝 Best extraction preview: "${bestExtraction.substring(0, 200)}..."`);
   
@@ -328,17 +305,6 @@ PATTERNS À CHERCHER ABSOLUMENT :
 - Projet : "Project:", titre en gras, nom répété, "Development"
 - Total : "units", "apartments", "villas", "total", "properties"
 
-Si tu trouves 127 propriétés, le projet doit avoir un nom et un développeur quelque part !
-
-CHERCHE DANS CES SECTIONS :
-- Page de couverture/titre
-- Headers et footers
-- Signatures et contacts
-- Disclaimers légaux
-- Plans avec annotations
-- Formulaires de contact
-- Brochures marketing
-
 FORMAT JSON (OBLIGATOIRE) :
 {
   "confidence": 0.98,
@@ -348,10 +314,7 @@ FORMAT JSON (OBLIGATOIRE) :
     "phone_numbers": ["TOUS les téléphones trouvés"],
     "addresses": ["adresses physiques complètes"],
     "website": "site web exact si trouvé",
-    "contact_info": {
-      "license_number": "numéro de licence si trouvé",
-      "registration_number": "numéro d'enregistrement si trouvé"
-    }
+    "contact_info": {}
   },
   "project": {
     "title": "NOM EXACT DU PROJET",
@@ -367,14 +330,29 @@ FORMAT JSON (OBLIGATOIRE) :
     "completion_date_new": "date si trouvée (YYYY-MM-DD)"
   },
   "buildings": [
-    // Garde les 10 bâtiments déjà détectés
+    {
+      "name": "nom du bâtiment",
+      "building_type": "residential",
+      "total_floors": 3,
+      "total_units": 15,
+      "construction_status": "completed"
+    }
   ],
   "properties": [
-    // Garde les 127 propriétés déjà détectées
+    {
+      "unit_number": "A101",
+      "building_name": "nom du bâtiment",
+      "type": "apartment",
+      "floor": 1,
+      "bedrooms": 2,
+      "bathrooms": 2,
+      "size_m2": 85,
+      "price": 320000,
+      "status": "available",
+      "features": ["balcony", "sea view"]
+    }
   ]
 }
-
-IMPORTANT : Tu as déjà détecté 10 bâtiments et 127 propriétés. Concentre-toi maintenant sur les DONNÉES MANQUANTES : développeur, projet, contacts !
 
 DOCUMENT À ANALYSER POUR EXTRACTION COMPLÈTE :
 ${content}`;
@@ -396,7 +374,7 @@ ${content}`;
           { role: 'user', content: prompt }
         ],
         max_tokens: 4000,
-        temperature: 0.05, // Température très basse pour plus de précision
+        temperature: 0.05,
         response_format: { type: 'json_object' }
       }),
     });
@@ -418,167 +396,6 @@ ${content}`;
       project_title: result.project?.title || 'MANQUANT',
       project_location: result.project?.full_address || result.project?.city || 'MANQUANT',
       total_units: result.project?.total_units_new || 'MANQUANT',
-      buildings: result.buildings?.length || 0,
-      properties: result.properties?.length || 0
-    });
-    
-    return result;
-    
-  } catch (error) {
-    console.error('❌ AI Extraction Error:', error);
-    throw error;
-  }
-}
-  console.log('🤖 Starting intelligent real estate extraction...');
-  
-  const prompt = `Tu es un expert en analyse de documents immobiliers chypriotes. Tu dois extraire TOUTES les informations possibles du document fourni.
-
-INSTRUCTIONS CRITIQUES:
-- Extrais CHAQUE détail mentionné dans le document
-- Ne laisse AUCUNE information derrière
-- Si tu trouves plusieurs projets, bâtiments ou propriétés, extrais-les TOUS
-- Reconstitue intelligemment les informations même si elles sont fragmentées
-- Utilise ton expertise pour interpréter les abréviations et termes techniques
-
-INFORMATIONS À EXTRAIRE (TOUT ce qui existe):
-
-DÉVELOPPEUR:
-- Nom complet de la société
-- Tous les numéros de téléphone trouvés
-- Toutes les adresses emails
-- Site web
-- Adresses physiques
-- Numéros d'enregistrement, licences
-- Historique, expérience
-
-PROJET(S):
-- Nom(s) du/des projet(s)
-- Description(s) complète(s)
-- Localisation(s) exacte(s) (ville, quartier, adresse)
-- Zone de Chypre (Limassol, Paphos, Larnaca, Nicosia)
-- Coordonnées GPS si mentionnées
-- Prix (de/à, par m², total)
-- Nombre total d'unités
-- Statut du projet (planifié, en construction, terminé)
-- Date de livraison/achèvement
-- Types de propriétés disponibles
-- Caractéristiques du projet
-- Équipements/services
-- TVA, frais, conditions de paiement
-
-BÂTIMENT(S):
-- Nom(s) du/des bâtiment(s)
-- Type(s) de bâtiment(s)
-- Nombre d'étages
-- Nombre d'unités par bâtiment
-- Statut de construction
-
-PROPRIÉTÉ(S) - EXTRAIS CHAQUE UNITÉ MENTIONNÉE:
-- Numéro d'unité/appartement
-- Bâtiment de rattachement  
-- Type (appartement, villa, penthouse, studio)
-- Étage
-- Nombre de chambres
-- Nombre de salles de bain
-- Surface en m²
-- Prix exact
-- Statut (disponible, vendu, réservé)
-- Caractéristiques spécifiques
-- Vue, orientation, balcon, terrasse
-- Parking, débarras inclus
-
-FORMAT DE RÉPONSE (JSON STRICT):
-{
-  "confidence": 0.95,
-  "developer": {
-    "name": "nom exact trouvé",
-    "email_primary": "email principal",
-    "phone_numbers": ["tous les téléphones trouvés"],
-    "addresses": ["toutes les adresses trouvées"],
-    "website": "site web si mentionné",
-    "contact_info": {}
-  },
-  "project": {
-    "title": "nom exact du projet",
-    "description": "description complète extraite",
-    "city": "ville exacte",
-    "full_address": "adresse complète si disponible",
-    "cyprus_zone": "limassol|paphos|larnaca|nicosia",
-    "gps_latitude": null,
-    "gps_longitude": null,
-    "price": "prix de départ en nombre",
-    "total_units_new": "nombre total d'unités",
-    "status": "statut exact trouvé",
-    "property_types": ["tous les types trouvés"],
-    "features": ["toutes les caractéristiques"],
-    "amenities": ["tous les équipements"],
-    "completion_date_new": "date au format YYYY-MM-DD si trouvée"
-  },
-  "buildings": [
-    {
-      "name": "nom du bâtiment",
-      "building_type": "type",
-      "total_floors": nombre,
-      "total_units": nombre,
-      "construction_status": "statut"
-    }
-  ],
-  "properties": [
-    {
-      "unit_number": "numéro exact",
-      "building_name": "nom du bâtiment",
-      "type": "type exact",
-      "floor": nombre,
-      "bedrooms": nombre,
-      "bathrooms": nombre,
-      "size_m2": nombre,
-      "price": nombre,
-      "status": "statut",
-      "features": ["caractéristiques"]
-    }
-  ]
-}
-
-DOCUMENT À ANALYSER:
-${content}
-
-IMPORTANT: Extrais TOUT ce qui existe dans le document. Plus tu extrais d'informations, mieux c'est !`;
-
-  try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { 
-            role: 'system', 
-            content: 'Tu es un expert en extraction de données immobilières. Tu extrais TOUTES les informations possibles des documents. JAMAIS d\'exemples ou de données fictives.' 
-          },
-          { role: 'user', content: prompt }
-        ],
-        max_tokens: 4000,
-        temperature: 0.1,
-        response_format: { type: 'json_object' }
-      }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`OpenAI API failed: ${response.status} - ${errorText}`);
-      throw new Error(`OpenAI API failed: ${response.status}`);
-    }
-
-    const data = await response.json();
-    const result = JSON.parse(data.choices[0].message.content);
-    
-    console.log('🎯 AI Extraction completed');
-    console.log('📊 Extracted data preview:', {
-      developer: result.developer?.name || 'N/A',
-      project: result.project?.title || 'N/A',
       buildings: result.buildings?.length || 0,
       properties: result.properties?.length || 0
     });
@@ -633,7 +450,7 @@ function calculateComprehensiveStatistics(data: any) {
       min: properties.length > 0 ? Math.min(...properties.map((p: any) => p.price || 0)) : 0,
       max: properties.length > 0 ? Math.max(...properties.map((p: any) => p.price || 0)) : 0
     },
-    types_distribution: {},
+    types_distribution: {} as Record<string, number>,
     availability: {
       available: properties.filter((p: any) => p.status === 'available').length,
       reserved: properties.filter((p: any) => p.status === 'reserved').length,
