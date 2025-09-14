@@ -42,11 +42,12 @@ serve(async (req) => {
         try {
           console.log(`📄 Processing: ${url}`);
           
-          // Download the file with proper headers
+          // Download the file with proper headers and auth
           const response = await fetch(url, {
             headers: {
               'User-Agent': 'Supabase-Edge-Function/1.0',
-              'Accept': '*/*'
+              'Accept': '*/*',
+              'Authorization': `Bearer ${supabaseKey}`
             }
           });
           if (!response.ok) {
