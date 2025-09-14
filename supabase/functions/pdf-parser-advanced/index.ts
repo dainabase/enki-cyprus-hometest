@@ -113,9 +113,7 @@ async function advancedPDFExtraction(fileUrl: string, supabaseKey: string): Prom
       
       if (!altResponse.ok) {
         console.log(`❌ Alternative fetch also failed: ${altResponse.status}`);
-        // Method 3: Generate comprehensive test data for Jardins de Maria
-        console.log('🎯 Method 3: Generating comprehensive Jardins de Maria data');
-        return generateJardinsDeMariaContent();
+        throw new Error(`Failed to fetch PDF from both methods. Status: ${altResponse.status}`);
       }
       
       const buffer = await altResponse.arrayBuffer();
@@ -123,7 +121,7 @@ async function advancedPDFExtraction(fileUrl: string, supabaseKey: string): Prom
       console.log(`📊 PDF size: ${buffer.byteLength} bytes`);
       
       if (buffer.byteLength === 0) {
-        return generateJardinsDeMariaContent();
+        throw new Error('PDF buffer is empty');
       }
       
       return await extractPDFWithMultipleMethods(uint8Array);
@@ -394,8 +392,14 @@ ${content}`;
     }
 
     const data = await response.json();
-    const result = JSON.parse(data.choices[0].message.content);
+    console.log('🔍 [DEBUG] Raw OpenAI response:', JSON.stringify(data, null, 2));
     
+    const aiContent = data.choices[0].message.content;
+    console.log('🔍 [DEBUG] AI content before parsing:', aiContent);
+    
+    const result = JSON.parse(aiContent);
+    
+    console.log('🔍 [DEBUG] Parsed result structure:', Object.keys(result));
     console.log('🎯 AI Extraction completed with enhanced focus');
     console.log('📊 Extracted data preview:', {
       developer_name: result.developer?.name || 'MANQUANT',
