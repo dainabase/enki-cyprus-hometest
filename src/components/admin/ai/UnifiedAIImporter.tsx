@@ -319,7 +319,6 @@ export function UnifiedAIImporter() {
     setProgress(100);
     setProgressMessage('Import terminé avec succès !');
   };
-  };
 
   const uploadFiles = async (files: File[]): Promise<string[]> => {
     const urls: string[] = [];
