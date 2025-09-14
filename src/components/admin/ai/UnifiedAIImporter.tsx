@@ -119,10 +119,23 @@ export function UnifiedAIImporter() {
       console.log('🏠 Properties count:', data?.properties?.length || 0);
       console.log('🏢 Buildings count:', data?.buildings?.length || 0);
       
-      if (!data || !data.properties || data.properties.length === 0) {
-        console.error('❌ No properties extracted!');
+      // Vérifier s'il y a une erreur d'extraction critique
+      if ((data as any)?.error === 'INSUFFICIENT_CONTENT_EXTRACTED') {
+        console.error('❌ Insufficient content extracted');
+        console.error('Debug info:', (data as any).debug);
+        throw new Error(`Échec d'extraction du PDF. Détails: ${(data as any).debug?.documents?.[0]?.contentLength || 0} caractères extraits. Le PDF pourrait être protégé ou corrompu.`);
+      }
+      
+      if (!data || (!data.properties && !data.project && !data.developer)) {
+        console.error('❌ No data extracted at all!');
         console.error('Full result object:', JSON.stringify(data, null, 2));
-        throw new Error('Aucune propriété extraite du document. Vérifiez le format du PDF.');
+        throw new Error('Aucune donnée extraite du document. Vérifiez le format du PDF ou réessayez avec un autre fichier.');
+      }
+      
+      // Accepter l'extraction même si properties est vide mais qu'on a d'autres données
+      if (!data.properties || data.properties.length === 0) {
+        console.warn('⚠️ No properties extracted, but continuing with other data');
+        data.properties = []; // Assurer que properties existe comme array vide
       }
       
       // Phase 4: Enrichissement
