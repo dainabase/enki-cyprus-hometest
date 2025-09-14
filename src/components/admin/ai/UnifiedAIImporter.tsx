@@ -119,7 +119,7 @@ export function UnifiedAIImporter() {
             {currentStep === 2 && (
               <div>
                 <h3 className="text-lg font-semibold text-blue-600 mb-4">
-                  ÉTAPE 2 : Test de la structure de base
+                  ÉTAPE 2 : Structure de base ✅ Prête
                 </h3>
                 
                 {!document ? (
@@ -134,7 +134,7 @@ export function UnifiedAIImporter() {
                     <input {...getInputProps()} />
                     <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
                     <p className="text-lg font-medium">
-                      Déposer un PDF pour tester la nouvelle structure
+                      Déposer un PDF pour commencer l'extraction développeur
                     </p>
                     <p className="text-sm text-gray-500 mt-2">
                       Glissez-déposez un fichier PDF ou cliquez pour sélectionner
@@ -145,7 +145,7 @@ export function UnifiedAIImporter() {
                     <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                       <span className="font-medium">{document.file.name}</span>
                       <Button onClick={() => setCurrentStep(3)} className="bg-green-600 hover:bg-green-700">
-                        ✅ Passer à l'ÉTAPE 3
+                        ✅ Passer à l'ÉTAPE 3 : Extraction développeur
                       </Button>
                     </div>
                   </div>
