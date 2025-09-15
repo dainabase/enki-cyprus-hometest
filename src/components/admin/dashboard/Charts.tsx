@@ -96,53 +96,213 @@ interface ModernPerformanceChartProps {
   data: PerformanceData[];
 }
 
+interface PerformanceData {
+  month: string;
+  sales: number;
+  revenue: number;
+  leads: number;
+}
+
+interface ModernPerformanceChartProps {
+  data: PerformanceData[];
+}
+
 export const ModernPerformanceChart = ({ data }: ModernPerformanceChartProps) => {
-  const maxSales = Math.max(...data.map(d => d.sales));
-  const maxRevenue = Math.max(...data.map(d => d.revenue));
+  // Prendre les 6 derniers mois pour l'affichage
+  const recentData = data.slice(-6);
+  
+  // Calculer les totaux pour les graphiques circulaires
+  const totalSales = recentData.reduce((sum, month) => sum + month.sales, 0);
+  const totalRevenue = recentData.reduce((sum, month) => sum + month.revenue, 0);
+  const totalLeads = recentData.reduce((sum, month) => sum + month.leads, 0);
+  
+  // Meilleur mois pour chaque métrique
+  const bestSalesMonth = recentData.reduce((prev, current) => 
+    current.sales > prev.sales ? current : prev, recentData[0]
+  );
+  const bestRevenueMonth = recentData.reduce((prev, current) => 
+    current.revenue > prev.revenue ? current : prev, recentData[0]
+  );
 
   return (
     <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-100">
       <div className="space-y-8">
         <div>
           <h3 className="text-xl font-semibold text-slate-900 mb-2">Performance Mensuelle</h3>
-          <p className="text-sm text-slate-500">Évolution des ventes et revenus</p>
+          <p className="text-sm text-slate-500">Évolution des 6 derniers mois</p>
         </div>
         
+        {/* Résumé avec graphiques circulaires */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Total Ventes */}
+          <div className="text-center space-y-4">
+            <div className="relative w-32 h-32 mx-auto">
+              <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 42 42">
+                <circle
+                  cx="21"
+                  cy="21"
+                  r="15.91549430918954"
+                  fill="transparent"
+                  stroke="#f1f5f9"
+                  strokeWidth="2"
+                />
+                <circle
+                  cx="21"
+                  cy="21"
+                  r="15.91549430918954"
+                  fill="transparent"
+                  stroke="#3B82F6"
+                  strokeWidth="2"
+                  strokeDasharray={`${(totalSales / 200) * 100} ${100 - (totalSales / 200) * 100}`}
+                  strokeDashoffset="25"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-2xl font-bold text-slate-900">{totalSales}</span>
+                <span className="text-xs text-slate-500">ventes</span>
+              </div>
+            </div>
+            <div>
+              <p className="font-medium text-slate-700">Total Ventes</p>
+              <p className="text-sm text-slate-500">6 derniers mois</p>
+              <p className="text-xs text-blue-600 mt-2">
+                Meilleur: {bestSalesMonth.month} ({bestSalesMonth.sales})
+              </p>
+            </div>
+          </div>
+
+          {/* Total Revenue */}
+          <div className="text-center space-y-4">
+            <div className="relative w-32 h-32 mx-auto">
+              <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 42 42">
+                <circle
+                  cx="21"
+                  cy="21"
+                  r="15.91549430918954"
+                  fill="transparent"
+                  stroke="#f1f5f9"
+                  strokeWidth="2"
+                />
+                <circle
+                  cx="21"
+                  cy="21"
+                  r="15.91549430918954"
+                  fill="transparent"
+                  stroke="#10B981"
+                  strokeWidth="2"
+                  strokeDasharray={`${(totalRevenue / 30000000) * 100} ${100 - (totalRevenue / 30000000) * 100}`}
+                  strokeDashoffset="25"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-lg font-bold text-slate-900">
+                  €{(totalRevenue / 1000000).toFixed(1)}M
+                </span>
+                <span className="text-xs text-slate-500">revenue</span>
+              </div>
+            </div>
+            <div>
+              <p className="font-medium text-slate-700">Total Revenue</p>
+              <p className="text-sm text-slate-500">6 derniers mois</p>
+              <p className="text-xs text-green-600 mt-2">
+                Meilleur: {bestRevenueMonth.month} (€{(bestRevenueMonth.revenue / 1000).toFixed(0)}k)
+              </p>
+            </div>
+          </div>
+
+          {/* Total Leads */}
+          <div className="text-center space-y-4">
+            <div className="relative w-32 h-32 mx-auto">
+              <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 42 42">
+                <circle
+                  cx="21"
+                  cy="21"
+                  r="15.91549430918954"
+                  fill="transparent"
+                  stroke="#f1f5f9"
+                  strokeWidth="2"
+                />
+                <circle
+                  cx="21"
+                  cy="21"
+                  r="15.91549430918954"
+                  fill="transparent"
+                  stroke="#8B5CF6"
+                  strokeWidth="2"
+                  strokeDasharray={`${(totalLeads / 500) * 100} ${100 - (totalLeads / 500) * 100}`}
+                  strokeDashoffset="25"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-2xl font-bold text-slate-900">{totalLeads}</span>
+                <span className="text-xs text-slate-500">leads</span>
+              </div>
+            </div>
+            <div>
+              <p className="font-medium text-slate-700">Total Leads</p>
+              <p className="text-sm text-slate-500">6 derniers mois</p>
+              <p className="text-xs text-purple-600 mt-2">
+                Moyenne: {Math.round(totalLeads / 6)}/mois
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Timeline mensuelle */}
         <div className="space-y-6">
-          {data.slice(-4).map((month, index) => (
-            <div key={month.month} className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h4 className="font-medium text-slate-700">{month.month}</h4>
-                <div className="flex items-center gap-6 text-sm">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                    <span className="text-slate-600">Ventes: {month.sales}</span>
+          <h4 className="text-lg font-medium text-slate-900">Timeline Mensuelle</h4>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {recentData.map((month, index) => (
+              <div key={month.month} className="bg-slate-50 rounded-xl p-6 hover:bg-slate-100 transition-colors">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h5 className="font-semibold text-slate-900">{month.month}</h5>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                      <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                      <div className="w-2 h-2 rounded-full bg-purple-500"></div>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                    <span className="text-slate-600">€{(month.revenue / 1000).toFixed(0)}k</span>
+                  
+                  <div className="grid grid-cols-3 gap-4 text-center">
+                    <div>
+                      <p className="text-2xl font-bold text-blue-600">{month.sales}</p>
+                      <p className="text-xs text-slate-500">Ventes</p>
+                    </div>
+                    <div>
+                      <p className="text-lg font-bold text-green-600">
+                        €{(month.revenue / 1000).toFixed(0)}k
+                      </p>
+                      <p className="text-xs text-slate-500">Revenue</p>
+                    </div>
+                    <div>
+                      <p className="text-xl font-bold text-purple-600">{month.leads}</p>
+                      <p className="text-xs text-slate-500">Leads</p>
+                    </div>
                   </div>
                 </div>
               </div>
-              
-              <div className="relative h-12 bg-slate-50 rounded-lg overflow-hidden">
-                <div 
-                  className="absolute left-0 top-0 h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg"
-                  style={{ 
-                    width: `${maxSales > 0 ? (month.sales / maxSales) * 100 : 0}%`,
-                    maxWidth: '60%'
-                  }}
-                />
-                <div 
-                  className="absolute right-0 top-0 h-full bg-gradient-to-l from-green-500 to-green-600 rounded-lg"
-                  style={{ 
-                    width: `${maxRevenue > 0 ? (month.revenue / maxRevenue) * 100 : 0}%`,
-                    maxWidth: '60%'
-                  }}
-                />
-              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Note sur la phase de test */}
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+          <div className="flex items-start gap-3">
+            <div className="w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <span className="text-white text-xs font-bold">!</span>
             </div>
-          ))}
+            <div>
+              <p className="text-sm font-medium text-amber-800">Phase de test en cours</p>
+              <p className="text-xs text-amber-700 mt-1">
+                Les données affichées sont des exemples. Les vraies métriques commenceront lors du lancement officiel de la plateforme.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
