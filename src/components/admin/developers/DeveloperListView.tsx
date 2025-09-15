@@ -1,4 +1,4 @@
-import { Eye, Edit, Trash2, Building, Mail, Phone } from 'lucide-react';
+import { Eye, Edit, Trash2, Building, Mail, Phone, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
@@ -79,40 +79,40 @@ export const DeveloperListView = ({
                   {dev.main_city && (
                     <div className="flex items-center space-x-2">
                       <div className="w-6 h-6 bg-slate-100 rounded-lg flex items-center justify-center">
-                        <Building className="h-3 w-3 text-slate-600" />
+                        <Building className="h-3 w-3 text-slate-700" />
                       </div>
-                      <span className="font-medium">{dev.main_city}</span>
+                      <span className="font-medium text-slate-700">{dev.main_city}</span>
                     </div>
                   )}
                   
                   {dev.contact_info?.email && (
                     <div className="flex items-center space-x-2">
-                      <div className="w-6 h-6 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <Mail className="h-3 w-3 text-blue-600" />
+                      <div className="w-6 h-6 bg-slate-100 rounded-lg flex items-center justify-center">
+                        <Mail className="h-3 w-3 text-slate-700" />
                       </div>
-                      <span className="font-medium truncate max-w-64">{dev.contact_info.email}</span>
+                      <span className="font-medium text-slate-700 truncate max-w-64">{dev.contact_info.email}</span>
                     </div>
                   )}
                   
                   {dev.contact_info?.phone && (
                     <div className="flex items-center space-x-2">
-                      <div className="w-6 h-6 bg-green-100 rounded-lg flex items-center justify-center">
-                        <Phone className="h-3 w-3 text-green-600" />
+                      <div className="w-6 h-6 bg-slate-100 rounded-lg flex items-center justify-center">
+                        <Phone className="h-3 w-3 text-slate-700" />
                       </div>
-                      <span className="font-medium">{dev.contact_info.phone}</span>
+                      <span className="font-medium text-slate-700">{dev.contact_info.phone}</span>
                     </div>
                   )}
                   
                   {dev.website && (
                     <div className="flex items-center space-x-2">
-                      <div className="w-6 h-6 bg-purple-100 rounded-lg flex items-center justify-center">
-                        <Building className="h-3 w-3 text-purple-600" />
+                      <div className="w-6 h-6 bg-slate-100 rounded-lg flex items-center justify-center">
+                        <Globe className="h-3 w-3 text-slate-700" />
                       </div>
                       <a 
                         href={dev.website.startsWith('http') ? dev.website : `https://${dev.website}`}
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="text-purple-600 hover:text-purple-800 font-medium truncate max-w-40 transition-colors"
+                        className="text-slate-700 hover:text-slate-900 font-medium truncate max-w-40 transition-colors"
                       >
                         {dev.website}
                       </a>

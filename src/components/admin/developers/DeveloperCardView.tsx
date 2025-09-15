@@ -1,4 +1,4 @@
-import { Eye, Edit, Trash2 } from 'lucide-react';
+import { Eye, Edit, Trash2, Mail, Phone, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
@@ -112,24 +112,24 @@ export const DeveloperCardView = ({
                   <div className="space-y-3 text-sm">
                     {dev.contact_info?.email && (
                       <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 transition-colors">
-                        <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                          <span className="text-blue-600">📧</span>
+                        <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center">
+                          <Mail className="h-4 w-4 text-slate-700" />
                         </div>
                         <span className="text-slate-700 font-medium truncate">{dev.contact_info.email}</span>
                       </div>
                     )}
                     {dev.contact_info?.phone && (
                       <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 transition-colors">
-                        <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                          <span className="text-green-600">📞</span>
+                        <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center">
+                          <Phone className="h-4 w-4 text-slate-700" />
                         </div>
                         <span className="text-slate-700 font-medium">{dev.contact_info.phone}</span>
                       </div>
                     )}
                     {dev.website && (
                       <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 transition-colors">
-                        <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                          <span className="text-purple-600">🌐</span>
+                        <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center">
+                          <Globe className="h-4 w-4 text-slate-700" />
                         </div>
                         <a 
                           href={dev.website.startsWith('http') ? dev.website : `https://${dev.website}`}
