@@ -181,12 +181,6 @@ export const AdminSidebarExecutive: React.FC = () => {
         {renderCategory('administration', navigation.administration)}
       </nav>
 
-      {/* Footer */}
-      <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200">
-        <div className="text-xs text-slate-400 text-center">
-          © 2025 ENKI-Realty. Tous droits réservés.
-        </div>
-      </div>
     </div>
   );
 };

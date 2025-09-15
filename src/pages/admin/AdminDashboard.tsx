@@ -69,7 +69,6 @@ export const AdminDashboard = () => {
         variant="executive"
         header={<AdminHeader />}
         sidebar={<AdminSidebarExecutive />}
-        footer={<AdminFooter />}
       >
         <Routes>
           <Route path="" element={<AdminOverview />} />
