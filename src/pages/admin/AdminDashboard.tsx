@@ -27,10 +27,10 @@ import { Card } from '@/components/dainabase-ui';
 import { AlertCircle } from 'lucide-react';
 
 const AdminHeader = () => (
-  <div className="h-16 px-6 flex items-center justify-between bg-slate-900 text-white">
-    <h1 className="text-xl font-semibold">Enki Realty - Admin Dashboard</h1>
+  <div className="h-16 px-6 flex items-center justify-between bg-white border-b border-slate-200">
+    <h1 className="text-lg font-semibold text-slate-900">NK REALTY - Cyprus Properties</h1>
     <div className="flex items-center gap-4">
-      <span className="text-sm text-slate-300">Cyprus Real Estate Platform</span>
+      <span className="text-sm text-slate-500">Admin Dashboard</span>
     </div>
   </div>
 );

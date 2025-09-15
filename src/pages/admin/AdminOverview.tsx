@@ -145,8 +145,8 @@ export const AdminOverview = () => {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           <div className="bg-white rounded-xl p-4 border border-slate-100">
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-yellow-50 rounded-lg">
-                <Award className="w-4 h-4 text-yellow-600" />
+              <div className="p-2 bg-slate-50 rounded-lg">
+                <Award className="w-4 h-4 text-slate-600" />
               </div>
             </div>
             <p className="text-2xl font-bold text-slate-900">{formatNumber(metrics.goldenVisaProperties)}</p>
@@ -155,8 +155,8 @@ export const AdminOverview = () => {
 
           <div className="bg-white rounded-xl p-4 border border-slate-100">
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-green-50 rounded-lg">
-                <Home className="w-4 h-4 text-green-600" />
+              <div className="p-2 bg-slate-50 rounded-lg">
+                <Home className="w-4 h-4 text-slate-600" />
               </div>
             </div>
             <p className="text-2xl font-bold text-slate-900">{formatNumber(metrics.availableProperties)}</p>
@@ -165,8 +165,8 @@ export const AdminOverview = () => {
 
           <div className="bg-white rounded-xl p-4 border border-slate-100">
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-purple-50 rounded-lg">
-                <CheckCircle className="w-4 h-4 text-purple-600" />
+              <div className="p-2 bg-slate-50 rounded-lg">
+                <CheckCircle className="w-4 h-4 text-slate-600" />
               </div>
             </div>
             <p className="text-2xl font-bold text-slate-900">{formatNumber(metrics.soldProperties)}</p>
@@ -175,8 +175,8 @@ export const AdminOverview = () => {
 
           <div className="bg-white rounded-xl p-4 border border-slate-100">
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-blue-50 rounded-lg">
-                <BarChart3 className="w-4 h-4 text-blue-600" />
+              <div className="p-2 bg-slate-50 rounded-lg">
+                <BarChart3 className="w-4 h-4 text-slate-600" />
               </div>
             </div>
             <p className="text-2xl font-bold text-slate-900">{formatCurrency(metrics.averagePricePerSqm)}</p>
@@ -185,8 +185,8 @@ export const AdminOverview = () => {
 
           <div className="bg-white rounded-xl p-4 border border-slate-100">
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-orange-50 rounded-lg">
-                <Clock className="w-4 h-4 text-orange-600" />
+              <div className="p-2 bg-slate-50 rounded-lg">
+                <Clock className="w-4 h-4 text-slate-600" />
               </div>
             </div>
             <p className="text-2xl font-bold text-slate-900">{Math.round(metrics.averageDaysOnMarket)}</p>
@@ -195,8 +195,8 @@ export const AdminOverview = () => {
 
           <div className="bg-white rounded-xl p-4 border border-slate-100">
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-indigo-50 rounded-lg">
-                <Calendar className="w-4 h-4 text-indigo-600" />
+              <div className="p-2 bg-slate-50 rounded-lg">
+                <Calendar className="w-4 h-4 text-slate-600" />
               </div>
             </div>
             <p className="text-2xl font-bold text-slate-900">{formatNumber(metrics.propertiesSoldThisMonth)}</p>
