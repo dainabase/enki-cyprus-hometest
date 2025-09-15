@@ -9,7 +9,7 @@ import { ProjectFormSteps } from '@/components/admin/projects/ProjectFormSteps';
 import { projectFormSteps } from '@/schemas/projectSchema';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, ArrowRight, Save, Eye } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Save, Eye, ChevronLeft } from 'lucide-react';
 
 export const AdminProjectForm: React.FC = () => {
   const navigate = useNavigate();
@@ -148,12 +148,24 @@ export const AdminProjectForm: React.FC = () => {
         <div className="px-8 py-6">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
-              <h1 className="text-3xl font-bold text-slate-900">
-                {isEditing ? 'Modifier le Projet' : 'Nouveau Projet'}
-              </h1>
-              <p className="text-slate-600">
-                {isEditing ? 'Modifiez les informations de votre projet' : 'Créez un nouveau projet immobilier'}
-              </p>
+              <div className="flex items-center gap-4">
+                <Button
+                  variant="outline"
+                  onClick={() => navigate('/admin/projects')}
+                  className="flex items-center gap-2"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  Retour aux projets
+                </Button>
+                <div>
+                  <h1 className="text-3xl font-bold text-slate-900">
+                    {isEditing ? 'Modifier le Projet' : 'Nouveau Projet'}
+                  </h1>
+                  <p className="text-slate-600">
+                    {isEditing ? 'Modifiez les informations de votre projet' : 'Créez un nouveau projet immobilier'}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
