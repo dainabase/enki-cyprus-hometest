@@ -94,7 +94,22 @@ All colors MUST be HSL.
     --sidebar-border: 220 13% 91%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
+}
+
+/* Admin Form Enhancements */
+@layer components {
+  .admin-input {
+    @apply border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm;
   }
+  
+  .admin-card {
+    @apply border-2 border-slate-200 shadow-lg hover:shadow-xl transition-all duration-200;
+  }
+  
+  .admin-button {
+    @apply border-2 shadow-md hover:shadow-lg transition-all duration-200 font-medium;
+  }
+}
 
   .dark {
     /* Dark mode - Cyprus night elegance */

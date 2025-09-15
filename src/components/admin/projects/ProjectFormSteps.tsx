@@ -43,8 +43,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
   const renderBasicsStep = () => (
     <div className="space-y-8">
-      <Card className="border-border/50 shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5">
+      <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
+        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
           <CardTitle className="text-xl font-semibold text-foreground">Informations de base</CardTitle>
           <CardDescription className="text-muted-foreground">Les détails de base de votre projet</CardDescription>
         </CardHeader>
@@ -55,9 +55,9 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nom du projet *</FormLabel>
+                  <FormLabel className="text-sm font-semibold text-slate-700">Nom du projet *</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: Marina Towers" {...field} />
+                    <Input placeholder="Ex: Marina Towers" {...field} className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -69,9 +69,9 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="project_code"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Code du projet</FormLabel>
+                  <FormLabel className="text-sm font-semibold text-slate-700">Code du projet</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: MT-2025-001" {...field} />
+                    <Input placeholder="Ex: MT-2025-001" {...field} className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

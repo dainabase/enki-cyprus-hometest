@@ -159,75 +159,128 @@ export const AdminProjectForm: React.FC = () => {
         </div>
       </div>
 
-      <div className="px-8 py-6">
-        <div className="max-w-6xl mx-auto">
-          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 shadow-lg">
-            <CardContent className="p-8">
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)}>
-                  <ProjectFormSteps 
-                    currentStep={currentStep.id}
-                    projectId={id}
-                    form={form as any}
-                  />
-                  
-                  {/* Navigation Buttons */}
-                  <div className="mt-8 p-6 border rounded-lg bg-slate-50">
-                    <div className="flex justify-between items-center">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={prevStep}
-                        disabled={currentStepIndex === 0}
-                        className="flex items-center gap-2"
-                      >
-                        <ArrowLeft className="h-4 w-4" />
-                        Précédent
-                      </Button>
+      <div className="flex min-h-screen bg-slate-50">
+        {/* Sidebar Navigation des Étapes */}
+        <div className="w-80 bg-white border-r border-slate-200 shadow-sm">
+          <div className="p-6">
+            <h2 className="text-lg font-semibold text-slate-900 mb-4">Étapes du Projet</h2>
+            <nav className="space-y-2">
+              {projectFormSteps.map((step, index) => {
+                const isActive = index === currentStepIndex;
+                const isCompleted = index < currentStepIndex;
+                
+                return (
+                  <button
+                    key={step.id}
+                    type="button"
+                    onClick={() => setCurrentStepIndex(index)}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
+                      isActive
+                        ? 'bg-primary text-primary-foreground shadow-sm'
+                        : isCompleted
+                        ? 'bg-green-50 text-green-700 hover:bg-green-100'
+                        : 'text-slate-600 hover:bg-slate-50'
+                    }`}
+                  >
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
+                      isActive
+                        ? 'bg-white text-primary'
+                        : isCompleted
+                        ? 'bg-green-500 text-white'
+                        : 'bg-slate-200 text-slate-500'
+                    }`}>
+                      {isCompleted ? '✓' : index + 1}
+                    </div>
+                    <span className="font-medium">{step.title}</span>
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1">
+          <div className="px-8 py-6">
+            <div className="max-w-4xl mx-auto">
+              <Card className="bg-white border-2 border-slate-200 shadow-xl">
+                <CardContent className="p-8">
+                  <div className="mb-8">
+                    <h1 className="text-2xl font-bold text-slate-900 mb-2">
+                      {currentStep.title}
+                    </h1>
+                    <p className="text-slate-600">
+                      Étape {currentStepIndex + 1} sur {projectFormSteps.length} - Complétez les informations demandées
+                    </p>
+                  </div>
+
+                  <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                      <div className="bg-slate-50 border-2 border-slate-200 rounded-xl p-6">
+                        <ProjectFormSteps 
+                          currentStep={currentStep.id}
+                          projectId={id}
+                          form={form as any}
+                        />
+                      </div>
                       
-                      <div className="flex items-center gap-3">
-                        {currentStepIndex === projectFormSteps.length - 1 ? (
-                          <>
+                      {/* Navigation Buttons */}
+                      <div className="flex justify-between items-center pt-6 border-t-2 border-slate-200">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={prevStep}
+                          disabled={currentStepIndex === 0}
+                          className="flex items-center gap-2 border-2 border-slate-300 hover:border-slate-400 hover:bg-slate-50"
+                        >
+                          <ArrowLeft className="h-4 w-4" />
+                          Précédent
+                        </Button>
+                        
+                        <div className="flex items-center gap-3">
+                          {currentStepIndex === projectFormSteps.length - 1 ? (
+                            <>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => {
+                                  setSaveType('draft');
+                                  form.handleSubmit(onSubmit)();
+                                }}
+                                disabled={saveProjectMutation.isPending}
+                                className="flex items-center gap-2 border-2 border-orange-300 text-orange-700 hover:bg-orange-50"
+                              >
+                                <Save className="h-4 w-4" />
+                                {saveProjectMutation.isPending && saveType === 'draft' ? 'Sauvegarde...' : 'Sauvegarder en brouillon'}
+                              </Button>
+                              <Button
+                                type="submit"
+                                onClick={() => setSaveType('publish')}
+                                disabled={saveProjectMutation.isPending}
+                                className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white border-2 border-emerald-600 shadow-lg"
+                              >
+                                <Eye className="h-4 w-4" />
+                                {saveProjectMutation.isPending && saveType === 'publish' ? 'Publication...' : 'Publier le projet'}
+                              </Button>
+                            </>
+                          ) : (
                             <Button
                               type="button"
-                              variant="outline"
-                              onClick={() => {
-                                setSaveType('draft');
-                                form.handleSubmit(onSubmit)();
-                              }}
-                              disabled={saveProjectMutation.isPending}
-                              className="flex items-center gap-2"
+                              onClick={nextStep}
+                              className="flex items-center gap-2 bg-primary hover:bg-primary/90 border-2 border-primary shadow-lg"
                             >
-                              <Save className="h-4 w-4" />
-                              {saveProjectMutation.isPending && saveType === 'draft' ? 'Sauvegarde...' : 'Sauvegarder en brouillon'}
+                              Suivant
+                              <ArrowRight className="h-4 w-4" />
                             </Button>
-                            <Button
-                              type="submit"
-                              onClick={() => setSaveType('publish')}
-                              disabled={saveProjectMutation.isPending}
-                              className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white"
-                            >
-                              <Eye className="h-4 w-4" />
-                              {saveProjectMutation.isPending && saveType === 'publish' ? 'Publication...' : 'Publier le projet'}
-                            </Button>
-                          </>
-                        ) : (
-                          <Button
-                            type="button"
-                            onClick={nextStep}
-                            className="flex items-center gap-2"
-                          >
-                            Suivant
-                            <ArrowRight className="h-4 w-4" />
-                          </Button>
-                        )}
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </form>
-              </Form>
-            </CardContent>
-          </Card>
+                    </form>
+                  </Form>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </div>
       </div>
     </div>
