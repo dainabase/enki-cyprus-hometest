@@ -18,6 +18,7 @@ import { ProjectCardView } from '@/components/admin/projects/ProjectCardView';
 import { ProjectListView } from '@/components/admin/projects/ProjectListView';
 import { ProjectCompactView } from '@/components/admin/projects/ProjectCompactView';
 import { ProjectDetailedView } from '@/components/admin/projects/ProjectDetailedView';
+import { ProjectTableView } from '@/components/admin/projects/ProjectTableView';
 import { PDFExportButton } from '@/components/admin/properties/PDFExportButton';
 
 // Helper function to safely access developer data
@@ -232,38 +233,19 @@ const AdminProjects = () => {
   };
 
   const renderProjectView = () => {
-    const projects = currentView === 'table' ? null : sortedProjects;
-    
     if (currentView === 'table') {
       return (
-        <div className="space-y-6">
-          {Object.entries(groupedProjects).map(([developerId, group]) => (
-            <Card key={developerId}>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span>{group.developerName}</span>
-                  <span className="text-sm font-normal text-muted-foreground">
-                    {group.projects.length} {t('admin.projects.projectsFound')}
-                  </span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ProjectsTable
-                  projects={group.projects}
-                  onEdit={(project) => navigate(`/admin/projects/${project.id}/edit`)}
-                  onRefetch={refetch}
-                  selectedProjects={selectedProjects}
-                  onSelectionChange={setSelectedProjects}
-                />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <ProjectTableView
+          projects={sortedProjects}
+          onEdit={(project) => navigate(`/admin/projects/${project.id}/edit`)}
+          selectedProjects={selectedProjects}
+          onSelectionChange={setSelectedProjects}
+        />
       );
     }
 
     const commonProps = {
-      projects: projects || [],
+      projects: sortedProjects || [],
       onEdit: (project: any) => navigate(`/admin/projects/${project.id}/edit`),
       selectedProjects,
       onSelectionChange: setSelectedProjects
@@ -350,80 +332,92 @@ const AdminProjects = () => {
   }, [sortedProjects]);
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Gestion des Projets</h1>
-            <p className="text-muted-foreground mt-2">Gérez et organisez votre portfolio de projets immobiliers</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <Button
-              variant="outline"
-              onClick={() => setShowFilters(!showFilters)}
-              className="gap-2"
-            >
-              <Filter className="w-4 h-4" />
-              Filtres
-            </Button>
-            
-            <ProjectViewSelector
-              currentView={currentView}
-              onViewChange={setCurrentView}
-            />
-            
-            <ProjectSorter
-              sortField={sortField}
-              sortDirection={sortDirection}
-              onSortChange={handleSortChange}
-            />
-            
-            <Button 
-              variant="outline"
-              onClick={() => navigate('/admin/ai-import-unified')} 
-              className="gap-2"
-            >
-              <Brain className="w-4 h-4" />
-              Import IA Unifié
-            </Button>
-            
-            <Button onClick={() => navigate('/admin/projects/new')} className="gap-2">
-              <Plus className="w-4 h-4" />
-              Nouveau Projet
-            </Button>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      {/* Modern Header */}
+      <div className="bg-white border-b border-slate-200 shadow-sm">
+        <div className="px-8 py-6">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <h1 className="text-3xl font-bold text-slate-900">Projets</h1>
+              <p className="text-slate-600">Gérez votre portfolio de projets immobiliers</p>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="text-sm text-slate-500 bg-slate-100 px-3 py-2 rounded-lg">
+                {totalCount} projet{totalCount !== 1 ? 's' : ''}
+              </div>
+              
+              <Button
+                variant="outline"
+                onClick={() => setShowFilters(!showFilters)}
+                className="gap-2"
+              >
+                <Filter className="w-4 h-4" />
+                Filtres
+              </Button>
+              
+              <ProjectViewSelector
+                currentView={currentView}
+                onViewChange={setCurrentView}
+              />
+              
+              <ProjectSorter
+                sortField={sortField}
+                sortDirection={sortDirection}
+                onSortChange={handleSortChange}
+              />
+              
+              <Button 
+                variant="outline"
+                onClick={() => navigate('/admin/ai-import-unified')} 
+                className="gap-2"
+              >
+                <Brain className="w-4 h-4" />
+                Import IA
+              </Button>
+              
+              <Button 
+                onClick={() => navigate('/admin/projects/new')} 
+                className="bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 gap-2"
+                size="lg"
+              >
+                <Plus className="w-5 h-5" />
+                Nouveau Projet
+              </Button>
+            </div>
           </div>
         </div>
+      </div>
 
+      <div className="px-8 py-6 space-y-6">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card>
+          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Projets</CardTitle>
+              <CardTitle className="text-sm font-medium text-slate-600">Total Projets</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.total}</div>
+              <div className="text-2xl font-bold text-slate-900">{stats.total}</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Disponibles</CardTitle>
+              <CardTitle className="text-sm font-medium text-slate-600">Disponibles</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-600">{stats.available}</div>
+              <div className="text-2xl font-bold text-emerald-600">{stats.available}</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">En Construction</CardTitle>
+              <CardTitle className="text-sm font-medium text-slate-600">En Construction</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-orange-600">{stats.construction}</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Livrés</CardTitle>
+              <CardTitle className="text-sm font-medium text-slate-600">Livrés</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-blue-600">{stats.delivered}</div>
@@ -433,9 +427,9 @@ const AdminProjects = () => {
 
         {/* Filters */}
         {showFilters && (
-          <Card>
+          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200">
             <CardHeader>
-              <CardTitle>Filtres</CardTitle>
+              <CardTitle className="text-slate-900">Filtres</CardTitle>
             </CardHeader>
             <CardContent>
               <ProjectFilters
