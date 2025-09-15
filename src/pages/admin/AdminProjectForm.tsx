@@ -20,43 +20,12 @@ export const AdminProjectForm: React.FC = () => {
   
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [saveType, setSaveType] = useState<'draft' | 'publish'>('draft');
+  const [formKey, setFormKey] = useState(0); // Force re-render key
 
   const currentStep = projectFormSteps[currentStepIndex];
-
+  
   const form = useForm({
-    mode: 'onSubmit',
-    defaultValues: {
-      title: '',
-      description: '',
-      developer_id: '',
-      city: '',
-      full_address: '',
-      region: '',
-      neighborhood: '',
-      photos: [] as string[],
-      features: [] as string[],
-      amenities: [] as string[],
-      status: 'available' as const,
-      vat_rate_new: 5,
-      vat_included: false,
-      golden_visa_eligible_new: false,
-      financing_available: false,
-      featured_new: false,
-      cyprus_zone: 'limassol' as const,
-      property_category: 'residential' as const,
-      property_sub_type: ['apartment'] as const,
-      exclusive_commercialization: false,
-      project_phase: 'off-plan' as const,
-      price: 0,
-      meta_title_new: '',
-      meta_description_new: '',
-      project_narrative: '',
-      project_code: '',
-      launch_date: '',
-      completion_date_new: '',
-      detailed_description: '',
-      subtitle: ''
-    }
+    mode: 'onSubmit'
   });
 
   // Fetch project data for editing
@@ -82,41 +51,50 @@ export const AdminProjectForm: React.FC = () => {
     if (projectData && isEdit) {
       console.log('Setting form values with project data:', projectData);
       
-      // Use reset to properly update all form values
-      form.reset({
+      // Create the form data object with proper mapping
+      const formData = {
         title: projectData.title || '',
-        description: projectData.description || '',
+        project_code: projectData.project_code || '',
         developer_id: projectData.developer_id || '',
-        city: projectData.city || '',
+        property_category: projectData.property_category || 'residential',
+        property_sub_type: projectData.property_sub_type || ['apartment'],
+        project_phase: projectData.project_phase || 'off-plan',
+        launch_date: projectData.launch_date || '',
+        completion_date_new: projectData.completion_date_new || '',
+        exclusive_commercialization: projectData.exclusive_commercialization || false,
+        description: projectData.description || '',
+        detailed_description: projectData.detailed_description || '',
         full_address: projectData.full_address || '',
+        city: projectData.city || '',
         region: projectData.region || '',
         neighborhood: projectData.neighborhood || '',
+        cyprus_zone: projectData.cyprus_zone || 'limassol',
         photos: projectData.photos || [],
         features: projectData.features || [],
         amenities: projectData.amenities || [],
-        status: (projectData.status as any) || 'available',
+        status: projectData.status || 'available',
         vat_rate_new: projectData.vat_rate_new || 5,
         vat_included: projectData.vat_included || false,
         golden_visa_eligible_new: projectData.golden_visa_eligible_new || false,
         financing_available: projectData.financing_available || false,
         featured_new: projectData.featured_new || false,
-        cyprus_zone: (projectData.cyprus_zone as any) || 'limassol',
-        property_category: (projectData.property_category as any) || 'residential',
-        property_sub_type: (projectData.property_sub_type as any) || ['apartment'],
-        exclusive_commercialization: projectData.exclusive_commercialization || false,
-        project_phase: (projectData.project_phase as any) || 'off-plan',
         price: projectData.price || 0,
         meta_title_new: projectData.meta_title_new || '',
         meta_description_new: projectData.meta_description_new || '',
-        project_narrative: projectData.project_narrative || '',
-        project_code: projectData.project_code || '',
-        launch_date: projectData.launch_date || '',
-        completion_date_new: projectData.completion_date_new || '',
-        detailed_description: projectData.detailed_description || '',
-        subtitle: projectData.subtitle || ''
-      });
+        project_narrative: projectData.project_narrative || ''
+      };
       
-      console.log('Form values after reset:', form.getValues());
+      console.log('Form data to set:', formData);
+      
+      // Reset the form with the mapped data
+      form.reset(formData);
+      
+      // Force re-render of the form component
+      setFormKey(prev => prev + 1);
+      
+      setTimeout(() => {
+        console.log('Form values after reset:', form.getValues());
+      }, 100);
     }
   }, [projectData, isEdit, form]);
 
@@ -268,6 +246,7 @@ export const AdminProjectForm: React.FC = () => {
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10"> {/* Augmenté l'espacement */}
                       <div className="bg-slate-50 border-2 border-slate-200 rounded-xl p-8"> {/* Augmenté le padding */}
                         <ProjectFormSteps 
+                          key={formKey} // Force re-render when data loads
                           currentStep={currentStep.id}
                           projectId={id}
                           form={form as any}
