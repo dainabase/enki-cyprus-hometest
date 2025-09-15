@@ -26,13 +26,14 @@ export const AdminProjectForm: React.FC = () => {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
   const isEdit = Boolean(id);
+  const isEditing = isEdit;
   const queryClient = useQueryClient();
   const { toast } = useToast();
   
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [saveType, setSaveType] = useState<'draft' | 'publish'>('draft');
   const [prefilledData, setPrefilledData] = useState<PrefilledFormData>({});
-const [showPrefilledBanner, setShowPrefilledBanner] = useState(false);
+  const [showPrefilledBanner, setShowPrefilledBanner] = useState(false);
 
   // Draft autosave state
   const [draftId, setDraftId] = useState<string | null>(null);
@@ -646,12 +647,25 @@ const [showPrefilledBanner, setShowPrefilledBanner] = useState(false);
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">{/* Plus de Layout = Plus de footer */}
-      {/* NOUVEAU DESIGN - INDICATEUR VISUEL IMPOSSIBLE A MANQUER */}
-      <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white p-6 text-center font-bold text-2xl shadow-2xl border-8 border-yellow-300 animate-pulse">
-        🚀 NOUVEAU FORMULAIRE PROJET REDESIGNÉ - VOUS VOYEZ MAINTENANT LE NOUVEAU DESIGN! 🚀
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      {/* Modern Header */}
+      <div className="bg-white border-b border-slate-200 shadow-sm">
+        <div className="px-8 py-6">
+          <div className="flex items-start justify-between">
+            <div className="space-y-1">
+              <h1 className="text-3xl font-bold text-slate-900">
+                {isEditing ? 'Modifier le Projet' : 'Nouveau Projet'}
+              </h1>
+              <p className="text-slate-600">
+                {isEditing ? 'Modifiez les informations de votre projet' : 'Créez un nouveau projet immobilier'}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="container mx-auto py-8 space-y-8 bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen">
+
+      <div className="px-8 py-6">
+        <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
@@ -806,10 +820,10 @@ const [showPrefilledBanner, setShowPrefilledBanner] = useState(false);
                       </div>
                     </div>
                   </CardContent>
-                </Card>
-              </form>
-            </Form>
-          </div>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

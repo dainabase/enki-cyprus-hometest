@@ -248,58 +248,61 @@ export const NearbyAmenitiesSelector: React.FC<NearbyAmenitiesSelectorProps> = (
         </CardHeader>
       </Card>
 
-      {/* Sélection par catégorie */}
-      {Object.entries(groupedAmenities || {}).map(([category, items]) => {
-        const CategoryIcon = categoryIcons[category as keyof typeof categoryIcons] || MapPin;
-        
-        return (
-          <Card key={category}>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base flex items-center gap-2">
-                <CategoryIcon className="w-4 h-4" />
-                {categoryLabels[category as keyof typeof categoryLabels] || category}
-                <Badge variant="secondary" className="ml-auto">
-                  {items.filter(item => selectedAmenities.some(s => s.nearby_amenity_id === item.id)).length} / {items.length}
-                </Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
+      {/* Grid de commodités */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        {Object.entries(groupedAmenities || {}).map(([category, items]) => {
+          const CategoryIcon = categoryIcons[category as keyof typeof categoryIcons] || MapPin;
+          const categoryLabel = categoryLabels[category as keyof typeof categoryLabels] || category;
+          const selectedCount = items.filter(item => selectedAmenities.some(s => s.nearby_amenity_id === item.id)).length;
+          
+          return (
+            <Card key={category} className="bg-white border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2 text-slate-700">
+                  <CategoryIcon className="w-4 h-4 text-primary" />
+                  {categoryLabel}
+                  <Badge variant={selectedCount > 0 ? "default" : "secondary"} className="ml-auto text-xs">
+                    {selectedCount} / {items.length}
+                  </Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
                 {items.map((amenity) => {
                   const selected = selectedAmenities.find(s => s.nearby_amenity_id === amenity.id);
                   const isImportant = amenity.importance_level >= 8;
                   
                   return (
-                    <div key={amenity.id} className="space-y-3">
+                    <div key={amenity.id} className="space-y-2">
                       {/* Checkbox et nom */}
-                      <div className="flex items-center justify-between">
-                        <label className="flex items-center gap-3 cursor-pointer">
-                          <Checkbox
-                            checked={!!selected}
-                            onCheckedChange={(checked) => toggleAmenity(amenity.id, !!checked)}
-                          />
-                          <div>
-                            <span className="font-medium">{amenity.name}</span>
-                            {isImportant && (
-                              <Badge variant="secondary" className="ml-2 text-xs">
-                                Important
-                              </Badge>
-                            )}
-                            {amenity.description && (
-                              <p className="text-xs text-muted-foreground mt-1">
-                                {amenity.description}
-                              </p>
-                            )}
-                          </div>
-                        </label>
+                      <div className="flex items-start gap-2">
+                        <Checkbox
+                          checked={!!selected}
+                          onCheckedChange={(checked) => toggleAmenity(amenity.id, !!checked)}
+                          className="mt-0.5"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <label className="text-sm font-medium text-slate-800 cursor-pointer block">
+                            {amenity.name}
+                          </label>
+                          {isImportant && (
+                            <Badge variant="outline" className="text-xs mt-1 text-orange-600 border-orange-200">
+                              Important
+                            </Badge>
+                          )}
+                          {amenity.description && (
+                            <p className="text-xs text-slate-500 mt-1 line-clamp-2">
+                              {amenity.description}
+                            </p>
+                          )}
+                        </div>
                       </div>
                       
-                      {/* Champs de distance/temps */}
+                      {/* Champs compacts */}
                       {selected && (
-                        <div className="ml-8 p-3 bg-muted/30 rounded-lg">
-                          <div className="grid grid-cols-2 gap-3">
+                        <div className="ml-6 space-y-2 p-2 bg-slate-50 rounded border">
+                          <div className="grid grid-cols-2 gap-2">
                             <div>
-                              <Label className="text-xs">Distance (km)</Label>
+                              <Label className="text-xs text-slate-600">Distance (km)</Label>
                               <Input
                                 type="number"
                                 step="0.1"
@@ -308,34 +311,31 @@ export const NearbyAmenitiesSelector: React.FC<NearbyAmenitiesSelectorProps> = (
                                 onChange={(e) => updateAmenity(amenity.id, {
                                   distance_km: e.target.value ? parseFloat(e.target.value) : undefined
                                 })}
-                                className="h-8"
+                                className="h-7 text-xs"
                               />
                             </div>
-                            
                             <div>
-                              <Label className="text-xs">Détails</Label>
+                              <Label className="text-xs text-slate-600">Détails</Label>
                               <Input
-                                placeholder="Nom spécifique, infos..."
+                                placeholder="Nom..."
                                 value={selected.details || ''}
                                 onChange={(e) => updateAmenity(amenity.id, {
                                   details: e.target.value
                                 })}
-                                className="h-8"
+                                className="h-7 text-xs"
                               />
                             </div>
                           </div>
                         </div>
                       )}
-                      
-                      {category !== 'nature' && <Separator />}
                     </div>
                   );
                 })}
-              </div>
-            </CardContent>
-          </Card>
-        );
-      })}
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
 
       {/* Résumé */}
       {selectedAmenities.length > 0 && (
