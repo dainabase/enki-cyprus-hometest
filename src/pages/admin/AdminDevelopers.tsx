@@ -560,115 +560,281 @@ export default function AdminDevelopers() {
        </div>
      </div>
 
-     {/* Form Modal */}
-     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-         <DialogHeader>
-           <DialogTitle>
-             {editingDeveloper ? 'Modifier le développeur' : 'Nouveau développeur'}
-           </DialogTitle>
-           <DialogDescription>
-             {editingDeveloper 
-               ? 'Modifiez les informations du développeur' 
-               : 'Ajoutez un nouveau développeur à votre liste'
-             }
-           </DialogDescription>
-         </DialogHeader>
-              getLogo={getLogo}
-              onEdit={openEditModal}
-              onDelete={deleteDeveloper}
-              onViewDetails={openDetailModal}
-            />
-          )}
-        </div>
-      </div>
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">{t('admin.developers.title', { defaultValue: 'Developer Management' })}</h1>
-        <div className="flex items-center space-x-4">
-          <DeveloperViewSelector 
-            currentView={currentView}
-            onViewChange={changeView}
-          />
-          <Button onClick={openCreateModal} className="flex items-center space-x-2">
-            <Plus className="h-4 w-4" />
-            <span>{t('admin.developers.addDeveloper', { defaultValue: 'Add Developer' })}</span>
-          </Button>
-        </div>
-      </div>
+      {/* Form Modal */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {editingDeveloper ? 'Modifier le développeur' : 'Nouveau développeur'}
+            </DialogTitle>
+            <DialogDescription>
+              {editingDeveloper 
+                ? 'Modifiez les informations du développeur' 
+                : 'Ajoutez un nouveau développeur à votre liste'
+              }
+            </DialogDescription>
+          </DialogHeader>
 
-
-      {/* Developers Multi-view */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('fields.developer', { defaultValue: 'Developers' })}</CardTitle>
-          <CardDescription>
-            {t('admin.developers.developersFound', { defaultValue: '{{count}} developers found', count: normalizedDevelopers.length })}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {normalizedDevelopers.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              Aucun développeur trouvé
-            </div>
-          ) : (
-            <>
-              {currentView === 'cards' && (
-                <DeveloperCardView
-                  developers={normalizedDevelopers}
-                  getLogo={getLogo}
-                  onEdit={openEditModal}
-                  onDelete={deleteDeveloper}
-                  onViewDetails={openDetailModal}
+          <div className="space-y-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="name">Nom *</Label>
+                <Input
+                  id="name"
+                  value={formData.name}
+                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                  placeholder="Nom du développeur"
                 />
-              )}
-              
-      {currentView === 'list' && (
-        <DeveloperListView 
-          developers={normalizedDevelopers}
-          getLogo={getLogo}
-          onEdit={openEditModal}
-          onDelete={deleteDeveloper}
-          onViewDetails={openDetailModal}
-        />
-      )}
+              </div>
+              <div>
+                <Label htmlFor="email">Email *</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                  placeholder="email@exemple.com"
+                />
+              </div>
+            </div>
 
-      {currentView === 'table' && (
-        <DeveloperTableView 
-          developers={normalizedDevelopers}
-          getLogo={getLogo}
-          onEdit={openEditModal}
-          onDelete={deleteDeveloper}
-          onViewDetails={openDetailModal}
-        />
-      )}
-              
-      {currentView === 'compact' && (
-        <DeveloperCompactView 
-          developers={normalizedDevelopers}
-          getLogo={getLogo}
-          onEdit={openEditModal}
-          onDelete={deleteDeveloper}
-          onViewDetails={openDetailModal}
-        />
-      )}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="phone">Téléphone</Label>
+                <Input
+                  id="phone"
+                  value={formData.phone}
+                  onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                  placeholder="+357 25 123 456"
+                />
+              </div>
+              <div>
+                <Label htmlFor="website">Site Web</Label>
+                <Input
+                  id="website"
+                  value={formData.website}
+                  onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
+                  placeholder="https://exemple.com"
+                />
+              </div>
+            </div>
 
-      {currentView === 'detailed' && (
-        <DeveloperDetailedView 
-          developers={normalizedDevelopers}
-          getLogo={getLogo}
-          onEdit={openEditModal}
-          onDelete={deleteDeveloper}
-          onViewDetails={openDetailModal}
-        />
-      )}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="address">Adresse</Label>
+                <Input
+                  id="address"
+                  value={formData.address}
+                  onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+                  placeholder="Adresse complète"
+                />
+              </div>
+              <div>
+                <Label htmlFor="main_city">Ville principale</Label>
+                <Select value={formData.main_city} onValueChange={(value) => setFormData(prev => ({ ...prev, main_city: value }))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sélectionner une ville" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Limassol">Limassol</SelectItem>
+                    <SelectItem value="Larnaca">Larnaca</SelectItem>
+                    <SelectItem value="Paphos">Paphos</SelectItem>
+                    <SelectItem value="Famagusta">Famagusta</SelectItem>
+                    <SelectItem value="Kyrenia">Kyrenia</SelectItem>
+                    <SelectItem value="Nicosia">Nicosia</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="commission_rate">Taux de commission (%)</Label>
+                <Input
+                  id="commission_rate"
+                  type="number"
+                  min="0"
+                  max="100"
+                  step="0.1"
+                  value={formData.commission_rate}
+                  onChange={(e) => setFormData(prev => ({ ...prev, commission_rate: parseFloat(e.target.value) || 0 }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="status">Statut</Label>
+                <Select value={formData.status} onValueChange={(value: 'active' | 'inactive') => setFormData(prev => ({ ...prev, status: value }))}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Actif</SelectItem>
+                    <SelectItem value="inactive">Inactif</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="founded_year">Année de fondation</Label>
+                <Input
+                  id="founded_year"
+                  type="number"
+                  min="1900"
+                  max={new Date().getFullYear()}
+                  value={formData.founded_year || ''}
+                  onChange={(e) => setFormData(prev => ({ ...prev, founded_year: e.target.value ? parseInt(e.target.value) : undefined }))}
+                  placeholder="2020"
+                />
+              </div>
+              <div>
+                <Label htmlFor="rating_score">Note (1-10)</Label>
+                <Input
+                  id="rating_score"
+                  type="number"
+                  min="1"
+                  max="10"
+                  step="0.1"
+                  value={formData.rating_score || ''}
+                  onChange={(e) => setFormData(prev => ({ ...prev, rating_score: e.target.value ? parseFloat(e.target.value) : undefined }))}
+                  placeholder="8.5"
+                />
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="main_activities">Activités principales</Label>
+              <Textarea
+                id="main_activities"
+                value={formData.main_activities}
+                onChange={(e) => setFormData(prev => ({ ...prev, main_activities: e.target.value }))}
+                placeholder="Description des activités principales..."
+                rows={3}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="key_projects">Projets clés</Label>
+              <Textarea
+                id="key_projects"
+                value={formData.key_projects}
+                onChange={(e) => setFormData(prev => ({ ...prev, key_projects: e.target.value }))}
+                placeholder="Description des projets clés..."
+                rows={3}
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end space-x-2 pt-4 border-t">
+            <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+              Annuler
+            </Button>
+            <Button onClick={handleSave} disabled={saveDevMutation.isPending}>
+              {saveDevMutation.isPending ? 'Sauvegarde...' : 'Sauvegarder'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Detail Modal */}
+      <Dialog open={isDetailModalOpen} onOpenChange={setIsDetailModalOpen}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Détails du développeur</DialogTitle>
+            <DialogDescription>
+              Informations complètes sur le développeur sélectionné
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedDeveloper && (
+            <>
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center overflow-hidden">
+                  {getLogo(selectedDeveloper) ? (
+                    <img 
+                      src={getLogo(selectedDeveloper)} 
+                      alt={`${selectedDeveloper.name} logo`}
+                      className="w-full h-full object-contain"
+                    />
+                  ) : (
+                    <span className="text-primary font-bold text-lg">
+                      {selectedDeveloper.name.charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold">{selectedDeveloper.name}</h3>
+                  <p className="text-muted-foreground">{selectedDeveloper.main_city}</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="font-semibold mb-3">Informations de contact</h3>
+                  <div className="space-y-2 text-sm">
+                    {selectedDeveloper.contact_info?.email && (
+                      <div><strong>Email:</strong> {selectedDeveloper.contact_info.email}</div>
+                    )}
+                    {selectedDeveloper.contact_info?.phone && (
+                      <div><strong>Téléphone:</strong> {selectedDeveloper.contact_info.phone}</div>
+                    )}
+                    {selectedDeveloper.website && (
+                      <div><strong>Site Web:</strong> <a href={selectedDeveloper.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{selectedDeveloper.website}</a></div>
+                    )}
+                    {selectedDeveloper.contact_info?.address && (
+                      <div><strong>Adresse:</strong> {selectedDeveloper.contact_info.address}</div>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold mb-3">Informations commerciales</h3>
+                  <div className="space-y-2 text-sm">
+                    <div><strong>Commission:</strong> {selectedDeveloper.commission_rate}%</div>
+                    <div><strong>Statut:</strong> {selectedDeveloper.status === 'active' ? 'Actif' : 'Inactif'}</div>
+                    {selectedDeveloper.founded_year && (
+                      <div><strong>Année de fondation:</strong> {selectedDeveloper.founded_year}</div>
+                    )}
+                    {selectedDeveloper.rating_score && (
+                      <div><strong>Note:</strong> ⭐ {selectedDeveloper.rating_score}/10</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4 mt-6">
+                {selectedDeveloper.main_activities && (
+                  <div>
+                    <h3 className="font-semibold mb-3">Activités principales</h3>
+                    <p className="text-sm">{selectedDeveloper.main_activities}</p>
+                  </div>
+                )}
+
+                {selectedDeveloper.key_projects && (
+                  <div>
+                    <h3 className="font-semibold mb-3">Projets clés</h3>
+                    <p className="text-sm">{selectedDeveloper.key_projects}</p>
+                  </div>
+                )}
+
+                {selectedDeveloper.financial_stability && (
+                  <div>
+                    <h3 className="font-semibold mb-3">Stabilité financière</h3>
+                    <p className="text-sm">{selectedDeveloper.financial_stability}</p>
+                  </div>
+                )}
+
+                {selectedDeveloper.payment_terms && (
+                  <div>
+                    <h3 className="font-semibold mb-3">Conditions de Paiement</h3>
+                    <p className="text-sm">{selectedDeveloper.payment_terms}</p>
+                  </div>
+                )}
+              </div>
             </>
           )}
-        </CardContent>
-      </Card>
-
-      {/* Create/Edit Modal */}
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        </DialogContent>
+      </Dialog>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
