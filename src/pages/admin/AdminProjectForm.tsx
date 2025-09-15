@@ -10,7 +10,9 @@ import { projectFormSteps } from '@/schemas/projectSchema';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { ArrowLeft, ArrowRight, Save, Eye, ChevronLeft } from 'lucide-react';
-import { ProjectActionDialog } from '@/components/admin/ProjectActionDialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
+import { AlertTriangle } from 'lucide-react';
 
 export const AdminProjectForm: React.FC = () => {
   const navigate = useNavigate();
@@ -23,6 +25,7 @@ export const AdminProjectForm: React.FC = () => {
   const [formKey, setFormKey] = useState(0);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [originalData, setOriginalData] = useState<any>(null);
+  const [validationErrors, setValidationErrors] = useState<any[]>([]);
 
   const currentStep = projectFormSteps[currentStepIndex];
   
@@ -73,7 +76,6 @@ export const AdminProjectForm: React.FC = () => {
         .single();
       
       if (error) throw error;
-      console.log('Project data loaded:', data);
       return data;
     },
     enabled: isEdit
@@ -82,10 +84,8 @@ export const AdminProjectForm: React.FC = () => {
   // Populate form when data is loaded
   React.useEffect(() => {
     if (projectData && isEdit) {
-      setOriginalData(projectData); // Store original data for comparison
-      console.log('Setting form values with project data:', projectData);
+      setOriginalData(projectData);
       
-      // Create the form data object with proper mapping and strict defaults
       const formData = {
         title: projectData.title || '',
         project_code: projectData.project_code || '',
@@ -120,75 +120,10 @@ export const AdminProjectForm: React.FC = () => {
         project_narrative: projectData.project_narrative || ''
       };
       
-      console.log('Form data to set:', formData);
-      
-      // Reset the form with the mapped data
       form.reset(formData);
-      
-      // Force re-render of the form component
       setFormKey(prev => prev + 1);
-      
-      setTimeout(() => {
-        console.log('Form values after reset:', form.getValues());
-      }, 100);
     }
   }, [projectData, isEdit, form]);
-
-  // Navigation functions
-  const nextStep = () => {
-    if (currentStepIndex < projectFormSteps.length - 1) {
-      setCurrentStepIndex(currentStepIndex + 1);
-    }
-  };
-
-  const prevStep = () => {
-    if (currentStepIndex > 0) {
-      setCurrentStepIndex(currentStepIndex - 1);
-    }
-  };
-
-  // Save project mutation
-  const saveProjectMutation = useMutation({
-    mutationFn: async (data: any) => {
-      if (isEdit) {
-        const { error } = await supabase
-          .from('projects')
-          .update(data)
-          .eq('id', id);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase
-          .from('projects')
-          .insert(data);
-        if (error) throw error;
-      }
-    },
-    onSuccess: () => {
-      const actionMessage = saveType === 'publish' 
-        ? 'Projet publié avec succès !' 
-        : isEdit ? 'Projet mis à jour avec succès !' : 'Projet créé avec succès !';
-      
-      const description = saveType === 'publish' 
-        ? 'Votre projet est maintenant visible publiquement. Toutes les modifications ont été prises en compte.'
-        : isEdit ? 'Toutes les modifications ont été sauvegardées.' : 'Le nouveau projet a été créé.';
-      
-      toast.success(actionMessage, {
-        description,
-        duration: 5000
-      });
-      
-      setTimeout(() => {
-        navigate('/admin/projects');
-      }, 2000);
-    },
-    onError: (error: any) => {
-      console.error('Erreur lors de la sauvegarde:', error);
-      toast.error('Erreur de publication', {
-        description: `Impossible de ${saveType === 'publish' ? 'publier' : 'sauvegarder'} le projet. Vérifiez tous les champs requis.`,
-        duration: 8000
-      });
-    }
-  });
 
   // Function to validate required fields and dates
   const validateRequiredFields = (formData: any) => {
@@ -245,60 +180,74 @@ export const AdminProjectForm: React.FC = () => {
       errors.push({ field: 'golden_visa_eligible_new', label: 'Golden Visa', message: 'Prix minimum de 300,000€ requis' });
     }
     
-    // Price range validation
-    if (formData.price_to && formData.price_from_new && formData.price_to < formData.price_from_new) {
-      errors.push({ field: 'price_to', label: 'Prix maximum', message: 'Ne peut être inférieur au prix minimum' });
-    }
-    
-    console.log('Validation result:', errors.length === 0 ? '✅ VALID' : `❌ ${errors.length} ERRORS`, errors);
     return errors;
   };
 
-  // Function to detect modifications
-  const getModifications = (formData: any) => {
-    if (!originalData) return [];
-    
-    const modifications: any[] = [];
-    const fieldsToCheck = [
-      { key: 'title', label: 'Titre' },
-      { key: 'description', label: 'Description' },
-      { key: 'price', label: 'Prix' },
-      { key: 'status', label: 'Statut' },
-      { key: 'features', label: 'Caractéristiques' },
-      { key: 'amenities', label: 'Équipements' },
-      { key: 'photos', label: 'Photos' }
-    ];
-
-    fieldsToCheck.forEach(field => {
-      const oldValue = originalData[field.key];
-      const newValue = formData[field.key];
-      
-      if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
-        modifications.push({
-          field: field.key,
-          label: field.label,
-          oldValue,
-          newValue,
-          type: !oldValue ? 'added' : !newValue ? 'removed' : 'modified'
-        });
-      }
-    });
-
-    return modifications;
+  // Navigation functions
+  const nextStep = () => {
+    if (currentStepIndex < projectFormSteps.length - 1) {
+      setCurrentStepIndex(currentStepIndex + 1);
+    }
   };
+
+  const prevStep = () => {
+    if (currentStepIndex > 0) {
+      setCurrentStepIndex(currentStepIndex - 1);
+    }
+  };
+
+  // Save project mutation
+  const saveProjectMutation = useMutation({
+    mutationFn: async (data: any) => {
+      if (isEdit) {
+        const { error } = await supabase
+          .from('projects')
+          .update(data)
+          .eq('id', id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from('projects')
+          .insert(data);
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      const actionMessage = saveType === 'publish' 
+        ? 'Projet publié avec succès !' 
+        : isEdit ? 'Projet mis à jour avec succès !' : 'Projet créé avec succès !';
+      
+      toast.success(actionMessage, {
+        description: 'Toutes les modifications ont été sauvegardées.',
+        duration: 5000
+      });
+      
+      setTimeout(() => {
+        navigate('/admin/projects');
+      }, 2000);
+    },
+    onError: (error: any) => {
+      console.error('Erreur lors de la sauvegarde:', error);
+      toast.error('Erreur de publication', {
+        description: 'Impossible de sauvegarder le projet. Vérifiez tous les champs requis.',
+        duration: 8000
+      });
+    }
+  });
 
   const handleSubmitWithConfirmation = (data: any) => {
     console.log('=== VALIDATION START ===');
     console.log('Form data received:', data);
     
     // Always validate required fields first
-    const validationErrors = validateRequiredFields(data);
-    console.log('Validation errors found:', validationErrors);
+    const errors = validateRequiredFields(data);
+    console.log('Validation errors found:', errors);
     
-    if (validationErrors.length > 0) {
+    if (errors.length > 0) {
       console.log('❌ Validation failed - showing dialog with errors');
+      setValidationErrors(errors);
       toast.error('Champs requis manquants', {
-        description: `${validationErrors.length} erreur(s) détectée(s). Vérifiez le dialogue pour plus de détails.`,
+        description: `${errors.length} erreur(s) détectée(s). Vérifiez le dialogue pour plus de détails.`,
         duration: 8000
       });
       setShowConfirmDialog(true);
@@ -306,16 +255,8 @@ export const AdminProjectForm: React.FC = () => {
     }
     
     console.log('✅ Validation passed');
-    const modifications = getModifications(data);
-    console.log('Modifications detected:', modifications);
-    
-    if (modifications.length > 0 || saveType === 'publish') {
-      console.log('📝 Showing confirmation dialog');
-      setShowConfirmDialog(true);
-    } else {
-      console.log('💾 No changes, submitting directly');
-      onSubmit(data);
-    }
+    setValidationErrors([]);
+    setShowConfirmDialog(true);
   };
 
   const onSubmit = (data: any) => {
@@ -513,29 +454,96 @@ export const AdminProjectForm: React.FC = () => {
                   </Form>
 
                   {/* Confirmation Dialog */}
-                  <ProjectActionDialog
-                    isOpen={showConfirmDialog}
-                    onClose={() => setShowConfirmDialog(false)}
-                    onConfirm={() => {
-                      const formData = form.getValues();
-                      const validationErrors = validateRequiredFields(formData);
-                      
-                      if (validationErrors.length > 0) {
-                        toast.error('Impossible de continuer', {
-                          description: 'Corrigez les erreurs affichées dans le dialogue.',
-                          duration: 5000
-                        });
-                        return;
-                      }
-                      
-                      onSubmit(formData);
-                    }}
-                    action={saveType === 'publish' ? 'publish' : 'save'}
-                    projectTitle={form.getValues('title') || 'Nouveau projet'}
-                    modifications={originalData ? getModifications(form.getValues()) : []}
-                    validationErrors={validateRequiredFields(form.getValues())}
-                    isLoading={saveProjectMutation.isPending}
-                  />
+                  <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+                    <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                          {validationErrors.length > 0 ? (
+                            <>
+                              <AlertTriangle className="h-5 w-5 text-red-600" />
+                              Erreurs détectées
+                            </>
+                          ) : (
+                            <>
+                              <Eye className="h-5 w-5 text-green-600" />
+                              {saveType === 'publish' ? 'Publier le projet' : 'Sauvegarder le projet'}
+                            </>
+                          )}
+                        </DialogTitle>
+                        <DialogDescription>
+                          {validationErrors.length > 0 
+                            ? 'Des erreurs ont été détectées et doivent être corrigées avant la publication.'
+                            : `Voulez-vous ${saveType === 'publish' ? 'publier' : 'sauvegarder'} le projet "${form.getValues('title') || 'Nouveau projet'}" ?`
+                          }
+                        </DialogDescription>
+                      </DialogHeader>
+
+                      <div className="space-y-6">
+                        <div className="bg-slate-50 rounded-lg p-4">
+                          <h4 className="font-medium text-slate-900 mb-2">Projet concerné</h4>
+                          <p className="text-slate-700">{form.getValues('title') || 'Nouveau projet'}</p>
+                        </div>
+
+                        {validationErrors.length > 0 && (
+                          <div className="space-y-4">
+                            <h4 className="font-medium text-red-700 flex items-center gap-2">
+                              <AlertTriangle className="h-5 w-5" />
+                              Erreurs à corriger ({validationErrors.length})
+                            </h4>
+                            <div className="space-y-2 max-h-60 overflow-y-auto">
+                              {validationErrors.map((error, index) => (
+                                <div key={index} className="border border-red-200 bg-red-50 rounded-lg p-3">
+                                  <div className="flex items-center gap-2">
+                                    <Badge variant="destructive">❌ Erreur</Badge>
+                                    <span className="font-medium text-sm text-red-800">{error.label}</span>
+                                  </div>
+                                  <p className="text-red-700 text-xs mt-1">{error.message}</p>
+                                </div>
+                              ))}
+                            </div>
+                            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                              <p className="text-red-800 text-sm font-medium">
+                                🚫 Impossible de publier le projet tant que ces erreurs ne sont pas corrigées.
+                              </p>
+                              <p className="text-red-700 text-xs mt-1">
+                                Retournez au formulaire et complétez les champs requis avant de republier.
+                              </p>
+                            </div>
+                          </div>
+                        )}
+
+                        {validationErrors.length === 0 && saveType === 'publish' && (
+                          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                            <p className="text-green-800 font-medium">✅ Aucune erreur détectée</p>
+                            <p className="text-green-700 text-sm">Le projet est prêt à être publié.</p>
+                          </div>
+                        )}
+                      </div>
+
+                      <DialogFooter>
+                        <Button
+                          variant="outline"
+                          onClick={() => setShowConfirmDialog(false)}
+                          disabled={saveProjectMutation.isPending}
+                        >
+                          {validationErrors.length > 0 ? 'Retour au formulaire' : 'Annuler'}
+                        </Button>
+                        {validationErrors.length === 0 && (
+                          <Button
+                            onClick={() => {
+                              const formData = form.getValues();
+                              onSubmit(formData);
+                              setShowConfirmDialog(false);
+                            }}
+                            disabled={saveProjectMutation.isPending}
+                            variant="default"
+                          >
+                            {saveProjectMutation.isPending ? 'En cours...' : (saveType === 'publish' ? 'Publier' : 'Sauvegarder')}
+                          </Button>
+                        )}
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
                 </CardContent>
               </Card>
             </div>
