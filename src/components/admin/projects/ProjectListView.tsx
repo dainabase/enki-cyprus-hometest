@@ -52,19 +52,19 @@ export const ProjectListView = ({
     <div className="space-y-3">
       {projects.map(project => (
         <div key={project.id} className="group bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl hover:shadow-xl hover:bg-white transition-all duration-300 hover:-translate-y-0.5 relative">
-          {/* Checkbox positioned to the left of the logo */}
-          <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10">
-            <Checkbox
-              checked={selectedProjects.includes(project.id)}
-              onCheckedChange={(checked) => 
-                handleProjectSelect(project.id, checked as boolean)
-              }
-              className="bg-white border-2 border-slate-300 shadow-lg"
-            />
-          </div>
           
-          <div className="flex items-center justify-between p-6 pl-16">
+          <div className="flex items-center justify-between p-6">
+            {/* Checkbox positioned at the beginning of the row */}
             <div className="flex items-center space-x-6 flex-1">
+              <div className="flex-shrink-0">
+                <Checkbox
+                  checked={selectedProjects.includes(project.id)}
+                  onCheckedChange={(checked) => 
+                    handleProjectSelect(project.id, checked as boolean)
+                  }
+                  className="bg-white border-2 border-slate-300"
+                />
+              </div>
                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center overflow-hidden border-2 border-white shadow-sm flex-shrink-0">
                  {project.photos && project.photos.length > 0 && project.photos[0] ? (
                    <img 

@@ -55,18 +55,18 @@ export const ProjectCompactView = ({
           key={project.id}
           className="group bg-white border border-slate-200 rounded-xl hover:shadow-lg hover:border-slate-300 transition-all duration-300 hover:-translate-y-0.5 relative"
         >
-          {/* Checkbox positioned outside on the left aligned with content */}
-          <div className="absolute -left-12 top-1/2 transform -translate-y-1/2 z-10">
-            <Checkbox
-              checked={selectedProjects.includes(project.id)}
-              onCheckedChange={(checked) => 
-                handleProjectSelect(project.id, checked as boolean)
-              }
-              className="bg-white border-2 border-slate-300 shadow-lg"
-            />
-          </div>
           
           <div className="flex items-center gap-4 p-4">
+            {/* Checkbox positioned at the beginning of the row */}
+            <div className="flex-shrink-0">
+              <Checkbox
+                checked={selectedProjects.includes(project.id)}
+                onCheckedChange={(checked) => 
+                  handleProjectSelect(project.id, checked as boolean)
+                }
+                className="bg-white border-2 border-slate-300"
+              />
+            </div>
              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center overflow-hidden border border-white shadow-sm flex-shrink-0">
                {project.photos && project.photos.length > 0 && project.photos[0] ? (
                  <img 

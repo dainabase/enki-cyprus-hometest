@@ -215,9 +215,9 @@ export const ProjectTableView = ({
                       }}
                     />
                   ) : null}
-                  <div className="w-6 h-6 bg-gradient-to-br from-slate-900 to-slate-700 rounded-lg flex items-center justify-center" style={{ display: project.photos && project.photos.length > 0 && project.photos[0] ? 'none' : 'flex' }}>
-                    <Building className="h-4 w-4 text-slate-700" />
-                  </div>
+                   <div className="w-6 h-6 bg-gradient-to-br from-slate-900 to-slate-700 rounded-lg flex items-center justify-center" style={{ display: project.photos && project.photos.length > 0 && project.photos[0] ? 'none' : 'flex' }}>
+                     <Building className="h-4 w-4 text-white" />
+                   </div>
                 </div>
               </TableCell>
               <TableCell className="font-bold text-slate-900 py-4 max-w-48">
