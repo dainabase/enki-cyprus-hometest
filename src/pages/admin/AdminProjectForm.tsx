@@ -221,14 +221,22 @@ export const AdminProjectForm: React.FC = () => {
     
     // Validate dates format
     if (formData.launch_date && formData.launch_date.length > 0) {
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(formData.launch_date)) {
-        errors.push({ field: 'launch_date', label: 'Date de lancement', message: 'Format invalide (YYYY-MM-DD requis)' });
+      if (formData.launch_date.length < 10 || !/^\d{4}-\d{2}-\d{2}$/.test(formData.launch_date)) {
+        errors.push({ 
+          field: 'launch_date', 
+          label: 'Date de lancement', 
+          message: `Format invalide "${formData.launch_date}" - Format requis: YYYY-MM-DD (ex: 2025-12-31)` 
+        });
       }
     }
     
     if (formData.completion_date_new && formData.completion_date_new.length > 0) {
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(formData.completion_date_new)) {
-        errors.push({ field: 'completion_date_new', label: 'Date de completion', message: 'Format invalide (YYYY-MM-DD requis)' });
+      if (formData.completion_date_new.length < 10 || !/^\d{4}-\d{2}-\d{2}$/.test(formData.completion_date_new)) {
+        errors.push({ 
+          field: 'completion_date_new', 
+          label: 'Date de completion', 
+          message: `Format invalide "${formData.completion_date_new}" - Format requis: YYYY-MM-DD (ex: 2025-12-31)` 
+        });
       }
     }
     
@@ -242,6 +250,7 @@ export const AdminProjectForm: React.FC = () => {
       errors.push({ field: 'price_to', label: 'Prix maximum', message: 'Ne peut être inférieur au prix minimum' });
     }
     
+    console.log('Validation result:', errors.length === 0 ? '✅ VALID' : `❌ ${errors.length} ERRORS`, errors);
     return errors;
   };
 
@@ -279,24 +288,32 @@ export const AdminProjectForm: React.FC = () => {
   };
 
   const handleSubmitWithConfirmation = (data: any) => {
+    console.log('=== VALIDATION START ===');
+    console.log('Form data received:', data);
+    
     // Always validate required fields first
     const validationErrors = validateRequiredFields(data);
+    console.log('Validation errors found:', validationErrors);
     
     if (validationErrors.length > 0) {
+      console.log('❌ Validation failed - showing dialog with errors');
       toast.error('Champs requis manquants', {
-        description: `${validationErrors.length} erreur(s) détectée(s). Vérifiez le pop-up pour plus de détails.`,
+        description: `${validationErrors.length} erreur(s) détectée(s). Vérifiez le dialogue pour plus de détails.`,
         duration: 8000
       });
       setShowConfirmDialog(true);
       return;
     }
     
+    console.log('✅ Validation passed');
     const modifications = getModifications(data);
+    console.log('Modifications detected:', modifications);
     
     if (modifications.length > 0 || saveType === 'publish') {
+      console.log('📝 Showing confirmation dialog');
       setShowConfirmDialog(true);
     } else {
-      // No changes, submit directly
+      console.log('💾 No changes, submitting directly');
       onSubmit(data);
     }
   };
@@ -320,6 +337,13 @@ export const AdminProjectForm: React.FC = () => {
       features: Array.isArray(data.features) ? data.features : [],
       amenities: Array.isArray(data.amenities) ? data.amenities : [],
       property_sub_type: Array.isArray(data.property_sub_type) ? data.property_sub_type : ['apartment'],
+      // Fix date formats - convert incomplete dates to null
+      launch_date: data.launch_date && data.launch_date.length === 10 && /^\d{4}-\d{2}-\d{2}$/.test(data.launch_date) 
+        ? data.launch_date 
+        : null,
+      completion_date_new: data.completion_date_new && data.completion_date_new.length === 10 && /^\d{4}-\d{2}-\d{2}$/.test(data.completion_date_new) 
+        ? data.completion_date_new 
+        : null,
       // Set proper status
       status: saveType === 'publish' ? 'available' : 'draft'
     };

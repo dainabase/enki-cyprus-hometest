@@ -37,6 +37,14 @@ export const ProjectActionDialog: React.FC<ProjectActionDialogProps> = ({
   validationErrors = [],
   isLoading = false
 }) => {
+  console.log('🚀 ProjectActionDialog rendered:', {
+    isOpen,
+    action,
+    projectTitle,
+    modificationsCount: modifications.length,
+    validationErrorsCount: validationErrors.length,
+    isLoading
+  });
   const getActionConfig = () => {
     switch (action) {
       case 'activate':
