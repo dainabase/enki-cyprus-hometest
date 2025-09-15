@@ -16,15 +16,15 @@ export const ProjectSorter = ({ sortField, sortDirection, onSortChange }: Projec
   const { t } = useTranslation();
   
   const sortOptions = [
-    { value: 'title', label: t('admin.sorting.title') },
-    { value: 'developer', label: t('admin.sorting.developer') },
-    { value: 'city', label: t('admin.sorting.city') },
-    { value: 'neighborhood', label: t('admin.sorting.neighborhood') },
-    { value: 'price', label: t('admin.sorting.price') },
-    { value: 'status', label: t('admin.sorting.status') },
-    { value: 'zone', label: t('admin.sorting.zone') },
-    { value: 'completion_date', label: t('admin.sorting.completionDate') },
-    { value: 'created_at', label: t('admin.sorting.createdDate') }
+    { value: 'title', label: 'Titre' },
+    { value: 'developer', label: 'Développeur' },
+    { value: 'city', label: 'Ville' },
+    { value: 'neighborhood', label: 'Quartier' },
+    { value: 'price', label: 'Prix' },
+    { value: 'status', label: 'Statut' },
+    { value: 'zone', label: 'Zone' },
+    { value: 'completion_date', label: 'Date de livraison' },
+    { value: 'created_at', label: 'Date de création' }
   ];
 
   const toggleSortDirection = () => {
@@ -32,13 +32,13 @@ export const ProjectSorter = ({ sortField, sortDirection, onSortChange }: Projec
   };
 
   return (
-    <div className="flex items-center gap-2">
-      <span className="text-sm text-muted-foreground">{t('admin.buttons.sortBy')}:</span>
+    <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl shadow-sm px-3 py-2">
+      <span className="text-sm text-slate-600 font-medium">Trier par:</span>
       <Select
         value={sortField}
         onValueChange={(value) => onSortChange(value as ProjectSortField, sortDirection)}
       >
-        <SelectTrigger className="w-48">
+        <SelectTrigger className="w-40 h-8 border-slate-200">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -53,7 +53,7 @@ export const ProjectSorter = ({ sortField, sortDirection, onSortChange }: Projec
         variant="outline"
         size="sm"
         onClick={toggleSortDirection}
-        className="h-8 w-8 p-0"
+        className="h-8 w-8 p-0 border-slate-200 hover:bg-slate-50"
         title={`Tri ${sortDirection === 'asc' ? 'croissant' : 'décroissant'}`}
       >
         {sortDirection === 'asc' ? (
