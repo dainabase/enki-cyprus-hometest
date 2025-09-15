@@ -91,16 +91,16 @@ const PropertySubTypeSelector: React.FC<PropertySubTypeSelectorProps> = ({ form 
         <div className="space-y-4">
           <div>
             <h4 className="text-sm font-medium mb-2 text-primary">Résidentiel</h4>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"> {/* Grille plus large */}
               {propertyTypes.residential.map((type) => (
                 <label
                   key={type.value}
                   className={`
-                    flex items-center gap-2 p-2 border rounded-lg cursor-pointer
-                    transition-colors hover:bg-accent
+                    flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer
+                    transition-all duration-200 hover:shadow-md
                     ${selectedTypes.includes(type.value) 
-                      ? 'bg-primary/10 border-primary' 
-                      : 'border-border'
+                      ? 'bg-[hsl(199,63%,59%)]/10 border-[hsl(199,63%,59%)] shadow-md' 
+                      : 'border-slate-300 hover:border-slate-400 hover:bg-slate-50'
                     }
                   `}
                 >
@@ -108,7 +108,7 @@ const PropertySubTypeSelector: React.FC<PropertySubTypeSelectorProps> = ({ form 
                     checked={selectedTypes.includes(type.value)}
                     onCheckedChange={() => handleToggle(type.value)}
                   />
-                  <span className="text-sm">{type.label}</span>
+                  <span className="text-sm font-medium text-slate-700">{type.label}</span>
                 </label>
               ))}
             </div>
@@ -116,16 +116,16 @@ const PropertySubTypeSelector: React.FC<PropertySubTypeSelectorProps> = ({ form 
           
           <div>
             <h4 className="text-sm font-medium mb-2 text-primary">Commercial</h4>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {propertyTypes.commercial.map((type) => (
                 <label
                   key={type.value}
                   className={`
-                    flex items-center gap-2 p-2 border rounded-lg cursor-pointer
-                    transition-colors hover:bg-accent
+                    flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer
+                    transition-all duration-200 hover:shadow-md
                     ${selectedTypes.includes(type.value) 
-                      ? 'bg-primary/10 border-primary' 
-                      : 'border-border'
+                      ? 'bg-[hsl(199,63%,59%)]/10 border-[hsl(199,63%,59%)] shadow-md' 
+                      : 'border-slate-300 hover:border-slate-400 hover:bg-slate-50'
                     }
                   `}
                 >
@@ -133,23 +133,23 @@ const PropertySubTypeSelector: React.FC<PropertySubTypeSelectorProps> = ({ form 
                     checked={selectedTypes.includes(type.value)}
                     onCheckedChange={() => handleToggle(type.value)}
                   />
-                  <span className="text-sm">{type.label}</span>
+                  <span className="text-sm font-medium text-slate-700">{type.label}</span>
                 </label>
               ))}
             </div>
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {availableTypes.map((type) => (
             <label
               key={type.value}
               className={`
-                flex items-center gap-2 p-2 border rounded-lg cursor-pointer
-                transition-colors hover:bg-accent
+                flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer
+                transition-all duration-200 hover:shadow-md
                 ${selectedTypes.includes(type.value) 
-                  ? 'bg-primary/10 border-primary' 
-                  : 'border-border'
+                  ? 'bg-[hsl(199,63%,59%)]/10 border-[hsl(199,63%,59%)] shadow-md' 
+                  : 'border-slate-300 hover:border-slate-400 hover:bg-slate-50'
                 }
               `}
             >
@@ -157,7 +157,7 @@ const PropertySubTypeSelector: React.FC<PropertySubTypeSelectorProps> = ({ form 
                 checked={selectedTypes.includes(type.value)}
                 onCheckedChange={() => handleToggle(type.value)}
               />
-              <span className="text-sm">{type.label}</span>
+              <span className="text-sm font-medium text-slate-700">{type.label}</span>
             </label>
           ))}
         </div>

@@ -176,17 +176,17 @@ export const AdminProjectForm: React.FC = () => {
                     onClick={() => setCurrentStepIndex(index)}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
                       isActive
-                        ? 'bg-primary text-primary-foreground shadow-sm'
+                        ? 'bg-primary text-white shadow-md'
                         : isCompleted
-                        ? 'bg-green-50 text-green-700 hover:bg-green-100'
-                        : 'text-slate-600 hover:bg-slate-50'
+                        ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200'
+                        : 'text-slate-600 hover:bg-slate-50 border border-slate-200'
                     }`}
                   >
                     <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
                       isActive
                         ? 'bg-white text-primary'
                         : isCompleted
-                        ? 'bg-green-500 text-white'
+                        ? 'bg-emerald-500 text-white'
                         : 'bg-slate-200 text-slate-500'
                     }`}>
                       {isCompleted ? '✓' : index + 1}
@@ -202,9 +202,9 @@ export const AdminProjectForm: React.FC = () => {
         {/* Main Content */}
         <div className="flex-1">
           <div className="px-8 py-6">
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-7xl mx-auto"> {/* Élargi de 4xl à 7xl */}
               <Card className="bg-white border-2 border-slate-200 shadow-xl">
-                <CardContent className="p-8">
+                <CardContent className="p-10"> {/* Augmenté le padding */}
                   <div className="mb-8">
                     <h1 className="text-2xl font-bold text-slate-900 mb-2">
                       {currentStep.title}
@@ -215,8 +215,8 @@ export const AdminProjectForm: React.FC = () => {
                   </div>
 
                   <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                      <div className="bg-slate-50 border-2 border-slate-200 rounded-xl p-6">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10"> {/* Augmenté l'espacement */}
+                      <div className="bg-slate-50 border-2 border-slate-200 rounded-xl p-8"> {/* Augmenté le padding */}
                         <ProjectFormSteps 
                           currentStep={currentStep.id}
                           projectId={id}

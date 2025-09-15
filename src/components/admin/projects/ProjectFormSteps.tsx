@@ -48,8 +48,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           <CardTitle className="text-xl font-semibold text-foreground">Informations de base</CardTitle>
           <CardDescription className="text-muted-foreground">Les détails de base de votre projet</CardDescription>
         </CardHeader>
-        <CardContent className="p-6 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <CardContent className="p-8 space-y-8"> {/* Augmenté le padding et l'espacement */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8"> {/* Augmenté l'espacement */}
             <FormField
               control={form.control}
               name="title"
