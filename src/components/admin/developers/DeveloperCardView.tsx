@@ -62,7 +62,7 @@ export const DeveloperCardView = ({
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {groupedByZone[zone].map(dev => (
-              <Card key={dev.id} className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/80 backdrop-blur-sm hover:bg-white hover:-translate-y-1">
+              <Card key={dev.id} className="group hover:shadow-xl transition-all duration-300 border-2 border-slate-200 bg-white hover:border-slate-300 hover:-translate-y-1">
                 <CardHeader className="pb-4">
                   <div className="flex items-start space-x-4">
                     <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center overflow-hidden border-2 border-white shadow-sm">
@@ -135,7 +135,7 @@ export const DeveloperCardView = ({
                           href={dev.website.startsWith('http') ? dev.website : `https://${dev.website}`}
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-purple-600 hover:text-purple-800 font-medium truncate transition-colors"
+                          className="text-slate-700 hover:text-slate-900 font-medium truncate transition-colors"
                         >
                           {dev.website}
                         </a>

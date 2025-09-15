@@ -192,8 +192,7 @@ export const DeveloperDetailedView = ({
                 </div>
                 <div className="space-y-3">
                   <div className="p-3 rounded-xl bg-amber-50 border border-amber-200">
-                    <div className="flex justify-between items-center">
-                      <span className="text-amber-800 font-medium">Stabilité financière:</span>
+                    <div className="text-center">
                       <span className="font-bold text-amber-900">{dev.financial_stability || 'N/A'}</span>
                     </div>
                   </div>

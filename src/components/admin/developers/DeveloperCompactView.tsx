@@ -34,13 +34,7 @@ export const DeveloperCompactView = ({
       {developers.map((dev, index) => (
         <div 
           key={dev.id} 
-          className={`
-            flex items-center justify-between p-4 rounded-xl border transition-all duration-200 hover:shadow-md hover:-translate-y-0.5
-            ${index % 2 === 0 
-              ? 'bg-white border-slate-200' 
-              : 'bg-slate-50/80 border-slate-100'
-            }
-          `}
+          className="flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 bg-white border-slate-200 hover:border-slate-300"
         >
           <div className="flex items-center space-x-4 flex-1 min-w-0">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center overflow-hidden border-2 border-white shadow-sm flex-shrink-0">
