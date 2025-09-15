@@ -28,16 +28,16 @@ import { Card } from '@/components/dainabase-ui';
 import { AlertCircle } from 'lucide-react';
 
 const AdminHeader = () => (
-  <div className="h-16 px-6 flex items-center justify-between bg-white border-b border-slate-200">
+  <div className="h-32 px-6 flex items-center justify-between bg-white border-b border-slate-200">
     <div className="flex items-center gap-4">
-      <a href="/" className="text-lg font-semibold text-slate-900 hover:text-slate-700 transition-colors">
-        ENKI-Realty
+      <a href="/" className="text-2xl font-bold text-slate-900 hover:text-slate-700 transition-colors uppercase">
+        ENKI-REALTY
       </a>
       <span className="text-slate-400">|</span>
-      <span className="text-sm text-slate-500">Admin Dashboard</span>
+      <span className="text-lg text-slate-500">Admin Dashboard</span>
     </div>
     <div className="flex items-center gap-4">
-      <a href="/" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
+      <a href="/" className="text-base text-slate-600 hover:text-slate-900 transition-colors">
         Retour au site
       </a>
     </div>
