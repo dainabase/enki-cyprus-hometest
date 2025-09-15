@@ -550,14 +550,23 @@ export default function AdminDevelopers() {
           )}
           {currentView === 'compact' && (
             <DeveloperCompactView
-           developers={normalizedDevelopers}
-           getLogo={getLogo}
-           onEdit={openEditModal}
-           onDelete={deleteDeveloper}
-           onViewDetails={openDetailModal}
-         />
-       )}
-       </div>
+              developers={normalizedDevelopers}
+              getLogo={getLogo}
+              onEdit={openEditModal}
+              onDelete={deleteDeveloper}
+              onViewDetails={openDetailModal}
+            />
+          )}
+          {currentView === 'detailed' && (
+            <DeveloperDetailedView
+              developers={normalizedDevelopers}
+              getLogo={getLogo}
+              onEdit={openEditModal}
+              onDelete={deleteDeveloper}
+              onViewDetails={openDetailModal}
+            />
+          )}
+        </div>
      </div>
 
       {/* Form Modal */}
@@ -778,9 +787,9 @@ export default function AdminDevelopers() {
                     {selectedDeveloper.contact_info?.phone && (
                       <div><strong>Téléphone:</strong> {selectedDeveloper.contact_info.phone}</div>
                     )}
-                    {selectedDeveloper.website && (
-                      <div><strong>Site Web:</strong> <a href={selectedDeveloper.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{selectedDeveloper.website}</a></div>
-                    )}
+                     {selectedDeveloper.website && (
+                       <div><strong>Site Web:</strong> <a href={selectedDeveloper.website} target="_blank" rel="noopener noreferrer" className="text-foreground hover:underline">{selectedDeveloper.website}</a></div>
+                     )}
                     {selectedDeveloper.contact_info?.address && (
                       <div><strong>Adresse:</strong> {selectedDeveloper.contact_info.address}</div>
                     )}

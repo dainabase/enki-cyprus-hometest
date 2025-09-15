@@ -175,7 +175,7 @@ export const DeveloperDetailedView = ({
                         href={dev.website.startsWith('http') ? dev.website : `https://${dev.website}`} 
                         target="_blank" 
                         rel="noopener noreferrer" 
-                        className="text-purple-600 hover:text-purple-800 font-medium underline truncate transition-colors"
+                        className="text-slate-700 hover:text-slate-900 font-medium truncate transition-colors"
                       >
                         {dev.website}
                       </a>
