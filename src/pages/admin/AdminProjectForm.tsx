@@ -8,19 +8,21 @@ import { Form } from '@/components/ui/form';
 import { ProjectFormSteps } from '@/components/admin/projects/ProjectFormSteps';
 import { projectFormSteps } from '@/schemas/projectSchema';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { ArrowLeft, ArrowRight, Save, Eye, ChevronLeft } from 'lucide-react';
+import { ProjectActionDialog } from '@/components/admin/ProjectActionDialog';
 
 export const AdminProjectForm: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const isEdit = Boolean(id);
   const isEditing = isEdit;
-  const { toast } = useToast();
   
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [saveType, setSaveType] = useState<'draft' | 'publish'>('draft');
-  const [formKey, setFormKey] = useState(0); // Force re-render key
+  const [formKey, setFormKey] = useState(0);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [originalData, setOriginalData] = useState<any>(null);
 
   const currentStep = projectFormSteps[currentStepIndex];
   
@@ -80,6 +82,7 @@ export const AdminProjectForm: React.FC = () => {
   // Populate form when data is loaded
   React.useEffect(() => {
     if (projectData && isEdit) {
+      setOriginalData(projectData); // Store original data for comparison
       console.log('Setting form values with project data:', projectData);
       
       // Create the form data object with proper mapping and strict defaults
@@ -161,29 +164,75 @@ export const AdminProjectForm: React.FC = () => {
       }
     },
     onSuccess: () => {
-      toast({
-        title: saveType === 'publish' ? '🎉 Projet publié avec succès !' : isEdit ? 'Projet mis à jour' : 'Projet créé',
-        description: saveType === 'publish' 
-          ? 'Votre projet est maintenant visible publiquement. Toutes les modifications ont été prises en compte.'
-          : isEdit ? 'Le projet a été mis à jour avec succès' : 'Le nouveau projet a été créé avec succès',
-        duration: 5000 // Toast reste 5 secondes
+      const actionMessage = saveType === 'publish' 
+        ? 'Projet publié avec succès !' 
+        : isEdit ? 'Projet mis à jour avec succès !' : 'Projet créé avec succès !';
+      
+      const description = saveType === 'publish' 
+        ? 'Votre projet est maintenant visible publiquement. Toutes les modifications ont été prises en compte.'
+        : isEdit ? 'Toutes les modifications ont été sauvegardées.' : 'Le nouveau projet a été créé.';
+      
+      toast.success(actionMessage, {
+        description,
+        duration: 5000
       });
       
-      // Délai avant redirection pour laisser le temps de voir le message
       setTimeout(() => {
         navigate('/admin/projects');
       }, 2000);
     },
     onError: (error: any) => {
       console.error('Erreur lors de la sauvegarde:', error);
-      toast({
-        title: 'Erreur de publication',
+      toast.error('Erreur de publication', {
         description: `Impossible de ${saveType === 'publish' ? 'publier' : 'sauvegarder'} le projet. Vérifiez tous les champs requis.`,
-        variant: 'destructive',
         duration: 8000
       });
     }
   });
+
+  // Function to detect modifications
+  const getModifications = (formData: any) => {
+    if (!originalData) return [];
+    
+    const modifications: any[] = [];
+    const fieldsToCheck = [
+      { key: 'title', label: 'Titre' },
+      { key: 'description', label: 'Description' },
+      { key: 'price', label: 'Prix' },
+      { key: 'status', label: 'Statut' },
+      { key: 'features', label: 'Caractéristiques' },
+      { key: 'amenities', label: 'Équipements' },
+      { key: 'photos', label: 'Photos' }
+    ];
+
+    fieldsToCheck.forEach(field => {
+      const oldValue = originalData[field.key];
+      const newValue = formData[field.key];
+      
+      if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
+        modifications.push({
+          field: field.key,
+          label: field.label,
+          oldValue,
+          newValue,
+          type: !oldValue ? 'added' : !newValue ? 'removed' : 'modified'
+        });
+      }
+    });
+
+    return modifications;
+  };
+
+  const handleSubmitWithConfirmation = (data: any) => {
+    const modifications = getModifications(data);
+    
+    if (modifications.length > 0 || saveType === 'publish') {
+      setShowConfirmDialog(true);
+    } else {
+      // No changes, submit directly
+      onSubmit(data);
+    }
+  };
 
   const onSubmit = (data: any) => {
     console.log('Submitting form data:', data);
@@ -295,9 +344,9 @@ export const AdminProjectForm: React.FC = () => {
         {/* Main Content */}
         <div className="flex-1">
           <div className="px-8 py-6">
-            <div className="max-w-7xl mx-auto"> {/* Élargi de 4xl à 7xl */}
+            <div className="max-w-7xl mx-auto">
               <Card className="bg-white border-2 border-slate-200 shadow-xl">
-                <CardContent className="p-10"> {/* Augmenté le padding */}
+                <CardContent className="p-10">
                   <div className="mb-8">
                     <h1 className="text-2xl font-bold text-slate-900 mb-2">
                       {currentStep.title}
@@ -308,10 +357,10 @@ export const AdminProjectForm: React.FC = () => {
                   </div>
 
                   <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10"> {/* Augmenté l'espacement */}
-                      <div className="bg-slate-50 border-2 border-slate-200 rounded-xl p-8"> {/* Augmenté le padding */}
+                    <form onSubmit={form.handleSubmit(handleSubmitWithConfirmation)} className="space-y-10">
+                      <div className="bg-slate-50 border-2 border-slate-200 rounded-xl p-8">
                         <ProjectFormSteps 
-                          key={formKey} // Force re-render when data loads
+                          key={formKey}
                           currentStep={currentStep.id}
                           projectId={id}
                           form={form as any}
@@ -339,7 +388,7 @@ export const AdminProjectForm: React.FC = () => {
                                 variant="outline"
                                 onClick={() => {
                                   setSaveType('draft');
-                                  form.handleSubmit(onSubmit)();
+                                  form.handleSubmit(handleSubmitWithConfirmation)();
                                 }}
                                 disabled={saveProjectMutation.isPending}
                                 className="flex items-center gap-2 border-2 border-orange-300 text-orange-700 hover:bg-orange-50"
@@ -371,6 +420,20 @@ export const AdminProjectForm: React.FC = () => {
                       </div>
                     </form>
                   </Form>
+
+                  {/* Confirmation Dialog */}
+                  <ProjectActionDialog
+                    isOpen={showConfirmDialog}
+                    onClose={() => setShowConfirmDialog(false)}
+                    onConfirm={() => {
+                      const formData = form.getValues();
+                      onSubmit(formData);
+                    }}
+                    action={saveType === 'publish' ? 'publish' : 'save'}
+                    projectTitle={form.getValues('title') || 'Nouveau projet'}
+                    modifications={originalData ? getModifications(form.getValues()) : []}
+                    isLoading={saveProjectMutation.isPending}
+                  />
                 </CardContent>
               </Card>
             </div>

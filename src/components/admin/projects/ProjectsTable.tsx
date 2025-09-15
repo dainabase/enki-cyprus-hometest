@@ -6,9 +6,10 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { checkProjectDependencies } from '@/lib/supabase/integrity';
+import { ProjectStatusActions } from '@/components/admin/ProjectStatusActions';
 
 interface ProjectsTableProps {
   projects: any[];
@@ -19,7 +20,6 @@ interface ProjectsTableProps {
 }
 
 const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEdit, onRefetch, selectedProjects, onSelectionChange }) => {
-  const { toast } = useToast();
   const { t } = useTranslation();
   const navigate = useNavigate();
   
@@ -70,17 +70,14 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
 
       if (error) throw error;
 
-      toast({
-        title: t('messages.projectDeletedTitle', { defaultValue: 'Project deleted' }),
-        description: t('messages.projectDeleted', { defaultValue: 'The project has been deleted successfully' })
+      toast.success('Projet supprimé', {
+        description: 'Le projet a été supprimé avec succès.'
       });
       onRefetch();
     } catch (error: any) {
       console.error('Error deleting project:', error);
-      toast({
-        variant: 'destructive',
-        title: t('messages.error', { defaultValue: 'Error' }),
-        description: t('messages.deleteProjectError', { defaultValue: 'Unable to delete the project' })
+      toast.error('Erreur', {
+        description: 'Impossible de supprimer le projet.'
       });
     }
   };
@@ -202,7 +199,14 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
                 {getZoneBadge(project.cyprus_zone)}
               </TableCell>
               <TableCell className="w-[120px]">
-                {getStatusBadge(project.status)}
+                <ProjectStatusActions 
+                  project={{
+                    id: project.id,
+                    title: project.title,
+                    status: project.status
+                  }}
+                  compact={true}
+                />
               </TableCell>
               <TableCell className="w-[80px] text-center">
                 <span className="font-mono text-sm">
