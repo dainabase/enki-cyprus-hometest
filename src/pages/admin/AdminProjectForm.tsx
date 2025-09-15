@@ -190,6 +190,61 @@ export const AdminProjectForm: React.FC = () => {
     }
   });
 
+  // Function to validate required fields and dates
+  const validateRequiredFields = (formData: any) => {
+    const errors: any[] = [];
+    
+    // Validate required fields
+    if (!formData.title || formData.title.length < 3) {
+      errors.push({ field: 'title', label: 'Titre', message: 'Minimum 3 caractères requis' });
+    }
+    
+    if (!formData.developer_id) {
+      errors.push({ field: 'developer_id', label: 'Développeur', message: 'Sélection requise' });
+    }
+    
+    if (!formData.city) {
+      errors.push({ field: 'city', label: 'Ville', message: 'Ville requise' });
+    }
+    
+    if (!formData.description || formData.description.length < 10) {
+      errors.push({ field: 'description', label: 'Description', message: 'Description trop courte (min. 10 caractères)' });
+    }
+    
+    if (!formData.price || formData.price <= 0) {
+      errors.push({ field: 'price', label: 'Prix', message: 'Prix requis et supérieur à 0' });
+    }
+    
+    if (!formData.property_sub_type || formData.property_sub_type.length === 0) {
+      errors.push({ field: 'property_sub_type', label: 'Type de propriété', message: 'Au moins un type requis' });
+    }
+    
+    // Validate dates format
+    if (formData.launch_date && formData.launch_date.length > 0) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(formData.launch_date)) {
+        errors.push({ field: 'launch_date', label: 'Date de lancement', message: 'Format invalide (YYYY-MM-DD requis)' });
+      }
+    }
+    
+    if (formData.completion_date_new && formData.completion_date_new.length > 0) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(formData.completion_date_new)) {
+        errors.push({ field: 'completion_date_new', label: 'Date de completion', message: 'Format invalide (YYYY-MM-DD requis)' });
+      }
+    }
+    
+    // Golden Visa validation
+    if (formData.golden_visa_eligible_new && formData.price < 300000) {
+      errors.push({ field: 'golden_visa_eligible_new', label: 'Golden Visa', message: 'Prix minimum de 300,000€ requis' });
+    }
+    
+    // Price range validation
+    if (formData.price_to && formData.price_from_new && formData.price_to < formData.price_from_new) {
+      errors.push({ field: 'price_to', label: 'Prix maximum', message: 'Ne peut être inférieur au prix minimum' });
+    }
+    
+    return errors;
+  };
+
   // Function to detect modifications
   const getModifications = (formData: any) => {
     if (!originalData) return [];
@@ -224,6 +279,18 @@ export const AdminProjectForm: React.FC = () => {
   };
 
   const handleSubmitWithConfirmation = (data: any) => {
+    // Always validate required fields first
+    const validationErrors = validateRequiredFields(data);
+    
+    if (validationErrors.length > 0) {
+      toast.error('Champs requis manquants', {
+        description: `${validationErrors.length} erreur(s) détectée(s). Vérifiez le pop-up pour plus de détails.`,
+        duration: 8000
+      });
+      setShowConfirmDialog(true);
+      return;
+    }
+    
     const modifications = getModifications(data);
     
     if (modifications.length > 0 || saveType === 'publish') {
@@ -427,11 +494,22 @@ export const AdminProjectForm: React.FC = () => {
                     onClose={() => setShowConfirmDialog(false)}
                     onConfirm={() => {
                       const formData = form.getValues();
+                      const validationErrors = validateRequiredFields(formData);
+                      
+                      if (validationErrors.length > 0) {
+                        toast.error('Impossible de continuer', {
+                          description: 'Corrigez les erreurs affichées dans le dialogue.',
+                          duration: 5000
+                        });
+                        return;
+                      }
+                      
                       onSubmit(formData);
                     }}
                     action={saveType === 'publish' ? 'publish' : 'save'}
                     projectTitle={form.getValues('title') || 'Nouveau projet'}
                     modifications={originalData ? getModifications(form.getValues()) : []}
+                    validationErrors={validateRequiredFields(form.getValues())}
                     isLoading={saveProjectMutation.isPending}
                   />
                 </CardContent>

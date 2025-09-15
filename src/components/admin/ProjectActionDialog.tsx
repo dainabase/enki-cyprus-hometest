@@ -2,7 +2,7 @@ import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle2, AlertCircle, Info } from 'lucide-react';
+import { CheckCircle2, AlertCircle, Info, AlertTriangle } from 'lucide-react';
 
 interface ProjectModification {
   field: string;
@@ -19,6 +19,11 @@ interface ProjectActionDialogProps {
   action: 'save' | 'publish' | 'unpublish' | 'archive' | 'activate';
   projectTitle: string;
   modifications?: ProjectModification[];
+  validationErrors?: Array<{
+    field: string;
+    label: string;
+    message: string;
+  }>;
   isLoading?: boolean;
 }
 
@@ -29,6 +34,7 @@ export const ProjectActionDialog: React.FC<ProjectActionDialogProps> = ({
   action,
   projectTitle,
   modifications = [],
+  validationErrors = [],
   isLoading = false
 }) => {
   const getActionConfig = () => {
@@ -112,7 +118,37 @@ export const ProjectActionDialog: React.FC<ProjectActionDialogProps> = ({
           </DialogDescription>
         </DialogHeader>
 
-        {modifications.length > 0 && (
+        {validationErrors && validationErrors.length > 0 && (
+          <div className="space-y-4">
+            <h3 className="font-semibold text-lg border-b pb-2 text-red-700 flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5" />
+              Erreurs à corriger ({validationErrors.length})
+            </h3>
+            
+            <div className="space-y-3 max-h-60 overflow-y-auto">
+              {validationErrors.map((error, index) => (
+                <div key={index} className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Badge variant="destructive">❌ Erreur</Badge>
+                    <span className="font-medium text-red-800">{error.label}</span>
+                  </div>
+                  <p className="text-red-700 text-sm">{error.message}</p>
+                </div>
+              ))}
+            </div>
+            
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <p className="text-red-800 font-medium">
+                🚫 Impossible de publier le projet tant que ces erreurs ne sont pas corrigées.
+              </p>
+              <p className="text-red-700 text-sm mt-1">
+                Retournez au formulaire et complétez les champs requis avant de republier.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {(!validationErrors || validationErrors.length === 0) && modifications.length > 0 && (
           <div className="space-y-4">
             <h3 className="font-semibold text-lg border-b pb-2">
               Modifications détectées ({modifications.length})
@@ -146,17 +182,26 @@ export const ProjectActionDialog: React.FC<ProjectActionDialogProps> = ({
           </div>
         )}
 
+        {(!validationErrors || validationErrors.length === 0) && modifications.length === 0 && action === 'publish' && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+            <p className="text-green-800 font-medium">✅ Aucune erreur détectée</p>
+            <p className="text-green-700 text-sm">Le projet est prêt à être publié.</p>
+          </div>
+        )}
+
         <DialogFooter className="gap-2">
           <Button variant="outline" onClick={onClose} disabled={isLoading}>
-            Annuler
+            {validationErrors && validationErrors.length > 0 ? 'Retour au formulaire' : 'Annuler'}
           </Button>
-          <Button 
-            onClick={onConfirm} 
-            disabled={isLoading}
-            className={config.buttonClass}
-          >
-            {isLoading ? 'En cours...' : config.buttonText}
-          </Button>
+          {(!validationErrors || validationErrors.length === 0) && (
+            <Button 
+              onClick={onConfirm} 
+              disabled={isLoading}
+              className={config.buttonClass}
+            >
+              {isLoading ? 'En cours...' : config.buttonText}
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>
