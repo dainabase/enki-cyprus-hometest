@@ -571,175 +571,245 @@ export default function AdminDevelopers() {
 
       {/* Form Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>
+        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto bg-white">
+          <DialogHeader className="bg-gradient-to-r from-slate-900 to-slate-700 text-white p-8 -m-6 mb-6 rounded-t-lg">
+            <DialogTitle className="text-2xl font-bold">
               {editingDeveloper ? 'Modifier le développeur' : 'Nouveau développeur'}
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-slate-200 text-lg">
               {editingDeveloper 
-                ? 'Modifiez les informations du développeur' 
-                : 'Ajoutez un nouveau développeur à votre liste'
+                ? 'Modifiez les informations du développeur sélectionné' 
+                : 'Ajoutez un nouveau partenaire développeur à votre portefeuille'
               }
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="name">Nom *</Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="Nom du développeur"
-                />
+          <div className="space-y-8 py-6">
+            {/* Section Informations de base */}
+            <div className="bg-gradient-to-r from-slate-50 to-white p-6 rounded-xl border border-slate-200">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-2 h-8 bg-gradient-to-b from-slate-900 to-slate-600 rounded-full"></div>
+                <h3 className="text-xl font-bold text-slate-900">Informations de base</h3>
               </div>
-              <div>
-                <Label htmlFor="email">Email *</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                  placeholder="email@exemple.com"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="phone">Téléphone</Label>
-                <Input
-                  id="phone"
-                  value={formData.phone}
-                  onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                  placeholder="+357 25 123 456"
-                />
-              </div>
-              <div>
-                <Label htmlFor="website">Site Web</Label>
-                <Input
-                  id="website"
-                  value={formData.website}
-                  onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
-                  placeholder="https://exemple.com"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="address">Adresse</Label>
-                <Input
-                  id="address"
-                  value={formData.address}
-                  onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-                  placeholder="Adresse complète"
-                />
-              </div>
-              <div>
-                <Label htmlFor="main_city">Ville principale</Label>
-                <Select value={formData.main_city} onValueChange={(value) => setFormData(prev => ({ ...prev, main_city: value }))}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Sélectionner une ville" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Limassol">Limassol</SelectItem>
-                    <SelectItem value="Larnaca">Larnaca</SelectItem>
-                    <SelectItem value="Paphos">Paphos</SelectItem>
-                    <SelectItem value="Famagusta">Famagusta</SelectItem>
-                    <SelectItem value="Kyrenia">Kyrenia</SelectItem>
-                    <SelectItem value="Nicosia">Nicosia</SelectItem>
-                  </SelectContent>
-                </Select>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="name" className="text-sm font-semibold text-slate-700">Nom du développeur *</Label>
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="Ex: Leptos Estates, Aristo Developers..."
+                    className="h-12 border-2 border-slate-200 focus:border-slate-400 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-sm font-semibold text-slate-700">Email professionnel *</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                    placeholder="contact@developpeur.com"
+                    className="h-12 border-2 border-slate-200 focus:border-slate-400 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="phone" className="text-sm font-semibold text-slate-700">Téléphone</Label>
+                  <Input
+                    id="phone"
+                    value={formData.phone}
+                    onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                    placeholder="+357 25 123 456"
+                    className="h-12 border-2 border-slate-200 focus:border-slate-400 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="website" className="text-sm font-semibold text-slate-700">Site Web</Label>
+                  <Input
+                    id="website"
+                    value={formData.website}
+                    onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
+                    placeholder="https://www.developpeur.com"
+                    className="h-12 border-2 border-slate-200 focus:border-slate-400 rounded-xl"
+                  />
+                </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="commission_rate">Taux de commission (%)</Label>
-                <Input
-                  id="commission_rate"
-                  type="number"
-                  min="0"
-                  max="100"
-                  step="0.1"
-                  value={formData.commission_rate}
-                  onChange={(e) => setFormData(prev => ({ ...prev, commission_rate: parseFloat(e.target.value) || 0 }))}
-                />
+            {/* Section Localisation */}
+            <div className="bg-gradient-to-r from-blue-50 to-white p-6 rounded-xl border border-blue-200">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-2 h-8 bg-gradient-to-b from-blue-600 to-blue-400 rounded-full"></div>
+                <h3 className="text-xl font-bold text-slate-900">Localisation</h3>
               </div>
-              <div>
-                <Label htmlFor="status">Statut</Label>
-                <Select value={formData.status} onValueChange={(value: 'active' | 'inactive') => setFormData(prev => ({ ...prev, status: value }))}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="active">Actif</SelectItem>
-                    <SelectItem value="inactive">Inactif</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="founded_year">Année de fondation</Label>
-                <Input
-                  id="founded_year"
-                  type="number"
-                  min="1900"
-                  max={new Date().getFullYear()}
-                  value={formData.founded_year || ''}
-                  onChange={(e) => setFormData(prev => ({ ...prev, founded_year: e.target.value ? parseInt(e.target.value) : undefined }))}
-                  placeholder="2020"
-                />
-              </div>
-              <div>
-                <Label htmlFor="rating_score">Note (1-10)</Label>
-                <Input
-                  id="rating_score"
-                  type="number"
-                  min="1"
-                  max="10"
-                  step="0.1"
-                  value={formData.rating_score || ''}
-                  onChange={(e) => setFormData(prev => ({ ...prev, rating_score: e.target.value ? parseFloat(e.target.value) : undefined }))}
-                  placeholder="8.5"
-                />
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="address" className="text-sm font-semibold text-slate-700">Adresse complète</Label>
+                  <Input
+                    id="address"
+                    value={formData.address}
+                    onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+                    placeholder="123 Avenue Principal, Limassol, Chypre"
+                    className="h-12 border-2 border-slate-200 focus:border-slate-400 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="main_city" className="text-sm font-semibold text-slate-700">Ville principale</Label>
+                  <Select value={formData.main_city} onValueChange={(value) => setFormData(prev => ({ ...prev, main_city: value }))}>
+                    <SelectTrigger className="h-12 border-2 border-slate-200 focus:border-slate-400 rounded-xl">
+                      <SelectValue placeholder="Sélectionner une ville" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Limassol">🏙️ Limassol</SelectItem>
+                      <SelectItem value="Larnaca">🏛️ Larnaca</SelectItem>
+                      <SelectItem value="Paphos">🏖️ Paphos</SelectItem>
+                      <SelectItem value="Famagusta">🏺 Famagusta</SelectItem>
+                      <SelectItem value="Kyrenia">⛰️ Kyrenia</SelectItem>
+                      <SelectItem value="Nicosia">🏛️ Nicosia</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
 
-            <div>
-              <Label htmlFor="main_activities">Activités principales</Label>
-              <Textarea
-                id="main_activities"
-                value={formData.main_activities}
-                onChange={(e) => setFormData(prev => ({ ...prev, main_activities: e.target.value }))}
-                placeholder="Description des activités principales..."
-                rows={3}
-              />
+            {/* Section Commercial */}
+            <div className="bg-gradient-to-r from-emerald-50 to-white p-6 rounded-xl border border-emerald-200">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-2 h-8 bg-gradient-to-b from-emerald-600 to-emerald-400 rounded-full"></div>
+                <h3 className="text-xl font-bold text-slate-900">Informations commerciales</h3>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="commission_rate" className="text-sm font-semibold text-slate-700">Taux de commission (%)</Label>
+                  <Input
+                    id="commission_rate"
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="0.1"
+                    value={formData.commission_rate}
+                    onChange={(e) => setFormData(prev => ({ ...prev, commission_rate: parseFloat(e.target.value) || 0 }))}
+                    className="h-12 border-2 border-slate-200 focus:border-slate-400 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="status" className="text-sm font-semibold text-slate-700">Statut</Label>
+                  <Select value={formData.status} onValueChange={(value: 'active' | 'inactive') => setFormData(prev => ({ ...prev, status: value }))}>
+                    <SelectTrigger className="h-12 border-2 border-slate-200 focus:border-slate-400 rounded-xl">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="active">✅ Actif</SelectItem>
+                      <SelectItem value="inactive">⏸️ Inactif</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="rating_score" className="text-sm font-semibold text-slate-700">Note (1-10)</Label>
+                  <Input
+                    id="rating_score"
+                    type="number"
+                    min="1"
+                    max="10"
+                    step="0.1"
+                    value={formData.rating_score || ''}
+                    onChange={(e) => setFormData(prev => ({ ...prev, rating_score: e.target.value ? parseFloat(e.target.value) : undefined }))}
+                    placeholder="8.5"
+                    className="h-12 border-2 border-slate-200 focus:border-slate-400 rounded-xl"
+                  />
+                </div>
+              </div>
             </div>
 
-            <div>
-              <Label htmlFor="key_projects">Projets clés</Label>
-              <Textarea
-                id="key_projects"
-                value={formData.key_projects}
-                onChange={(e) => setFormData(prev => ({ ...prev, key_projects: e.target.value }))}
-                placeholder="Description des projets clés..."
-                rows={3}
-              />
+            {/* Section Historique */}
+            <div className="bg-gradient-to-r from-amber-50 to-white p-6 rounded-xl border border-amber-200">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-2 h-8 bg-gradient-to-b from-amber-600 to-amber-400 rounded-full"></div>
+                <h3 className="text-xl font-bold text-slate-900">Historique & Expérience</h3>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="founded_year" className="text-sm font-semibold text-slate-700">Année de fondation</Label>
+                  <Input
+                    id="founded_year"
+                    type="number"
+                    min="1900"
+                    max={new Date().getFullYear()}
+                    value={formData.founded_year || ''}
+                    onChange={(e) => setFormData(prev => ({ ...prev, founded_year: e.target.value ? parseInt(e.target.value) : undefined }))}
+                    placeholder="2020"
+                    className="h-12 border-2 border-slate-200 focus:border-slate-400 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="years_experience" className="text-sm font-semibold text-slate-700">Années d'expérience</Label>
+                  <Input
+                    id="years_experience"
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={formData.years_experience || ''}
+                    onChange={(e) => setFormData(prev => ({ ...prev, years_experience: e.target.value ? parseInt(e.target.value) : undefined }))}
+                    placeholder="15"
+                    className="h-12 border-2 border-slate-200 focus:border-slate-400 rounded-xl"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Section Activités & Projets */}
+            <div className="bg-gradient-to-r from-purple-50 to-white p-6 rounded-xl border border-purple-200">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-2 h-8 bg-gradient-to-b from-purple-600 to-purple-400 rounded-full"></div>
+                <h3 className="text-xl font-bold text-slate-900">Activités & Projets</h3>
+              </div>
+              
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="main_activities" className="text-sm font-semibold text-slate-700">Activités principales</Label>
+                  <Textarea
+                    id="main_activities"
+                    value={formData.main_activities}
+                    onChange={(e) => setFormData(prev => ({ ...prev, main_activities: e.target.value }))}
+                    placeholder="Ex: Développement résidentiel de luxe, projets commerciaux, rénovation urbaine..."
+                    rows={4}
+                    className="border-2 border-slate-200 focus:border-slate-400 rounded-xl resize-none"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="key_projects" className="text-sm font-semibold text-slate-700">Projets clés</Label>
+                  <Textarea
+                    id="key_projects"
+                    value={formData.key_projects}
+                    onChange={(e) => setFormData(prev => ({ ...prev, key_projects: e.target.value }))}
+                    placeholder="Ex: Marina Bay Residences (2023), Skyline Tower (2022), Mountain Villas (2021)..."
+                    rows={4}
+                    className="border-2 border-slate-200 focus:border-slate-400 rounded-xl resize-none"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="flex justify-end space-x-2 pt-4 border-t">
-            <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+          <div className="flex justify-end space-x-4 pt-8 border-t border-slate-200 bg-slate-50 -m-6 mt-6 p-6 rounded-b-lg">
+            <Button 
+              variant="outline" 
+              onClick={() => setIsModalOpen(false)}
+              className="px-8 py-3 h-auto border-2 border-slate-300 hover:bg-slate-100 text-slate-700 font-semibold"
+            >
               Annuler
             </Button>
-            <Button onClick={handleSave} disabled={saveDevMutation.isPending}>
-              {saveDevMutation.isPending ? 'Sauvegarde...' : 'Sauvegarder'}
+            <Button 
+              onClick={handleSave} 
+              disabled={saveDevMutation.isPending}
+              className="px-8 py-3 h-auto bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white font-semibold shadow-lg"
+            >
+              {saveDevMutation.isPending ? 'Sauvegarde...' : 'Sauvegarder le développeur'}
             </Button>
           </div>
         </DialogContent>
