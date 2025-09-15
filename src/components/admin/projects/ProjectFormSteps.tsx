@@ -45,7 +45,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     <div className="space-y-8">
       <Card className="border-border/50 shadow-lg">
         <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5">
-          <CardTitle className="text-xl font-semibold text-foreground">{t('admin.steps.basicInfo')}</CardTitle>
+          <CardTitle className="text-xl font-semibold text-foreground">Informations de base</CardTitle>
           <CardDescription className="text-muted-foreground">Les détails de base de votre projet</CardDescription>
         </CardHeader>
         <CardContent className="p-6 space-y-6">
@@ -55,7 +55,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('admin.fields.projectName')} *</FormLabel>
+                  <FormLabel>Nom du projet *</FormLabel>
                   <FormControl>
                     <Input placeholder="Ex: Marina Towers" {...field} />
                   </FormControl>
@@ -69,7 +69,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="project_code"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('admin.fields.projectCode')}</FormLabel>
+                  <FormLabel>Code du projet</FormLabel>
                   <FormControl>
                     <Input placeholder="Ex: MT-2025-001" {...field} />
                   </FormControl>
@@ -85,7 +85,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="property_category"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('admin.fields.category')} *</FormLabel>
+                  <FormLabel>Catégorie *</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
@@ -93,10 +93,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="residential">{t('admin.categories.residential')}</SelectItem>
-                      <SelectItem value="commercial">{t('admin.categories.commercial')}</SelectItem>
-                      <SelectItem value="mixed">{t('admin.categories.mixed')}</SelectItem>
-                      <SelectItem value="industrial">{t('admin.categories.industrial')}</SelectItem>
+                       <SelectItem value="residential">Résidentiel</SelectItem>
+                       <SelectItem value="commercial">Commercial</SelectItem>
+                       <SelectItem value="mixed">Mixte</SelectItem>
+                       <SelectItem value="industrial">Industriel</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -114,7 +114,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="project_phase"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('admin.fields.projectPhase')}</FormLabel>
+                  <FormLabel>Phase du projet</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
@@ -122,10 +122,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="off-plan">{t('admin.phases.offPlan')}</SelectItem>
-                      <SelectItem value="under-construction">{t('admin.phases.underConstruction')}</SelectItem>
-                      <SelectItem value="completed">{t('admin.phases.completed')}</SelectItem>
-                      <SelectItem value="ready-to-move">{t('admin.phases.readyToMove')}</SelectItem>
+                       <SelectItem value="off-plan">Sur plan</SelectItem>
+                       <SelectItem value="under-construction">En construction</SelectItem>
+                       <SelectItem value="completed">Terminé</SelectItem>
+                       <SelectItem value="ready-to-move">Prêt à emménager</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -139,7 +139,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             name="developer_id"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t('admin.fields.developer')} *</FormLabel>
+                <FormLabel>Développeur *</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger>
@@ -165,7 +165,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="launch_date"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('admin.fields.launchDate')}</FormLabel>
+                  <FormLabel>Date de lancement</FormLabel>
                   <FormControl>
                     <Input type="month" {...field} />
                   </FormControl>
@@ -179,7 +179,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="completion_date_new"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('admin.fields.deliveryDate')}</FormLabel>
+                  <FormLabel>Date de livraison</FormLabel>
                   <FormControl>
                     <Input type="month" {...field} />
                   </FormControl>
@@ -195,9 +195,9 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                 <div className="space-y-0.5">
-                  <FormLabel className="text-base font-medium">
-                    {t('admin.fields.exclusiveCommercialization')}
-                  </FormLabel>
+                 <FormLabel className="text-base font-medium">
+                    Commercialisation exclusive
+                 </FormLabel>
                 </div>
                 <FormControl>
                   <Switch

@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Form } from '@/components/ui/form';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import Layout from '@/components/layout/Layout';
+
 import { ProjectFormSteps } from '@/components/admin/projects/ProjectFormSteps';
 import { DocumentManager } from '@/components/admin/projects/DocumentManager';
 import { projectSchema, ProjectFormData, projectFormSteps } from '@/schemas/projectSchema';
@@ -637,16 +637,16 @@ const [showPrefilledBanner, setShowPrefilledBanner] = useState(false);
 
   if (isLoading) {
     return (
-      <Layout>
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="container mx-auto py-8">
           <div className="text-center">Chargement...</div>
         </div>
-      </Layout>
+      </div>
     );
   }
 
   return (
-    <Layout>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">{/* Plus de Layout = Plus de footer */}
       {/* NOUVEAU DESIGN - INDICATEUR VISUEL IMPOSSIBLE A MANQUER */}
       <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white p-6 text-center font-bold text-2xl shadow-2xl border-8 border-yellow-300 animate-pulse">
         🚀 NOUVEAU FORMULAIRE PROJET REDESIGNÉ - VOUS VOYEZ MAINTENANT LE NOUVEAU DESIGN! 🚀
@@ -812,6 +812,6 @@ const [showPrefilledBanner, setShowPrefilledBanner] = useState(false);
           </div>
         </div>
       </div>
-    </Layout>
+    </div>
   );
 };
