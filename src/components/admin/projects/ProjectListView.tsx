@@ -49,99 +49,118 @@ export const ProjectListView = ({
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-      {projects.map((project, index) => (
-        <div key={project.id}>
-          <div className="flex items-center gap-4 p-6 hover:bg-slate-50 transition-colors">
-            <Checkbox
-              checked={selectedProjects.includes(project.id)}
-              onCheckedChange={(checked) => 
-                handleProjectSelect(project.id, checked as boolean)
-              }
-            />
-            
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-lg text-slate-900 truncate pr-4">
-                  {project.title}
-                </h3>
-                <div className="flex items-center gap-2">
+    <div className="space-y-3">
+      {projects.map(project => (
+        <div key={project.id} className="group bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl p-6 hover:shadow-xl hover:bg-white transition-all duration-300 hover:-translate-y-0.5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-6 flex-1">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center overflow-hidden border-2 border-white shadow-sm flex-shrink-0">
+                {project.photos && project.photos[0] ? (
+                  <img 
+                    src={project.photos[0]} 
+                    alt={project.title}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-10 h-10 bg-gradient-to-br from-slate-900 to-slate-700 rounded-xl flex items-center justify-center">
+                    <Building className="h-6 w-6 text-white" />
+                  </div>
+                )}
+              </div>
+              
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center space-x-4 mb-2">
+                  <Checkbox
+                    checked={selectedProjects.includes(project.id)}
+                    onCheckedChange={(checked) => 
+                      handleProjectSelect(project.id, checked as boolean)
+                    }
+                  />
+                  <h4 className="text-xl font-bold text-slate-900">{project.title}</h4>
                   <Badge className={getStatusColor(project.status)}>
                     {project.status === 'available' && 'Disponible'}
                     {project.status === 'under_construction' && 'En construction'}
                     {project.status === 'delivered' && 'Livré'}
                     {project.status === 'sold' && 'Vendu'}
                   </Badge>
-                  {(project.golden_visa_eligible || project.golden_visa_eligible_new) && (
-                    <div className="flex items-center gap-1 text-xs text-amber-600">
-                      <Star className="h-3 w-3" />
-                      <span>Golden Visa</span>
+                  
+                  <div className="flex items-center gap-2 bg-gradient-to-r from-emerald-50 to-green-50 px-3 py-1 rounded-full border border-emerald-200">
+                    <Euro className="h-4 w-4 text-emerald-600" />
+                    <span className="font-bold text-emerald-800">
+                      {formatPrice(project.price || project.price_from || 0)}
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-6 text-slate-600">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-6 h-6 bg-slate-100 rounded-lg flex items-center justify-center">
+                      <Building className="h-3 w-3 text-slate-700" />
+                    </div>
+                    <span className="font-medium text-slate-700">{getDeveloperName(project.developer)}</span>
+                  </div>
+                  
+                  <div className="flex items-center space-x-2">
+                    <div className="w-6 h-6 bg-slate-100 rounded-lg flex items-center justify-center">
+                      <MapPin className="h-3 w-3 text-slate-700" />
+                    </div>
+                    <span className="font-medium text-slate-700">
+                      {project.city || 'Ville non définie'}
+                      {project.neighborhood && `, ${project.neighborhood}`}
+                    </span>
+                  </div>
+                  
+                  {project.completion_date && (
+                    <div className="flex items-center space-x-2">
+                      <div className="w-6 h-6 bg-slate-100 rounded-lg flex items-center justify-center">
+                        <Calendar className="h-3 w-3 text-slate-700" />
+                      </div>
+                      <span className="font-medium text-slate-700">Livraison: {project.completion_date}</span>
                     </div>
                   )}
-                  {project.exclusive_commercialization && (
-                    <div title="Exclusivité">
+                  
+                  <div className="flex items-center gap-2">
+                    {(project.golden_visa_eligible || project.golden_visa_eligible_new) && (
+                      <div className="flex items-center gap-1 text-xs text-amber-600">
+                        <Star className="h-3 w-3" />
+                        <span>Golden Visa</span>
+                      </div>
+                    )}
+                    {project.exclusive_commercialization && (
                       <Crown className="h-4 w-4 text-purple-600" />
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2 text-sm text-slate-600">
-                <div className="flex items-center gap-2">
-                  <Building className="h-4 w-4 text-slate-900" />
-                  <span className="font-medium">{getDeveloperName(project.developer)}</span>
-                </div>
-                
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-slate-900" />
-                  <span>
-                    {project.city || 'Ville non définie'}
-                    {project.neighborhood && `, ${project.neighborhood}`}
-                  </span>
-                </div>
-                
-                <div className="flex items-center gap-2">
-                  <Euro className="h-4 w-4 text-slate-900" />
-                  <span className="font-semibold text-slate-900">
-                    {formatPrice(project.price || project.price_from || 0)}
-                  </span>
-                </div>
-              </div>
-
-              {project.completion_date && (
-                <div className="flex items-center gap-2 mt-1 text-sm text-slate-600">
-                  <Calendar className="h-4 w-4 text-slate-900" />
-                  <span>Livraison: {project.completion_date}</span>
-                </div>
-              )}
             </div>
             
-            <div className="flex items-center gap-1">
-              <Button
-                variant="ghost"
+            <div className="flex space-x-3 ml-6">
+              <Button 
+                variant="outline" 
                 size="sm"
-                className="h-8 w-8 p-0 text-slate-600 hover:text-slate-900"
+                className="border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-200"
               >
-                <Eye className="h-4 w-4" />
+                <Eye className="h-4 w-4 mr-2" />
+                Voir
               </Button>
-              <Button
-                variant="ghost"
+              <Button 
+                variant="outline" 
                 size="sm"
+                className="border-blue-200 hover:bg-blue-50 hover:border-blue-300 text-blue-700 hover:text-blue-800 transition-all duration-200"
                 onClick={() => onEdit(project)}
-                className="h-8 w-8 p-0 text-slate-600 hover:text-slate-900"
               >
-                <Edit className="h-4 w-4" />
+                <Edit className="h-4 w-4 mr-2" />
+                Modifier
               </Button>
-              <Button
-                variant="ghost"
+              <Button 
+                variant="outline" 
                 size="sm"
-                className="h-8 w-8 p-0 text-slate-600 hover:text-red-600"
+                className="border-red-200 hover:bg-red-50 hover:border-red-300 text-red-600 hover:text-red-700 transition-all duration-200"
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
             </div>
           </div>
-          {index < projects.length - 1 && <Separator className="border-slate-100" />}
         </div>
       ))}
     </div>

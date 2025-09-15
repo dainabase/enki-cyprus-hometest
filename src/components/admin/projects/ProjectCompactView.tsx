@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Edit, Star, Crown, Eye, Trash2 } from 'lucide-react';
+import { Edit, Star, Crown, Eye, Trash2, Building } from 'lucide-react';
 
 interface ProjectCompactViewProps {
   projects: any[];
@@ -49,76 +49,92 @@ export const ProjectCompactView = ({
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-      {projects.map((project) => (
+    <div className="space-y-2">
+      {projects.map(project => (
         <div 
           key={project.id}
-          className="flex items-center gap-4 p-4 hover:bg-slate-50 transition-colors"
+          className="group bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-slate-300 transition-all duration-300 hover:-translate-y-0.5"
         >
-          <Checkbox
-            checked={selectedProjects.includes(project.id)}
-            onCheckedChange={(checked) => 
-              handleProjectSelect(project.id, checked as boolean)
-            }
-          />
-          
-          <div className="flex-1 min-w-0 grid grid-cols-5 gap-4 items-center text-sm">
-            <div className="truncate font-semibold text-slate-900">
-              {project.title}
+          <div className="flex items-center gap-4">
+            <Checkbox
+              checked={selectedProjects.includes(project.id)}
+              onCheckedChange={(checked) => 
+                handleProjectSelect(project.id, checked as boolean)
+              }
+            />
+            
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center overflow-hidden border border-white shadow-sm flex-shrink-0">
+              {project.photos && project.photos[0] ? (
+                <img 
+                  src={project.photos[0]} 
+                  alt={project.title}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-8 h-8 bg-gradient-to-br from-slate-900 to-slate-700 rounded-lg flex items-center justify-center">
+                  <Building className="h-4 w-4 text-white" />
+                </div>
+              )}
             </div>
             
-            <div className="truncate text-slate-600 font-medium">
-              {getDeveloperName(project.developer)}
-            </div>
-            
-            <div className="truncate text-slate-600">
-              {project.city || 'N/A'}
-              {project.neighborhood && ` - ${project.neighborhood}`}
-            </div>
-            
-            <div className="text-slate-900 font-semibold">
-              {formatPrice(project.price || project.price_from || 0)}
+            <div className="flex-1 min-w-0 grid grid-cols-5 gap-4 items-center text-sm">
+              <div className="truncate font-bold text-slate-900">
+                {project.title}
+              </div>
+              
+              <div className="truncate font-semibold text-slate-700">
+                {getDeveloperName(project.developer)}
+              </div>
+              
+              <div className="truncate text-slate-600">
+                {project.city || 'N/A'}
+                {project.neighborhood && ` - ${project.neighborhood}`}
+              </div>
+              
+              <div className="font-bold text-emerald-700">
+                {formatPrice(project.price || project.price_from || 0)}
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <Badge className={`${getStatusColor(project.status)} text-xs border`}>
+                  {project.status === 'available' && 'Dispo'}
+                  {project.status === 'under_construction' && 'Constr.'}
+                  {project.status === 'delivered' && 'Livré'}
+                  {project.status === 'sold' && 'Vendu'}
+                </Badge>
+                {(project.golden_visa_eligible || project.golden_visa_eligible_new) && (
+                  <Star className="h-3 w-3 text-amber-500" />
+                )}
+                {project.exclusive_commercialization && (
+                  <Crown className="h-3 w-3 text-purple-500" />
+                )}
+              </div>
             </div>
             
             <div className="flex items-center gap-2">
-              <Badge className={`${getStatusColor(project.status)} text-xs`}>
-                {project.status === 'available' && 'Dispo'}
-                {project.status === 'under_construction' && 'Constr.'}
-                {project.status === 'delivered' && 'Livré'}
-                {project.status === 'sold' && 'Vendu'}
-              </Badge>
-              {(project.golden_visa_eligible || project.golden_visa_eligible_new) && (
-                <Star className="h-3 w-3 text-amber-500" />
-              )}
-              {project.exclusive_commercialization && (
-                <Crown className="h-3 w-3 text-purple-500" />
-              )}
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="h-8 w-8 p-0 border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-200"
+              >
+                <Eye className="h-3 w-3" />
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => onEdit(project)}
+                className="h-8 w-8 p-0 border-blue-200 hover:bg-blue-50 hover:border-blue-300 text-blue-700 hover:text-blue-800 transition-all duration-200"
+              >
+                <Edit className="h-3 w-3" />
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="h-8 w-8 p-0 border-red-200 hover:bg-red-50 hover:border-red-300 text-red-600 hover:text-red-700 transition-all duration-200"
+              >
+                <Trash2 className="h-3 w-3" />
+              </Button>
             </div>
-          </div>
-          
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-6 w-6 p-0 text-slate-600 hover:text-slate-900"
-            >
-              <Eye className="h-3 w-3" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onEdit(project)}
-              className="h-6 w-6 p-0 text-slate-600 hover:text-slate-900"
-            >
-              <Edit className="h-3 w-3" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-6 w-6 p-0 text-slate-600 hover:text-red-600"
-            >
-              <Trash2 className="h-3 w-3" />
-            </Button>
           </div>
         </div>
       ))}
