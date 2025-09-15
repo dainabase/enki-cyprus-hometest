@@ -2,7 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
-import { Edit, MapPin, Building, Calendar, Euro, Star, Crown } from 'lucide-react';
+import { Edit, MapPin, Building, Calendar, Euro, Star, Crown, Eye, Trash2 } from 'lucide-react';
 
 interface ProjectListViewProps {
   projects: any[];
@@ -49,10 +49,10 @@ export const ProjectListView = ({
   };
 
   return (
-    <div className="space-y-1">
+    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
       {projects.map((project, index) => (
         <div key={project.id}>
-          <div className="flex items-center gap-4 p-4 hover:bg-muted/50 transition-colors">
+          <div className="flex items-center gap-4 p-6 hover:bg-slate-50 transition-colors">
             <Checkbox
               checked={selectedProjects.includes(project.id)}
               onCheckedChange={(checked) => 
@@ -62,7 +62,7 @@ export const ProjectListView = ({
             
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-lg truncate pr-4">
+                <h3 className="font-semibold text-lg text-slate-900 truncate pr-4">
                   {project.title}
                 </h3>
                 <div className="flex items-center gap-2">
@@ -86,14 +86,14 @@ export const ProjectListView = ({
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2 text-sm text-muted-foreground">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2 text-sm text-slate-600">
                 <div className="flex items-center gap-2">
-                  <Building className="h-4 w-4" />
-                  <span>{getDeveloperName(project.developer)}</span>
+                  <Building className="h-4 w-4 text-slate-900" />
+                  <span className="font-medium">{getDeveloperName(project.developer)}</span>
                 </div>
                 
                 <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4" />
+                  <MapPin className="h-4 w-4 text-slate-900" />
                   <span>
                     {project.city || 'Ville non définie'}
                     {project.neighborhood && `, ${project.neighborhood}`}
@@ -101,31 +101,47 @@ export const ProjectListView = ({
                 </div>
                 
                 <div className="flex items-center gap-2">
-                  <Euro className="h-4 w-4 text-green-600" />
-                  <span className="font-semibold text-green-600">
+                  <Euro className="h-4 w-4 text-slate-900" />
+                  <span className="font-semibold text-slate-900">
                     {formatPrice(project.price || project.price_from || 0)}
                   </span>
                 </div>
               </div>
 
               {project.completion_date && (
-                <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
-                  <Calendar className="h-4 w-4" />
+                <div className="flex items-center gap-2 mt-1 text-sm text-slate-600">
+                  <Calendar className="h-4 w-4 text-slate-900" />
                   <span>Livraison: {project.completion_date}</span>
                 </div>
               )}
             </div>
             
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onEdit(project)}
-              className="h-8 w-8 p-0"
-            >
-              <Edit className="h-4 w-4" />
-            </Button>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0 text-slate-600 hover:text-slate-900"
+              >
+                <Eye className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onEdit(project)}
+                className="h-8 w-8 p-0 text-slate-600 hover:text-slate-900"
+              >
+                <Edit className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0 text-slate-600 hover:text-red-600"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
-          {index < projects.length - 1 && <Separator />}
+          {index < projects.length - 1 && <Separator className="border-slate-100" />}
         </div>
       ))}
     </div>

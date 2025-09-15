@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Edit, Star, Crown } from 'lucide-react';
+import { Edit, Star, Crown, Eye, Trash2 } from 'lucide-react';
 
 interface ProjectCompactViewProps {
   projects: any[];
@@ -49,11 +49,11 @@ export const ProjectCompactView = ({
   };
 
   return (
-    <div className="space-y-1">
+    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
       {projects.map((project) => (
         <div 
           key={project.id}
-          className="flex items-center gap-3 p-2 hover:bg-muted/50 transition-colors rounded"
+          className="flex items-center gap-4 p-4 hover:bg-slate-50 transition-colors"
         >
           <Checkbox
             checked={selectedProjects.includes(project.id)}
@@ -62,21 +62,21 @@ export const ProjectCompactView = ({
             }
           />
           
-          <div className="flex-1 min-w-0 grid grid-cols-5 gap-3 items-center text-sm">
-            <div className="truncate font-medium">
+          <div className="flex-1 min-w-0 grid grid-cols-5 gap-4 items-center text-sm">
+            <div className="truncate font-semibold text-slate-900">
               {project.title}
             </div>
             
-            <div className="truncate text-muted-foreground">
+            <div className="truncate text-slate-600 font-medium">
               {getDeveloperName(project.developer)}
             </div>
             
-            <div className="truncate text-muted-foreground">
+            <div className="truncate text-slate-600">
               {project.city || 'N/A'}
               {project.neighborhood && ` - ${project.neighborhood}`}
             </div>
             
-            <div className="text-green-600 font-medium">
+            <div className="text-slate-900 font-semibold">
               {formatPrice(project.price || project.price_from || 0)}
             </div>
             
@@ -96,14 +96,30 @@ export const ProjectCompactView = ({
             </div>
           </div>
           
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onEdit(project)}
-            className="h-6 w-6 p-0"
-          >
-            <Edit className="h-3 w-3" />
-          </Button>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-6 w-6 p-0 text-slate-600 hover:text-slate-900"
+            >
+              <Eye className="h-3 w-3" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onEdit(project)}
+              className="h-6 w-6 p-0 text-slate-600 hover:text-slate-900"
+            >
+              <Edit className="h-3 w-3" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-6 w-6 p-0 text-slate-600 hover:text-red-600"
+            >
+              <Trash2 className="h-3 w-3" />
+            </Button>
+          </div>
         </div>
       ))}
     </div>

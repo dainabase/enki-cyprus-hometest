@@ -156,38 +156,46 @@ export const ProjectDetailedView = ({
             <Separator />
 
             {/* Détails techniques */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-left">
               {project.bedrooms_range && (
-                <div className="flex items-center gap-2">
-                  <Home className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                  <span className="text-xs text-muted-foreground">Chambres :</span>
-                  <span className="text-sm font-medium">{project.bedrooms_range}</span>
+                <div className="flex items-start gap-2">
+                  <Home className="h-4 w-4 text-slate-900 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <span className="text-xs text-slate-600 block">Chambres :</span>
+                    <span className="text-sm font-medium text-slate-900">{project.bedrooms_range}</span>
+                  </div>
                 </div>
               )}
               
               {project.built_area_m2 && (
-                <div className="flex items-center gap-2">
-                  <Ruler className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                  <span className="text-xs text-muted-foreground">Surface :</span>
-                  <span className="text-sm font-medium">{project.built_area_m2} m²</span>
+                <div className="flex items-start gap-2">
+                  <Ruler className="h-4 w-4 text-slate-900 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <span className="text-xs text-slate-600 block">Surface :</span>
+                    <span className="text-sm font-medium text-slate-900">{project.built_area_m2} m²</span>
+                  </div>
                 </div>
               )}
               
               {(project.total_units || project.total_units_new) && (
-                <div className="flex items-center gap-2">
-                  <Users className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                  <span className="text-xs text-muted-foreground">Unités :</span>
-                  <span className="text-sm font-medium">
-                    {project.total_units_new || project.total_units}
-                  </span>
+                <div className="flex items-start gap-2">
+                  <Users className="h-4 w-4 text-slate-900 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <span className="text-xs text-slate-600 block">Unités :</span>
+                    <span className="text-sm font-medium text-slate-900">
+                      {project.total_units_new || project.total_units}
+                    </span>
+                  </div>
                 </div>
               )}
               
               {project.parking_spaces && (
-                <div className="flex items-center gap-2">
-                  <Car className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                  <span className="text-xs text-muted-foreground">Parking :</span>
-                  <span className="text-sm font-medium">{project.parking_spaces}</span>
+                <div className="flex items-start gap-2">
+                  <Car className="h-4 w-4 text-slate-900 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <span className="text-xs text-slate-600 block">Parking :</span>
+                    <span className="text-sm font-medium text-slate-900">{project.parking_spaces}</span>
+                  </div>
                 </div>
               )}
             </div>

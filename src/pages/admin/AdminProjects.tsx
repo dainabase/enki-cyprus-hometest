@@ -355,8 +355,8 @@ const AdminProjects = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">{t('admin.titles.projectManagement')}</h1>
-            <p className="text-muted-foreground mt-2">{t('admin.titles.projectManagementSubtitle')}</p>
+            <h1 className="text-3xl font-bold text-foreground">Gestion des Projets</h1>
+            <p className="text-muted-foreground mt-2">Gérez et organisez votre portfolio de projets immobiliers</p>
           </div>
           <div className="flex items-center gap-4">
             <Button
@@ -365,7 +365,7 @@ const AdminProjects = () => {
               className="gap-2"
             >
               <Filter className="w-4 h-4" />
-              {t('admin.buttons.filters')}
+              Filtres
             </Button>
             
             <ProjectViewSelector
@@ -390,7 +390,7 @@ const AdminProjects = () => {
             
             <Button onClick={() => navigate('/admin/projects/new')} className="gap-2">
               <Plus className="w-4 h-4" />
-              {t('admin.buttons.newProject')}
+              Nouveau Projet
             </Button>
           </div>
         </div>
@@ -399,7 +399,7 @@ const AdminProjects = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{t('admin.status.totalProjects')}</CardTitle>
+              <CardTitle className="text-sm font-medium">Total Projets</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.total}</div>
@@ -407,7 +407,7 @@ const AdminProjects = () => {
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{t('admin.status.available')}</CardTitle>
+              <CardTitle className="text-sm font-medium">Disponibles</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-green-600">{stats.available}</div>
@@ -415,7 +415,7 @@ const AdminProjects = () => {
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{t('admin.status.underConstruction')}</CardTitle>
+              <CardTitle className="text-sm font-medium">En Construction</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-orange-600">{stats.construction}</div>
@@ -423,7 +423,7 @@ const AdminProjects = () => {
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{t('admin.status.delivered')}</CardTitle>
+              <CardTitle className="text-sm font-medium">Livrés</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-blue-600">{stats.delivered}</div>
@@ -435,7 +435,7 @@ const AdminProjects = () => {
         {showFilters && (
           <Card>
             <CardHeader>
-              <CardTitle>{t('admin.filters.title')}</CardTitle>
+              <CardTitle>Filtres</CardTitle>
             </CardHeader>
             <CardContent>
               <ProjectFilters
@@ -456,11 +456,11 @@ const AdminProjects = () => {
                   <div className="flex items-center gap-2">
                     <CheckSquare className="w-5 h-5 text-primary" />
                     <span className="font-medium">
-                      {selectedProjects.length} {t('admin.projects.projectsSelected')}
+                      {selectedProjects.length} projet(s) sélectionné(s)
                     </span>
                   </div>
                   <Button variant="outline" size="sm" onClick={clearSelection}>
-                    {t('admin.projects.deselectAll')}
+                    Tout désélectionner
                   </Button>
                 </div>
                 <div className="flex items-center gap-2">
@@ -476,7 +476,7 @@ const AdminProjects = () => {
                     className="gap-2"
                   >
                     <CheckSquare className="w-4 h-4" />
-                    {t('admin.projects.selectAll')}
+                    Tout sélectionner
                   </Button>
                   <Button 
                     variant="destructive" 
