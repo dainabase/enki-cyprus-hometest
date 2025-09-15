@@ -16,7 +16,7 @@ import { projectSchema, ProjectFormData, projectFormSteps } from '@/schemas/proj
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useDebounceCallback } from '@/hooks/useDebounceCallback';
-import { ArrowLeft, ArrowRight, Save, Eye, CheckCircle, FileText, Brain } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Save, Eye, CheckCircle, FileText, Brain, Building, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { extractPrefilledData, PrefilledFormData } from '@/lib/ai-import/mapper';
 import * as LucideIcons from 'lucide-react';
@@ -647,7 +647,11 @@ const [showPrefilledBanner, setShowPrefilledBanner] = useState(false);
 
   return (
     <Layout>
-      <div className="container mx-auto py-8 space-y-8">
+      {/* NOUVEAU DESIGN - INDICATEUR VISUEL IMPOSSIBLE A MANQUER */}
+      <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white p-6 text-center font-bold text-2xl shadow-2xl border-8 border-yellow-300 animate-pulse">
+        🚀 NOUVEAU FORMULAIRE PROJET REDESIGNÉ - VOUS VOYEZ MAINTENANT LE NOUVEAU DESIGN! 🚀
+      </div>
+      <div className="container mx-auto py-8 space-y-8 bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
@@ -670,13 +674,16 @@ const [showPrefilledBanner, setShowPrefilledBanner] = useState(false);
           </p>
         </div>
 
-        {/* Main Form */}
+        {/* Main Content */}
         <div className="flex gap-8">
           {/* Sidebar Navigation */}
           <div className="w-64 flex-shrink-0">
-            <Card className="sticky top-4 border-border/50 shadow-lg">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg font-semibold text-foreground">Étapes</CardTitle>
+            <Card className="sticky top-4 border-border/50 shadow-lg bg-card">
+              <CardHeader className="pb-3 bg-gradient-to-r from-primary/5 to-accent/5 rounded-t-lg">
+                <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
+                  <MapPin className="h-5 w-5 text-primary" />
+                  Étapes
+                </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
                 <nav className="space-y-2">
