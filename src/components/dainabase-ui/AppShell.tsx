@@ -6,6 +6,7 @@ interface AppShellProps {
   header?: React.ReactNode
   sidebar?: React.ReactNode
   breadcrumbs?: React.ReactNode
+  footer?: React.ReactNode
   variant?: 'executive' | 'client'
   className?: string
 }
@@ -15,6 +16,7 @@ export const AppShell: React.FC<AppShellProps> = ({
   header,
   sidebar,
   breadcrumbs,
+  footer,
   variant = 'executive',
   className,
 }) => {
@@ -48,6 +50,8 @@ export const AppShell: React.FC<AppShellProps> = ({
           </div>
         </main>
       </div>
+
+      {footer && footer}
     </div>
   )
 }

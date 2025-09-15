@@ -2,6 +2,7 @@ import React, { lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AppShell } from '@/components/dainabase-ui';
 import { AdminSidebarExecutive } from '@/components/admin/AdminSidebarExecutive';
+import AdminFooter from '@/components/admin/AdminFooter';
 
 // Lazy load admin pages for better performance
 const AdminOverview = lazy(() => import('./AdminOverview').then(module => ({ default: module.AdminOverview })));
@@ -68,6 +69,7 @@ export const AdminDashboard = () => {
         variant="executive"
         header={<AdminHeader />}
         sidebar={<AdminSidebarExecutive />}
+        footer={<AdminFooter />}
       >
         <Routes>
           <Route path="" element={<AdminOverview />} />
