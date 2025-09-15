@@ -55,8 +55,8 @@ export const ProjectCompactView = ({
           key={project.id}
           className="group bg-white border border-slate-200 rounded-xl hover:shadow-lg hover:border-slate-300 transition-all duration-300 hover:-translate-y-0.5 relative"
         >
-          {/* Checkbox positioned outside on the left */}
-          <div className="absolute -left-8 top-1/2 transform -translate-y-1/2 z-10">
+          {/* Checkbox positioned outside on the left aligned with content */}
+          <div className="absolute -left-12 top-1/2 transform -translate-y-1/2 z-10">
             <Checkbox
               checked={selectedProjects.includes(project.id)}
               onCheckedChange={(checked) => 

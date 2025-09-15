@@ -74,16 +74,16 @@ export const ProjectCardView = ({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {groupedByDeveloper[developerName].map(project => (
               <div key={project.id} className="relative">
-                {/* Checkbox positioned outside on the left */}
-                <div className="absolute -left-8 top-1/2 transform -translate-y-1/2 z-10">
-                  <Checkbox
-                    checked={selectedProjects.includes(project.id)}
-                    onCheckedChange={(checked) => 
-                      handleProjectSelect(project.id, checked as boolean)
-                    }
-                    className="bg-white border-2 border-slate-300 shadow-lg"
-                  />
-                </div>
+          {/* Checkbox positioned outside on the left aligned with content */}
+          <div className="absolute -left-12 top-1/2 transform -translate-y-1/2 z-10">
+            <Checkbox
+              checked={selectedProjects.includes(project.id)}
+              onCheckedChange={(checked) => 
+                handleProjectSelect(project.id, checked as boolean)
+              }
+              className="bg-white border-2 border-slate-300 shadow-lg"
+            />
+          </div>
                 
                 <Card className="group hover:shadow-xl transition-all duration-300 border-2 border-slate-200 bg-white hover:border-slate-300 hover:-translate-y-1 flex flex-col h-full">
                   <CardHeader className="pb-4">

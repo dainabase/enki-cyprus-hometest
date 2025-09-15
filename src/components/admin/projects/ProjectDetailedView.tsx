@@ -70,8 +70,8 @@ export const ProjectDetailedView = ({
     <div className="space-y-6">
       {projects.map((project) => (
         <div key={project.id} className="relative">
-          {/* Checkbox positioned outside on the left */}
-          <div className="absolute -left-8 top-1/2 transform -translate-y-1/2 z-10">
+          {/* Checkbox positioned outside on the left aligned with content */}
+          <div className="absolute -left-12 top-1/2 transform -translate-y-1/2 z-10">
             <Checkbox
               checked={selectedProjects.includes(project.id)}
               onCheckedChange={(checked) => 

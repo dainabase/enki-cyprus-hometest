@@ -483,7 +483,7 @@ const AdminProjects = () => {
                     className="gap-2"
                   >
                     <Trash2 className="w-4 h-4" />
-                    {t('admin.projects.deleteSelected')}
+                    Supprimer la sélection
                   </Button>
                 </div>
               </div>
