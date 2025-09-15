@@ -33,10 +33,7 @@ export const AppShell: React.FC<AppShellProps> = ({
 
       <div className="flex">
         {sidebar && (
-          <aside className={cn(
-            "w-64 min-h-screen bg-white border-r border-slate-200",
-            variant === 'executive' && "bg-slate-900 border-slate-700"
-          )}>
+          <aside className="w-64 min-h-screen bg-white border-r border-slate-200">
             {sidebar}
           </aside>
         )}
