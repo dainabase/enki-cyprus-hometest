@@ -20,9 +20,7 @@ export const AppShell: React.FC<AppShellProps> = ({
 }) => {
   return (
     <div className={cn(
-      "min-h-screen bg-slate-50",
-      variant === 'executive' && "bg-slate-100",
-      variant === 'client' && "bg-white",
+      "min-h-screen bg-white",
       className
     )}>
       {header && (

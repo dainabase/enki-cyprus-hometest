@@ -163,12 +163,6 @@ export const AdminSidebarExecutive: React.FC = () => {
 
   return (
     <div className="h-full bg-white border-r border-slate-200">
-      {/* Header */}
-      <div className="p-6 border-b border-slate-200">
-        <h2 className="text-lg font-semibold text-slate-900">ENKI-Realty</h2>
-        <p className="text-sm text-slate-500 mt-1">Admin Dashboard</p>
-      </div>
-
       {/* Navigation */}
       <nav className="p-4 space-y-4">
         {/* Dashboard - standalone */}
@@ -190,7 +184,7 @@ export const AdminSidebarExecutive: React.FC = () => {
       {/* Footer */}
       <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200">
         <div className="text-xs text-slate-400 text-center">
-          Dashboard v1.3.0
+          © 2025 ENKI-Realty. Tous droits réservés.
         </div>
       </div>
     </div>
