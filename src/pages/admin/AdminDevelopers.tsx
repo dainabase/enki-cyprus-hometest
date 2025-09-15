@@ -835,14 +835,9 @@ export default function AdminDevelopers() {
           )}
         </DialogContent>
       </Dialog>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>
-              {editingDeveloper ? 'Modifier le développeur' : 'Ajouter un nouveau développeur'}
-            </DialogTitle>
-            <DialogDescription>
-              Remplissez les informations du développeur ci-dessous.
-            </DialogDescription>
+    </div>
+  );
+}
           </DialogHeader>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
