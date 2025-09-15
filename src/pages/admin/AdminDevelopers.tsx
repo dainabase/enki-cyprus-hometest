@@ -467,13 +467,121 @@ export default function AdminDevelopers() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <LoadingSpinner />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex justify-center items-center">
+        <div className="text-center space-y-4">
+          <LoadingSpinner />
+          <p className="text-slate-600 font-medium">Chargement des développeurs...</p>
+        </div>
       </div>
     );
   }
 
   return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      {/* Modern Header */}
+      <div className="bg-white border-b border-slate-200 shadow-sm">
+        <div className="px-8 py-6">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <h1 className="text-3xl font-bold text-slate-900">Développeurs</h1>
+              <p className="text-slate-600">Gérez vos partenaires développeurs et leurs informations</p>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="text-sm text-slate-500 bg-slate-100 px-3 py-2 rounded-lg">
+                {developers.length} développeur{developers.length !== 1 ? 's' : ''}
+              </div>
+              <Button 
+                onClick={openCreateModal}
+                className="bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+                size="lg"
+              >
+                <Plus className="h-5 w-5 mr-2" />
+                Nouveau Développeur
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Controls Bar */}
+      <div className="bg-white/50 backdrop-blur-sm border-b border-slate-200/50">
+        <div className="px-8 py-4">
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-slate-600 font-medium">
+              Vue d'affichage
+            </div>
+            <DeveloperViewSelector
+              currentView={currentView}
+              onViewChange={changeView}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="px-8 py-8">
+        <div className="animate-fade-in">
+          {currentView === 'cards' && (
+            <DeveloperCardView
+              developers={normalizedDevelopers}
+              getLogo={getLogo}
+              onEdit={openEditModal}
+              onDelete={deleteDeveloper}
+              onViewDetails={openDetailModal}
+            />
+          )}
+          {currentView === 'list' && (
+            <DeveloperListView
+              developers={normalizedDevelopers}
+              getLogo={getLogo}
+              onEdit={openEditModal}
+              onDelete={deleteDeveloper}
+              onViewDetails={openDetailModal}
+            />
+          )}
+          {currentView === 'table' && (
+            <DeveloperTableView
+              developers={normalizedDevelopers}
+              getLogo={getLogo}
+              onEdit={openEditModal}
+              onDelete={deleteDeveloper}
+              onViewDetails={openDetailModal}
+            />
+          )}
+          {currentView === 'compact' && (
+            <DeveloperCompactView
+           developers={normalizedDevelopers}
+           getLogo={getLogo}
+           onEdit={openEditModal}
+           onDelete={deleteDeveloper}
+           onViewDetails={openDetailModal}
+         />
+       )}
+       </div>
+     </div>
+
+     {/* Form Modal */}
+     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+         <DialogHeader>
+           <DialogTitle>
+             {editingDeveloper ? 'Modifier le développeur' : 'Nouveau développeur'}
+           </DialogTitle>
+           <DialogDescription>
+             {editingDeveloper 
+               ? 'Modifiez les informations du développeur' 
+               : 'Ajoutez un nouveau développeur à votre liste'
+             }
+           </DialogDescription>
+         </DialogHeader>
+              getLogo={getLogo}
+              onEdit={openEditModal}
+              onDelete={deleteDeveloper}
+              onViewDetails={openDetailModal}
+            />
+          )}
+        </div>
+      </div>
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">{t('admin.developers.title', { defaultValue: 'Developer Management' })}</h1>

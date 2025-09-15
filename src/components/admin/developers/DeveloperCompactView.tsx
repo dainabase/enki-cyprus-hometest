@@ -30,11 +30,20 @@ export const DeveloperCompactView = ({
   onViewDetails 
 }: DeveloperCompactViewProps) => {
   return (
-    <div className="space-y-1">
-      {developers.map(dev => (
-        <div key={dev.id} className="flex items-center justify-between p-2 bg-card rounded border hover:shadow-sm transition-shadow">
-          <div className="flex items-center space-x-3 flex-1 min-w-0">
-            <div className="w-8 h-8 rounded bg-muted flex items-center justify-center overflow-hidden flex-shrink-0">
+    <div className="space-y-2">
+      {developers.map((dev, index) => (
+        <div 
+          key={dev.id} 
+          className={`
+            flex items-center justify-between p-4 rounded-xl border transition-all duration-200 hover:shadow-md hover:-translate-y-0.5
+            ${index % 2 === 0 
+              ? 'bg-white border-slate-200' 
+              : 'bg-slate-50/80 border-slate-100'
+            }
+          `}
+        >
+          <div className="flex items-center space-x-4 flex-1 min-w-0">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center overflow-hidden border-2 border-white shadow-sm flex-shrink-0">
               {getLogo(dev) ? (
                 <img 
                   src={getLogo(dev)} 
@@ -42,58 +51,67 @@ export const DeveloperCompactView = ({
                   className="w-full h-full object-contain"
                 />
               ) : (
-                <span className="text-primary font-bold text-xs">
+                <span className="text-slate-700 font-bold text-sm">
                   {dev.name.charAt(0).toUpperCase()}
                 </span>
               )}
             </div>
             
             <div className="flex-1 min-w-0">
-              <div className="flex items-center space-x-2">
-                <span className="font-medium truncate">{dev.name}</span>
+              <div className="flex items-center space-x-3">
+                <span className="font-bold text-slate-900 truncate">{dev.name}</span>
                 <Badge 
                   variant={dev.status === 'active' ? 'default' : 'secondary'}
-                  className="text-xs px-1 py-0"
+                  className={`
+                    text-xs px-2 py-1
+                    ${dev.status === 'active' 
+                      ? 'bg-emerald-100 text-emerald-800 border-emerald-200' 
+                      : 'bg-slate-100 text-slate-600 border-slate-200'
+                    }
+                  `}
                 >
-                  {dev.status === 'active' ? 'A' : 'I'}
+                  {dev.status === 'active' ? 'Actif' : 'Inactif'}
                 </Badge>
               </div>
             </div>
             
-            <div className="flex items-center space-x-4 text-xs text-muted-foreground">
+            <div className="flex items-center space-x-6 text-sm">
               {dev.main_city && (
-                <span className="hidden sm:inline">{dev.main_city}</span>
+                <span className="hidden sm:inline text-slate-600 font-medium">{dev.main_city}</span>
               )}
               {dev.rating_score && (
-                <span>⭐{dev.rating_score}/10</span>
+                <div className="flex items-center gap-1">
+                  <span className="text-amber-500">⭐</span>
+                  <span className="font-bold text-amber-800">{dev.rating_score}/10</span>
+                </div>
               )}
             </div>
           </div>
           
-          <div className="flex space-x-1 ml-2">
+          <div className="flex space-x-2 ml-4">
             <Button 
               variant="outline" 
               size="sm"
-              className="h-7 w-7 p-0"
+              className="h-8 w-8 p-0 border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-200"
               onClick={() => onViewDetails(dev)}
             >
-              <Eye className="h-3 w-3" />
+              <Eye className="h-4 w-4" />
             </Button>
             <Button 
               variant="outline" 
               size="sm"
-              className="h-7 w-7 p-0"
+              className="h-8 w-8 p-0 border-blue-200 hover:bg-blue-50 hover:border-blue-300 text-blue-700 hover:text-blue-800 transition-all duration-200"
               onClick={() => onEdit(dev)}
             >
-              <Edit className="h-3 w-3" />
+              <Edit className="h-4 w-4" />
             </Button>
             <Button 
               variant="outline" 
               size="sm"
-              className="h-7 w-7 p-0 text-destructive hover:text-destructive"
+              className="h-8 w-8 p-0 border-red-200 hover:bg-red-50 hover:border-red-300 text-red-600 hover:text-red-700 transition-all duration-200"
               onClick={() => onDelete(dev)}
             >
-              <Trash2 className="h-3 w-3" />
+              <Trash2 className="h-4 w-4" />
             </Button>
           </div>
         </div>

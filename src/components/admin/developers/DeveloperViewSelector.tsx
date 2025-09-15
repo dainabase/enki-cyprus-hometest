@@ -17,18 +17,24 @@ export const DeveloperViewSelector = ({ currentView, onViewChange }: DeveloperVi
   ];
 
   return (
-    <div className="flex items-center gap-1 bg-muted p-1 rounded-lg">
+    <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl shadow-sm p-1">
       {views.map(({ id, icon: Icon, label }) => (
         <Button
           key={id}
-          variant={currentView === id ? 'default' : 'ghost'}
+          variant="ghost"
           size="sm"
           onClick={() => onViewChange(id)}
-          className="h-8 px-3"
+          className={`
+            h-10 px-4 rounded-lg transition-all duration-200 
+            ${currentView === id 
+              ? 'bg-slate-900 text-white shadow-md' 
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            }
+          `}
           title={label}
         >
-          <Icon className="h-4 w-4" />
-          <span className="sr-only">{label}</span>
+          <Icon className="h-4 w-4 mr-2" />
+          <span className="font-medium">{label}</span>
         </Button>
       ))}
     </div>

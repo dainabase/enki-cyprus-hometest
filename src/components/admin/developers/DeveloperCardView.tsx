@@ -49,16 +49,23 @@ export const DeveloperCardView = ({
   });
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       {sortedZones.map(zone => (
-        <div key={zone} className="space-y-4">
-          <h3 className="text-lg font-semibold text-foreground">{zone}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div key={zone} className="space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="w-2 h-8 bg-gradient-to-b from-slate-900 to-slate-600 rounded-full"></div>
+            <h3 className="text-xl font-bold text-slate-900">{zone}</h3>
+            <div className="text-sm text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
+              {groupedByZone[zone].length} développeur{groupedByZone[zone].length !== 1 ? 's' : ''}
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {groupedByZone[zone].map(dev => (
-              <Card key={dev.id} className="hover:shadow-md transition-shadow">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center overflow-hidden">
+              <Card key={dev.id} className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/80 backdrop-blur-sm hover:bg-white hover:-translate-y-1">
+                <CardHeader className="pb-4">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center overflow-hidden border-2 border-white shadow-sm">
                       {getLogo(dev) ? (
                         <img 
                           src={getLogo(dev)} 
@@ -66,53 +73,69 @@ export const DeveloperCardView = ({
                           className="w-full h-full object-contain"
                         />
                       ) : (
-                        <div className="w-8 h-8 bg-primary/10 rounded flex items-center justify-center">
-                          <span className="text-primary font-bold text-sm">
+                        <div className="w-10 h-10 bg-gradient-to-br from-slate-900 to-slate-700 rounded-xl flex items-center justify-center">
+                          <span className="text-white font-bold text-lg">
                             {dev.name.charAt(0).toUpperCase()}
                           </span>
                         </div>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-sm truncate">{dev.name}</h4>
-                      <p className="text-xs text-muted-foreground truncate">{dev.main_city}</p>
+                      <h4 className="font-bold text-slate-900 text-lg leading-tight">{dev.name}</h4>
+                      <p className="text-slate-500 font-medium">{dev.main_city}</p>
+                      <div className="flex items-center gap-2 mt-2">
+                        <Badge 
+                          variant={dev.status === 'active' ? 'default' : 'secondary'}
+                          className={dev.status === 'active' 
+                            ? 'bg-emerald-100 text-emerald-800 border-emerald-200' 
+                            : 'bg-slate-100 text-slate-600 border-slate-200'
+                          }
+                        >
+                          {dev.status === 'active' ? 'Actif' : 'Inactif'}
+                        </Badge>
+                      </div>
                     </div>
                   </div>
                 </CardHeader>
                 
-                <CardContent className="space-y-2 pt-0">
-                  <div className="flex items-center justify-between">
-                    <Badge variant={dev.status === 'active' ? 'default' : 'secondary'}>
-                      {dev.status === 'active' ? 'Actif' : 'Inactif'}
-                    </Badge>
-                    {dev.rating_score && (
-                      <span className="text-xs text-muted-foreground">
-                        ⭐ {dev.rating_score}/10
-                      </span>
-                    )}
-                  </div>
+                <CardContent className="space-y-4">
+                  {dev.rating_score && (
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-xl border border-amber-200">
+                      <span className="text-sm font-medium text-amber-800">Note</span>
+                      <div className="flex items-center gap-1">
+                        <span className="text-lg">⭐</span>
+                        <span className="font-bold text-amber-800">{dev.rating_score}/10</span>
+                      </div>
+                    </div>
+                  )}
                   
-                  <div className="text-xs text-muted-foreground space-y-1">
+                  <div className="space-y-3 text-sm">
                     {dev.contact_info?.email && (
-                      <div className="truncate flex items-center">
-                        <span className="mr-1">📧</span>
-                        {dev.contact_info.email}
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 transition-colors">
+                        <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                          <span className="text-blue-600">📧</span>
+                        </div>
+                        <span className="text-slate-700 font-medium truncate">{dev.contact_info.email}</span>
                       </div>
                     )}
                     {dev.contact_info?.phone && (
-                      <div className="truncate flex items-center">
-                        <span className="mr-1">📞</span>
-                        {dev.contact_info.phone}
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 transition-colors">
+                        <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                          <span className="text-green-600">📞</span>
+                        </div>
+                        <span className="text-slate-700 font-medium">{dev.contact_info.phone}</span>
                       </div>
                     )}
                     {dev.website && (
-                      <div className="truncate flex items-center">
-                        <span className="mr-1">🌐</span>
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 transition-colors">
+                        <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                          <span className="text-purple-600">🌐</span>
+                        </div>
                         <a 
                           href={dev.website.startsWith('http') ? dev.website : `https://${dev.website}`}
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-primary hover:underline truncate"
+                          className="text-purple-600 hover:text-purple-800 font-medium truncate transition-colors"
                         >
                           {dev.website}
                         </a>
@@ -121,31 +144,33 @@ export const DeveloperCardView = ({
                   </div>
                 </CardContent>
                 
-                <CardFooter className="pt-3 border-t">
-                  <div className="flex space-x-1 w-full">
+                <CardFooter className="pt-4 border-t border-slate-100">
+                  <div className="flex gap-2 w-full">
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="flex-1"
+                      className="flex-1 border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-200"
                       onClick={() => onViewDetails(dev)}
                     >
-                      <Eye className="h-3 w-3" />
+                      <Eye className="h-4 w-4 mr-2" />
+                      Voir
                     </Button>
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="flex-1"
+                      className="flex-1 border-blue-200 hover:bg-blue-50 hover:border-blue-300 text-blue-700 hover:text-blue-800 transition-all duration-200"
                       onClick={() => onEdit(dev)}
                     >
-                      <Edit className="h-3 w-3" />
+                      <Edit className="h-4 w-4 mr-2" />
+                      Modifier
                     </Button>
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="flex-1 text-destructive hover:text-destructive"
+                      className="border-red-200 hover:bg-red-50 hover:border-red-300 text-red-600 hover:text-red-700 transition-all duration-200"
                       onClick={() => onDelete(dev)}
                     >
-                      <Trash2 className="h-3 w-3" />
+                      <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 </CardFooter>

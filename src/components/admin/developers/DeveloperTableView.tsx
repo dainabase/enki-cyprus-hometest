@@ -87,57 +87,63 @@ export const DeveloperTableView = ({
   };
 
   return (
-    <div className="rounded-md border">
+    <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg overflow-hidden">
       <Table>
         <TableHeader>
-          <TableRow>
-            <TableHead className="w-12">{t('admin.developers.headers.logo', { defaultValue: 'Logo' })}</TableHead>
-            <TableHead>
+          <TableRow className="bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600">
+            <TableHead className="text-white font-bold border-0">Logo</TableHead>
+            <TableHead className="text-white font-bold border-0">
               <Button 
                 variant="ghost" 
-                className="h-auto p-0 font-semibold hover:bg-transparent"
+                className="h-auto p-0 font-bold text-white hover:bg-white/10"
                 onClick={() => handleSort('name')}
               >
-                {t('fields.name', { defaultValue: 'Name' })} <SortIcon field="name" />
+                Nom <SortIcon field="name" />
               </Button>
             </TableHead>
-            <TableHead>
+            <TableHead className="text-white font-bold border-0">
               <Button 
                 variant="ghost" 
-                className="h-auto p-0 font-semibold hover:bg-transparent"
+                className="h-auto p-0 font-bold text-white hover:bg-white/10"
                 onClick={() => handleSort('main_city')}
               >
-                {t('fields.city', { defaultValue: 'City' })} <SortIcon field="main_city" />
+                Ville <SortIcon field="main_city" />
               </Button>
             </TableHead>
-            <TableHead>
+            <TableHead className="text-white font-bold border-0">
               <Button 
                 variant="ghost" 
-                className="h-auto p-0 font-semibold hover:bg-transparent"
+                className="h-auto p-0 font-bold text-white hover:bg-white/10"
                 onClick={() => handleSort('status')}
               >
-                {t('fields.status', { defaultValue: 'Status' })} <SortIcon field="status" />
+                Statut <SortIcon field="status" />
               </Button>
             </TableHead>
-            <TableHead>{t('fields.website', { defaultValue: 'Website' })}</TableHead>
-            <TableHead>
+            <TableHead className="text-white font-bold border-0">Site Web</TableHead>
+            <TableHead className="text-white font-bold border-0">
               <Button 
                 variant="ghost" 
-                className="h-auto p-0 font-semibold hover:bg-transparent"
+                className="h-auto p-0 font-bold text-white hover:bg-white/10"
                 onClick={() => handleSort('rating_score')}
               >
-                {t('fields.rating', { defaultValue: 'Rating' })} <SortIcon field="rating_score" />
+                Note <SortIcon field="rating_score" />
               </Button>
             </TableHead>
-            <TableHead>{t('fields.contact', { defaultValue: 'Contact' })}</TableHead>
-            <TableHead className="w-32">{t('actions.actions', { defaultValue: 'Actions' })}</TableHead>
+            <TableHead className="text-white font-bold border-0">Contact</TableHead>
+            <TableHead className="text-white font-bold border-0 w-32">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {sortedDevelopers.map(dev => (
-            <TableRow key={dev.id} className="hover:bg-muted/50">
-              <TableCell>
-                <div className="w-8 h-8 rounded bg-muted flex items-center justify-center overflow-hidden">
+          {sortedDevelopers.map((dev, index) => (
+            <TableRow 
+              key={dev.id} 
+              className={`
+                hover:bg-slate-50 transition-colors border-0
+                ${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}
+              `}
+            >
+              <TableCell className="py-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center overflow-hidden border-2 border-white shadow-sm">
                   {getLogo(dev) ? (
                     <img 
                       src={getLogo(dev)} 
@@ -145,62 +151,86 @@ export const DeveloperTableView = ({
                       className="w-full h-full object-contain"
                     />
                   ) : (
-                    <span className="text-primary font-bold text-xs">
+                    <span className="text-slate-700 font-bold text-sm">
                       {dev.name.charAt(0).toUpperCase()}
                     </span>
                   )}
                 </div>
               </TableCell>
-              <TableCell className="font-medium">{dev.name}</TableCell>
-              <TableCell>{dev.main_city || '-'}</TableCell>
-              <TableCell>
-                <Badge variant={dev.status === 'active' ? 'default' : 'secondary'}>
-                  {t(`status.${dev.status}`, { defaultValue: dev.status === 'active' ? 'Active' : 'Inactive' })}
+              <TableCell className="font-bold text-slate-900 py-4">{dev.name}</TableCell>
+              <TableCell className="text-slate-600 py-4">{dev.main_city || '-'}</TableCell>
+              <TableCell className="py-4">
+                <Badge 
+                  variant={dev.status === 'active' ? 'default' : 'secondary'}
+                  className={`
+                    ${dev.status === 'active' 
+                      ? 'bg-emerald-100 text-emerald-800 border-emerald-200' 
+                      : 'bg-slate-100 text-slate-600 border-slate-200'
+                    }
+                  `}
+                >
+                  {dev.status === 'active' ? 'Actif' : 'Inactif'}
                 </Badge>
               </TableCell>
-              <TableCell>
+              <TableCell className="py-4">
                 {dev.website ? (
-                  <a href={dev.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline truncate max-w-32 block">
+                  <a 
+                    href={dev.website.startsWith('http') ? dev.website : `https://${dev.website}`} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="text-blue-600 hover:text-blue-800 font-medium underline truncate max-w-32 block transition-colors"
+                  >
                     {dev.website}
                   </a>
-                ) : '-'}
+                ) : (
+                  <span className="text-slate-400">-</span>
+                )}
               </TableCell>
-              <TableCell>
-                {dev.rating_score ? `⭐ ${dev.rating_score}/10` : '-'}
+              <TableCell className="py-4">
+                {dev.rating_score ? (
+                  <div className="flex items-center gap-1">
+                    <span className="text-amber-500">⭐</span>
+                    <span className="font-bold text-amber-800">{dev.rating_score}/10</span>
+                  </div>
+                ) : (
+                  <span className="text-slate-400">-</span>
+                )}
               </TableCell>
-              <TableCell className="max-w-48">
+              <TableCell className="max-w-48 py-4">
                 <div className="text-sm space-y-1">
                   {dev.contact_info?.email && (
-                    <div className="truncate">{dev.contact_info.email}</div>
+                    <div className="truncate text-slate-700 font-medium">{dev.contact_info.email}</div>
                   )}
                   {dev.contact_info?.phone && (
-                    <div className="text-muted-foreground">{dev.contact_info.phone}</div>
+                    <div className="text-slate-500">{dev.contact_info.phone}</div>
                   )}
                 </div>
               </TableCell>
-              <TableCell>
-                <div className="flex space-x-1">
+              <TableCell className="py-4">
+                <div className="flex space-x-2">
                   <Button 
                     variant="outline" 
                     size="sm"
+                    className="border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-200"
                     onClick={() => onViewDetails(dev)}
                   >
-                    <Eye className="h-3 w-3" />
+                    <Eye className="h-4 w-4" />
                   </Button>
                   <Button 
                     variant="outline" 
                     size="sm"
+                    className="border-blue-200 hover:bg-blue-50 hover:border-blue-300 text-blue-700 hover:text-blue-800 transition-all duration-200"
                     onClick={() => onEdit(dev)}
                   >
-                    <Edit className="h-3 w-3" />
+                    <Edit className="h-4 w-4" />
                   </Button>
                   <Button 
                     variant="outline" 
                     size="sm"
+                    className="border-red-200 hover:bg-red-50 hover:border-red-300 text-red-600 hover:text-red-700 transition-all duration-200"
                     onClick={() => onDelete(dev)}
-                    className="text-destructive hover:text-destructive"
                   >
-                    <Trash2 className="h-3 w-3" />
+                    <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
               </TableCell>
