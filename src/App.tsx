@@ -69,33 +69,40 @@ const AppContent = () => {
     <BrowserRouter>
       <TooltipProvider>
         <FilterProvider>
-          <Layout>
-            <Suspense fallback={<LoadingSpinner />}>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/search" element={<Search />} />
-                <Route path="/projects" element={<Projects />} />
-                <Route path="/projects/:slug" element={<PublicProjectPage />} />
-                <Route path="/project/:id" element={<ProjectDetail />} />
-                <Route path="/project-detail/:id" element={<ProjectDetail />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-                <Route path="/lexaia" element={<LexaiaPage />} />
-                <Route path="/admin/*" element={<PrivateRoute adminOnly><AdminDashboard /></PrivateRoute>} />
-                <Route path="/admin/projects/new" element={<PrivateRoute adminOnly><AdminProjectForm /></PrivateRoute>} />
-                <Route path="/admin/projects/ai-import" element={<PrivateRoute adminOnly><AdminAIImport /></PrivateRoute>} />
-                <Route path="/admin/ai-import-unified" element={<PrivateRoute adminOnly><AdminAIImportUnified /></PrivateRoute>} />
-                <Route path="/admin/projects/:id" element={<PrivateRoute adminOnly><AdminProjectDetail /></PrivateRoute>} />
-                <Route path="/admin/projects/:id/edit" element={<PrivateRoute adminOnly><AdminProjectForm /></PrivateRoute>} />
-                <Route path="/admin-test" element={<PrivateRoute adminOnly><AdminTestIntegration /></PrivateRoute>} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Suspense>
-          </Layout>
+          <Suspense fallback={<LoadingSpinner />}>
+            <Routes>
+              {/* Admin routes - without Layout */}
+              <Route path="/admin/*" element={<PrivateRoute adminOnly><AdminDashboard /></PrivateRoute>} />
+              <Route path="/admin/projects/new" element={<PrivateRoute adminOnly><AdminProjectForm /></PrivateRoute>} />
+              <Route path="/admin/projects/ai-import" element={<PrivateRoute adminOnly><AdminAIImport /></PrivateRoute>} />
+              <Route path="/admin/ai-import-unified" element={<PrivateRoute adminOnly><AdminAIImportUnified /></PrivateRoute>} />
+              <Route path="/admin/projects/:id" element={<PrivateRoute adminOnly><AdminProjectDetail /></PrivateRoute>} />
+              <Route path="/admin/projects/:id/edit" element={<PrivateRoute adminOnly><AdminProjectForm /></PrivateRoute>} />
+              <Route path="/admin-test" element={<PrivateRoute adminOnly><AdminTestIntegration /></PrivateRoute>} />
+              
+              {/* Public routes - with Layout */}
+              <Route path="/*" element={
+                <Layout>
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/search" element={<Search />} />
+                    <Route path="/projects" element={<Projects />} />
+                    <Route path="/projects/:slug" element={<PublicProjectPage />} />
+                    <Route path="/project/:id" element={<ProjectDetail />} />
+                    <Route path="/project-detail/:id" element={<ProjectDetail />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                    <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+                    <Route path="/lexaia" element={<LexaiaPage />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Layout>
+              } />
+            </Routes>
+          </Suspense>
           <CookieConsentBanner />
           <Sonner />
         </FilterProvider>
