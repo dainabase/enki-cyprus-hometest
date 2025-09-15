@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Card } from '@/components/dainabase-ui';
+import { Button } from '@/components/dainabase-ui';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Users, 
@@ -12,15 +12,13 @@ import {
   AlertCircle,
   Home,
   Target,
-  Receipt,
-  MapPin,
-  Calendar,
   DollarSign,
   BarChart3,
+  Calendar,
   Filter
 } from 'lucide-react';
 import { useDashboardMetrics } from '@/hooks/useDashboardMetrics';
-import { KPICard, KPIGrid } from '@/components/admin/dashboard/KPICards';
+import { MetricCard, KPIGrid } from '@/components/admin/dashboard/KPICards';
 import { ModernBarChart, ModernZoneChart, ModernPerformanceChart } from '@/components/admin/dashboard/Charts';
 import { formatCurrency, formatNumber, formatPercentage } from '@/lib/dashboard/calculations';
 
@@ -29,8 +27,6 @@ export const AdminOverview = () => {
   const [zone, setZone] = useState<'all' | 'limassol' | 'paphos' | 'larnaca' | 'nicosia'>('all');
   
   const { data: metrics, isLoading, error } = useDashboardMetrics({ period, zone });
-  
-  console.log('🎯 Dashboard State:', { metrics, isLoading, error, period, zone });
 
   // Sample performance data for charts
   const performanceData = [
@@ -51,51 +47,44 @@ export const AdminOverview = () => {
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-slate-600">Chargement du dashboard exécutif...</div>
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="text-slate-600">Chargement du dashboard...</p>
         </div>
       </div>
     );
   }
 
-  if (error) {
+  if (error || !metrics) {
     return (
-      <Card variant="executive" padding="lg" className="mx-auto max-w-md">
-        <div className="text-center">
-          <AlertCircle className="w-12 h-12 text-red-600 mx-auto mb-4" />
-          <div className="text-red-600 font-semibold">Erreur lors du chargement des données</div>
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <AlertCircle className="w-12 h-12 text-red-500 mx-auto" />
+          <p className="text-red-600 font-medium">Erreur lors du chargement des données</p>
         </div>
-      </Card>
-    );
-  }
-
-  if (!metrics) {
-    return (
-      <Card variant="executive" padding="lg" className="mx-auto max-w-md">
-        <div className="text-center text-slate-600">Aucune donnée disponible</div>
-      </Card>
+      </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Modern Header */}
-      <div className="bg-white border-b border-slate-200">
-        <div className="px-8 py-8">
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-            <div className="space-y-2">
-              <h1 className="text-4xl font-light text-slate-900">Dashboard</h1>
-              <p className="text-slate-600">Vue d'ensemble des performances Cyprus</p>
+      {/* Header à la Apple */}
+      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-8 py-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-light text-slate-900">Dashboard</h1>
+              <p className="text-slate-500 mt-1">Vue d'ensemble des performances</p>
             </div>
             
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <div className="flex items-center gap-2 text-sm text-slate-500">
                 <Filter className="w-4 h-4" />
                 <span>Filtres</span>
               </div>
               <Select value={period} onValueChange={(value: any) => setPeriod(value)}>
-                <SelectTrigger className="w-32 h-10 bg-white border-slate-200">
+                <SelectTrigger className="w-28 h-9 bg-white/60 border-slate-200 text-sm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -107,7 +96,7 @@ export const AdminOverview = () => {
               </Select>
               
               <Select value={zone} onValueChange={(value: any) => setZone(value)}>
-                <SelectTrigger className="w-40 h-10 bg-white border-slate-200">
+                <SelectTrigger className="w-36 h-9 bg-white/60 border-slate-200 text-sm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -123,89 +112,99 @@ export const AdminOverview = () => {
         </div>
       </div>
 
-      <div className="px-8 py-8 space-y-12">
-        {/* KPIs Portfolio */}
-        <div className="space-y-6">
-          <h2 className="text-xl font-medium text-slate-900">Portfolio & Inventaire</h2>
-          <KPIGrid columns={5}>
-            <KPICard
-              title="Total Propriétés"
-              value={formatNumber(metrics.totalProperties)}
-              subtitle="Dans le portfolio"
-              icon={Building}
-              variant="primary"
-            />
-            <KPICard
-              title="Golden Visa"
-              value={formatNumber(metrics.goldenVisaProperties)}
-              subtitle={`${formatPercentage(metrics.goldenVisaPercentage)} du total`}
-              icon={Award}
-              variant="warning"
-            />
-            <KPICard
-              title="Disponibles"
-              value={formatNumber(metrics.availableProperties)}
-              subtitle="Prêtes à vendre"
-              icon={Home}
-              variant="success"
-            />
-            <KPICard
-              title="Vendues"
-              value={formatNumber(metrics.soldProperties)}
-              subtitle="Ce mois"
-              icon={CheckCircle}
-              variant="info"
-            />
-            <KPICard
-              title="Conversion"
-              value={formatPercentage(metrics.conversionRate)}
-              subtitle="Lead vers client"
-              icon={Target}
-              variant="primary"
-            />
-          </KPIGrid>
+      <div className="max-w-7xl mx-auto px-8 py-8 space-y-12">
+        {/* Hero Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <MetricCard
+            title="Total Propriétés"
+            value={formatNumber(metrics.totalProperties)}
+            change={{ value: 12, period: "mois dernier" }}
+            icon={Building}
+          />
+          <MetricCard
+            title="Chiffre d'Affaires"
+            value={formatCurrency(metrics.totalRevenue)}
+            change={{ value: 23, period: "mois dernier" }}
+            icon={Euro}
+          />
+          <MetricCard
+            title="Commissions"
+            value={formatCurrency(metrics.totalCommissions)}
+            change={{ value: 8, period: "mois dernier" }}
+            icon={DollarSign}
+          />
+          <MetricCard
+            title="Conversion"
+            value={formatPercentage(metrics.conversionRate)}
+            change={{ value: -2, period: "mois dernier" }}
+            icon={Target}
+          />
         </div>
 
-        {/* KPIs Financiers */}
-        <div className="space-y-6">
-          <h2 className="text-xl font-medium text-slate-900">Performance Financière</h2>
-          <KPIGrid columns={4}>
-            <KPICard
-              title="Chiffre d'Affaires"
-              value={formatCurrency(metrics.totalRevenue)}
-              subtitle="Propriétés vendues"
-              icon={Euro}
-              variant="success"
-              trend={12.5}
-            />
-            <KPICard
-              title="Prix Moyen/m²"
-              value={formatCurrency(metrics.averagePricePerSqm)}
-              subtitle="Portfolio global"
-              icon={BarChart3}
-              variant="primary"
-              trend={-2.3}
-            />
-            <KPICard
-              title="Commissions"
-              value={formatCurrency(metrics.totalCommissions)}
-              subtitle={`Moyenne ${formatPercentage(metrics.averageCommissionRate)}`}
-              icon={DollarSign}
-              variant="info"
-              trend={8.7}
-            />
-            <KPICard
-              title="Temps de Vente"
-              value={`${Math.round(metrics.averageDaysOnMarket)} jours`}
-              subtitle="Délai moyen"
-              icon={Clock}
-              variant="warning"
-              trend={-15.2}
-            />
-          </KPIGrid>
+        {/* Secondary Metrics */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="bg-white rounded-xl p-4 border border-slate-100">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="p-2 bg-yellow-50 rounded-lg">
+                <Award className="w-4 h-4 text-yellow-600" />
+              </div>
+            </div>
+            <p className="text-2xl font-bold text-slate-900">{formatNumber(metrics.goldenVisaProperties)}</p>
+            <p className="text-xs text-slate-500">Golden Visa</p>
+          </div>
+
+          <div className="bg-white rounded-xl p-4 border border-slate-100">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="p-2 bg-green-50 rounded-lg">
+                <Home className="w-4 h-4 text-green-600" />
+              </div>
+            </div>
+            <p className="text-2xl font-bold text-slate-900">{formatNumber(metrics.availableProperties)}</p>
+            <p className="text-xs text-slate-500">Disponibles</p>
+          </div>
+
+          <div className="bg-white rounded-xl p-4 border border-slate-100">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="p-2 bg-purple-50 rounded-lg">
+                <CheckCircle className="w-4 h-4 text-purple-600" />
+              </div>
+            </div>
+            <p className="text-2xl font-bold text-slate-900">{formatNumber(metrics.soldProperties)}</p>
+            <p className="text-xs text-slate-500">Vendues</p>
+          </div>
+
+          <div className="bg-white rounded-xl p-4 border border-slate-100">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="p-2 bg-blue-50 rounded-lg">
+                <BarChart3 className="w-4 h-4 text-blue-600" />
+              </div>
+            </div>
+            <p className="text-2xl font-bold text-slate-900">{formatCurrency(metrics.averagePricePerSqm)}</p>
+            <p className="text-xs text-slate-500">Prix/m²</p>
+          </div>
+
+          <div className="bg-white rounded-xl p-4 border border-slate-100">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="p-2 bg-orange-50 rounded-lg">
+                <Clock className="w-4 h-4 text-orange-600" />
+              </div>
+            </div>
+            <p className="text-2xl font-bold text-slate-900">{Math.round(metrics.averageDaysOnMarket)}</p>
+            <p className="text-xs text-slate-500">Jours/vente</p>
+          </div>
+
+          <div className="bg-white rounded-xl p-4 border border-slate-100">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="p-2 bg-indigo-50 rounded-lg">
+                <Calendar className="w-4 h-4 text-indigo-600" />
+              </div>
+            </div>
+            <p className="text-2xl font-bold text-slate-900">{formatNumber(metrics.propertiesSoldThisMonth)}</p>
+            <p className="text-xs text-slate-500">Ce mois</p>
+          </div>
         </div>
 
-        {/* Analytics et Graphiques */}
+        {/* Analytics Section */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
           <ModernZoneChart
             limassol={metrics.limassol}
@@ -220,28 +219,44 @@ export const AdminOverview = () => {
           />
         </div>
 
-        {/* Performance Temporelle */}
+        {/* Performance Chart */}
         <ModernPerformanceChart data={performanceData} />
 
-        {/* Actions Rapides */}
-        <div className="bg-white rounded-xl border border-slate-200 p-8">
-          <h3 className="text-xl font-medium text-slate-900 mb-6">Actions Rapides</h3>
+        {/* Quick Actions */}
+        <div className="bg-white rounded-2xl p-8 border border-slate-100">
+          <h3 className="text-lg font-semibold text-slate-900 mb-6">Actions Rapides</h3>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <Button variant="clean" size="lg" className="h-20 flex-col gap-3" onClick={() => window.location.href = '/admin/projects'}>
-              <Building className="w-6 h-6 text-slate-600" />
-              <span className="text-sm font-medium">Gérer Propriétés</span>
+            <Button 
+              variant="clean" 
+              className="h-16 flex-col gap-2 text-sm font-medium hover:bg-slate-50"
+              onClick={() => window.location.href = '/admin/projects'}
+            >
+              <Building className="w-5 h-5 text-slate-600" />
+              Propriétés
             </Button>
-            <Button variant="clean" size="lg" className="h-20 flex-col gap-3" onClick={() => window.location.href = '/admin/leads'}>
-              <Users className="w-6 h-6 text-slate-600" />
-              <span className="text-sm font-medium">Leads & Pipeline</span>
+            <Button 
+              variant="clean" 
+              className="h-16 flex-col gap-2 text-sm font-medium hover:bg-slate-50"
+              onClick={() => window.location.href = '/admin/leads'}
+            >
+              <Users className="w-5 h-5 text-slate-600" />
+              Prospects
             </Button>
-            <Button variant="clean" size="lg" className="h-20 flex-col gap-3" onClick={() => window.location.href = '/admin/commissions'}>
-              <DollarSign className="w-6 h-6 text-slate-600" />
-              <span className="text-sm font-medium">Commissions</span>
+            <Button 
+              variant="clean" 
+              className="h-16 flex-col gap-2 text-sm font-medium hover:bg-slate-50"
+              onClick={() => window.location.href = '/admin/commissions'}
+            >
+              <DollarSign className="w-5 h-5 text-slate-600" />
+              Commissions
             </Button>
-            <Button variant="clean" size="lg" className="h-20 flex-col gap-3" onClick={() => window.location.href = '/admin/analytics'}>
-              <BarChart3 className="w-6 h-6 text-slate-600" />
-              <span className="text-sm font-medium">Analytics</span>
+            <Button 
+              variant="clean" 
+              className="h-16 flex-col gap-2 text-sm font-medium hover:bg-slate-50"
+              onClick={() => window.location.href = '/admin/analytics'}
+            >
+              <BarChart3 className="w-5 h-5 text-slate-600" />
+              Analytics
             </Button>
           </div>
         </div>
