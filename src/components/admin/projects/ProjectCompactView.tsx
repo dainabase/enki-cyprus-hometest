@@ -53,29 +53,38 @@ export const ProjectCompactView = ({
       {projects.map(project => (
         <div 
           key={project.id}
-          className="group bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-slate-300 transition-all duration-300 hover:-translate-y-0.5"
+          className="group bg-white border border-slate-200 rounded-xl hover:shadow-lg hover:border-slate-300 transition-all duration-300 hover:-translate-y-0.5 relative"
         >
-          <div className="flex items-center gap-4">
+          {/* Checkbox positioned outside on the left */}
+          <div className="absolute -left-8 top-1/2 transform -translate-y-1/2 z-10">
             <Checkbox
               checked={selectedProjects.includes(project.id)}
               onCheckedChange={(checked) => 
                 handleProjectSelect(project.id, checked as boolean)
               }
+              className="bg-white border-2 border-slate-300 shadow-lg"
             />
-            
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center overflow-hidden border border-white shadow-sm flex-shrink-0">
-              {project.photos && project.photos[0] ? (
-                <img 
-                  src={project.photos[0]} 
-                  alt={project.title}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-8 h-8 bg-gradient-to-br from-slate-900 to-slate-700 rounded-lg flex items-center justify-center">
-                  <Building className="h-4 w-4 text-white" />
-                </div>
-              )}
-            </div>
+          </div>
+          
+          <div className="flex items-center gap-4 p-4">
+             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center overflow-hidden border border-white shadow-sm flex-shrink-0">
+               {project.photos && project.photos.length > 0 && project.photos[0] ? (
+                 <img 
+                   src={project.photos[0]} 
+                   alt={project.title}
+                   className="w-full h-full object-cover rounded-lg"
+                   onError={(e) => {
+                     const target = e.currentTarget as HTMLImageElement;
+                     target.style.display = 'none';
+                     const fallback = target.nextElementSibling as HTMLElement;
+                     if (fallback) fallback.style.display = 'flex';
+                   }}
+                 />
+               ) : null}
+               <div className="w-8 h-8 bg-gradient-to-br from-slate-900 to-slate-700 rounded-lg flex items-center justify-center" style={{ display: project.photos && project.photos.length > 0 && project.photos[0] ? 'none' : 'flex' }}>
+                 <Building className="h-4 w-4 text-white" />
+               </div>
+             </div>
             
             <div className="flex-1 min-w-0 grid grid-cols-5 gap-4 items-center text-sm">
               <div className="truncate font-bold text-slate-900">

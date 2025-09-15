@@ -73,47 +73,58 @@ export const ProjectCardView = ({
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {groupedByDeveloper[developerName].map(project => (
-              <Card key={project.id} className="group hover:shadow-xl transition-all duration-300 border-2 border-slate-200 bg-white hover:border-slate-300 hover:-translate-y-1 flex flex-col h-full">
-                <CardHeader className="pb-4">
-                  <div className="flex items-start space-x-4 h-20">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center overflow-hidden border-2 border-white shadow-sm flex-shrink-0">
-                      {project.photos && project.photos[0] ? (
-                        <img 
-                          src={project.photos[0]} 
-                          alt={project.title}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-10 h-10 bg-gradient-to-br from-slate-900 to-slate-700 rounded-xl flex items-center justify-center">
+              <div key={project.id} className="relative">
+                {/* Checkbox positioned outside on the left */}
+                <div className="absolute -left-8 top-1/2 transform -translate-y-1/2 z-10">
+                  <Checkbox
+                    checked={selectedProjects.includes(project.id)}
+                    onCheckedChange={(checked) => 
+                      handleProjectSelect(project.id, checked as boolean)
+                    }
+                    className="bg-white border-2 border-slate-300 shadow-lg"
+                  />
+                </div>
+                
+                <Card className="group hover:shadow-xl transition-all duration-300 border-2 border-slate-200 bg-white hover:border-slate-300 hover:-translate-y-1 flex flex-col h-full">
+                  <CardHeader className="pb-4">
+                    <div className="flex items-start space-x-4 h-20">
+                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center overflow-hidden border-2 border-white shadow-sm flex-shrink-0">
+                        {project.photos && project.photos.length > 0 && project.photos[0] ? (
+                          <img 
+                            src={project.photos[0]} 
+                            alt={project.title}
+                            className="w-full h-full object-cover rounded-xl"
+                            onError={(e) => {
+                              const target = e.currentTarget as HTMLImageElement;
+                              target.style.display = 'none';
+                              const fallback = target.nextElementSibling as HTMLElement;
+                              if (fallback) fallback.style.display = 'flex';
+                            }}
+                          />
+                        ) : null}
+                        <div className="w-10 h-10 bg-gradient-to-br from-slate-900 to-slate-700 rounded-xl flex items-center justify-center" style={{ display: project.photos && project.photos.length > 0 && project.photos[0] ? 'none' : 'flex' }}>
                           <Building className="h-6 w-6 text-white" />
                         </div>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0 h-full flex flex-col justify-between">
-                      <div>
-                        <h4 className="font-bold text-slate-900 text-lg leading-tight line-clamp-2">{project.title}</h4>
-                        <p className="text-slate-500 font-medium mt-1">
-                          {project.city || 'Ville non définie'}
-                          {project.neighborhood && `, ${project.neighborhood}`}
-                        </p>
                       </div>
-                      <div className="flex items-center gap-2 mt-auto">
-                        <Checkbox
-                          checked={selectedProjects.includes(project.id)}
-                          onCheckedChange={(checked) => 
-                            handleProjectSelect(project.id, checked as boolean)
-                          }
-                        />
-                        <Badge className={getStatusColor(project.status)}>
-                          {project.status === 'available' && 'Disponible'}
-                          {project.status === 'under_construction' && 'En construction'}
-                          {project.status === 'delivered' && 'Livré'}
-                          {project.status === 'sold' && 'Vendu'}
-                        </Badge>
+                      <div className="flex-1 min-w-0 h-full flex flex-col justify-between">
+                        <div>
+                          <h4 className="font-bold text-slate-900 text-lg leading-tight line-clamp-2">{project.title}</h4>
+                          <p className="text-slate-500 font-medium mt-1">
+                            {project.city || 'Ville non définie'}
+                            {project.neighborhood && `, ${project.neighborhood}`}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2 mt-auto">
+                          <Badge className={getStatusColor(project.status)}>
+                            {project.status === 'available' && 'Disponible'}
+                            {project.status === 'under_construction' && 'En construction'}
+                            {project.status === 'delivered' && 'Livré'}
+                            {project.status === 'sold' && 'Vendu'}
+                          </Badge>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </CardHeader>
+                  </CardHeader>
                 
                 <CardContent className="space-y-4 flex-1">
                   <div className="flex items-center justify-between p-3 bg-gradient-to-r from-emerald-50 to-green-50 rounded-xl border border-emerald-200">
@@ -186,7 +197,8 @@ export const ProjectCardView = ({
                     </Button>
                   </div>
                 </CardFooter>
-              </Card>
+                </Card>
+              </div>
             ))}
           </div>
         </div>

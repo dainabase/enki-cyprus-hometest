@@ -202,15 +202,22 @@ export const ProjectTableView = ({
               </TableCell>
               <TableCell className="py-4">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center overflow-hidden border-2 border-white shadow-sm">
-                  {project.photos && project.photos[0] ? (
+                  {project.photos && project.photos.length > 0 && project.photos[0] ? (
                     <img 
                       src={project.photos[0]} 
                       alt={project.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover rounded-lg"
+                      onError={(e) => {
+                        const target = e.currentTarget as HTMLImageElement;
+                        target.style.display = 'none';
+                        const fallback = target.nextElementSibling as HTMLElement;
+                        if (fallback) fallback.style.display = 'flex';
+                      }}
                     />
-                  ) : (
-                    <Building className="h-6 w-6 text-slate-700" />
-                  )}
+                  ) : null}
+                  <div className="w-6 h-6 bg-gradient-to-br from-slate-900 to-slate-700 rounded-lg flex items-center justify-center" style={{ display: project.photos && project.photos.length > 0 && project.photos[0] ? 'none' : 'flex' }}>
+                    <Building className="h-4 w-4 text-slate-700" />
+                  </div>
                 </div>
               </TableCell>
               <TableCell className="font-bold text-slate-900 py-4 max-w-48">
