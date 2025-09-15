@@ -74,10 +74,33 @@ export const AdminProjectForm: React.FC = () => {
   // Populate form when data is loaded
   React.useEffect(() => {
     if (projectData && isEdit) {
-      Object.entries(projectData).forEach(([key, value]) => {
-        if (value !== undefined && form.getValues(key as any) !== undefined) {
-          form.setValue(key as any, value);
-        }
+      // Reset form with the project data
+      form.reset({
+        title: projectData.title || '',
+        description: projectData.description || '',
+        developer_id: projectData.developer_id || '',
+        city: projectData.city || '',
+        full_address: projectData.full_address || '',
+        region: projectData.region || '',
+        neighborhood: projectData.neighborhood || '',
+        photos: projectData.photos || [],
+        features: projectData.features || [],
+        amenities: projectData.amenities || [],
+        status: (projectData.status as any) || 'available',
+        vat_rate_new: projectData.vat_rate_new || 5,
+        vat_included: projectData.vat_included || false,
+        golden_visa_eligible_new: projectData.golden_visa_eligible_new || false,
+        financing_available: projectData.financing_available || false,
+        featured_new: projectData.featured_new || false,
+        cyprus_zone: (projectData.cyprus_zone as any) || 'limassol',
+        property_category: (projectData.property_category as any) || 'residential',
+        property_sub_type: (projectData.property_sub_type as any) || ['apartment'],
+        exclusive_commercialization: projectData.exclusive_commercialization || false,
+        project_phase: (projectData.project_phase as any) || 'off-plan',
+        price: projectData.price || 0,
+        meta_title_new: projectData.meta_title_new || '',
+        meta_description_new: projectData.meta_description_new || '',
+        project_narrative: projectData.project_narrative || ''
       });
     }
   }, [projectData, isEdit, form]);
