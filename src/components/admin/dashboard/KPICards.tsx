@@ -7,7 +7,7 @@ interface KPICardProps {
   subtitle?: string;
   icon: LucideIcon;
   trend?: number;
-  color?: 'blue' | 'green' | 'yellow' | 'purple' | 'red';
+  variant?: 'primary' | 'success' | 'warning' | 'info';
 }
 
 export const KPICard = ({ 
@@ -15,59 +15,60 @@ export const KPICard = ({
   value, 
   subtitle, 
   icon: Icon, 
-  trend, 
-  color = 'blue' 
+  trend,
+  variant = 'primary'
 }: KPICardProps) => {
-  const colorClasses = {
-    blue: 'text-blue-600',
-    green: 'text-green-600',
-    yellow: 'text-yellow-600',
-    purple: 'text-purple-600',
-    red: 'text-red-600'
+  const variantClasses = {
+    primary: 'border-l-blue-500',
+    success: 'border-l-green-500',
+    warning: 'border-l-orange-500',
+    info: 'border-l-purple-500'
   };
 
-  const bgColorClasses = {
-    blue: 'bg-blue-100',
-    green: 'bg-green-100',
-    yellow: 'bg-yellow-100',
-    purple: 'bg-purple-100',
-    red: 'bg-red-100'
+  const trendClasses = {
+    positive: 'text-green-600',
+    negative: 'text-red-600',
+    neutral: 'text-slate-500'
+  };
+
+  const getTrendClass = () => {
+    if (trend === undefined) return '';
+    if (trend > 0) return trendClasses.positive;
+    if (trend < 0) return trendClasses.negative;
+    return trendClasses.neutral;
   };
 
   return (
-    <Card variant="executive" padding="md" className="hover:shadow-xl transition-all duration-300">
+    <Card variant="clean" padding="lg" className={`border-l-4 ${variantClasses[variant]} hover:shadow-lg transition-all duration-300`}>
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wide">
-            {title}
-          </h3>
-          <div className={`p-2 rounded-lg ${bgColorClasses[color]}`}>
-            <Icon className={`w-5 h-5 ${colorClasses[color]}`} />
+        <div className="flex items-start justify-between">
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-slate-600 uppercase tracking-wider">
+              {title}
+            </p>
+            <div className="space-y-1">
+              <h3 className="text-3xl font-light text-slate-900 tracking-tight">
+                {value}
+              </h3>
+              {subtitle && (
+                <p className="text-sm text-slate-500">
+                  {subtitle}
+                </p>
+              )}
+            </div>
+          </div>
+          <div className="p-3 bg-slate-50 rounded-xl">
+            <Icon className="w-6 h-6 text-slate-600" />
           </div>
         </div>
         
-        <div className="space-y-2">
-          <div className="text-3xl font-bold text-slate-900">
-            {value}
+        {trend !== undefined && (
+          <div className={`text-sm font-medium ${getTrendClass()}`}>
+            {trend > 0 ? '↗ +' : trend < 0 ? '↘ ' : '→ '}
+            {Math.abs(trend)}%
+            <span className="text-slate-400 ml-1">vs période précédente</span>
           </div>
-          
-          {subtitle && (
-            <p className="text-sm text-slate-500">
-              {subtitle}
-            </p>
-          )}
-          
-          {trend !== undefined && (
-            <div className={`text-sm font-medium flex items-center gap-1 ${
-              trend > 0 ? 'text-green-600' : trend < 0 ? 'text-red-600' : 'text-slate-500'
-            }`}>
-              <span className="text-lg">
-                {trend > 0 ? '↗' : trend < 0 ? '↘' : '→'}
-              </span>
-              {Math.abs(trend)}%
-            </div>
-          )}
-        </div>
+        )}
       </div>
     </Card>
   );
