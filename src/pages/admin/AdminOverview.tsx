@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Button } from '@/components/dainabase-ui';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Users, 
@@ -69,13 +70,13 @@ export const AdminOverview = () => {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Header à la Apple */}
-      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-8 py-6">
+      {/* Header Section - Following AdminProjects structure */}
+      <div className="bg-white border-b border-slate-200">
+        <div className="px-8 py-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-light text-slate-900">Dashboard</h1>
-              <p className="text-slate-500 mt-1">Vue d'ensemble des performances</p>
+              <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
+              <p className="text-slate-600 mt-2">Vue d'ensemble des performances de votre portfolio</p>
             </div>
             
             <div className="flex items-center gap-3">
@@ -84,7 +85,7 @@ export const AdminOverview = () => {
                 <span>Filtres</span>
               </div>
               <Select value={period} onValueChange={(value: any) => setPeriod(value)}>
-                <SelectTrigger className="w-28 h-9 bg-white/60 border-slate-200 text-sm">
+                <SelectTrigger className="w-28 h-9 bg-white border-slate-200 text-sm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -96,7 +97,7 @@ export const AdminOverview = () => {
               </Select>
               
               <Select value={zone} onValueChange={(value: any) => setZone(value)}>
-                <SelectTrigger className="w-36 h-9 bg-white/60 border-slate-200 text-sm">
+                <SelectTrigger className="w-36 h-9 bg-white border-slate-200 text-sm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -112,33 +113,49 @@ export const AdminOverview = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-8 py-8 space-y-12">
-        {/* Hero Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <MetricCard
-            title="Total Propriétés"
-            value={formatNumber(metrics.totalProperties)}
-            change={{ value: 12, period: "mois dernier" }}
-            icon={Building}
-          />
-          <MetricCard
-            title="Chiffre d'Affaires"
-            value={formatCurrency(metrics.totalRevenue)}
-            change={{ value: 23, period: "mois dernier" }}
-            icon={Euro}
-          />
-          <MetricCard
-            title="Commissions"
-            value={formatCurrency(metrics.totalCommissions)}
-            change={{ value: 8, period: "mois dernier" }}
-            icon={DollarSign}
-          />
-          <MetricCard
-            title="Conversion"
-            value={formatPercentage(metrics.conversionRate)}
-            change={{ value: -2, period: "mois dernier" }}
-            icon={Target}
-          />
+      <div className="px-8 py-6 space-y-6">
+        {/* Stats Cards - Following AdminProjects structure */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-slate-600">Total Propriétés</CardTitle>
+              <Building className="h-4 w-4 text-slate-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-slate-900">{formatNumber(metrics.totalProperties)}</div>
+              <p className="text-xs text-slate-500 mt-1">+12% ce mois</p>
+            </CardContent>
+          </Card>
+          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-slate-600">Chiffre d'Affaires</CardTitle>
+              <Euro className="h-4 w-4 text-slate-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-slate-900">{formatCurrency(metrics.totalRevenue)}</div>
+              <p className="text-xs text-slate-500 mt-1">+23% ce mois</p>
+            </CardContent>
+          </Card>
+          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-slate-600">Commissions</CardTitle>
+              <DollarSign className="h-4 w-4 text-slate-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-slate-900">{formatCurrency(metrics.totalCommissions)}</div>
+              <p className="text-xs text-slate-500 mt-1">+8% ce mois</p>
+            </CardContent>
+          </Card>
+          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-slate-600">Conversion</CardTitle>
+              <Target className="h-4 w-4 text-slate-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-slate-900">{formatPercentage(metrics.conversionRate)}</div>
+              <p className="text-xs text-slate-500 mt-1">-2% ce mois</p>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Secondary Metrics */}
@@ -205,61 +222,86 @@ export const AdminOverview = () => {
         </div>
 
         {/* Analytics Section */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-          <ModernZoneChart
-            limassol={metrics.limassol}
-            paphos={metrics.paphos}
-            larnaca={metrics.larnaca}
-            nicosia={metrics.nicosia}
-          />
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
+            <CardHeader>
+              <CardTitle className="text-slate-900 font-bold">Répartition par Zone</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ModernZoneChart
+                limassol={metrics.limassol}
+                paphos={metrics.paphos}
+                larnaca={metrics.larnaca}
+                nicosia={metrics.nicosia}
+              />
+            </CardContent>
+          </Card>
           
-          <ModernBarChart
-            title="Commissions par Zone"
-            data={commissionData}
-          />
+          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
+            <CardHeader>
+              <CardTitle className="text-slate-900 font-bold">Commissions par Zone</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ModernBarChart
+                title=""
+                data={commissionData}
+              />
+            </CardContent>
+          </Card>
         </div>
 
         {/* Performance Chart */}
-        <ModernPerformanceChart data={performanceData} />
+        <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
+          <CardHeader>
+            <CardTitle className="text-slate-900 font-bold">Performance Mensuelle</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ModernPerformanceChart data={performanceData} />
+          </CardContent>
+        </Card>
 
         {/* Quick Actions */}
-        <div className="group hover:shadow-xl transition-all duration-300 border-2 border-slate-200 bg-white hover:border-slate-300 hover:-translate-y-1 rounded-2xl p-8">
-          <h3 className="text-lg font-bold text-slate-900 mb-6">Actions Rapides</h3>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <Button 
-              variant="clean" 
-              className="h-16 flex-col gap-2 text-sm font-medium hover:bg-slate-50"
-              onClick={() => window.location.href = '/admin/projects'}
-            >
-              <Building className="w-5 h-5 text-slate-600" />
-              Propriétés
-            </Button>
-            <Button 
-              variant="clean" 
-              className="h-16 flex-col gap-2 text-sm font-medium hover:bg-slate-50"
-              onClick={() => window.location.href = '/admin/leads'}
-            >
-              <Users className="w-5 h-5 text-slate-600" />
-              Prospects
-            </Button>
-            <Button 
-              variant="clean" 
-              className="h-16 flex-col gap-2 text-sm font-medium hover:bg-slate-50"
-              onClick={() => window.location.href = '/admin/commissions'}
-            >
-              <DollarSign className="w-5 h-5 text-slate-600" />
-              Commissions
-            </Button>
-            <Button 
-              variant="clean" 
-              className="h-16 flex-col gap-2 text-sm font-medium hover:bg-slate-50"
-              onClick={() => window.location.href = '/admin/analytics'}
-            >
-              <BarChart3 className="w-5 h-5 text-slate-600" />
-              Analytics
-            </Button>
-          </div>
-        </div>
+        <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
+          <CardHeader>
+            <CardTitle className="text-slate-900 font-bold">Actions Rapides</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <Button 
+                variant="ghost" 
+                className="h-16 flex-col gap-2 text-sm font-medium hover:bg-slate-50 border border-slate-200"
+                onClick={() => window.location.href = '/admin/projects'}
+              >
+                <Building className="w-5 h-5 text-slate-600" />
+                Propriétés
+              </Button>
+              <Button 
+                variant="ghost" 
+                className="h-16 flex-col gap-2 text-sm font-medium hover:bg-slate-50 border border-slate-200"
+                onClick={() => window.location.href = '/admin/leads'}
+              >
+                <Users className="w-5 h-5 text-slate-600" />
+                Prospects
+              </Button>
+              <Button 
+                variant="ghost" 
+                className="h-16 flex-col gap-2 text-sm font-medium hover:bg-slate-50 border border-slate-200"
+                onClick={() => window.location.href = '/admin/commissions'}
+              >
+                <DollarSign className="w-5 h-5 text-slate-600" />
+                Commissions
+              </Button>
+              <Button 
+                variant="ghost" 
+                className="h-16 flex-col gap-2 text-sm font-medium hover:bg-slate-50 border border-slate-200"
+                onClick={() => window.location.href = '/admin/analytics'}
+              >
+                <BarChart3 className="w-5 h-5 text-slate-600" />
+                Analytics
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
