@@ -25,7 +25,38 @@ export const AdminProjectForm: React.FC = () => {
   const currentStep = projectFormSteps[currentStepIndex];
   
   const form = useForm({
-    mode: 'onSubmit'
+    mode: 'onSubmit',
+    defaultValues: {
+      title: '',
+      project_code: '',
+      developer_id: '',
+      property_category: 'residential',
+      property_sub_type: ['apartment'],
+      project_phase: 'off-plan',
+      launch_date: '',
+      completion_date_new: '',
+      exclusive_commercialization: false,
+      description: '',
+      detailed_description: '',
+      full_address: '',
+      city: '',
+      region: '',
+      neighborhood: '',
+      cyprus_zone: 'limassol',
+      photos: [],
+      features: [],
+      amenities: [],
+      status: 'available',
+      vat_rate_new: 5,
+      vat_included: false,
+      golden_visa_eligible_new: false,
+      financing_available: false,
+      featured_new: false,
+      price: 0,
+      meta_title_new: '',
+      meta_description_new: '',
+      project_narrative: ''
+    }
   });
 
   // Fetch project data for editing
@@ -51,17 +82,19 @@ export const AdminProjectForm: React.FC = () => {
     if (projectData && isEdit) {
       console.log('Setting form values with project data:', projectData);
       
-      // Create the form data object with proper mapping
+      // Create the form data object with proper mapping and strict defaults
       const formData = {
         title: projectData.title || '',
         project_code: projectData.project_code || '',
         developer_id: projectData.developer_id || '',
         property_category: projectData.property_category || 'residential',
-        property_sub_type: projectData.property_sub_type || ['apartment'],
+        property_sub_type: Array.isArray(projectData.property_sub_type) && projectData.property_sub_type.length > 0 
+          ? projectData.property_sub_type 
+          : ['apartment'],
         project_phase: projectData.project_phase || 'off-plan',
         launch_date: projectData.launch_date || '',
         completion_date_new: projectData.completion_date_new || '',
-        exclusive_commercialization: projectData.exclusive_commercialization || false,
+        exclusive_commercialization: Boolean(projectData.exclusive_commercialization),
         description: projectData.description || '',
         detailed_description: projectData.detailed_description || '',
         full_address: projectData.full_address || '',
@@ -69,16 +102,16 @@ export const AdminProjectForm: React.FC = () => {
         region: projectData.region || '',
         neighborhood: projectData.neighborhood || '',
         cyprus_zone: projectData.cyprus_zone || 'limassol',
-        photos: projectData.photos || [],
-        features: projectData.features || [],
-        amenities: projectData.amenities || [],
+        photos: Array.isArray(projectData.photos) ? projectData.photos : [],
+        features: Array.isArray(projectData.features) ? projectData.features : [],
+        amenities: Array.isArray(projectData.amenities) ? projectData.amenities : [],
         status: projectData.status || 'available',
-        vat_rate_new: projectData.vat_rate_new || 5,
-        vat_included: projectData.vat_included || false,
-        golden_visa_eligible_new: projectData.golden_visa_eligible_new || false,
-        financing_available: projectData.financing_available || false,
-        featured_new: projectData.featured_new || false,
-        price: projectData.price || 0,
+        vat_rate_new: Number(projectData.vat_rate_new) || 5,
+        vat_included: Boolean(projectData.vat_included),
+        golden_visa_eligible_new: Boolean(projectData.golden_visa_eligible_new || projectData.golden_visa_eligible),
+        financing_available: Boolean(projectData.financing_available),
+        featured_new: Boolean(projectData.featured_new || projectData.featured_property),
+        price: Number(projectData.price) || 0,
         meta_title_new: projectData.meta_title_new || '',
         meta_description_new: projectData.meta_description_new || '',
         project_narrative: projectData.project_narrative || ''
@@ -144,7 +177,30 @@ export const AdminProjectForm: React.FC = () => {
   });
 
   const onSubmit = (data: any) => {
-    saveProjectMutation.mutate(data);
+    console.log('Submitting form data:', data);
+    
+    // Clean and validate data before submission
+    const cleanedData = {
+      ...data,
+      // Ensure proper data types
+      price: Number(data.price) || 0,
+      vat_rate_new: Number(data.vat_rate_new) || 5,
+      vat_included: Boolean(data.vat_included),
+      golden_visa_eligible_new: Boolean(data.golden_visa_eligible_new),
+      financing_available: Boolean(data.financing_available),
+      featured_new: Boolean(data.featured_new),
+      exclusive_commercialization: Boolean(data.exclusive_commercialization),
+      // Ensure arrays are properly formatted
+      photos: Array.isArray(data.photos) ? data.photos : [],
+      features: Array.isArray(data.features) ? data.features : [],
+      amenities: Array.isArray(data.amenities) ? data.amenities : [],
+      property_sub_type: Array.isArray(data.property_sub_type) ? data.property_sub_type : ['apartment'],
+      // Set proper status
+      status: saveType === 'publish' ? 'available' : 'draft'
+    };
+    
+    console.log('Cleaned form data for submission:', cleanedData);
+    saveProjectMutation.mutate(cleanedData);
   };
 
   if (isLoading) {

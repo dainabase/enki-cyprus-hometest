@@ -86,7 +86,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Catégorie *</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value || 'residential'}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Sélectionnez" />
@@ -115,7 +115,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Phase du projet</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value || 'off-plan'}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Sélectionnez" />
@@ -140,7 +140,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Développeur *</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
+                <Select onValueChange={field.onChange} value={field.value || ''}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Sélectionnez un développeur" />
