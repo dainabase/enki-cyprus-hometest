@@ -1,6 +1,7 @@
 import React, { lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AppShell } from '@/components/dainabase-ui';
+import { AdminSidebarExecutive } from '@/components/admin/AdminSidebarExecutive';
 
 // Lazy load admin pages for better performance
 const AdminOverview = lazy(() => import('./AdminOverview').then(module => ({ default: module.AdminOverview })));
@@ -24,17 +25,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { PrivateRoute } from '@/components/auth/PrivateRoute';
 import { Card } from '@/components/dainabase-ui';
 import { AlertCircle } from 'lucide-react';
-
-// Sidebar simple pour l'AppShell
-const AdminSidebarSimple = () => (
-  <div className="p-4 text-white">
-    <nav className="space-y-2">
-      <a href="/admin" className="block px-3 py-2 rounded hover:bg-slate-800">Dashboard</a>
-      <a href="/admin/projects" className="block px-3 py-2 rounded hover:bg-slate-800">Projets</a>
-      <a href="/admin/analytics" className="block px-3 py-2 rounded hover:bg-slate-800">Analytics</a>
-    </nav>
-  </div>
-);
 
 const AdminHeader = () => (
   <div className="h-16 px-6 flex items-center justify-between bg-slate-900 text-white">
@@ -69,7 +59,7 @@ export const AdminDashboard = () => {
       <AppShell
         variant="executive"
         header={<AdminHeader />}
-        sidebar={<AdminSidebarSimple />}
+        sidebar={<AdminSidebarExecutive />}
       >
         <Routes>
           <Route path="" element={<AdminOverview />} />
