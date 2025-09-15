@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { 
   LayoutDashboard, 
   Building2, 
@@ -23,60 +22,60 @@ import {
   ChevronRight 
 } from 'lucide-react';
 
-const getNavigationStructure = (t: any) => ({
+const getNavigationStructure = () => ({
   // Tableau de bord - standalone
   dashboard: {
-    title: t('admin.sidebar.dashboard') || 'Dashboard',
+    title: 'Dashboard',
     url: '/admin',
     icon: LayoutDashboard
   },
 
   // Gestion Immobilière
   gestionImmobiliere: {
-    title: t('admin.sidebar.gestionImmobiliere') || 'Gestion Immobilière',
+    title: 'Gestion Immobilière',
     icon: Building2,
     collapsed: false,
     items: [
-      { title: t('admin.sidebar.developers') || 'Développeurs', url: '/admin/developers', icon: Users },
-      { title: t('admin.sidebar.projects') || 'Projets', url: '/admin/projects', icon: FolderOpen },
-      { title: t('admin.sidebar.units') || 'Propriétés', url: '/admin/units', icon: Home }
+      { title: 'Développeurs', url: '/admin/developers', icon: Users },
+      { title: 'Projets', url: '/admin/projects', icon: FolderOpen },
+      { title: 'Propriétés', url: '/admin/units', icon: Home }
     ]
   },
 
   // Ventes & CRM
   ventesCRM: {
-    title: t('admin.sidebar.ventesCRM') || 'Ventes & CRM',
+    title: 'Ventes & CRM',
     icon: TrendingUp,
     collapsed: false,
     items: [
-      { title: t('admin.sidebar.prospects') || 'Prospects', url: '/admin/leads', icon: UserPlus },
-      { title: t('admin.sidebar.commissions') || 'Commissions', url: '/admin/commissions', icon: DollarSign }
+      { title: 'Prospects', url: '/admin/leads', icon: UserPlus },
+      { title: 'Commissions', url: '/admin/commissions', icon: DollarSign }
     ]
   },
 
   // Analytics
   analytics: {
-    title: t('admin.sidebar.analytics') || 'Analytics',
+    title: 'Analytics',
     icon: BarChart3,
     collapsed: true,
     items: [
-      { title: t('admin.sidebar.analyses') || 'Analyses', url: '/admin/analytics', icon: ChartBar },
-      { title: t('admin.sidebar.segmentation') || 'Segmentation', url: '/admin/segmentation', icon: Target },
-      { title: t('admin.sidebar.performance') || 'Performance', url: '/admin/performance', icon: Activity },
-      { title: t('admin.sidebar.reports') || 'Rapports', url: '/admin/reports', icon: FileText }
+      { title: 'Analyses', url: '/admin/analytics', icon: ChartBar },
+      { title: 'Segmentation', url: '/admin/segmentation', icon: Target },
+      { title: 'Performance', url: '/admin/performance', icon: Activity },
+      { title: 'Rapports', url: '/admin/reports', icon: FileText }
     ]
   },
 
   // Administration
   administration: {
-    title: t('admin.sidebar.administration') || 'Administration',
+    title: 'Administration',
     icon: Settings2,
     collapsed: true,
     items: [
-      { title: t('admin.sidebar.documentation') || 'Documentation', url: '/admin/documentation', icon: BookOpen },
-      { title: t('admin.sidebar.settings') || 'Paramètres', url: '/admin/settings', icon: Settings },
+      { title: 'Documentation', url: '/admin/documentation', icon: BookOpen },
+      { title: 'Paramètres', url: '/admin/settings', icon: Settings },
       ...(process.env.NODE_ENV === 'development' ? [
-        { title: t('admin.sidebar.tests') || 'Tests', url: '/admin/tests', icon: CheckSquare }
+        { title: 'Tests', url: '/admin/tests', icon: CheckSquare }
       ] : [])
     ]
   }
@@ -84,8 +83,7 @@ const getNavigationStructure = (t: any) => ({
 
 export const AdminSidebarExecutive: React.FC = () => {
   const location = useLocation();
-  const { t } = useTranslation();
-  const navigation = getNavigationStructure(t);
+  const navigation = getNavigationStructure();
   
   const [categoryStates, setCategoryStates] = useState(() => {
     const saved = localStorage.getItem('admin-sidebar-categories');
