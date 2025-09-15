@@ -291,8 +291,8 @@ const AdminProjects = () => {
       if (error) throw error;
 
       toast({
-        title: t('admin.messages.projectsDeleted'),
-        description: t('admin.messages.projectsDeletedDesc', { count: selectedProjects.length })
+        title: 'Projets supprimés',
+        description: `${selectedProjects.length} projet(s) supprimé(s) avec succès`
       });
       
       setSelectedProjects([]);
@@ -301,8 +301,8 @@ const AdminProjects = () => {
       console.error('Error deleting projects:', error);
       toast({
         variant: 'destructive',
-        title: t('admin.messages.error'),
-        description: error.message || t('admin.messages.errorDeletingProjects')
+        title: 'Erreur',
+        description: error.message || 'Erreur lors de la suppression des projets'
       });
     }
   };
@@ -311,8 +311,8 @@ const AdminProjects = () => {
     const allProjectIds = sortedProjects.map(project => project.id);
     setSelectedProjects(allProjectIds);
     toast({
-      title: t('admin.messages.allProjectsSelected'),
-      description: t('admin.messages.allProjectsSelectedDesc', { count: allProjectIds.length })
+      title: 'Tous les projets sélectionnés',
+      description: `${allProjectIds.length} projet(s) sélectionné(s)`
     });
   };
 
