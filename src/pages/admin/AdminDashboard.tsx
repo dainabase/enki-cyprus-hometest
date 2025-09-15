@@ -1,6 +1,6 @@
 import React, { lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { SidebarProvider } from '@/components/ui/sidebar';
+import { AppShell } from '@/components/dainabase-ui';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 
 // Lazy load admin pages for better performance
@@ -23,23 +23,32 @@ const AdminTests = lazy(() => import('./AdminTests'));
 
 import { useAuth } from '@/contexts/AuthContext';
 import { PrivateRoute } from '@/components/auth/PrivateRoute';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/dainabase-ui';
 import { AlertCircle } from 'lucide-react';
+
+const AdminHeader = () => (
+  <div className="h-16 px-6 flex items-center justify-between bg-slate-900 text-white">
+    <h1 className="text-xl font-semibold">Enki Realty - Admin Dashboard</h1>
+    <div className="flex items-center gap-4">
+      <span className="text-sm text-slate-300">Cyprus Real Estate Platform</span>
+    </div>
+  </div>
+);
 
 export const AdminDashboard = () => {
   const { profile } = useAuth();
 
   if (profile?.role !== 'admin') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <Card className="max-w-md mx-auto">
-          <CardContent className="p-8 text-center">
-            <AlertCircle className="w-16 h-16 text-destructive mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-primary mb-2">Accès Restreint</h2>
-            <p className="text-secondary">
+      <div className="min-h-screen flex items-center justify-center bg-slate-100">
+        <Card variant="executive" padding="lg" className="max-w-md mx-auto">
+          <div className="text-center">
+            <AlertCircle className="w-16 h-16 text-red-600 mx-auto mb-4" />
+            <h2 className="text-xl font-semibold text-slate-900 mb-2">Accès Restreint</h2>
+            <p className="text-slate-600">
               Seuls les administrateurs peuvent accéder à cette section.
             </p>
-          </CardContent>
+          </div>
         </Card>
       </div>
     );
@@ -47,35 +56,32 @@ export const AdminDashboard = () => {
 
   return (
     <PrivateRoute adminOnly>
-      <div className="min-h-screen bg-muted/30 admin-theme">
-        <SidebarProvider defaultOpen>
-          <div className="flex min-h-screen w-full">
-            <AdminSidebar />
-            <main className="flex-1 pt-16">
-              <Routes>
-                <Route path="" element={<AdminOverview />} />
-                <Route path="developers" element={<AdminDevelopers />} />
-                <Route path="projects" element={<AdminProjects />} />
-                <Route path="units" element={<AdminUnits />} />
-                <Route path="leads" element={<AdminLeads />} />
-                <Route path="pipeline" element={<AdminPipeline />} />
-                <Route path="commissions" element={<AdminCommissions />} />
-                <Route path="analytics" element={<AdminAnalytics />} />
-                <Route path="predictions" element={<AdminPredictions />} />
-                <Route path="segmentation" element={<AdminSegmentation />} />
-                <Route path="performance" element={<AdminPerformance />} />
-                <Route path="documentation" element={<AdminDocumentation />} />
-                <Route path="reports" element={<AdminReports />} />
-                <Route path="settings" element={<AdminContent />} />
-                {process.env.NODE_ENV === 'development' && (
-                  <Route path="tests" element={<AdminTests />} />
-                )}
-                <Route path="*" element={<Navigate to="/admin" replace />} />
-              </Routes>
-            </main>
-          </div>
-        </SidebarProvider>
-      </div>
+      <AppShell
+        variant="executive"
+        header={<AdminHeader />}
+        sidebar={<AdminSidebar />}
+      >
+        <Routes>
+          <Route path="" element={<AdminOverview />} />
+          <Route path="developers" element={<AdminDevelopers />} />
+          <Route path="projects" element={<AdminProjects />} />
+          <Route path="units" element={<AdminUnits />} />
+          <Route path="leads" element={<AdminLeads />} />
+          <Route path="pipeline" element={<AdminPipeline />} />
+          <Route path="commissions" element={<AdminCommissions />} />
+          <Route path="analytics" element={<AdminAnalytics />} />
+          <Route path="predictions" element={<AdminPredictions />} />
+          <Route path="segmentation" element={<AdminSegmentation />} />
+          <Route path="performance" element={<AdminPerformance />} />
+          <Route path="documentation" element={<AdminDocumentation />} />
+          <Route path="reports" element={<AdminReports />} />
+          <Route path="settings" element={<AdminContent />} />
+          {process.env.NODE_ENV === 'development' && (
+            <Route path="tests" element={<AdminTests />} />
+          )}
+          <Route path="*" element={<Navigate to="/admin" replace />} />
+        </Routes>
+      </AppShell>
     </PrivateRoute>
   );
 };

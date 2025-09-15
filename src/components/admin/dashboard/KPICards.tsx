@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/dainabase-ui';
 import { LucideIcon } from 'lucide-react';
 
 interface KPICardProps {
@@ -35,36 +35,40 @@ export const KPICard = ({
   };
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">
-          {title}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+    <Card variant="executive" padding="md" className="hover:shadow-xl transition-all duration-300">
+      <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <div className="flex-1">
-            <div className="text-2xl font-bold text-foreground mb-1">
-              {value}
-            </div>
-            {subtitle && (
-              <p className="text-xs text-muted-foreground">
-                {subtitle}
-              </p>
-            )}
-            {trend !== undefined && (
-              <div className={`text-xs mt-1 ${
-                trend > 0 ? 'text-green-600' : trend < 0 ? 'text-red-600' : 'text-muted-foreground'
-              }`}>
-                {trend > 0 ? '↑' : trend < 0 ? '↓' : '→'} {Math.abs(trend)}%
-              </div>
-            )}
-          </div>
-          <div className={`p-3 rounded-lg ${bgColorClasses[color]}`}>
-            <Icon className={`w-6 h-6 ${colorClasses[color]}`} />
+          <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wide">
+            {title}
+          </h3>
+          <div className={`p-2 rounded-lg ${bgColorClasses[color]}`}>
+            <Icon className={`w-5 h-5 ${colorClasses[color]}`} />
           </div>
         </div>
-      </CardContent>
+        
+        <div className="space-y-2">
+          <div className="text-3xl font-bold text-slate-900">
+            {value}
+          </div>
+          
+          {subtitle && (
+            <p className="text-sm text-slate-500">
+              {subtitle}
+            </p>
+          )}
+          
+          {trend !== undefined && (
+            <div className={`text-sm font-medium flex items-center gap-1 ${
+              trend > 0 ? 'text-green-600' : trend < 0 ? 'text-red-600' : 'text-slate-500'
+            }`}>
+              <span className="text-lg">
+                {trend > 0 ? '↗' : trend < 0 ? '↘' : '→'}
+              </span>
+              {Math.abs(trend)}%
+            </div>
+          )}
+        </div>
+      </div>
     </Card>
   );
 };
@@ -77,14 +81,14 @@ interface KPIGridProps {
 export const KPIGrid = ({ children, columns = 4 }: KPIGridProps) => {
   const gridClasses = {
     1: 'grid-cols-1',
-    2: 'grid-cols-1 md:grid-cols-2',
-    3: 'grid-cols-1 md:grid-cols-3',
+    2: 'grid-cols-1 lg:grid-cols-2',
+    3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
     4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
-    5: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-5'
+    5: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5'
   };
 
   return (
-    <div className={`grid ${gridClasses[columns]} gap-4`}>
+    <div className={`grid ${gridClasses[columns]} gap-6`}>
       {children}
     </div>
   );

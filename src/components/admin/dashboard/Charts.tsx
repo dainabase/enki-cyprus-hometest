@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/dainabase-ui';
 
 interface ChartDataPoint {
   label: string;
@@ -27,22 +27,21 @@ export const SimpleBarChart = ({ title, data, formatValue }: SimpleBarChartProps
   const formatter = formatValue || defaultFormatValue;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-lg">{title}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
+    <Card variant="executive" padding="lg">
+      <div className="space-y-6">
+        <h3 className="text-xl font-bold text-slate-900">{title}</h3>
+        
+        <div className="space-y-6">
           {data.map((item, index) => (
-            <div key={index}>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="font-medium">{item.label}</span>
-                <span className="text-muted-foreground">{formatter(item.value)}</span>
+            <div key={index} className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="font-semibold text-slate-700">{item.label}</span>
+                <span className="text-slate-600 font-medium">{formatter(item.value)}</span>
               </div>
-              <div className="w-full bg-muted rounded-full h-3">
+              <div className="w-full bg-slate-200 rounded-full h-4">
                 <div 
-                  className={`h-3 rounded-full transition-all duration-500 ${
-                    item.color || 'bg-primary'
+                  className={`h-4 rounded-full transition-all duration-700 ${
+                    item.color || 'bg-blue-500'
                   }`}
                   style={{
                     width: maxValue > 0 ? `${(item.value / maxValue) * 100}%` : '0%'
@@ -52,7 +51,7 @@ export const SimpleBarChart = ({ title, data, formatValue }: SimpleBarChartProps
             </div>
           ))}
         </div>
-      </CardContent>
+      </div>
     </Card>
   );
 };
@@ -75,21 +74,20 @@ export const ZoneDistributionChart = ({ limassol, paphos, larnaca, nicosia }: Zo
   ];
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Distribution par Zone</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
+    <Card variant="executive" padding="lg">
+      <div className="space-y-6">
+        <h3 className="text-xl font-bold text-slate-900">Distribution par Zone</h3>
+        
+        <div className="space-y-6">
           {data.map((zone, index) => (
             <div key={index} className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className={`w-4 h-4 rounded ${zone.color}`} />
-                <span className="font-medium">{zone.label}</span>
+              <div className="flex items-center gap-4">
+                <div className={`w-5 h-5 rounded ${zone.color}`} />
+                <span className="font-semibold text-slate-700">{zone.label}</span>
               </div>
               <div className="text-right">
-                <div className="font-bold">{zone.value}</div>
-                <div className="text-xs text-muted-foreground">
+                <div className="font-bold text-slate-900">{zone.value}</div>
+                <div className="text-sm text-slate-500">
                   {zone.percentage.toFixed(1)}%
                 </div>
               </div>
@@ -97,21 +95,24 @@ export const ZoneDistributionChart = ({ limassol, paphos, larnaca, nicosia }: Zo
           ))}
         </div>
         
-        {/* Simple pie visualization */}
-        <div className="mt-6 flex h-4 rounded-full overflow-hidden">
-          {data.map((zone, index) => (
-            <div
-              key={index}
-              className={zone.color}
-              style={{ width: `${zone.percentage}%` }}
-            />
-          ))}
+        {/* Executive pie visualization */}
+        <div className="space-y-4">
+          <div className="flex h-6 rounded-full overflow-hidden shadow-inner bg-slate-100">
+            {data.map((zone, index) => (
+              <div
+                key={index}
+                className={zone.color}
+                style={{ width: `${zone.percentage}%` }}
+              />
+            ))}
+          </div>
+          
+          <div className="text-center">
+            <div className="text-lg font-bold text-slate-900">{total}</div>
+            <div className="text-sm text-slate-500">Total propriétés</div>
+          </div>
         </div>
-        
-        <div className="mt-4 text-center text-sm text-muted-foreground">
-          Total: {total} propriétés
-        </div>
-      </CardContent>
+      </div>
     </Card>
   );
 };
@@ -131,51 +132,50 @@ export const PerformanceChart = ({ data }: PerformanceChartProps) => {
   const maxLeads = Math.max(...data.map(d => d.leads));
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Performance des 6 derniers mois</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-6">
+    <Card variant="executive" padding="lg">
+      <div className="space-y-6">
+        <h3 className="text-xl font-bold text-slate-900">Performance des 6 derniers mois</h3>
+        
+        <div className="space-y-8">
           {data.map((month, index) => (
-            <div key={index} className="space-y-2">
-              <div className="text-sm font-medium">{month.month}</div>
+            <div key={index} className="space-y-4">
+              <div className="text-lg font-semibold text-slate-800">{month.month}</div>
               
-              <div className="grid grid-cols-3 gap-4 text-xs">
-                <div>
-                  <div className="flex justify-between mb-1">
-                    <span>Ventes</span>
-                    <span>{month.sales}</span>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-slate-600">Ventes</span>
+                    <span className="font-bold text-slate-900">{month.sales}</span>
                   </div>
-                  <div className="w-full bg-muted rounded h-2">
+                  <div className="w-full bg-slate-200 rounded-full h-3">
                     <div 
-                      className="bg-blue-500 h-2 rounded"
+                      className="bg-blue-500 h-3 rounded-full transition-all duration-500"
                       style={{ width: `${maxSales > 0 ? (month.sales / maxSales) * 100 : 0}%` }}
                     />
                   </div>
                 </div>
                 
-                <div>
-                  <div className="flex justify-between mb-1">
-                    <span>Revenue</span>
-                    <span>€{(month.revenue / 1000).toFixed(0)}k</span>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-slate-600">Revenue</span>
+                    <span className="font-bold text-slate-900">€{(month.revenue / 1000).toFixed(0)}k</span>
                   </div>
-                  <div className="w-full bg-muted rounded h-2">
+                  <div className="w-full bg-slate-200 rounded-full h-3">
                     <div 
-                      className="bg-green-500 h-2 rounded"
+                      className="bg-green-500 h-3 rounded-full transition-all duration-500"
                       style={{ width: `${maxRevenue > 0 ? (month.revenue / maxRevenue) * 100 : 0}%` }}
                     />
                   </div>
                 </div>
                 
-                <div>
-                  <div className="flex justify-between mb-1">
-                    <span>Leads</span>
-                    <span>{month.leads}</span>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-slate-600">Leads</span>
+                    <span className="font-bold text-slate-900">{month.leads}</span>
                   </div>
-                  <div className="w-full bg-muted rounded h-2">
+                  <div className="w-full bg-slate-200 rounded-full h-3">
                     <div 
-                      className="bg-purple-500 h-2 rounded"
+                      className="bg-purple-500 h-3 rounded-full transition-all duration-500"
                       style={{ width: `${maxLeads > 0 ? (month.leads / maxLeads) * 100 : 0}%` }}
                     />
                   </div>
@@ -184,7 +184,7 @@ export const PerformanceChart = ({ data }: PerformanceChartProps) => {
             </div>
           ))}
         </div>
-      </CardContent>
+      </div>
     </Card>
   );
 };

@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button, Card } from '@/components/dainabase-ui';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Users, 
@@ -51,37 +50,45 @@ export const AdminOverview = () => {
 
   if (isLoading) {
     return (
-      <div className="p-6">
-        <div className="text-center">Chargement du dashboard...</div>
+      <div className="space-y-6">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-slate-600">Chargement du dashboard exécutif...</div>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="p-6">
-        <div className="text-center text-red-600">Erreur lors du chargement des données</div>
-      </div>
+      <Card variant="executive" padding="lg" className="mx-auto max-w-md">
+        <div className="text-center">
+          <AlertCircle className="w-12 h-12 text-red-600 mx-auto mb-4" />
+          <div className="text-red-600 font-semibold">Erreur lors du chargement des données</div>
+        </div>
+      </Card>
     );
   }
 
   if (!metrics) {
     return (
-      <div className="p-6">
-        <div className="text-center">Aucune donnée disponible</div>
-      </div>
+      <Card variant="executive" padding="lg" className="mx-auto max-w-md">
+        <div className="text-center text-slate-600">Aucune donnée disponible</div>
+      </Card>
     );
   }
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header avec filtres */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <h1 className="text-3xl font-bold">Dashboard Analytics Cyprus</h1>
+    <div className="space-y-8">
+      {/* Executive Header avec filtres */}
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+        <div>
+          <h1 className="text-4xl font-bold text-slate-900 mb-2">Executive Dashboard</h1>
+          <p className="text-slate-600 text-lg">Cyprus Real Estate Analytics</p>
+        </div>
         
-        <div className="flex flex-col sm:flex-row gap-2">
+        <div className="flex flex-col sm:flex-row gap-3">
           <Select value={period} onValueChange={(value: any) => setPeriod(value)}>
-            <SelectTrigger className="w-32">
+            <SelectTrigger className="w-40 h-12 bg-white border-slate-300">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -93,7 +100,7 @@ export const AdminOverview = () => {
           </Select>
           
           <Select value={zone} onValueChange={(value: any) => setZone(value)}>
-            <SelectTrigger className="w-32">
+            <SelectTrigger className="w-40 h-12 bg-white border-slate-300">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -107,9 +114,12 @@ export const AdminOverview = () => {
         </div>
       </div>
 
-      {/* KPIs Inventaire */}
-      <div>
-        <h2 className="text-xl font-semibold mb-4">📊 Inventaire & Portfolio</h2>
+      {/* KPIs Inventaire Executive */}
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-3">
+          <Building className="w-7 h-7 text-blue-600" />
+          Portfolio & Inventaire
+        </h2>
         <KPIGrid columns={5}>
           <KPICard
             title="Total Propriétés"
@@ -149,9 +159,12 @@ export const AdminOverview = () => {
         </KPIGrid>
       </div>
 
-      {/* KPIs Financiers */}
-      <div>
-        <h2 className="text-xl font-semibold mb-4">💰 Métriques Financières</h2>
+      {/* KPIs Financiers Executive */}
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-3">
+          <Euro className="w-7 h-7 text-green-600" />
+          Performance Financière
+        </h2>
         <KPIGrid columns={5}>
           <KPICard
             title="Chiffre d'Affaires"
@@ -191,9 +204,12 @@ export const AdminOverview = () => {
         </KPIGrid>
       </div>
 
-      {/* KPIs Cyprus Spécifiques */}
-      <div>
-        <h2 className="text-xl font-semibold mb-4">🇨🇾 Métriques Cyprus</h2>
+      {/* KPIs Cyprus Spécifiques Executive */}
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-3">
+          <MapPin className="w-7 h-7 text-red-600" />
+          Réglementation Cyprus
+        </h2>
         <KPIGrid columns={3}>
           <KPICard
             title="TVA Collectée 5%"
@@ -219,8 +235,8 @@ export const AdminOverview = () => {
         </KPIGrid>
       </div>
 
-      {/* Graphiques et Distribution */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Executive Analytics Charts */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
         <ZoneDistributionChart
           limassol={metrics.limassol}
           paphos={metrics.paphos}
@@ -234,55 +250,94 @@ export const AdminOverview = () => {
         />
       </div>
 
-      {/* Performance Chart */}
+      {/* Performance Chart Executive */}
       <PerformanceChart data={performanceData} />
 
-      {/* Résumé Performance */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MapPin className="w-5 h-5" />
+      {/* Executive Summary */}
+      <Card variant="executive" padding="lg">
+        <div className="space-y-6">
+          <h3 className="text-2xl font-bold text-slate-900 flex items-center gap-3">
+            <TrendingUp className="w-6 h-6 text-blue-600" />
             Résumé Exécutif - Période: {period}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="font-semibold mb-3">🏆 Points Forts</h4>
-              <ul className="space-y-2 text-sm">
-                <li>• <strong>{formatNumber(metrics.goldenVisaProperties)}</strong> propriétés Golden Visa disponibles</li>
-                <li>• Taux de conversion <strong>{formatPercentage(metrics.conversionRate)}</strong></li>
-                <li>• Revenue moyen <strong>{formatCurrency(metrics.totalRevenue / Math.max(metrics.soldProperties, 1))}</strong> par vente</li>
-                <li>• Commission moyenne <strong>{formatPercentage(metrics.averageCommissionRate)}</strong></li>
-              </ul>
+          </h3>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="space-y-4">
+              <h4 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+                🏆 Points Forts
+              </h4>
+              <div className="space-y-3 text-slate-700">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                  <span><strong>{formatNumber(metrics.goldenVisaProperties)}</strong> propriétés Golden Visa disponibles</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                  <span>Taux de conversion <strong>{formatPercentage(metrics.conversionRate)}</strong></span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-purple-500"></div>
+                  <span>Revenue moyen <strong>{formatCurrency(metrics.totalRevenue / Math.max(metrics.soldProperties, 1))}</strong> par vente</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
+                  <span>Commission moyenne <strong>{formatPercentage(metrics.averageCommissionRate)}</strong></span>
+                </div>
+              </div>
             </div>
             
-            <div>
-              <h4 className="font-semibold mb-3">📈 Objectifs</h4>
-              <ul className="space-y-2 text-sm">
-                <li>• Maintenir un stock de {Math.max(100 - metrics.availableProperties, 0)} propriétés supplémentaires</li>
-                <li>• Cibler une conversion de <strong>15%</strong> minimum</li>
-                <li>• Optimiser le délai de vente (actuellement {Math.round(metrics.averageDaysOnMarket)} jours)</li>
-                <li>• Développer le portefeuille Golden Visa</li>
-              </ul>
+            <div className="space-y-4">
+              <h4 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+                📈 Objectifs Stratégiques
+              </h4>
+              <div className="space-y-3 text-slate-700">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-orange-500"></div>
+                  <span>Maintenir un stock de {Math.max(100 - metrics.availableProperties, 0)} propriétés supplémentaires</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                  <span>Cibler une conversion de <strong>15%</strong> minimum</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-indigo-500"></div>
+                  <span>Optimiser le délai de vente (actuellement {Math.round(metrics.averageDaysOnMarket)} jours)</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-teal-500"></div>
+                  <span>Développer le portefeuille Golden Visa</span>
+                </div>
+              </div>
             </div>
           </div>
-        </CardContent>
+        </div>
       </Card>
 
-      {/* Liens rapides */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Button variant="outline" className="w-full" asChild>
-          <a href="/admin/projects">Gérer Propriétés</a>
+      {/* Executive Action Center */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <Button variant="executive" size="lg" className="h-16" onClick={() => window.location.href = '/admin/projects'}>
+          <div className="flex flex-col items-center gap-2">
+            <Building className="w-6 h-6" />
+            <span>Gérer Propriétés</span>
+          </div>
         </Button>
-        <Button variant="outline" className="w-full" asChild>
-          <a href="/admin/leads">Leads & Pipeline</a>
+        <Button variant="executive" size="lg" className="h-16" onClick={() => window.location.href = '/admin/leads'}>
+          <div className="flex flex-col items-center gap-2">
+            <Users className="w-6 h-6" />
+            <span>Leads & Pipeline</span>
+          </div>
         </Button>
-        <Button variant="outline" className="w-full" asChild>
-          <a href="/admin/commissions">Commissions</a>
+        <Button variant="executive" size="lg" className="h-16" onClick={() => window.location.href = '/admin/commissions'}>
+          <div className="flex flex-col items-center gap-2">
+            <DollarSign className="w-6 h-6" />
+            <span>Commissions</span>
+          </div>
         </Button>
-        <Button variant="outline" className="w-full" asChild>
-          <a href="/admin/analytics">Analytics Avancés</a>
+        <Button variant="executive" size="lg" className="h-16" onClick={() => window.location.href = '/admin/analytics'}>
+          <div className="flex flex-col items-center gap-2">
+            <BarChart3 className="w-6 h-6" />
+            <span>Analytics Avancés</span>
+          </div>
         </Button>
       </div>
     </div>
