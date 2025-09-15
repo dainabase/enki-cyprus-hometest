@@ -17,6 +17,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useDebounceCallback } from '@/hooks/useDebounceCallback';
 import { ArrowLeft, ArrowRight, Save, Eye, CheckCircle, FileText, Brain } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { extractPrefilledData, PrefilledFormData } from '@/lib/ai-import/mapper';
 import * as LucideIcons from 'lucide-react';
 
@@ -648,62 +649,87 @@ const [showPrefilledBanner, setShowPrefilledBanner] = useState(false);
     <Layout>
       <div className="container mx-auto py-8 space-y-8">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">
-              {isEdit ? 'Modifier le projet' : 'Nouveau projet'}
-            </h1>
-            <p className="text-muted-foreground">
-              {isEdit ? 'Modifiez les informations du projet' : 'Créez un nouveau projet immobilier'}
-            </p>
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/admin/projects')}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Retour aux projets
+            </Button>
           </div>
+          
+          <h1 className="text-2xl font-bold text-foreground mb-2">
+            {isEdit ? 'Modifier le projet' : 'Créer un nouveau projet'}
+          </h1>
+          <p className="text-muted-foreground">
+            {isEdit ? 'Modifiez les informations de votre projet' : 'Ajoutez un nouveau projet immobilier à votre catalogue'}
+          </p>
         </div>
 
-        <div className="pt-2">
-          <Button
-            variant="outline"
-            onClick={() => navigate('/admin/projects')}
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour aux projets
-          </Button>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Steps Navigation */}
-          <div className="lg:col-span-1">
-            <Card className="sticky top-4">
-              <CardHeader>
-                <CardTitle className="text-lg">Étapes</CardTitle>
-                <CardDescription>
-                  {currentStepIndex + 1} / {projectFormSteps.length}
-                </CardDescription>
+        {/* Main Form */}
+        <div className="flex gap-8">
+          {/* Sidebar Navigation */}
+          <div className="w-64 flex-shrink-0">
+            <Card className="sticky top-4 border-border/50 shadow-lg">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg font-semibold text-foreground">Étapes</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2">
-                {projectFormSteps.map((step, index) => (
-                  <Button
-                    key={step.id}
-                    variant={index === currentStepIndex ? 'default' : 'ghost'}
-                    className="w-full justify-start h-auto p-3"
-                    onClick={() => goToStep(index)}
-                  >
-                    <div className="flex items-center gap-3">
-                      {renderIcon(step.icon)}
-                      <div className="text-left">
-                        <div className="font-medium text-sm">{step.title}</div>
-                        {index < currentStepIndex && (
-                          <CheckCircle className="w-3 h-3 text-green-500 mt-1" />
+              <CardContent className="pt-0">
+                <nav className="space-y-2">
+                  {projectFormSteps.map((step, index) => {
+                    const isCompleted = index < currentStepIndex;
+                    const isCurrent = index === currentStepIndex;
+                    const StepIcon = (LucideIcons as any)[step.icon] as React.ComponentType<{ className?: string }>;
+                    
+                    return (
+                      <button
+                        key={step.id}
+                        onClick={() => goToStep(index)}
+                        className={cn(
+                          "w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg transition-all duration-200 group",
+                          isCurrent 
+                            ? "bg-primary/10 text-primary border border-primary/20 shadow-sm" 
+                            : isCompleted 
+                              ? "text-emerald-600 hover:bg-emerald-50 border border-transparent" 
+                              : "text-muted-foreground hover:bg-accent border border-transparent"
                         )}
-                      </div>
-                    </div>
-                  </Button>
-                ))}
+                      >
+                        <div className={cn(
+                          "flex items-center justify-center w-7 h-7 rounded-lg text-xs font-semibold",
+                          isCurrent 
+                            ? "bg-primary text-primary-foreground shadow-sm" 
+                            : isCompleted 
+                              ? "bg-emerald-100 text-emerald-700" 
+                              : "bg-muted text-muted-foreground group-hover:bg-accent-foreground/10"
+                        )}>
+                          {isCompleted ? (
+                            <CheckCircle className="h-4 w-4" />
+                          ) : (
+                            <StepIcon className="h-4 w-4" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className={cn(
+                            "text-sm font-semibold truncate",
+                            isCurrent && "text-primary"
+                          )}>
+                            {step.title}
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </nav>
               </CardContent>
             </Card>
           </div>
 
-          {/* Form Content */}
-          <div className="lg:col-span-3">
+          {/* Main Content */}
+          <div className="flex-1">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit, () => {
                 toast({
@@ -712,72 +738,62 @@ const [showPrefilledBanner, setShowPrefilledBanner] = useState(false);
                   variant: "destructive"
                 });
               })} className="space-y-8">
-                {/* Current Step Content */}
-                <Card>
-                  <CardHeader>
-                    <div className="flex items-center gap-3">
-                      {renderIcon(currentStep.icon)}
-                      <div>
-                        <CardTitle>{currentStep.title}</CardTitle>
-                        <CardDescription>
-                          Étape {currentStepIndex + 1} sur {projectFormSteps.length}
-                        </CardDescription>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <ProjectFormSteps 
-                      key={currentStep.id}
-                      form={form} 
-                      currentStep={currentStep.id}
-                      projectId={id}
-                    />
-                  </CardContent>
-                </Card>
-
-                {/* Navigation & Actions */}
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex items-center justify-between">
+                <ProjectFormSteps 
+                  key={currentStep.id}
+                  form={form} 
+                  currentStep={currentStep.id}
+                  projectId={id}
+                />
+                
+                {/* Navigation Buttons */}
+                <Card className="border-border/50 shadow-sm">
+                  <CardContent className="p-6">
+                    <div className="flex justify-between items-center">
                       <Button
                         type="button"
                         variant="outline"
                         onClick={prevStep}
                         disabled={currentStepIndex === 0}
+                        className="flex items-center gap-2"
                       >
-                        <ArrowLeft className="w-4 h-4 mr-2" />
+                        <ArrowLeft className="h-4 w-4" />
                         Précédent
                       </Button>
-
+                      
                       <div className="flex items-center gap-3">
                         {currentStepIndex === projectFormSteps.length - 1 ? (
-                          <div className="flex gap-2">
+                          <>
                             <Button
-                              type="submit"
+                              type="button"
                               variant="outline"
+                              onClick={() => {
+                                setSaveType('draft');
+                                form.handleSubmit(onSubmit)();
+                              }}
                               disabled={saveProjectMutation.isPending}
-                              onClick={() => { setSaveType('draft'); form.handleSubmit(onSubmit)(); }}
+                              className="flex items-center gap-2"
                             >
-                              <Save className="w-4 h-4 mr-2" />
-                              Sauvegarder brouillon
+                              <Save className="h-4 w-4" />
+                              {saveProjectMutation.isPending && saveType === 'draft' ? 'Sauvegarde...' : 'Sauvegarder en brouillon'}
                             </Button>
                             <Button
                               type="submit"
+                              onClick={() => setSaveType('publish')}
                               disabled={saveProjectMutation.isPending}
-                              onClick={() => { setSaveType('publish'); form.handleSubmit(onSubmit)(); }}
+                              className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white"
                             >
-                              <Eye className="w-4 h-4 mr-2" />
-                              {isEdit ? 'Mettre à jour' : 'Publier'}
+                              <Eye className="h-4 w-4" />
+                              {saveProjectMutation.isPending && saveType === 'publish' ? 'Publication...' : 'Publier le projet'}
                             </Button>
-                          </div>
+                          </>
                         ) : (
                           <Button
                             type="button"
                             onClick={nextStep}
-                            disabled={currentStepIndex === projectFormSteps.length - 1}
+                            className="flex items-center gap-2"
                           >
                             Suivant
-                            <ArrowRight className="w-4 h-4 ml-2" />
+                            <ArrowRight className="h-4 w-4" />
                           </Button>
                         )}
                       </div>
