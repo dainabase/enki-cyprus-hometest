@@ -162,16 +162,25 @@ export const AdminProjectForm: React.FC = () => {
     },
     onSuccess: () => {
       toast({
-        title: isEdit ? 'Projet mis à jour' : 'Projet créé',
-        description: isEdit ? 'Le projet a été mis à jour avec succès' : 'Le nouveau projet a été créé avec succès'
+        title: saveType === 'publish' ? '🎉 Projet publié avec succès !' : isEdit ? 'Projet mis à jour' : 'Projet créé',
+        description: saveType === 'publish' 
+          ? 'Votre projet est maintenant visible publiquement. Toutes les modifications ont été prises en compte.'
+          : isEdit ? 'Le projet a été mis à jour avec succès' : 'Le nouveau projet a été créé avec succès',
+        duration: 5000 // Toast reste 5 secondes
       });
-      navigate('/admin/projects');
+      
+      // Délai avant redirection pour laisser le temps de voir le message
+      setTimeout(() => {
+        navigate('/admin/projects');
+      }, 2000);
     },
     onError: (error: any) => {
+      console.error('Erreur lors de la sauvegarde:', error);
       toast({
-        title: 'Erreur',
-        description: 'Une erreur est survenue lors de la sauvegarde',
-        variant: 'destructive'
+        title: 'Erreur de publication',
+        description: `Impossible de ${saveType === 'publish' ? 'publier' : 'sauvegarder'} le projet. Vérifiez tous les champs requis.`,
+        variant: 'destructive',
+        duration: 8000
       });
     }
   });
