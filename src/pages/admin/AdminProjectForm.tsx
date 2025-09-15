@@ -66,6 +66,7 @@ export const AdminProjectForm: React.FC = () => {
         .single();
       
       if (error) throw error;
+      console.log('Project data loaded:', data);
       return data;
     },
     enabled: isEdit
@@ -74,34 +75,36 @@ export const AdminProjectForm: React.FC = () => {
   // Populate form when data is loaded
   React.useEffect(() => {
     if (projectData && isEdit) {
-      // Reset form with the project data
-      form.reset({
-        title: projectData.title || '',
-        description: projectData.description || '',
-        developer_id: projectData.developer_id || '',
-        city: projectData.city || '',
-        full_address: projectData.full_address || '',
-        region: projectData.region || '',
-        neighborhood: projectData.neighborhood || '',
-        photos: projectData.photos || [],
-        features: projectData.features || [],
-        amenities: projectData.amenities || [],
-        status: (projectData.status as any) || 'available',
-        vat_rate_new: projectData.vat_rate_new || 5,
-        vat_included: projectData.vat_included || false,
-        golden_visa_eligible_new: projectData.golden_visa_eligible_new || false,
-        financing_available: projectData.financing_available || false,
-        featured_new: projectData.featured_new || false,
-        cyprus_zone: (projectData.cyprus_zone as any) || 'limassol',
-        property_category: (projectData.property_category as any) || 'residential',
-        property_sub_type: (projectData.property_sub_type as any) || ['apartment'],
-        exclusive_commercialization: projectData.exclusive_commercialization || false,
-        project_phase: (projectData.project_phase as any) || 'off-plan',
-        price: projectData.price || 0,
-        meta_title_new: projectData.meta_title_new || '',
-        meta_description_new: projectData.meta_description_new || '',
-        project_narrative: projectData.project_narrative || ''
-      });
+      console.log('Setting form values with project data:', projectData);
+      
+      // Set each field individually to ensure proper updates
+      form.setValue('title', projectData.title || '');
+      form.setValue('description', projectData.description || '');
+      form.setValue('developer_id', projectData.developer_id || '');
+      form.setValue('city', projectData.city || '');
+      form.setValue('full_address', projectData.full_address || '');
+      form.setValue('region', projectData.region || '');
+      form.setValue('neighborhood', projectData.neighborhood || '');
+      form.setValue('photos', projectData.photos || []);
+      form.setValue('features', projectData.features || []);
+      form.setValue('amenities', projectData.amenities || []);
+      form.setValue('status', (projectData.status as any) || 'available');
+      form.setValue('vat_rate_new', projectData.vat_rate_new || 5);
+      form.setValue('vat_included', projectData.vat_included || false);
+      form.setValue('golden_visa_eligible_new', projectData.golden_visa_eligible_new || false);
+      form.setValue('financing_available', projectData.financing_available || false);
+      form.setValue('featured_new', projectData.featured_new || false);
+      form.setValue('cyprus_zone', (projectData.cyprus_zone as any) || 'limassol');
+      form.setValue('property_category', (projectData.property_category as any) || 'residential');
+      form.setValue('property_sub_type', (projectData.property_sub_type as any) || ['apartment']);
+      form.setValue('exclusive_commercialization', projectData.exclusive_commercialization || false);
+      form.setValue('project_phase', (projectData.project_phase as any) || 'off-plan');
+      form.setValue('price', projectData.price || 0);
+      form.setValue('meta_title_new', projectData.meta_title_new || '');
+      form.setValue('meta_description_new', projectData.meta_description_new || '');
+      form.setValue('project_narrative', projectData.project_narrative || '');
+      
+      console.log('Form values after setting:', form.getValues());
     }
   }, [projectData, isEdit, form]);
 
