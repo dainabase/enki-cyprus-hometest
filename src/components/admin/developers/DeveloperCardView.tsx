@@ -62,10 +62,10 @@ export const DeveloperCardView = ({
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {groupedByZone[zone].map(dev => (
-              <Card key={dev.id} className="group hover:shadow-xl transition-all duration-300 border-2 border-slate-200 bg-white hover:border-slate-300 hover:-translate-y-1">
+              <Card key={dev.id} className="group hover:shadow-xl transition-all duration-300 border-2 border-slate-200 bg-white hover:border-slate-300 hover:-translate-y-1 flex flex-col h-full">
                 <CardHeader className="pb-4">
-                  <div className="flex items-start space-x-4">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center overflow-hidden border-2 border-white shadow-sm">
+                  <div className="flex items-start space-x-4 h-20">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center overflow-hidden border-2 border-white shadow-sm flex-shrink-0">
                       {getLogo(dev) ? (
                         <img 
                           src={getLogo(dev)} 
@@ -80,10 +80,12 @@ export const DeveloperCardView = ({
                         </div>
                       )}
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-bold text-slate-900 text-lg leading-tight">{dev.name}</h4>
-                      <p className="text-slate-500 font-medium">{dev.main_city}</p>
-                      <div className="flex items-center gap-2 mt-2">
+                    <div className="flex-1 min-w-0 h-full flex flex-col justify-between">
+                      <div>
+                        <h4 className="font-bold text-slate-900 text-lg leading-tight line-clamp-2">{dev.name}</h4>
+                        <p className="text-slate-500 font-medium mt-1">{dev.main_city}</p>
+                      </div>
+                      <div className="flex items-center gap-2 mt-auto">
                         <Badge 
                           variant={dev.status === 'active' ? 'default' : 'secondary'}
                           className={dev.status === 'active' 
@@ -98,7 +100,7 @@ export const DeveloperCardView = ({
                   </div>
                 </CardHeader>
                 
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-4 flex-1">
                   {dev.rating_score && (
                     <div className="flex items-center justify-between p-3 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-xl border border-amber-200">
                       <span className="text-sm font-medium text-amber-800">Note</span>
@@ -144,7 +146,7 @@ export const DeveloperCardView = ({
                   </div>
                 </CardContent>
                 
-                <CardFooter className="pt-4 border-t border-slate-100">
+                <CardFooter className="pt-4 border-t border-slate-100 mt-auto">
                   <div className="flex gap-2 w-full">
                     <Button 
                       variant="outline" 
