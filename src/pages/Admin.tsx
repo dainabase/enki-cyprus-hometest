@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   Plus, 
@@ -48,6 +49,7 @@ interface ProjectFormData {
 }
 
 const Admin = () => {
+  const navigate = useNavigate();
   const { profile } = useAuth();
   const { toast } = useToast();
   const [stats, setStats] = useState<AdminStats>({ totalProjects: 0, totalUsers: 0 });
@@ -306,7 +308,7 @@ const Admin = () => {
                   </>
                 )}
               </Button>
-              <Button onClick={openCreateModal} className="btn-premium">
+              <Button onClick={() => navigate('/admin/projects/new')} className="btn-premium">
                 <Plus className="w-4 h-4 mr-2" />
                 Nouveau Projet
               </Button>
