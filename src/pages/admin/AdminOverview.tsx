@@ -143,64 +143,64 @@ export const AdminOverview = () => {
 
         {/* Secondary Metrics */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          <div className="bg-white rounded-xl p-4 border border-slate-100">
+          <div className="group hover:shadow-xl transition-all duration-300 border-2 border-slate-200 bg-white hover:border-slate-300 hover:-translate-y-1 rounded-xl p-4">
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-slate-50 rounded-lg">
+              <div className="p-2 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg border border-white shadow-sm">
                 <Award className="w-4 h-4 text-slate-600" />
               </div>
             </div>
             <p className="text-2xl font-bold text-slate-900">{formatNumber(metrics.goldenVisaProperties)}</p>
-            <p className="text-xs text-slate-500">Golden Visa</p>
+            <p className="text-xs text-slate-500 font-medium">Golden Visa</p>
           </div>
 
-          <div className="bg-white rounded-xl p-4 border border-slate-100">
+          <div className="group hover:shadow-xl transition-all duration-300 border-2 border-slate-200 bg-white hover:border-slate-300 hover:-translate-y-1 rounded-xl p-4">
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-slate-50 rounded-lg">
+              <div className="p-2 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg border border-white shadow-sm">
                 <Home className="w-4 h-4 text-slate-600" />
               </div>
             </div>
             <p className="text-2xl font-bold text-slate-900">{formatNumber(metrics.availableProperties)}</p>
-            <p className="text-xs text-slate-500">Disponibles</p>
+            <p className="text-xs text-slate-500 font-medium">Disponibles</p>
           </div>
 
-          <div className="bg-white rounded-xl p-4 border border-slate-100">
+          <div className="group hover:shadow-xl transition-all duration-300 border-2 border-slate-200 bg-white hover:border-slate-300 hover:-translate-y-1 rounded-xl p-4">
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-slate-50 rounded-lg">
+              <div className="p-2 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg border border-white shadow-sm">
                 <CheckCircle className="w-4 h-4 text-slate-600" />
               </div>
             </div>
             <p className="text-2xl font-bold text-slate-900">{formatNumber(metrics.soldProperties)}</p>
-            <p className="text-xs text-slate-500">Vendues</p>
+            <p className="text-xs text-slate-500 font-medium">Vendues</p>
           </div>
 
-          <div className="bg-white rounded-xl p-4 border border-slate-100">
+          <div className="group hover:shadow-xl transition-all duration-300 border-2 border-slate-200 bg-white hover:border-slate-300 hover:-translate-y-1 rounded-xl p-4">
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-slate-50 rounded-lg">
+              <div className="p-2 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg border border-white shadow-sm">
                 <BarChart3 className="w-4 h-4 text-slate-600" />
               </div>
             </div>
             <p className="text-2xl font-bold text-slate-900">{formatCurrency(metrics.averagePricePerSqm)}</p>
-            <p className="text-xs text-slate-500">Prix/m²</p>
+            <p className="text-xs text-slate-500 font-medium">Prix/m²</p>
           </div>
 
-          <div className="bg-white rounded-xl p-4 border border-slate-100">
+          <div className="group hover:shadow-xl transition-all duration-300 border-2 border-slate-200 bg-white hover:border-slate-300 hover:-translate-y-1 rounded-xl p-4">
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-slate-50 rounded-lg">
+              <div className="p-2 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg border border-white shadow-sm">
                 <Clock className="w-4 h-4 text-slate-600" />
               </div>
             </div>
             <p className="text-2xl font-bold text-slate-900">{Math.round(metrics.averageDaysOnMarket)}</p>
-            <p className="text-xs text-slate-500">Jours/vente</p>
+            <p className="text-xs text-slate-500 font-medium">Jours/vente</p>
           </div>
 
-          <div className="bg-white rounded-xl p-4 border border-slate-100">
+          <div className="group hover:shadow-xl transition-all duration-300 border-2 border-slate-200 bg-white hover:border-slate-300 hover:-translate-y-1 rounded-xl p-4">
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-slate-50 rounded-lg">
+              <div className="p-2 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg border border-white shadow-sm">
                 <Calendar className="w-4 h-4 text-slate-600" />
               </div>
             </div>
             <p className="text-2xl font-bold text-slate-900">{formatNumber(metrics.propertiesSoldThisMonth)}</p>
-            <p className="text-xs text-slate-500">Ce mois</p>
+            <p className="text-xs text-slate-500 font-medium">Ce mois</p>
           </div>
         </div>
 
@@ -223,8 +223,8 @@ export const AdminOverview = () => {
         <ModernPerformanceChart data={performanceData} />
 
         {/* Quick Actions */}
-        <div className="bg-white rounded-2xl p-8 border border-slate-100">
-          <h3 className="text-lg font-semibold text-slate-900 mb-6">Actions Rapides</h3>
+        <div className="group hover:shadow-xl transition-all duration-300 border-2 border-slate-200 bg-white hover:border-slate-300 hover:-translate-y-1 rounded-2xl p-8">
+          <h3 className="text-lg font-bold text-slate-900 mb-6">Actions Rapides</h3>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <Button 
               variant="clean" 

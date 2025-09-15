@@ -70,14 +70,14 @@ export const ProjectDetailedView = ({
     <div className="space-y-6">
       {projects.map((project) => (
         <div key={project.id} className="relative">
-          {/* Checkbox positioned in top-left corner of card */}
-          <div className="absolute top-4 left-4 z-10">
+          {/* Checkbox positioned in top-right corner for better UX */}
+          <div className="absolute top-4 right-4 z-10">
             <Checkbox
               checked={selectedProjects.includes(project.id)}
               onCheckedChange={(checked) => 
                 handleProjectSelect(project.id, checked as boolean)
               }
-              className="bg-white border-2 border-slate-300 shadow-lg"
+              className="bg-white/95 border-2 border-slate-300 shadow-lg backdrop-blur-sm"
             />
           </div>
           
