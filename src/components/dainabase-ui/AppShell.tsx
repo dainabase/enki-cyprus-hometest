@@ -22,7 +22,7 @@ export const AppShell: React.FC<AppShellProps> = ({
 }) => {
   return (
     <div className={cn(
-      "min-h-screen bg-white flex flex-col",
+      "min-h-screen bg-white",
       className
     )}>
       {header && (
@@ -31,21 +31,21 @@ export const AppShell: React.FC<AppShellProps> = ({
         </header>
       )}
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex">
         {sidebar && (
           <aside className="w-64 bg-white border-r border-slate-200 sticky top-32 h-[calc(100vh-8rem)] overflow-y-auto flex-shrink-0">
             {sidebar}
           </aside>
         )}
 
-        <main className="flex-1 flex flex-col overflow-y-auto">
+        <main className="flex-1 min-h-screen">
           {breadcrumbs && (
             <div className="bg-white border-b border-slate-200 px-6 py-4">
               {breadcrumbs}
             </div>
           )}
 
-          <div className="flex-1 p-6">
+          <div className="p-6">
             {children}
           </div>
         </main>
