@@ -357,6 +357,19 @@ export const SimpleProjectFormSteps: React.FC<SimpleProjectFormStepsProps> = ({ 
         </CardHeader>
         <CardContent className="space-y-6">
           <div>
+            <Label>Photos du projet</Label>
+            <MediaUploader
+              field={{
+                value: Array.isArray(form.watch('photos')) ? form.watch('photos').map((item: any) => typeof item === 'string' ? item : item.url).filter(Boolean) : [],
+                onChange: (value: string[]) => form.setValue('photos', value)
+              }}
+              label="Photos du projet"
+              accept="image/*"
+              bucketName="projects"
+            />
+          </div>
+
+          <div>
             <Label>URL visite virtuelle</Label>
             <Input 
               placeholder="https://..."
