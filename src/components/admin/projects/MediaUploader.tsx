@@ -26,6 +26,13 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const valueArray = Array.isArray(field.value) ? field.value : [];
+  
+  // S'assurer que le field.value est toujours un array
+  React.useEffect(() => {
+    if (!Array.isArray(field.value)) {
+      field.onChange([]);
+    }
+  }, [field.value, field.onChange]);
 
   const handleUpload = async (files: File[]) => {
     if (!files || files.length === 0) return;
