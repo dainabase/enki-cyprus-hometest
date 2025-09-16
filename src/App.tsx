@@ -33,7 +33,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 
 // Lazy load admin pages for better performance
 const AdminProjects = lazy(() => import("./pages/admin/AdminProjects"));
-const AdminProjectForm = lazy(() => import("./pages/admin/AdminProjectForm").then(module => ({ default: module.AdminProjectForm })));
+const AdminProjectForm = lazy(() => import("./pages/admin/AdminProjectForm"));
 const AdminAIImport = lazy(() => import("./pages/admin/AdminAIImport"));
 const AdminAIImportUnified = lazy(() => import("./pages/admin/AdminAIImportUnified"));
 const AdminProjectDetail = lazy(() => import("./pages/admin/AdminProjectDetail"));
