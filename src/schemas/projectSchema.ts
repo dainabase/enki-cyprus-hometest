@@ -19,8 +19,8 @@ export const projectSchema = z.object({
     'mixed_use', 'other'
   ])).min(1, "Sélectionnez au moins un type"),
   project_phase: z.enum(['off-plan', 'under-construction', 'completed', 'ready-to-move']),
-  launch_date: z.string().regex(/^\d{4}-\d{2}$/, "Format attendu: YYYY-MM").optional(),
-  completion_date_new: z.string().regex(/^\d{4}-\d{2}$/, "Format attendu: YYYY-MM").optional(),
+  launch_date: z.string().optional(),
+  completion_date_new: z.string().optional(),
   unique_selling_points: z.array(z.string()).optional(),
   exclusive_commercialization: z.boolean().default(false),
   description: z.string().min(10, "Description trop courte"),
