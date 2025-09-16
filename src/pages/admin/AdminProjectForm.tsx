@@ -85,19 +85,22 @@ export const AdminProjectForm: React.FC = () => {
   });
 
 
-  // Load existing draft and merge with project data
+  // Populate form when data is loaded
   React.useEffect(() => {
-    const loadDraftAndProjectData = async () => {
-      if (projectData && isEdit) {
-        console.log('🔄 Loading project data for edit:', projectData.title);
-        console.log('📊 Raw project status data from DB:', { 
-          status: projectData.status,
-          statut_commercial: projectData.statut_commercial, 
-          statut_travaux: projectData.statut_travaux, 
-          avancement_travaux: projectData.avancement_travaux 
-        });
-
-        // Try to load existing draft
+    if (projectData && isEdit) {
+      console.log('🔄 Loading project data for edit:', projectData.title);
+      console.log('📊 Raw project status data from DB:', { 
+        status: projectData.status,
+        statut_commercial: projectData.statut_commercial, 
+        statut_travaux: projectData.statut_travaux, 
+        avancement_travaux: projectData.avancement_travaux 
+      });
+      console.log('📅 Original launch_date:', projectData.launch_date);
+      console.log('📅 Original completion_date_new:', projectData.completion_date_new);
+      
+      setOriginalData(projectData);
+      
+      // Convert dates from YYYY-MM-DD to YYYY-MM for month inputs
         let draftData = null;
         try {
           draftData = await loadDraft();
@@ -170,9 +173,15 @@ export const AdminProjectForm: React.FC = () => {
         financing_available: Boolean(projectData.financing_available),
         featured_new: Boolean(projectData.featured_new || projectData.featured_property),
         price: Number(projectData.price) || 0,
-        meta_title_new: projectData.meta_title_new || '',
-        meta_description_new: projectData.meta_description_new || '',
-        project_narrative: projectData.project_narrative || ''
+        meta_title_new: projectData.meta_title_new || projectData.meta_title || '',
+        meta_description_new: projectData.meta_description_new || projectData.meta_description || '',
+        project_narrative: projectData.project_narrative || '',
+        gps_latitude: projectData.gps_latitude || null,
+        gps_longitude: projectData.gps_longitude || null,
+        proximity_sea_km: projectData.proximity_sea_km || null,
+        proximity_airport_km: projectData.proximity_airport_km || null,
+        proximity_city_center_km: projectData.proximity_city_center_km || null,
+        proximity_highway_km: projectData.proximity_highway_km || null
       };
       
       console.log('📝 Final form data with dates:', { launch_date: formData.launch_date, completion_date_new: formData.completion_date_new });
@@ -187,6 +196,12 @@ export const AdminProjectForm: React.FC = () => {
       setFormKey(prev => prev + 1);
     }
   }, [projectData, isEdit, form]);
+
+  // Validation and form submission
+  const validateCurrentStep = () => {
+    const currentFormData = form.getValues();
+    return validateRequiredFields(currentFormData);
+  };
 
   // Function to validate required fields and dates
   const validateRequiredFields = (formData: any) => {
