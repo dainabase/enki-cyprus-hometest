@@ -367,9 +367,9 @@ const AdminProjectForm: React.FC = () => {
     // Clean and validate data before submission
     const cleanedData = {
       ...data,
-      // FORCE les statuts
-      status_project: data.status_project || 'disponible',
-      statut_commercial: data.statut_commercial || 'prelancement',
+      // Préserver les statuts exactement comme saisis (SANS fallback)
+      status_project: data.status_project,
+      statut_commercial: data.statut_commercial,
       // Ensure proper data types
       price: Number(data.price) || 0,
       vat_rate_new: Number(data.vat_rate_new) || 5,

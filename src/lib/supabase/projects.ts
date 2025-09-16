@@ -15,6 +15,8 @@ export interface ProjectFormData {
   developer_id?: string;
   cyprus_zone: string;
   status: string;
+  status_project?: string;
+  statut_commercial?: string;
   type: string;
   price: number;
   price_from?: string;
@@ -31,6 +33,7 @@ export interface ProjectFormData {
   };
   features?: string[];
   photos?: string[];
+  [key: string]: any; // Pour permettre tous les autres champs du formulaire
 }
 
 // Fetch projects with optional filters
@@ -106,6 +109,13 @@ export const createProject = async (projectData: ProjectFormData) => {
 
 // Update existing project
 export const updateProject = async (id: string, projectData: Partial<ProjectFormData>) => {
+  console.log('🔄 UPDATE PROJECT - Données envoyées à Supabase:', {
+    id,
+    status_project: projectData.status_project,
+    statut_commercial: projectData.statut_commercial,
+    title: projectData.title
+  });
+  
   const { data, error } = await supabase
     .from('projects')
     .update(projectData)
@@ -113,7 +123,18 @@ export const updateProject = async (id: string, projectData: Partial<ProjectForm
     .select()
     .single();
   
-  if (error) throw error;
+  if (error) {
+    console.error('❌ ERREUR UPDATE PROJECT:', error);
+    throw error;
+  }
+  
+  console.log('✅ UPDATE PROJECT RÉUSSI - Données retournées:', {
+    id: data.id,
+    status_project: data.status_project,
+    statut_commercial: data.statut_commercial,
+    title: data.title
+  });
+  
   return data;
 };
 
