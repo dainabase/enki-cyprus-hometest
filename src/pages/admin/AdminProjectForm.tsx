@@ -13,6 +13,9 @@ import { ArrowLeft, ArrowRight, Save, Eye, ChevronLeft } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { AlertTriangle } from 'lucide-react';
+import { AppShell } from '@/components/dainabase-ui/AppShell';
+import { AdminSidebar } from '@/components/admin/AdminSidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
 
 const AdminProjectForm: React.FC = () => {
   const navigate = useNavigate();
@@ -527,12 +530,12 @@ const AdminProjectForm: React.FC = () => {
   }
 
   return (
-    <div className="h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col">
-      {/* Modern Header - STICKY - Même taille que les autres pages admin */}
-      <div className="sticky top-0 z-10 bg-white border-b border-slate-200 shadow-sm">
-        <div className="px-8 py-8">
-          <div className="flex items-start justify-between">
-            <div className="space-y-1">
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <AppShell
+          sidebar={<AdminSidebar />}
+          header={
+            <div className="px-6 py-4 border-b border-slate-200">
               <div className="flex items-center gap-4">
                 <Button
                   variant="outline"
@@ -543,7 +546,7 @@ const AdminProjectForm: React.FC = () => {
                   Retour aux projets
                 </Button>
                 <div>
-                  <h1 className="text-3xl font-bold text-slate-900">
+                  <h1 className="text-2xl font-bold text-slate-900">
                     {isEditing ? 'Modifier le Projet' : 'Nouveau Projet'}
                   </h1>
                   <p className="text-slate-600">
@@ -552,9 +555,8 @@ const AdminProjectForm: React.FC = () => {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
+          }
+        >
 
       {/* Main Content Area */}
       <div className="flex flex-1 overflow-hidden">
