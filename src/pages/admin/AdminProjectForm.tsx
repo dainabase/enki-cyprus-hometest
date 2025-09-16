@@ -527,9 +527,9 @@ const AdminProjectForm: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      {/* Modern Header */}
-      <div className="bg-white border-b border-slate-200 shadow-sm">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col">
+      {/* Modern Header - STICKY */}
+      <div className="sticky top-0 z-10 bg-white border-b border-slate-200 shadow-sm">
         <div className="px-8 py-6">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
@@ -556,9 +556,10 @@ const AdminProjectForm: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex min-h-screen bg-slate-50">
-        {/* Sidebar Navigation des Étapes */}
-        <div className="w-80 bg-white border-r border-slate-200 shadow-sm">
+      {/* Main Content Area */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Sidebar Navigation des Étapes - STICKY */}
+        <div className="w-80 bg-white border-r border-slate-200 shadow-sm flex-shrink-0 overflow-y-auto">
           <div className="p-6">
             <h2 className="text-lg font-semibold text-slate-900 mb-4">Étapes du Projet</h2>
             <nav className="space-y-2">
@@ -596,8 +597,8 @@ const AdminProjectForm: React.FC = () => {
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="flex-1">
+        {/* Main Content - SCROLLABLE */}
+        <div className="flex-1 overflow-y-auto h-screen">
           <div className="px-8 py-6">
             <div className="max-w-7xl mx-auto">
               <Card className="bg-white border-2 border-slate-200 shadow-xl">
