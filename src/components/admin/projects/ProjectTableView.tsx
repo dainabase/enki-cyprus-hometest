@@ -12,7 +12,7 @@ interface ProjectTableViewProps {
   onSelectionChange: (ids: string[]) => void;
 }
 
-type SortField = 'title' | 'developer' | 'city' | 'statut_commercial' | 'price' | 'completion_date_new' | 'launch_date' | 'cyprus_zone';
+type SortField = 'title' | 'developer' | 'city' | 'price' | 'completion_date_new' | 'launch_date' | 'cyprus_zone';
 type SortOrder = 'asc' | 'desc';
 
 export const ProjectTableView = ({ 
@@ -162,15 +162,6 @@ export const ProjectTableView = ({
                 Zone <SortIcon field="cyprus_zone" />
               </Button>
             </TableHead>
-             <TableHead className="text-white font-bold border-0">
-               <Button 
-                 variant="ghost" 
-                 className="h-auto p-0 font-bold text-white hover:bg-white/10"
-                 onClick={() => handleSort('statut_commercial')}
-               >
-                 Statut Commercial <SortIcon field="statut_commercial" />
-               </Button>
-             </TableHead>
             <TableHead className="text-white font-bold border-0">
               <Button 
                 variant="ghost" 
@@ -247,16 +238,6 @@ export const ProjectTableView = ({
               <TableCell className="text-slate-600 py-4">{getDeveloperName(project.developer)}</TableCell>
               <TableCell className="text-slate-600 py-4">{project.city || '-'}</TableCell>
               <TableCell className="text-slate-600 py-4">{project.cyprus_zone || '-'}</TableCell>
-               <TableCell className="py-4">
-                 <Badge className={getStatusColor(project.statut_commercial || 'pre_lancement')}>
-                   {project.statut_commercial === 'pre_lancement' && 'Pré-lancement'}
-                   {project.statut_commercial === 'lancement_commercial' && 'Lancement commercial'}
-                   {project.statut_commercial === 'en_commercialisation' && 'En commercialisation'}
-                   {project.statut_commercial === 'dernieres_opportunites' && 'Dernières opportunités'}
-                   {project.statut_commercial === 'vendu' && 'Vendu'}
-                   {!project.statut_commercial && 'Pré-lancement'}
-                 </Badge>
-               </TableCell>
               <TableCell className="py-4">
                 <div className="flex items-center gap-1 font-bold text-emerald-700">
                   <Euro className="h-4 w-4" />

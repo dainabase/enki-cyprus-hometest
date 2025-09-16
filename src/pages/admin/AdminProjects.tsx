@@ -68,7 +68,6 @@ const AdminProjects = () => {
           completion_date_new, launch_date, units_available, units_sold, total_units, developer_id,
           city, neighborhood, description, bedrooms_range, built_area_m2, 
           total_units_new, parking_spaces, energy_rating, created_at,
-          statut_commercial, statut_travaux, avancement_travaux,
           developer:developers(id, name)
         `, { count: 'exact' })
         .range(from, to);

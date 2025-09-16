@@ -51,15 +51,7 @@ const AdminProjectForm: React.FC = () => {
       photos: [],
       features: [],
       amenities: [],
-      status: 'disponible',
-      statut_commercial: '',
-      statut_travaux: '',
-      avancement_travaux: 0,
       vat_rate_new: 5,
-      vat_included: false,
-      golden_visa_eligible_new: false,
-      financing_available: false,
-      featured_new: false,
       price: 0,
       meta_title_new: '',
       meta_description_new: '',
@@ -89,12 +81,6 @@ const AdminProjectForm: React.FC = () => {
   React.useEffect(() => {
     if (projectData && isEdit) {
       console.log('🔄 Loading project data for edit:', projectData.title);
-      console.log('📊 Raw project status data from DB:', { 
-        status: projectData.status,
-        statut_commercial: projectData.statut_commercial, 
-        statut_travaux: projectData.statut_travaux, 
-        avancement_travaux: projectData.avancement_travaux 
-      });
       console.log('📅 Original launch_date:', projectData.launch_date);
       console.log('📅 Original completion_date_new:', projectData.completion_date_new);
       
@@ -127,12 +113,7 @@ const AdminProjectForm: React.FC = () => {
         neighborhood: projectData.neighborhood || '',
         cyprus_zone: projectData.cyprus_zone || 'limassol',
         photos: Array.isArray(projectData.photos) ? projectData.photos : [],
-        features: Array.isArray(projectData.features) ? projectData.features : [],
         amenities: Array.isArray(projectData.amenities) ? projectData.amenities : [],
-        status: projectData.status || '',
-        statut_commercial: projectData.statut_commercial || '',
-        statut_travaux: projectData.statut_travaux || '',
-        avancement_travaux: Number(projectData.avancement_travaux) || 0,
         vat_rate_new: Number(projectData.vat_rate_new) || 5,
         vat_included: Boolean(projectData.vat_included),
         golden_visa_eligible_new: Boolean(projectData.golden_visa_eligible_new || projectData.golden_visa_eligible),
@@ -151,26 +132,10 @@ const AdminProjectForm: React.FC = () => {
       };
       
       console.log('📝 Final form data with dates:', { launch_date: formData.launch_date, completion_date_new: formData.completion_date_new });
-      console.log('📊 Final form data with statuts:', { 
-        status: formData.status,
-        statut_commercial: formData.statut_commercial, 
-        statut_travaux: formData.statut_travaux, 
-        avancement_travaux: formData.avancement_travaux 
-      });
       
       console.log('🔄 About to reset form with data:', formData);
       form.reset(formData);
-      console.log('✅ Form reset complete. Current form status value:', form.getValues('status'));
       setFormKey(prev => prev + 1);
-      
-      // Force update des champs après un délai
-      setTimeout(() => {
-        console.log('⏰ Delayed check - Current form status value:', form.getValues('status'));
-        form.setValue('status', formData.status);
-        form.setValue('statut_commercial', formData.statut_commercial);
-        form.setValue('statut_travaux', formData.statut_travaux);
-        console.log('🔧 Force setValue complete. Final status:', form.getValues('status'));
-      }, 100);
     }
   }, [projectData, isEdit, form]);
 
@@ -338,11 +303,6 @@ const AdminProjectForm: React.FC = () => {
       length: data.status?.length,
       saveType: saveType
     });
-    console.log('💾 Status fields in submission:', { 
-      statut_commercial: data.statut_commercial, 
-      statut_travaux: data.statut_travaux, 
-      avancement_travaux: data.avancement_travaux 
-    });
     
     // Clean and validate data before submission
     const cleanedData = {
@@ -355,10 +315,6 @@ const AdminProjectForm: React.FC = () => {
       financing_available: Boolean(data.financing_available),
       featured_new: Boolean(data.featured_new),
       exclusive_commercialization: Boolean(data.exclusive_commercialization),
-      // Status fields - ensure they are included in the submission
-      statut_commercial: data.statut_commercial || null,
-      statut_travaux: data.statut_travaux || null,
-      avancement_travaux: Number(data.avancement_travaux) || 0,
       // Clean numeric fields - convert undefined objects to null
       gps_latitude: data.gps_latitude && typeof data.gps_latitude === 'number' ? data.gps_latitude : null,
       gps_longitude: data.gps_longitude && typeof data.gps_longitude === 'number' ? data.gps_longitude : null,
@@ -401,9 +357,7 @@ const AdminProjectForm: React.FC = () => {
         }
         console.log('❌ Invalid completion_date_new format:', data.completion_date_new);
         return null;
-      })(),
-      // Set proper status - use form value or default based on save type
-      status: data.status || (saveType === 'publish' ? 'en_construction' : 'disponible')
+      })()
     };
     
     console.log('🧹 CLEANED data for submission:');
