@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
 import { ProjectFormSteps } from '@/components/admin/projects/ProjectFormSteps';
-import { projectFormSteps } from '@/schemas/projectSchema';
+import { projectFormSteps, ProjectFormData } from '@/schemas/projectSchema';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { ArrowLeft, ArrowRight, Save, Eye, ChevronLeft, ChevronRight, Loader2, Send } from 'lucide-react';
@@ -30,15 +30,15 @@ const AdminProjectForm: React.FC = () => {
 
   const currentStep = projectFormSteps[currentStepIndex];
   
-  const form = useForm({
+  const form = useForm<ProjectFormData>({
     mode: 'onSubmit',
     defaultValues: {
       title: '',
       project_code: '',
       developer_id: '',
-      property_category: 'residential',
-      property_sub_type: ['apartment'],
-      project_phase: 'off-plan',
+      property_category: 'residential' as const,
+      property_sub_type: ['apartment'] as const,
+      project_phase: 'off-plan' as const,
       launch_date: '',
       completion_date_new: '',
       exclusive_commercialization: false,
@@ -53,8 +53,8 @@ const AdminProjectForm: React.FC = () => {
       surrounding_amenities: [],
       features: [],
       amenities: [],
-      status_project: 'disponible',
-      statut_commercial: 'prelancement',
+      status_project: 'disponible' as const,
+      statut_commercial: 'prelancement' as const,
       vat_rate_new: 5,
       price: 0,
       meta_title_new: '',
@@ -102,11 +102,11 @@ const AdminProjectForm: React.FC = () => {
         title: projectData.title || '',
         project_code: projectData.project_code || '',
         developer_id: projectData.developer_id || '',
-        property_category: projectData.property_category || 'residential',
+        property_category: (projectData.property_category as 'residential' | 'commercial' | 'mixed' | 'industrial') || 'residential',
         property_sub_type: Array.isArray(projectData.property_sub_type) && projectData.property_sub_type.length > 0 
-          ? projectData.property_sub_type 
+          ? projectData.property_sub_type as ('villa' | 'apartment' | 'penthouse' | 'townhouse' | 'studio' | 'duplex' | 'triplex' | 'maisonette' | 'office' | 'retail' | 'warehouse' | 'showroom' | 'restaurant' | 'hotel' | 'clinic' | 'workshop' | 'factory' | 'logistics' | 'storage' | 'production' | 'land_residential' | 'land_commercial' | 'land_agricultural' | 'mixed_use' | 'other')[]
           : ['apartment'],
-        project_phase: projectData.project_phase || 'off-plan',
+        project_phase: (projectData.project_phase as 'off-plan' | 'under-construction' | 'completed' | 'ready-to-move') || 'off-plan',
         launch_date: convertedLaunchDate,
         completion_date_new: convertedCompletionDate,
         exclusive_commercialization: Boolean(projectData.exclusive_commercialization),
@@ -136,8 +136,8 @@ const AdminProjectForm: React.FC = () => {
         golden_visa_eligible_new: Boolean(projectData.golden_visa_eligible_new || projectData.golden_visa_eligible),
         financing_available: Boolean(projectData.financing_available),
         featured_new: Boolean(projectData.featured_new || projectData.featured_property),
-        status_project: projectData.status_project || 'disponible',
-        statut_commercial: projectData.statut_commercial || 'prelancement',
+        status_project: (projectData.status_project as 'disponible' | 'en_construction' | 'livre' | 'pret_a_emmenager') || 'disponible',
+        statut_commercial: (projectData.statut_commercial as 'prelancement' | 'lancement_commercial' | 'en_commercialisation' | 'derniere_opportunite' | 'vendu') || 'prelancement',
         price: Number(projectData.price) || 0,
         meta_title_new: projectData.meta_title_new || projectData.meta_title || '',
         meta_description_new: projectData.meta_description_new || projectData.meta_description || '',
@@ -200,7 +200,7 @@ const AdminProjectForm: React.FC = () => {
           photos_count: formData.photos?.length || 0
         });
         
-        form.reset(formData);
+        form.reset(formData as ProjectFormData);
         setFormKey(prev => prev + 1);
       };
       
@@ -402,6 +402,11 @@ const AdminProjectForm: React.FC = () => {
     console.log('✅ Validation passed');
     setValidationErrors([]);
     setShowConfirmDialog(true);
+  };
+
+  const onSubmitWithType = (type: 'draft' | 'publish') => {
+    setSaveType(type);
+    form.handleSubmit(onSubmit)();
   };
 
   const onSubmit = (data: any) => {
@@ -613,10 +618,9 @@ const AdminProjectForm: React.FC = () => {
                   </div>
 
                   <ProjectFormSteps
-                    formSteps={projectFormSteps}
-                    currentStepIndex={currentStepIndex}
-                    onStepClick={setCurrentStepIndex}
                     form={form}
+                    currentStep={currentStep.id}
+                    projectId={id}
                   />
                 </CardContent>
               </Card>
