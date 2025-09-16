@@ -1309,12 +1309,21 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           <FormField
             control={form.control}
             name="status"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Statut du projet</FormLabel>
+            render={({ field }) => {
+              // Log pour debug
+              React.useEffect(() => {
+                console.log('🔍 Status field value changed:', field.value);
+              }, [field.value]);
+              
+              return (
+               <FormItem>
+                 <FormLabel>Statut du projet</FormLabel>
                 <Select 
                   key={`status_${field.value}_${projectId}_${Date.now()}`}
-                  onValueChange={field.onChange} 
+                  onValueChange={(value) => {
+                    console.log('🔄 Status Select onChange:', value);
+                    field.onChange(value);
+                  }} 
                   value={field.value || ''}
                   defaultValue={field.value || ''}
                 >
@@ -1332,7 +1341,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 </Select>
                 <FormMessage />
               </FormItem>
-            )}
+              );
+            }}
           />
 
           <FormField
