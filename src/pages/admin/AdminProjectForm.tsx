@@ -156,21 +156,21 @@ export const AdminProjectForm: React.FC = () => {
     
     // Validate dates format
     if (formData.launch_date && formData.launch_date.length > 0) {
-      if (formData.launch_date.length < 10 || !/^\d{4}-\d{2}-\d{2}$/.test(formData.launch_date)) {
+      if (!/^\d{4}-\d{2}(-\d{2})?$/.test(formData.launch_date)) {
         errors.push({ 
           field: 'launch_date', 
           label: 'Date de lancement', 
-          message: `Format invalide "${formData.launch_date}" - Format requis: YYYY-MM-DD (ex: 2025-12-31)` 
+          message: `Format invalide "${formData.launch_date}" - Format requis: YYYY-MM ou YYYY-MM-DD (ex: 2025-10 ou 2025-12-31)` 
         });
       }
     }
     
     if (formData.completion_date_new && formData.completion_date_new.length > 0) {
-      if (formData.completion_date_new.length < 10 || !/^\d{4}-\d{2}-\d{2}$/.test(formData.completion_date_new)) {
+      if (!/^\d{4}-\d{2}(-\d{2})?$/.test(formData.completion_date_new)) {
         errors.push({ 
           field: 'completion_date_new', 
           label: 'Date de completion', 
-          message: `Format invalide "${formData.completion_date_new}" - Format requis: YYYY-MM-DD (ex: 2025-12-31)` 
+          message: `Format invalide "${formData.completion_date_new}" - Format requis: YYYY-MM ou YYYY-MM-DD (ex: 2025-10 ou 2025-12-31)` 
         });
       }
     }
