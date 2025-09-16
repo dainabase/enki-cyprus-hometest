@@ -143,48 +143,79 @@ const AdminProjectForm: React.FC = () => {
     }
   }, [projectData, isEdit, form]);
 
-  // Enable autosave for drafts - SOLUTION POUR LA PERSISTANCE!
+  // SOLUTION SIMPLE ET EFFICACE POUR LA PERSISTANCE!
   const watchedFormData = form.watch();
   
-  // Autosave avec useFormAutosave pour la persistance
-  const { mutateAsync: saveAutosave } = useMutation({
-    mutationFn: async (formData: any) => {
-      const userId = (await supabase.auth.getUser()).data.user?.id;
-      const sessionId = userId || crypto.randomUUID();
+  // Chargement des drafts existants
+  useEffect(() => {
+    const loadDraft = async () => {
+      if (!id) return;
       
-      const draftData = {
-        user_id: userId,
-        session_id: sessionId,
-        project_id: id,
-        form_data: formData,
-        current_step: 'marketing',
-        auto_save_enabled: true,
-        updated_at: new Date().toISOString()
-      };
+      const userId = (await supabase.auth.getUser()).data.user?.id;
+      if (!userId) return;
+      
+      const { data: draft } = await supabase
+        .from('project_drafts')
+        .select('form_data')
+        .eq('user_id', userId)
+        .eq('project_id', id)
+        .order('updated_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      
+      if (draft?.form_data && typeof draft.form_data === 'object') {
+        const savedData = draft.form_data as any;
+        console.log('📥 Loading draft data for persistence:', savedData);
+        
+        // Charger les statuts sauvegardés
+        if (savedData.status_project) {
+          form.setValue('status_project', savedData.status_project);
+        }
+        if (savedData.statut_commercial) {
+          form.setValue('statut_commercial', savedData.statut_commercial);
+        }
+      }
+    };
+    
+    loadDraft();
+  }, [id, form]);
 
+  // Sauvegarde automatique simple
+  useEffect(() => {
+    const saveDraft = async () => {
+      if (!id || !watchedFormData) return;
+      
+      const userId = (await supabase.auth.getUser()).data.user?.id;
+      if (!userId) return;
+      
+      // Supprimer les anciennes drafts et créer une nouvelle
+      await supabase
+        .from('project_drafts')
+        .delete()
+        .eq('user_id', userId)
+        .eq('project_id', id);
+      
       const { error } = await supabase
         .from('project_drafts')
-        .upsert(draftData, {
-          onConflict: userId ? 'user_id,project_id' : 'session_id'
+        .insert({
+          user_id: userId,
+          project_id: id,
+          form_data: watchedFormData,
+          current_step: 'marketing',
+          step_index: 6,
+          auto_save_enabled: true
         });
-
+      
       if (error) {
-        console.error('Error saving draft:', error);
-        throw error;
+        console.log('Draft save error (non-critical):', error);
+      } else {
+        console.log('💾 Draft saved successfully with status fields');
       }
-    }
-  });
+    };
 
-  // Auto-save form data every 2 seconds
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (watchedFormData && Object.keys(watchedFormData).length > 0) {
-        saveAutosave(watchedFormData).catch(console.error);
-      }
-    }, 2000);
-
+    const timer = setTimeout(saveDraft, 1000);
     return () => clearTimeout(timer);
-  }, [watchedFormData, saveAutosave]);
+  }, [watchedFormData, id]);
 
   // Validation and form submission
   const validateCurrentStep = () => {
