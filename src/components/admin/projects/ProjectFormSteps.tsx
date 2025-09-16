@@ -110,29 +110,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               <PropertySubTypeSelector form={form} />
             </div>
 
-            <FormField
-              control={form.control}
-              name="project_phase"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phase du projet</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value || 'off-plan'}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Sélectionnez" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                       <SelectItem value="off-plan">Sur plan</SelectItem>
-                       <SelectItem value="under-construction">En construction</SelectItem>
-                       <SelectItem value="completed">Terminé</SelectItem>
-                       <SelectItem value="ready-to-move">Prêt à emménager</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           </div>
 
           <FormField

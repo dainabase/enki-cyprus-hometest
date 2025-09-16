@@ -165,7 +165,7 @@ export const projectFormSteps = [
     icon: 'FileText',
     fields: [
       'title', 'project_code', 'developer_id', 'property_category', 
-      'property_sub_type', 'project_phase', 'launch_date', 
+      'property_sub_type', 'launch_date', 
       'completion_date_new', 'description', 'detailed_description'
     ]
   },
