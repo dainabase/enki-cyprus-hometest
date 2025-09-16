@@ -13,7 +13,6 @@ import { ArrowLeft, ArrowRight, Save, Eye, ChevronLeft } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { AlertTriangle } from 'lucide-react';
-import { AlertTriangle } from 'lucide-react';
 
 export const AdminProjectForm: React.FC = () => {
   const navigate = useNavigate();
@@ -52,7 +51,7 @@ export const AdminProjectForm: React.FC = () => {
       photos: [],
       features: [],
       amenities: [],
-      status: 'available',
+      status: '',
       statut_commercial: '',
       statut_travaux: '',
       avancement_travaux: 0,
@@ -178,6 +177,7 @@ export const AdminProjectForm: React.FC = () => {
       
       console.log('📝 Final form data with dates:', { launch_date: formData.launch_date, completion_date_new: formData.completion_date_new });
       console.log('📊 Final form data with statuts:', { 
+        status: formData.status,
         statut_commercial: formData.statut_commercial, 
         statut_travaux: formData.statut_travaux, 
         avancement_travaux: formData.avancement_travaux 
