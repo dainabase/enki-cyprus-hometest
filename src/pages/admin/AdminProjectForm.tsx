@@ -319,7 +319,14 @@ const AdminProjectForm: React.FC = () => {
   };
 
   const onSubmit = (data: any) => {
-    console.log('Submitting form data:', data);
+    console.log('🔥 === DÉBUT SUBMISSION DEBUG ===');
+    console.log('📋 Form data BRUTE reçu:', data);
+    console.log('🎯 Status field value:', { 
+      raw: data.status, 
+      type: typeof data.status,
+      length: data.status?.length,
+      saveType: saveType
+    });
     console.log('💾 Status fields in submission:', { 
       statut_commercial: data.statut_commercial, 
       statut_travaux: data.statut_travaux, 
@@ -388,7 +395,14 @@ const AdminProjectForm: React.FC = () => {
       status: data.status || (saveType === 'publish' ? 'under_construction' : 'pre_launch')
     };
     
-    console.log('Cleaned form data for submission:', cleanedData);
+    console.log('🧹 CLEANED data for submission:');
+    console.log('📊 Status FINAL value:', { 
+      original: data.status,
+      final: cleanedData.status,
+      logic: `${data.status} || (${saveType} === 'publish' ? 'under_construction' : 'pre_launch')`
+    });
+    console.log('📋 Complete cleaned data:', cleanedData);
+    console.log('🔥 === FIN DEBUG - SENDING TO DB ===');
     saveProjectMutation.mutate(cleanedData);
   };
 
