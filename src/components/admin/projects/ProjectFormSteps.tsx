@@ -1247,25 +1247,34 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           <FormField
             control={form.control}
             name="status_project"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Statut du projet</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ''}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Sélectionnez un statut" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="disponible">Disponible</SelectItem>
-                    <SelectItem value="en_construction">En construction</SelectItem>
-                    <SelectItem value="livre">Livré</SelectItem>
-                    <SelectItem value="pret_a_emmenager">Prêt à emménager</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
+            render={({ field }) => {
+              console.log('🔍 Status Project field render - value:', field.value, 'type:', typeof field.value);
+              return (
+                <FormItem>
+                  <FormLabel>Statut du projet</FormLabel>
+                  <Select 
+                    onValueChange={(value) => {
+                      console.log('🔄 Status Project onChange:', value);
+                      field.onChange(value);
+                    }} 
+                    value={field.value || ''}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Sélectionnez un statut" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="bg-white z-50">
+                      <SelectItem value="disponible">Disponible</SelectItem>
+                      <SelectItem value="en_construction">En construction</SelectItem>
+                      <SelectItem value="livre">Livré</SelectItem>
+                      <SelectItem value="pret_a_emmenager">Prêt à emménager</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
           />
 
           <FormField
