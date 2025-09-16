@@ -67,7 +67,7 @@ const AdminProjects = () => {
           id, title, status, cyprus_zone, golden_visa_eligible, price, price_from,
           completion_date_new, launch_date, units_available, units_sold, total_units, developer_id,
           city, neighborhood, description, bedrooms_range, built_area_m2, 
-          total_units_new, parking_spaces, energy_rating, created_at,
+          total_units_new, parking_spaces, energy_rating, created_at, status_project,
           developer:developers(id, name)
         `, { count: 'exact' })
         .range(from, to);

@@ -51,6 +51,7 @@ const AdminProjectForm: React.FC = () => {
       photos: [],
       features: [],
       amenities: [],
+      status_project: 'disponible',
       vat_rate_new: 5,
       price: 0,
       meta_title_new: '',
@@ -119,6 +120,7 @@ const AdminProjectForm: React.FC = () => {
         golden_visa_eligible_new: Boolean(projectData.golden_visa_eligible_new || projectData.golden_visa_eligible),
         financing_available: Boolean(projectData.financing_available),
         featured_new: Boolean(projectData.featured_new || projectData.featured_property),
+        status_project: projectData.status_project || 'disponible',
         price: Number(projectData.price) || 0,
         meta_title_new: projectData.meta_title_new || projectData.meta_title || '',
         meta_description_new: projectData.meta_description_new || projectData.meta_description || '',
@@ -357,7 +359,9 @@ const AdminProjectForm: React.FC = () => {
         }
         console.log('❌ Invalid completion_date_new format:', data.completion_date_new);
         return null;
-      })()
+      })(),
+      // Statut du projet
+      status_project: data.status_project || 'disponible'
     };
     
     console.log('🧹 CLEANED data for submission:');

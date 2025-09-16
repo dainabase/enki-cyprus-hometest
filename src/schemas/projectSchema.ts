@@ -119,6 +119,7 @@ export const projectSchema = z.object({
   amenities: z.array(z.string()).optional(),
 
   // STATUS
+  status_project: z.enum(['disponible', 'en_construction', 'livre', 'pret_a_emmenager']).default('disponible'),
   featured_new: z.boolean().default(false),
 
   // LOCATION OBJECT (legacy compatibility)
@@ -218,7 +219,7 @@ export const projectFormSteps = [
     icon: 'Megaphone',
     fields: [
       'project_narrative', 'meta_title_new', 'meta_description_new',
-      'marketing_highlights', 'target_audience', 'features', 'featured_new'
+      'marketing_highlights', 'target_audience', 'features', 'status_project', 'featured_new'
     ]
   }
 ];
