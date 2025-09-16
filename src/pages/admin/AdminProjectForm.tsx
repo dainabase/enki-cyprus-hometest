@@ -377,16 +377,21 @@ const AdminProjectForm: React.FC = () => {
   const onSubmit = (data: any) => {
     console.log('🔥 === DÉBUT SUBMISSION DEBUG ===');
     console.log('📋 Form data BRUTE reçu:', data);
-    console.log('🎯 Status field value:', { 
-      raw: data.status, 
-      type: typeof data.status,
-      length: data.status?.length,
-      saveType: saveType
+    console.log('🚨 CRITICAL STATUS CHECK:', { 
+      status_project: data.status_project,
+      statut_commercial: data.statut_commercial,
+      types: {
+        status_project: typeof data.status_project,
+        statut_commercial: typeof data.statut_commercial
+      }
     });
     
     // Clean and validate data before submission
     const cleanedData = {
       ...data,
+      // FORCE les statuts
+      status_project: data.status_project || 'disponible',
+      statut_commercial: data.statut_commercial || 'prelancement',
       // Ensure proper data types
       price: Number(data.price) || 0,
       vat_rate_new: Number(data.vat_rate_new) || 5,
@@ -438,15 +443,13 @@ const AdminProjectForm: React.FC = () => {
         console.log('❌ Invalid completion_date_new format:', data.completion_date_new);
         return null;
       })(),
-      // Statut du projet
-      status_project: data.status_project || 'disponible'
+      // Rien ici - les statuts sont déjà définis au début
     };
     
     console.log('🧹 CLEANED data for submission:');
-    console.log('📊 Status FINAL value:', { 
-      original: data.status,
-      final: cleanedData.status,
-      logic: `${data.status} || (${saveType} === 'publish' ? 'under_construction' : 'pre_launch')`
+    console.log('📊 Status FINAL values:', { 
+      status_project: cleanedData.status_project,
+      statut_commercial: cleanedData.statut_commercial
     });
     console.log('📋 Complete cleaned data:', cleanedData);
     console.log('🔥 === FIN DEBUG - SENDING TO DB ===');
