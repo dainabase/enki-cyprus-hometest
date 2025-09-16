@@ -1312,7 +1312,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 <FormLabel>Statut du projet</FormLabel>
                 <Select 
                   onValueChange={field.onChange} 
-                  value={field.value || 'disponible'}
+                  value={field.value}
                   key={`status_project_${field.value}`}
                 >
                   <FormControl>
@@ -1340,7 +1340,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 <FormLabel>Statut commercial</FormLabel>
                 <Select 
                   onValueChange={field.onChange} 
-                  value={field.value || 'prelancement'}
+                  value={field.value}
                   key={`statut_commercial_${field.value}`}
                 >
                   <FormControl>
