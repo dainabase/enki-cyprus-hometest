@@ -135,7 +135,8 @@ const AdminProjectForm: React.FC = () => {
         proximity_sea_km: projectData.proximity_sea_km || null,
         proximity_airport_km: projectData.proximity_airport_km || null,
         proximity_city_center_km: projectData.proximity_city_center_km || null,
-        proximity_highway_km: projectData.proximity_highway_km || null
+        proximity_highway_km: projectData.proximity_highway_km || null,
+        surrounding_amenities: Array.isArray(projectData.surrounding_amenities) ? projectData.surrounding_amenities : []
       };
       
       // Les données Supabase sont prioritaires, on ne charge PAS les drafts pour les statuts
