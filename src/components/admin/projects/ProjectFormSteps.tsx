@@ -1170,7 +1170,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 <FormControl>
                   <CategorizedMediaUploader
                     field={{
-                      value: Array.isArray(field.value) ? field.value.filter((photo: any) => photo && photo.url) as any : [],
+                      value: (field.value || []) as any,
                       onChange: field.onChange
                     }}
                     bucketName="projects"
