@@ -13,6 +13,7 @@ import { ArrowLeft, ArrowRight, Save, Eye, ChevronLeft } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { AlertTriangle } from 'lucide-react';
+import { useFormAutosave } from '@/hooks/useFormAutosave';
 
 export const AdminProjectForm: React.FC = () => {
   const navigate = useNavigate();
@@ -82,6 +83,19 @@ export const AdminProjectForm: React.FC = () => {
       return data;
     },
     enabled: isEdit
+  });
+
+  // Watch form changes for autosave
+  const watchedValues = form.watch();
+
+  // Setup autosave for form
+  const { sessionId, isAutoSaving, loadDraft, clearDraft } = useFormAutosave({
+    table: 'project_drafts',
+    formData: watchedValues,
+    entityId: id,
+    enabled: true,
+    debounceMs: 2000,
+    showToasts: false
   });
 
   // Populate form when data is loaded
