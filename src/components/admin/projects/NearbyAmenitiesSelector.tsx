@@ -100,7 +100,7 @@ export const NearbyAmenitiesSelector: React.FC<NearbyAmenitiesSelectorProps> = (
     enabled: !!projectId
   });
 
-  // Synchroniser avec les données existantes
+  // Synchroniser avec les données existantes UNIQUEMENT au chargement initial
   useEffect(() => {
     if (existingAmenities && existingAmenities.length > 0) {
       const formattedAmenities = existingAmenities.map(item => ({
@@ -109,10 +109,15 @@ export const NearbyAmenitiesSelector: React.FC<NearbyAmenitiesSelectorProps> = (
         distance_km: item.distance_km,
         details: item.details
       }));
-      setSelectedAmenities(formattedAmenities);
-      onChange(formattedAmenities);
+      
+      // UNIQUEMENT si selectedAmenities est vide (première charge)
+      if (selectedAmenities.length === 0) {
+        console.log('🔄 Loading existing amenities from DB:', formattedAmenities);
+        setSelectedAmenities(formattedAmenities);
+        onChange(formattedAmenities);
+      }
     }
-  }, [existingAmenities, onChange]);
+  }, [existingAmenities]); // RETIRER onChange des dépendances
 
   // Sauvegarder dans la base de données
   const saveMutation = useMutation({
