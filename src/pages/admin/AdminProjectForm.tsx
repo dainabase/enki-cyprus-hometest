@@ -138,6 +138,11 @@ export const AdminProjectForm: React.FC = () => {
       };
       
       console.log('📝 Final form data with dates:', { launch_date: formData.launch_date, completion_date_new: formData.completion_date_new });
+      console.log('📊 Final form data with statuts:', { 
+        statut_commercial: formData.statut_commercial, 
+        statut_travaux: formData.statut_travaux, 
+        avancement_travaux: formData.avancement_travaux 
+      });
       
       form.reset(formData);
       setFormKey(prev => prev + 1);
@@ -295,6 +300,11 @@ export const AdminProjectForm: React.FC = () => {
 
   const onSubmit = (data: any) => {
     console.log('Submitting form data:', data);
+    console.log('💾 Status fields in submission:', { 
+      statut_commercial: data.statut_commercial, 
+      statut_travaux: data.statut_travaux, 
+      avancement_travaux: data.avancement_travaux 
+    });
     
     // Clean and validate data before submission
     const cleanedData = {
