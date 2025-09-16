@@ -33,7 +33,7 @@ export const AppShell: React.FC<AppShellProps> = ({
 
       <div className="flex flex-1 overflow-hidden">
         {sidebar && (
-          <aside className="w-64 bg-white border-r border-slate-200 sticky top-0 h-screen overflow-y-auto flex-shrink-0">
+          <aside className="w-64 bg-white border-r border-slate-200 sticky top-32 h-[calc(100vh-8rem)] overflow-y-auto flex-shrink-0">
             {sidebar}
           </aside>
         )}
