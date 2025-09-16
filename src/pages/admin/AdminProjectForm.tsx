@@ -88,6 +88,12 @@ export const AdminProjectForm: React.FC = () => {
   React.useEffect(() => {
     if (projectData && isEdit) {
       console.log('🔄 Loading project data for edit:', projectData.title);
+      console.log('📊 Raw project status data from DB:', { 
+        status: projectData.status,
+        statut_commercial: projectData.statut_commercial, 
+        statut_travaux: projectData.statut_travaux, 
+        avancement_travaux: projectData.avancement_travaux 
+      });
       console.log('📅 Original launch_date:', projectData.launch_date);
       console.log('📅 Original completion_date_new:', projectData.completion_date_new);
       
