@@ -143,6 +143,49 @@ const AdminProjectForm: React.FC = () => {
     }
   }, [projectData, isEdit, form]);
 
+  // Enable autosave for drafts - SOLUTION POUR LA PERSISTANCE!
+  const watchedFormData = form.watch();
+  
+  // Autosave avec useFormAutosave pour la persistance
+  const { mutateAsync: saveAutosave } = useMutation({
+    mutationFn: async (formData: any) => {
+      const userId = (await supabase.auth.getUser()).data.user?.id;
+      const sessionId = userId || crypto.randomUUID();
+      
+      const draftData = {
+        user_id: userId,
+        session_id: sessionId,
+        project_id: id,
+        form_data: formData,
+        current_step: 'marketing',
+        auto_save_enabled: true,
+        updated_at: new Date().toISOString()
+      };
+
+      const { error } = await supabase
+        .from('project_drafts')
+        .upsert(draftData, {
+          onConflict: userId ? 'user_id,project_id' : 'session_id'
+        });
+
+      if (error) {
+        console.error('Error saving draft:', error);
+        throw error;
+      }
+    }
+  });
+
+  // Auto-save form data every 2 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (watchedFormData && Object.keys(watchedFormData).length > 0) {
+        saveAutosave(watchedFormData).catch(console.error);
+      }
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [watchedFormData, saveAutosave]);
+
   // Validation and form submission
   const validateCurrentStep = () => {
     const currentFormData = form.getValues();
