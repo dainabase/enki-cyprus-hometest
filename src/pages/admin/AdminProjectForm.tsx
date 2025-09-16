@@ -286,16 +286,36 @@ export const AdminProjectForm: React.FC = () => {
       amenities: Array.isArray(data.amenities) ? data.amenities : [],
       property_sub_type: Array.isArray(data.property_sub_type) ? data.property_sub_type : ['apartment'],
       // Fix date formats - convert YYYY-MM to YYYY-MM-01 for database
-      launch_date: data.launch_date && /^\d{4}-\d{2}$/.test(data.launch_date) 
-        ? `${data.launch_date}-01`
-        : data.launch_date && /^\d{4}-\d{2}-\d{2}$/.test(data.launch_date)
-        ? data.launch_date
-        : null,
-      completion_date_new: data.completion_date_new && /^\d{4}-\d{2}$/.test(data.completion_date_new) 
-        ? `${data.completion_date_new}-01`
-        : data.completion_date_new && /^\d{4}-\d{2}-\d{2}$/.test(data.completion_date_new)
-        ? data.completion_date_new
-        : null,
+      launch_date: (() => {
+        console.log('🔍 Processing launch_date:', data.launch_date);
+        if (!data.launch_date) return null;
+        if (/^\d{4}-\d{2}$/.test(data.launch_date)) {
+          const converted = `${data.launch_date}-01`;
+          console.log('✅ Converted launch_date:', data.launch_date, '->', converted);
+          return converted;
+        }
+        if (/^\d{4}-\d{2}-\d{2}$/.test(data.launch_date)) {
+          console.log('✅ Valid launch_date format:', data.launch_date);
+          return data.launch_date;
+        }
+        console.log('❌ Invalid launch_date format:', data.launch_date);
+        return null;
+      })(),
+      completion_date_new: (() => {
+        console.log('🔍 Processing completion_date_new:', data.completion_date_new);
+        if (!data.completion_date_new) return null;
+        if (/^\d{4}-\d{2}$/.test(data.completion_date_new)) {
+          const converted = `${data.completion_date_new}-01`;
+          console.log('✅ Converted completion_date_new:', data.completion_date_new, '->', converted);
+          return converted;
+        }
+        if (/^\d{4}-\d{2}-\d{2}$/.test(data.completion_date_new)) {
+          console.log('✅ Valid completion_date_new format:', data.completion_date_new);
+          return data.completion_date_new;
+        }
+        console.log('❌ Invalid completion_date_new format:', data.completion_date_new);
+        return null;
+      })(),
       // Set proper status
       status: saveType === 'publish' ? 'available' : 'draft'
     };
