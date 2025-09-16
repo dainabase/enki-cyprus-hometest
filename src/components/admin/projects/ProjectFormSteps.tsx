@@ -1323,12 +1323,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="pre_launch">Pré-lancement</SelectItem>
-                    <SelectItem value="under_construction">En construction</SelectItem>
-                    <SelectItem value="ready_for_delivery">Prêt pour livraison</SelectItem>
-                    <SelectItem value="completed">Complété</SelectItem>
-                    <SelectItem value="ready_to_move">Prêt à emménager</SelectItem>
-                    <SelectItem value="sold">Vendu</SelectItem>
+                    <SelectItem value="disponible">Disponible</SelectItem>
+                    <SelectItem value="en_construction">En construction</SelectItem>
+                    <SelectItem value="livre">Livré</SelectItem>
+                    <SelectItem value="vendu">Vendu</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -1356,8 +1354,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                     <SelectItem value="pre_lancement">Pré-lancement</SelectItem>
                     <SelectItem value="lancement_commercial">Lancement commercial</SelectItem>
                     <SelectItem value="en_commercialisation">En commercialisation</SelectItem>
-                    <SelectItem value="dernieres_opportunites">Dernières opportunités</SelectItem>
-                    <SelectItem value="vendu">Vendu</SelectItem>
+                    <SelectItem value="derniere_opportunite_vendue">Dernière opportunité vendue</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />

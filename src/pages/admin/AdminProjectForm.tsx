@@ -51,7 +51,7 @@ const AdminProjectForm: React.FC = () => {
       photos: [],
       features: [],
       amenities: [],
-      status: '',
+      status: 'disponible',
       statut_commercial: '',
       statut_travaux: '',
       avancement_travaux: 0,
@@ -392,7 +392,7 @@ const AdminProjectForm: React.FC = () => {
         return null;
       })(),
       // Set proper status - use form value or default based on save type
-      status: data.status || (saveType === 'publish' ? 'under_construction' : 'pre_launch')
+      status: data.status || (saveType === 'publish' ? 'en_construction' : 'disponible')
     };
     
     console.log('🧹 CLEANED data for submission:');
