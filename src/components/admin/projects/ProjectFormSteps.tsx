@@ -1313,9 +1313,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               <FormItem>
                 <FormLabel>Statut du projet</FormLabel>
                 <Select 
-                  key={`status_${field.value}_${projectId}`}
+                  key={`status_${field.value}_${projectId}_${Date.now()}`}
                   onValueChange={field.onChange} 
                   value={field.value || ''}
+                  defaultValue={field.value || ''}
                 >
                   <FormControl>
                     <SelectTrigger>
