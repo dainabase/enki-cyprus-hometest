@@ -13,9 +13,6 @@ import { ArrowLeft, ArrowRight, Save, Eye, ChevronLeft } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { AlertTriangle } from 'lucide-react';
-import { AppShell } from '@/components/dainabase-ui/AppShell';
-import { AdminSidebar } from '@/components/admin/AdminSidebar';
-import { SidebarProvider } from '@/components/ui/sidebar';
 
 const AdminProjectForm: React.FC = () => {
   const navigate = useNavigate();
@@ -530,33 +527,30 @@ const AdminProjectForm: React.FC = () => {
   }
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full">
-        <AppShell
-          sidebar={<AdminSidebar />}
-          header={
-            <div className="px-6 py-4 border-b border-slate-200">
-              <div className="flex items-center gap-4">
-                <Button
-                  variant="outline"
-                  onClick={() => navigate('/admin/projects')}
-                  className="flex items-center gap-2"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                  Retour aux projets
-                </Button>
-                <div>
-                  <h1 className="text-2xl font-bold text-slate-900">
-                    {isEditing ? 'Modifier le Projet' : 'Nouveau Projet'}
-                  </h1>
-                  <p className="text-slate-600">
-                    {isEditing ? 'Modifiez les informations de votre projet' : 'Créez un nouveau projet immobilier'}
-                  </p>
-                </div>
-              </div>
+    <div className="min-h-screen bg-slate-50">
+      {/* Header - STICKY */}
+      <div className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
+        <div className="px-6 py-4">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="outline"
+              onClick={() => navigate('/admin/projects')}
+              className="flex items-center gap-2"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              Retour aux projets
+            </Button>
+            <div>
+              <h1 className="text-2xl font-bold text-slate-900">
+                {isEditing ? 'Modifier le Projet' : 'Nouveau Projet'}
+              </h1>
+              <p className="text-slate-600">
+                {isEditing ? 'Modifiez les informations de votre projet' : 'Créez un nouveau projet immobilier'}
+              </p>
             </div>
-          }
-        >
+          </div>
+        </div>
+      </div>
 
       {/* Main Content Area */}
       <div className="flex flex-1 overflow-hidden">
@@ -803,11 +797,12 @@ const AdminProjectForm: React.FC = () => {
               </div>
             </div>
           </div>
-        </AppShell>
+        </div>
+      </div>
 
-        {/* Confirmation Dialog */}
-        <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
-          <DialogContent className="max-w-2xl">
+      {/* Confirmation Dialog */}
+      <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+        <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 {validationErrors.length > 0 ? (
@@ -905,8 +900,7 @@ const AdminProjectForm: React.FC = () => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      </div>
-    </SidebarProvider>
+    </div>
   );
 };
 
