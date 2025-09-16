@@ -136,7 +136,34 @@ const AdminProjectForm: React.FC = () => {
         proximity_airport_km: projectData.proximity_airport_km || null,
         proximity_city_center_km: projectData.proximity_city_center_km || null,
         proximity_highway_km: projectData.proximity_highway_km || null,
-        surrounding_amenities: Array.isArray(projectData.surrounding_amenities) ? projectData.surrounding_amenities : []
+        surrounding_amenities: Array.isArray(projectData.surrounding_amenities) ? projectData.surrounding_amenities : [],
+        // Specifications fields
+        land_area_m2: projectData.land_area_m2 || null,
+        built_area_m2: projectData.built_area_m2 || null,
+        total_units_new: projectData.total_units_new || null,
+        units_available_new: projectData.units_available_new || null,
+        bedrooms_range: projectData.bedrooms_range || '',
+        bathrooms_range: projectData.bathrooms_range || '',
+        energy_rating: projectData.energy_rating || '',
+        construction_year: projectData.construction_year || null,
+        building_certification: projectData.building_certification || '',
+        maintenance_fees_yearly: projectData.maintenance_fees_yearly || null,
+        property_tax_yearly: projectData.property_tax_yearly || null,
+        hoa_fees_monthly: projectData.hoa_fees_monthly || null,
+        internet_speed_mbps: projectData.internet_speed_mbps || null,
+        pet_policy: projectData.pet_policy || '',
+        floors_total: projectData.floors_total || null,
+        parking_spaces: projectData.parking_spaces || null,
+        storage_spaces: projectData.storage_spaces || null,
+        // Pricing fields
+        price_from_new: projectData.price_from_new || null,
+        price_to: projectData.price_to || null,
+        price_per_m2: projectData.price_per_m2 || null,
+        roi_estimate_percent: projectData.roi_estimate_percent || '',
+        rental_yield_percent: projectData.rental_yield_percent || '',
+        // Media fields
+        floor_plan_urls: Array.isArray(projectData.floor_plan_urls) ? projectData.floor_plan_urls : [],
+        virtual_tour_url_new: projectData.virtual_tour_url_new || null
       };
       
       // Les données Supabase sont prioritaires, on ne charge PAS les drafts pour les statuts
