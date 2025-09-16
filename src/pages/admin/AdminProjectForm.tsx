@@ -527,10 +527,10 @@ const AdminProjectForm: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col">
-      {/* Modern Header - STICKY */}
+    <div className="h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col">
+      {/* Modern Header - STICKY - Même taille que les autres pages admin */}
       <div className="sticky top-0 z-10 bg-white border-b border-slate-200 shadow-sm">
-        <div className="px-8 py-6">
+        <div className="px-8 py-8">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
               <div className="flex items-center gap-4">
@@ -559,7 +559,7 @@ const AdminProjectForm: React.FC = () => {
       {/* Main Content Area */}
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar Navigation des Étapes - STICKY */}
-        <div className="w-80 bg-white border-r border-slate-200 shadow-sm flex-shrink-0 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto">
+        <div className="w-80 bg-white border-r border-slate-200 shadow-sm flex-shrink-0 sticky top-32 h-[calc(100vh-8rem)] overflow-y-auto">
           <div className="p-6">
             <h2 className="text-lg font-semibold text-slate-900 mb-4">Étapes du Projet</h2>
             <nav className="space-y-2">
