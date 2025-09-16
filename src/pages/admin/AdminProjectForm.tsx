@@ -788,13 +788,11 @@ const AdminProjectForm: React.FC = () => {
                             {saveProjectMutation.isPending ? 'En cours...' : (saveType === 'publish' ? 'Publier' : 'Sauvegarder')}
                           </Button>
                         )}
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
+                      </div>
+                    </form>
+                  </Form>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
