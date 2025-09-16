@@ -163,7 +163,12 @@ const AdminProjectForm: React.FC = () => {
         rental_yield_percent: projectData.rental_yield_percent || '',
         // Media fields
         floor_plan_urls: Array.isArray(projectData.floor_plan_urls) ? projectData.floor_plan_urls : [],
-        virtual_tour_url_new: projectData.virtual_tour_url_new || null
+        virtual_tour_url_new: projectData.virtual_tour_url_new || null,
+        video_tour_urls: Array.isArray(projectData.video_tour_urls) ? projectData.video_tour_urls : [],
+        photo_gallery_urls: Array.isArray(projectData.photo_gallery_urls) ? projectData.photo_gallery_urls : [],
+        drone_footage_urls: Array.isArray(projectData.drone_footage_urls) ? projectData.drone_footage_urls : [],
+        model_3d_urls: Array.isArray(projectData.model_3d_urls) ? projectData.model_3d_urls : [],
+        floor_plan_3d_urls: Array.isArray(projectData.floor_plan_3d_urls) ? projectData.floor_plan_3d_urls : []
       };
       
       // Les données Supabase sont prioritaires, on ne charge PAS les drafts pour les statuts
