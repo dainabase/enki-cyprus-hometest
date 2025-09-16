@@ -73,7 +73,9 @@ export const useFormAutosave = ({
         .from(table)
         .upsert(draftData, {
           onConflict: entityId 
-            ? userId ? 'user_id,developer_id' : 'session_id'
+            ? userId ? (table === 'project_drafts' ? 'user_id,project_id' : 
+                       table === 'building_drafts' ? 'user_id,building_id' : 
+                       'user_id,developer_id') : 'session_id'
             : 'session_id'
         });
 

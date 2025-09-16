@@ -13,7 +13,7 @@ import { ArrowLeft, ArrowRight, Save, Eye, ChevronLeft } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { AlertTriangle } from 'lucide-react';
-import { useFormAutosave } from '@/hooks/useFormAutosave';
+import { AlertTriangle } from 'lucide-react';
 
 export const AdminProjectForm: React.FC = () => {
   const navigate = useNavigate();
@@ -85,21 +85,40 @@ export const AdminProjectForm: React.FC = () => {
     enabled: isEdit
   });
 
-  // Watch form changes for autosave
-  const watchedValues = form.watch();
 
-  // Setup autosave for form
-  const { sessionId, isAutoSaving, loadDraft, clearDraft } = useFormAutosave({
-    table: 'project_drafts',
-    formData: watchedValues,
-    entityId: id,
-    enabled: true,
-    debounceMs: 2000,
-    showToasts: false
-  });
+  // Load existing draft and merge with project data
+  React.useEffect(() => {
+    const loadDraftAndProjectData = async () => {
+      if (projectData && isEdit) {
+        console.log('🔄 Loading project data for edit:', projectData.title);
+        console.log('📊 Raw project status data from DB:', { 
+          status: projectData.status,
+          statut_commercial: projectData.statut_commercial, 
+          statut_travaux: projectData.statut_travaux, 
+          avancement_travaux: projectData.avancement_travaux 
+        });
+
+        // Try to load existing draft
+        let draftData = null;
+        try {
+          draftData = await loadDraft();
+          console.log('📝 Loaded draft data:', draftData);
+        } catch (error) {
+          console.log('📝 No draft found, using project data only');
+        }
+
+        // Convert dates from YYYY-MM-DD to YYYY-MM for month inputs
+        const convertedLaunchDate = projectData.launch_date ? projectData.launch_date.substring(0, 7) : '';
+        const convertedCompletionDate = projectData.completion_date_new ? projectData.completion_date_new.substring(0, 7) : '';
+        
+        console.log('📅 Converted launch_date:', convertedLaunchDate);
+        console.log('📅 Converted completion_date_new:', convertedCompletionDate);
+        
+        setOriginalData(projectData);
 
   // Populate form when data is loaded
   React.useEffect(() => {
+    const loadFormData = async () => {
     if (projectData && isEdit) {
       console.log('🔄 Loading project data for edit:', projectData.title);
       console.log('📊 Raw project status data from DB:', { 
