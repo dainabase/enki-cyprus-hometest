@@ -120,6 +120,7 @@ export const projectSchema = z.object({
 
   // STATUS
   status_project: z.enum(['disponible', 'en_construction', 'livre', 'pret_a_emmenager']).default('disponible'),
+  statut_commercial: z.enum(['prelancement', 'lancement_commercial', 'en_commercialisation', 'derniere_opportunite', 'vendu']).default('prelancement'),
   featured_new: z.boolean().default(false),
 
   // LOCATION OBJECT (legacy compatibility)

@@ -1389,6 +1389,7 @@ export type Database = {
           social_proof_stats: Json | null
           status: string
           status_project: string | null
+          statut_commercial: string | null
           storage_spaces: number | null
           subtitle: string | null
           surrounding_amenities: Json | null
@@ -1562,6 +1563,7 @@ export type Database = {
           social_proof_stats?: Json | null
           status?: string
           status_project?: string | null
+          statut_commercial?: string | null
           storage_spaces?: number | null
           subtitle?: string | null
           surrounding_amenities?: Json | null
@@ -1735,6 +1737,7 @@ export type Database = {
           social_proof_stats?: Json | null
           status?: string
           status_project?: string | null
+          statut_commercial?: string | null
           storage_spaces?: number | null
           subtitle?: string | null
           surrounding_amenities?: Json | null

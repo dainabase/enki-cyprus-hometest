@@ -1330,6 +1330,31 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
           <FormField
             control={form.control}
+            name="statut_commercial"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Statut commercial</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value || ''}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sélectionnez un statut commercial" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="bg-white z-50">
+                    <SelectItem value="prelancement">Prélancement</SelectItem>
+                    <SelectItem value="lancement_commercial">Lancement commercial</SelectItem>
+                    <SelectItem value="en_commercialisation">En commercialisation</SelectItem>
+                    <SelectItem value="derniere_opportunite">Dernière opportunité</SelectItem>
+                    <SelectItem value="vendu">Vendu</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name="featured_new"
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">

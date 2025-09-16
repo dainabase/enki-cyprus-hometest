@@ -54,6 +54,28 @@ export const ProjectTableView = ({
     }).format(price);
   };
 
+  const getCommercialStatusColor = (status: string) => {
+    switch (status) {
+      case 'prelancement': return 'bg-purple-100 text-purple-800';
+      case 'lancement_commercial': return 'bg-blue-100 text-blue-800';
+      case 'en_commercialisation': return 'bg-green-100 text-green-800';
+      case 'derniere_opportunite': return 'bg-orange-100 text-orange-800';
+      case 'vendu': return 'bg-gray-100 text-gray-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getCommercialStatusLabel = (status: string) => {
+    switch (status) {
+      case 'prelancement': return 'Prélancement';
+      case 'lancement_commercial': return 'Lancement commercial';
+      case 'en_commercialisation': return 'En commercialisation';
+      case 'derniere_opportunite': return 'Dernière opportunité';
+      case 'vendu': return 'Vendu';
+      default: return status || '-';
+    }
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pre_lancement': return 'bg-purple-100 text-purple-800';
@@ -171,6 +193,7 @@ export const ProjectTableView = ({
                 Prix <SortIcon field="price" />
               </Button>
             </TableHead>
+            <TableHead className="text-white font-bold border-0">Statut commercial</TableHead>
             <TableHead className="text-white font-bold border-0">
               <Button 
                 variant="ghost" 
@@ -243,6 +266,11 @@ export const ProjectTableView = ({
                   <Euro className="h-4 w-4" />
                   <span>{formatPrice(project.price || project.price_from || 0)}</span>
                 </div>
+              </TableCell>
+              <TableCell className="py-4">
+                <Badge className={getCommercialStatusColor(project.statut_commercial || '')}>
+                  {getCommercialStatusLabel(project.statut_commercial || '')}
+                </Badge>
               </TableCell>
               <TableCell className="py-4">
                 {project.launch_date ? (
