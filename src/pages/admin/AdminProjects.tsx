@@ -337,35 +337,22 @@ const AdminProjects = () => {
       <div className="sticky top-0 z-10 bg-white border-b border-slate-200 shadow-sm">
         <div className="px-8 py-6">
           <div className="flex items-start justify-between">
-            <div className="space-y-1">
-              <h1 className="text-3xl font-bold text-slate-900">Projets</h1>
-              <p className="text-slate-600">Gérez votre portfolio de projets immobiliers</p>
-            </div>
-            <div className="flex items-center gap-3">
+            <div className="space-y-3">
+              <div>
+                <h1 className="text-3xl font-bold text-slate-900">Projets</h1>
+                <p className="text-slate-600">Gérez votre portfolio de projets immobiliers</p>
+              </div>
               <Button 
                 variant="outline"
                 onClick={() => navigate('/admin/ai-import-unified')} 
                 className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200 gap-2"
-                size="lg"
+                size="sm"
               >
-                <Brain className="w-5 h-5" />
+                <Brain className="w-4 h-4" />
                 Import IA
               </Button>
-              
-              <Button 
-                onClick={() => navigate('/admin/projects/new')} 
-                className="bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 gap-2"
-                size="lg"
-              >
-                <Plus className="w-5 h-5" />
-                Nouveau Projet
-              </Button>
             </div>
-          </div>
-          
-          {/* Controls Row */}
-          <div className="flex items-center justify-between mt-6 pt-4 border-t border-slate-100">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <Button
                 variant="outline"
                 onClick={() => setShowFilters(!showFilters)}
@@ -374,9 +361,7 @@ const AdminProjects = () => {
                 <Filter className="w-4 h-4" />
                 Filtres
               </Button>
-            </div>
-            
-            <div className="flex items-center gap-4">
+              
               <ProjectViewSelector
                 currentView={currentView}
                 onViewChange={setCurrentView}
@@ -387,6 +372,15 @@ const AdminProjects = () => {
                 sortDirection={sortDirection}
                 onSortChange={handleSortChange}
               />
+              
+              <Button 
+                onClick={() => navigate('/admin/projects/new')} 
+                className="bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 gap-2"
+                size="lg"
+              >
+                <Plus className="w-5 h-5" />
+                Nouveau Projet
+              </Button>
             </div>
           </div>
         </div>
