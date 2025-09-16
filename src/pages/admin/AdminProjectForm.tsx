@@ -387,17 +387,25 @@ const AdminProjectForm: React.FC = () => {
       proximity_airport_km: data.proximity_airport_km && typeof data.proximity_airport_km === 'number' ? data.proximity_airport_km : null,
       proximity_city_center_km: data.proximity_city_center_km && typeof data.proximity_city_center_km === 'number' ? data.proximity_city_center_km : null,
       proximity_highway_km: data.proximity_highway_km && typeof data.proximity_highway_km === 'number' ? data.proximity_highway_km : null,
-      // Ensure arrays are properly formatted
+      // Ensure arrays are properly formatted - FORCE ARRAYS FOR ALL MEDIA FIELDS
       photos: Array.isArray(data.photos) ? data.photos : [],
       features: Array.isArray(data.features) ? data.features : [],
       amenities: Array.isArray(data.amenities) ? data.amenities : [],
       property_sub_type: Array.isArray(data.property_sub_type) ? data.property_sub_type : ['apartment'],
-      // Fix all media URL arrays
-      floor_plan_urls: Array.isArray(data.floor_plan_urls) ? data.floor_plan_urls : [],
+      // CRITICAL: Force all media URL fields to be arrays
+      floor_plan_urls: (() => {
+        console.log('🔍 DEBUGGING floor_plan_urls:', { 
+          value: data.floor_plan_urls, 
+          type: typeof data.floor_plan_urls,
+          isArray: Array.isArray(data.floor_plan_urls) 
+        });
+        return Array.isArray(data.floor_plan_urls) ? data.floor_plan_urls : [];
+      })(),
       video_tour_urls: Array.isArray(data.video_tour_urls) ? data.video_tour_urls : [],
       photo_gallery_urls: Array.isArray(data.photo_gallery_urls) ? data.photo_gallery_urls : [],
       drone_footage_urls: Array.isArray(data.drone_footage_urls) ? data.drone_footage_urls : [],
       model_3d_urls: Array.isArray(data.model_3d_urls) ? data.model_3d_urls : [],
+      floor_plan_3d_urls: Array.isArray(data.floor_plan_3d_urls) ? data.floor_plan_3d_urls : [],
       // Fix date formats - convert YYYY-MM to YYYY-MM-01 for database
       launch_date: (() => {
         console.log('🔍 Processing launch_date:', data.launch_date);
@@ -429,7 +437,6 @@ const AdminProjectForm: React.FC = () => {
         console.log('❌ Invalid completion_date_new format:', data.completion_date_new);
         return null;
       })(),
-      // Rien ici - les statuts sont déjà définis au début
     };
     
     console.log('🧹 CLEANED data for submission:');
