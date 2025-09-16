@@ -178,13 +178,17 @@ const AdminProjectForm: React.FC = () => {
       const loadDraftsAndApply = async () => {
         console.log('📊 DONNÉES SUPABASE CHARGÉES:', { 
           status_project: formData.status_project,
-          statut_commercial: formData.statut_commercial
+          statut_commercial: formData.statut_commercial,
+          photos: formData.photos,
+          photos_count: formData.photos?.length || 0
         });
         // On garde les données Supabase comme source de vérité
         
         console.log('📝 Final form data with drafts applied:', { 
           status_project: formData.status_project,
-          statut_commercial: formData.statut_commercial
+          statut_commercial: formData.statut_commercial,
+          photos: formData.photos,
+          photos_count: formData.photos?.length || 0
         });
         
         form.reset(formData);
