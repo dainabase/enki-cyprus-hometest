@@ -75,7 +75,7 @@ export const AdminOverview = () => {
         <div className="px-8 py-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
+              <h1 className="text-3xl font-bold text-primary">Dashboard</h1>
               <p className="text-slate-600 mt-2">Vue d'ensemble des performances de votre portfolio</p>
             </div>
             
@@ -226,7 +226,7 @@ export const AdminOverview = () => {
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
             <CardHeader>
-              <CardTitle className="text-slate-900 font-bold">Répartition par Zone</CardTitle>
+              <CardTitle className="text-primary font-bold">Répartition par Zone</CardTitle>
             </CardHeader>
             <CardContent>
               <ModernZoneChart
@@ -240,7 +240,7 @@ export const AdminOverview = () => {
           
           <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
             <CardHeader>
-              <CardTitle className="text-slate-900 font-bold">Commissions par Zone</CardTitle>
+              <CardTitle className="text-primary font-bold">Commissions par Zone</CardTitle>
             </CardHeader>
             <CardContent>
               <ModernBarChart
@@ -254,7 +254,7 @@ export const AdminOverview = () => {
         {/* Performance Chart */}
         <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
           <CardHeader>
-            <CardTitle className="text-slate-900 font-bold">Performance Mensuelle</CardTitle>
+            <CardTitle className="text-primary font-bold">Performance Mensuelle</CardTitle>
           </CardHeader>
           <CardContent>
             <ModernPerformanceChart data={performanceData} />
@@ -264,7 +264,7 @@ export const AdminOverview = () => {
         {/* Quick Actions */}
         <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
           <CardHeader>
-            <CardTitle className="text-slate-900 font-bold">Actions Rapides</CardTitle>
+            <CardTitle className="text-primary font-bold">Actions Rapides</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

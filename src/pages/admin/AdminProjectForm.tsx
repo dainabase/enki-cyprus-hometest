@@ -543,7 +543,7 @@ const AdminProjectForm: React.FC = () => {
                   Retour aux projets
                 </Button>
                 <div>
-                  <h1 className="text-3xl font-bold text-slate-900">
+                  <h1 className="text-3xl font-bold text-primary">
                     {isEditing ? 'Modifier le Projet' : 'Nouveau Projet'}
                   </h1>
                   <p className="text-slate-600">
@@ -561,7 +561,7 @@ const AdminProjectForm: React.FC = () => {
         {/* Sidebar Navigation des Étapes - STICKY */}
         <div className="w-80 bg-white border-r border-slate-200 shadow-sm flex-shrink-0 sticky top-32 h-[calc(100vh-8rem)] overflow-y-auto">
           <div className="p-6">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4">Étapes du Projet</h2>
+            <h2 className="text-lg font-semibold text-primary mb-4">Étapes du Projet</h2>
             <nav className="space-y-2">
               {projectFormSteps.map((step, index) => {
                 const isActive = index === currentStepIndex;

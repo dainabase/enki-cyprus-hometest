@@ -53,7 +53,7 @@ const AdminDashboard = () => {
         <Card variant="executive" padding="lg" className="max-w-md mx-auto">
           <div className="text-center">
             <AlertCircle className="w-16 h-16 text-red-600 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-slate-900 mb-2">Accès Restreint</h2>
+            <h2 className="text-xl font-semibold text-primary mb-2">Accès Restreint</h2>
             <p className="text-slate-600">
               Seuls les administrateurs peuvent accéder à cette section.
             </p>
