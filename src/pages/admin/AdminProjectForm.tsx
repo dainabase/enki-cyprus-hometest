@@ -527,78 +527,82 @@ const AdminProjectForm: React.FC = () => {
   }
 
   return (
-    <div className="h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col">
-      {/* Modern Header - STICKY - Même taille que les autres pages admin */}
-      <div className="sticky top-0 z-10 bg-white border-b border-slate-200 shadow-sm">
-        <div className="px-8 py-8">
-          <div className="flex items-start justify-between">
-            <div className="space-y-1">
-              <div className="flex items-center gap-4">
-                <Button
-                  variant="outline"
-                  onClick={() => navigate('/admin/projects')}
-                  className="flex items-center gap-2"
+    <div className="h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex">
+      {/* Sidebar Navigation des Étapes - FULL HEIGHT */}
+      <div className="w-80 bg-white border-r border-slate-200 shadow-sm flex-shrink-0 flex flex-col h-screen overflow-hidden">
+        {/* Sidebar Header Area */}
+        <div className="h-32 border-b border-slate-200 flex items-center justify-center bg-slate-50">
+          <h2 className="text-lg font-semibold text-slate-900">Étapes du Projet</h2>
+        </div>
+        
+        {/* Sidebar Content - Scrollable */}
+        <div className="flex-1 overflow-y-auto p-6">
+          <nav className="space-y-2">
+            {projectFormSteps.map((step, index) => {
+              const isActive = index === currentStepIndex;
+              const isCompleted = index < currentStepIndex;
+              
+              return (
+                <button
+                  key={step.id}
+                  type="button"
+                  onClick={() => setCurrentStepIndex(index)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
+                    isActive
+                      ? 'bg-primary text-white shadow-md'
+                      : isCompleted
+                      ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200'
+                      : 'text-slate-600 hover:bg-slate-50 border border-slate-200'
+                  }`}
                 >
-                  <ChevronLeft className="h-4 w-4" />
-                  Retour aux projets
-                </Button>
-                <div>
-                  <h1 className="text-3xl font-bold text-slate-900">
-                    {isEditing ? 'Modifier le Projet' : 'Nouveau Projet'}
-                  </h1>
-                  <p className="text-slate-600">
-                    {isEditing ? 'Modifiez les informations de votre projet' : 'Créez un nouveau projet immobilier'}
-                  </p>
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
+                    isActive
+                      ? 'bg-white text-primary'
+                      : isCompleted
+                      ? 'bg-emerald-500 text-white'
+                      : 'bg-slate-200 text-slate-500'
+                  }`}>
+                    {isCompleted ? '✓' : index + 1}
+                  </div>
+                  <span className="font-medium">{step.title}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+      </div>
+
+      {/* Right Content Area */}
+      <div className="flex-1 flex flex-col h-screen overflow-hidden">
+        {/* Modern Header - STICKY - Même taille que les autres pages admin */}
+        <div className="sticky top-0 z-10 bg-white border-b border-slate-200 shadow-sm">
+          <div className="px-8 py-8">
+            <div className="flex items-start justify-between">
+              <div className="space-y-1">
+                <div className="flex items-center gap-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => navigate('/admin/projects')}
+                    className="flex items-center gap-2"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    Retour aux projets
+                  </Button>
+                  <div>
+                    <h1 className="text-3xl font-bold text-slate-900">
+                      {isEditing ? 'Modifier le Projet' : 'Nouveau Projet'}
+                    </h1>
+                    <p className="text-slate-600">
+                      {isEditing ? 'Modifiez les informations de votre projet' : 'Créez un nouveau projet immobilier'}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Main Content Area */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar Navigation des Étapes - STICKY */}
-        <div className="w-80 bg-white border-r border-slate-200 shadow-sm flex-shrink-0 sticky top-0 h-screen overflow-y-auto">
-          <div className="p-6">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4">Étapes du Projet</h2>
-            <nav className="space-y-2">
-              {projectFormSteps.map((step, index) => {
-                const isActive = index === currentStepIndex;
-                const isCompleted = index < currentStepIndex;
-                
-                return (
-                  <button
-                    key={step.id}
-                    type="button"
-                    onClick={() => setCurrentStepIndex(index)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
-                      isActive
-                        ? 'bg-primary text-white shadow-md'
-                        : isCompleted
-                        ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200'
-                        : 'text-slate-600 hover:bg-slate-50 border border-slate-200'
-                    }`}
-                  >
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
-                      isActive
-                        ? 'bg-white text-primary'
-                        : isCompleted
-                        ? 'bg-emerald-500 text-white'
-                        : 'bg-slate-200 text-slate-500'
-                    }`}>
-                      {isCompleted ? '✓' : index + 1}
-                    </div>
-                    <span className="font-medium">{step.title}</span>
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
-        </div>
-
         {/* Main Content - SCROLLABLE */}
-        <div className="flex-1 overflow-y-auto h-screen">
+        <div className="flex-1 overflow-y-auto">
           <div className="px-8 py-6">
             <div className="max-w-7xl mx-auto">
               <Card className="bg-white border-2 border-slate-200 shadow-xl">
