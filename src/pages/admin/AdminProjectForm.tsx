@@ -9,7 +9,7 @@ import { ProjectFormSteps } from '@/components/admin/projects/ProjectFormSteps';
 import { projectFormSteps } from '@/schemas/projectSchema';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { ArrowLeft, ArrowRight, Save, Eye, ChevronLeft } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Save, Eye, ChevronLeft, ChevronRight, Loader2, Send } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { AlertTriangle } from 'lucide-react';
@@ -604,203 +604,213 @@ const AdminProjectForm: React.FC = () => {
               <Card className="bg-white border-2 border-slate-200 shadow-xl">
                 <CardContent className="p-10">
                   <div className="mb-8">
-                    <h1 className="text-2xl font-bold text-slate-900 mb-2">
-                      {currentStep.title}
+                    <h1 className="text-2xl font-bold text-primary mb-2">
+                      {id ? 'Modifier le projet' : 'Nouveau projet'}
                     </h1>
-                    <p className="text-slate-600">
-                      Étape {currentStepIndex + 1} sur {projectFormSteps.length} - Complétez les informations demandées
+                    <p className="text-muted-foreground">
+                      {id ? 'Modifiez les informations du projet' : 'Créez un nouveau projet immobilier'}
                     </p>
                   </div>
 
-                  <Form {...form}>
-                    <form onSubmit={form.handleSubmit(handleSubmitWithConfirmation)} className="space-y-10">
-                      <div className="bg-slate-50 border-2 border-slate-200 rounded-xl p-8">
-                        <ProjectFormSteps 
-                          key={formKey}
-                          currentStep={currentStep.id}
-                          projectId={id}
-                          form={form as any}
-                        />
-                      </div>
-                      
-                      {/* Navigation Buttons */}
-                      <div className="flex justify-between items-center pt-6 border-t-2 border-slate-200">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={prevStep}
-                          disabled={currentStepIndex === 0}
-                          className="flex items-center gap-2 border-2 border-slate-300 hover:border-slate-400 hover:bg-slate-50"
-                        >
-                          <ArrowLeft className="h-4 w-4" />
-                          Précédent
-                        </Button>
-                        
-                        <div className="flex items-center gap-3">
-                          {currentStepIndex === projectFormSteps.length - 1 ? (
-                            <>
-                              <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => {
-                                  setSaveType('draft');
-                                  form.handleSubmit(handleSubmitWithConfirmation)();
-                                }}
-                                disabled={saveProjectMutation.isPending}
-                                className="flex items-center gap-2 border-2 border-orange-300 text-orange-700 hover:bg-orange-50"
-                              >
-                                <Save className="h-4 w-4" />
-                                {saveProjectMutation.isPending && saveType === 'draft' ? 'Sauvegarde...' : 'Sauvegarder en brouillon'}
-                              </Button>
-                              <Button
-                                type="submit"
-                                onClick={() => setSaveType('publish')}
-                                disabled={saveProjectMutation.isPending}
-                                className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white border-2 border-emerald-600 shadow-lg"
-                              >
-                                <Eye className="h-4 w-4" />
-                                {saveProjectMutation.isPending && saveType === 'publish' ? 'Publication...' : 'Publier le projet'}
-                              </Button>
-                            </>
-                          ) : (
-                            <Button
-                              type="button"
-                              onClick={nextStep}
-                              className="flex items-center gap-2 bg-primary hover:bg-primary/90 border-2 border-primary shadow-lg"
-                            >
-                              Suivant
-                              <ArrowRight className="h-4 w-4" />
-                            </Button>
-                          )}
-                        </div>
-                      </div>
-                    </form>
-                  </Form>
-
-                  {/* Confirmation Dialog */}
-                  <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
-                    <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle className="flex items-center gap-2">
-                          {validationErrors.length > 0 ? (
-                            <>
-                              <AlertTriangle className="h-5 w-5 text-red-600" />
-                              Erreurs détectées
-                            </>
-                          ) : (
-                            <>
-                              <Eye className="h-5 w-5 text-green-600" />
-                              {saveType === 'publish' ? 'Publier le projet' : 'Sauvegarder le projet'}
-                            </>
-                          )}
-                        </DialogTitle>
-                        <DialogDescription>
-                          {validationErrors.length > 0 
-                            ? 'Des erreurs ont été détectées et doivent être corrigées avant la publication.'
-                            : `Voulez-vous ${saveType === 'publish' ? 'publier' : 'sauvegarder'} le projet "${form.getValues('title') || 'Nouveau projet'}" ?`
-                          }
-                        </DialogDescription>
-                      </DialogHeader>
-
-                      <div className="space-y-6">
-                        <div className="bg-slate-50 rounded-lg p-4">
-                          <h4 className="font-medium text-slate-900 mb-2">Projet concerné</h4>
-                          <p className="text-slate-700">{form.getValues('title') || 'Nouveau projet'}</p>
-                        </div>
-
-                        {validationErrors.length > 0 && (
-                          <div className="space-y-4">
-                            <h4 className="font-medium text-red-700 flex items-center gap-2">
-                              <AlertTriangle className="h-5 w-5" />
-                              Erreurs à corriger ({validationErrors.length})
-                            </h4>
-                            <div className="space-y-2 max-h-60 overflow-y-auto">
-                              {validationErrors.map((error, index) => (
-                                <div key={index} className="border border-red-200 bg-red-50 rounded-lg p-3">
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                      <Badge variant="destructive">❌ Erreur</Badge>
-                                      <span className="font-medium text-sm text-red-800">{error.label}</span>
-                                    </div>
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="h-6 px-2 text-xs"
-                                      onClick={() => {
-                                        setShowConfirmDialog(false);
-                                        // Find which step contains this field
-                                        const stepIndex = projectFormSteps.findIndex(step => 
-                                          step.fields && step.fields.includes(error.field)
-                                        );
-                                        if (stepIndex !== -1 && stepIndex !== currentStepIndex) {
-                                          setCurrentStepIndex(stepIndex);
-                                        }
-                                        // Focus the field after a small delay
-                                        setTimeout(() => {
-                                          const field = document.querySelector(`[name="${error.field}"]`) as HTMLElement;
-                                          if (field) {
-                                            field.focus();
-                                            field.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                          }
-                                        }, 100);
-                                      }}
-                                    >
-                                      Aller au champ
-                                    </Button>
-                                  </div>
-                                  <p className="text-red-700 text-xs mt-1">{error.message}</p>
-                                </div>
-                              ))}
-                            </div>
-                            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                              <p className="text-red-800 text-sm font-medium">
-                                🚫 Impossible de publier le projet tant que ces erreurs ne sont pas corrigées.
-                              </p>
-                              <p className="text-red-700 text-xs mt-1">
-                                Cliquez sur "Aller au champ" pour naviguer directement vers les champs à corriger.
-                              </p>
-                            </div>
-                          </div>
-                        )}
-
-                        {validationErrors.length === 0 && saveType === 'publish' && (
-                          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                            <p className="text-green-800 font-medium">✅ Aucune erreur détectée</p>
-                            <p className="text-green-700 text-sm">Le projet est prêt à être publié.</p>
-                          </div>
-                        )}
-                      </div>
-
-                      <DialogFooter>
-                        <Button
-                          variant="outline"
-                          onClick={() => setShowConfirmDialog(false)}
-                          disabled={saveProjectMutation.isPending}
-                        >
-                          {validationErrors.length > 0 ? 'Retour au formulaire' : 'Annuler'}
-                        </Button>
-                        {validationErrors.length === 0 && (
-                          <Button
-                            onClick={() => {
-                              const formData = form.getValues();
-                              onSubmit(formData);
-                              setShowConfirmDialog(false);
-                            }}
-                            disabled={saveProjectMutation.isPending}
-                            variant="default"
-                          >
-                            {saveProjectMutation.isPending ? 'En cours...' : (saveType === 'publish' ? 'Publier' : 'Sauvegarder')}
-                          </Button>
-                        )}
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
+                  <ProjectFormSteps
+                    formSteps={projectFormSteps}
+                    currentStepIndex={currentStepIndex}
+                    onStepClick={setCurrentStepIndex}
+                    form={form}
+                  />
                 </CardContent>
               </Card>
             </div>
           </div>
         </div>
+
+        {/* Fixed Bottom Actions - NO SCROLL */}
+        <div className="h-20 bg-card border-t border-border px-8 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="outline"
+              onClick={() => navigate(-1)}
+              className="px-6"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Retour
+            </Button>
+
+            <div className="text-sm text-muted-foreground">
+              Étape {currentStepIndex + 1} sur {projectFormSteps.length}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4">
+            {currentStepIndex > 0 && (
+              <Button
+                variant="outline"
+                onClick={() => setCurrentStepIndex(prev => Math.max(0, prev - 1))}
+                className="px-6"
+              >
+                <ChevronLeft className="w-4 h-4 mr-1" />
+                Précédent
+              </Button>
+            )}
+
+            {currentStepIndex < projectFormSteps.length - 1 ? (
+              <Button
+                onClick={() => setCurrentStepIndex(prev => Math.min(projectFormSteps.length - 1, prev + 1))}
+                className="px-6"
+              >
+                Suivant
+                <ChevronRight className="w-4 h-4 ml-1" />
+              </Button>
+            ) : (
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => onSubmitWithType('draft')}
+                  disabled={saveProjectMutation.isPending}
+                  className="px-6"
+                >
+                  {saveProjectMutation.isPending && saveType === 'draft' ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Sauvegarde...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4 mr-2" />
+                      Sauvegarder
+                    </>
+                  )}
+                </Button>
+
+                <Button
+                  onClick={() => onSubmitWithType('publish')}
+                  disabled={saveProjectMutation.isPending}
+                  className="px-6 bg-green-600 hover:bg-green-700"
+                >
+                  {saveProjectMutation.isPending && saveType === 'publish' ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Publication...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4 mr-2" />
+                      Publier
+                    </>
+                  )}
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
+
+      {/* Confirmation Dialog */}
+      <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {saveType === 'publish' ? 'Confirmer la publication' : 'Confirmer la sauvegarde'}
+            </DialogTitle>
+            <DialogDescription>
+              {saveType === 'publish' 
+                ? 'Le projet sera publié et visible par les visiteurs.' 
+                : 'Le projet sera sauvegardé en brouillon.'
+              }
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-6">
+            <div className="bg-muted rounded-lg p-4">
+              <h4 className="font-medium text-primary mb-2">Projet concerné</h4>
+              <p className="text-foreground">{form.getValues('title') || 'Nouveau projet'}</p>
+            </div>
+
+            {validationErrors.length > 0 && (
+              <div className="space-y-4">
+                <h4 className="font-medium text-destructive flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5" />
+                  Erreurs à corriger ({validationErrors.length})
+                </h4>
+                <div className="space-y-2 max-h-60 overflow-y-auto">
+                  {validationErrors.map((error, index) => (
+                    <div key={index} className="border border-red-200 bg-red-50 rounded-lg p-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="destructive">❌ Erreur</Badge>
+                          <span className="font-medium text-sm text-red-800">{error.label}</span>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-6 px-2 text-xs"
+                          onClick={() => {
+                            setShowConfirmDialog(false);
+                            const stepIndex = projectFormSteps.findIndex(step => 
+                              step.fields && step.fields.includes(error.field)
+                            );
+                            if (stepIndex !== -1 && stepIndex !== currentStepIndex) {
+                              setCurrentStepIndex(stepIndex);
+                            }
+                            setTimeout(() => {
+                              const field = document.querySelector(`[name="${error.field}"]`) as HTMLElement;
+                              if (field) {
+                                field.focus();
+                                field.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                              }
+                            }, 100);
+                          }}
+                        >
+                          Aller au champ
+                        </Button>
+                      </div>
+                      <p className="text-red-700 text-xs mt-1">{error.message}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                  <p className="text-red-800 text-sm font-medium">
+                    🚫 Impossible de publier le projet tant que ces erreurs ne sont pas corrigées.
+                  </p>
+                  <p className="text-red-700 text-xs mt-1">
+                    Cliquez sur "Aller au champ" pour naviguer directement vers les champs à corriger.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {validationErrors.length === 0 && saveType === 'publish' && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <p className="text-green-800 font-medium">✅ Aucune erreur détectée</p>
+                <p className="text-green-700 text-sm">Le projet est prêt à être publié.</p>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowConfirmDialog(false)}
+              disabled={saveProjectMutation.isPending}
+            >
+              {validationErrors.length > 0 ? 'Retour au formulaire' : 'Annuler'}
+            </Button>
+            {validationErrors.length === 0 && (
+              <Button
+                onClick={() => {
+                  const formData = form.getValues();
+                  onSubmit(formData);
+                  setShowConfirmDialog(false);
+                }}
+                disabled={saveProjectMutation.isPending}
+                variant="default"
+              >
+                {saveProjectMutation.isPending ? 'En cours...' : (saveType === 'publish' ? 'Publier' : 'Sauvegarder')}
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

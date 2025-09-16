@@ -12,37 +12,37 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* ENKI REALTY Cyprus - Mediterranean elegance */
-    --background: 0 0% 100%; /* Pure white background */
+    /* ENKI REALTY Brand Colors - Based on Brand Book */
+    --background: 30 67% 96%; /* #FDF0E4 - Crème */
     --foreground: 0 0% 3.9%;
     
-    /* Card system - Always white/very light */
+    /* Card system - Clean white */
     --card: 0 0% 100%;
     --card-foreground: 0 0% 3.9%;
     
-    /* Interactive elements - Light backgrounds only */
+    /* Interactive elements - Light backgrounds */
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
     
-    /* Primary - Cyprus Ocean Blue #57B9D6 */
-    --primary: 199 63% 59%;
+    /* Primary - ENKI Blue #57B9D6 */
+    --primary: 195 56% 59%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 199 63% 55%;
+    --primary-hover: 195 56% 55%;
     
-    /* Secondary - Light Cyprus Blue #D3E3F0 */
-    --secondary: 210 50% 88%;
+    /* Secondary - Light Blue #D3E3F0 */
+    --secondary: 210 36% 87%;
     --secondary-foreground: 0 0% 3.9%;
     
-    /* Muted tones - Very light beige accent */
-    --muted: 30 50% 97%;
+    /* Muted tones - ENKI Cream */
+    --muted: 30 67% 96%;
     --muted-foreground: 25 15% 40%;
     
-    /* Accent colors - Soft Cyprus beige */
-    --accent: 30 50% 96%;
+    /* Accent colors - ENKI Cream lighter */
+    --accent: 30 67% 98%;
     --accent-foreground: 25 25% 35%;
     
-    /* Cyprus terra cotta accent - Only for highlights */
-    --cyprus-terra: 25 35% 55%;
+    /* Cyprus terra bronze accent - #A17964 */
+    --cyprus-terra: 25 26% 51%;
     --cyprus-terra-foreground: 0 0% 100%;
     
     /* Status colors */
@@ -56,12 +56,12 @@ All colors MUST be HSL.
     --input: 30 30% 95%;
     --ring: 199 63% 59%;
     
-    /* Cyprus Mediterranean gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(199 63% 59%) 0%, hsl(210 50% 75%) 100%);
-    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(30 50% 98%) 100%);
-    --gradient-premium: linear-gradient(45deg, hsl(199 63% 59%) 0%, hsl(25 35% 55%) 100%);
-    --gradient-ocean: linear-gradient(135deg, hsl(199 63% 59%) 0%, hsl(199 63% 65%) 100%);
-    --gradient-sand: linear-gradient(135deg, hsl(30 50% 97%) 0%, hsl(0 0% 100%) 100%);
+    /* ENKI Brand Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(195 56% 59%) 0%, hsl(210 36% 87%) 100%);
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(30 67% 98%) 100%);
+    --gradient-premium: linear-gradient(45deg, hsl(195 56% 59%) 0%, hsl(25 26% 51%) 100%);
+    --gradient-ocean: linear-gradient(135deg, hsl(195 56% 59%) 0%, hsl(195 56% 65%) 100%);
+    --gradient-sand: linear-gradient(135deg, hsl(30 67% 96%) 0%, hsl(0 0% 100%) 100%);
     
     /* Modern shadows */
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);

@@ -581,7 +581,7 @@ export default function AdminDevelopers() {
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="text-sm font-semibold text-slate-700">Nom du développeur *</Label>
+                  <Label htmlFor="name" className="text-sm font-semibold text-foreground">Nom du développeur *</Label>
                   <Input
                     id="name"
                     value={formData.name}

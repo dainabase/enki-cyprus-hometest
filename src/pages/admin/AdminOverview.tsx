@@ -123,7 +123,7 @@ export const AdminOverview = () => {
               <Building className="h-4 w-4 text-slate-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-slate-900">{formatNumber(metrics.totalProperties)}</div>
+              <div className="text-2xl font-bold text-primary">{formatNumber(metrics.totalProperties)}</div>
               <p className="text-xs text-slate-500 mt-1">+12% ce mois</p>
             </CardContent>
           </Card>
@@ -133,7 +133,7 @@ export const AdminOverview = () => {
               <Euro className="h-4 w-4 text-slate-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-slate-900">{formatCurrency(metrics.totalRevenue)}</div>
+              <div className="text-2xl font-bold text-primary">{formatCurrency(metrics.totalRevenue)}</div>
               <p className="text-xs text-slate-500 mt-1">+23% ce mois</p>
             </CardContent>
           </Card>
@@ -143,7 +143,7 @@ export const AdminOverview = () => {
               <DollarSign className="h-4 w-4 text-slate-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-slate-900">{formatCurrency(metrics.totalCommissions)}</div>
+              <div className="text-2xl font-bold text-primary">{formatCurrency(metrics.totalCommissions)}</div>
               <p className="text-xs text-slate-500 mt-1">+8% ce mois</p>
             </CardContent>
           </Card>
@@ -153,7 +153,7 @@ export const AdminOverview = () => {
               <Target className="h-4 w-4 text-slate-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-slate-900">{formatPercentage(metrics.conversionRate)}</div>
+              <div className="text-2xl font-bold text-primary">{formatPercentage(metrics.conversionRate)}</div>
               <p className="text-xs text-slate-500 mt-1">-2% ce mois</p>
             </CardContent>
           </Card>
@@ -167,7 +167,7 @@ export const AdminOverview = () => {
                 <Award className="w-4 h-4 text-slate-600" />
               </div>
             </div>
-            <p className="text-2xl font-bold text-slate-900">{formatNumber(metrics.goldenVisaProperties)}</p>
+            <p className="text-2xl font-bold text-primary">{formatNumber(metrics.goldenVisaProperties)}</p>
             <p className="text-xs text-slate-500 font-medium">Golden Visa</p>
           </div>
 
@@ -177,7 +177,7 @@ export const AdminOverview = () => {
                 <Home className="w-4 h-4 text-slate-600" />
               </div>
             </div>
-            <p className="text-2xl font-bold text-slate-900">{formatNumber(metrics.availableProperties)}</p>
+            <p className="text-2xl font-bold text-primary">{formatNumber(metrics.availableProperties)}</p>
             <p className="text-xs text-slate-500 font-medium">Disponibles</p>
           </div>
 
@@ -187,7 +187,7 @@ export const AdminOverview = () => {
                 <CheckCircle className="w-4 h-4 text-slate-600" />
               </div>
             </div>
-            <p className="text-2xl font-bold text-slate-900">{formatNumber(metrics.soldProperties)}</p>
+            <p className="text-2xl font-bold text-primary">{formatNumber(metrics.soldProperties)}</p>
             <p className="text-xs text-slate-500 font-medium">Vendues</p>
           </div>
 
@@ -197,7 +197,7 @@ export const AdminOverview = () => {
                 <BarChart3 className="w-4 h-4 text-slate-600" />
               </div>
             </div>
-            <p className="text-2xl font-bold text-slate-900">{formatCurrency(metrics.averagePricePerSqm)}</p>
+            <p className="text-2xl font-bold text-primary">{formatCurrency(metrics.averagePricePerSqm)}</p>
             <p className="text-xs text-slate-500 font-medium">Prix/m²</p>
           </div>
 
@@ -207,7 +207,7 @@ export const AdminOverview = () => {
                 <Clock className="w-4 h-4 text-slate-600" />
               </div>
             </div>
-            <p className="text-2xl font-bold text-slate-900">{Math.round(metrics.averageDaysOnMarket)}</p>
+            <p className="text-2xl font-bold text-primary">{Math.round(metrics.averageDaysOnMarket)}</p>
             <p className="text-xs text-slate-500 font-medium">Jours/vente</p>
           </div>
 
@@ -217,7 +217,7 @@ export const AdminOverview = () => {
                 <Calendar className="w-4 h-4 text-slate-600" />
               </div>
             </div>
-            <p className="text-2xl font-bold text-slate-900">{formatNumber(metrics.propertiesSoldThisMonth)}</p>
+            <p className="text-2xl font-bold text-primary">{formatNumber(metrics.propertiesSoldThisMonth)}</p>
             <p className="text-xs text-slate-500 font-medium">Ce mois</p>
           </div>
         </div>

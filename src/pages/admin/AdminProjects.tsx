@@ -389,7 +389,7 @@ const AdminProjects = () => {
               <CardTitle className="text-sm font-medium text-slate-600">Total Projets</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-slate-900">{stats.total}</div>
+              <div className="text-2xl font-bold text-primary">{stats.total}</div>
             </CardContent>
           </Card>
           <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
