@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { Slider } from '@/components/ui/slider';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
@@ -1344,6 +1345,85 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                     <SelectItem value="sold">Vendu</SelectItem>
                   </SelectContent>
                 </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="statut_commercial"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Statut commercial</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value || ''}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sélectionnez le statut commercial" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="pre_lancement">Pré-lancement</SelectItem>
+                    <SelectItem value="lancement_commercial">Lancement commercial</SelectItem>
+                    <SelectItem value="en_commercialisation">En commercialisation</SelectItem>
+                    <SelectItem value="dernieres_opportunites">Dernières opportunités</SelectItem>
+                    <SelectItem value="vendu">Vendu</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="statut_travaux"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Statut travaux</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value || ''}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sélectionnez le statut des travaux" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="preparation_chantier">Préparation chantier</SelectItem>
+                    <SelectItem value="travaux_en_cours">Travaux en cours</SelectItem>
+                    <SelectItem value="achevement">Achèvement</SelectItem>
+                    <SelectItem value="pret_a_emmenager">Prêt à emménager</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="avancement_travaux"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Avancement des travaux ({field.value || 0}%)</FormLabel>
+                <FormControl>
+                  <div className="px-3">
+                    <Slider
+                      min={0}
+                      max={100}
+                      step={5}
+                      value={[field.value || 0]}
+                      onValueChange={(value) => field.onChange(value[0])}
+                      className="w-full"
+                    />
+                    <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                      <span>0%</span>
+                      <span>25%</span>
+                      <span>50%</span>
+                      <span>75%</span>
+                      <span>100%</span>
+                    </div>
+                  </div>
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
