@@ -119,7 +119,7 @@ export const projectSchema = z.object({
   amenities: z.array(z.string()).optional(),
 
   // STATUS
-  status: z.enum(['available', 'under_construction', 'delivered', 'sold']).default('available'),
+  status: z.enum(['disponible', 'en_construction', 'livre', 'pret_a_emmenager']).default('disponible'),
   statut_commercial: z.enum(['pre_lancement', 'lancement_commercial', 'en_commercialisation', 'dernieres_opportunites', 'vendu']).optional(),
   statut_travaux: z.enum(['preparation_chantier', 'travaux_en_cours', 'achevement', 'termine']).optional(),
   avancement_travaux: z.number().min(0).max(100).default(0),
