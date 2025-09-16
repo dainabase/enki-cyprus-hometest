@@ -278,11 +278,11 @@ export const AdminProjectForm: React.FC = () => {
       features: Array.isArray(data.features) ? data.features : [],
       amenities: Array.isArray(data.amenities) ? data.amenities : [],
       property_sub_type: Array.isArray(data.property_sub_type) ? data.property_sub_type : ['apartment'],
-      // Fix date formats - convert incomplete dates to null
-      launch_date: data.launch_date && data.launch_date.length === 10 && /^\d{4}-\d{2}-\d{2}$/.test(data.launch_date) 
+      // Fix date formats - allow YYYY-MM format
+      launch_date: data.launch_date && data.launch_date.length >= 7 && /^\d{4}-\d{2}(-\d{2})?$/.test(data.launch_date) 
         ? data.launch_date 
         : null,
-      completion_date_new: data.completion_date_new && data.completion_date_new.length === 10 && /^\d{4}-\d{2}-\d{2}$/.test(data.completion_date_new) 
+      completion_date_new: data.completion_date_new && data.completion_date_new.length >= 7 && /^\d{4}-\d{2}(-\d{2})?$/.test(data.completion_date_new) 
         ? data.completion_date_new 
         : null,
       // Set proper status
@@ -493,9 +493,36 @@ export const AdminProjectForm: React.FC = () => {
                             <div className="space-y-2 max-h-60 overflow-y-auto">
                               {validationErrors.map((error, index) => (
                                 <div key={index} className="border border-red-200 bg-red-50 rounded-lg p-3">
-                                  <div className="flex items-center gap-2">
-                                    <Badge variant="destructive">❌ Erreur</Badge>
-                                    <span className="font-medium text-sm text-red-800">{error.label}</span>
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                      <Badge variant="destructive">❌ Erreur</Badge>
+                                      <span className="font-medium text-sm text-red-800">{error.label}</span>
+                                    </div>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="h-6 px-2 text-xs"
+                                      onClick={() => {
+                                        setShowConfirmDialog(false);
+                                        // Find which step contains this field
+                                        const stepIndex = projectFormSteps.findIndex(step => 
+                                          step.fields && step.fields.includes(error.field)
+                                        );
+                                        if (stepIndex !== -1 && stepIndex !== currentStepIndex) {
+                                          setCurrentStepIndex(stepIndex);
+                                        }
+                                        // Focus the field after a small delay
+                                        setTimeout(() => {
+                                          const field = document.querySelector(`[name="${error.field}"]`) as HTMLElement;
+                                          if (field) {
+                                            field.focus();
+                                            field.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                          }
+                                        }, 100);
+                                      }}
+                                    >
+                                      Aller au champ
+                                    </Button>
                                   </div>
                                   <p className="text-red-700 text-xs mt-1">{error.message}</p>
                                 </div>
@@ -506,7 +533,7 @@ export const AdminProjectForm: React.FC = () => {
                                 🚫 Impossible de publier le projet tant que ces erreurs ne sont pas corrigées.
                               </p>
                               <p className="text-red-700 text-xs mt-1">
-                                Retournez au formulaire et complétez les champs requis avant de republier.
+                                Cliquez sur "Aller au champ" pour naviguer directement vers les champs à corriger.
                               </p>
                             </div>
                           </div>
