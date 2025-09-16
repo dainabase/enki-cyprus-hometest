@@ -477,7 +477,7 @@ export default function AdminDevelopers() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="h-screen flex flex-col">
       {/* Modern Header */}
       <div className="bg-white border-b border-slate-200 shadow-sm">
         <div className="px-8 py-6">
@@ -503,23 +503,8 @@ export default function AdminDevelopers() {
         </div>
       </div>
 
-      {/* Controls Bar */}
-      <div className="bg-white/50 backdrop-blur-sm border-b border-slate-200/50">
-        <div className="px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="text-sm text-slate-600 font-medium">
-              Vue d'affichage
-            </div>
-            <DeveloperViewSelector
-              currentView={currentView}
-              onViewChange={changeView}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="px-8 py-8">
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto bg-gradient-to-br from-slate-50 to-slate-100 px-8 py-6">
         <div className="animate-fade-in">
           {currentView === 'cards' && (
             <DeveloperCardView

@@ -332,9 +332,9 @@ const AdminProjects = () => {
   }, [sortedProjects]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      {/* Modern Header */}
-      <div className="bg-white border-b border-slate-200 shadow-sm">
+    <div className="h-screen flex flex-col">
+      {/* Header Section - STICKY */}
+      <div className="sticky top-0 z-10 bg-white border-b border-slate-200 shadow-sm">
         <div className="px-8 py-6">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
@@ -392,7 +392,8 @@ const AdminProjects = () => {
         </div>
       </div>
 
-      <div className="px-8 py-6 space-y-6">
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto bg-gradient-to-br from-slate-50 to-slate-100 px-8 py-6 space-y-6">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
