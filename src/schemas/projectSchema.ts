@@ -116,6 +116,11 @@ export const projectSchema = z.object({
 
   // FEATURES & AMENITIES
   features: z.array(z.string()).default([]),
+  nearby_amenities: z.array(z.object({
+    nearby_amenity_id: z.string().min(1, "ID requis"),
+    distance_km: z.number().optional(),
+    details: z.string().optional()
+  })).default([]),
   amenities: z.array(z.string()).optional(),
 
   // STATUS

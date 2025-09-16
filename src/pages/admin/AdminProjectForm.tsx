@@ -50,6 +50,7 @@ const AdminProjectForm: React.FC = () => {
       neighborhood: '',
       cyprus_zone: 'limassol',
       photos: [],
+      nearby_amenities: [],
       features: [],
       amenities: [],
       status_project: 'disponible',

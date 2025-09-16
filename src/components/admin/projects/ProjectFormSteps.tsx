@@ -547,11 +547,20 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         </CardContent>
       </Card>
 
-      {/* Commodités de proximité */}
-      <NearbyAmenitiesSelector
-        projectId={projectId}
-        value={[]}
-        onChange={() => {}}
+      {/* Commodités de proximité - CONNECTÉ AU FORMULAIRE */}
+      <FormField
+        control={form.control}
+        name="nearby_amenities"
+        render={({ field }) => (
+          <FormItem>
+            <NearbyAmenitiesSelector
+              projectId={projectId}
+              value={field.value as any || []}
+              onChange={(amenities) => field.onChange(amenities)}
+            />
+            <FormMessage />
+          </FormItem>
+        )}
       />
     </div>
   );

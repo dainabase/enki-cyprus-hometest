@@ -34,7 +34,7 @@ interface ProjectNearbyAmenity {
 
 interface NearbyAmenitiesSelectorProps {
   projectId?: string;
-  value: ProjectNearbyAmenity[];
+  value: ProjectNearbyAmenity[] | undefined;
   onChange: (amenities: ProjectNearbyAmenity[]) => void;
 }
 
