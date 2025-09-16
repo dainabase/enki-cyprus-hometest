@@ -1310,7 +1310,11 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Statut du projet</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ''}>
+                <Select 
+                  onValueChange={field.onChange} 
+                  value={field.value || 'disponible'}
+                  key={`status_project_${field.value}`}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Sélectionnez un statut" />
@@ -1334,7 +1338,11 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Statut commercial</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ''}>
+                <Select 
+                  onValueChange={field.onChange} 
+                  value={field.value || 'prelancement'}
+                  key={`statut_commercial_${field.value}`}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Sélectionnez un statut commercial" />
