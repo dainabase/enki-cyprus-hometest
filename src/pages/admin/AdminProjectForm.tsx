@@ -617,11 +617,13 @@ const AdminProjectForm: React.FC = () => {
                     </p>
                   </div>
 
-                  <ProjectFormSteps
-                    form={form}
-                    currentStep={currentStep.id}
-                    projectId={id}
-                  />
+                  <Form {...form}>
+                    <ProjectFormSteps
+                      form={form}
+                      currentStep={currentStep.id}
+                      projectId={id}
+                    />
+                  </Form>
                 </CardContent>
               </Card>
             </div>
