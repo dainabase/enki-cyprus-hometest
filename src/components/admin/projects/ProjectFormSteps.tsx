@@ -19,6 +19,7 @@ import PropertySubTypeSelector from './PropertySubTypeSelector';
 import { ProjectFormData } from '@/schemas/projectSchema';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { StatusFieldsDebug } from './StatusFieldsDebug';
 
 interface ProjectFormStepsProps {
   form: UseFormReturn<ProjectFormData>;
@@ -1303,6 +1304,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           <CardTitle className="text-xl font-semibold text-foreground">Statut & Visibilité</CardTitle>
         </CardHeader>
         <CardContent className="p-6 space-y-6">
+          {/* Debug component pour voir les valeurs en temps réel */}
+          <StatusFieldsDebug form={form} />
           <FormField
             control={form.control}
             name="status"
@@ -1333,7 +1336,11 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Statut commercial</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ''}>
+                <Select 
+                  key={`statut_commercial_${field.value}_${projectId}`}
+                  onValueChange={field.onChange} 
+                  value={field.value || ''}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Sélectionnez le statut commercial" />
@@ -1358,7 +1365,11 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Statut travaux</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ''}>
+                <Select 
+                  key={`statut_travaux_${field.value}_${projectId}`}
+                  onValueChange={field.onChange} 
+                  value={field.value || ''}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Sélectionnez le statut des travaux" />
