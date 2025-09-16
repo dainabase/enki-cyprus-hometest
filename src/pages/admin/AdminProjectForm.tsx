@@ -136,35 +136,13 @@ const AdminProjectForm: React.FC = () => {
         proximity_highway_km: projectData.proximity_highway_km || null
       };
       
-      // Maintenant charger les drafts et override les champs de statut si ils existent
+      // Les données Supabase sont prioritaires, on ne charge PAS les drafts pour les statuts
       const loadDraftsAndApply = async () => {
-        const userId = (await supabase.auth.getUser()).data.user?.id;
-        if (userId) {
-          const { data: draft } = await supabase
-            .from('project_drafts')
-            .select('form_data')
-            .eq('user_id', userId)
-            .eq('project_id', id)
-            .order('updated_at', { ascending: false })
-            .limit(1)
-            .maybeSingle();
-          
-          if (draft?.form_data && typeof draft.form_data === 'object') {
-            const savedData = draft.form_data as any;
-            console.log('📥 PERSISTANCE: Loading draft status data:', {
-              status_project: savedData.status_project,
-              statut_commercial: savedData.statut_commercial
-            });
-            
-            // Override avec les données des drafts si elles existent
-            if (savedData.status_project) {
-              formData.status_project = savedData.status_project;
-            }
-            if (savedData.statut_commercial) {
-              formData.statut_commercial = savedData.statut_commercial;
-            }
-          }
-        }
+        console.log('📊 DONNÉES SUPABASE CHARGÉES:', { 
+          status_project: formData.status_project,
+          statut_commercial: formData.statut_commercial
+        });
+        // On garde les données Supabase comme source de vérité
         
         console.log('📝 Final form data with drafts applied:', { 
           status_project: formData.status_project,
