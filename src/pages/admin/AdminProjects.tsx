@@ -11,7 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import ProjectsTable from '@/components/admin/projects/ProjectsTable';
 import ProjectForm from '@/components/admin/projects/ProjectForm';
-import ProjectFilters from '@/components/admin/projects/ProjectFilters';
+import CombinedFiltersAndSort from '@/components/admin/projects/CombinedFiltersAndSort';
 import { ProjectViewSelector, ProjectViewType } from '@/components/admin/projects/ProjectViewSelector';
 import { ProjectSorter, ProjectSortField, SortDirection } from '@/components/admin/projects/ProjectSorter';
 import { ProjectCardView } from '@/components/admin/projects/ProjectCardView';
@@ -50,9 +50,9 @@ const AdminProjects = () => {
     pageSize: 25,
   });
   const [filters, setFilters] = useState<FilterState>({
-    developerId: '',
-    zone: '',
-    status: '',
+    developerId: 'all',
+    zone: 'all',
+    status: 'all',
     goldenVisaOnly: false
   });
 
@@ -91,13 +91,13 @@ const AdminProjects = () => {
       }
 
       // Apply filters
-      if (filters.developerId) {
+      if (filters.developerId && filters.developerId !== 'all') {
         query = query.eq('developer_id', filters.developerId);
       }
-      if (filters.zone) {
+      if (filters.zone && filters.zone !== 'all') {
         query = query.eq('cyprus_zone', filters.zone);
       }
-      if (filters.status) {
+      if (filters.status && filters.status !== 'all') {
         query = query.eq('status', filters.status);
       }
       if (filters.goldenVisaOnly) {
@@ -353,25 +353,19 @@ const AdminProjects = () => {
               </Button>
             </div>
             <div className="flex items-center gap-3">
+              <ProjectViewSelector
+                currentView={currentView}
+                onViewChange={setCurrentView}
+              />
+              
               <Button
                 variant="outline"
                 onClick={() => setShowFilters(!showFilters)}
                 className="gap-2 border-slate-200 hover:bg-slate-50"
               >
                 <Filter className="w-4 h-4" />
-                Filtres
+                Filtres & Tri
               </Button>
-              
-              <ProjectViewSelector
-                currentView={currentView}
-                onViewChange={setCurrentView}
-              />
-              
-              <ProjectSorter
-                sortField={sortField}
-                sortDirection={sortDirection}
-                onSortChange={handleSortChange}
-              />
               
               <Button 
                 onClick={() => navigate('/admin/projects/new')} 
@@ -424,17 +418,20 @@ const AdminProjects = () => {
           </Card>
         </div>
 
-        {/* Filters */}
+        {/* Combined Filters and Sort */}
         {showFilters && (
           <Card className="bg-white/80 backdrop-blur-sm border border-slate-200">
             <CardHeader>
-              <CardTitle className="text-slate-900">Filtres</CardTitle>
+              <CardTitle className="text-slate-900">Filtres et Tri</CardTitle>
             </CardHeader>
             <CardContent>
-              <ProjectFilters
+              <CombinedFiltersAndSort
                 filters={filters}
                 onFiltersChange={setFilters}
                 developers={developers || []}
+                sortField={sortField}
+                sortDirection={sortDirection}
+                onSortChange={handleSortChange}
               />
             </CardContent>
           </Card>

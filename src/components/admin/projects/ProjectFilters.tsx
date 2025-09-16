@@ -27,15 +27,15 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({ filters, onFiltersChang
 
   const clearFilters = () => {
     onFiltersChange({
-      developerId: '',
-      zone: '',
-      status: '',
+      developerId: 'all',
+      zone: 'all',
+      status: 'all',
       goldenVisaOnly: false
     });
   };
 
   const hasActiveFilters = Object.values(filters).some(value => 
-    typeof value === 'boolean' ? value : value !== ''
+    typeof value === 'boolean' ? value : (value !== '' && value !== 'all')
   );
 
   return (
@@ -62,7 +62,7 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({ filters, onFiltersChang
               <SelectValue placeholder={t('admin.filters.allDevelopers')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">{t('admin.filters.allDevelopers')}</SelectItem>
+              <SelectItem value="all">{t('admin.filters.allDevelopers')}</SelectItem>
               {developers.map((developer) => (
                 <SelectItem key={developer.id} value={developer.id}>
                   {developer.name}
@@ -83,7 +83,7 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({ filters, onFiltersChang
               <SelectValue placeholder={t('admin.filters.allZones')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">{t('admin.filters.allZones')}</SelectItem>
+              <SelectItem value="all">{t('admin.filters.allZones')}</SelectItem>
               <SelectItem value="limassol">{t('zones.limassol')}</SelectItem>
               <SelectItem value="paphos">{t('zones.paphos')}</SelectItem>
               <SelectItem value="larnaca">{t('zones.larnaca')}</SelectItem>
@@ -104,7 +104,7 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({ filters, onFiltersChang
               <SelectValue placeholder={t('admin.filters.allStatuses')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">{t('admin.filters.allStatuses')}</SelectItem>
+              <SelectItem value="all">{t('admin.filters.allStatuses')}</SelectItem>
               <SelectItem value="planning">{t('status.planning')}</SelectItem>
               <SelectItem value="under_construction">{t('status.under_construction')}</SelectItem>
               <SelectItem value="delivered">{t('status.delivered')}</SelectItem>
