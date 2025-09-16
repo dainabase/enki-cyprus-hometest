@@ -387,6 +387,19 @@ const AdminProjectForm: React.FC = () => {
       proximity_airport_km: data.proximity_airport_km && typeof data.proximity_airport_km === 'number' ? data.proximity_airport_km : null,
       proximity_city_center_km: data.proximity_city_center_km && typeof data.proximity_city_center_km === 'number' ? data.proximity_city_center_km : null,
       proximity_highway_km: data.proximity_highway_km && typeof data.proximity_highway_km === 'number' ? data.proximity_highway_km : null,
+      // CRITICAL: Validate energy_rating
+      energy_rating: (() => {
+        console.log('🔍 DEBUGGING energy_rating:', { 
+          value: data.energy_rating, 
+          type: typeof data.energy_rating 
+        });
+        const validRatings = ['A+', 'A', 'B', 'C', 'D', 'E', 'F', 'G'];
+        if (data.energy_rating && validRatings.includes(data.energy_rating)) {
+          return data.energy_rating;
+        }
+        console.log('❌ Invalid energy_rating, setting to null:', data.energy_rating);
+        return null;
+      })(),
       // Ensure arrays are properly formatted - FORCE ARRAYS FOR ALL MEDIA FIELDS
       photos: Array.isArray(data.photos) ? data.photos : [],
       features: Array.isArray(data.features) ? data.features : [],
