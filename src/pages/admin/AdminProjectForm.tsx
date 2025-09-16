@@ -273,17 +273,28 @@ export const AdminProjectForm: React.FC = () => {
       financing_available: Boolean(data.financing_available),
       featured_new: Boolean(data.featured_new),
       exclusive_commercialization: Boolean(data.exclusive_commercialization),
+      // Clean numeric fields - convert undefined objects to null
+      gps_latitude: data.gps_latitude && typeof data.gps_latitude === 'number' ? data.gps_latitude : null,
+      gps_longitude: data.gps_longitude && typeof data.gps_longitude === 'number' ? data.gps_longitude : null,
+      proximity_sea_km: data.proximity_sea_km && typeof data.proximity_sea_km === 'number' ? data.proximity_sea_km : null,
+      proximity_airport_km: data.proximity_airport_km && typeof data.proximity_airport_km === 'number' ? data.proximity_airport_km : null,
+      proximity_city_center_km: data.proximity_city_center_km && typeof data.proximity_city_center_km === 'number' ? data.proximity_city_center_km : null,
+      proximity_highway_km: data.proximity_highway_km && typeof data.proximity_highway_km === 'number' ? data.proximity_highway_km : null,
       // Ensure arrays are properly formatted
       photos: Array.isArray(data.photos) ? data.photos : [],
       features: Array.isArray(data.features) ? data.features : [],
       amenities: Array.isArray(data.amenities) ? data.amenities : [],
       property_sub_type: Array.isArray(data.property_sub_type) ? data.property_sub_type : ['apartment'],
-      // Fix date formats - allow YYYY-MM format
-      launch_date: data.launch_date && data.launch_date.length >= 7 && /^\d{4}-\d{2}(-\d{2})?$/.test(data.launch_date) 
-        ? data.launch_date 
+      // Fix date formats - convert YYYY-MM to YYYY-MM-01 for database
+      launch_date: data.launch_date && /^\d{4}-\d{2}$/.test(data.launch_date) 
+        ? `${data.launch_date}-01`
+        : data.launch_date && /^\d{4}-\d{2}-\d{2}$/.test(data.launch_date)
+        ? data.launch_date
         : null,
-      completion_date_new: data.completion_date_new && data.completion_date_new.length >= 7 && /^\d{4}-\d{2}(-\d{2})?$/.test(data.completion_date_new) 
-        ? data.completion_date_new 
+      completion_date_new: data.completion_date_new && /^\d{4}-\d{2}$/.test(data.completion_date_new) 
+        ? `${data.completion_date_new}-01`
+        : data.completion_date_new && /^\d{4}-\d{2}-\d{2}$/.test(data.completion_date_new)
+        ? data.completion_date_new
         : null,
       // Set proper status
       status: saveType === 'publish' ? 'available' : 'draft'
