@@ -128,7 +128,7 @@ export const AdminProjectForm: React.FC = () => {
         photos: Array.isArray(projectData.photos) ? projectData.photos : [],
         features: Array.isArray(projectData.features) ? projectData.features : [],
         amenities: Array.isArray(projectData.amenities) ? projectData.amenities : [],
-        status: projectData.status || 'available',
+        status: projectData.status || '',
         statut_commercial: projectData.statut_commercial || '',
         statut_travaux: projectData.statut_travaux || '',
         avancement_travaux: Number(projectData.avancement_travaux) || 0,
