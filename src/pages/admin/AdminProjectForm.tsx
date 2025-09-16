@@ -117,7 +117,10 @@ const AdminProjectForm: React.FC = () => {
         region: projectData.region || '',
         neighborhood: projectData.neighborhood || '',
         cyprus_zone: projectData.cyprus_zone || 'limassol',
-        photos: Array.isArray(projectData.photos) ? projectData.photos : [],
+        // Photos - priorité à categorized_photos, sinon photos classiques
+        photos: Array.isArray(projectData.categorized_photos) && projectData.categorized_photos.length > 0
+          ? projectData.categorized_photos
+          : Array.isArray(projectData.photos) ? projectData.photos : [],
         amenities: Array.isArray(projectData.amenities) ? projectData.amenities : [],
         vat_rate_new: Number(projectData.vat_rate_new) || 5,
         vat_included: Boolean(projectData.vat_included),
