@@ -98,8 +98,8 @@ export const AdminProjectForm: React.FC = () => {
           ? projectData.property_sub_type 
           : ['apartment'],
         project_phase: projectData.project_phase || 'off-plan',
-        launch_date: projectData.launch_date || '',
-        completion_date_new: projectData.completion_date_new || '',
+        launch_date: projectData.launch_date ? projectData.launch_date.substring(0, 7) : '',
+        completion_date_new: projectData.completion_date_new ? projectData.completion_date_new.substring(0, 7) : '',
         exclusive_commercialization: Boolean(projectData.exclusive_commercialization),
         description: projectData.description || '',
         detailed_description: projectData.detailed_description || '',
