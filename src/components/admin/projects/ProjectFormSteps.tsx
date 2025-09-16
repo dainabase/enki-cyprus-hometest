@@ -1326,7 +1326,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                     <SelectItem value="disponible">Disponible</SelectItem>
                     <SelectItem value="en_construction">En construction</SelectItem>
                     <SelectItem value="livre">Livré</SelectItem>
-                    <SelectItem value="termine">Terminé</SelectItem>
+                    <SelectItem value="pret_a_emmenager">Prêt à emménager</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
