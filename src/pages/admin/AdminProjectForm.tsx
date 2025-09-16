@@ -527,26 +527,30 @@ const AdminProjectForm: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Header - STICKY */}
-      <div className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
-        <div className="px-6 py-4">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="outline"
-              onClick={() => navigate('/admin/projects')}
-              className="flex items-center gap-2"
-            >
-              <ChevronLeft className="h-4 w-4" />
-              Retour aux projets
-            </Button>
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900">
-                {isEditing ? 'Modifier le Projet' : 'Nouveau Projet'}
-              </h1>
-              <p className="text-slate-600">
-                {isEditing ? 'Modifiez les informations de votre projet' : 'Créez un nouveau projet immobilier'}
-              </p>
+    <div className="h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col">
+      {/* Modern Header - STICKY - Même taille que les autres pages admin */}
+      <div className="sticky top-0 z-10 bg-white border-b border-slate-200 shadow-sm">
+        <div className="px-8 py-8">
+          <div className="flex items-start justify-between">
+            <div className="space-y-1">
+              <div className="flex items-center gap-4">
+                <Button
+                  variant="outline"
+                  onClick={() => navigate('/admin/projects')}
+                  className="flex items-center gap-2"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  Retour aux projets
+                </Button>
+                <div>
+                  <h1 className="text-3xl font-bold text-slate-900">
+                    {isEditing ? 'Modifier le Projet' : 'Nouveau Projet'}
+                  </h1>
+                  <p className="text-slate-600">
+                    {isEditing ? 'Modifiez les informations de votre projet' : 'Créez un nouveau projet immobilier'}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -555,7 +559,7 @@ const AdminProjectForm: React.FC = () => {
       {/* Main Content Area */}
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar Navigation des Étapes - STICKY */}
-        <div className="w-80 bg-white border-r border-slate-200 shadow-sm flex-shrink-0 h-full overflow-y-auto">
+        <div className="w-80 bg-white border-r border-slate-200 shadow-sm flex-shrink-0 sticky top-32 h-[calc(100vh-8rem)] overflow-y-auto">
           <div className="p-6">
             <h2 className="text-lg font-semibold text-slate-900 mb-4">Étapes du Projet</h2>
             <nav className="space-y-2">
@@ -673,12 +677,22 @@ const AdminProjectForm: React.FC = () => {
                     </form>
                   </Form>
 
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </div>
+                  {/* Confirmation Dialog */}
+                  <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+                    <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                          {validationErrors.length > 0 ? (
+                            <>
+                              <AlertTriangle className="h-5 w-5 text-red-600" />
+                              Erreurs détectées
+                            </>
+                          ) : (
+                            <>
+                              <Eye className="h-5 w-5 text-green-600" />
+                              {saveType === 'publish' ? 'Publier le projet' : 'Sauvegarder le projet'}
+                            </>
+                          )}
                         </DialogTitle>
                         <DialogDescription>
                           {validationErrors.length > 0 
@@ -778,116 +792,15 @@ const AdminProjectForm: React.FC = () => {
                             {saveProjectMutation.isPending ? 'En cours...' : (saveType === 'publish' ? 'Publier' : 'Sauvegarder')}
                           </Button>
                         )}
-                      </div>
-                    </form>
-                  </Form>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
                 </CardContent>
               </Card>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Confirmation Dialog */}
-      <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              {validationErrors.length > 0 ? (
-                <>
-                  <AlertTriangle className="h-5 w-5 text-red-500" />
-                  Erreurs de validation détectées
-                </>
-              ) : (
-                <>
-                  <Save className="h-5 w-5 text-emerald-500" />
-                  Confirmer la {saveType === 'publish' ? 'publication' : 'sauvegarde'}
-                </>
-              )}
-            </DialogTitle>
-            <DialogDescription>
-              {validationErrors.length > 0
-                ? `${validationErrors.length} erreur(s) empêche(nt) la publication du projet. Veuillez les corriger avant de continuer.`
-                : saveType === 'publish'
-                ? 'Le projet sera publié et visible par les clients.'
-                : 'Le projet sera sauvegardé en tant que brouillon.'
-              }
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-4">
-            {validationErrors.length > 0 && (
-              <div className="space-y-3">
-                <div className="space-y-2 max-h-60 overflow-y-auto">
-                  {validationErrors.map((error, index) => (
-                    <div key={index} className="bg-red-50 border border-red-200 rounded-lg p-3">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <p className="font-medium text-red-800">{error.label}</p>
-                        </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            const fieldElement = document.querySelector(`[name="${error.field}"]`) as HTMLElement;
-                            if (fieldElement) {
-                              fieldElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                              fieldElement.focus();
-                            }
-                            setShowConfirmDialog(false);
-                          }}
-                          className="text-xs h-7 px-2"
-                        >
-                          Aller au champ
-                        </Button>
-                      </div>
-                      <p className="text-red-700 text-xs mt-1">{error.message}</p>
-                    </div>
-                  ))}
-                </div>
-                <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                  <p className="text-red-800 text-sm font-medium">
-                    🚫 Impossible de publier le projet tant que ces erreurs ne sont pas corrigées.
-                  </p>
-                  <p className="text-red-700 text-xs mt-1">
-                    Cliquez sur "Aller au champ" pour naviguer directement vers les champs à corriger.
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {validationErrors.length === 0 && saveType === 'publish' && (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                <p className="text-green-800 font-medium">✅ Aucune erreur détectée</p>
-                <p className="text-green-700 text-sm">Le projet est prêt à être publié.</p>
-              </div>
-            )}
-          </div>
-
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setShowConfirmDialog(false)}
-              disabled={saveProjectMutation.isPending}
-            >
-              {validationErrors.length > 0 ? 'Retour au formulaire' : 'Annuler'}
-            </Button>
-            {validationErrors.length === 0 && (
-              <Button
-                onClick={() => {
-                  const formData = form.getValues();
-                  onSubmit(formData);
-                  setShowConfirmDialog(false);
-                }}
-                disabled={saveProjectMutation.isPending}
-                variant="default"
-              >
-                {saveProjectMutation.isPending ? 'En cours...' : (saveType === 'publish' ? 'Publier' : 'Sauvegarder')}
-              </Button>
-            )}
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
