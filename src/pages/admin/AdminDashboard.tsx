@@ -28,16 +28,16 @@ import { Card } from '@/components/dainabase-ui';
 import { AlertCircle } from 'lucide-react';
 
 const AdminHeader = () => (
-  <div className="h-32 px-6 flex items-center justify-between bg-card border-b border-border">
+  <div className="h-32 px-6 flex items-center justify-between bg-white border-b border-slate-200">
     <div className="flex items-center gap-4">
-      <a href="/" className="text-2xl font-bold text-primary hover:text-primary-hover transition-colors uppercase">
+      <a href="/" className="text-2xl font-bold text-slate-900 hover:text-slate-700 transition-colors uppercase">
         ENKI-REALTY
       </a>
-      <span className="text-muted-foreground">|</span>
-      <span className="text-lg text-muted-foreground">Admin Dashboard</span>
+      <span className="text-slate-400">|</span>
+      <span className="text-lg text-slate-500">Admin Dashboard</span>
     </div>
     <div className="flex items-center gap-4">
-      <a href="/" className="text-base text-muted-foreground hover:text-primary transition-colors">
+      <a href="/" className="text-base text-slate-600 hover:text-slate-900 transition-colors">
         Retour au site
       </a>
     </div>
@@ -49,12 +49,12 @@ const AdminDashboard = () => {
 
   if (profile?.role !== 'admin') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-slate-100">
         <Card variant="executive" padding="lg" className="max-w-md mx-auto">
           <div className="text-center">
-            <AlertCircle className="w-16 h-16 text-destructive mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-primary mb-2">Accès Restreint</h2>
-            <p className="text-muted-foreground">
+            <AlertCircle className="w-16 h-16 text-red-600 mx-auto mb-4" />
+            <h2 className="text-xl font-semibold text-slate-900 mb-2">Accès Restreint</h2>
+            <p className="text-slate-600">
               Seuls les administrateurs peuvent accéder à cette section.
             </p>
           </div>

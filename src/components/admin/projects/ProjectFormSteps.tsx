@@ -52,29 +52,33 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         </CardHeader>
         <CardContent className="p-8 space-y-8"> {/* Augmenté le padding et l'espacement */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8"> {/* Augmenté l'espacement */}
-            <div>
-              <Label className="text-sm font-semibold text-slate-700">Nom du projet *</Label>
-              <Input 
-                placeholder="Ex: Marina Towers" 
-                {...form.register("title")} 
-                className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm" 
-              />
-              {form.formState.errors.title && (
-                <p className="text-sm text-red-500 mt-1">{form.formState.errors.title.message}</p>
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-semibold text-slate-700">Nom du projet *</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Ex: Marina Towers" {...field} className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-            </div>
+            />
 
-            <div>
-              <Label className="text-sm font-semibold text-slate-700">Code du projet</Label>
-              <Input 
-                placeholder="Ex: MT-2025-001" 
-                {...form.register("project_code")} 
-                className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm" 
-              />
-              {form.formState.errors.project_code && (
-                <p className="text-sm text-red-500 mt-1">{form.formState.errors.project_code.message}</p>
+            <FormField
+              control={form.control}
+              name="project_code"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-semibold text-slate-700">Code du projet</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Ex: MT-2025-001" {...field} className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-            </div>
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

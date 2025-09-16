@@ -339,7 +339,7 @@ const AdminProjects = () => {
           <div className="flex items-start justify-between">
             <div className="space-y-3">
               <div>
-                <h1 className="text-3xl font-bold text-primary">Projets</h1>
+                <h1 className="text-3xl font-bold text-slate-900">Projets</h1>
                 <p className="text-slate-600">Gérez votre portfolio de projets immobiliers</p>
               </div>
               <Button 
@@ -369,7 +369,7 @@ const AdminProjects = () => {
               
               <Button 
                 onClick={() => navigate('/admin/projects/new')} 
-                className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-white shadow-lg hover:shadow-xl transition-all duration-200 gap-2"
+                className="bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 gap-2"
                 size="lg"
               >
                 <Plus className="w-5 h-5" />
@@ -389,7 +389,7 @@ const AdminProjects = () => {
               <CardTitle className="text-sm font-medium text-slate-600">Total Projets</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-primary">{stats.total}</div>
+              <div className="text-2xl font-bold text-slate-900">{stats.total}</div>
             </CardContent>
           </Card>
           <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
@@ -422,7 +422,7 @@ const AdminProjects = () => {
         {showFilters && (
           <Card className="bg-white/80 backdrop-blur-sm border border-slate-200">
             <CardHeader>
-              <CardTitle className="text-primary">Filtres et Tri</CardTitle>
+              <CardTitle className="text-slate-900">Filtres et Tri</CardTitle>
             </CardHeader>
             <CardContent>
               <CombinedFiltersAndSort
