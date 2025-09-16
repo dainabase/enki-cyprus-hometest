@@ -437,8 +437,9 @@ const AdminProjectForm: React.FC = () => {
         console.log('❌ Invalid energy_rating, setting to null:', data.energy_rating);
         return null;
       })(),
-      // Ensure arrays are properly formatted - FORCE ARRAYS FOR ALL MEDIA FIELDS
+      // Ensure arrays are properly formatted - Gérer les photos avec le nouveau format categorized_photos
       photos: Array.isArray(data.photos) ? data.photos : [],
+      categorized_photos: Array.isArray(data.photos) ? data.photos : [], // Sauvegarder dans les deux formats
       features: Array.isArray(data.features) ? data.features : [],
       amenities: Array.isArray(data.amenities) ? data.amenities : [],
       property_sub_type: Array.isArray(data.property_sub_type) ? data.property_sub_type : ['apartment'],
