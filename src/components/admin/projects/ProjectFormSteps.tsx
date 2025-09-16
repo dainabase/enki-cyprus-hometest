@@ -1370,7 +1370,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 <FormMessage />
               </FormItem>
               );
-            }
+            }}
           />
 
           <FormField
@@ -1404,7 +1404,41 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 <FormMessage />
                </FormItem>
               );
-            }
+            }}
+          />
+
+          <FormField
+            control={form.control}
+            name="statut_travaux"
+            render={({ field }) => {
+              console.log('🔍 Statut travaux field render - value:', field.value, 'type:', typeof field.value);
+              return (
+              <FormItem>
+                <FormLabel>Statut travaux</FormLabel>
+                <Select 
+                  key={`statut-travaux-${field.value || 'empty'}-${projectId}`}
+                  onValueChange={(value) => {
+                    console.log('🔄 Statut travaux onChange:', value);
+                    field.onChange(value);
+                  }} 
+                  value={field.value || ''}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sélectionnez le statut des travaux" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="preparation_chantier">Préparation chantier</SelectItem>
+                    <SelectItem value="travaux_en_cours">Travaux en cours</SelectItem>
+                    <SelectItem value="achevement">Achèvement</SelectItem>
+                    <SelectItem value="termine">Terminé</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+               </FormItem>
+              );
+            }}
           />
 
           <FormField
