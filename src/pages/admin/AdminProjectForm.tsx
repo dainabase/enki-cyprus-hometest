@@ -344,9 +344,9 @@ const AdminProjectForm: React.FC = () => {
       financing_available: Boolean(data.financing_available),
       featured_new: Boolean(data.featured_new),
       exclusive_commercialization: Boolean(data.exclusive_commercialization),
-      // New status fields
-      statut_commercial: data.statut_commercial || '',
-      statut_travaux: data.statut_travaux || '',
+      // Status fields - ensure they are included in the submission
+      statut_commercial: data.statut_commercial || null,
+      statut_travaux: data.statut_travaux || null,
       avancement_travaux: Number(data.avancement_travaux) || 0,
       // Clean numeric fields - convert undefined objects to null
       gps_latitude: data.gps_latitude && typeof data.gps_latitude === 'number' ? data.gps_latitude : null,
