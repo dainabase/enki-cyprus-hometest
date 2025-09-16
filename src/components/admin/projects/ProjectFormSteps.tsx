@@ -688,33 +688,33 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         </CardHeader>
         <CardContent className="p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <FormField
-              control={form.control}
-              name="energy_rating"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Classe énergétique</FormLabel>
-                  <FormControl>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Sélectionner" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="A+">A+</SelectItem>
-                        <SelectItem value="A">A</SelectItem>
-                        <SelectItem value="B">B</SelectItem>
-                        <SelectItem value="C">C</SelectItem>
-                        <SelectItem value="D">D</SelectItem>
-                        <SelectItem value="E">E</SelectItem>
-                        <SelectItem value="F">F</SelectItem>
-                        <SelectItem value="G">G</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="energy_rating"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Classe énergétique</FormLabel>
+                    <FormControl>
+                      <Select onValueChange={field.onChange} value={field.value || ''}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Sélectionner" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="A+">A+</SelectItem>
+                          <SelectItem value="A">A</SelectItem>
+                          <SelectItem value="B">B</SelectItem>
+                          <SelectItem value="C">C</SelectItem>
+                          <SelectItem value="D">D</SelectItem>
+                          <SelectItem value="E">E</SelectItem>
+                          <SelectItem value="F">F</SelectItem>
+                          <SelectItem value="G">G</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
             <FormField
               control={form.control}
@@ -832,28 +832,28 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="pet_policy"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Politique animaux</FormLabel>
-                  <FormControl>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Sélectionner" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="allowed">Autorisés</SelectItem>
-                        <SelectItem value="restricted">Restrictions</SelectItem>
-                        <SelectItem value="forbidden">Interdits</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="pet_policy"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Politique animaux</FormLabel>
+                    <FormControl>
+                      <Select onValueChange={field.onChange} value={field.value || ''}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Sélectionner" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="allowed">Autorisés</SelectItem>
+                          <SelectItem value="restricted">Restrictions</SelectItem>
+                          <SelectItem value="forbidden">Interdits</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
           </div>
         </CardContent>
       </Card>
@@ -1230,13 +1230,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
       </CardHeader>
       <CardContent className="p-6">
         <AmenitiesSelector
-          selectedAmenities={(() => {
-            const watchedAmenities = form.watch('amenities') || [];
-            console.log('📋 ProjectFormSteps - watchedAmenities:', watchedAmenities);
-            return watchedAmenities;
-          })()}
+          selectedAmenities={form.watch('amenities') || []}
           onChange={(amenities) => {
-            console.log('📋 ProjectFormSteps - onChange amenities:', amenities);
             form.setValue('amenities', amenities);
           }}
         />
@@ -1319,8 +1314,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 <FormLabel>Statut du projet</FormLabel>
                 <Select 
                   onValueChange={field.onChange} 
-                  value={field.value}
-                  key={`status_project_${field.value}`}
+                  value={field.value || 'disponible'}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -1347,8 +1341,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 <FormLabel>Statut commercial</FormLabel>
                 <Select 
                   onValueChange={field.onChange} 
-                  value={field.value}
-                  key={`statut_commercial_${field.value}`}
+                  value={field.value || 'prelancement'}
                 >
                   <FormControl>
                     <SelectTrigger>

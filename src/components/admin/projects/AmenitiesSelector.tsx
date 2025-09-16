@@ -18,9 +18,6 @@ export const AmenitiesSelector: React.FC<AmenitiesSelectorProps> = ({
   selectedAmenities,
   onChange
 }) => {
-  console.log('🏢 AmenitiesSelector - selectedAmenities reçues:', selectedAmenities);
-  console.log('🏢 AmenitiesSelector - length:', selectedAmenities.length);
-  console.log('🏢 AmenitiesSelector - sample:', selectedAmenities.slice(0, 5));
   const [searchTerm, setSearchTerm] = useState('');
 
   const { data: amenities, isLoading } = useQuery({
@@ -139,18 +136,7 @@ export const AmenitiesSelector: React.FC<AmenitiesSelectorProps> = ({
                     }`}
                   >
                     <Checkbox
-                      checked={(() => {
-                        const isChecked = selectedAmenities.includes(amenity.id);
-                        if (!isChecked && selectedAmenities.length > 0) {
-                          // Debug: pourquoi cette amenity n'est pas cochée
-                          console.log(`🔍 Checkbox NOT checked for ${amenity.name}:`, {
-                            amenity_id: amenity.id,
-                            selectedAmenities_sample: selectedAmenities.slice(0, 3),
-                            includes_test: selectedAmenities.includes(amenity.id)
-                          });
-                        }
-                        return isChecked;
-                      })()}
+                      checked={selectedAmenities.includes(amenity.id)}
                       onCheckedChange={() => toggleAmenity(amenity.id)}
                     />
                     <div className="flex items-center gap-2 flex-1 min-w-0">

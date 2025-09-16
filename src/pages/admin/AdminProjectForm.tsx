@@ -117,12 +117,7 @@ const AdminProjectForm: React.FC = () => {
         neighborhood: projectData.neighborhood || '',
         cyprus_zone: projectData.cyprus_zone || 'limassol',
         photos: Array.isArray(projectData.photos) ? projectData.photos : [],
-        amenities: (() => {
-          const amenitiesData = Array.isArray(projectData.amenities) ? projectData.amenities : [];
-          console.log('🔍 LOADING amenities from Supabase:', amenitiesData);
-          console.log('🔍 AMENITIES count:', amenitiesData.length);
-          return amenitiesData;
-        })(),
+        amenities: Array.isArray(projectData.amenities) ? projectData.amenities : [],
         vat_rate_new: Number(projectData.vat_rate_new) || 5,
         vat_included: Boolean(projectData.vat_included),
         golden_visa_eligible_new: Boolean(projectData.golden_visa_eligible_new || projectData.golden_visa_eligible),
@@ -192,12 +187,7 @@ const AdminProjectForm: React.FC = () => {
         });
       
       if (!error) {
-        console.log('💾 PERSISTANCE: Draft saved with amenities count:', {
-          status_project: watchedFormData.status_project,
-          statut_commercial: watchedFormData.statut_commercial,
-          amenities_count: watchedFormData.amenities?.length || 0,
-          amenities_sample: watchedFormData.amenities?.slice(0, 3) || []
-        });
+        // Console log simplifié
       }
     };
 
