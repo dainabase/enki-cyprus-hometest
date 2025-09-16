@@ -152,12 +152,14 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
   };
 
   const removePhoto = (index: number) => {
-    const newPhotos = field.value.filter((_, i) => i !== index);
+    const currentPhotos = Array.isArray(field.value) ? field.value : [];
+    const newPhotos = currentPhotos.filter((_, i) => i !== index);
     field.onChange(newPhotos);
   };
 
   const setPrimary = (index: number) => {
-    const newPhotos = field.value.map((photo, i) => ({
+    const currentPhotos = Array.isArray(field.value) ? field.value : [];
+    const newPhotos = currentPhotos.map((photo, i) => ({
       ...photo,
       isPrimary: i === index && photo.category === 'hero'
     }));
@@ -165,14 +167,16 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
   };
 
   const updateCaption = (index: number, caption: string) => {
-    const newPhotos = field.value.map((photo, i) => 
+    const currentPhotos = Array.isArray(field.value) ? field.value : [];
+    const newPhotos = currentPhotos.map((photo, i) => 
       i === index ? { ...photo, caption } : photo
     );
     field.onChange(newPhotos);
   };
 
   const getPhotosByCategory = (category: string) => {
-    return field.value.filter(photo => photo.category === category);
+    const currentPhotos = Array.isArray(field.value) ? field.value : [];
+    return currentPhotos.filter(photo => photo.category === category);
   };
 
   const renderUploadZone = (category: string) => {
@@ -274,7 +278,8 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {photos.map((photo, photoIndex) => {
-                  const globalIndex = field.value.findIndex(p => p.url === photo.url);
+                  const currentPhotos = Array.isArray(field.value) ? field.value : [];
+                  const globalIndex = currentPhotos.findIndex(p => p.url === photo.url);
                   return (
                     <Card key={photo.url} className="overflow-hidden group hover:shadow-md transition-all duration-200">
                       <div className="relative aspect-video">
@@ -437,7 +442,7 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
       )}
 
       {/* All Photos Display */}
-      {field.value.length > 0 && (
+      {Array.isArray(field.value) && field.value.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -463,7 +468,8 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
                       {photos.map((photo, photoIndex) => {
-                        const globalIndex = field.value.findIndex(p => p.url === photo.url);
+                        const currentPhotos = Array.isArray(field.value) ? field.value : [];
+                        const globalIndex = currentPhotos.findIndex(p => p.url === photo.url);
                         return (
                           <Card key={photo.url} className="overflow-hidden group hover:shadow-md transition-all duration-200">
                             <div className="relative aspect-square">
