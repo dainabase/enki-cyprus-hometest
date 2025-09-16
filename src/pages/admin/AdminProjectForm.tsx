@@ -561,7 +561,7 @@ const AdminProjectForm: React.FC = () => {
       {/* Main Content Area */}
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar Navigation des Étapes - STICKY */}
-        <div className="w-80 bg-white border-r border-slate-200 shadow-sm flex-shrink-0 sticky top-32 h-[calc(100vh-8rem)] overflow-y-auto">
+        <div className="w-80 bg-white border-r border-slate-200 shadow-sm flex-shrink-0 h-full overflow-y-auto">
           <div className="p-6">
             <h2 className="text-lg font-semibold text-slate-900 mb-4">Étapes du Projet</h2>
             <nav className="space-y-2">
