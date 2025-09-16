@@ -316,8 +316,8 @@ export const AdminProjectForm: React.FC = () => {
         console.log('❌ Invalid completion_date_new format:', data.completion_date_new);
         return null;
       })(),
-      // Set proper status
-      status: saveType === 'publish' ? 'available' : 'draft'
+      // Set proper status - use valid enum values
+      status: saveType === 'publish' ? 'under_construction' : 'pre_launch'
     };
     
     console.log('Cleaned form data for submission:', cleanedData);
