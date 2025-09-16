@@ -79,7 +79,7 @@ const AdminProjectForm: React.FC = () => {
   });
 
 
-  // Populate form when data is loaded
+  // Populate form when data is loaded - AVEC PERSISTANCE DES DRAFTS!
   React.useEffect(() => {
     if (projectData && isEdit) {
       console.log('🔄 Loading project data for edit:', projectData.title);
@@ -95,6 +95,7 @@ const AdminProjectForm: React.FC = () => {
       console.log('📅 Converted launch_date:', convertedLaunchDate);
       console.log('📅 Converted completion_date_new:', convertedCompletionDate);
       
+      // SOLUTION PERSISTANCE: Charger d'abord les données du projet, puis override avec les drafts
       const formData = {
         title: projectData.title || '',
         project_code: projectData.project_code || '',
@@ -135,52 +136,52 @@ const AdminProjectForm: React.FC = () => {
         proximity_highway_km: projectData.proximity_highway_km || null
       };
       
-      console.log('📝 Final form data with dates:', { launch_date: formData.launch_date, completion_date_new: formData.completion_date_new });
+      // Maintenant charger les drafts et override les champs de statut si ils existent
+      const loadDraftsAndApply = async () => {
+        const userId = (await supabase.auth.getUser()).data.user?.id;
+        if (userId) {
+          const { data: draft } = await supabase
+            .from('project_drafts')
+            .select('form_data')
+            .eq('user_id', userId)
+            .eq('project_id', id)
+            .order('updated_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          
+          if (draft?.form_data && typeof draft.form_data === 'object') {
+            const savedData = draft.form_data as any;
+            console.log('📥 PERSISTANCE: Loading draft status data:', {
+              status_project: savedData.status_project,
+              statut_commercial: savedData.statut_commercial
+            });
+            
+            // Override avec les données des drafts si elles existent
+            if (savedData.status_project) {
+              formData.status_project = savedData.status_project;
+            }
+            if (savedData.statut_commercial) {
+              formData.statut_commercial = savedData.statut_commercial;
+            }
+          }
+        }
+        
+        console.log('📝 Final form data with drafts applied:', { 
+          status_project: formData.status_project,
+          statut_commercial: formData.statut_commercial
+        });
+        
+        form.reset(formData);
+        setFormKey(prev => prev + 1);
+      };
       
-      console.log('🔄 About to reset form with data:', formData);
-      form.reset(formData);
-      setFormKey(prev => prev + 1);
+      loadDraftsAndApply();
     }
-  }, [projectData, isEdit, form]);
+  }, [projectData, isEdit, form, id]);
 
-  // SOLUTION SIMPLE ET EFFICACE POUR LA PERSISTANCE!
+  // SAUVEGARDE AUTOMATIQUE SIMPLE ET EFFICACE
   const watchedFormData = form.watch();
   
-  // Chargement des drafts existants
-  useEffect(() => {
-    const loadDraft = async () => {
-      if (!id) return;
-      
-      const userId = (await supabase.auth.getUser()).data.user?.id;
-      if (!userId) return;
-      
-      const { data: draft } = await supabase
-        .from('project_drafts')
-        .select('form_data')
-        .eq('user_id', userId)
-        .eq('project_id', id)
-        .order('updated_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      
-      if (draft?.form_data && typeof draft.form_data === 'object') {
-        const savedData = draft.form_data as any;
-        console.log('📥 Loading draft data for persistence:', savedData);
-        
-        // Charger les statuts sauvegardés
-        if (savedData.status_project) {
-          form.setValue('status_project', savedData.status_project);
-        }
-        if (savedData.statut_commercial) {
-          form.setValue('statut_commercial', savedData.statut_commercial);
-        }
-      }
-    };
-    
-    loadDraft();
-  }, [id, form]);
-
-  // Sauvegarde automatique simple
   useEffect(() => {
     const saveDraft = async () => {
       if (!id || !watchedFormData) return;
@@ -206,10 +207,11 @@ const AdminProjectForm: React.FC = () => {
           auto_save_enabled: true
         });
       
-      if (error) {
-        console.log('Draft save error (non-critical):', error);
-      } else {
-        console.log('💾 Draft saved successfully with status fields');
+      if (!error) {
+        console.log('💾 PERSISTANCE: Draft saved with status:', {
+          status_project: watchedFormData.status_project,
+          statut_commercial: watchedFormData.statut_commercial
+        });
       }
     };
 
