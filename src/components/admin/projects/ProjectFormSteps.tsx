@@ -1310,22 +1310,29 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             control={form.control}
             name="status"
             render={({ field }) => {
-              // Log pour debug
+              // Récupérer la valeur directe du formulaire ou des props
+              const currentValue = field.value || form.getValues('status') || '';
+              
+              // Forcer la synchronisation quand les données changent
               React.useEffect(() => {
-                console.log('🔍 Status field value changed:', field.value);
-              }, [field.value]);
+                const formValue = form.getValues('status');
+                if (formValue && formValue !== field.value) {
+                  console.log('🔄 Forcing status sync:', formValue);
+                  field.onChange(formValue);
+                }
+              }, [form.getValues('status')]);
               
               return (
                <FormItem>
                  <FormLabel>Statut du projet</FormLabel>
                 <Select 
-                  key={`status_${field.value}_${projectId}_${Date.now()}`}
                   onValueChange={(value) => {
                     console.log('🔄 Status Select onChange:', value);
                     field.onChange(value);
-                  }} 
-                  value={field.value || ''}
-                  defaultValue={field.value || ''}
+                    // Force update du formulaire
+                    setTimeout(() => form.trigger('status'), 10);
+                  }}
+                  value={currentValue}
                 >
                   <FormControl>
                     <SelectTrigger>
