@@ -1308,11 +1308,16 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             control={form.control}
             name="status"
             render={({ field }) => {
+              console.log('🔍 Status field render - value:', field.value, 'type:', typeof field.value);
               return (
                <FormItem>
                  <FormLabel>Statut du projet</FormLabel>
                 <Select 
-                  onValueChange={field.onChange} 
+                  key={`status-${field.value || 'empty'}-${projectId}`}
+                  onValueChange={(value) => {
+                    console.log('🔄 Status onChange:', value);
+                    field.onChange(value);
+                  }} 
                   value={field.value || ''}
                 >
                   <FormControl>
@@ -1336,11 +1341,17 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           <FormField
             control={form.control}
             name="statut_commercial"
-            render={({ field }) => (
+            render={({ field }) => {
+              console.log('🔍 Statut commercial field render - value:', field.value, 'type:', typeof field.value);
+              return (
               <FormItem>
                 <FormLabel>Statut commercial</FormLabel>
                 <Select 
-                  onValueChange={field.onChange} 
+                  key={`statut-commercial-${field.value || 'empty'}-${projectId}`}
+                  onValueChange={(value) => {
+                    console.log('🔄 Statut commercial onChange:', value);
+                    field.onChange(value);
+                  }} 
                   value={field.value || ''}
                 >
                   <FormControl>
@@ -1358,17 +1369,24 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 </Select>
                 <FormMessage />
               </FormItem>
-            )}
+              );
+            }
           />
 
           <FormField
             control={form.control}
             name="statut_travaux"
-            render={({ field }) => (
+            render={({ field }) => {
+              console.log('🔍 Statut travaux field render - value:', field.value, 'type:', typeof field.value);
+              return (
               <FormItem>
                 <FormLabel>Statut travaux</FormLabel>
                 <Select 
-                  onValueChange={field.onChange} 
+                  key={`statut-travaux-${field.value || 'empty'}-${projectId}`}
+                  onValueChange={(value) => {
+                    console.log('🔄 Statut travaux onChange:', value);
+                    field.onChange(value);
+                  }} 
                   value={field.value || ''}
                 >
                   <FormControl>
@@ -1384,8 +1402,9 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                   </SelectContent>
                 </Select>
                 <FormMessage />
-              </FormItem>
-            )}
+               </FormItem>
+              );
+            }
           />
 
           <FormField
