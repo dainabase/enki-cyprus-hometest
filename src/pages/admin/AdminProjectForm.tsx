@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
@@ -19,6 +19,7 @@ const AdminProjectForm: React.FC = () => {
   const { id } = useParams();
   const isEdit = Boolean(id);
   const isEditing = isEdit;
+  const queryClient = useQueryClient();
   
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [saveType, setSaveType] = useState<'draft' | 'publish'>('draft');
@@ -313,6 +314,10 @@ const AdminProjectForm: React.FC = () => {
       }
     },
     onSuccess: () => {
+      // Invalider le cache pour forcer le rechargement des données
+      queryClient.invalidateQueries({ queryKey: ['project', id] });
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      
       const actionMessage = saveType === 'publish' 
         ? 'Projet publié avec succès !' 
         : isEdit ? 'Projet mis à jour avec succès !' : 'Projet créé avec succès !';
