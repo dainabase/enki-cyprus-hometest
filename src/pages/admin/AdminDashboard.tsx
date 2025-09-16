@@ -44,7 +44,7 @@ const AdminHeader = () => (
   </div>
 );
 
-export const AdminDashboard = () => {
+const AdminDashboard = () => {
   const { profile } = useAuth();
 
   if (profile?.role !== 'admin') {
@@ -94,3 +94,5 @@ export const AdminDashboard = () => {
     </PrivateRoute>
   );
 };
+
+export default AdminDashboard;

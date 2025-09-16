@@ -27,7 +27,7 @@ const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
-const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard").then(module => ({ default: module.AdminDashboard })));
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const LexaiaPage = lazy(() => import("./pages/LexaiaPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
