@@ -31,14 +31,14 @@ export const AppShell: React.FC<AppShellProps> = ({
         </header>
       )}
 
-      <div className="flex flex-1">
+      <div className="flex flex-1 overflow-hidden">
         {sidebar && (
-          <aside className="w-64 min-h-full bg-white border-r border-slate-200">
+          <aside className="w-64 bg-white border-r border-slate-200 sticky top-0 h-screen overflow-y-auto flex-shrink-0">
             {sidebar}
           </aside>
         )}
 
-        <main className="flex-1 flex flex-col">
+        <main className="flex-1 flex flex-col overflow-y-auto">
           {breadcrumbs && (
             <div className="bg-white border-b border-slate-200 px-6 py-4">
               {breadcrumbs}
