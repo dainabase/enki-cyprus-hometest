@@ -50,7 +50,7 @@ const AdminProjectForm: React.FC = () => {
       neighborhood: '',
       cyprus_zone: 'limassol',
       photos: [],
-      nearby_amenities: [],
+      surrounding_amenities: [],
       features: [],
       amenities: [],
       status_project: 'disponible',
@@ -453,9 +453,7 @@ const AdminProjectForm: React.FC = () => {
       })(),
     };
 
-    // CRITICAL: Exclure nearby_amenities du payload envoyé à la DB
-    // Les commodités de proximité sont gérées séparément par NearbyAmenitiesSelector
-    delete cleanedData.nearby_amenities;
+    // Les commodités de proximité sont maintenant dans surrounding_amenities (champ normal)
     
     
     console.log('🧹 CLEANED data for submission:');

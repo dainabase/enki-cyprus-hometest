@@ -547,10 +547,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         </CardContent>
       </Card>
 
-      {/* Commodités de proximité - CONNECTÉ AU FORMULAIRE pour persistance */}
+      {/* Commodités de proximité - CHAMP NORMAL DU FORMULAIRE */}
       <FormField
         control={form.control}
-        name="nearby_amenities"
+        name="surrounding_amenities"
         render={({ field }) => (
           <FormItem>
             <NearbyAmenitiesSelector
