@@ -1266,7 +1266,6 @@ export type Database = {
           ar_experience_url: string | null
           architect_license_number: string | null
           architect_name: string | null
-          avancement_travaux: number | null
           bathrooms_range: string | null
           bedrooms_range: string | null
           bim_model_url: string | null
@@ -1389,8 +1388,6 @@ export type Database = {
           smoking_policy: string | null
           social_proof_stats: Json | null
           status: string
-          statut_commercial: string | null
-          statut_travaux: string | null
           storage_spaces: number | null
           subtitle: string | null
           surrounding_amenities: Json | null
@@ -1441,7 +1438,6 @@ export type Database = {
           ar_experience_url?: string | null
           architect_license_number?: string | null
           architect_name?: string | null
-          avancement_travaux?: number | null
           bathrooms_range?: string | null
           bedrooms_range?: string | null
           bim_model_url?: string | null
@@ -1564,8 +1560,6 @@ export type Database = {
           smoking_policy?: string | null
           social_proof_stats?: Json | null
           status?: string
-          statut_commercial?: string | null
-          statut_travaux?: string | null
           storage_spaces?: number | null
           subtitle?: string | null
           surrounding_amenities?: Json | null
@@ -1616,7 +1610,6 @@ export type Database = {
           ar_experience_url?: string | null
           architect_license_number?: string | null
           architect_name?: string | null
-          avancement_travaux?: number | null
           bathrooms_range?: string | null
           bedrooms_range?: string | null
           bim_model_url?: string | null
@@ -1739,8 +1732,6 @@ export type Database = {
           smoking_policy?: string | null
           social_proof_stats?: Json | null
           status?: string
-          statut_commercial?: string | null
-          statut_travaux?: string | null
           storage_spaces?: number | null
           subtitle?: string | null
           surrounding_amenities?: Json | null
