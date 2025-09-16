@@ -673,22 +673,12 @@ const AdminProjectForm: React.FC = () => {
                     </form>
                   </Form>
 
-                  {/* Confirmation Dialog */}
-                  <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
-                    <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle className="flex items-center gap-2">
-                          {validationErrors.length > 0 ? (
-                            <>
-                              <AlertTriangle className="h-5 w-5 text-red-600" />
-                              Erreurs détectées
-                            </>
-                          ) : (
-                            <>
-                              <Eye className="h-5 w-5 text-green-600" />
-                              {saveType === 'publish' ? 'Publier le projet' : 'Sauvegarder le projet'}
-                            </>
-                          )}
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </div>
                         </DialogTitle>
                         <DialogDescription>
                           {validationErrors.length > 0 
@@ -801,103 +791,103 @@ const AdminProjectForm: React.FC = () => {
       {/* Confirmation Dialog */}
       <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
         <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                {validationErrors.length > 0 ? (
-                  <>
-                    <AlertTriangle className="h-5 w-5 text-red-500" />
-                    Erreurs de validation détectées
-                  </>
-                ) : (
-                  <>
-                    <Save className="h-5 w-5 text-emerald-500" />
-                    Confirmer la {saveType === 'publish' ? 'publication' : 'sauvegarde'}
-                  </>
-                )}
-              </DialogTitle>
-              <DialogDescription>
-                {validationErrors.length > 0
-                  ? `${validationErrors.length} erreur(s) empêche(nt) la publication du projet. Veuillez les corriger avant de continuer.`
-                  : saveType === 'publish'
-                  ? 'Le projet sera publié et visible par les clients.'
-                  : 'Le projet sera sauvegardé en tant que brouillon.'
-                }
-              </DialogDescription>
-            </DialogHeader>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              {validationErrors.length > 0 ? (
+                <>
+                  <AlertTriangle className="h-5 w-5 text-red-500" />
+                  Erreurs de validation détectées
+                </>
+              ) : (
+                <>
+                  <Save className="h-5 w-5 text-emerald-500" />
+                  Confirmer la {saveType === 'publish' ? 'publication' : 'sauvegarde'}
+                </>
+              )}
+            </DialogTitle>
+            <DialogDescription>
+              {validationErrors.length > 0
+                ? `${validationErrors.length} erreur(s) empêche(nt) la publication du projet. Veuillez les corriger avant de continuer.`
+                : saveType === 'publish'
+                ? 'Le projet sera publié et visible par les clients.'
+                : 'Le projet sera sauvegardé en tant que brouillon.'
+              }
+            </DialogDescription>
+          </DialogHeader>
 
-            <div className="space-y-4">
-              {validationErrors.length > 0 && (
-                <div className="space-y-3">
-                  <div className="space-y-2 max-h-60 overflow-y-auto">
-                    {validationErrors.map((error, index) => (
-                      <div key={index} className="bg-red-50 border border-red-200 rounded-lg p-3">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="font-medium text-red-800">{error.label}</p>
-                          </div>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              const fieldElement = document.querySelector(`[name="${error.field}"]`) as HTMLElement;
-                              if (fieldElement) {
-                                fieldElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                fieldElement.focus();
-                              }
-                              setShowConfirmDialog(false);
-                            }}
-                            className="text-xs h-7 px-2"
-                          >
-                            Aller au champ
-                          </Button>
+          <div className="space-y-4">
+            {validationErrors.length > 0 && (
+              <div className="space-y-3">
+                <div className="space-y-2 max-h-60 overflow-y-auto">
+                  {validationErrors.map((error, index) => (
+                    <div key={index} className="bg-red-50 border border-red-200 rounded-lg p-3">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="font-medium text-red-800">{error.label}</p>
                         </div>
-                        <p className="text-red-700 text-xs mt-1">{error.message}</p>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const fieldElement = document.querySelector(`[name="${error.field}"]`) as HTMLElement;
+                            if (fieldElement) {
+                              fieldElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                              fieldElement.focus();
+                            }
+                            setShowConfirmDialog(false);
+                          }}
+                          className="text-xs h-7 px-2"
+                        >
+                          Aller au champ
+                        </Button>
                       </div>
-                    ))}
-                  </div>
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                    <p className="text-red-800 text-sm font-medium">
-                      🚫 Impossible de publier le projet tant que ces erreurs ne sont pas corrigées.
-                    </p>
-                    <p className="text-red-700 text-xs mt-1">
-                      Cliquez sur "Aller au champ" pour naviguer directement vers les champs à corriger.
-                    </p>
-                  </div>
+                      <p className="text-red-700 text-xs mt-1">{error.message}</p>
+                    </div>
+                  ))}
                 </div>
-              )}
-
-              {validationErrors.length === 0 && saveType === 'publish' && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                  <p className="text-green-800 font-medium">✅ Aucune erreur détectée</p>
-                  <p className="text-green-700 text-sm">Le projet est prêt à être publié.</p>
+                <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                  <p className="text-red-800 text-sm font-medium">
+                    🚫 Impossible de publier le projet tant que ces erreurs ne sont pas corrigées.
+                  </p>
+                  <p className="text-red-700 text-xs mt-1">
+                    Cliquez sur "Aller au champ" pour naviguer directement vers les champs à corriger.
+                  </p>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
 
-            <DialogFooter>
+            {validationErrors.length === 0 && saveType === 'publish' && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <p className="text-green-800 font-medium">✅ Aucune erreur détectée</p>
+                <p className="text-green-700 text-sm">Le projet est prêt à être publié.</p>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowConfirmDialog(false)}
+              disabled={saveProjectMutation.isPending}
+            >
+              {validationErrors.length > 0 ? 'Retour au formulaire' : 'Annuler'}
+            </Button>
+            {validationErrors.length === 0 && (
               <Button
-                variant="outline"
-                onClick={() => setShowConfirmDialog(false)}
+                onClick={() => {
+                  const formData = form.getValues();
+                  onSubmit(formData);
+                  setShowConfirmDialog(false);
+                }}
                 disabled={saveProjectMutation.isPending}
+                variant="default"
               >
-                {validationErrors.length > 0 ? 'Retour au formulaire' : 'Annuler'}
+                {saveProjectMutation.isPending ? 'En cours...' : (saveType === 'publish' ? 'Publier' : 'Sauvegarder')}
               </Button>
-              {validationErrors.length === 0 && (
-                <Button
-                  onClick={() => {
-                    const formData = form.getValues();
-                    onSubmit(formData);
-                    setShowConfirmDialog(false);
-                  }}
-                  disabled={saveProjectMutation.isPending}
-                  variant="default"
-                >
-                  {saveProjectMutation.isPending ? 'En cours...' : (saveType === 'publish' ? 'Publier' : 'Sauvegarder')}
-                </Button>
-              )}
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
