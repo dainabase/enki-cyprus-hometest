@@ -427,7 +427,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       step="any"
                       placeholder="34.6856"
                       {...field}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                      onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -447,7 +447,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       step="any"
                       placeholder="33.0393"
                       {...field}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                      onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -476,7 +476,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       step="0.1"
                       placeholder="0.5"
                       {...field}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                      onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -496,7 +496,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       step="0.1"
                       placeholder="15"
                       {...field}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                      onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -516,7 +516,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       step="0.1"
                       placeholder="2"
                       {...field}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                      onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -536,7 +536,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       step="0.1"
                       placeholder="1"
                       {...field}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                      onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -575,7 +575,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       type="number" 
                       placeholder="1500"
                       {...field}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                      onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -594,7 +594,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       type="number" 
                       placeholder="1200"
                       {...field}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                      onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -622,7 +622,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       type="number" 
                       placeholder="24"
                       {...field}
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || undefined)}
+                        onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : null)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -641,7 +641,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       type="number" 
                       placeholder="18"
                       {...field}
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || undefined)}
+                        onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : null)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -727,7 +727,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       type="number" 
                       placeholder="2025"
                       {...field}
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || undefined)}
+                        onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : null)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -765,7 +765,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       type="number" 
                       placeholder="2500"
                       {...field}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                        onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -784,7 +784,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       type="number" 
                       placeholder="1200"
                       {...field}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                        onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -803,7 +803,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       type="number" 
                       placeholder="150"
                       {...field}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                        onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -824,7 +824,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       type="number" 
                       placeholder="100"
                       {...field}
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || undefined)}
+                        onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : null)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -875,7 +875,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       type="number" 
                       placeholder="8"
                       {...field}
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || undefined)}
+                        onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : null)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -894,7 +894,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       type="number" 
                       placeholder="30"
                       {...field}
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || undefined)}
+                        onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : null)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -913,7 +913,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       type="number" 
                       placeholder="24"
                       {...field}
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || undefined)}
+                      onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : null)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -964,7 +964,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       type="number" 
                       placeholder="180000"
                       {...field}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                      onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -983,7 +983,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       type="number" 
                       placeholder="350000"
                       {...field}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                      onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -1002,7 +1002,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       type="number" 
                       placeholder="2500"
                       {...field}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                      onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -1112,7 +1112,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       step="0.1"
                       placeholder="6.2"
                       {...field}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                        onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -1304,21 +1304,16 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           <CardTitle className="text-xl font-semibold text-foreground">Statut & Visibilité</CardTitle>
         </CardHeader>
         <CardContent className="p-6 space-y-6">
-          {/* Debug component pour voir les valeurs en temps réel */}
-          <StatusFieldsDebug form={form} />
           <FormField
             control={form.control}
             name="status"
             render={({ field }) => {
-              // Récupérer la valeur directe du formulaire ou des props
-              const currentValue = field.value || '';
-              
               return (
                <FormItem>
                  <FormLabel>Statut du projet</FormLabel>
                 <Select 
                   onValueChange={field.onChange} 
-                  value={currentValue}
+                  value={field.value || ''}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -1345,7 +1340,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               <FormItem>
                 <FormLabel>Statut commercial</FormLabel>
                 <Select 
-                  key={`statut_commercial_${field.value}_${projectId}`}
                   onValueChange={field.onChange} 
                   value={field.value || ''}
                 >
@@ -1374,7 +1368,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               <FormItem>
                 <FormLabel>Statut travaux</FormLabel>
                 <Select 
-                  key={`statut_travaux_${field.value}_${projectId}`}
                   onValueChange={field.onChange} 
                   value={field.value || ''}
                 >
