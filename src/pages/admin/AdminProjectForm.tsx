@@ -106,28 +106,6 @@ const AdminProjectForm: React.FC = () => {
       
       console.log('📅 Converted launch_date:', convertedLaunchDate);
       console.log('📅 Converted completion_date_new:', convertedCompletionDate);
-
-  // Populate form when data is loaded  
-  React.useEffect(() => {
-    if (projectData && isEdit) {
-      console.log('🔄 Loading project data for edit:', projectData.title);
-      console.log('📊 Raw project status data from DB:', { 
-        status: projectData.status,
-        statut_commercial: projectData.statut_commercial, 
-        statut_travaux: projectData.statut_travaux, 
-        avancement_travaux: projectData.avancement_travaux 
-      });
-      console.log('📅 Original launch_date:', projectData.launch_date);
-      console.log('📅 Original completion_date_new:', projectData.completion_date_new);
-      
-      setOriginalData(projectData);
-      
-      // Convert dates from YYYY-MM-DD to YYYY-MM for month inputs
-      const convertedLaunchDate = projectData.launch_date ? projectData.launch_date.substring(0, 7) : '';
-      const convertedCompletionDate = projectData.completion_date_new ? projectData.completion_date_new.substring(0, 7) : '';
-      
-      console.log('📅 Converted launch_date:', convertedLaunchDate);
-      console.log('📅 Converted completion_date_new:', convertedCompletionDate);
       
       const formData = {
         title: projectData.title || '',
@@ -406,8 +384,8 @@ const AdminProjectForm: React.FC = () => {
         console.log('❌ Invalid completion_date_new format:', data.completion_date_new);
         return null;
       })(),
-      // Set proper status - use valid enum values
-      status: saveType === 'publish' ? 'under_construction' : 'pre_launch'
+      // Set proper status - use form value or default based on save type
+      status: data.status || (saveType === 'publish' ? 'under_construction' : 'pre_launch')
     };
     
     console.log('Cleaned form data for submission:', cleanedData);
@@ -702,5 +680,4 @@ const AdminProjectForm: React.FC = () => {
   );
 };
 
-}
 export default AdminProjectForm;
