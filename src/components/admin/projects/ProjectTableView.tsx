@@ -12,7 +12,7 @@ interface ProjectTableViewProps {
   onSelectionChange: (ids: string[]) => void;
 }
 
-type SortField = 'title' | 'developer' | 'city' | 'status' | 'price' | 'completion_date' | 'cyprus_zone';
+type SortField = 'title' | 'developer' | 'city' | 'status' | 'price' | 'completion_date_new' | 'cyprus_zone';
 type SortOrder = 'asc' | 'desc';
 
 export const ProjectTableView = ({ 
@@ -179,7 +179,15 @@ export const ProjectTableView = ({
                 Prix <SortIcon field="price" />
               </Button>
             </TableHead>
-            <TableHead className="text-white font-bold border-0">Livraison</TableHead>
+            <TableHead className="text-white font-bold border-0">
+              <Button 
+                variant="ghost" 
+                className="h-auto p-0 font-bold text-white hover:bg-white/10"
+                onClick={() => handleSort('completion_date_new')}
+              >
+                Livraison <SortIcon field="completion_date_new" />
+              </Button>
+            </TableHead>
             <TableHead className="text-white font-bold border-0 w-32">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -244,10 +252,15 @@ export const ProjectTableView = ({
                 </div>
               </TableCell>
               <TableCell className="py-4">
-                {project.completion_date ? (
+                {project.completion_date_new ? (
                   <div className="flex items-center gap-1 text-slate-600">
                     <Calendar className="h-3 w-3" />
-                    <span className="text-xs">{project.completion_date}</span>
+                    <span className="text-xs">
+                      {new Date(project.completion_date_new).toLocaleDateString('fr-FR', { 
+                        year: 'numeric', 
+                        month: 'short' 
+                      })}
+                    </span>
                   </div>
                 ) : (
                   <span className="text-slate-400">-</span>
