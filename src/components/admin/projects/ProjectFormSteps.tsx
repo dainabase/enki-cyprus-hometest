@@ -1230,8 +1230,15 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
       </CardHeader>
       <CardContent className="p-6">
         <AmenitiesSelector
-          selectedAmenities={form.watch('amenities') || []}
-          onChange={(amenities) => form.setValue('amenities', amenities)}
+          selectedAmenities={(() => {
+            const watchedAmenities = form.watch('amenities') || [];
+            console.log('📋 ProjectFormSteps - watchedAmenities:', watchedAmenities);
+            return watchedAmenities;
+          })()}
+          onChange={(amenities) => {
+            console.log('📋 ProjectFormSteps - onChange amenities:', amenities);
+            form.setValue('amenities', amenities);
+          }}
         />
       </CardContent>
     </Card>

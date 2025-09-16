@@ -18,6 +18,7 @@ export const AmenitiesSelector: React.FC<AmenitiesSelectorProps> = ({
   selectedAmenities,
   onChange
 }) => {
+  console.log('🏢 AmenitiesSelector - selectedAmenities reçues:', selectedAmenities);
   const [searchTerm, setSearchTerm] = useState('');
 
   const { data: amenities, isLoading } = useQuery({
