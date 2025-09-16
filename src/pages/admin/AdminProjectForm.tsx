@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
-import { ProjectFormSteps } from '@/components/admin/projects/ProjectFormSteps';
+import { SimpleProjectFormSteps } from '@/components/admin/projects/SimpleProjectFormSteps';
 import { projectFormSteps, ProjectFormData } from '@/schemas/projectSchema';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -618,7 +618,7 @@ const AdminProjectForm: React.FC = () => {
                   </div>
 
                   <Form {...form}>
-                    <ProjectFormSteps
+                    <SimpleProjectFormSteps
                       form={form}
                       currentStep={currentStep.id}
                       projectId={id}
