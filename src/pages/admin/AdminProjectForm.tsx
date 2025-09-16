@@ -701,6 +701,6 @@ const AdminProjectForm: React.FC = () => {
     </div>
   );
 };
-}
 
+}
 export default AdminProjectForm;
