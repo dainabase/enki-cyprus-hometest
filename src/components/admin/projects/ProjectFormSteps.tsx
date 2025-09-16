@@ -1312,13 +1312,18 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Statut du projet</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
+                <Select 
+                  key={`status_${field.value}_${projectId}`}
+                  onValueChange={field.onChange} 
+                  value={field.value || ''}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Sélectionnez un statut" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
+                    <SelectItem value="pre_launch">Pré-lancement</SelectItem>
                     <SelectItem value="available">Disponible</SelectItem>
                     <SelectItem value="under_construction">En construction</SelectItem>
                     <SelectItem value="delivered">Livré</SelectItem>
