@@ -87,7 +87,18 @@ export const AdminProjectForm: React.FC = () => {
   // Populate form when data is loaded
   React.useEffect(() => {
     if (projectData && isEdit) {
+      console.log('🔄 Loading project data for edit:', projectData.title);
+      console.log('📅 Original launch_date:', projectData.launch_date);
+      console.log('📅 Original completion_date_new:', projectData.completion_date_new);
+      
       setOriginalData(projectData);
+      
+      // Convert dates from YYYY-MM-DD to YYYY-MM for month inputs
+      const convertedLaunchDate = projectData.launch_date ? projectData.launch_date.substring(0, 7) : '';
+      const convertedCompletionDate = projectData.completion_date_new ? projectData.completion_date_new.substring(0, 7) : '';
+      
+      console.log('📅 Converted launch_date:', convertedLaunchDate);
+      console.log('📅 Converted completion_date_new:', convertedCompletionDate);
       
       const formData = {
         title: projectData.title || '',
@@ -98,8 +109,8 @@ export const AdminProjectForm: React.FC = () => {
           ? projectData.property_sub_type 
           : ['apartment'],
         project_phase: projectData.project_phase || 'off-plan',
-        launch_date: projectData.launch_date ? projectData.launch_date.substring(0, 7) : '',
-        completion_date_new: projectData.completion_date_new ? projectData.completion_date_new.substring(0, 7) : '',
+        launch_date: convertedLaunchDate,
+        completion_date_new: convertedCompletionDate,
         exclusive_commercialization: Boolean(projectData.exclusive_commercialization),
         description: projectData.description || '',
         detailed_description: projectData.detailed_description || '',
@@ -125,6 +136,8 @@ export const AdminProjectForm: React.FC = () => {
         meta_description_new: projectData.meta_description_new || '',
         project_narrative: projectData.project_narrative || ''
       };
+      
+      console.log('📝 Final form data with dates:', { launch_date: formData.launch_date, completion_date_new: formData.completion_date_new });
       
       form.reset(formData);
       setFormKey(prev => prev + 1);
@@ -160,7 +173,7 @@ export const AdminProjectForm: React.FC = () => {
       errors.push({ field: 'property_sub_type', label: 'Type de propriété', message: 'Au moins un type requis' });
     }
     
-    // Validate dates format
+    // Validate dates format and logic
     if (formData.launch_date && formData.launch_date.length > 0) {
       if (!/^\d{4}-\d{2}(-\d{2})?$/.test(formData.launch_date)) {
         errors.push({ 
@@ -177,6 +190,21 @@ export const AdminProjectForm: React.FC = () => {
           field: 'completion_date_new', 
           label: 'Date de completion', 
           message: `Format invalide "${formData.completion_date_new}" - Format requis: YYYY-MM ou YYYY-MM-DD (ex: 2025-10 ou 2025-12-31)` 
+        });
+      }
+    }
+    
+    // Validate date logic: launch date must be before completion date
+    if (formData.launch_date && formData.completion_date_new && 
+        formData.launch_date.length > 0 && formData.completion_date_new.length > 0) {
+      const launchDate = new Date(formData.launch_date + (formData.launch_date.length === 7 ? '-01' : ''));
+      const completionDate = new Date(formData.completion_date_new + (formData.completion_date_new.length === 7 ? '-01' : ''));
+      
+      if (launchDate >= completionDate) {
+        errors.push({
+          field: 'completion_date_new',
+          label: 'Date de livraison',
+          message: 'La date de livraison doit être postérieure à la date de lancement'
         });
       }
     }
