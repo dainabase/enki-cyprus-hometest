@@ -158,8 +158,19 @@ const AdminProjectForm: React.FC = () => {
         avancement_travaux: formData.avancement_travaux 
       });
       
+      console.log('🔄 About to reset form with data:', formData);
       form.reset(formData);
+      console.log('✅ Form reset complete. Current form status value:', form.getValues('status'));
       setFormKey(prev => prev + 1);
+      
+      // Force update des champs après un délai
+      setTimeout(() => {
+        console.log('⏰ Delayed check - Current form status value:', form.getValues('status'));
+        form.setValue('status', formData.status);
+        form.setValue('statut_commercial', formData.statut_commercial);
+        form.setValue('statut_travaux', formData.statut_travaux);
+        console.log('🔧 Force setValue complete. Final status:', form.getValues('status'));
+      }, 100);
     }
   }, [projectData, isEdit, form]);
 
