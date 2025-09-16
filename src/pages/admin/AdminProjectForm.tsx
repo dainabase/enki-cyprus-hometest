@@ -118,9 +118,18 @@ const AdminProjectForm: React.FC = () => {
         neighborhood: projectData.neighborhood || '',
         cyprus_zone: projectData.cyprus_zone || 'limassol',
         // Photos - priorité à categorized_photos, sinon photos classiques
-        photos: Array.isArray(projectData.categorized_photos) && projectData.categorized_photos.length > 0
-          ? projectData.categorized_photos
-          : Array.isArray(projectData.photos) ? projectData.photos : [],
+        photos: (() => {
+          const photos = Array.isArray(projectData.categorized_photos) && projectData.categorized_photos.length > 0
+            ? projectData.categorized_photos
+            : Array.isArray(projectData.photos) ? projectData.photos : [];
+          console.log('🔍 PHOTOS LOADED FROM SUPABASE:', { 
+            categorized_photos: projectData.categorized_photos,
+            photos: projectData.photos,
+            result: photos,
+            count: photos.length
+          });
+          return photos;
+        })(),
         amenities: Array.isArray(projectData.amenities) ? projectData.amenities : [],
         vat_rate_new: Number(projectData.vat_rate_new) || 5,
         vat_included: Boolean(projectData.vat_included),

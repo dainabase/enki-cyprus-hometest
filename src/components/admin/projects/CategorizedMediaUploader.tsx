@@ -51,6 +51,16 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
   const [dragOver, setDragOver] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('hero');
 
+  // DEBUG: Log what we receive
+  React.useEffect(() => {
+    console.log('🖼️ CategorizedMediaUploader received:', {
+      field_value: field.value,
+      field_value_type: typeof field.value,
+      field_value_length: field.value?.length || 0,
+      first_photo: field.value?.[0]
+    });
+  }, [field.value]);
+
   // Enforce one photo per catégorie
   React.useEffect(() => {
     const seen = new Set<string>();
