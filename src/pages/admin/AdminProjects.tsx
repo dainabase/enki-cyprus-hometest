@@ -65,7 +65,7 @@ const AdminProjects = () => {
         .from('projects')
         .select(`
           id, title, status, cyprus_zone, golden_visa_eligible, price, price_from,
-          completion_date_new, units_available, units_sold, total_units, developer_id,
+          completion_date_new, launch_date, units_available, units_sold, total_units, developer_id,
           city, neighborhood, description, bedrooms_range, built_area_m2, 
           total_units_new, parking_spaces, energy_rating, created_at,
           statut_commercial, statut_travaux, avancement_travaux,

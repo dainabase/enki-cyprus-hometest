@@ -12,7 +12,7 @@ interface ProjectTableViewProps {
   onSelectionChange: (ids: string[]) => void;
 }
 
-type SortField = 'title' | 'developer' | 'city' | 'status' | 'price' | 'completion_date_new' | 'cyprus_zone';
+type SortField = 'title' | 'developer' | 'city' | 'status' | 'price' | 'completion_date_new' | 'launch_date' | 'cyprus_zone';
 type SortOrder = 'asc' | 'desc';
 
 export const ProjectTableView = ({ 
@@ -188,6 +188,15 @@ export const ProjectTableView = ({
                 Livraison <SortIcon field="completion_date_new" />
               </Button>
             </TableHead>
+            <TableHead className="text-white font-bold border-0">
+              <Button 
+                variant="ghost" 
+                className="h-auto p-0 font-bold text-white hover:bg-white/10"
+                onClick={() => handleSort('launch_date')}
+              >
+                Lancement <SortIcon field="launch_date" />
+              </Button>
+            </TableHead>
             <TableHead className="text-white font-bold border-0 w-32">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -257,6 +266,21 @@ export const ProjectTableView = ({
                     <Calendar className="h-3 w-3" />
                     <span className="text-xs">
                       {new Date(project.completion_date_new).toLocaleDateString('fr-FR', { 
+                        year: 'numeric', 
+                        month: 'short' 
+                      })}
+                    </span>
+                  </div>
+                ) : (
+                  <span className="text-slate-400">-</span>
+                )}
+              </TableCell>
+              <TableCell className="py-4">
+                {project.launch_date ? (
+                  <div className="flex items-center gap-1 text-slate-600">
+                    <Calendar className="h-3 w-3" />
+                    <span className="text-xs">
+                      {new Date(project.launch_date).toLocaleDateString('fr-FR', { 
                         year: 'numeric', 
                         month: 'short' 
                       })}
