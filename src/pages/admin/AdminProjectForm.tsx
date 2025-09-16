@@ -101,26 +101,14 @@ export const AdminProjectForm: React.FC = () => {
       setOriginalData(projectData);
       
       // Convert dates from YYYY-MM-DD to YYYY-MM for month inputs
-        let draftData = null;
-        try {
-          draftData = await loadDraft();
-          console.log('📝 Loaded draft data:', draftData);
-        } catch (error) {
-          console.log('📝 No draft found, using project data only');
-        }
+      const convertedLaunchDate = projectData.launch_date ? projectData.launch_date.substring(0, 7) : '';
+      const convertedCompletionDate = projectData.completion_date_new ? projectData.completion_date_new.substring(0, 7) : '';
+      
+      console.log('📅 Converted launch_date:', convertedLaunchDate);
+      console.log('📅 Converted completion_date_new:', convertedCompletionDate);
 
-        // Convert dates from YYYY-MM-DD to YYYY-MM for month inputs
-        const convertedLaunchDate = projectData.launch_date ? projectData.launch_date.substring(0, 7) : '';
-        const convertedCompletionDate = projectData.completion_date_new ? projectData.completion_date_new.substring(0, 7) : '';
-        
-        console.log('📅 Converted launch_date:', convertedLaunchDate);
-        console.log('📅 Converted completion_date_new:', convertedCompletionDate);
-        
-        setOriginalData(projectData);
-
-  // Populate form when data is loaded
+  // Populate form when data is loaded  
   React.useEffect(() => {
-    const loadFormData = async () => {
     if (projectData && isEdit) {
       console.log('🔄 Loading project data for edit:', projectData.title);
       console.log('📊 Raw project status data from DB:', { 
@@ -712,4 +700,7 @@ export const AdminProjectForm: React.FC = () => {
       </div>
     </div>
   );
+  );
 };
+
+export default AdminProjectForm;
