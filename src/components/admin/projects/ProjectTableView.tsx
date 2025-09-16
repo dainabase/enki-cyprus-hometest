@@ -185,7 +185,7 @@ export const ProjectTableView = ({
                 className="h-auto p-0 font-bold text-white hover:bg-white/10"
                 onClick={() => handleSort('launch_date')}
               >
-                Lancement <SortIcon field="launch_date" />
+                🚀 Lancement <SortIcon field="launch_date" />
               </Button>
             </TableHead>
             <TableHead className="text-white font-bold border-0">
@@ -194,7 +194,7 @@ export const ProjectTableView = ({
                 className="h-auto p-0 font-bold text-white hover:bg-white/10"
                 onClick={() => handleSort('completion_date_new')}
               >
-                Livraison <SortIcon field="completion_date_new" />
+                🏠 Livraison <SortIcon field="completion_date_new" />
               </Button>
             </TableHead>
             <TableHead className="text-white font-bold border-0 w-32">Actions</TableHead>
