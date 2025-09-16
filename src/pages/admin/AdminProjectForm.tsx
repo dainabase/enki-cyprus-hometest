@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Badge } from '@/components/ui/badge';
 import { AlertTriangle } from 'lucide-react';
 
-export const AdminProjectForm: React.FC = () => {
+const AdminProjectForm: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const isEdit = Boolean(id);
@@ -699,7 +699,6 @@ export const AdminProjectForm: React.FC = () => {
         </div>
       </div>
     </div>
-  );
   );
 };
 
