@@ -35,8 +35,15 @@ export const CookieConsentBanner: React.FC = () => {
         marginRight: "10px",
       }}
       expires={365}
+      sameSite="strict"
+      acceptOnScroll={false}
+      acceptOnScrollPercentage={50}
       onAccept={() => {
         console.log('✅ Cookies accepted - Analytics enabled');
+        // Store consent in sessionStorage AND localStorage for persistence
+        localStorage.setItem('enki-realty-consent', 'true');
+        sessionStorage.setItem('enki-realty-consent', 'true');
+        
         // Enable analytics tracking
         if (typeof window !== 'undefined' && (window as any).gtag) {
           (window as any).gtag('consent', 'update', {
@@ -46,6 +53,10 @@ export const CookieConsentBanner: React.FC = () => {
       }}
       onDecline={() => {
         console.log('❌ Cookies declined - Analytics disabled');
+        // Store decline in localStorage for persistence
+        localStorage.setItem('enki-realty-consent', 'false');
+        sessionStorage.setItem('enki-realty-consent', 'false');
+        
         // Disable analytics tracking
         if (typeof window !== 'undefined' && (window as any).gtag) {
           (window as any).gtag('consent', 'update', {

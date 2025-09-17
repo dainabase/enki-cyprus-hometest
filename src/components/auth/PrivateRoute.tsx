@@ -15,6 +15,7 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({
   const { isAuthenticated, isAdmin, loading, profile } = useAuth();
   const location = useLocation();
 
+  // Show loading while auth is being checked
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -26,7 +27,9 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({
     );
   }
 
-  if (!isAuthenticated) {
+  // Only redirect if we're sure the user is not authenticated
+  if (!loading && !isAuthenticated) {
+    // Save current location for redirect after login
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
@@ -35,7 +38,7 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({
     return <Navigate to="/" replace />;
   }
 
-  // Wait for profile to load before deciding admin access
+  // For admin routes, wait for profile to load completely
   if (adminOnly && isAuthenticated && !profile) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -47,7 +50,8 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({
     );
   }
 
-  if (adminOnly && !isAdmin) {
+  // Only check admin status after profile is loaded
+  if (adminOnly && profile && !isAdmin) {
     return <Navigate to="/dashboard" replace />;
   }
 

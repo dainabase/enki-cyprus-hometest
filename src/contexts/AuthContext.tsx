@@ -43,6 +43,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Fetch user profile from profiles table
   const fetchProfile = async (userId: string) => {
     try {
+      setLoading(true);
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -50,11 +51,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         .single();
 
       if (error) {
-        console.error('Error fetching profile:', error);
-        return;
-      }
-
-      if (data) {
+        console.error('Profile fetch error:', error);
+        setProfile(null);
+      } else if (data) {
         setProfile({
           ...data,
           role: data.role as 'admin' | 'user',
@@ -63,14 +62,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     } catch (error) {
       console.error('Error fetching profile:', error);
+      setProfile(null);
+    } finally {
+      setLoading(false);
     }
   };
 
   // Initialize auth state
   useEffect(() => {
+    let mounted = true;
+    
     // Set up auth state listener FIRST (no async in callback to avoid deadlocks)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, nextSession) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, nextSession) => {
       console.log('🔐 Auth state changed:', event, nextSession?.user?.email);
+
+      if (!mounted) return;
 
       setSession(nextSession);
       setUser(nextSession?.user ?? null);
@@ -78,31 +84,56 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (nextSession?.user) {
         // Defer Supabase calls with setTimeout to prevent deadlocks
         setTimeout(() => {
-          fetchProfile(nextSession.user!.id);
+          if (mounted) {
+            fetchProfile(nextSession.user!.id);
+          }
         }, 0);
       } else {
         setProfile(null);
+        setLoading(false); // Set loading to false when no user
       }
-
-      setLoading(false);
     });
 
     // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+    const getInitialSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (!mounted) return;
+        
+        if (error) {
+          console.error('Error getting session:', error);
+          setLoading(false);
+          return;
+        }
 
-      if (session?.user) {
-        // Defer profile load
-        setTimeout(() => {
-          fetchProfile(session.user!.id);
-        }, 0);
+        setSession(session);
+        setUser(session?.user ?? null);
+
+        if (session?.user) {
+          // Defer profile load
+          setTimeout(() => {
+            if (mounted) {
+              fetchProfile(session.user!.id);
+            }
+          }, 0);
+        } else {
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Error in getInitialSession:', error);
+        if (mounted) {
+          setLoading(false);
+        }
       }
+    };
 
-      setLoading(false);
-    });
+    getInitialSession();
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signUp = async (email: string, password: string, metadata = {}) => {
