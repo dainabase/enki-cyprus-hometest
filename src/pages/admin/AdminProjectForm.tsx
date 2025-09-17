@@ -524,7 +524,10 @@ const AdminProjectForm: React.FC = () => {
               {projectFormSteps.map((step, index) => (
                 <button
                   key={step.id}
-                  onClick={() => setCurrentStepIndex(index)}
+                  onClick={async () => {
+                    setCurrentStepIndex(index);
+                    await refreshFormData();
+                  }}
                   className={`w-full text-left px-4 py-3 rounded-lg transition-colors ${
                     currentStepIndex === index
                       ? 'bg-primary text-white'
