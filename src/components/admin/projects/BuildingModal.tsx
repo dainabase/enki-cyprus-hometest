@@ -142,7 +142,11 @@ export function BuildingModal({
     }
   }, [building, open, form]);
 
-  const onSubmit = async (data: BuildingFormData) => {
+  const onSubmit = async (data: BuildingFormData, e?: React.FormEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     setSubmitLoading(true);
     try {
       await onSave(data);
@@ -164,7 +168,11 @@ export function BuildingModal({
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit((data) => onSubmit(data, e))();
+          }} className="space-y-6">
             {/* Basic Information */}
             <Card>
               <CardHeader>
@@ -560,7 +568,15 @@ export function BuildingModal({
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 Annuler
               </Button>
-              <Button type="submit" disabled={submitLoading || isLoading}>
+              <Button 
+                type="button" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  form.handleSubmit((data) => onSubmit(data, e))();
+                }}
+                disabled={submitLoading || isLoading}
+              >
                 {submitLoading ? 'Sauvegarde...' : (building ? 'Modifier' : 'Créer')}
               </Button>
             </DialogFooter>
