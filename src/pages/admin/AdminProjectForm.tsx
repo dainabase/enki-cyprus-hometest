@@ -181,8 +181,17 @@ const AdminProjectForm: React.FC = () => {
         rental_yield_percent: projectData.rental_yield_percent || null,
         financing_available: projectData.financing_available || false,
         
-        // Media
-        photos: Array.isArray(projectData.photos) ? projectData.photos : [],
+        // Media - Parse JSON string photos
+        photos: Array.isArray(projectData.photos) ? projectData.photos.map(photo => {
+          if (typeof photo === 'string') {
+            try {
+              return JSON.parse(photo);
+            } catch {
+              return { url: photo, category: 'hero', isPrimary: false, caption: '' };
+            }
+          }
+          return photo;
+        }) : [],
         photo_gallery_urls: Array.isArray(projectData.photo_gallery_urls) ? projectData.photo_gallery_urls : [],
         video_tour_urls: Array.isArray(projectData.video_tour_urls) ? projectData.video_tour_urls : [],
         floor_plan_urls: Array.isArray(projectData.floor_plan_urls) ? projectData.floor_plan_urls : [],

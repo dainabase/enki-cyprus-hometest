@@ -72,12 +72,17 @@ const AppContent = () => {
           <Suspense fallback={<LoadingSpinner />}>
             <Routes>
               {/* Admin routes - without Layout */}
-              <Route path="/admin/*" element={<PrivateRoute adminOnly><AdminDashboard /></PrivateRoute>} />
+              <Route path="/admin" element={<PrivateRoute adminOnly><AdminDashboard /></PrivateRoute>} />
+              <Route path="/admin/projects" element={<PrivateRoute adminOnly><AdminProjects /></PrivateRoute>} />
               <Route path="/admin/projects/new" element={<PrivateRoute adminOnly><AdminProjectForm /></PrivateRoute>} />
               <Route path="/admin/projects/ai-import" element={<PrivateRoute adminOnly><AdminAIImport /></PrivateRoute>} />
               <Route path="/admin/ai-import-unified" element={<PrivateRoute adminOnly><AdminAIImportUnified /></PrivateRoute>} />
               <Route path="/admin/projects/:id" element={<PrivateRoute adminOnly><AdminProjectDetail /></PrivateRoute>} />
               <Route path="/admin/projects/:id/edit" element={<PrivateRoute adminOnly><AdminProjectForm /></PrivateRoute>} />
+              <Route path="/admin/buildings" element={<PrivateRoute adminOnly><AdminBuildings /></PrivateRoute>} />
+              <Route path="/admin/leads" element={<PrivateRoute adminOnly><AdminLeads /></PrivateRoute>} />
+              <Route path="/admin/performance" element={<PrivateRoute adminOnly><AdminPerformance /></PrivateRoute>} />
+              <Route path="/admin/segmentation" element={<PrivateRoute adminOnly><AdminSegmentation /></PrivateRoute>} />
               <Route path="/admin-test" element={<PrivateRoute adminOnly><AdminTestIntegration /></PrivateRoute>} />
               
               {/* Public routes - with Layout */}
