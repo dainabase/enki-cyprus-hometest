@@ -538,7 +538,11 @@ const AdminProjectForm: React.FC = () => {
                   ) : (
                     <Button
                       type="button"
-                      onClick={nextStep}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        nextStep();
+                      }}
                       className="flex items-center gap-2"
                     >
                       Suivant
