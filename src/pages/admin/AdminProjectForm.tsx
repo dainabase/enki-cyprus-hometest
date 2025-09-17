@@ -603,7 +603,7 @@ const AdminProjectForm: React.FC = () => {
         </div>
 
         {/* Right Content Area */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col overflow-y-auto h-[calc(100vh-4rem)]">
           <div className="px-8 py-6">
             <div className="max-w-7xl mx-auto">
               <Card className="bg-white border-2 border-slate-200 shadow-xl">
