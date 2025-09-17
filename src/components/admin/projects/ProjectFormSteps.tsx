@@ -1166,6 +1166,12 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
   const renderMediaStep = () => {
     console.log('🔍 Rendering MediaStep');
+    
+    const photosValue = form.watch('photos');
+    console.log('📸 Photos raw value:', photosValue);
+    console.log('📸 Photos type:', typeof photosValue);
+    console.log('📸 Photos is array:', Array.isArray(photosValue));
+    
     try {
       return (
         <div className="space-y-8">
@@ -1180,20 +1186,36 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               <FormField
                 control={form.control}
                 name="photos"
-                render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <CategorizedMediaUploader
-                      field={{
-                        value: Array.isArray(field.value) ? (field.value as any[]).filter((item: any) => item && item.url) : [],
-                        onChange: field.onChange
-                      }}
-                      bucketName="projects"
-                    />
-                  </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  console.log('📸 Field value in render:', field.value);
+                  const validPhotos = Array.isArray(field.value) ? 
+                    field.value.filter((item: any) => {
+                      const isValid = item && item.url && typeof item.url === 'string';
+                      console.log('📸 Photo validation:', { item, isValid });
+                      return isValid;
+                    }).map((item: any) => ({
+                      url: item.url,
+                      category: item.category || 'hero',
+                      isPrimary: item.isPrimary || false,
+                      caption: item.caption || ''
+                    })) : [];
+                  console.log('📸 Valid photos:', validPhotos);
+                  
+                  return (
+                    <FormItem>
+                      <FormControl>
+                        <CategorizedMediaUploader
+                          field={{
+                            value: validPhotos,
+                            onChange: field.onChange
+                          }}
+                          bucketName="projects"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
               />
             </CardContent>
           </Card>

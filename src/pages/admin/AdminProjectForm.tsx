@@ -188,17 +188,32 @@ const AdminProjectForm: React.FC = () => {
         rental_yield_percent: projectData.rental_yield_percent || null,
         financing_available: projectData.financing_available || false,
         
-        // Media - Parse JSON string photos
-        photos: Array.isArray(projectData.photos) ? projectData.photos.map(photo => {
-          if (typeof photo === 'string') {
-            try {
-              return JSON.parse(photo);
-            } catch {
-              return { url: photo, category: 'hero', isPrimary: false, caption: '' };
-            }
+        // Media - Parse JSON string photos with detailed logging
+        photos: (() => {
+          console.log('📸 Processing photos from database:', projectData.photos);
+          if (!Array.isArray(projectData.photos)) {
+            console.log('📸 Photos is not an array:', typeof projectData.photos);
+            return [];
           }
-          return photo;
-        }) : [],
+          
+          const parsed = projectData.photos.map((photo, index) => {
+            if (typeof photo === 'string') {
+              try {
+                const parsedPhoto = JSON.parse(photo);
+                console.log(`📸 Parsed photo ${index}:`, parsedPhoto);
+                return parsedPhoto;
+              } catch (e) {
+                console.error(`📸 Failed to parse photo ${index}:`, photo, e);
+                return { url: photo, category: 'hero', isPrimary: false, caption: '' };
+              }
+            }
+            console.log(`📸 Photo ${index} already object:`, photo);
+            return photo;
+          });
+          
+          console.log('📸 Final parsed photos:', parsed);
+          return parsed;
+        })(),
         photo_gallery_urls: Array.isArray(projectData.photo_gallery_urls) ? projectData.photo_gallery_urls : [],
         video_tour_urls: Array.isArray(projectData.video_tour_urls) ? projectData.video_tour_urls : [],
         floor_plan_urls: Array.isArray(projectData.floor_plan_urls) ? projectData.floor_plan_urls : [],
@@ -237,27 +252,41 @@ const AdminProjectForm: React.FC = () => {
     try {
       console.log('💾 Submitting project data:', data);
       
+      console.log('💾 Submitting data:', data);
+      
       if (isEdit) {
         const { error } = await supabase
           .from('projects')
           .update(data)
           .eq('id', id);
         
-        if (error) throw error;
+        if (error) {
+          console.error('❌ Update error:', error);
+          throw error;
+        }
         toast.success('Projet mis à jour avec succès');
       } else {
-        const { error } = await supabase
+        const { data: insertData, error } = await supabase
           .from('projects')
-          .insert([data]);
+          .insert([data])
+          .select();
           
-        if (error) throw error;
+        if (error) {
+          console.error('❌ Insert error:', error);
+          throw error;
+        }
+        console.log('✅ Insert success:', insertData);
         toast.success('Projet créé avec succès');
       }
       
       navigate('/admin/projects');
     } catch (error) {
       console.error('❌ Erreur lors de la sauvegarde:', error);
-      toast.error('Erreur lors de la sauvegarde');
+      if (error.message) {
+        toast.error(`Erreur: ${error.message}`);
+      } else {
+        toast.error('Erreur lors de la sauvegarde');
+      }
     }
   };
 
