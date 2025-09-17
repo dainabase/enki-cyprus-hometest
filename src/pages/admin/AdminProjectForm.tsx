@@ -69,6 +69,11 @@ const AdminProjectForm: React.FC = () => {
       storage_spaces: null,
       energy_rating: '',
       construction_year: null,
+      building_certification: '',
+      maintenance_fees_yearly: null,
+      property_tax_yearly: null,
+      hoa_fees_monthly: null,
+      internet_speed_mbps: null,
       
       // Pricing
       price: 0,
@@ -175,6 +180,13 @@ const AdminProjectForm: React.FC = () => {
         floors_total: projectData.floors_total || null,
         parking_spaces: projectData.parking_spaces || null,
         storage_spaces: projectData.storage_spaces || null,
+        energy_rating: projectData.energy_rating || '',
+        construction_year: projectData.construction_year || null,
+        building_certification: projectData.building_certification || '',
+        maintenance_fees_yearly: projectData.maintenance_fees_yearly || null,
+        property_tax_yearly: projectData.property_tax_yearly || null,
+        hoa_fees_monthly: projectData.hoa_fees_monthly || null,
+        internet_speed_mbps: projectData.internet_speed_mbps || null,
         
         // Pricing
         price: projectData.price || 0,
