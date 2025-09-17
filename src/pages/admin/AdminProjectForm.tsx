@@ -529,9 +529,9 @@ const AdminProjectForm: React.FC = () => {
   return (
     <div className="h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex">
       {/* Sidebar Navigation des Étapes - FULL HEIGHT */}
-      <div className="w-80 bg-white border-r border-slate-200 shadow-sm flex-shrink-0 flex flex-col h-screen overflow-hidden">
+      <div className="w-80 bg-white border-r border-slate-200 shadow-sm flex-shrink-0 flex flex-col sticky top-16 h-[calc(100vh-4rem)] overflow-hidden">
         {/* Sidebar Header Area */}
-        <div className="h-32 border-b border-slate-200 flex items-center justify-center bg-slate-50">
+        <div className="h-16 border-b border-slate-200 flex items-center justify-center bg-slate-50">
           <h2 className="text-lg font-semibold text-slate-900">Étapes du Projet</h2>
         </div>
         
