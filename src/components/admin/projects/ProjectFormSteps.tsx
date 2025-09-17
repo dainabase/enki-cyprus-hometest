@@ -16,6 +16,7 @@ import { CategorizedMediaUploader } from './CategorizedMediaUploader';
 import { NearbyAmenitiesSelector } from './NearbyAmenitiesSelector';
 import { AmenitiesSelector } from './AmenitiesSelector';
 import PropertySubTypeSelector from './PropertySubTypeSelector';
+import { BuildingsSection } from './BuildingsSection';
 import { ProjectFormData } from '@/schemas/projectSchema';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -940,6 +941,9 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           </div>
         </CardContent>
       </Card>
+
+      {/* Buildings Section */}
+      {projectId && <BuildingsSection projectId={projectId} />}
     </div>
     );
   };
