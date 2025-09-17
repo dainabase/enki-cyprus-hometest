@@ -124,13 +124,23 @@ const AdminProjectForm: React.FC = () => {
   const { data: project, isLoading } = useQuery({
     queryKey: ['project', id],
     queryFn: () => fetchProject(id!),
-    enabled: !!id && isEdit
+    enabled: !!id && isEdit,
+    staleTime: 30000, // Les données restent fraîches pendant 30 secondes
+    gcTime: 5 * 60 * 1000, // Garde en cache pendant 5 minutes
+    refetchOnWindowFocus: false, // Évite les refetch intempestifs
+    refetchOnMount: true // Toujours refetch au montage
   });
 
   // Load project data into form when editing
   useEffect(() => {
     if (project && isEdit) {
       console.log('📝 Loading project data into form:', project);
+      console.log('📊 Project data values:', {
+        total_units_new: project.total_units_new,
+        units_available_new: project.units_available_new,
+        energy_rating: project.energy_rating,
+        categorized_photos: project.categorized_photos
+      });
       
       // Reset form with project data
       const projectData = project;
@@ -174,8 +184,8 @@ const AdminProjectForm: React.FC = () => {
         // Specifications
         land_area_m2: projectData.land_area_m2 || null,
         built_area_m2: projectData.built_area_m2 || null,
-        total_units_new: projectData.total_units_new || (projectData.total_units > 0 ? projectData.total_units : null) || null,
-        units_available_new: projectData.units_available_new || (projectData.units_available > 0 ? projectData.units_available : null) || null,
+        total_units_new: projectData.total_units_new || null,
+        units_available_new: projectData.units_available_new || null,
         bedrooms_range: projectData.bedrooms_range || '',
         bathrooms_range: projectData.bathrooms_range || '',
         floors_total: projectData.floors_total || null,
@@ -316,16 +326,10 @@ const AdminProjectForm: React.FC = () => {
         
         toast.success('Projet mis à jour avec succès');
         
-        // Forcer un rechargement complet après sauvegarde pour garantir l'affichage
-        setTimeout(async () => {
-          // Invalider tout le cache lié au projet
-          await queryClient.invalidateQueries({ queryKey: ['project', id] });
-          await queryClient.refetchQueries({ queryKey: ['project', id] });
-          
-          // Forcer le rechargement de la page pour éviter les problèmes de cache persistants
-          console.log('🔄 Forcing page reload to ensure all data is displayed correctly');
-          window.location.reload();
-        }, 1500);
+        // Invalider le cache et recharger les données
+        queryClient.invalidateQueries({ queryKey: ['project', id] });
+        
+        // Pas de rechargement automatique - laissons l'utilisateur naviguer normalement
         
       } else {
         const { data: insertData, error } = await supabase
