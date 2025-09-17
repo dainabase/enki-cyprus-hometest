@@ -182,150 +182,125 @@ export default function PropertyForm() {
 
 
   return (
-    <div className="h-screen flex flex-col">
-      {/* Header Section - STICKY */}
-      <div className="sticky top-0 z-10 bg-white border-b border-slate-200 shadow-sm">
-        <div className="px-8 py-6">
-          <div className="flex items-start justify-between">
-            <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                <Button 
-                  variant="ghost" 
-                  onClick={() => navigate('/admin/properties')}
-                  className="p-2 hover:bg-slate-100"
-                  size="sm"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </Button>
-                <div>
-                  <h1 className="text-3xl font-bold text-slate-900">
-                    {isEdit ? 'Modifier la propriété' : 'Créer une nouvelle propriété'}
-                  </h1>
-                  <p className="text-slate-600">
-                    Étape {currentStepIndex + 1} sur {propertyFormSteps.length}: {currentStep.title}
-                  </p>
-                </div>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header fixe */}
+      <div className="h-32 bg-white border-b-2 border-slate-200 sticky top-0 z-10">
+        <div className="h-full px-8 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate('/admin/properties')}
+              className="flex items-center gap-2"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              Retour propriétés
+            </Button>
+            <span className="text-slate-400">|</span>
+            <h1 className="text-2xl font-bold text-slate-900">
+              {isEdit ? 'Modifier la propriété' : 'Créer une nouvelle propriété'}
+            </h1>
+          </div>
+          <div className="flex items-center gap-4">
+            {saveMutation.isSuccess && (
+              <div className="flex items-center text-emerald-600">
+                <CheckCircle className="w-5 h-5 mr-2" />
+                <span className="text-sm font-medium">Sauvegardé</span>
               </div>
-            </div>
-            <div className="flex items-center gap-3">
-              {saveMutation.isSuccess && (
-                <div className="flex items-center text-emerald-600 bg-emerald-50 px-3 py-2 rounded-lg">
-                  <CheckCircle className="w-5 h-5 mr-2" />
-                  <span className="text-sm font-medium">Sauvegardé</span>
-                </div>
-              )}
-              {/* Golden Visa Badge */}
-              {isGoldenVisa && (
-                <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300">
-                  ✨ Golden Visa Éligible
-                </Badge>
-              )}
-            </div>
+            )}
+            {/* Golden Visa Badge */}
+            {isGoldenVisa && (
+              <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300">
+                ✨ Golden Visa Éligible
+              </Badge>
+            )}
+            <a href="/admin" className="text-base text-slate-600 hover:text-slate-900 transition-colors">
+              Retour au dashboard
+            </a>
           </div>
         </div>
       </div>
 
-      {/* Main Layout with Sidebar */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar */}
-        <aside className="w-64 bg-white border-r border-slate-200 sticky top-32 h-[calc(100vh-8rem)] overflow-y-auto flex-shrink-0">
-          <div className="p-6 space-y-6">
-            {/* Steps navigation */}
-            <div className="space-y-2">
-              <h3 className="text-sm font-medium text-slate-500 mb-4">Étapes du formulaire</h3>
+      <div className="flex">
+        {/* Sidebar fixe */}
+        <div className="w-80 bg-white border-r-2 border-slate-200 sticky top-[128px] h-[calc(100vh-128px)] overflow-y-auto">
+          <div className="p-6">
+            <h2 className="text-lg font-semibold text-slate-900 mb-6">Étapes de la propriété</h2>
+            <nav className="space-y-2">
               {propertyFormSteps.map((step, index) => (
-                <Button
+                <button
                   key={step.id}
-                  variant={index === currentStepIndex ? "default" : "ghost"}
                   onClick={() => handleStepClick(index)}
-                  className={`w-full justify-start text-left h-auto p-3 ${
-                    index === currentStepIndex 
-                      ? 'bg-slate-900 text-white hover:bg-slate-800' 
-                      : 'hover:bg-slate-100'
+                  className={`w-full text-left px-4 py-3 rounded-lg transition-colors ${
+                    currentStepIndex === index
+                      ? 'bg-primary text-white'
+                      : 'text-slate-600 hover:bg-slate-100'
                   }`}
                 >
-                  <div className="flex items-center space-x-3">
-                    <div
-                      className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0 ${
-                        index < currentStepIndex
-                          ? 'bg-emerald-500 text-white'
-                          : index === currentStepIndex
-                          ? 'bg-white text-slate-900'
-                          : 'bg-slate-200 text-slate-600'
-                      }`}
-                    >
+                  <div className="flex items-center gap-3">
+                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
+                      index < currentStepIndex
+                        ? 'bg-emerald-500 text-white'
+                        : currentStepIndex === index
+                        ? 'bg-white text-primary'
+                        : 'bg-slate-200 text-slate-600'
+                    }`}>
                       {index < currentStepIndex ? <Check className="w-3 h-3" /> : index + 1}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="font-medium text-sm">{step.title}</div>
-                      <div className={`text-xs truncate ${
-                        index === currentStepIndex 
-                          ? 'text-slate-300' 
-                          : 'text-slate-500'
-                      }`}>{step.description}</div>
-                    </div>
+                    </span>
+                    <span className="font-medium">{step.title}</span>
                   </div>
-                </Button>
+                </button>
               ))}
-            </div>
+            </nav>
           </div>
-        </aside>
+        </div>
 
-        {/* Main Content */}
-        <main className="flex-1 overflow-y-auto bg-gradient-to-br from-slate-50 to-slate-100">
-          <div className="p-8 space-y-6">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(handleSave)} className="space-y-6">
-                <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 shadow-lg">
-                  <CardContent className="p-8">
-                    <PropertyFormSteps
-                      form={form}
-                      currentStep={currentStep.id}
-                    />
-                  </CardContent>
-                </Card>
+        {/* Contenu principal */}
+        <div className="flex-1 p-8">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleSave)} className="space-y-8">
+              <PropertyFormSteps
+                form={form}
+                currentStep={currentStep.id}
+              />
 
-                {/* Navigation Buttons */}
-                <div className="flex justify-between bg-white/80 backdrop-blur-sm border border-slate-200 rounded-xl p-6 shadow-lg">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handlePrevious}
-                    disabled={currentStepIndex === 0}
-                    className="gap-2 border-slate-200 hover:bg-slate-50"
-                  >
-                    <ArrowLeft className="w-4 h-4" />
-                    Précédent
-                  </Button>
+              {/* Navigation controls */}
+              <div className="flex justify-between items-center pt-8 border-t">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handlePrevious}
+                  disabled={currentStepIndex === 0}
+                  className="flex items-center gap-2"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Précédent
+                </Button>
 
-                  <div className="flex gap-3">
-                    {currentStepIndex === propertyFormSteps.length - 1 ? (
-                      <Button 
-                        type="submit" 
-                        disabled={saveMutation.isPending}
-                        className="bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 gap-2"
-                        size="lg"
-                      >
-                        <Save className="w-4 h-4" />
-                        {saveMutation.isPending ? 'Sauvegarde...' : 'Sauvegarder'}
-                      </Button>
-                    ) : (
-                      <Button 
-                        type="button" 
-                        onClick={handleNext}
-                        className="bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 gap-2"
-                        size="lg"
-                      >
-                        Suivant
-                        <ArrowRight className="w-4 h-4" />
-                      </Button>
-                    )}
-                  </div>
+                <div className="flex items-center gap-4">
+                  {currentStepIndex === propertyFormSteps.length - 1 ? (
+                    <Button 
+                      type="submit" 
+                      disabled={saveMutation.isPending}
+                      className="flex items-center gap-2"
+                    >
+                      <Save className="h-4 w-4" />
+                      {saveMutation.isPending ? 'Sauvegarde...' : (isEdit ? 'Mettre à jour' : 'Créer la propriété')}
+                    </Button>
+                  ) : (
+                    <Button
+                      type="button"
+                      onClick={handleNext}
+                      className="flex items-center gap-2"
+                    >
+                      Suivant
+                      <ArrowRight className="h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
-              </form>
-            </Form>
-          </div>
-        </main>
+              </div>
+            </form>
+          </Form>
+        </div>
       </div>
     </div>
   );
