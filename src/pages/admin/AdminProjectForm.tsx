@@ -74,6 +74,7 @@ const AdminProjectForm: React.FC = () => {
       property_tax_yearly: null,
       hoa_fees_monthly: null,
       internet_speed_mbps: null,
+      pet_policy: '',
       
       // Pricing
       price: 0,
@@ -187,6 +188,7 @@ const AdminProjectForm: React.FC = () => {
         property_tax_yearly: projectData.property_tax_yearly || null,
         hoa_fees_monthly: projectData.hoa_fees_monthly || null,
         internet_speed_mbps: projectData.internet_speed_mbps || null,
+        pet_policy: projectData.pet_policy || '',
         
         // Pricing
         price: projectData.price || 0,
