@@ -1440,7 +1440,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent className="bg-white z-50">
-                    <SelectItem value="planned">Préparation au chantier</SelectItem>
+                    <SelectItem value="planned">Préparation chantier</SelectItem>
                     <SelectItem value="in_progress">Travaux en cours</SelectItem>
                     <SelectItem value="completion">Achèvement</SelectItem>
                     <SelectItem value="finished">Terminé</SelectItem>
