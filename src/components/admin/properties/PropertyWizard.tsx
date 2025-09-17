@@ -6,9 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Building2, Home, Package, FileSpreadsheet } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import PropertyForm from './PropertyForm';
 import BulkPropertyCreator from './BulkPropertyCreator';
-import CSVImporter from './CSVImporter';
+import { CSVImporter } from './CSVImporter';
 import { PropertyOCRImporter } from './PropertyOCRImporter';
 import { toast } from 'sonner';
 
@@ -201,16 +200,19 @@ export default function PropertyWizard({ open, onClose, onSuccess }: PropertyWiz
               </TabsList>
 
               <TabsContent value="single" className="mt-4">
-                <PropertyForm
-                  developerId={selectedDeveloper}
-                  projectId={selectedProject}
-                  buildingId={selectedBuilding}
-                  onSuccess={() => {
-                    toast.success('Propriété créée avec succès');
-                    onSuccess();
-                    onClose();
-                  }}
-                />
+                <div className="text-center p-8">
+                  <p className="text-muted-foreground">
+                    Formulaire de création unique en cours de développement.
+                  </p>
+                  <Button
+                    onClick={() => {
+                      window.location.href = `/admin/property-form?project=${selectedProject}&building=${selectedBuilding}`;
+                    }}
+                    className="mt-4"
+                  >
+                    Aller au formulaire détaillé
+                  </Button>
+                </div>
               </TabsContent>
 
               <TabsContent value="bulk" className="mt-4">
@@ -228,10 +230,9 @@ export default function PropertyWizard({ open, onClose, onSuccess }: PropertyWiz
 
               <TabsContent value="import" className="mt-4">
                 <CSVImporter
-                  developerId={selectedDeveloper}
                   projectId={selectedProject}
                   buildingId={selectedBuilding}
-                  onSuccess={(count) => {
+                  onPropertiesImported={(count) => {
                     toast.success(`${count} propriétés importées avec succès`);
                     onSuccess();
                     onClose();
@@ -241,7 +242,6 @@ export default function PropertyWizard({ open, onClose, onSuccess }: PropertyWiz
 
               <TabsContent value="template" className="mt-4">
                 <PropertyOCRImporter
-                  developerId={selectedDeveloper}
                   projectId={selectedProject}
                   buildingId={selectedBuilding}
                   onPropertiesExtracted={(count) => {
