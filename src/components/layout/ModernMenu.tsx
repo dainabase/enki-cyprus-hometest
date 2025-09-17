@@ -18,6 +18,7 @@ const ModernMenu = () => {
     { title: "Projets", href: "/projects" },
     { title: "Recherche IA", href: "/search" },
     { title: "Conseil Fiscal IA", href: "/lexaia" },
+    { title: "Blog", href: "/blog" },
     { title: "À propos", href: "/about" },
     { title: "Contact", href: "/contact" },
   ];

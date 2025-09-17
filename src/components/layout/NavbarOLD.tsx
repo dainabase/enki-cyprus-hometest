@@ -15,7 +15,8 @@ import {
   Building,
   Info,
   Mail,
-  Brain
+  Brain,
+  BookOpen
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
@@ -64,7 +65,7 @@ const Navbar = () => {
     { name: 'Projets', href: '/projects', icon: Building },
     { name: 'Recherche IA', href: '/search', icon: Search },
     { name: 'Conseil Fiscal IA', href: '/lexaia', icon: Brain },
-    { name: 'Blog', href: '/blog', icon: Info },
+    { name: 'Blog', href: '/blog', icon: BookOpen },
     { name: 'À Propos', href: '/about', icon: Info },
     { name: 'Contact', href: '/contact', icon: Mail },
   ];
