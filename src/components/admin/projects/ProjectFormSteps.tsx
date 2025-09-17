@@ -1152,84 +1152,96 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     </div>
   );
 
-  const renderMediaStep = () => (
-    <div className="space-y-8">
-      <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
-        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
-          <CardTitle className="text-xl font-semibold text-foreground">Photos du Projet</CardTitle>
-          <CardDescription className="text-muted-foreground">
-            Gérez vos photos par catégorie pour un affichage optimal
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="p-6">
-          <FormField
-            control={form.control}
-            name="photos"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <CategorizedMediaUploader
-                    field={{
-                      value: (field.value || []) as any,
-                      onChange: field.onChange
-                    }}
-                    bucketName="projects"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </CardContent>
-      </Card>
+  const renderMediaStep = () => {
+    try {
+      return (
+        <div className="space-y-8">
+          <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
+            <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+              <CardTitle className="text-xl font-semibold text-foreground">Photos du Projet</CardTitle>
+              <CardDescription className="text-muted-foreground">
+                Gérez vos photos par catégorie pour un affichage optimal
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-6">
+              <FormField
+                control={form.control}
+                name="photos"
+                render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <CategorizedMediaUploader
+                      field={{
+                        value: Array.isArray(field.value) ? (field.value as any[]).filter((item: any) => item && item.url) : [],
+                        onChange: field.onChange
+                      }}
+                      bucketName="projects"
+                    />
+                  </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
 
-      <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
-        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
-          <CardTitle className="text-xl font-semibold text-foreground">Plans & Documentation</CardTitle>
-        </CardHeader>
-        <CardContent className="p-6">
-          <FormField
-            control={form.control}
-            name="floor_plan_urls"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <MediaUploader
-                    field={field}
-                    label="Plans d'étage"
-                    accept="image/*,.pdf"
-                    bucketName="projects"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </CardContent>
-      </Card>
+          <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
+            <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+              <CardTitle className="text-xl font-semibold text-foreground">Plans & Documentation</CardTitle>
+            </CardHeader>
+            <CardContent className="p-6">
+              <FormField
+                control={form.control}
+                name="floor_plan_urls"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <MediaUploader
+                        field={field}
+                        label="Plans d'étage"
+                        accept="image/*,.pdf"
+                        bucketName="projects"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
 
-      <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
-        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
-          <CardTitle className="text-xl font-semibold text-foreground">Contenu Multimédia</CardTitle>
-        </CardHeader>
-        <CardContent className="p-6 space-y-6">
-          <FormField
-            control={form.control}
-            name="virtual_tour_url_new"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>URL visite virtuelle</FormLabel>
-                <FormControl>
-                  <Input placeholder="https://..." {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </CardContent>
-      </Card>
-    </div>
-  );
+          <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
+            <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+              <CardTitle className="text-xl font-semibold text-foreground">Contenu Multimédia</CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 space-y-6">
+              <FormField
+                control={form.control}
+                name="virtual_tour_url_new"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>URL visite virtuelle</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+        </div>
+      );
+    } catch (error) {
+      console.error('Error in renderMediaStep:', error);
+      return (
+        <div className="p-6 text-center">
+          <p className="text-red-600">Erreur lors du chargement de la section média.</p>
+          <p className="text-sm text-gray-600">Veuillez rafraîchir la page ou contacter le support.</p>
+        </div>
+      );
+    }
+  }
 
   const renderAmenitiesStep = () => (
     <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
