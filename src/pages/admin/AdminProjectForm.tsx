@@ -276,29 +276,33 @@ const AdminProjectForm: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header fixe */}
-      <div className="bg-white border-b-2 border-slate-200 sticky top-0 z-10">
-        <div className="px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button 
-                variant="ghost" 
-                onClick={() => navigate('/admin/projects')}
-                className="flex items-center gap-2"
-              >
-                <ChevronLeft className="h-4 w-4" />
-                Retour projets
-              </Button>
-              <h1 className="text-2xl font-bold text-slate-900">
-                {isEdit ? 'Modifier le projet' : 'Créer un nouveau projet'}
-              </h1>
-            </div>
+      <div className="h-32 bg-white border-b-2 border-slate-200 sticky top-0 z-10">
+        <div className="h-full px-8 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate('/admin/projects')}
+              className="flex items-center gap-2"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              Retour projets
+            </Button>
+            <span className="text-slate-400">|</span>
+            <h1 className="text-2xl font-bold text-slate-900">
+              {isEdit ? 'Modifier le projet' : 'Créer un nouveau projet'}
+            </h1>
+          </div>
+          <div className="flex items-center gap-4">
+            <a href="/admin" className="text-base text-slate-600 hover:text-slate-900 transition-colors">
+              Retour au dashboard
+            </a>
           </div>
         </div>
       </div>
 
       <div className="flex">
         {/* Sidebar fixe */}
-        <div className="w-80 bg-white border-r-2 border-slate-200 sticky top-[73px] h-[calc(100vh-73px)] overflow-y-auto">
+        <div className="w-80 bg-white border-r-2 border-slate-200 sticky top-[128px] h-[calc(100vh-128px)] overflow-y-auto">
           <div className="p-6">
             <h2 className="text-lg font-semibold text-slate-900 mb-6">Étapes du projet</h2>
             <nav className="space-y-2">
