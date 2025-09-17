@@ -1888,21 +1888,56 @@ export type Database = {
       }
       properties: {
         Row: {
+          balcony_count: number | null
+          basement_area: number | null
           bathrooms_count: number | null
           bedrooms_count: number | null
           building_id: string | null
           cadastral_reference: string | null
+          ceiling_height: number | null
+          covered_veranda_area: number | null
           created_at: string | null
           created_by: string | null
           developer_id: string | null
           display_order: number | null
+          distance_to_elevator: number | null
+          distance_to_stairs: number | null
+          en_suite_count: number | null
+          entrance_type: string | null
           facing: string[] | null
           floor_number: number | null
+          garden_area: number | null
+          has_balcony: boolean | null
+          has_disabled_access: boolean | null
+          has_dressing_room: boolean | null
+          has_guest_wc: boolean | null
+          has_laundry_room: boolean | null
+          has_maid_room: boolean | null
+          has_office: boolean | null
+          has_pantry: boolean | null
+          has_playroom: boolean | null
+          has_private_elevator: boolean | null
+          has_private_garden: boolean | null
+          has_private_pool: boolean | null
+          has_roof_terrace: boolean | null
+          has_storage_room: boolean | null
+          has_storage_unit: boolean | null
+          has_terrace: boolean | null
+          has_wine_cellar: boolean | null
           id: string
           internal_area: number | null
           is_available: boolean | null
+          kitchen_area: number | null
+          living_room_area: number | null
+          master_bedroom_area: number | null
           orientation: string | null
           ownership_type: string | null
+          parking_included: boolean | null
+          parking_location: string | null
+          parking_spaces: number | null
+          parking_type_unit: string | null
+          plot_area: number | null
+          pool_size: string | null
           position_on_floor: string | null
           price_excluding_vat: number | null
           project_id: string
@@ -1911,28 +1946,70 @@ export type Database = {
           property_subtype: string | null
           property_type: string
           reservation_date: string | null
+          roof_terrace_area: number | null
           sale_type: string | null
           sold_date: string | null
+          storage_area: number | null
+          storage_location: string | null
           title_deed_number: string | null
+          total_covered_area: number | null
+          total_rooms: number | null
+          uncovered_veranda_area: number | null
           unit_number: string
           updated_at: string | null
+          wc_count: number | null
         }
         Insert: {
+          balcony_count?: number | null
+          basement_area?: number | null
           bathrooms_count?: number | null
           bedrooms_count?: number | null
           building_id?: string | null
           cadastral_reference?: string | null
+          ceiling_height?: number | null
+          covered_veranda_area?: number | null
           created_at?: string | null
           created_by?: string | null
           developer_id?: string | null
           display_order?: number | null
+          distance_to_elevator?: number | null
+          distance_to_stairs?: number | null
+          en_suite_count?: number | null
+          entrance_type?: string | null
           facing?: string[] | null
           floor_number?: number | null
+          garden_area?: number | null
+          has_balcony?: boolean | null
+          has_disabled_access?: boolean | null
+          has_dressing_room?: boolean | null
+          has_guest_wc?: boolean | null
+          has_laundry_room?: boolean | null
+          has_maid_room?: boolean | null
+          has_office?: boolean | null
+          has_pantry?: boolean | null
+          has_playroom?: boolean | null
+          has_private_elevator?: boolean | null
+          has_private_garden?: boolean | null
+          has_private_pool?: boolean | null
+          has_roof_terrace?: boolean | null
+          has_storage_room?: boolean | null
+          has_storage_unit?: boolean | null
+          has_terrace?: boolean | null
+          has_wine_cellar?: boolean | null
           id?: string
           internal_area?: number | null
           is_available?: boolean | null
+          kitchen_area?: number | null
+          living_room_area?: number | null
+          master_bedroom_area?: number | null
           orientation?: string | null
           ownership_type?: string | null
+          parking_included?: boolean | null
+          parking_location?: string | null
+          parking_spaces?: number | null
+          parking_type_unit?: string | null
+          plot_area?: number | null
+          pool_size?: string | null
           position_on_floor?: string | null
           price_excluding_vat?: number | null
           project_id: string
@@ -1941,28 +2018,70 @@ export type Database = {
           property_subtype?: string | null
           property_type: string
           reservation_date?: string | null
+          roof_terrace_area?: number | null
           sale_type?: string | null
           sold_date?: string | null
+          storage_area?: number | null
+          storage_location?: string | null
           title_deed_number?: string | null
+          total_covered_area?: number | null
+          total_rooms?: number | null
+          uncovered_veranda_area?: number | null
           unit_number: string
           updated_at?: string | null
+          wc_count?: number | null
         }
         Update: {
+          balcony_count?: number | null
+          basement_area?: number | null
           bathrooms_count?: number | null
           bedrooms_count?: number | null
           building_id?: string | null
           cadastral_reference?: string | null
+          ceiling_height?: number | null
+          covered_veranda_area?: number | null
           created_at?: string | null
           created_by?: string | null
           developer_id?: string | null
           display_order?: number | null
+          distance_to_elevator?: number | null
+          distance_to_stairs?: number | null
+          en_suite_count?: number | null
+          entrance_type?: string | null
           facing?: string[] | null
           floor_number?: number | null
+          garden_area?: number | null
+          has_balcony?: boolean | null
+          has_disabled_access?: boolean | null
+          has_dressing_room?: boolean | null
+          has_guest_wc?: boolean | null
+          has_laundry_room?: boolean | null
+          has_maid_room?: boolean | null
+          has_office?: boolean | null
+          has_pantry?: boolean | null
+          has_playroom?: boolean | null
+          has_private_elevator?: boolean | null
+          has_private_garden?: boolean | null
+          has_private_pool?: boolean | null
+          has_roof_terrace?: boolean | null
+          has_storage_room?: boolean | null
+          has_storage_unit?: boolean | null
+          has_terrace?: boolean | null
+          has_wine_cellar?: boolean | null
           id?: string
           internal_area?: number | null
           is_available?: boolean | null
+          kitchen_area?: number | null
+          living_room_area?: number | null
+          master_bedroom_area?: number | null
           orientation?: string | null
           ownership_type?: string | null
+          parking_included?: boolean | null
+          parking_location?: string | null
+          parking_spaces?: number | null
+          parking_type_unit?: string | null
+          plot_area?: number | null
+          pool_size?: string | null
           position_on_floor?: string | null
           price_excluding_vat?: number | null
           project_id?: string
@@ -1971,11 +2090,18 @@ export type Database = {
           property_subtype?: string | null
           property_type?: string
           reservation_date?: string | null
+          roof_terrace_area?: number | null
           sale_type?: string | null
           sold_date?: string | null
+          storage_area?: number | null
+          storage_location?: string | null
           title_deed_number?: string | null
+          total_covered_area?: number | null
+          total_rooms?: number | null
+          uncovered_veranda_area?: number | null
           unit_number?: string
           updated_at?: string | null
+          wc_count?: number | null
         }
         Relationships: [
           {
