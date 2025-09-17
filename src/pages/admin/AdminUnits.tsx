@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,16 +8,19 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Home, Search, Filter, Eye, Edit, Crown, MapPin, Euro, Plus } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { Home, Search, Filter, Eye, Edit, Crown, MapPin, Euro, Plus, Download, TrendingUp, TrendingDown, Building2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { useTranslation } from 'react-i18next';
 import PropertyWizard from '@/components/admin/properties/PropertyWizard';
+import { convertToCSV, downloadCSV } from '@/utils/csvExport';
 
 interface Property {
   id: string;
   unit_number: string;
-  floor: number;
+  floor_number: number;
   property_type: string;
   bedrooms_count: number;
   bathrooms_count: number;
@@ -57,13 +60,47 @@ const AdminUnits = () => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [zoneFilter, setZoneFilter] = useState<string>('all');
-  const [goldenVisaFilter, setGoldenVisaFilter] = useState<string>('all');
+  const [developerFilter, setDeveloperFilter] = useState<string>('all');
+  const [priceMin, setPriceMin] = useState<string>('');
+  const [priceMax, setPriceMax] = useState<string>('');
+  const [goldenVisaOnly, setGoldenVisaOnly] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const [showWizard, setShowWizard] = useState(false);
   const [showPropertyForm, setShowPropertyForm] = useState(false);
   const [editingPropertyId, setEditingPropertyId] = useState<string | null>(null);
 
+  const ITEMS_PER_PAGE = 25;
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Load filters from localStorage
+  useEffect(() => {
+    const savedFilters = localStorage.getItem('admin-units-filters');
+    if (savedFilters) {
+      const filters = JSON.parse(savedFilters);
+      setStatusFilter(filters.statusFilter || 'all');
+      setTypeFilter(filters.typeFilter || 'all');
+      setZoneFilter(filters.zoneFilter || 'all');
+      setDeveloperFilter(filters.developerFilter || 'all');
+      setPriceMin(filters.priceMin || '');
+      setPriceMax(filters.priceMax || '');
+      setGoldenVisaOnly(filters.goldenVisaOnly || false);
+    }
+  }, []);
+
+  // Save filters to localStorage
+  useEffect(() => {
+    const filters = {
+      statusFilter,
+      typeFilter,
+      zoneFilter,
+      developerFilter,
+      priceMin,
+      priceMax,
+      goldenVisaOnly
+    };
+    localStorage.setItem('admin-units-filters', JSON.stringify(filters));
+  }, [statusFilter, typeFilter, zoneFilter, developerFilter, priceMin, priceMax, goldenVisaOnly]);
 
   // Fetch properties with enriched data
   const { data: units = [], isLoading } = useQuery({
@@ -108,13 +145,13 @@ const AdminUnits = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-units'] });
       toast({
-        title: t('units.statusModified'),
-        description: t('units.unitStatusUpdated')
+        title: 'Statut modifié',
+        description: 'Le statut de la propriété a été mis à jour'
       });
     }
   });
 
-  // Filter units
+  // Filter units with enhanced logic
   const filteredUnits = units.filter(unit => {
     const matchesSearch = unit.unit_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          unit.project?.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -122,20 +159,77 @@ const AdminUnits = () => {
     const matchesStatus = statusFilter === 'all' || unit.property_status === statusFilter;
     const matchesType = typeFilter === 'all' || unit.property_type === typeFilter;
     const matchesZone = zoneFilter === 'all' || unit.project?.cyprus_zone === zoneFilter;
-    const matchesGoldenVisa = goldenVisaFilter === 'all' || 
-                              (goldenVisaFilter === 'true' && unit.golden_visa_eligible) ||
-                              (goldenVisaFilter === 'false' && !unit.golden_visa_eligible);
+    const matchesDeveloper = developerFilter === 'all' || unit.developer?.id === developerFilter;
+    const matchesGoldenVisaOnly = !goldenVisaOnly || unit.golden_visa_eligible;
     
-    return matchesSearch && matchesStatus && matchesType && matchesZone && matchesGoldenVisa;
+    // Price filters
+    const unitPrice = unit.price_excluding_vat || 0;
+    const matchesPriceMin = !priceMin || unitPrice >= parseFloat(priceMin);
+    const matchesPriceMax = !priceMax || unitPrice <= parseFloat(priceMax);
+    
+    return matchesSearch && matchesStatus && matchesType && matchesZone && 
+           matchesDeveloper && matchesGoldenVisaOnly &&
+           matchesPriceMin && matchesPriceMax;
   });
 
+  // Pagination logic
+  const totalPages = Math.ceil(filteredUnits.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedUnits = filteredUnits.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  // Enhanced statistics
   const stats = {
     total: units.length,
     available: units.filter(u => u.property_status === 'available').length,
     reserved: units.filter(u => u.property_status === 'reserved').length,
     sold: units.filter(u => u.property_status === 'sold').length,
     goldenVisa: units.filter(u => u.golden_visa_eligible).length,
-    totalValue: units.reduce((acc, unit) => acc + (unit.price_excluding_vat || 0), 0)
+    totalValue: units.reduce((acc, unit) => acc + (unit.price_excluding_vat || 0), 0),
+    goldenVisaValue: units
+      .filter(u => u.golden_visa_eligible)
+      .reduce((acc, unit) => acc + (unit.price_excluding_vat || 0), 0)
+  };
+
+  const availablePercentage = stats.total > 0 ? Math.round((stats.available / stats.total) * 100) : 0;
+  const reservedPercentage = stats.total > 0 ? Math.round((stats.reserved / stats.total) * 100) : 0;
+  const soldPercentage = stats.total > 0 ? Math.round((stats.sold / stats.total) * 100) : 0;
+
+  // Get unique developers for filter
+  const developers = Array.from(new Set(units.map(u => u.developer).filter(Boolean)));
+
+  // Export to CSV function
+  const handleExportCSV = () => {
+    const csvData = filteredUnits.map(unit => ({
+      'Référence': unit.unit_number || '',
+      'Projet': unit.project?.title || '',
+      'Bâtiment': unit.building?.name || 'Villa individuelle',
+      'Développeur': unit.developer?.name || '',
+      'Type': unit.property_type || '',
+      'Surface (m²)': unit.internal_area || '',
+      'Chambres': unit.bedrooms_count || '',
+      'Salles de bain': unit.bathrooms_count || '',
+      'Étage': unit.floor_number || 0,
+      'Orientation': unit.orientation || '',
+      'Prix HT (€)': unit.price_excluding_vat || 0,
+      'Prix TTC (€)': unit.price_including_vat || 0,
+      'TVA (%)': unit.vat_rate || 5,
+      'Statut': unit.property_status || '',
+      'Golden Visa': unit.golden_visa_eligible ? 'Oui' : 'Non',
+      'Ville': unit.project?.city || '',
+      'Zone': unit.project?.cyprus_zone || '',
+      'Places parking': unit.parking_spaces || 0,
+      'Vue mer': unit.has_sea_view ? 'Oui' : 'Non',
+      'Date création': new Date(unit.created_at).toLocaleDateString('fr-FR')
+    }));
+
+    const csv = convertToCSV(csvData);
+    const filename = `proprietes_${new Date().toISOString().split('T')[0]}.csv`;
+    downloadCSV(csv, filename);
+    
+    toast({
+      title: 'Export réussi',
+      description: `${csvData.length} propriétés exportées vers ${filename}`
+    });
   };
 
   const formatPrice = (price: number) => {
@@ -144,24 +238,6 @@ const AdminUnits = () => {
       currency: 'EUR',
       minimumFractionDigits: 0
     }).format(price);
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'available': return 'bg-green-100 text-green-800';
-      case 'reserved': return 'bg-yellow-100 text-yellow-800';
-      case 'sold': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'available': return 'Disponible';
-      case 'reserved': return 'Réservé';
-      case 'sold': return 'Vendu';
-      default: return status;
-    }
   };
 
   if (isLoading) {
@@ -173,13 +249,17 @@ const AdminUnits = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">{t('units.title')}</h1>
-          <p className="text-muted-foreground">{t('units.subtitle')}</p>
+          <h1 className="text-3xl font-bold">Gestion des Propriétés</h1>
+          <p className="text-muted-foreground">Gérez toutes les propriétés de votre portefeuille</p>
         </div>
         <div className="flex gap-2">
           <Button onClick={() => setShowWizard(true)} variant="outline" className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
             Créer en lot
+          </Button>
+          <Button onClick={handleExportCSV} variant="outline" className="flex items-center gap-2">
+            <Download className="h-4 w-4" />
+            Exporter CSV
           </Button>
           <Button onClick={() => {
             setEditingPropertyId(null);
@@ -191,83 +271,88 @@ const AdminUnits = () => {
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-        <Card>
+      {/* Enhanced Statistics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <Card className="border-l-4 border-l-blue-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('units.totalUnits')}</CardTitle>
-            <Home className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Total Propriétés</CardTitle>
+            <Building2 className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.total}</div>
+            <p className="text-xs text-muted-foreground">
+              Valeur totale: {formatPrice(stats.totalValue)}
+            </p>
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className="border-l-4 border-l-green-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('units.available')}</CardTitle>
-            <Home className="h-4 w-4 text-green-600" />
+            <CardTitle className="text-sm font-medium">Disponibles</CardTitle>
+            <div className="flex items-center gap-1">
+              <TrendingUp className="h-4 w-4 text-green-600" />
+              <span className="text-xs text-green-600">{availablePercentage}%</span>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">{stats.available}</div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-l-4 border-l-yellow-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('units.reserved')}</CardTitle>
-            <Home className="h-4 w-4 text-yellow-600" />
+            <CardTitle className="text-sm font-medium">Réservées</CardTitle>
+            <div className="flex items-center gap-1">
+              <TrendingDown className="h-4 w-4 text-yellow-600" />
+              <span className="text-xs text-yellow-600">{reservedPercentage}%</span>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-yellow-600">{stats.reserved}</div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-l-4 border-l-red-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('units.sold')}</CardTitle>
-            <Home className="h-4 w-4 text-red-600" />
+            <CardTitle className="text-sm font-medium">Vendues</CardTitle>
+            <div className="flex items-center gap-1">
+              <Home className="h-4 w-4 text-red-600" />
+              <span className="text-xs text-red-600">{soldPercentage}%</span>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-red-600">{stats.sold}</div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-l-4 border-l-amber-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('units.goldenVisa')}</CardTitle>
+            <CardTitle className="text-sm font-medium">Golden Visa</CardTitle>
             <Crown className="h-4 w-4 text-amber-600" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-amber-600">{stats.goldenVisa}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('units.totalValue')}</CardTitle>
-            <Euro className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-xl font-bold">{formatPrice(stats.totalValue)}</div>
+            <p className="text-xs text-muted-foreground">
+              Valeur: {formatPrice(stats.goldenVisaValue)}
+            </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Filters */}
+      {/* Enhanced Filters */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Filter className="w-5 h-5" />
-            {t('units.filters')}
+            Filtres avancés
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
             <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder={t('units.search')}
+                placeholder="Rechercher..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -276,55 +361,88 @@ const AdminUnits = () => {
             
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger>
-                <SelectValue placeholder={t('fields.status')} />
+                <SelectValue placeholder="Statut" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{t('units.allStatuses')}</SelectItem>
-                <SelectItem value="available">{t('units.available')}</SelectItem>
-                <SelectItem value="reserved">{t('units.reserved')}</SelectItem>
-                <SelectItem value="sold">{t('units.sold')}</SelectItem>
+                <SelectItem value="all">Tous les statuts</SelectItem>
+                <SelectItem value="available">Disponible</SelectItem>
+                <SelectItem value="reserved">Réservé</SelectItem>
+                <SelectItem value="sold">Vendu</SelectItem>
               </SelectContent>
             </Select>
 
             <Select value={typeFilter} onValueChange={setTypeFilter}>
               <SelectTrigger>
-                <SelectValue placeholder={t('fields.type')} />
+                <SelectValue placeholder="Type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{t('units.allTypes')}</SelectItem>
-                <SelectItem value="apartment">{t('units.apartment')}</SelectItem>
-                <SelectItem value="villa">{t('units.villa')}</SelectItem>
-                <SelectItem value="penthouse">{t('units.penthouse')}</SelectItem>
-                <SelectItem value="commercial">{t('units.commercial')}</SelectItem>
+                <SelectItem value="all">Tous les types</SelectItem>
+                <SelectItem value="apartment">Appartement</SelectItem>
+                <SelectItem value="villa">Villa</SelectItem>
+                <SelectItem value="penthouse">Penthouse</SelectItem>
+                <SelectItem value="studio">Studio</SelectItem>
+                <SelectItem value="townhouse">Maison de ville</SelectItem>
               </SelectContent>
             </Select>
 
             <Select value={zoneFilter} onValueChange={setZoneFilter}>
               <SelectTrigger>
-                <SelectValue placeholder={t('fields.zone')} />
+                <SelectValue placeholder="Zone" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{t('units.allZones')}</SelectItem>
-                <SelectItem value="limassol">{t('units.limassol')}</SelectItem>
-                <SelectItem value="paphos">{t('units.paphos')}</SelectItem>
-                <SelectItem value="larnaca">{t('units.larnaca')}</SelectItem>
-                <SelectItem value="nicosia">{t('units.nicosia')}</SelectItem>
-                <SelectItem value="famagusta">{t('units.famagusta')}</SelectItem>
-                <SelectItem value="kyrenia">{t('units.kyrenia')}</SelectItem>
+                <SelectItem value="all">Toutes les zones</SelectItem>
+                <SelectItem value="limassol">Limassol</SelectItem>
+                <SelectItem value="paphos">Paphos</SelectItem>
+                <SelectItem value="larnaca">Larnaca</SelectItem>
+                <SelectItem value="nicosia">Nicosia</SelectItem>
+                <SelectItem value="famagusta">Famagusta</SelectItem>
+                <SelectItem value="kyrenia">Kyrenia</SelectItem>
               </SelectContent>
             </Select>
+          </div>
 
-            <Select value={goldenVisaFilter} onValueChange={setGoldenVisaFilter}>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Select value={developerFilter} onValueChange={setDeveloperFilter}>
               <SelectTrigger>
-                <SelectValue placeholder={t('units.goldenVisa')} />
+                <SelectValue placeholder="Développeur" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{t('units.all')}</SelectItem>
-                <SelectItem value="true">{t('units.goldenVisa')}</SelectItem>
-                <SelectItem value="false">{t('units.standard')}</SelectItem>
+                <SelectItem value="all">Tous les développeurs</SelectItem>
+                {developers.map(dev => (
+                  <SelectItem key={dev.id} value={dev.id}>
+                    {dev.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
 
+            <Input
+              type="number"
+              placeholder="Prix min"
+              value={priceMin}
+              onChange={(e) => setPriceMin(e.target.value)}
+            />
+
+            <Input
+              type="number"
+              placeholder="Prix max"
+              value={priceMax}
+              onChange={(e) => setPriceMax(e.target.value)}
+            />
+
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="golden-visa-only"
+                checked={goldenVisaOnly}
+                onCheckedChange={setGoldenVisaOnly}
+              />
+              <Label htmlFor="golden-visa-only" className="text-sm">
+                Golden Visa uniquement
+              </Label>
+            </div>
+          </div>
+
+          <div className="mt-4 flex justify-between items-center">
             <Button 
               variant="outline" 
               onClick={() => {
@@ -332,37 +450,45 @@ const AdminUnits = () => {
                 setStatusFilter('all');
                 setTypeFilter('all');
                 setZoneFilter('all');
-                setGoldenVisaFilter('all');
+                setDeveloperFilter('all');
+                setPriceMin('');
+                setPriceMax('');
+                setGoldenVisaOnly(false);
+                setCurrentPage(1);
               }}
             >
-              {t('units.reset')}
+              Réinitialiser les filtres
             </Button>
+            
+            <div className="text-sm text-muted-foreground">
+              {filteredUnits.length} propriété(s) trouvée(s) sur {stats.total}
+            </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Units Table */}
+      {/* Properties Table */}
       <Card>
         <CardHeader>
-          <CardTitle>{t('fields.units')} ({filteredUnits.length})</CardTitle>
+          <CardTitle>Propriétés ({filteredUnits.length})</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>{t('units.unit')}</TableHead>
-                <TableHead>{t('units.developer')}</TableHead>
-                <TableHead>{t('units.type')}</TableHead>
-                <TableHead>{t('units.zone')}</TableHead>
-                <TableHead>{t('units.price')}</TableHead>
-                <TableHead>{t('units.vat')}</TableHead>
-                <TableHead>{t('units.status')}</TableHead>
-                <TableHead>{t('units.goldenVisa')}</TableHead>
-                <TableHead>{t('units.actions')}</TableHead>
+                <TableHead>Propriété</TableHead>
+                <TableHead>Développeur</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead>Zone</TableHead>
+                <TableHead>Prix</TableHead>
+                <TableHead>TVA</TableHead>
+                <TableHead>Statut</TableHead>
+                <TableHead>Golden Visa</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredUnits.map((unit) => (
+              {paginatedUnits.map((unit) => (
                 <TableRow key={unit.id}>
                   <TableCell>
                     <div>
@@ -386,7 +512,7 @@ const AdminUnits = () => {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <span className="capitalize">{unit.project.cyprus_zone}</span>
+                    <span className="capitalize">{unit.project?.cyprus_zone}</span>
                   </TableCell>
                   <TableCell>
                     <div className="font-medium">{formatPrice(unit.price_excluding_vat)}</div>
@@ -406,9 +532,9 @@ const AdminUnits = () => {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="available">{t('units.available')}</SelectItem>
-                        <SelectItem value="reserved">{t('units.reserved')}</SelectItem>
-                        <SelectItem value="sold">{t('units.sold')}</SelectItem>
+                        <SelectItem value="available">Disponible</SelectItem>
+                        <SelectItem value="reserved">Réservé</SelectItem>
+                        <SelectItem value="sold">Vendu</SelectItem>
                       </SelectContent>
                     </Select>
                   </TableCell>
@@ -416,7 +542,7 @@ const AdminUnits = () => {
                     {unit.golden_visa_eligible ? (
                       <Badge className="bg-amber-100 text-amber-800">
                         <Crown className="w-3 h-3 mr-1" />
-                        {t('units.goldenVisa')}
+                        Golden Visa
                       </Badge>
                     ) : (
                       <span className="text-sm text-muted-foreground">-</span>
@@ -443,6 +569,35 @@ const AdminUnits = () => {
               ))}
             </TableBody>
           </Table>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-4">
+              <div className="text-sm text-muted-foreground">
+                Page {currentPage} sur {totalPages} ({filteredUnits.length} propriétés)
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                  disabled={currentPage === 1}
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  Précédent
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                  disabled={currentPage === totalPages}
+                >
+                  Suivant
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
