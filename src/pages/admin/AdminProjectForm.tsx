@@ -139,6 +139,8 @@ const AdminProjectForm: React.FC = () => {
         total_units_new: project.total_units_new,
         units_available_new: project.units_available_new,
         energy_rating: project.energy_rating,
+        roi_estimate_percent: project.roi_estimate_percent,
+        rental_yield_percent: project.rental_yield_percent,
         categorized_photos: project.categorized_photos
       });
       
@@ -285,7 +287,8 @@ const AdminProjectForm: React.FC = () => {
         statut_commercial: projectData.statut_commercial || 'prelancement'
       });
       
-      setFormKey(prev => prev + 1); // Force re-render of ProjectFormSteps
+      // Ne PAS forcer le re-render ici car cela efface les données
+      console.log('📝 Form data loaded successfully');
     }
   }, [project, isEdit, form]);
 
@@ -395,8 +398,7 @@ const AdminProjectForm: React.FC = () => {
         await queryClient.invalidateQueries({ queryKey: ['project', id] });
         await queryClient.refetchQueries({ queryKey: ['project', id] });
         
-        // Force la re-render du formulaire avec les nouvelles données
-        setFormKey(prev => prev + 1);
+        // Pas de setFormKey ici car cela efface les données affichées
         
       } else {
         const { data: insertData, error } = await supabase
