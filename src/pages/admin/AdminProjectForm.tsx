@@ -202,28 +202,43 @@ const AdminProjectForm: React.FC = () => {
         rental_yield_percent: projectData.rental_yield_percent || null,
         financing_available: projectData.financing_available || false,
         
-        // Media - Parse JSON string photos with detailed logging
+        // Media - Parse JSON string photos with improved error handling
         photos: (() => {
           console.log('📸 Processing photos from database:', projectData.photos);
+          
+          if (!projectData.photos) {
+            console.log('📸 No photos in project data');
+            return [];
+          }
+          
           if (!Array.isArray(projectData.photos)) {
             console.log('📸 Photos is not an array:', typeof projectData.photos);
             return [];
           }
           
-          const parsed = projectData.photos.map((photo, index) => {
-            if (typeof photo === 'string') {
-              try {
-                const parsedPhoto = JSON.parse(photo);
-                console.log(`📸 Parsed photo ${index}:`, parsedPhoto);
-                return parsedPhoto;
-              } catch (e) {
-                console.error(`📸 Failed to parse photo ${index}:`, photo, e);
-                return { url: photo, category: 'hero', isPrimary: false, caption: '' };
+          const parsed = projectData.photos
+            .filter((photo: any) => photo !== null && photo !== undefined)
+            .map((photo: any, index: number) => {
+              if (typeof photo === 'string') {
+                try {
+                  const parsedPhoto = JSON.parse(photo);
+                  console.log(`📸 Parsed photo ${index}:`, parsedPhoto);
+                  return parsedPhoto;
+                } catch (e) {
+                  console.error(`📸 Failed to parse photo ${index}:`, photo, e);
+                  return { url: photo, category: 'hero', isPrimary: false, caption: '' };
+                }
               }
-            }
-            console.log(`📸 Photo ${index} already object:`, photo);
-            return photo;
-          });
+              
+              if (typeof photo === 'object' && photo.url) {
+                console.log(`📸 Photo ${index} already object:`, photo);
+                return photo;
+              }
+              
+              console.warn(`📸 Invalid photo format at index ${index}:`, photo);
+              return null;
+            })
+            .filter((photo: any) => photo !== null);
           
           console.log('📸 Final parsed photos:', parsed);
           return parsed;
@@ -261,10 +276,15 @@ const AdminProjectForm: React.FC = () => {
     }
   }, [project, isEdit, form]);
 
-  // Simple submit handler
+  // Enhanced submit handler with debug and cache invalidation
   const onSubmit = async (data: any) => {
     try {
       console.log('💾 Submitting project data:', data);
+      console.log('💾 Specific fields check:');
+      console.log('💾 - energy_rating:', data.energy_rating);
+      console.log('💾 - pet_policy:', data.pet_policy);
+      console.log('💾 - total_units_new:', data.total_units_new);
+      console.log('💾 - land_area_m2:', data.land_area_m2);
       
       // Fix date format - convert YYYY-MM to YYYY-MM-01 for database
       const processedData = {
@@ -276,16 +296,29 @@ const AdminProjectForm: React.FC = () => {
       console.log('💾 Processed data with fixed dates:', processedData);
       
       if (isEdit) {
-        const { error } = await supabase
+        const { data: updateResult, error } = await supabase
           .from('projects')
           .update(processedData)
-          .eq('id', id);
+          .eq('id', id)
+          .select();
         
         if (error) {
           console.error('❌ Update error:', error);
           throw error;
         }
+        
+        console.log('✅ Update success:', updateResult);
+        
+        // Invalider le cache et recharger les données
+        await queryClient.invalidateQueries({ queryKey: ['project', id] });
+        
         toast.success('Projet mis à jour avec succès');
+        
+        // Attendre un peu avant de recharger pour s'assurer que la DB est mise à jour
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+        
       } else {
         const { data: insertData, error } = await supabase
           .from('projects')
@@ -298,9 +331,10 @@ const AdminProjectForm: React.FC = () => {
         }
         console.log('✅ Insert success:', insertData);
         toast.success('Projet créé avec succès');
+        
+        navigate('/admin/projects');
       }
       
-      navigate('/admin/projects');
     } catch (error) {
       console.error('❌ Erreur lors de la sauvegarde:', error);
       if (error.message) {
