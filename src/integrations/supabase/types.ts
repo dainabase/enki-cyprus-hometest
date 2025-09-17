@@ -1888,187 +1888,96 @@ export type Database = {
       }
       properties: {
         Row: {
-          assigned_agent_id: string | null
-          attic_m2: number | null
-          balcony_m2: number | null
-          basement_m2: number | null
-          bathrooms: number
-          bedrooms: number
-          building_id: string
-          commission_rate: number | null
-          covered_veranda_m2: number | null
+          bathrooms_count: number | null
+          bedrooms_count: number | null
+          building_id: string | null
+          cadastral_reference: string | null
           created_at: string | null
-          developer_id: string
-          energy_certificate_rating: string | null
-          featured_image: string | null
-          floor: number
-          floor_plan_url: string | null
-          gallery_images: string[] | null
-          garden_m2: number | null
-          has_air_conditioning: boolean | null
-          has_alarm_system: boolean | null
-          has_central_heating: boolean | null
-          has_electric_gates: boolean | null
-          has_gym_access: boolean | null
-          has_mountain_view: boolean | null
-          has_pool_access: boolean | null
-          has_pressurized_water: boolean | null
-          has_sea_view: boolean | null
-          has_solar_panels: boolean | null
-          has_underfloor_heating: boolean | null
+          created_by: string | null
+          developer_id: string | null
+          display_order: number | null
+          facing: string[] | null
+          floor_number: number | null
           id: string
-          immovable_property_tax: number | null
-          internet_ready: boolean | null
-          is_furnished: boolean | null
-          is_golden_visa: boolean | null
-          legal_fees_percentage: number | null
+          internal_area: number | null
+          is_available: boolean | null
           orientation: string | null
-          parking_spaces: number | null
-          plot_m2: number | null
-          price: number
-          price_with_vat: number | null
+          ownership_type: string | null
+          position_on_floor: string | null
+          price_excluding_vat: number | null
           project_id: string
-          property_tax_yearly: number | null
-          sewerage_levy: number | null
-          size_m2: number
-          stamp_duty_percentage: number | null
-          status: string | null
-          storage_units: number | null
-          terrace_m2: number | null
+          property_code: string | null
+          property_status: string | null
+          property_subtype: string | null
+          property_type: string
+          reservation_date: string | null
+          sale_type: string | null
+          sold_date: string | null
           title_deed_number: string | null
-          transfer_fee_percentage: number | null
-          type: string
-          uncovered_veranda_m2: number | null
           unit_number: string
           updated_at: string | null
-          vat_rate: number | null
-          view_type: string | null
-          virtual_tour_url: string | null
         }
         Insert: {
-          assigned_agent_id?: string | null
-          attic_m2?: number | null
-          balcony_m2?: number | null
-          basement_m2?: number | null
-          bathrooms: number
-          bedrooms: number
-          building_id: string
-          commission_rate?: number | null
-          covered_veranda_m2?: number | null
+          bathrooms_count?: number | null
+          bedrooms_count?: number | null
+          building_id?: string | null
+          cadastral_reference?: string | null
           created_at?: string | null
-          developer_id: string
-          energy_certificate_rating?: string | null
-          featured_image?: string | null
-          floor: number
-          floor_plan_url?: string | null
-          gallery_images?: string[] | null
-          garden_m2?: number | null
-          has_air_conditioning?: boolean | null
-          has_alarm_system?: boolean | null
-          has_central_heating?: boolean | null
-          has_electric_gates?: boolean | null
-          has_gym_access?: boolean | null
-          has_mountain_view?: boolean | null
-          has_pool_access?: boolean | null
-          has_pressurized_water?: boolean | null
-          has_sea_view?: boolean | null
-          has_solar_panels?: boolean | null
-          has_underfloor_heating?: boolean | null
+          created_by?: string | null
+          developer_id?: string | null
+          display_order?: number | null
+          facing?: string[] | null
+          floor_number?: number | null
           id?: string
-          immovable_property_tax?: number | null
-          internet_ready?: boolean | null
-          is_furnished?: boolean | null
-          is_golden_visa?: boolean | null
-          legal_fees_percentage?: number | null
+          internal_area?: number | null
+          is_available?: boolean | null
           orientation?: string | null
-          parking_spaces?: number | null
-          plot_m2?: number | null
-          price: number
-          price_with_vat?: number | null
+          ownership_type?: string | null
+          position_on_floor?: string | null
+          price_excluding_vat?: number | null
           project_id: string
-          property_tax_yearly?: number | null
-          sewerage_levy?: number | null
-          size_m2: number
-          stamp_duty_percentage?: number | null
-          status?: string | null
-          storage_units?: number | null
-          terrace_m2?: number | null
+          property_code?: string | null
+          property_status?: string | null
+          property_subtype?: string | null
+          property_type: string
+          reservation_date?: string | null
+          sale_type?: string | null
+          sold_date?: string | null
           title_deed_number?: string | null
-          transfer_fee_percentage?: number | null
-          type: string
-          uncovered_veranda_m2?: number | null
           unit_number: string
           updated_at?: string | null
-          vat_rate?: number | null
-          view_type?: string | null
-          virtual_tour_url?: string | null
         }
         Update: {
-          assigned_agent_id?: string | null
-          attic_m2?: number | null
-          balcony_m2?: number | null
-          basement_m2?: number | null
-          bathrooms?: number
-          bedrooms?: number
-          building_id?: string
-          commission_rate?: number | null
-          covered_veranda_m2?: number | null
+          bathrooms_count?: number | null
+          bedrooms_count?: number | null
+          building_id?: string | null
+          cadastral_reference?: string | null
           created_at?: string | null
-          developer_id?: string
-          energy_certificate_rating?: string | null
-          featured_image?: string | null
-          floor?: number
-          floor_plan_url?: string | null
-          gallery_images?: string[] | null
-          garden_m2?: number | null
-          has_air_conditioning?: boolean | null
-          has_alarm_system?: boolean | null
-          has_central_heating?: boolean | null
-          has_electric_gates?: boolean | null
-          has_gym_access?: boolean | null
-          has_mountain_view?: boolean | null
-          has_pool_access?: boolean | null
-          has_pressurized_water?: boolean | null
-          has_sea_view?: boolean | null
-          has_solar_panels?: boolean | null
-          has_underfloor_heating?: boolean | null
+          created_by?: string | null
+          developer_id?: string | null
+          display_order?: number | null
+          facing?: string[] | null
+          floor_number?: number | null
           id?: string
-          immovable_property_tax?: number | null
-          internet_ready?: boolean | null
-          is_furnished?: boolean | null
-          is_golden_visa?: boolean | null
-          legal_fees_percentage?: number | null
+          internal_area?: number | null
+          is_available?: boolean | null
           orientation?: string | null
-          parking_spaces?: number | null
-          plot_m2?: number | null
-          price?: number
-          price_with_vat?: number | null
+          ownership_type?: string | null
+          position_on_floor?: string | null
+          price_excluding_vat?: number | null
           project_id?: string
-          property_tax_yearly?: number | null
-          sewerage_levy?: number | null
-          size_m2?: number
-          stamp_duty_percentage?: number | null
-          status?: string | null
-          storage_units?: number | null
-          terrace_m2?: number | null
+          property_code?: string | null
+          property_status?: string | null
+          property_subtype?: string | null
+          property_type?: string
+          reservation_date?: string | null
+          sale_type?: string | null
+          sold_date?: string | null
           title_deed_number?: string | null
-          transfer_fee_percentage?: number | null
-          type?: string
-          uncovered_veranda_m2?: number | null
           unit_number?: string
           updated_at?: string | null
-          vat_rate?: number | null
-          view_type?: string | null
-          virtual_tour_url?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "properties_assigned_agent_id_fkey"
-            columns: ["assigned_agent_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "properties_building_id_fkey"
             columns: ["building_id"]
