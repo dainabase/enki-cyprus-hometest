@@ -15,8 +15,18 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({
   const { isAuthenticated, isAdmin, loading, profile } = useAuth();
   const location = useLocation();
 
-  // Show loading while auth is being checked
+  console.log('🔒 PrivateRoute check:', {
+    path: location.pathname,
+    isAuthenticated,
+    isAdmin,
+    loading,
+    hasProfile: !!profile,
+    adminOnly
+  });
+
+  // Show loading while auth is being determined
   if (loading) {
+    console.log('🔒 PrivateRoute: Still loading authentication...');
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -27,24 +37,26 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({
     );
   }
 
-  // Only redirect if we're sure the user is not authenticated
+  // Only redirect if we're absolutely sure the user is not authenticated
   if (!loading && !isAuthenticated) {
-    // Save current location for redirect after login
+    console.log('🔒 PrivateRoute: User not authenticated, redirecting to login');
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Block access to client space (dashboard etc.) if profile flag is set
+  // Block access to client space if profile flag is set
   if (!adminOnly && profile?.profile?.blockedClient) {
+    console.log('🔒 PrivateRoute: Client blocked, redirecting to home');
     return <Navigate to="/" replace />;
   }
 
   // For admin routes, wait for profile to load completely
   if (adminOnly && isAuthenticated && !profile) {
+    console.log('🔒 PrivateRoute: Admin route, waiting for profile...');
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
-          <p className="text-muted-foreground">Chargement du profil...</p>
+          <p className="text-muted-foreground">Chargement du profil administrateur...</p>
         </div>
       </div>
     );
@@ -52,8 +64,10 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({
 
   // Only check admin status after profile is loaded
   if (adminOnly && profile && !isAdmin) {
+    console.log('🔒 PrivateRoute: Not admin, redirecting to dashboard');
     return <Navigate to="/dashboard" replace />;
   }
 
+  console.log('🔒 PrivateRoute: Access granted');
   return <>{children}</>;
 };

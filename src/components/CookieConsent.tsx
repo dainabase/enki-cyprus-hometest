@@ -1,74 +1,81 @@
-import React from 'react';
-import CookieConsent from 'react-cookie-consent';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { X, Cookie } from 'lucide-react';
 
 export const CookieConsentBanner: React.FC = () => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    // Check both localStorage and cookies for consent
+    const localConsent = localStorage.getItem('enki-realty-consent');
+    const cookieConsent = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('enki-realty-consent='));
+    
+    // Only show banner if no consent found in either storage
+    if (!localConsent && !cookieConsent) {
+      setIsVisible(true);
+    }
+  }, []);
+
+  const handleAccept = () => {
+    // Store consent in multiple ways for maximum persistence
+    localStorage.setItem('enki-realty-consent', 'true');
+    sessionStorage.setItem('enki-realty-consent', 'true');
+    
+    // Set cookie with long expiration
+    const expiryDate = new Date();
+    expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+    document.cookie = `enki-realty-consent=true; expires=${expiryDate.toUTCString()}; path=/; SameSite=Strict`;
+    
+    console.log('✅ Cookies accepted - Analytics enabled');
+    
+    // Enable analytics tracking
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('consent', 'update', {
+        analytics_storage: 'granted'
+      });
+    }
+    
+    setIsVisible(false);
+  };
+
+  const handleDecline = () => {
+    // Store decline in multiple ways
+    localStorage.setItem('enki-realty-consent', 'false');
+    sessionStorage.setItem('enki-realty-consent', 'false');
+    
+    // Set cookie with long expiration
+    const expiryDate = new Date();
+    expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+    document.cookie = `enki-realty-consent=false; expires=${expiryDate.toUTCString()}; path=/; SameSite=Strict`;
+    
+    console.log('❌ Cookies declined - Analytics disabled');
+    
+    // Disable analytics tracking
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('consent', 'update', {
+        analytics_storage: 'denied'
+      });
+    }
+    
+    setIsVisible(false);
+  };
+
+  if (!isVisible) {
+    return null;
+  }
+
   return (
-    <CookieConsent
-      location="bottom"
-      buttonText="J'accepte"
-      declineButtonText="Refuser"
-      enableDeclineButton
-      cookieName="enki-realty-consent"
-      style={{
-        background: "hsl(var(--background))",
-        color: "hsl(var(--foreground))",
-        borderTop: "1px solid hsl(var(--border))",
-        boxShadow: "0 -4px 12px hsl(var(--shadow))",
-      }}
-      buttonStyle={{
-        background: "hsl(var(--primary))",
-        color: "hsl(var(--primary-foreground))",
-        border: "none",
-        borderRadius: "6px",
-        padding: "8px 16px",
-        fontSize: "14px",
-        fontWeight: "500",
-      }}
-      declineButtonStyle={{
-        background: "transparent",
-        color: "hsl(var(--muted-foreground))",
-        border: "1px solid hsl(var(--border))",
-        borderRadius: "6px",
-        padding: "8px 16px",
-        fontSize: "14px",
-        marginRight: "10px",
-      }}
-      expires={365}
-      sameSite="strict"
-      acceptOnScroll={false}
-      acceptOnScrollPercentage={50}
-      onAccept={() => {
-        console.log('✅ Cookies accepted - Analytics enabled');
-        // Store consent in sessionStorage AND localStorage for persistence
-        localStorage.setItem('enki-realty-consent', 'true');
-        sessionStorage.setItem('enki-realty-consent', 'true');
-        
-        // Enable analytics tracking
-        if (typeof window !== 'undefined' && (window as any).gtag) {
-          (window as any).gtag('consent', 'update', {
-            analytics_storage: 'granted'
-          });
-        }
-      }}
-      onDecline={() => {
-        console.log('❌ Cookies declined - Analytics disabled');
-        // Store decline in localStorage for persistence
-        localStorage.setItem('enki-realty-consent', 'false');
-        sessionStorage.setItem('enki-realty-consent', 'false');
-        
-        // Disable analytics tracking
-        if (typeof window !== 'undefined' && (window as any).gtag) {
-          (window as any).gtag('consent', 'update', {
-            analytics_storage: 'denied'
-          });
-        }
-      }}
-    >
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="fixed bottom-4 right-4 max-w-md bg-background border-2 border-border rounded-lg shadow-xl p-6 z-50">
+      <div className="flex items-start gap-3">
+        <Cookie className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
         <div className="flex-1">
-          <p className="text-sm">
-            🍪 <strong>ENKI-REALTY</strong> utilise des cookies pour améliorer votre expérience et analyser l'usage du site. 
+          <h3 className="font-semibold text-foreground mb-2">
+            🍪 Cookies & Confidentialité
+          </h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            <strong>ENKI-REALTY</strong> utilise des cookies pour améliorer votre expérience et analyser l'usage du site. 
             En continuant, vous acceptez notre{' '}
             <a 
               href="/privacy-policy" 
@@ -79,8 +86,29 @@ export const CookieConsentBanner: React.FC = () => {
               politique de confidentialité
             </a>.
           </p>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Button
+              onClick={handleAccept}
+              className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              J'accepte
+            </Button>
+            <Button
+              onClick={handleDecline}
+              variant="outline"
+              className="flex-1"
+            >
+              Refuser
+            </Button>
+          </div>
         </div>
+        <button
+          onClick={handleDecline}
+          className="text-muted-foreground hover:text-foreground p-1"
+        >
+          <X className="w-4 h-4" />
+        </button>
       </div>
-    </CookieConsent>
+    </div>
   );
 };

@@ -71,57 +71,65 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Initialize auth state
   useEffect(() => {
     let mounted = true;
+    let initialLoadComplete = false;
     
-    // Set up auth state listener FIRST (no async in callback to avoid deadlocks)
+    console.log('🔐 AuthContext: Initializing authentication...');
+    
+    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, nextSession) => {
       console.log('🔐 Auth state changed:', event, nextSession?.user?.email);
 
       if (!mounted) return;
 
-      setSession(nextSession);
-      setUser(nextSession?.user ?? null);
+      // Only update state after initial load is complete OR if this is a real auth event
+      if (initialLoadComplete || event !== 'INITIAL_SESSION') {
+        setSession(nextSession);
+        setUser(nextSession?.user ?? null);
 
-      if (nextSession?.user) {
-        // Defer Supabase calls with setTimeout to prevent deadlocks
-        setTimeout(() => {
+        if (nextSession?.user && mounted) {
+          // Defer profile loading to avoid deadlocks
+          setTimeout(async () => {
+            if (mounted) {
+              await fetchProfile(nextSession.user!.id);
+            }
+          }, 100);
+        } else {
+          setProfile(null);
           if (mounted) {
-            fetchProfile(nextSession.user!.id);
+            setLoading(false);
           }
-        }, 0);
-      } else {
-        setProfile(null);
-        setLoading(false); // Set loading to false when no user
+        }
       }
     });
 
     // THEN check for existing session
     const getInitialSession = async () => {
       try {
+        console.log('🔐 AuthContext: Getting initial session...');
         const { data: { session }, error } = await supabase.auth.getSession();
         
         if (!mounted) return;
         
         if (error) {
-          console.error('Error getting session:', error);
+          console.error('❌ AuthContext: Error getting session:', error);
           setLoading(false);
           return;
         }
 
+        console.log('🔐 AuthContext: Initial session found:', !!session?.user);
+        
         setSession(session);
         setUser(session?.user ?? null);
+        initialLoadComplete = true;
 
-        if (session?.user) {
-          // Defer profile load
-          setTimeout(() => {
-            if (mounted) {
-              fetchProfile(session.user!.id);
-            }
-          }, 0);
+        if (session?.user && mounted) {
+          // Load profile for existing session
+          await fetchProfile(session.user.id);
         } else {
           setLoading(false);
         }
       } catch (error) {
-        console.error('Error in getInitialSession:', error);
+        console.error('❌ AuthContext: Error in getInitialSession:', error);
         if (mounted) {
           setLoading(false);
         }
@@ -131,6 +139,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     getInitialSession();
 
     return () => {
+      console.log('🔐 AuthContext: Cleanup');
       mounted = false;
       subscription.unsubscribe();
     };
