@@ -281,6 +281,7 @@ const AdminProjectForm: React.FC = () => {
     try {
       console.log('💾 Submitting project data:', data);
       console.log('💾 Specific fields check:');
+      console.log('💾 - title:', data.title);
       console.log('💾 - energy_rating:', data.energy_rating);
       console.log('💾 - pet_policy:', data.pet_policy);
       console.log('💾 - total_units_new:', data.total_units_new);
@@ -311,12 +312,15 @@ const AdminProjectForm: React.FC = () => {
         
         // Invalider le cache et recharger les données
         await queryClient.invalidateQueries({ queryKey: ['project', id] });
+        await queryClient.refetchQueries({ queryKey: ['project', id] });
         
         toast.success('Projet mis à jour avec succès');
         
-        // Attendre un peu avant de recharger pour s'assurer que la DB est mise à jour
+        // Forcer la re-fetch des données et la mise à jour du formulaire
+        // Juste invalider le cache pour forcer le rechargement
         setTimeout(() => {
-          window.location.reload();
+          queryClient.invalidateQueries({ queryKey: ['project', id] });
+          console.log('🔄 Cache invalidated, form should refresh automatically');
         }, 1000);
         
       } else {
