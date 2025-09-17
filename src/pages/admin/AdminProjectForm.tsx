@@ -30,6 +30,7 @@ const AdminProjectForm: React.FC = () => {
   const form = useForm({
     mode: 'onSubmit',
     defaultValues: {
+      // Basics
       title: '',
       project_code: '',
       developer_id: '',
@@ -41,29 +42,48 @@ const AdminProjectForm: React.FC = () => {
       exclusive_commercialization: false,
       description: '',
       detailed_description: '',
+      
+      // Location
       full_address: '',
       city: '',
       region: '',
       neighborhood: '',
-      latitude: null,
-      longitude: null,
+      cyprus_zone: 'limassol',
+      gps_latitude: null,
+      gps_longitude: null,
+      proximity_sea_km: null,
+      proximity_airport_km: null,
+      proximity_city_center_km: null,
+      proximity_highway_km: null,
+      
+      // Specifications
       land_area_m2: null,
       built_area_m2: null,
-      total_units: null,
-      bedrooms_min: null,
-      bedrooms_max: null,
-      bathrooms_min: null,
-      bathrooms_max: null,
+      total_units_new: null,
+      units_available_new: null,
+      energy_rating: '',
+      construction_year: null,
+      
+      // Pricing
       price: 0,
-      vat_rate: 19,
+      vat_rate_new: 19,
+      golden_visa_eligible_new: false,
+      
+      // Media
       photos: [],
       floor_plan_urls: [],
       virtual_tour_url_new: '',
+      
+      // Amenities
       amenities: [],
-      meta_title: '',
-      meta_description: '',
+      
+      // Marketing
+      meta_title_new: '',
+      meta_description_new: '',
       featured_new: false,
-      status_project: 'active'
+      
+      // Status
+      status_project: 'disponible'
     }
   });
 
@@ -100,17 +120,26 @@ const AdminProjectForm: React.FC = () => {
         city: projectData.city || '',
         region: projectData.region || '',
         neighborhood: projectData.neighborhood || '',
-        latitude: projectData.gps_latitude || null,
-        longitude: projectData.gps_longitude || null,
+        cyprus_zone: projectData.cyprus_zone || 'limassol',
+        gps_latitude: projectData.gps_latitude || null,
+        gps_longitude: projectData.gps_longitude || null,
+        proximity_sea_km: projectData.proximity_sea_km || null,
+        proximity_airport_km: projectData.proximity_airport_km || null,
+        proximity_city_center_km: projectData.proximity_city_center_km || null,
+        proximity_highway_km: projectData.proximity_highway_km || null,
         
         // Specifications
         land_area_m2: projectData.land_area_m2 || null,
         built_area_m2: projectData.built_area_m2 || null,
-        total_units: projectData.total_units_new || null,
+        total_units_new: projectData.total_units_new || null,
+        units_available_new: projectData.units_available_new || null,
+        energy_rating: projectData.energy_rating || '',
+        construction_year: projectData.construction_year || null,
         
         // Pricing
         price: projectData.price || 0,
-        vat_rate: projectData.vat_rate_new || 19,
+        vat_rate_new: projectData.vat_rate_new || 19,
+        golden_visa_eligible_new: projectData.golden_visa_eligible_new || false,
         
         // Media
         photos: projectData.photos || [],
@@ -120,13 +149,13 @@ const AdminProjectForm: React.FC = () => {
         // Amenities
         amenities: projectData.amenities || [],
         
-        // Marketing & SEO
-        meta_title: projectData.meta_title_new || '',
-        meta_description: projectData.meta_description_new || '',
+        // Marketing
+        meta_title_new: projectData.meta_title_new || '',
+        meta_description_new: projectData.meta_description_new || '',
         featured_new: projectData.featured_new || false,
         
         // Status
-        status_project: projectData.status_project || 'active'
+        status_project: projectData.status_project || 'disponible'
       });
       
       setFormKey(prev => prev + 1); // Force re-render of ProjectFormSteps
