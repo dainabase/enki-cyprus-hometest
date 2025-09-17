@@ -296,39 +296,102 @@ export type Database = {
       }
       buildings: {
         Row: {
+          actual_completion: string | null
+          building_class: string | null
+          building_code: string | null
+          building_name: string | null
           building_type: string | null
           construction_status: string | null
           created_at: string | null
+          created_by: string | null
+          display_order: number | null
+          elevator_count: number | null
+          energy_certificate: string | null
           energy_rating: string | null
+          expected_completion: string | null
+          has_cctv: boolean | null
+          has_concierge: boolean | null
+          has_garden: boolean | null
+          has_generator: boolean | null
+          has_gym: boolean | null
+          has_parking: boolean | null
+          has_playground: boolean | null
+          has_pool: boolean | null
+          has_security_system: boolean | null
+          has_spa: boolean | null
           id: string
           name: string
+          parking_type: string | null
           project_id: string | null
           total_floors: number | null
           total_units: number | null
+          units_available: number | null
           updated_at: string | null
         }
         Insert: {
+          actual_completion?: string | null
+          building_class?: string | null
+          building_code?: string | null
+          building_name?: string | null
           building_type?: string | null
           construction_status?: string | null
           created_at?: string | null
+          created_by?: string | null
+          display_order?: number | null
+          elevator_count?: number | null
+          energy_certificate?: string | null
           energy_rating?: string | null
+          expected_completion?: string | null
+          has_cctv?: boolean | null
+          has_concierge?: boolean | null
+          has_garden?: boolean | null
+          has_generator?: boolean | null
+          has_gym?: boolean | null
+          has_parking?: boolean | null
+          has_playground?: boolean | null
+          has_pool?: boolean | null
+          has_security_system?: boolean | null
+          has_spa?: boolean | null
           id?: string
           name: string
+          parking_type?: string | null
           project_id?: string | null
           total_floors?: number | null
           total_units?: number | null
+          units_available?: number | null
           updated_at?: string | null
         }
         Update: {
+          actual_completion?: string | null
+          building_class?: string | null
+          building_code?: string | null
+          building_name?: string | null
           building_type?: string | null
           construction_status?: string | null
           created_at?: string | null
+          created_by?: string | null
+          display_order?: number | null
+          elevator_count?: number | null
+          energy_certificate?: string | null
           energy_rating?: string | null
+          expected_completion?: string | null
+          has_cctv?: boolean | null
+          has_concierge?: boolean | null
+          has_garden?: boolean | null
+          has_generator?: boolean | null
+          has_gym?: boolean | null
+          has_parking?: boolean | null
+          has_playground?: boolean | null
+          has_pool?: boolean | null
+          has_security_system?: boolean | null
+          has_spa?: boolean | null
           id?: string
           name?: string
+          parking_type?: string | null
           project_id?: string | null
           total_floors?: number | null
           total_units?: number | null
+          units_available?: number | null
           updated_at?: string | null
         }
         Relationships: [
