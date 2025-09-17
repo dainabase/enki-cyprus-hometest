@@ -48,6 +48,7 @@ const AdminProjectForm: React.FC = () => {
       city: '',
       region: '',
       neighborhood: '',
+      neighborhood_description: '',
       cyprus_zone: 'limassol',
       gps_latitude: null,
       gps_longitude: null,
@@ -61,29 +62,55 @@ const AdminProjectForm: React.FC = () => {
       built_area_m2: null,
       total_units_new: null,
       units_available_new: null,
+      bedrooms_range: '',
+      bathrooms_range: '',
+      floors_total: null,
+      parking_spaces: null,
+      storage_spaces: null,
       energy_rating: '',
       construction_year: null,
       
       // Pricing
       price: 0,
+      price_from_new: null,
+      price_to: null,
+      price_per_m2: null,
       vat_rate_new: 19,
+      vat_included: false,
       golden_visa_eligible_new: false,
+      roi_estimate_percent: null,
+      rental_yield_percent: null,
+      financing_available: false,
       
       // Media
       photos: [],
+      photo_gallery_urls: [],
+      video_tour_urls: [],
       floor_plan_urls: [],
       virtual_tour_url_new: '',
+      project_presentation_url: '',
+      youtube_tour_url: '',
+      vimeo_tour_url: '',
+      drone_footage_urls: [],
+      model_3d_urls: [],
       
-      // Amenities
+      // Features & Amenities
+      features: [],
       amenities: [],
+      surrounding_amenities: [],
       
       // Marketing
+      project_narrative: '',
       meta_title_new: '',
       meta_description_new: '',
+      meta_keywords: [],
+      marketing_highlights: [],
+      target_audience: [],
       featured_new: false,
       
       // Status
-      status_project: 'disponible'
+      status_project: 'disponible',
+      statut_commercial: 'prelancement'
     }
   });
 
@@ -107,7 +134,7 @@ const AdminProjectForm: React.FC = () => {
         project_code: projectData.project_code || '',
         developer_id: projectData.developer_id || '',
         property_category: projectData.property_category || 'residential',
-        property_sub_type: projectData.property_sub_type || ['apartment'],
+        property_sub_type: Array.isArray(projectData.property_sub_type) ? projectData.property_sub_type : ['apartment'],
         project_phase: projectData.project_phase || 'off-plan',
         launch_date: projectData.launch_date || '',
         completion_date_new: projectData.completion_date_new || '',
@@ -120,6 +147,7 @@ const AdminProjectForm: React.FC = () => {
         city: projectData.city || '',
         region: projectData.region || '',
         neighborhood: projectData.neighborhood || '',
+        neighborhood_description: projectData.neighborhood_description || '',
         cyprus_zone: projectData.cyprus_zone || 'limassol',
         gps_latitude: projectData.gps_latitude || null,
         gps_longitude: projectData.gps_longitude || null,
@@ -133,29 +161,55 @@ const AdminProjectForm: React.FC = () => {
         built_area_m2: projectData.built_area_m2 || null,
         total_units_new: projectData.total_units_new || null,
         units_available_new: projectData.units_available_new || null,
+        bedrooms_range: projectData.bedrooms_range || '',
+        bathrooms_range: projectData.bathrooms_range || '',
+        floors_total: projectData.floors_total || null,
+        parking_spaces: projectData.parking_spaces || null,
+        storage_spaces: projectData.storage_spaces || null,
         energy_rating: projectData.energy_rating || '',
         construction_year: projectData.construction_year || null,
         
         // Pricing
         price: projectData.price || 0,
+        price_from_new: projectData.price_from_new || null,
+        price_to: projectData.price_to || null,
+        price_per_m2: projectData.price_per_m2 || null,
         vat_rate_new: projectData.vat_rate_new || 19,
+        vat_included: projectData.vat_included || false,
         golden_visa_eligible_new: projectData.golden_visa_eligible_new || false,
+        roi_estimate_percent: projectData.roi_estimate_percent || null,
+        rental_yield_percent: projectData.rental_yield_percent || null,
+        financing_available: projectData.financing_available || false,
         
         // Media
-        photos: projectData.photos || [],
-        floor_plan_urls: projectData.floor_plan_urls || [],
+        photos: Array.isArray(projectData.photos) ? projectData.photos : [],
+        photo_gallery_urls: Array.isArray(projectData.photo_gallery_urls) ? projectData.photo_gallery_urls : [],
+        video_tour_urls: Array.isArray(projectData.video_tour_urls) ? projectData.video_tour_urls : [],
+        floor_plan_urls: Array.isArray(projectData.floor_plan_urls) ? projectData.floor_plan_urls : [],
         virtual_tour_url_new: projectData.virtual_tour_url_new || '',
+        project_presentation_url: projectData.project_presentation_url || '',
+        youtube_tour_url: projectData.youtube_tour_url || '',
+        vimeo_tour_url: projectData.vimeo_tour_url || '',
+        drone_footage_urls: Array.isArray(projectData.drone_footage_urls) ? projectData.drone_footage_urls : [],
+        model_3d_urls: Array.isArray(projectData.model_3d_urls) ? projectData.model_3d_urls : [],
         
-        // Amenities
-        amenities: projectData.amenities || [],
+        // Features & Amenities
+        features: Array.isArray(projectData.features) ? projectData.features : [],
+        amenities: Array.isArray(projectData.amenities) ? projectData.amenities : [],
+        surrounding_amenities: Array.isArray(projectData.surrounding_amenities) ? projectData.surrounding_amenities : [],
         
         // Marketing
+        project_narrative: projectData.project_narrative || '',
         meta_title_new: projectData.meta_title_new || '',
         meta_description_new: projectData.meta_description_new || '',
+        meta_keywords: Array.isArray(projectData.meta_keywords) ? projectData.meta_keywords : [],
+        marketing_highlights: Array.isArray(projectData.marketing_highlights) ? projectData.marketing_highlights : [],
+        target_audience: Array.isArray(projectData.target_audience) ? projectData.target_audience : [],
         featured_new: projectData.featured_new || false,
         
         // Status
-        status_project: projectData.status_project || 'disponible'
+        status_project: projectData.status_project || 'disponible',
+        statut_commercial: projectData.statut_commercial || 'prelancement'
       });
       
       setFormKey(prev => prev + 1); // Force re-render of ProjectFormSteps
