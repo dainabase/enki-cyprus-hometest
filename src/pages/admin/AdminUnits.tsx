@@ -7,27 +7,28 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Home, Search, Filter, Eye, Edit, Crown, MapPin, Euro, Plus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { useTranslation } from 'react-i18next';
 import PropertyWizard from '@/components/admin/properties/PropertyWizard';
 
-interface Unit {
+interface Property {
   id: string;
   unit_number: string;
   floor: number;
-  type: string;
-  bedrooms: number;
-  bathrooms: number;
-  size_m2: number;
-  price: number;
-  price_with_vat: number;
-  status: 'available' | 'reserved' | 'sold';
-  is_golden_visa: boolean;
-  view_type?: string;
+  property_type: string;
+  bedrooms_count: number;
+  bathrooms_count: number;
+  internal_area: number;
+  price_excluding_vat: number;
+  price_including_vat: number;
+  property_status: 'available' | 'reserved' | 'sold' | 'rented' | 'unavailable';
+  golden_visa_eligible: boolean;
+  view_type?: string[];
   orientation?: string;
-  balcony_m2?: number;
+  balcony_area?: number;
   parking_spaces?: number;
   has_sea_view?: boolean;
   vat_rate?: number;
@@ -35,18 +36,19 @@ interface Unit {
   created_at: string;
   project: {
     id: string;
-    name: string;
+    title: string;
     city: string;
     cyprus_zone?: string;
-  };
+  } | null;
   building: {
     id: string;
     name: string;
-  };
+    building_type: string;
+  } | null;
   developer: {
     id: string;
     name: string;
-  };
+  } | null;
 }
 
 const AdminUnits = () => {
@@ -57,11 +59,13 @@ const AdminUnits = () => {
   const [zoneFilter, setZoneFilter] = useState<string>('all');
   const [goldenVisaFilter, setGoldenVisaFilter] = useState<string>('all');
   const [showWizard, setShowWizard] = useState(false);
+  const [showPropertyForm, setShowPropertyForm] = useState(false);
+  const [editingPropertyId, setEditingPropertyId] = useState<string | null>(null);
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Fetch units from properties table
+  // Fetch properties with enriched data
   const { data: units = [], isLoading } = useQuery({
     queryKey: ['admin-units'],
     queryFn: async () => {
@@ -69,17 +73,18 @@ const AdminUnits = () => {
         .from('properties')
         .select(`
           *,
-          project:projects!inner(
+          project:project_id(
             id,
-            name,
+            title,
             city,
             cyprus_zone
           ),
-          building:buildings!inner(
+          building:building_id(
             id,
-            name
+            name,
+            building_type
           ),
-          developer:developers!inner(
+          developer:developer_id(
             id,
             name
           )
@@ -111,26 +116,26 @@ const AdminUnits = () => {
 
   // Filter units
   const filteredUnits = units.filter(unit => {
-    const matchesSearch = unit.unit_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         unit.project.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         unit.project.name?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || unit.status === statusFilter;
-    const matchesType = typeFilter === 'all' || unit.type === typeFilter;
-    const matchesZone = zoneFilter === 'all' || unit.project.cyprus_zone === zoneFilter;
+    const matchesSearch = unit.unit_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         unit.project?.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         unit.project?.title?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || unit.property_status === statusFilter;
+    const matchesType = typeFilter === 'all' || unit.property_type === typeFilter;
+    const matchesZone = zoneFilter === 'all' || unit.project?.cyprus_zone === zoneFilter;
     const matchesGoldenVisa = goldenVisaFilter === 'all' || 
-                              (goldenVisaFilter === 'true' && unit.is_golden_visa) ||
-                              (goldenVisaFilter === 'false' && !unit.is_golden_visa);
+                              (goldenVisaFilter === 'true' && unit.golden_visa_eligible) ||
+                              (goldenVisaFilter === 'false' && !unit.golden_visa_eligible);
     
     return matchesSearch && matchesStatus && matchesType && matchesZone && matchesGoldenVisa;
   });
 
   const stats = {
     total: units.length,
-    available: units.filter(u => u.status === 'available').length,
-    reserved: units.filter(u => u.status === 'reserved').length,
-    sold: units.filter(u => u.status === 'sold').length,
-    goldenVisa: units.filter(u => u.is_golden_visa).length,
-    totalValue: units.reduce((acc, unit) => acc + (unit.price || 0), 0)
+    available: units.filter(u => u.property_status === 'available').length,
+    reserved: units.filter(u => u.property_status === 'reserved').length,
+    sold: units.filter(u => u.property_status === 'sold').length,
+    goldenVisa: units.filter(u => u.golden_visa_eligible).length,
+    totalValue: units.reduce((acc, unit) => acc + (unit.price_excluding_vat || 0), 0)
   };
 
   const formatPrice = (price: number) => {
@@ -171,10 +176,19 @@ const AdminUnits = () => {
           <h1 className="text-3xl font-bold">{t('units.title')}</h1>
           <p className="text-muted-foreground">{t('units.subtitle')}</p>
         </div>
-        <Button onClick={() => setShowWizard(true)} className="flex items-center gap-2">
-          <Plus className="h-4 w-4" />
-          Créer Propriété(s)
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={() => setShowWizard(true)} variant="outline" className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            Créer en lot
+          </Button>
+          <Button onClick={() => {
+            setEditingPropertyId(null);
+            setShowPropertyForm(true);
+          }} className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            Nouvelle Propriété
+          </Button>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -354,30 +368,30 @@ const AdminUnits = () => {
                     <div>
                       <div className="font-medium">{unit.unit_number}</div>
                       <div className="text-sm text-muted-foreground">
-                        {unit.building.name} - Étage {unit.floor}
+                        {unit.building?.name || 'Villa individuelle'} - Étage {unit.floor_number || 0}
                       </div>
                       <div className="text-sm text-muted-foreground flex items-center gap-1">
                         <MapPin className="w-3 h-3" />
-                        {unit.project.city}
+                        {unit.project?.city}
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <span className="text-sm">{unit.developer.name}</span>
+                    <span className="text-sm">{unit.developer?.name || unit.project?.title || '-'}</span>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline">{unit.type}</Badge>
+                    <Badge variant="outline">{unit.property_type}</Badge>
                     <div className="text-xs text-muted-foreground mt-1">
-                      {unit.bedrooms}ch • {unit.bathrooms}sdb • {unit.size_m2}m²
+                      {unit.bedrooms_count}ch • {unit.bathrooms_count}sdb • {unit.internal_area}m²
                     </div>
                   </TableCell>
                   <TableCell>
                     <span className="capitalize">{unit.project.cyprus_zone}</span>
                   </TableCell>
                   <TableCell>
-                    <div className="font-medium">{formatPrice(unit.price)}</div>
+                    <div className="font-medium">{formatPrice(unit.price_excluding_vat)}</div>
                     <div className="text-xs text-muted-foreground">
-                      TTC: {formatPrice(unit.price_with_vat)}
+                      TTC: {formatPrice(unit.price_including_vat)}
                     </div>
                   </TableCell>
                   <TableCell>
@@ -385,7 +399,7 @@ const AdminUnits = () => {
                   </TableCell>
                   <TableCell>
                     <Select
-                      value={unit.status}
+                      value={unit.property_status}
                       onValueChange={(value) => updateStatusMutation.mutate({ id: unit.id, status: value })}
                     >
                       <SelectTrigger className="w-32">
@@ -399,7 +413,7 @@ const AdminUnits = () => {
                     </Select>
                   </TableCell>
                   <TableCell>
-                    {unit.is_golden_visa ? (
+                    {unit.golden_visa_eligible ? (
                       <Badge className="bg-amber-100 text-amber-800">
                         <Crown className="w-3 h-3 mr-1" />
                         {t('units.goldenVisa')}
@@ -413,7 +427,14 @@ const AdminUnits = () => {
                       <Button variant="outline" size="sm">
                         <Eye className="w-4 h-4" />
                       </Button>
-                      <Button variant="outline" size="sm">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => {
+                          setEditingPropertyId(unit.id);
+                          setShowPropertyForm(true);
+                        }}
+                      >
                         <Edit className="w-4 h-4" />
                       </Button>
                     </div>
@@ -433,6 +454,38 @@ const AdminUnits = () => {
           queryClient.invalidateQueries({ queryKey: ['admin-units'] });
         }}
       />
+
+      {/* PropertyForm Modal - Simplified for now */}
+      <Dialog open={showPropertyForm} onOpenChange={setShowPropertyForm}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {editingPropertyId ? 'Modifier la propriété' : 'Nouvelle propriété'}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-muted-foreground">
+              Le formulaire détaillé de propriété va s'ouvrir dans une nouvelle fenêtre.
+            </p>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => {
+                  const url = `/admin/property-form${editingPropertyId ? `?id=${editingPropertyId}` : ''}`;
+                  window.open(url, '_blank');
+                  setShowPropertyForm(false);
+                  setEditingPropertyId(null);
+                }}
+                className="flex-1"
+              >
+                Ouvrir le formulaire
+              </Button>
+              <Button variant="outline" onClick={() => setShowPropertyForm(false)}>
+                Annuler
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
