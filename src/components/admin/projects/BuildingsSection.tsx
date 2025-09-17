@@ -223,7 +223,7 @@ export function BuildingsSection({ projectId }: BuildingsSectionProps) {
             <p className="text-muted-foreground mb-4">
               Ajoutez votre premier bâtiment pour structurer votre projet
             </p>
-            <Button onClick={handleAddBuilding} className="gap-2">
+            <Button type="button" onClick={handleAddBuilding} className="gap-2">
               <Plus className="w-4 h-4" />
               Ajouter un bâtiment
             </Button>
