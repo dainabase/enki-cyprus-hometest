@@ -43,7 +43,9 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     }
   });
 
-  const renderBasicsStep = () => (
+  const renderBasicsStep = () => {
+    console.log('🔍 Rendering BasicsStep');
+    return (
     <div className="space-y-8">
       <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
         <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
@@ -234,9 +236,12 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         </CardContent>
       </Card>
     </div>
-  );
+    );
+  };
 
-  const renderLocationStep = () => (
+  const renderLocationStep = () => {
+    console.log('🔍 Rendering LocationStep');
+    return (
     <div className="space-y-8">
       <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
         <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
@@ -563,9 +568,12 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         )}
       />
     </div>
-  );
+    );
+  };
 
-  const renderSpecificationsStep = () => (
+  const renderSpecificationsStep = () => {
+    console.log('🔍 Rendering SpecificationsStep');
+    return (
     <div className="space-y-8">
       <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
         <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
@@ -933,9 +941,12 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         </CardContent>
       </Card>
     </div>
-  );
+    );
+  };
 
-  const renderPricingStep = () => (
+  const renderPricingStep = () => {
+    console.log('🔍 Rendering PricingStep');
+    return (
     <div className="space-y-8">
       <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
         <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
@@ -1150,9 +1161,11 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         </CardContent>
       </Card>
     </div>
-  );
+    );
+  };
 
   const renderMediaStep = () => {
+    console.log('🔍 Rendering MediaStep');
     try {
       return (
         <div className="space-y-8">
@@ -1243,8 +1256,11 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     }
   }
 
-  const renderAmenitiesStep = () => (
-    <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
+  const renderAmenitiesStep = () => {
+    console.log('🔍 Rendering AmenitiesStep');
+    return (
+    <div className="space-y-8">
+      <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
       <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
         <CardTitle className="text-xl font-semibold text-foreground">Prestations & Équipements</CardTitle>
         <CardDescription className="text-muted-foreground">Sélectionnez les prestations disponibles dans le projet</CardDescription>
@@ -1258,9 +1274,13 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         />
       </CardContent>
     </Card>
-  );
+    </div>
+    );
+  };
 
-  const renderMarketingStep = () => (
+  const renderMarketingStep = () => {
+    console.log('🔍 Rendering MarketingStep');
+    return (
     <div className="space-y-8">
       <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
         <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
@@ -1405,7 +1425,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         </CardContent>
       </Card>
     </div>
-  );
+    );
+  };
 
   // Main render switch
   switch (currentStep) {
