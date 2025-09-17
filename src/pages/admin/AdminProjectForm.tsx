@@ -8,6 +8,7 @@ import { Form } from '@/components/ui/form';
 import { ProjectFormSteps } from '@/components/admin/projects/ProjectFormSteps';
 import { projectFormSteps } from '@/schemas/projectSchema';
 import { supabase } from '@/integrations/supabase/client';
+import { fetchProject } from '@/lib/supabase/projects';
 import { toast } from 'sonner';
 import { ArrowLeft, ArrowRight, Save, CheckCircle, ChevronLeft } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
@@ -65,6 +66,61 @@ const AdminProjectForm: React.FC = () => {
       status_project: 'active'
     }
   });
+
+  // Fetch project data for editing
+  const { data: project, isLoading } = useQuery({
+    queryKey: ['project', id],
+    queryFn: () => fetchProject(id!),
+    enabled: !!id && isEdit
+  });
+
+  // Load project data into form when editing
+  useEffect(() => {
+    if (project && isEdit) {
+      console.log('📝 Loading project data into form:', project);
+      
+      // Reset form with project data
+      const projectData = project;
+      form.reset({
+        title: projectData.title || '',
+        project_code: projectData.project_code || '',
+        developer_id: projectData.developer_id || '',
+        property_category: projectData.property_category || 'residential',
+        property_sub_type: projectData.property_sub_type || ['apartment'],
+        project_phase: projectData.project_phase || 'off-plan',
+        launch_date: projectData.launch_date || '',
+        completion_date_new: projectData.completion_date_new || '',
+        exclusive_commercialization: projectData.exclusive_commercialization || false,
+        description: projectData.description || '',
+        detailed_description: projectData.detailed_description || '',
+        full_address: projectData.full_address || '',
+        city: projectData.city || '',
+        region: projectData.region || '',
+        neighborhood: projectData.neighborhood || '',
+        latitude: projectData.gps_latitude || null,
+        longitude: projectData.gps_longitude || null,
+        land_area_m2: projectData.land_area_m2 || null,
+        built_area_m2: projectData.built_area_m2 || null,
+        total_units: projectData.total_units_new || null,
+        bedrooms_min: null,
+        bedrooms_max: null,
+        bathrooms_min: null,
+        bathrooms_max: null,
+        price: projectData.price || 0,
+        vat_rate: projectData.vat_rate_new || 19,
+        photos: projectData.photos || [],
+        floor_plan_urls: projectData.floor_plan_urls || [],
+        virtual_tour_url_new: projectData.virtual_tour_url_new || '',
+        amenities: projectData.amenities || [],
+        meta_title: projectData.meta_title_new || '',
+        meta_description: projectData.meta_description_new || '',
+        featured_new: projectData.featured_new || false,
+        status_project: projectData.status_project || 'active'
+      });
+      
+      setFormKey(prev => prev + 1); // Force re-render of ProjectFormSteps
+    }
+  }, [project, isEdit, form]);
 
   // Simple submit handler
   const onSubmit = async (data: any) => {
@@ -172,7 +228,7 @@ const AdminProjectForm: React.FC = () => {
         {/* Contenu principal avec scroll */}
         <div className="flex-1">
           <div className="p-8">
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-6xl mx-auto">
               {/* Titre de l'étape */}
               <div className="mb-8">
                 <h2 className="text-2xl font-bold text-slate-900 mb-2">
