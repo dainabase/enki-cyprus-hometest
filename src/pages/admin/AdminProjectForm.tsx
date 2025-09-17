@@ -426,15 +426,29 @@ const AdminProjectForm: React.FC = () => {
     }
   };
 
-  const nextStep = () => {
+  const nextStep = async () => {
     if (currentStepIndex < projectFormSteps.length - 1) {
       setCurrentStepIndex(currentStepIndex + 1);
+      
+      // Recharger les données depuis la base à chaque étape si on modifie un projet existant
+      if (isEdit && id) {
+        console.log('🔄 Rechargement des données depuis la base pour l\'étape suivante');
+        await queryClient.invalidateQueries({ queryKey: ['project', id] });
+        await queryClient.refetchQueries({ queryKey: ['project', id] });
+      }
     }
   };
 
-  const prevStep = () => {
+  const prevStep = async () => {
     if (currentStepIndex > 0) {
       setCurrentStepIndex(currentStepIndex - 1);
+      
+      // Recharger les données depuis la base à chaque étape si on modifie un projet existant
+      if (isEdit && id) {
+        console.log('🔄 Rechargement des données depuis la base pour l\'étape précédente');
+        await queryClient.invalidateQueries({ queryKey: ['project', id] });
+        await queryClient.refetchQueries({ queryKey: ['project', id] });
+      }
     }
   };
 
@@ -538,10 +552,10 @@ const AdminProjectForm: React.FC = () => {
                   ) : (
                     <Button
                       type="button"
-                      onClick={(e) => {
+                      onClick={async (e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        nextStep();
+                        await nextStep();
                       }}
                       className="flex items-center gap-2"
                     >
