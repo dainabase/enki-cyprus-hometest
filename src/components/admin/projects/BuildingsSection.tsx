@@ -53,8 +53,9 @@ export function BuildingsSection({ projectId }: BuildingsSectionProps) {
     mutationFn: (data: BuildingFormData) => createBuilding(projectId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['buildings', projectId] });
+      setIsModalOpen(false);
       toast({
-        title: 'Succès',
+        title: 'Bâtiment créé',
         description: 'Le bâtiment a été créé avec succès.',
       });
     },
