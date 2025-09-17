@@ -173,65 +173,87 @@ const Blog = () => {
         image="/og-image.jpg"
       />
 
-      <div className="min-h-screen">
-        {/* Hero Section */}
-        <section className="relative bg-gradient-to-br from-primary via-primary-glow to-secondary py-20 px-4">
-          <div className="absolute inset-0 bg-black/20"></div>
-          <div className="relative max-w-6xl mx-auto text-center text-white">
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
-              <span className="text-sm font-medium">Centre de Connaissances</span>
+      <div className="min-h-screen bg-background">
+        {/* Hero Section - Style Enki Realty */}
+        <section className="relative bg-gradient-hero py-24 px-4 overflow-hidden">
+          <div className="absolute inset-0 bg-black/10"></div>
+          
+          {/* Floating particles effect like homepage */}
+          <div className="absolute inset-0 overflow-hidden">
+            {Array.from({ length: 12 }, (_, i) => (
+              <div
+                key={i}
+                className="absolute w-2 h-2 bg-white/20 rounded-full animate-pulse"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 3}s`,
+                  animationDuration: `${3 + Math.random() * 2}s`
+                }}
+              />
+            ))}
+          </div>
+          
+          <div className="relative max-w-7xl mx-auto text-center text-white">
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 mb-8 border border-white/20">
+              <span className="swaarg-body font-medium">Centre de Connaissances</span>
             </div>
             
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+            <h1 className="swaarg-hero-title mb-8">
               Actualités & Conseils
               <br />
-              <span className="text-accent">Immobilier Chypre</span>
+              <span className="text-cyprus-terra">Immobilier Chypre</span>
             </h1>
             
-            <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto">
+            <p className="swaarg-body-large text-white/90 mb-12 max-w-4xl mx-auto leading-relaxed">
               Découvrez les derniers articles, guides et analyses d'experts sur l'investissement immobilier, 
               le Golden Visa, le lifestyle chypriote et les tendances du marché.
             </p>
 
-            {/* Barre de recherche */}
-            <div className="max-w-md mx-auto relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            {/* Barre de recherche - Style Enki */}
+            <div className="max-w-xl mx-auto relative">
+              <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
               <Input
                 type="text"
                 placeholder="Rechercher un article..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-12 pr-4 py-3 bg-white/90 backdrop-blur-sm border-0 text-gray-900 placeholder:text-gray-500"
+                className="pl-14 pr-6 py-4 bg-card backdrop-blur-sm border-border/20 text-foreground placeholder:text-muted-foreground rounded-2xl shadow-lg focus:shadow-premium transition-all duration-300"
               />
             </div>
           </div>
         </section>
 
-        <div className="max-w-7xl mx-auto px-4 py-16">
-          {/* Catégories */}
-          <section className="mb-16">
-            <h2 className="text-3xl font-bold text-center mb-12">Explorez par Catégorie</h2>
+        <div className="max-w-7xl mx-auto px-4 py-20">
+          {/* Catégories - Style Enki Realty */}
+          <section className="mb-20">
+            <h2 className="swaarg-large-title text-center mb-16 text-foreground">Explorez par Catégorie</h2>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
               {categories.map((category) => {
                 const Icon = category.icon;
                 return (
                   <Card 
                     key={category.id}
-                    className={`cursor-pointer transition-all duration-300 hover:shadow-elegant hover:-translate-y-1 ${
-                      selectedCategory === category.id ? 'ring-2 ring-primary' : ''
+                    className={`cursor-pointer card-hover bg-card border-border/20 rounded-2xl shadow-lg group ${
+                      selectedCategory === category.id ? 'ring-2 ring-primary shadow-premium' : ''
                     }`}
                     onClick={() => setSelectedCategory(selectedCategory === category.id ? 'all' : category.id)}
                   >
-                    <CardHeader className="text-center pb-4">
-                      <div className={`w-12 h-12 ${category.color} rounded-full flex items-center justify-center mx-auto mb-4`}>
-                        <Icon className="w-6 h-6 text-white" />
+                    <CardHeader className="text-center pb-6 p-8">
+                      <div className={`w-16 h-16 ${category.color} rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                        <Icon className="w-8 h-8 text-white" />
                       </div>
-                      <h3 className="font-semibold text-lg">{category.name}</h3>
-                      <p className="text-sm text-muted-foreground">{category.description}</p>
+                      <h3 className="swaarg-card-title font-medium mb-3 text-foreground">{category.name}</h3>
+                      <p className="swaarg-body text-muted-foreground leading-relaxed">{category.description}</p>
                     </CardHeader>
-                    <CardContent className="pt-0 text-center">
-                      <Badge variant="secondary">{category.count} articles</Badge>
+                    <CardContent className="pt-0 text-center pb-8">
+                      <Badge 
+                        variant="secondary" 
+                        className="bg-muted/50 text-muted-foreground px-4 py-2 rounded-full"
+                      >
+                        {category.count} articles
+                      </Badge>
                     </CardContent>
                   </Card>
                 );
@@ -240,67 +262,75 @@ const Blog = () => {
 
             <div className="text-center">
               <Button 
-                variant="outline" 
+                variant={selectedCategory === 'all' ? 'default' : 'outline'}
                 onClick={() => setSelectedCategory('all')}
-                className={selectedCategory === 'all' ? 'bg-primary text-white' : ''}
+                className="btn-premium px-8 py-3 rounded-2xl"
               >
                 Voir tous les articles
               </Button>
             </div>
           </section>
 
-          {/* Articles à la une */}
+          {/* Articles à la une - Style Enki Realty */}
           {featuredPosts.length > 0 && selectedCategory === 'all' && (
-            <section className="mb-16">
-              <h2 className="text-3xl font-bold mb-8">Articles à la Une</h2>
+            <section className="mb-20">
+              <h2 className="swaarg-large-title mb-12 text-foreground">Articles à la Une</h2>
               
-              <div className="grid lg:grid-cols-2 gap-8">
+              <div className="grid lg:grid-cols-2 gap-12">
                 {featuredPosts.map((post) => {
                   const categoryInfo = getCategoryInfo(post.category);
                   return (
-                    <Card key={post.id} className="overflow-hidden group cursor-pointer hover:shadow-elegant transition-all duration-300">
-                      <div className="relative h-64 overflow-hidden">
+                    <Card key={post.id} className="overflow-hidden group cursor-pointer card-hover bg-card border-border/20 rounded-3xl shadow-lg">
+                      <div className="relative h-80 overflow-hidden">
                         <img 
                           src={post.image} 
                           alt={post.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-full object-cover image-hover"
                         />
-                        <div className="absolute top-4 left-4">
-                          <Badge className={`${categoryInfo?.color} text-white`}>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                        <div className="absolute top-6 left-6">
+                          <Badge className={`${categoryInfo?.color} text-white px-4 py-2 rounded-full backdrop-blur-sm`}>
                             À la une
                           </Badge>
                         </div>
                       </div>
                       
-                      <CardContent className="p-6">
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
-                          <div className="flex items-center gap-1">
+                      <CardContent className="p-8">
+                        <div className="flex items-center gap-6 text-sm text-muted-foreground mb-4">
+                          <div className="flex items-center gap-2">
                             <User className="w-4 h-4" />
                             {post.author}
                           </div>
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-2">
                             <Calendar className="w-4 h-4" />
                             {formatDate(post.date)}
                           </div>
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-2">
                             <Clock className="w-4 h-4" />
                             {post.readTime}
                           </div>
                         </div>
                         
-                        <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
+                        <h3 className="swaarg-card-title mb-4 group-hover:text-primary transition-colors text-foreground">
                           {post.title}
                         </h3>
                         
-                        <p className="text-muted-foreground mb-4 line-clamp-3">
+                        <p className="swaarg-body text-muted-foreground mb-6 line-clamp-3 leading-relaxed">
                           {post.excerpt}
                         </p>
 
                         <div className="flex items-center justify-between">
-                          <Badge variant="outline" className="capitalize">
-                            {categoryInfo?.name}
+                          <Badge 
+                            variant="outline" 
+                            className="capitalize bg-muted/30 border-border/30 text-muted-foreground px-3 py-1 rounded-full"
+                          >
+                            {categoryInfo?.name.split(' ')[0]}
                           </Badge>
-                          <Button variant="ghost" size="sm" className="group-hover:bg-primary group-hover:text-white transition-colors">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="btn-outline-premium rounded-2xl group-hover:shadow-md"
+                          >
                             Lire l'article
                             <ArrowRight className="w-4 h-4 ml-2" />
                           </Button>
@@ -313,33 +343,34 @@ const Blog = () => {
             </section>
           )}
 
-          {/* Tous les articles */}
+          {/* Tous les articles - Style Enki Realty */}
           <section>
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-bold">
+            <div className="flex items-center justify-between mb-12">
+              <h2 className="swaarg-large-title text-foreground">
                 {selectedCategory === 'all' ? 'Tous les Articles' : 
                  `Articles - ${getCategoryInfo(selectedCategory)?.name}`}
               </h2>
-              <div className="text-muted-foreground">
+              <div className="swaarg-body text-muted-foreground bg-muted/30 px-4 py-2 rounded-full">
                 {filteredPosts.length} article{filteredPosts.length > 1 ? 's' : ''}
               </div>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
               {regularPosts.map((post) => {
                 const categoryInfo = getCategoryInfo(post.category);
                 const Icon = categoryInfo?.icon;
                 
                 return (
-                  <Card key={post.id} className="overflow-hidden group cursor-pointer hover:shadow-elegant transition-all duration-300 hover:-translate-y-1">
-                    <div className="relative h-48 overflow-hidden">
+                  <Card key={post.id} className="overflow-hidden group cursor-pointer card-hover bg-card border-border/20 rounded-2xl shadow-lg">
+                    <div className="relative h-56 overflow-hidden">
                       <img 
                         src={post.image} 
                         alt={post.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full object-cover image-hover"
                       />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
                       <div className="absolute top-4 left-4">
-                        <Badge className={`${categoryInfo?.color} text-white flex items-center gap-1`}>
+                        <Badge className={`${categoryInfo?.color} text-white flex items-center gap-2 px-3 py-1 rounded-full backdrop-blur-sm`}>
                           {Icon && <Icon className="w-3 h-3" />}
                           {categoryInfo?.name.split(' ')[0]}
                         </Badge>
@@ -347,26 +378,26 @@ const Blog = () => {
                     </div>
                     
                     <CardContent className="p-6">
-                      <div className="flex items-center gap-3 text-xs text-muted-foreground mb-3">
-                        <span>{post.author}</span>
+                      <div className="flex items-center gap-4 text-xs text-muted-foreground mb-4">
+                        <span className="font-medium">{post.author}</span>
                         <span>•</span>
                         <span>{formatDate(post.date)}</span>
                         <span>•</span>
                         <span>{post.readTime}</span>
                       </div>
                       
-                      <h3 className="text-lg font-bold mb-3 group-hover:text-primary transition-colors line-clamp-2">
+                      <h3 className="swaarg-body-large font-semibold mb-3 group-hover:text-primary transition-colors line-clamp-2 text-foreground">
                         {post.title}
                       </h3>
                       
-                      <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
+                      <p className="swaarg-body text-muted-foreground mb-6 line-clamp-3 leading-relaxed">
                         {post.excerpt}
                       </p>
 
                       <Button 
                         variant="ghost" 
                         size="sm" 
-                        className="w-full group-hover:bg-primary group-hover:text-white transition-colors"
+                        className="w-full btn-outline-premium rounded-2xl button-hover"
                       >
                         Lire l'article
                         <ArrowRight className="w-4 h-4 ml-2" />
@@ -378,44 +409,68 @@ const Blog = () => {
             </div>
 
             {filteredPosts.length === 0 && (
-              <div className="text-center py-16">
-                <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Search className="w-8 h-8 text-muted-foreground" />
+              <div className="text-center py-20">
+                <div className="w-20 h-20 bg-muted/30 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                  <Search className="w-10 h-10 text-muted-foreground" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Aucun article trouvé</h3>
-                <p className="text-muted-foreground mb-4">
+                <h3 className="swaarg-card-title mb-4 text-foreground">Aucun article trouvé</h3>
+                <p className="swaarg-body text-muted-foreground mb-8 max-w-md mx-auto leading-relaxed">
                   Essayez de modifier vos critères de recherche ou explorez d'autres catégories.
                 </p>
-                <Button onClick={() => { setSearchTerm(''); setSelectedCategory('all'); }}>
+                <Button 
+                  onClick={() => { setSearchTerm(''); setSelectedCategory('all'); }}
+                  className="btn-premium px-8 py-3 rounded-2xl"
+                >
                   Voir tous les articles
                 </Button>
               </div>
             )}
           </section>
 
-          {/* Newsletter Section */}
-          <section className="mt-20">
-            <Card className="bg-gradient-to-r from-primary to-primary-glow text-white">
-              <CardContent className="p-8 text-center">
-                <h3 className="text-2xl font-bold mb-4">Restez Informé</h3>
-                <p className="text-white/90 mb-6 max-w-2xl mx-auto">
-                  Recevez nos derniers articles et analyses du marché immobilier chypriote directement dans votre boîte mail.
-                </p>
-                
-                <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-                  <Input 
-                    type="email" 
-                    placeholder="Votre adresse email"
-                    className="bg-white/10 border-white/20 text-white placeholder:text-white/70"
-                  />
-                  <Button variant="secondary" className="bg-white text-primary hover:bg-white/90">
-                    S'abonner
-                  </Button>
+          {/* Newsletter Section - Style Enki Realty */}
+          <section className="mt-24">
+            <Card className="bg-gradient-premium text-white border-0 rounded-3xl shadow-2xl overflow-hidden">
+              <CardContent className="p-12 text-center relative">
+                {/* Background particles */}
+                <div className="absolute inset-0 overflow-hidden">
+                  {Array.from({ length: 8 }, (_, i) => (
+                    <div
+                      key={i}
+                      className="absolute w-1 h-1 bg-white/30 rounded-full animate-pulse"
+                      style={{
+                        left: `${Math.random() * 100}%`,
+                        top: `${Math.random() * 100}%`,
+                        animationDelay: `${Math.random() * 2}s`,
+                        animationDuration: `${2 + Math.random() * 2}s`
+                      }}
+                    />
+                  ))}
                 </div>
                 
-                <p className="text-xs text-white/70 mt-4">
-                  Pas de spam, désabonnement en un clic.
-                </p>
+                <div className="relative z-10">
+                  <h3 className="swaarg-large-title mb-6">Restez Informé</h3>
+                  <p className="swaarg-body-large text-white/90 mb-10 max-w-3xl mx-auto leading-relaxed">
+                    Recevez nos derniers articles et analyses du marché immobilier chypriote directement dans votre boîte mail.
+                  </p>
+                  
+                  <div className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+                    <Input 
+                      type="email" 
+                      placeholder="Votre adresse email"
+                      className="bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-white/70 rounded-2xl py-3 px-6"
+                    />
+                    <Button 
+                      variant="secondary" 
+                      className="bg-white text-primary hover:bg-white/90 rounded-2xl px-8 py-3 font-semibold button-hover"
+                    >
+                      S'abonner
+                    </Button>
+                  </div>
+                  
+                  <p className="text-sm text-white/70 mt-6">
+                    Pas de spam, désabonnement en un clic.
+                  </p>
+                </div>
               </CardContent>
             </Card>
           </section>
