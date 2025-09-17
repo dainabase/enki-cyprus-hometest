@@ -1888,13 +1888,17 @@ export type Database = {
       }
       properties: {
         Row: {
+          air_conditioning_type: string | null
+          appliances_list: Json | null
           balcony_count: number | null
           basement_area: number | null
+          bathroom_fixtures_brand: string | null
           bathrooms_count: number | null
           bedrooms_count: number | null
           building_id: string | null
           cadastral_reference: string | null
           ceiling_height: number | null
+          countertop_material: string | null
           covered_veranda_area: number | null
           created_at: string | null
           created_by: string | null
@@ -1902,32 +1906,70 @@ export type Database = {
           display_order: number | null
           distance_to_elevator: number | null
           distance_to_stairs: number | null
+          doors_type: string | null
           en_suite_count: number | null
           entrance_type: string | null
           facing: string[] | null
+          fireplace_type: string | null
           floor_number: number | null
+          flooring_type: string | null
+          furniture_package_value: number | null
           garden_area: number | null
+          garden_type: string | null
+          has_alarm_system: boolean | null
+          has_automatic_irrigation: boolean | null
           has_balcony: boolean | null
+          has_bbq_area: boolean | null
+          has_central_vacuum: boolean | null
+          has_city_view: boolean | null
           has_disabled_access: boolean | null
           has_dressing_room: boolean | null
+          has_electric_car_charger: boolean | null
+          has_electric_shutters: boolean | null
+          has_fiber_optic: boolean | null
+          has_fireplace: boolean | null
+          has_garden_view: boolean | null
           has_guest_wc: boolean | null
+          has_home_cinema: boolean | null
+          has_jacuzzi: boolean | null
+          has_kitchen_appliances: boolean | null
           has_laundry_room: boolean | null
           has_maid_room: boolean | null
+          has_mountain_view: boolean | null
           has_office: boolean | null
+          has_outdoor_kitchen: boolean | null
           has_pantry: boolean | null
+          has_pergola: boolean | null
           has_playroom: boolean | null
+          has_pool_view: boolean | null
           has_private_elevator: boolean | null
           has_private_garden: boolean | null
           has_private_pool: boolean | null
           has_roof_terrace: boolean | null
+          has_safe: boolean | null
+          has_satellite_tv: boolean | null
+          has_sauna: boolean | null
+          has_sea_view: boolean | null
+          has_security_door: boolean | null
+          has_smart_home: boolean | null
+          has_solar_panels: boolean | null
           has_storage_room: boolean | null
           has_storage_unit: boolean | null
           has_terrace: boolean | null
+          has_underfloor_heating: boolean | null
+          has_video_intercom: boolean | null
+          has_water_softener: boolean | null
           has_wine_cellar: boolean | null
+          has_wine_fridge: boolean | null
+          heating_type: string | null
           id: string
           internal_area: number | null
+          internet_ready: boolean | null
           is_available: boolean | null
+          is_furnished: boolean | null
           kitchen_area: number | null
+          kitchen_brand: string | null
+          kitchen_type: string | null
           living_room_area: number | null
           master_bedroom_area: number | null
           orientation: string | null
@@ -1948,6 +1990,7 @@ export type Database = {
           reservation_date: string | null
           roof_terrace_area: number | null
           sale_type: string | null
+          smart_home_features: Json | null
           sold_date: string | null
           storage_area: number | null
           storage_location: string | null
@@ -1957,16 +2000,23 @@ export type Database = {
           uncovered_veranda_area: number | null
           unit_number: string
           updated_at: string | null
+          view_quality: string | null
+          wall_finish: string | null
           wc_count: number | null
+          windows_type: string | null
         }
         Insert: {
+          air_conditioning_type?: string | null
+          appliances_list?: Json | null
           balcony_count?: number | null
           basement_area?: number | null
+          bathroom_fixtures_brand?: string | null
           bathrooms_count?: number | null
           bedrooms_count?: number | null
           building_id?: string | null
           cadastral_reference?: string | null
           ceiling_height?: number | null
+          countertop_material?: string | null
           covered_veranda_area?: number | null
           created_at?: string | null
           created_by?: string | null
@@ -1974,32 +2024,70 @@ export type Database = {
           display_order?: number | null
           distance_to_elevator?: number | null
           distance_to_stairs?: number | null
+          doors_type?: string | null
           en_suite_count?: number | null
           entrance_type?: string | null
           facing?: string[] | null
+          fireplace_type?: string | null
           floor_number?: number | null
+          flooring_type?: string | null
+          furniture_package_value?: number | null
           garden_area?: number | null
+          garden_type?: string | null
+          has_alarm_system?: boolean | null
+          has_automatic_irrigation?: boolean | null
           has_balcony?: boolean | null
+          has_bbq_area?: boolean | null
+          has_central_vacuum?: boolean | null
+          has_city_view?: boolean | null
           has_disabled_access?: boolean | null
           has_dressing_room?: boolean | null
+          has_electric_car_charger?: boolean | null
+          has_electric_shutters?: boolean | null
+          has_fiber_optic?: boolean | null
+          has_fireplace?: boolean | null
+          has_garden_view?: boolean | null
           has_guest_wc?: boolean | null
+          has_home_cinema?: boolean | null
+          has_jacuzzi?: boolean | null
+          has_kitchen_appliances?: boolean | null
           has_laundry_room?: boolean | null
           has_maid_room?: boolean | null
+          has_mountain_view?: boolean | null
           has_office?: boolean | null
+          has_outdoor_kitchen?: boolean | null
           has_pantry?: boolean | null
+          has_pergola?: boolean | null
           has_playroom?: boolean | null
+          has_pool_view?: boolean | null
           has_private_elevator?: boolean | null
           has_private_garden?: boolean | null
           has_private_pool?: boolean | null
           has_roof_terrace?: boolean | null
+          has_safe?: boolean | null
+          has_satellite_tv?: boolean | null
+          has_sauna?: boolean | null
+          has_sea_view?: boolean | null
+          has_security_door?: boolean | null
+          has_smart_home?: boolean | null
+          has_solar_panels?: boolean | null
           has_storage_room?: boolean | null
           has_storage_unit?: boolean | null
           has_terrace?: boolean | null
+          has_underfloor_heating?: boolean | null
+          has_video_intercom?: boolean | null
+          has_water_softener?: boolean | null
           has_wine_cellar?: boolean | null
+          has_wine_fridge?: boolean | null
+          heating_type?: string | null
           id?: string
           internal_area?: number | null
+          internet_ready?: boolean | null
           is_available?: boolean | null
+          is_furnished?: boolean | null
           kitchen_area?: number | null
+          kitchen_brand?: string | null
+          kitchen_type?: string | null
           living_room_area?: number | null
           master_bedroom_area?: number | null
           orientation?: string | null
@@ -2020,6 +2108,7 @@ export type Database = {
           reservation_date?: string | null
           roof_terrace_area?: number | null
           sale_type?: string | null
+          smart_home_features?: Json | null
           sold_date?: string | null
           storage_area?: number | null
           storage_location?: string | null
@@ -2029,16 +2118,23 @@ export type Database = {
           uncovered_veranda_area?: number | null
           unit_number: string
           updated_at?: string | null
+          view_quality?: string | null
+          wall_finish?: string | null
           wc_count?: number | null
+          windows_type?: string | null
         }
         Update: {
+          air_conditioning_type?: string | null
+          appliances_list?: Json | null
           balcony_count?: number | null
           basement_area?: number | null
+          bathroom_fixtures_brand?: string | null
           bathrooms_count?: number | null
           bedrooms_count?: number | null
           building_id?: string | null
           cadastral_reference?: string | null
           ceiling_height?: number | null
+          countertop_material?: string | null
           covered_veranda_area?: number | null
           created_at?: string | null
           created_by?: string | null
@@ -2046,32 +2142,70 @@ export type Database = {
           display_order?: number | null
           distance_to_elevator?: number | null
           distance_to_stairs?: number | null
+          doors_type?: string | null
           en_suite_count?: number | null
           entrance_type?: string | null
           facing?: string[] | null
+          fireplace_type?: string | null
           floor_number?: number | null
+          flooring_type?: string | null
+          furniture_package_value?: number | null
           garden_area?: number | null
+          garden_type?: string | null
+          has_alarm_system?: boolean | null
+          has_automatic_irrigation?: boolean | null
           has_balcony?: boolean | null
+          has_bbq_area?: boolean | null
+          has_central_vacuum?: boolean | null
+          has_city_view?: boolean | null
           has_disabled_access?: boolean | null
           has_dressing_room?: boolean | null
+          has_electric_car_charger?: boolean | null
+          has_electric_shutters?: boolean | null
+          has_fiber_optic?: boolean | null
+          has_fireplace?: boolean | null
+          has_garden_view?: boolean | null
           has_guest_wc?: boolean | null
+          has_home_cinema?: boolean | null
+          has_jacuzzi?: boolean | null
+          has_kitchen_appliances?: boolean | null
           has_laundry_room?: boolean | null
           has_maid_room?: boolean | null
+          has_mountain_view?: boolean | null
           has_office?: boolean | null
+          has_outdoor_kitchen?: boolean | null
           has_pantry?: boolean | null
+          has_pergola?: boolean | null
           has_playroom?: boolean | null
+          has_pool_view?: boolean | null
           has_private_elevator?: boolean | null
           has_private_garden?: boolean | null
           has_private_pool?: boolean | null
           has_roof_terrace?: boolean | null
+          has_safe?: boolean | null
+          has_satellite_tv?: boolean | null
+          has_sauna?: boolean | null
+          has_sea_view?: boolean | null
+          has_security_door?: boolean | null
+          has_smart_home?: boolean | null
+          has_solar_panels?: boolean | null
           has_storage_room?: boolean | null
           has_storage_unit?: boolean | null
           has_terrace?: boolean | null
+          has_underfloor_heating?: boolean | null
+          has_video_intercom?: boolean | null
+          has_water_softener?: boolean | null
           has_wine_cellar?: boolean | null
+          has_wine_fridge?: boolean | null
+          heating_type?: string | null
           id?: string
           internal_area?: number | null
+          internet_ready?: boolean | null
           is_available?: boolean | null
+          is_furnished?: boolean | null
           kitchen_area?: number | null
+          kitchen_brand?: string | null
+          kitchen_type?: string | null
           living_room_area?: number | null
           master_bedroom_area?: number | null
           orientation?: string | null
@@ -2092,6 +2226,7 @@ export type Database = {
           reservation_date?: string | null
           roof_terrace_area?: number | null
           sale_type?: string | null
+          smart_home_features?: Json | null
           sold_date?: string | null
           storage_area?: number | null
           storage_location?: string | null
@@ -2101,7 +2236,10 @@ export type Database = {
           uncovered_veranda_area?: number | null
           unit_number?: string
           updated_at?: string | null
+          view_quality?: string | null
+          wall_finish?: string | null
           wc_count?: number | null
+          windows_type?: string | null
         }
         Relationships: [
           {
