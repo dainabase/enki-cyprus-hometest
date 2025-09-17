@@ -27,7 +27,7 @@ const AdminProjectForm: React.FC = () => {
 
   const currentStep = projectFormSteps[currentStepIndex];
   
-  const form = useForm({
+  const form = useForm<any>({
     mode: 'onSubmit',
     defaultValues: {
       // Basics
@@ -120,18 +120,18 @@ const AdminProjectForm: React.FC = () => {
     }
   });
 
-  // Fetch project data for editing
+  // Fetch project data for editing with stable cache configuration
   const { data: project, isLoading } = useQuery({
     queryKey: ['project', id],
     queryFn: () => fetchProject(id!),
     enabled: !!id && isEdit,
-    staleTime: 30000, // Les données restent fraîches pendant 30 secondes
-    gcTime: 5 * 60 * 1000, // Garde en cache pendant 5 minutes
-    refetchOnWindowFocus: false, // Évite les refetch intempestifs
-    refetchOnMount: true // Toujours refetch au montage
+    staleTime: 0, // Toujours considérer les données comme obsolètes
+    gcTime: 0, // Ne pas garder en cache
+    refetchOnWindowFocus: false,
+    refetchOnMount: true
   });
 
-  // Load project data into form when editing
+  // Load project data into form when editing with improved data handling
   useEffect(() => {
     if (project && isEdit) {
       console.log('📝 Loading project data into form:', project);
@@ -181,77 +181,80 @@ const AdminProjectForm: React.FC = () => {
         proximity_city_center_km: projectData.proximity_city_center_km || null,
         proximity_highway_km: projectData.proximity_highway_km || null,
         
-        // Specifications
-        land_area_m2: projectData.land_area_m2 || null,
-        built_area_m2: projectData.built_area_m2 || null,
-        total_units_new: projectData.total_units_new || null,
-        units_available_new: projectData.units_available_new || null,
+        // Specifications with proper number conversion
+        land_area_m2: projectData.land_area_m2 ? Number(projectData.land_area_m2) : null,
+        built_area_m2: projectData.built_area_m2 ? Number(projectData.built_area_m2) : null,
+        total_units_new: projectData.total_units_new ? Number(projectData.total_units_new) : null,
+        units_available_new: projectData.units_available_new ? Number(projectData.units_available_new) : null,
         bedrooms_range: projectData.bedrooms_range || '',
         bathrooms_range: projectData.bathrooms_range || '',
-        floors_total: projectData.floors_total || null,
-        parking_spaces: projectData.parking_spaces || null,
-        storage_spaces: projectData.storage_spaces || null,
+        floors_total: projectData.floors_total ? Number(projectData.floors_total) : null,
+        parking_spaces: projectData.parking_spaces ? Number(projectData.parking_spaces) : null,
+        storage_spaces: projectData.storage_spaces ? Number(projectData.storage_spaces) : null,
         energy_rating: projectData.energy_rating || '',
-        construction_year: projectData.construction_year || null,
+        construction_year: projectData.construction_year ? Number(projectData.construction_year) : null,
         building_certification: projectData.building_certification || '',
-        maintenance_fees_yearly: projectData.maintenance_fees_yearly || null,
-        property_tax_yearly: projectData.property_tax_yearly || null,
-        hoa_fees_monthly: projectData.hoa_fees_monthly || null,
-        internet_speed_mbps: projectData.internet_speed_mbps || null,
+        maintenance_fees_yearly: projectData.maintenance_fees_yearly ? Number(projectData.maintenance_fees_yearly) : null,
+        property_tax_yearly: projectData.property_tax_yearly ? Number(projectData.property_tax_yearly) : null,
+        hoa_fees_monthly: projectData.hoa_fees_monthly ? Number(projectData.hoa_fees_monthly) : null,
+        internet_speed_mbps: projectData.internet_speed_mbps ? Number(projectData.internet_speed_mbps) : null,
         pet_policy: projectData.pet_policy || '',
         
-        // Pricing
-        price: projectData.price || 0,
-        price_from_new: projectData.price_from_new || null,
-        price_to: projectData.price_to || null,
-        price_per_m2: projectData.price_per_m2 || null,
-        vat_rate_new: projectData.vat_rate_new || projectData.vat_rate || 5,
+        // Pricing with proper number conversion
+        price: projectData.price ? Number(projectData.price) : 0,
+        price_from_new: projectData.price_from_new ? Number(projectData.price_from_new) : null,
+        price_to: projectData.price_to ? Number(projectData.price_to) : null,
+        price_per_m2: projectData.price_per_m2 ? Number(projectData.price_per_m2) : null,
+        vat_rate_new: projectData.vat_rate_new ? Number(projectData.vat_rate_new) : projectData.vat_rate ? Number(projectData.vat_rate) : 5,
         vat_included: projectData.vat_included || false,
         golden_visa_eligible_new: projectData.golden_visa_eligible_new || projectData.golden_visa_eligible || false,
-        roi_estimate_percent: projectData.roi_estimate_percent || null,
-        rental_yield_percent: projectData.rental_yield_percent || null,
+        roi_estimate_percent: projectData.roi_estimate_percent ? Number(projectData.roi_estimate_percent) : null,
+        rental_yield_percent: projectData.rental_yield_percent ? Number(projectData.rental_yield_percent) : null,
         financing_available: projectData.financing_available || false,
         
-        // Media - Parse JSON string photos with improved error handling
+        // Media - Parse photos from database (prioritize categorized_photos over photos)
         photos: (() => {
-          console.log('📸 Processing photos from database:', projectData.photos);
+          console.log('📸 Processing photos from database');
           
-          if (!projectData.photos) {
-            console.log('📸 No photos in project data');
-            return [];
+          // First try categorized_photos which is the new format
+          if (projectData.categorized_photos && Array.isArray(projectData.categorized_photos)) {
+            console.log('📸 Using categorized_photos:', projectData.categorized_photos);
+            return projectData.categorized_photos.filter((photo: any) => photo && typeof photo === 'object' && photo.url);
           }
           
-          if (!Array.isArray(projectData.photos)) {
-            console.log('📸 Photos is not an array:', typeof projectData.photos);
-            return [];
-          }
-          
-          const parsed = projectData.photos
-            .filter((photo: any) => photo !== null && photo !== undefined)
-            .map((photo: any, index: number) => {
-              if (typeof photo === 'string') {
-                try {
-                  const parsedPhoto = JSON.parse(photo);
-                  console.log(`📸 Parsed photo ${index}:`, parsedPhoto);
-                  return parsedPhoto;
-                } catch (e) {
-                  console.error(`📸 Failed to parse photo ${index}:`, photo, e);
-                  return { url: photo, category: 'hero', isPrimary: false, caption: '' };
+          // Fallback to old photos field
+          if (projectData.photos && Array.isArray(projectData.photos)) {
+            console.log('📸 Using legacy photos field:', projectData.photos);
+            const parsed = projectData.photos
+              .filter((photo: any) => photo !== null && photo !== undefined)
+              .map((photo: any, index: number) => {
+                if (typeof photo === 'string') {
+                  try {
+                    const parsedPhoto = JSON.parse(photo);
+                    console.log(`📸 Parsed photo ${index}:`, parsedPhoto);
+                    return parsedPhoto;
+                  } catch (e) {
+                    console.error(`📸 Failed to parse photo ${index}:`, photo, e);
+                    return { url: photo, category: 'hero', isPrimary: false, caption: '' };
+                  }
                 }
-              }
-              
-              if (typeof photo === 'object' && photo.url) {
-                console.log(`📸 Photo ${index} already object:`, photo);
-                return photo;
-              }
-              
-              console.warn(`📸 Invalid photo format at index ${index}:`, photo);
-              return null;
-            })
-            .filter((photo: any) => photo !== null);
+                
+                if (typeof photo === 'object' && photo.url) {
+                  console.log(`📸 Photo ${index} already object:`, photo);
+                  return photo;
+                }
+                
+                console.warn(`📸 Invalid photo format at index ${index}:`, photo);
+                return null;
+              })
+              .filter((photo: any) => photo !== null);
+            
+            console.log('📸 Final parsed photos:', parsed);
+            return parsed;
+          }
           
-          console.log('📸 Final parsed photos:', parsed);
-          return parsed;
+          console.log('📸 No photos found in project data');
+          return [];
         })(),
         photo_gallery_urls: Array.isArray(projectData.photo_gallery_urls) ? projectData.photo_gallery_urls : [],
         video_tour_urls: Array.isArray(projectData.video_tour_urls) ? projectData.video_tour_urls : [],
@@ -286,7 +289,7 @@ const AdminProjectForm: React.FC = () => {
     }
   }, [project, isEdit, form]);
 
-  // Enhanced submit handler with debug and cache invalidation
+  // Enhanced submit handler with comprehensive data processing
   const onSubmit = async (data: any) => {
     try {
       console.log('💾 Submitting project data:', data);
@@ -297,11 +300,77 @@ const AdminProjectForm: React.FC = () => {
       console.log('💾 - total_units_new:', data.total_units_new);
       console.log('💾 - land_area_m2:', data.land_area_m2);
       
-      // Fix date format - convert YYYY-MM to YYYY-MM-01 for database
+      // Prepare data for database with proper types and fixes
       const processedData = {
         ...data,
+        // Fix date formats - convert YYYY-MM to YYYY-MM-01 for database
         launch_date: data.launch_date ? `${data.launch_date}-01` : null,
         completion_date_new: data.completion_date_new ? `${data.completion_date_new}-01` : null,
+        
+        // Ensure numeric fields are properly converted
+        total_units_new: data.total_units_new ? Number(data.total_units_new) : null,
+        units_available_new: data.units_available_new ? Number(data.units_available_new) : null,
+        land_area_m2: data.land_area_m2 ? Number(data.land_area_m2) : null,
+        built_area_m2: data.built_area_m2 ? Number(data.built_area_m2) : null,
+        floors_total: data.floors_total ? Number(data.floors_total) : null,
+        parking_spaces: data.parking_spaces ? Number(data.parking_spaces) : null,
+        storage_spaces: data.storage_spaces ? Number(data.storage_spaces) : null,
+        construction_year: data.construction_year ? Number(data.construction_year) : null,
+        maintenance_fees_yearly: data.maintenance_fees_yearly ? Number(data.maintenance_fees_yearly) : null,
+        property_tax_yearly: data.property_tax_yearly ? Number(data.property_tax_yearly) : null,
+        hoa_fees_monthly: data.hoa_fees_monthly ? Number(data.hoa_fees_monthly) : null,
+        internet_speed_mbps: data.internet_speed_mbps ? Number(data.internet_speed_mbps) : null,
+        price: data.price ? Number(data.price) : 0,
+        price_from_new: data.price_from_new ? Number(data.price_from_new) : null,
+        price_to: data.price_to ? Number(data.price_to) : null,
+        price_per_m2: data.price_per_m2 ? Number(data.price_per_m2) : null,
+        vat_rate_new: data.vat_rate_new ? Number(data.vat_rate_new) : 5,
+        roi_estimate_percent: data.roi_estimate_percent ? Number(data.roi_estimate_percent) : null,
+        rental_yield_percent: data.rental_yield_percent ? Number(data.rental_yield_percent) : null,
+        gps_latitude: data.gps_latitude ? Number(data.gps_latitude) : null,
+        gps_longitude: data.gps_longitude ? Number(data.gps_longitude) : null,
+        proximity_sea_km: data.proximity_sea_km ? Number(data.proximity_sea_km) : null,
+        proximity_airport_km: data.proximity_airport_km ? Number(data.proximity_airport_km) : null,
+        proximity_city_center_km: data.proximity_city_center_km ? Number(data.proximity_city_center_km) : null,
+        proximity_highway_km: data.proximity_highway_km ? Number(data.proximity_highway_km) : null,
+        
+        // Ensure boolean fields are properly set
+        exclusive_commercialization: Boolean(data.exclusive_commercialization),
+        vat_included: Boolean(data.vat_included),
+        golden_visa_eligible_new: Boolean(data.golden_visa_eligible_new),
+        financing_available: Boolean(data.financing_available),
+        featured_new: Boolean(data.featured_new),
+        
+        // Store photos in the new categorized_photos field
+        categorized_photos: data.photos || [],
+        
+        // Ensure text fields are not null/undefined
+        energy_rating: data.energy_rating || null,
+        pet_policy: data.pet_policy || null,
+        building_certification: data.building_certification || null,
+        bedrooms_range: data.bedrooms_range || null,
+        bathrooms_range: data.bathrooms_range || null,
+        project_narrative: data.project_narrative || null,
+        meta_title_new: data.meta_title_new || null,
+        meta_description_new: data.meta_description_new || null,
+        virtual_tour_url_new: data.virtual_tour_url_new || null,
+        project_presentation_url: data.project_presentation_url || null,
+        youtube_tour_url: data.youtube_tour_url || null,
+        vimeo_tour_url: data.vimeo_tour_url || null,
+        
+        // Ensure arrays are properly handled
+        features: Array.isArray(data.features) ? data.features : [],
+        amenities: Array.isArray(data.amenities) ? data.amenities : [],
+        surrounding_amenities: Array.isArray(data.surrounding_amenities) ? data.surrounding_amenities : [],
+        meta_keywords: Array.isArray(data.meta_keywords) ? data.meta_keywords : [],
+        marketing_highlights: Array.isArray(data.marketing_highlights) ? data.marketing_highlights : [],
+        target_audience: Array.isArray(data.target_audience) ? data.target_audience : [],
+        property_sub_type: Array.isArray(data.property_sub_type) ? data.property_sub_type : ['apartment'],
+        photo_gallery_urls: Array.isArray(data.photo_gallery_urls) ? data.photo_gallery_urls : [],
+        video_tour_urls: Array.isArray(data.video_tour_urls) ? data.video_tour_urls : [],
+        floor_plan_urls: Array.isArray(data.floor_plan_urls) ? data.floor_plan_urls : [],
+        drone_footage_urls: Array.isArray(data.drone_footage_urls) ? data.drone_footage_urls : [],
+        model_3d_urls: Array.isArray(data.model_3d_urls) ? data.model_3d_urls : []
       };
       
       console.log('💾 Processed data with fixed dates:', processedData);
@@ -320,16 +389,14 @@ const AdminProjectForm: React.FC = () => {
         
         console.log('✅ Update success:', updateResult);
         
-        // Invalider le cache et recharger les données
+        toast.success('Projet mis à jour avec succès');
+        
+        // Invalider le cache pour forcer le rechargement des données
         await queryClient.invalidateQueries({ queryKey: ['project', id] });
         await queryClient.refetchQueries({ queryKey: ['project', id] });
         
-        toast.success('Projet mis à jour avec succès');
-        
-        // Invalider le cache et recharger les données
-        queryClient.invalidateQueries({ queryKey: ['project', id] });
-        
-        // Pas de rechargement automatique - laissons l'utilisateur naviguer normalement
+        // Force la re-render du formulaire avec les nouvelles données
+        setFormKey(prev => prev + 1);
         
       } else {
         const { data: insertData, error } = await supabase
@@ -435,93 +502,51 @@ const AdminProjectForm: React.FC = () => {
           </div>
         </div>
 
-        {/* Contenu principal avec scroll */}
-        <div className="flex-1">
-          <div className="p-8">
-            <div className="max-w-6xl mx-auto">
-              {/* Titre de l'étape */}
-              <div className="mb-8">
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">
-                  {currentStep.title}
-                </h2>
-                <p className="text-slate-600">
-                  Étape {currentStepIndex + 1} sur {projectFormSteps.length} - Complétez les informations demandées
-                </p>
+        {/* Contenu principal */}
+        <div className="flex-1 p-8">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <div key={formKey}>
+                <ProjectFormSteps 
+                  form={form} 
+                  currentStep={currentStep.id}
+                  projectId={id}
+                />
               </div>
 
-              {/* Formulaire */}
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                  {/* Contenu de l'étape */}
-                  <div>
-                    <ProjectFormSteps 
-                      key={formKey}
-                      currentStep={currentStep.id}
-                      projectId={id}
-                      form={form as any}
-                    />
-                  </div>
-                  
-                  {/* Boutons de navigation */}
-                  <div className="flex justify-between items-center pt-6 border-t-2 border-slate-200 mt-12">
+              {/* Navigation controls */}
+              <div className="flex justify-between items-center pt-8 border-t">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={prevStep}
+                  disabled={currentStepIndex === 0}
+                  className="flex items-center gap-2"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Précédent
+                </Button>
+
+                <div className="flex items-center gap-4">
+                  {currentStepIndex === projectFormSteps.length - 1 ? (
+                    <Button type="submit" className="flex items-center gap-2">
+                      <Save className="h-4 w-4" />
+                      {isEdit ? 'Mettre à jour' : 'Créer le projet'}
+                    </Button>
+                  ) : (
                     <Button
                       type="button"
-                      variant="outline"
-                      onClick={prevStep}
-                      disabled={currentStepIndex === 0}
+                      onClick={nextStep}
                       className="flex items-center gap-2"
                     >
-                      <ArrowLeft className="h-4 w-4" />
-                      Précédent
+                      Suivant
+                      <ArrowRight className="h-4 w-4" />
                     </Button>
-                    
-                    <div className="flex items-center gap-3">
-                      {currentStepIndex === projectFormSteps.length - 1 ? (
-                        <>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => {
-                              const formData = form.getValues();
-                              const errors = validateProjectData(formData);
-                              setValidationErrors(errors);
-                              setSaveType('draft');
-                              setShowConfirmDialog(true);
-                            }}
-                          >
-                            <Save className="h-4 w-4 mr-2" />
-                            Sauvegarder brouillon
-                          </Button>
-                          <Button
-                            type="button"
-                            onClick={() => {
-                              const formData = form.getValues();
-                              const errors = validateProjectData(formData);
-                              setValidationErrors(errors);
-                              setSaveType('publish');
-                              setShowConfirmDialog(true);
-                            }}
-                          >
-                            <CheckCircle className="h-4 w-4 mr-2" />
-                            Publier le projet
-                          </Button>
-                        </>
-                      ) : (
-                        <Button
-                          type="button"
-                          onClick={nextStep}
-                          className="flex items-center gap-2"
-                        >
-                          Suivant
-                          <ArrowRight className="h-4 w-4" />
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                </form>
-              </Form>
-            </div>
-          </div>
+                  )}
+                </div>
+              </div>
+            </form>
+          </Form>
         </div>
       </div>
 
@@ -529,56 +554,38 @@ const AdminProjectForm: React.FC = () => {
       <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>
-              {saveType === 'publish' ? 'Publier le projet' : 'Sauvegarder comme brouillon'}
-            </DialogTitle>
+            <DialogTitle>Confirmer la publication</DialogTitle>
             <DialogDescription>
-              {saveType === 'publish' 
-                ? 'Le projet sera visible par le public après publication.' 
-                : 'Le projet sera sauvegardé comme brouillon et ne sera pas visible publiquement.'
-              }
+              Vous êtes sur le point de publier ce projet. Il sera visible par tous les utilisateurs.
             </DialogDescription>
           </DialogHeader>
-
-          <div className="space-y-4">
-            {validationErrors.length > 0 && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                <p className="text-red-800 text-sm font-medium">
-                  ⚠️ {validationErrors.length} erreur(s) détectée(s)
-                </p>
+          
+          {validationErrors.length > 0 && (
+            <div className="space-y-2">
+              <h4 className="font-medium text-destructive">Erreurs à corriger :</h4>
+              <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
                 {validationErrors.map((error, index) => (
-                  <p key={index} className="text-red-700 text-xs mt-1">
-                    • {error.message}
-                  </p>
+                  <li key={index}>{error.message}</li>
                 ))}
-              </div>
-            )}
-
-            {validationErrors.length === 0 && saveType === 'publish' && (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                <p className="text-green-800 font-medium">✅ Projet prêt à être publié</p>
-              </div>
-            )}
-          </div>
-
+              </ul>
+            </div>
+          )}
+          
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setShowConfirmDialog(false)}
-            >
+            <Button variant="outline" onClick={() => setShowConfirmDialog(false)}>
               Annuler
             </Button>
-            {validationErrors.length === 0 && (
-              <Button
-                onClick={() => {
-                  const formData = form.getValues();
-                  onSubmit(formData);
-                  setShowConfirmDialog(false);
-                }}
-              >
-                {saveType === 'publish' ? 'Publier' : 'Sauvegarder'}
-              </Button>
-            )}
+            <Button 
+              onClick={() => {
+                setSaveType('publish');
+                form.handleSubmit(onSubmit)();
+                setShowConfirmDialog(false);
+              }}
+              disabled={validationErrors.length > 0}
+            >
+              <CheckCircle className="h-4 w-4 mr-2" />
+              Publier
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
