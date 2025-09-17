@@ -82,6 +82,7 @@ const AdminProjectForm: React.FC = () => {
       // Reset form with project data
       const projectData = project;
       form.reset({
+        // Basics
         title: projectData.title || '',
         project_code: projectData.project_code || '',
         developer_id: projectData.developer_id || '',
@@ -93,28 +94,38 @@ const AdminProjectForm: React.FC = () => {
         exclusive_commercialization: projectData.exclusive_commercialization || false,
         description: projectData.description || '',
         detailed_description: projectData.detailed_description || '',
+        
+        // Location
         full_address: projectData.full_address || '',
         city: projectData.city || '',
         region: projectData.region || '',
         neighborhood: projectData.neighborhood || '',
         latitude: projectData.gps_latitude || null,
         longitude: projectData.gps_longitude || null,
+        
+        // Specifications
         land_area_m2: projectData.land_area_m2 || null,
         built_area_m2: projectData.built_area_m2 || null,
         total_units: projectData.total_units_new || null,
-        bedrooms_min: null,
-        bedrooms_max: null,
-        bathrooms_min: null,
-        bathrooms_max: null,
+        
+        // Pricing
         price: projectData.price || 0,
         vat_rate: projectData.vat_rate_new || 19,
+        
+        // Media
         photos: projectData.photos || [],
         floor_plan_urls: projectData.floor_plan_urls || [],
         virtual_tour_url_new: projectData.virtual_tour_url_new || '',
+        
+        // Amenities
         amenities: projectData.amenities || [],
+        
+        // Marketing & SEO
         meta_title: projectData.meta_title_new || '',
         meta_description: projectData.meta_description_new || '',
         featured_new: projectData.featured_new || false,
+        
+        // Status
         status_project: projectData.status_project || 'active'
       });
       
