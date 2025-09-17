@@ -252,12 +252,19 @@ const AdminProjectForm: React.FC = () => {
     try {
       console.log('💾 Submitting project data:', data);
       
-      console.log('💾 Submitting data:', data);
+      // Fix date format - convert YYYY-MM to YYYY-MM-01 for database
+      const processedData = {
+        ...data,
+        launch_date: data.launch_date ? `${data.launch_date}-01` : null,
+        completion_date_new: data.completion_date_new ? `${data.completion_date_new}-01` : null,
+      };
+      
+      console.log('💾 Processed data with fixed dates:', processedData);
       
       if (isEdit) {
         const { error } = await supabase
           .from('projects')
-          .update(data)
+          .update(processedData)
           .eq('id', id);
         
         if (error) {
@@ -268,7 +275,7 @@ const AdminProjectForm: React.FC = () => {
       } else {
         const { data: insertData, error } = await supabase
           .from('projects')
-          .insert([data])
+          .insert([processedData])
           .select();
           
         if (error) {

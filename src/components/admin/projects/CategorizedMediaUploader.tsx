@@ -172,7 +172,7 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
   };
 
   const getPhotosByCategory = (category: string) => {
-    return field.value.filter(photo => photo.category === category);
+    return (field.value || []).filter(photo => photo && photo.url && photo.category === category);
   };
 
   const renderUploadZone = (category: string) => {
