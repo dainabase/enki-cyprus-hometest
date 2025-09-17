@@ -3,15 +3,18 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, ArrowRight, Check, Save } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Save, CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { PropertyFormSteps } from '@/components/admin/properties/PropertyFormSteps';
 import { propertySchema, PropertyFormData, propertyFormSteps } from '@/schemas/property.schema';
 import { useToast } from '@/hooks/use-toast';
+import { AppShell } from '@/components/dainabase-ui/AppShell';
+import { AdminSidebarExecutive } from '@/components/admin/AdminSidebarExecutive';
+import HierarchyBreadcrumb from '@/components/admin/common/HierarchyBreadcrumb';
 
 export default function PropertyForm() {
   const { id } = useParams();
@@ -82,7 +85,6 @@ export default function PropertyForm() {
   // Load property data into form
   useEffect(() => {
     if (property && isEdit) {
-      // TODO: Fix form data mapping for edit mode
       console.log('Property data loaded for editing:', property);
     }
   }, [property, isEdit, form]);
@@ -90,7 +92,6 @@ export default function PropertyForm() {
   // Save mutation
   const saveMutation = useMutation({
     mutationFn: async (data: PropertyFormData) => {
-      // Ensure required fields are present
       const propertyData = {
         ...data,
         project_id: data.project_id || '',
@@ -121,7 +122,6 @@ export default function PropertyForm() {
         title: isEdit ? "Propriété mise à jour" : "Propriété créée",
         description: "Les modifications ont été sauvegardées avec succès.",
       });
-      navigate('/admin/properties');
     },
     onError: (error) => {
       toast({
@@ -149,6 +149,10 @@ export default function PropertyForm() {
     if (currentStepIndex > 0) {
       setCurrentStepIndex(currentStepIndex - 1);
     }
+  };
+
+  const handleStepClick = (stepIndex: number) => {
+    setCurrentStepIndex(stepIndex);
   };
 
   const getCurrentStepFields = (): (keyof PropertyFormData)[] => {
@@ -179,95 +183,134 @@ export default function PropertyForm() {
   const priceIncludingVat = priceExcludingVat + (priceExcludingVat * vatRate / 100);
   const isGoldenVisa = priceIncludingVat >= 300000;
 
-  return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <Button variant="ghost" onClick={() => navigate('/admin/properties')}>
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour aux propriétés
-          </Button>
-          <h1 className="text-2xl font-bold mt-2">
-            {isEdit ? 'Modifier la propriété' : 'Créer une nouvelle propriété'}
-          </h1>
-        </div>
-        {isGoldenVisa && (
-          <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300">
-            ✨ Golden Visa Éligible
-          </Badge>
-        )}
-      </div>
+  // Sidebar with steps navigation
+  const sidebarContent = (
+    <div className="p-4 space-y-6">
+      {/* Back button */}
+      <Button 
+        variant="ghost" 
+        onClick={() => navigate('/admin/properties')}
+        className="w-full justify-start"
+      >
+        <ArrowLeft className="w-4 h-4 mr-2" />
+        Retour aux propriétés
+      </Button>
 
-      {/* Steps Navigation */}
-      <div className="flex items-center justify-between">
+      {/* Steps navigation */}
+      <div className="space-y-2">
+        <h3 className="text-sm font-medium text-gray-500 mb-4">Étapes du formulaire</h3>
         {propertyFormSteps.map((step, index) => (
-          <div key={step.id} className="flex items-center">
-            <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                index < currentStepIndex
-                  ? 'bg-green-500 text-white'
-                  : index === currentStepIndex
-                  ? 'bg-primary text-white'
-                  : 'bg-gray-200 text-gray-600'
-              }`}
-            >
-              {index < currentStepIndex ? <Check className="w-4 h-4" /> : index + 1}
+          <Button
+            key={step.id}
+            variant={index === currentStepIndex ? "default" : "ghost"}
+            onClick={() => handleStepClick(index)}
+            className="w-full justify-start text-left h-auto p-3"
+          >
+            <div className="flex items-center space-x-3">
+              <div
+                className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0 ${
+                  index < currentStepIndex
+                    ? 'bg-green-500 text-white'
+                    : index === currentStepIndex
+                    ? 'bg-primary text-white'
+                    : 'bg-gray-200 text-gray-600'
+                }`}
+              >
+                {index < currentStepIndex ? <Check className="w-3 h-3" /> : index + 1}
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="font-medium text-sm">{step.title}</div>
+                <div className="text-xs text-gray-500 truncate">{step.description}</div>
+              </div>
             </div>
-            <div className="ml-2 text-sm">
-              <div className="font-medium">{step.title}</div>
-              <div className="text-gray-500">{step.description}</div>
-            </div>
-            {index < propertyFormSteps.length - 1 && (
-              <div className="w-16 h-px bg-gray-300 mx-4" />
-            )}
-          </div>
+          </Button>
         ))}
       </div>
 
-      {/* Form */}
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSave)} className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>{currentStep.title}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <PropertyFormSteps
-                form={form}
-                currentStep={currentStep.id}
-              />
-            </CardContent>
-          </Card>
-
-          {/* Navigation Buttons */}
-          <div className="flex justify-between">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handlePrevious}
-              disabled={currentStepIndex === 0}
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Précédent
-            </Button>
-
-            <div className="flex gap-2">
-              {currentStepIndex === propertyFormSteps.length - 1 ? (
-                <Button type="submit" disabled={saveMutation.isPending}>
-                  <Save className="w-4 h-4 mr-2" />
-                  {saveMutation.isPending ? 'Sauvegarde...' : 'Sauvegarder'}
-                </Button>
-              ) : (
-                <Button type="button" onClick={handleNext}>
-                  Suivant
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              )}
-            </div>
-          </div>
-        </form>
-      </Form>
+      {/* Golden Visa Badge */}
+      {isGoldenVisa && (
+        <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300 w-full justify-center">
+          ✨ Golden Visa Éligible
+        </Badge>
+      )}
     </div>
+  );
+
+  // Header content
+  const headerContent = (
+    <div className="flex items-center justify-between px-6 py-4">
+      <div>
+        <h1 className="text-xl font-semibold">
+          {isEdit ? 'Modifier la propriété' : 'Créer une nouvelle propriété'}
+        </h1>
+        <p className="text-sm text-gray-500 mt-1">
+          Étape {currentStepIndex + 1} sur {propertyFormSteps.length}: {currentStep.title}
+        </p>
+      </div>
+      {saveMutation.isSuccess && (
+        <div className="flex items-center text-green-600">
+          <CheckCircle className="w-5 h-5 mr-2" />
+          <span className="text-sm">Sauvegardé</span>
+        </div>
+      )}
+    </div>
+  );
+
+  // Breadcrumbs
+  const breadcrumbsContent = (
+    <HierarchyBreadcrumb
+      currentPage={isEdit ? "Modifier la propriété" : "Créer une propriété"}
+    />
+  );
+
+  return (
+    <AppShell
+      header={headerContent}
+      sidebar={sidebarContent}
+      breadcrumbs={breadcrumbsContent}
+      variant="executive"
+    >
+      <div className="max-w-4xl">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSave)} className="space-y-6">
+            <Card>
+              <CardContent className="p-6">
+                <PropertyFormSteps
+                  form={form}
+                  currentStep={currentStep.id}
+                />
+              </CardContent>
+            </Card>
+
+            {/* Navigation Buttons */}
+            <div className="flex justify-between bg-white border-t p-4 sticky bottom-0">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handlePrevious}
+                disabled={currentStepIndex === 0}
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Précédent
+              </Button>
+
+              <div className="flex gap-2">
+                {currentStepIndex === propertyFormSteps.length - 1 ? (
+                  <Button type="submit" disabled={saveMutation.isPending}>
+                    <Save className="w-4 h-4 mr-2" />
+                    {saveMutation.isPending ? 'Sauvegarde...' : 'Sauvegarder'}
+                  </Button>
+                ) : (
+                  <Button type="button" onClick={handleNext}>
+                    Suivant
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                )}
+              </div>
+            </div>
+          </form>
+        </Form>
+      </div>
+    </AppShell>
   );
 }
