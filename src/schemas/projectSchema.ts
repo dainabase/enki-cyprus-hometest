@@ -126,6 +126,7 @@ export const projectSchema = z.object({
   // STATUS
   status_project: z.enum(['disponible', 'en_construction', 'livre', 'pret_a_emmenager']).default('disponible'),
   statut_commercial: z.enum(['prelancement', 'lancement_commercial', 'en_commercialisation', 'derniere_opportunite', 'vendu']).default('prelancement'),
+  construction_phase: z.enum(['planned', 'in_progress', 'completion', 'finished']).default('planned'),
   featured_new: z.boolean().default(false),
 
   // LOCATION OBJECT (legacy compatibility)
@@ -225,7 +226,7 @@ export const projectFormSteps = [
     icon: 'Megaphone',
     fields: [
       'project_narrative', 'meta_title_new', 'meta_description_new',
-      'marketing_highlights', 'target_audience', 'features', 'status_project', 'featured_new'
+      'marketing_highlights', 'target_audience', 'features', 'status_project', 'statut_commercial', 'construction_phase', 'featured_new'
     ]
   }
 ];

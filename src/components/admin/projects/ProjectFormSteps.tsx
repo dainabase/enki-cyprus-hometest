@@ -1426,6 +1426,33 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
           <FormField
             control={form.control}
+            name="construction_phase"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Statut travaux</FormLabel>
+                <Select 
+                  onValueChange={field.onChange} 
+                  value={field.value || 'planned'}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sélectionnez un statut travaux" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="bg-white z-50">
+                    <SelectItem value="planned">Prévision chantier</SelectItem>
+                    <SelectItem value="in_progress">Travaux en cours</SelectItem>
+                    <SelectItem value="completion">Achèvement</SelectItem>
+                    <SelectItem value="finished">Terminé</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name="featured_new"
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
