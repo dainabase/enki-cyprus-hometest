@@ -623,11 +623,16 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         </CardContent>
       </Card>
 
+      {/* Section unifiée : Bâtiments & Unités */}
       <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
         <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
-          <CardTitle className="text-xl font-semibold text-foreground">Unités & Logements</CardTitle>
+          <CardTitle className="text-xl font-semibold text-foreground">Bâtiments & Unités</CardTitle>
+          <CardDescription className="text-muted-foreground">
+            Informations générales sur les unités du projet et gestion des bâtiments
+          </CardDescription>
         </CardHeader>
         <CardContent className="p-6 space-y-6">
+          {/* Informations générales sur les unités */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
               control={form.control}
@@ -697,6 +702,13 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               )}
             />
           </div>
+
+          {/* Gestion des bâtiments */}
+          {projectId && (
+            <div className="mt-8 pt-6 border-t border-slate-200">
+              <BuildingsSection projectId={projectId} />
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -942,8 +954,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         </CardContent>
       </Card>
 
-      {/* Buildings Section */}
-      {projectId && <BuildingsSection projectId={projectId} />}
     </div>
     );
   };

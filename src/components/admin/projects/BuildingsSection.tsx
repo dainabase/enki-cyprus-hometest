@@ -190,10 +190,6 @@ export function BuildingsSection({ projectId }: BuildingsSectionProps) {
             Gérez les bâtiments de votre projet immobilier
           </p>
         </div>
-        <Button onClick={handleAddBuilding} className="gap-2">
-          <Plus className="w-4 h-4" />
-          Ajouter un bâtiment
-        </Button>
       </div>
 
       {/* Buildings List */}
