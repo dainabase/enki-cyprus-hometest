@@ -141,13 +141,12 @@ export function BuildingsSection({ projectId }: BuildingsSectionProps) {
 
   const getStatusBadge = (status: string) => {
     const statusMap = {
-      planning: { label: 'Planification', variant: 'outline' as const },
       planned: { label: 'Planifié', variant: 'secondary' as const },
       construction: { label: 'En construction', variant: 'default' as const },
       delivered: { label: 'Livré', variant: 'secondary' as const },
     };
     
-    const statusInfo = statusMap[status as keyof typeof statusMap] || statusMap.planning;
+    const statusInfo = statusMap[status as keyof typeof statusMap] || statusMap.planned;
     return (
       <Badge variant={statusInfo.variant}>
         {statusInfo.label}

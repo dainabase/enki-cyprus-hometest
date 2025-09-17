@@ -47,7 +47,7 @@ const buildingSchema = z.object({
   total_floors: z.number().min(0).optional(),
   total_units: z.number().min(0).optional(),
   units_available: z.number().min(0).optional(),
-  construction_status: z.enum(['planning', 'construction', 'delivered', 'planned']),
+  construction_status: z.enum(['planned', 'construction', 'delivered']),
   expected_completion: z.string().optional(),
   actual_completion: z.string().optional(),
   building_class: z.enum(['A+', 'A', 'B', 'C']).optional(),
@@ -89,7 +89,7 @@ export function BuildingModal({
     defaultValues: {
       building_name: '',
       building_type: 'apartment_building',
-      construction_status: 'planning',
+      construction_status: 'planned',
       total_floors: 1,
       total_units: 1,
       units_available: 1,
@@ -238,7 +238,6 @@ export function BuildingModal({
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="planning">Planification</SelectItem>
                               <SelectItem value="planned">Planifié</SelectItem>
                               <SelectItem value="construction">En construction</SelectItem>
                               <SelectItem value="delivered">Livré</SelectItem>

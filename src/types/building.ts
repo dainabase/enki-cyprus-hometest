@@ -7,7 +7,7 @@ export interface Building {
   total_floors?: number;
   total_units?: number;
   units_available?: number;
-  construction_status: 'planning' | 'construction' | 'delivered' | 'planned';
+  construction_status: 'planned' | 'construction' | 'delivered';
   expected_completion?: string;
   actual_completion?: string;
   building_class?: 'A+' | 'A' | 'B' | 'C';
@@ -37,7 +37,7 @@ export interface BuildingFormData {
   total_floors?: number;
   total_units?: number;
   units_available?: number;
-  construction_status: 'planning' | 'construction' | 'delivered' | 'planned';
+  construction_status: 'planned' | 'construction' | 'delivered';
   expected_completion?: string;
   actual_completion?: string;
   building_class?: 'A+' | 'A' | 'B' | 'C';
