@@ -191,8 +191,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         </CardContent>
       </Card>
 
-      <Card className="border-border/50 shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5">
+      <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
+        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
           <CardTitle className="text-xl font-semibold text-foreground">Descriptions</CardTitle>
         </CardHeader>
         <CardContent className="p-6 space-y-6">
@@ -238,8 +238,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
   const renderLocationStep = () => (
     <div className="space-y-8">
-      <Card className="border-border/50 shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5">
+      <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
+        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
           <CardTitle className="text-xl font-semibold text-foreground">Adresse & Localisation</CardTitle>
           <CardDescription className="text-muted-foreground">
             L'adresse complète remplit automatiquement tous les champs ci-dessous
@@ -409,8 +409,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         </CardContent>
       </Card>
 
-      <Card className="border-border/50 shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5">
+      <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
+        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
           <CardTitle className="text-xl font-semibold text-foreground">Coordonnées GPS</CardTitle>
         </CardHeader>
         <CardContent className="p-6 space-y-6">
@@ -567,8 +567,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
   const renderSpecificationsStep = () => (
     <div className="space-y-8">
-      <Card className="border-border/50 shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5">
+      <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
+        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
           <CardTitle className="text-xl font-semibold text-foreground">Surfaces & Dimensions</CardTitle>
         </CardHeader>
         <CardContent className="p-6 space-y-6">
@@ -614,8 +614,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         </CardContent>
       </Card>
 
-      <Card className="border-border/50 shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5">
+      <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
+        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
           <CardTitle className="text-xl font-semibold text-foreground">Unités & Logements</CardTitle>
         </CardHeader>
         <CardContent className="p-6 space-y-6">
@@ -691,8 +691,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         </CardContent>
       </Card>
 
-      <Card className="border-border/50 shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5">
+      <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
+        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
           <CardTitle className="text-xl font-semibold text-foreground">Caractéristiques Techniques</CardTitle>
         </CardHeader>
         <CardContent className="p-6 space-y-6">
@@ -867,8 +867,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         </CardContent>
       </Card>
 
-      <Card className="border-border/50 shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5">
+      <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
+        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
           <CardTitle className="text-xl font-semibold text-foreground">Équipements</CardTitle>
         </CardHeader>
         <CardContent className="p-6 space-y-6">
@@ -937,8 +937,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
   const renderPricingStep = () => (
     <div className="space-y-8">
-      <Card className="border-border/50 shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5">
+      <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
+        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
           <CardTitle className="text-xl font-semibold text-foreground">Prix & Tarifs</CardTitle>
         </CardHeader>
         <CardContent className="p-6 space-y-6">
@@ -1062,8 +1062,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         </CardContent>
       </Card>
 
-      <Card className="border-border/50 shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5">
+      <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
+        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
           <CardTitle className="text-xl font-semibold text-foreground">Golden Visa & Investissement</CardTitle>
         </CardHeader>
         <CardContent className="p-6 space-y-6">
@@ -1154,8 +1154,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
   const renderMediaStep = () => (
     <div className="space-y-8">
-      <Card className="border-border/50 shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5">
+      <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
+        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
           <CardTitle className="text-xl font-semibold text-foreground">Photos du Projet</CardTitle>
           <CardDescription className="text-muted-foreground">
             Gérez vos photos par catégorie pour un affichage optimal
@@ -1183,8 +1183,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         </CardContent>
       </Card>
 
-      <Card className="border-border/50 shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5">
+      <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
+        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
           <CardTitle className="text-xl font-semibold text-foreground">Plans & Documentation</CardTitle>
         </CardHeader>
         <CardContent className="p-6">
@@ -1208,8 +1208,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         </CardContent>
       </Card>
 
-      <Card className="border-border/50 shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5">
+      <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
+        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
           <CardTitle className="text-xl font-semibold text-foreground">Contenu Multimédia</CardTitle>
         </CardHeader>
         <CardContent className="p-6 space-y-6">
@@ -1232,8 +1232,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
   );
 
   const renderAmenitiesStep = () => (
-    <Card className="border-border/50 shadow-lg">
-      <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5">
+    <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
+      <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
         <CardTitle className="text-xl font-semibold text-foreground">Prestations & Équipements</CardTitle>
         <CardDescription className="text-muted-foreground">Sélectionnez les prestations disponibles dans le projet</CardDescription>
       </CardHeader>
@@ -1250,8 +1250,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
   const renderMarketingStep = () => (
     <div className="space-y-8">
-      <Card className="border-border/50 shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5">
+      <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
+        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
           <CardTitle className="text-xl font-semibold text-foreground">SEO & Marketing</CardTitle>
         </CardHeader>
         <CardContent className="p-6 space-y-6">
@@ -1310,8 +1310,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         </CardContent>
       </Card>
 
-      <Card className="border-border/50 shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5">
+      <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
+        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
           <CardTitle className="text-xl font-semibold text-foreground">Statut & Visibilité</CardTitle>
         </CardHeader>
         <CardContent className="p-6 space-y-6">
