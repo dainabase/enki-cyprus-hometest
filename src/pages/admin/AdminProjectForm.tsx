@@ -426,29 +426,58 @@ const AdminProjectForm: React.FC = () => {
     }
   };
 
+  const refreshFormData = async () => {
+    if (isEdit && id) {
+      try {
+        console.log('🔄 Rechargement des données du projet depuis la base');
+        const freshProject = await fetchProject(id);
+        if (freshProject) {
+          console.log('🔄 Données fraîches récupérées:', {
+            total_units_new: freshProject.total_units_new,
+            units_available_new: freshProject.units_available_new,
+            energy_rating: freshProject.energy_rating,
+            roi_estimate_percent: freshProject.roi_estimate_percent,
+            rental_yield_percent: freshProject.rental_yield_percent
+          });
+          
+          // Récupérer les valeurs actuelles du formulaire
+          const currentFormValues = form.getValues();
+          
+          // Remettre à jour le formulaire avec les données fraîches de la base
+          form.reset({
+            ...currentFormValues,
+            total_units_new: freshProject.total_units_new ? Number(freshProject.total_units_new) : null,
+            units_available_new: freshProject.units_available_new ? Number(freshProject.units_available_new) : null,
+            energy_rating: freshProject.energy_rating || '',
+            roi_estimate_percent: freshProject.roi_estimate_percent ? Number(freshProject.roi_estimate_percent) : null,
+            rental_yield_percent: freshProject.rental_yield_percent ? Number(freshProject.rental_yield_percent) : null,
+            photos: (() => {
+              if (freshProject.categorized_photos && Array.isArray(freshProject.categorized_photos)) {
+                return freshProject.categorized_photos.filter((photo: any) => photo && typeof photo === 'object' && photo.url);
+              }
+              return [];
+            })()
+          });
+          
+          console.log('✅ Formulaire mis à jour avec les données fraîches');
+        }
+      } catch (error) {
+        console.error('❌ Erreur lors du rechargement des données:', error);
+      }
+    }
+  };
+
   const nextStep = async () => {
     if (currentStepIndex < projectFormSteps.length - 1) {
       setCurrentStepIndex(currentStepIndex + 1);
-      
-      // Recharger les données depuis la base à chaque étape si on modifie un projet existant
-      if (isEdit && id) {
-        console.log('🔄 Rechargement des données depuis la base pour l\'étape suivante');
-        await queryClient.invalidateQueries({ queryKey: ['project', id] });
-        await queryClient.refetchQueries({ queryKey: ['project', id] });
-      }
+      await refreshFormData();
     }
   };
 
   const prevStep = async () => {
     if (currentStepIndex > 0) {
       setCurrentStepIndex(currentStepIndex - 1);
-      
-      // Recharger les données depuis la base à chaque étape si on modifie un projet existant
-      if (isEdit && id) {
-        console.log('🔄 Rechargement des données depuis la base pour l\'étape précédente');
-        await queryClient.invalidateQueries({ queryKey: ['project', id] });
-        await queryClient.refetchQueries({ queryKey: ['project', id] });
-      }
+      await refreshFormData();
     }
   };
 
