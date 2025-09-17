@@ -1,97 +1,119 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
-import { Download, Upload, Check, X, AlertCircle, FileSpreadsheet } from 'lucide-react';
-import { downloadTemplate } from '@/lib/excel/propertyTemplate';
-import { parseExcelFile, parseCSVFile, ParsedProperty } from '@/lib/excel/propertyParser';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Upload, Download, AlertCircle, CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { useMutation } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import Papa from 'papaparse';
 
 interface CSVImporterProps {
-  developerId: string;
   projectId: string;
-  buildingId: string;
-  onSuccess: (count: number) => void;
+  buildingId?: string;
+  onPropertiesImported: (count: number) => void;
 }
 
-export default function CSVImporter({ developerId, projectId, buildingId, onSuccess }: CSVImporterProps) {
-  const [file, setFile] = useState<File | null>(null);
-  const [parsedData, setParsedData] = useState<ParsedProperty[]>([]);
-  const [parseErrors, setParseErrors] = useState<string[]>([]);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [importProgress, setImportProgress] = useState(0);
+interface CSVRow {
+  unit_number: string;
+  floor: number;
+  type: string;
+  bedrooms: number;
+  bathrooms: number;
+  size_m2: number;
+  price: number;
+  status: 'available' | 'reserved' | 'sold';
+  view_type?: string;
+  orientation?: string;
+  parking_spaces?: number;
+}
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const uploadedFile = event.target.files?.[0];
-    if (!uploadedFile) return;
+export const CSVImporter: React.FC<CSVImporterProps> = ({
+  projectId,
+  buildingId,
+  onPropertiesImported
+}) => {
+  const [file, setFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [result, setResult] = useState<{ success: boolean; message: string; count?: number } | null>(null);
+
+  const downloadTemplate = () => {
+    const template = [
+      ['unit_number', 'floor', 'type', 'bedrooms', 'bathrooms', 'size_m2', 'price', 'status', 'view_type', 'orientation', 'parking_spaces'],
+      ['A-101', '1', 'apartment', '2', '2', '85.5', '350000', 'available', 'sea', 'south', '1'],
+      ['A-102', '1', 'apartment', '3', '2', '120.0', '450000', 'available', 'mountain', 'north', '2']
+    ];
     
-    setFile(uploadedFile);
-    setIsProcessing(true);
-    setParsedData([]);
-    setParseErrors([]);
-    
-    try {
-      let result;
-      if (uploadedFile.name.endsWith('.xlsx') || uploadedFile.name.endsWith('.xls')) {
-        result = await parseExcelFile(uploadedFile);
-      } else if (uploadedFile.name.endsWith('.csv')) {
-        result = await parseCSVFile(uploadedFile);
-      } else {
-        throw new Error('Format de fichier non supporté. Utilisez .xlsx, .xls ou .csv');
-      }
-      
-      setParsedData(result.data);
-      setParseErrors(result.errors);
-      
-      if (result.success) {
-        toast.success(`${result.data.length} propriétés prêtes à importer`);
-      } else {
-        toast.warning('Des erreurs ont été détectées, vérifiez avant d\'importer');
-      }
-    } catch (error) {
-      toast.error(`Erreur: ${error}`);
-      setParseErrors([String(error)]);
-    } finally {
-      setIsProcessing(false);
+    const csv = Papa.unparse(template);
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'properties_template.csv';
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0];
+    if (selectedFile && selectedFile.type === 'text/csv') {
+      setFile(selectedFile);
+      setResult(null);
+    } else {
+      alert('Veuillez sélectionner un fichier CSV valide.');
     }
   };
 
-  const importMutation = useMutation({
-    mutationFn: async () => {
-      const validProperties = parsedData.filter(p => !p.validation_errors?.length);
-      const totalBatch = validProperties.length;
+  const validateAndImportData = async (data: CSVRow[]) => {
+    try {
+      setIsUploading(true);
+      setUploadProgress(10);
+
+      // Validate required fields
+      const validData = data.filter(row => 
+        row.unit_number && 
+        row.type && 
+        row.bedrooms !== undefined && 
+        row.bathrooms !== undefined && 
+        row.size_m2 && 
+        row.price
+      );
+
+      if (validData.length === 0) {
+        throw new Error('Aucune donnée valide trouvée dans le fichier CSV');
+      }
+
+      setUploadProgress(30);
+
+      // Transform data to match database schema
+      const propertiesToInsert = validData.map(row => ({
+        project_id: projectId,
+        building_id: buildingId || null,
+        unit_number: row.unit_number,
+        property_type: row.type as 'apartment' | 'villa' | 'penthouse' | 'studio' | 'townhouse' | 'duplex' | 'triplex' | 'maisonette',
+        property_status: row.status as 'available' | 'reserved' | 'sold' | 'rented' | 'unavailable',
+        bedrooms_count: row.bedrooms,
+        bathrooms_count: row.bathrooms,
+        internal_area: row.size_m2,
+        price_excluding_vat: row.price,
+        view_type: row.view_type ? [row.view_type] : [],
+        orientation: row.orientation as 'north' | 'south' | 'east' | 'west' | 'north_east' | 'north_west' | 'south_east' | 'south_west' | undefined,
+        parking_spaces: row.parking_spaces || 0,
+        floor_number: row.floor || null,
+        vat_rate: 5, // Default VAT rate
+        commission_rate: 5, // Default commission rate
+        deposit_percentage: 30, // Default deposit
+        reservation_fee: 5000 // Default reservation fee
+      }));
+
+      setUploadProgress(60);
+
+      // Insert in batches
       const batchSize = 10;
-      
-      for (let i = 0; i < totalBatch; i += batchSize) {
-        const batch = validProperties.slice(i, i + batchSize).map(prop => ({
-          unit_number: prop.unit_number,
-          floor: prop.floor,
-          type: prop.type,
-          bedrooms: prop.bedrooms,
-          bathrooms: prop.bathrooms,
-          size_m2: prop.size_m2,
-          price: prop.price,
-          status: prop.status,
-          view_type: prop.view_type || null,
-          orientation: prop.orientation || null,
-          balcony_m2: prop.balcony_m2 || 0,
-          terrace_m2: prop.terrace_m2 || 0,
-          parking_spaces: prop.parking_spaces || 0,
-          storage_units: prop.storage_units || 0,
-          has_sea_view: prop.has_sea_view || false,
-          has_pool_access: prop.has_pool_access || false,
-          has_gym_access: prop.has_gym_access || false,
-          has_mountain_view: prop.has_mountain_view || false,
-          is_furnished: prop.is_furnished || false,
-          developer_id: developerId,
-          project_id: projectId,
-          building_id: buildingId,
-        }));
+      for (let i = 0; i < propertiesToInsert.length; i += batchSize) {
+        const batch = propertiesToInsert.slice(i, i + batchSize);
         
         const { error } = await supabase
           .from('properties')
@@ -99,216 +121,131 @@ export default function CSVImporter({ developerId, projectId, buildingId, onSucc
         
         if (error) throw error;
         
-        setImportProgress(Math.round(((i + batchSize) / totalBatch) * 100));
+        setUploadProgress(60 + ((i + batchSize) / propertiesToInsert.length) * 40);
       }
-      
-      return validProperties.length;
-    },
-    onSuccess: (count) => {
-      toast.success(`${count} propriétés importées avec succès !`);
-      onSuccess(count);
-      // Reset
-      setFile(null);
-      setParsedData([]);
-      setParseErrors([]);
-      setImportProgress(0);
-    },
-    onError: (error) => {
-      toast.error(`Erreur lors de l'import: ${error}`);
-    }
-  });
 
-  const validCount = parsedData.filter(p => !p.validation_errors?.length).length;
-  const errorCount = parsedData.filter(p => p.validation_errors?.length).length;
-  const goldenVisaCount = parsedData.filter(p => p.is_golden_visa && !p.validation_errors?.length).length;
+      setUploadProgress(100);
+      setResult({
+        success: true,
+        message: `${validData.length} propriétés importées avec succès`,
+        count: validData.length
+      });
+      
+      onPropertiesImported(validData.length);
+      
+    } catch (error) {
+      console.error('Erreur lors de l\'importation:', error);
+      setResult({
+        success: false,
+        message: error instanceof Error ? error.message : 'Erreur lors de l\'importation'
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleUpload = () => {
+    if (!file) return;
+
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      transform: (value: string, field?: string) => {
+        // Convert string numbers to actual numbers for numeric fields
+        if (['floor', 'bedrooms', 'bathrooms', 'size_m2', 'price', 'parking_spaces'].includes(field || '')) {
+          const num = parseFloat(value);
+          return isNaN(num) ? 0 : num;
+        }
+        return value.trim();
+      },
+      complete: (results) => {
+        if (results.errors.length > 0) {
+          setResult({
+            success: false,
+            message: `Erreurs dans le fichier CSV: ${results.errors.map(e => e.message).join(', ')}`
+          });
+          return;
+        }
+        
+        validateAndImportData(results.data as CSVRow[]);
+      },
+      error: (error) => {
+        setResult({
+          success: false,
+          message: `Erreur de lecture du fichier: ${error.message}`
+        });
+      }
+    });
+  };
 
   return (
-    <div className="space-y-6">
-      {/* Étape 1: Télécharger le template */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Étape 1 : Télécharger le template</CardTitle>
-          <CardDescription>
-            Utilisez notre template Excel pour préparer vos données
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button onClick={downloadTemplate} variant="outline" className="w-full">
-            <Download className="mr-2 h-4 w-4" />
-            Télécharger le template Excel
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Upload className="w-5 h-5" />
+          Import CSV
+        </CardTitle>
+        <CardDescription>
+          Importez des propriétés en masse depuis un fichier CSV
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={downloadTemplate} className="flex items-center gap-2">
+            <Download className="w-4 h-4" />
+            Télécharger le modèle
           </Button>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Étape 2: Upload du fichier */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Étape 2 : Importer votre fichier</CardTitle>
-          <CardDescription>
-            Formats acceptés : Excel (.xlsx, .xls) ou CSV (.csv)
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="border-2 border-dashed rounded-lg p-8 text-center">
-            <input
-              type="file"
-              accept=".xlsx,.xls,.csv"
-              onChange={handleFileUpload}
-              className="hidden"
-              id="file-upload"
-              disabled={isProcessing}
-            />
-            <label htmlFor="file-upload" className="cursor-pointer">
-              <FileSpreadsheet className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-              <p className="text-sm text-gray-600">
-                {file ? file.name : 'Cliquez pour sélectionner un fichier'}
-              </p>
-              <Button variant="secondary" className="mt-4" disabled={isProcessing}>
-                <Upload className="mr-2 h-4 w-4" />
-                {isProcessing ? 'Traitement...' : 'Choisir un fichier'}
-              </Button>
-            </label>
+        <div className="space-y-2">
+          <Label htmlFor="csv-file">Fichier CSV</Label>
+          <Input
+            id="csv-file"
+            type="file"
+            accept=".csv"
+            onChange={handleFileChange}
+            disabled={isUploading}
+          />
+        </div>
+
+        {file && (
+          <div className="p-3 bg-gray-50 rounded">
+            <p className="text-sm">
+              <strong>Fichier sélectionné:</strong> {file.name} ({(file.size / 1024).toFixed(1)} KB)
+            </p>
           </div>
+        )}
 
-          {/* Résumé après parsing */}
-          {parsedData.length > 0 && (
-            <div className="grid grid-cols-4 gap-4">
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="text-2xl font-bold">{parsedData.length}</div>
-                  <p className="text-xs text-muted-foreground">Total lignes</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="text-2xl font-bold text-green-600">{validCount}</div>
-                  <p className="text-xs text-muted-foreground">Valides</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="text-2xl font-bold text-red-600">{errorCount}</div>
-                  <p className="text-xs text-muted-foreground">Erreurs</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="text-2xl font-bold text-yellow-600">{goldenVisaCount}</div>
-                  <p className="text-xs text-muted-foreground">Golden Visa</p>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+        {isUploading && (
+          <div className="space-y-2">
+            <Progress value={uploadProgress} className="w-full" />
+            <p className="text-sm text-gray-600">
+              Import en cours... {uploadProgress}%
+            </p>
+          </div>
+        )}
 
-      {/* Étape 3: Validation et preview */}
-      {parsedData.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Étape 3 : Validation et import</CardTitle>
-            <CardDescription>
-              Vérifiez les données avant l'import final
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {/* Erreurs */}
-            {parseErrors.length > 0 && (
-              <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>
-                  <div className="font-semibold mb-2">Erreurs détectées :</div>
-                  <ul className="list-disc list-inside text-sm">
-                    {parseErrors.slice(0, 5).map((error, i) => (
-                      <li key={i}>{error}</li>
-                    ))}
-                    {parseErrors.length > 5 && (
-                      <li>... et {parseErrors.length - 5} autres erreurs</li>
-                    )}
-                  </ul>
-                </AlertDescription>
-              </Alert>
+        {result && (
+          <Alert variant={result.success ? "default" : "destructive"}>
+            {result.success ? (
+              <CheckCircle className="h-4 w-4" />
+            ) : (
+              <AlertCircle className="h-4 w-4" />
             )}
+            <AlertDescription>
+              {result.message}
+            </AlertDescription>
+          </Alert>
+        )}
 
-            {/* Preview des données */}
-            <div className="max-h-96 overflow-y-auto border rounded">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Statut</TableHead>
-                    <TableHead>Unité</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Surface</TableHead>
-                    <TableHead>Prix</TableHead>
-                    <TableHead>Golden Visa</TableHead>
-                    <TableHead>Erreurs</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {parsedData.slice(0, 10).map((prop, i) => (
-                    <TableRow key={i}>
-                      <TableCell>
-                        {prop.validation_errors?.length ? (
-                          <X className="h-4 w-4 text-red-500" />
-                        ) : (
-                          <Check className="h-4 w-4 text-green-500" />
-                        )}
-                      </TableCell>
-                      <TableCell>{prop.unit_number}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{prop.type}</Badge>
-                      </TableCell>
-                      <TableCell>{prop.size_m2} m²</TableCell>
-                      <TableCell>€{prop.price?.toLocaleString()}</TableCell>
-                      <TableCell>
-                        {prop.is_golden_visa && (
-                          <Badge className="bg-yellow-500">✨ Golden Visa</Badge>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {prop.validation_errors?.length && (
-                          <div className="text-xs text-red-600">
-                            {prop.validation_errors.join(', ')}
-                          </div>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                  {parsedData.length > 10 && (
-                    <TableRow>
-                      <TableCell colSpan={7} className="text-center text-sm text-gray-500">
-                        ... et {parsedData.length - 10} autres propriétés
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-
-            {/* Progress bar pendant l'import */}
-            {importMutation.isPending && (
-              <div className="space-y-2">
-                <Progress value={importProgress} />
-                <p className="text-sm text-center text-gray-600">
-                  Import en cours... {importProgress}%
-                </p>
-              </div>
-            )}
-
-            {/* Bouton d'import */}
-            <Button
-              onClick={() => importMutation.mutate()}
-              disabled={validCount === 0 || importMutation.isPending}
-              className="w-full"
-              size="lg"
-            >
-              <Upload className="mr-2 h-4 w-4" />
-              Importer {validCount} propriétés valides
-              {goldenVisaCount > 0 && ` (dont ${goldenVisaCount} Golden Visa)`}
-            </Button>
-          </CardContent>
-        </Card>
-      )}
-    </div>
+        <Button 
+          onClick={handleUpload} 
+          disabled={!file || isUploading}
+          className="w-full"
+        >
+          {isUploading ? 'Import en cours...' : 'Importer les propriétés'}
+        </Button>
+      </CardContent>
+    </Card>
   );
-}
+};

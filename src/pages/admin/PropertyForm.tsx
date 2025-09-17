@@ -52,8 +52,8 @@ export default function PropertyForm() {
       terrace_count: 0,
       parking_spaces: 0,
       storage_spaces: 0,
-      kitchen_appliances: [],
       appliances_list: [],
+      smart_home_features: [],
       smart_home_features: [],
       security_features: [],
       view_type: []
@@ -85,11 +85,10 @@ export default function PropertyForm() {
     if (property && isEdit) {
       const formData = {
         ...property,
-        kitchen_appliances: property.kitchen_appliances || [],
         appliances_list: property.appliances_list || [],
         smart_home_features: property.smart_home_features || [],
-        security_features: property.security_features || [],
-        view_type: property.view_type || []
+        view_type: property.view_type || [],
+        property_type: property.property_type as 'apartment' | 'villa' | 'penthouse' | 'studio' | 'townhouse' | 'duplex' | 'triplex' | 'maisonette'
       };
       form.reset(formData);
     }

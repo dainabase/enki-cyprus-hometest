@@ -96,7 +96,9 @@ const AdminUnits = () => {
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
       const { error } = await supabase
         .from('properties')
-        .update({ status: status })
+      const { error } = await supabase
+        .from('properties')
+        .update({ property_status: status as 'available' | 'reserved' | 'sold' | 'rented' | 'unavailable' })
         .eq('id', id);
       if (error) throw error;
     },

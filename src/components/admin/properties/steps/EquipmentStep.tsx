@@ -22,15 +22,15 @@ const smartHomeFeaturesList = [
 ];
 
 export const EquipmentStep: React.FC<EquipmentStepProps> = ({ form }) => {
-  const selectedAppliances = form.watch('kitchen_appliances') || [];
+  const selectedAppliances = form.watch('appliances_list') || [];
   const selectedSmartFeatures = form.watch('smart_home_features') || [];
 
   const handleApplianceChange = (appliance: string, checked: boolean) => {
     const current = selectedAppliances;
     if (checked) {
-      form.setValue('kitchen_appliances', [...current, appliance]);
+      form.setValue('appliances_list', [...current, appliance]);
     } else {
-      form.setValue('kitchen_appliances', current.filter(item => item !== appliance));
+      form.setValue('appliances_list', current.filter(item => item !== appliance));
     }
   };
 

@@ -23,6 +23,7 @@ const Projects = lazy(() => import("./pages/Projects"));
 const ProjectDetail = lazy(() => import("./pages/ProjectDetail"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
+const PropertyForm = lazy(() => import("./pages/admin/PropertyForm"));
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
