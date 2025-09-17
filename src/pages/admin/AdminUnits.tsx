@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -56,6 +57,7 @@ interface Property {
 
 const AdminUnits = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [typeFilter, setTypeFilter] = useState<string>('all');
@@ -626,7 +628,7 @@ const AdminUnits = () => {
               <Button
                 onClick={() => {
                   const url = `/admin/property-form${editingPropertyId ? `?id=${editingPropertyId}` : ''}`;
-                  window.open(url, '_blank');
+                  navigate(url);
                   setShowPropertyForm(false);
                   setEditingPropertyId(null);
                 }}
