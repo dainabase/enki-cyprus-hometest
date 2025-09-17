@@ -128,29 +128,38 @@ const AdminProjectForm: React.FC = () => {
       
       // Reset form with project data
       const projectData = project;
+      // Helper function to safely access location data
+      const getLocationValue = (field: string) => {
+        if (typeof projectData.location === 'object' && projectData.location !== null) {
+          return (projectData.location as any)[field];
+        }
+        return null;
+      };
+
       form.reset({
         // Basics
         title: projectData.title || '',
         project_code: projectData.project_code || '',
         developer_id: projectData.developer_id || '',
         property_category: projectData.property_category || 'residential',
-        property_sub_type: Array.isArray(projectData.property_sub_type) ? projectData.property_sub_type : ['apartment'],
+        property_sub_type: Array.isArray(projectData.property_sub_type) ? projectData.property_sub_type : 
+                          Array.isArray(projectData.property_types) ? projectData.property_types : ['apartment'],
         project_phase: projectData.project_phase || 'off-plan',
-        launch_date: projectData.launch_date || '',
-        completion_date_new: projectData.completion_date_new || '',
+        launch_date: projectData.launch_date ? String(projectData.launch_date).substring(0, 7) : '', // Convert YYYY-MM-DD to YYYY-MM
+        completion_date_new: projectData.completion_date_new ? String(projectData.completion_date_new).substring(0, 7) : '',
         exclusive_commercialization: projectData.exclusive_commercialization || false,
         description: projectData.description || '',
         detailed_description: projectData.detailed_description || '',
         
         // Location
-        full_address: projectData.full_address || '',
-        city: projectData.city || '',
+        full_address: projectData.full_address || getLocationValue('address') || '',
+        city: projectData.city || getLocationValue('city') || '',
         region: projectData.region || '',
         neighborhood: projectData.neighborhood || '',
         neighborhood_description: projectData.neighborhood_description || '',
         cyprus_zone: projectData.cyprus_zone || 'limassol',
-        gps_latitude: projectData.gps_latitude || null,
-        gps_longitude: projectData.gps_longitude || null,
+        gps_latitude: projectData.gps_latitude || getLocationValue('coordinates')?.lat || null,
+        gps_longitude: projectData.gps_longitude || getLocationValue('coordinates')?.lng || null,
         proximity_sea_km: projectData.proximity_sea_km || null,
         proximity_airport_km: projectData.proximity_airport_km || null,
         proximity_city_center_km: projectData.proximity_city_center_km || null,
@@ -159,24 +168,22 @@ const AdminProjectForm: React.FC = () => {
         // Specifications
         land_area_m2: projectData.land_area_m2 || null,
         built_area_m2: projectData.built_area_m2 || null,
-        total_units_new: projectData.total_units_new || null,
-        units_available_new: projectData.units_available_new || null,
+        total_units_new: projectData.total_units_new || projectData.total_units || null,
+        units_available_new: projectData.units_available_new || projectData.units_available || null,
         bedrooms_range: projectData.bedrooms_range || '',
         bathrooms_range: projectData.bathrooms_range || '',
         floors_total: projectData.floors_total || null,
         parking_spaces: projectData.parking_spaces || null,
         storage_spaces: projectData.storage_spaces || null,
-        energy_rating: projectData.energy_rating || '',
-        construction_year: projectData.construction_year || null,
         
         // Pricing
         price: projectData.price || 0,
         price_from_new: projectData.price_from_new || null,
         price_to: projectData.price_to || null,
         price_per_m2: projectData.price_per_m2 || null,
-        vat_rate_new: projectData.vat_rate_new || 19,
+        vat_rate_new: projectData.vat_rate_new || projectData.vat_rate || 5,
         vat_included: projectData.vat_included || false,
-        golden_visa_eligible_new: projectData.golden_visa_eligible_new || false,
+        golden_visa_eligible_new: projectData.golden_visa_eligible_new || projectData.golden_visa_eligible || false,
         roi_estimate_percent: projectData.roi_estimate_percent || null,
         rental_yield_percent: projectData.rental_yield_percent || null,
         financing_available: projectData.financing_available || false,
@@ -195,7 +202,7 @@ const AdminProjectForm: React.FC = () => {
         photo_gallery_urls: Array.isArray(projectData.photo_gallery_urls) ? projectData.photo_gallery_urls : [],
         video_tour_urls: Array.isArray(projectData.video_tour_urls) ? projectData.video_tour_urls : [],
         floor_plan_urls: Array.isArray(projectData.floor_plan_urls) ? projectData.floor_plan_urls : [],
-        virtual_tour_url_new: projectData.virtual_tour_url_new || '',
+        virtual_tour_url_new: projectData.virtual_tour_url_new || projectData.virtual_tour_url || '',
         project_presentation_url: projectData.project_presentation_url || '',
         youtube_tour_url: projectData.youtube_tour_url || '',
         vimeo_tour_url: projectData.vimeo_tour_url || '',
@@ -209,12 +216,12 @@ const AdminProjectForm: React.FC = () => {
         
         // Marketing
         project_narrative: projectData.project_narrative || '',
-        meta_title_new: projectData.meta_title_new || '',
-        meta_description_new: projectData.meta_description_new || '',
+        meta_title_new: projectData.meta_title_new || projectData.meta_title || '',
+        meta_description_new: projectData.meta_description_new || projectData.meta_description || '',
         meta_keywords: Array.isArray(projectData.meta_keywords) ? projectData.meta_keywords : [],
         marketing_highlights: Array.isArray(projectData.marketing_highlights) ? projectData.marketing_highlights : [],
         target_audience: Array.isArray(projectData.target_audience) ? projectData.target_audience : [],
-        featured_new: projectData.featured_new || false,
+        featured_new: projectData.featured_new || projectData.featured_property || false,
         
         // Status
         status_project: projectData.status_project || 'disponible',
