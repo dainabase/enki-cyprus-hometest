@@ -51,7 +51,7 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
   const [dragOver, setDragOver] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('hero');
 
-  // DEBUG: Log what we receive
+  // DEBUG: Log what we receive and validate photos
   React.useEffect(() => {
     console.log('🖼️ CategorizedMediaUploader received:', {
       field_value: field.value,
@@ -59,6 +59,17 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
       field_value_length: field.value?.length || 0,
       first_photo: field.value?.[0]
     });
+    
+    // Validate that all photos have valid URLs
+    if (field.value && Array.isArray(field.value)) {
+      field.value.forEach((photo, index) => {
+        if (!photo || !photo.url) {
+          console.warn(`🖼️ Invalid photo at index ${index}:`, photo);
+        } else {
+          console.log(`🖼️ Valid photo ${index}:`, { url: photo.url, category: photo.category });
+        }
+      });
+    }
   }, [field.value]);
 
   // Enforce one photo per catégorie
@@ -282,7 +293,12 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
                           src={photo.url} 
                           alt={photo.caption || `${categoryInfo?.label} ${photoIndex + 1}`}
                           className="w-full h-full object-cover"
-                          onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/placeholder.svg'; }}
+                          onError={(e) => { 
+                            console.warn('🖼️ Image failed to load:', photo.url);
+                            e.currentTarget.onerror = null; 
+                            e.currentTarget.src = '/placeholder.svg'; 
+                          }}
+                          onLoad={() => console.log('🖼️ Image loaded successfully:', photo.url)}
                         />
                         
                         {/* Actions overlay */}

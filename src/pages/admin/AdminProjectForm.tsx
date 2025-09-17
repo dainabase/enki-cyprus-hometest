@@ -174,8 +174,8 @@ const AdminProjectForm: React.FC = () => {
         // Specifications
         land_area_m2: projectData.land_area_m2 || null,
         built_area_m2: projectData.built_area_m2 || null,
-        total_units_new: projectData.total_units_new || projectData.total_units || null,
-        units_available_new: projectData.units_available_new || projectData.units_available || null,
+        total_units_new: projectData.total_units_new || (projectData.total_units > 0 ? projectData.total_units : null) || null,
+        units_available_new: projectData.units_available_new || (projectData.units_available > 0 ? projectData.units_available : null) || null,
         bedrooms_range: projectData.bedrooms_range || '',
         bathrooms_range: projectData.bathrooms_range || '',
         floors_total: projectData.floors_total || null,
@@ -316,12 +316,16 @@ const AdminProjectForm: React.FC = () => {
         
         toast.success('Projet mis à jour avec succès');
         
-        // Forcer la re-fetch des données et la mise à jour du formulaire
-        // Juste invalider le cache pour forcer le rechargement
-        setTimeout(() => {
-          queryClient.invalidateQueries({ queryKey: ['project', id] });
-          console.log('🔄 Cache invalidated, form should refresh automatically');
-        }, 1000);
+        // Forcer un rechargement complet après sauvegarde pour garantir l'affichage
+        setTimeout(async () => {
+          // Invalider tout le cache lié au projet
+          await queryClient.invalidateQueries({ queryKey: ['project', id] });
+          await queryClient.refetchQueries({ queryKey: ['project', id] });
+          
+          // Forcer le rechargement de la page pour éviter les problèmes de cache persistants
+          console.log('🔄 Forcing page reload to ensure all data is displayed correctly');
+          window.location.reload();
+        }, 1500);
         
       } else {
         const { data: insertData, error } = await supabase
