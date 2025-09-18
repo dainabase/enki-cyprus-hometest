@@ -100,24 +100,34 @@ export default function PropertyForm() {
     mutationFn: async (data: PropertyFormData) => {
       console.log('Form data before processing:', data);
       
-      // Créer un objet avec seulement les champs essentiels d'abord
-      const essentialData = {
-        project_id: data.project_id || projectFromUrl || null, // UUID ou null, jamais ""
-        building_id: data.building_id === 'none' || !data.building_id ? null : data.building_id,
-        property_type: data.property_type || 'apartment',
-        unit_number: data.unit_number || 'TBD'
-      };
+      // Créer un objet avec SEULEMENT les champs essentiels, pas de spread operator
+      const essentialData: any = {};
+      
+      // Gérer les UUIDs - ils doivent être null ou des UUIDs valides, jamais ""
+      if (data.project_id && data.project_id !== '') {
+        essentialData.project_id = data.project_id;
+      } else if (projectFromUrl && projectFromUrl !== '') {
+        essentialData.project_id = projectFromUrl;
+      }
+      
+      if (data.building_id && data.building_id !== 'none' && data.building_id !== '') {
+        essentialData.building_id = data.building_id;
+      }
+      
+      // Champs obligatoires non-UUID
+      essentialData.property_type = data.property_type || 'apartment';
+      essentialData.unit_number = data.unit_number || 'TBD';
 
       console.log('Essential data:', essentialData);
 
       // Validation des champs obligatoires - s'assurer que project_id n'est pas null/vide
       if (!essentialData.project_id) {
-        throw new Error('Le projet est obligatoire. Veuillez sélectionner un projet.');
+        throw new Error('Le projet est obligatoire. Veuillez sélectionner un projet avant de continuer.');
       }
-      if (!essentialData.unit_number) {
+      if (!essentialData.unit_number || essentialData.unit_number === '') {
         throw new Error('Le numéro d\'unité est obligatoire');
       }
-      if (!essentialData.property_type) {
+      if (!essentialData.property_type || essentialData.property_type === '') {
         throw new Error('Le type de propriété est obligatoire');
       }
 
