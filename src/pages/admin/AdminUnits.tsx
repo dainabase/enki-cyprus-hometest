@@ -282,7 +282,10 @@ const AdminUnits = () => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate(`/admin/property-form/${row.id}`)}
+            onClick={() => {
+              console.log('📝 Navigating to edit property:', row.id);
+              navigate(`/admin/property-form/${row.id}`);
+            }}
             className="h-8 w-8 p-0"
           >
             <Edit className="h-4 w-4" />
