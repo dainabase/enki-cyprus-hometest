@@ -99,132 +99,142 @@ export default function PropertyForm() {
   const saveMutation = useMutation({
     mutationFn: async (data: PropertyFormData) => {
       try {
-        console.log('=== DEBUGGING EACH FIELD ===');
+        // TESTER AVEC SEULEMENT 4 CHAMPS D'ABORD
+        const absoluteMinimal = {
+          project_id: data.project_id || projectFromUrl,
+          building_id: data.building_id && data.building_id !== 'none' ? data.building_id : buildingFromUrl && buildingFromUrl !== 'none' ? buildingFromUrl : null,
+          property_type: 'apartment',
+          unit_number: 'TEST-' + Date.now()
+        };
         
-        // Examiner chaque champ individuellement
-        const cleanedData: any = {};
+        console.log('TEST 1: Absolute minimal (4 fields):', absoluteMinimal);
         
-        Object.entries(data).forEach(([key, value]) => {
-          console.log(`Field: ${key}, Type: ${typeof value}, Value:`, value);
+        const { data: test1, error: error1 } = await supabase
+          .from('properties')
+          .insert(absoluteMinimal)
+          .select()
+          .single();
+        
+        if (error1) {
+          console.error('❌ FAILED with 4 fields:', error1);
+          // Le problème est dans la structure de la table elle-même !
+          throw new Error('ERREUR CRITIQUE: La table properties a un problème de configuration. Vérifiez les valeurs par défaut des champs UUID dans Supabase: ' + error1.message);
+        }
+        
+        console.log('✅ SUCCESS with 4 fields!');
+        
+        // Supprimer le test
+        await supabase.from('properties').delete().eq('id', test1.id);
+        
+        // MAINTENANT AJOUTER LES CHAMPS UN PAR UN
+        const fieldsToAdd = [
+          'property_status',
+          'ownership_type', 
+          'bedrooms_count',
+          'bathrooms_count',
+          'wc_count',
+          'vat_rate',
+          'commission_rate',
+          'deposit_percentage',
+          'reservation_fee',
+          'payment_plan_available',
+          'finance_available',
+          'title_deed_status',
+          'sale_type',
+          'internal_area',
+          'has_office',
+          'has_maid_room',
+          'has_dressing_room',
+          'has_playroom',
+          'has_wine_cellar',
+          'has_pantry',
+          'has_laundry_room',
+          'has_kitchen_appliances',
+          'appliances_list',
+          'smart_home_features',
+          'security_features',
+          'balcony_count',
+          'terrace_count',
+          'has_private_garden',
+          'has_private_pool',
+          'parking_spaces',
+          'storage_spaces',
+          'view_type',
+          'price_excluding_vat'
+        ];
+        
+        let workingData: any = { ...absoluteMinimal };
+        
+        for (const field of fieldsToAdd) {
+          const value = data[field as keyof PropertyFormData];
           
-          // IMPORTANT : Détecter et nettoyer TOUTE chaîne vide
+          // Nettoyer la valeur
+          let cleanValue = value;
           if (value === '') {
-            console.warn(`⚠️ EMPTY STRING FOUND: ${key}`);
-            
-            // CORRECTION CRITIQUE : Les champs JSONB ne peuvent pas recevoir de chaînes vides
-            if (key.includes('_list') || key.includes('features') || key === 'view_type') {
-              cleanedData[key] = []; // Array vide pour JSONB
-              console.log(`  → Converting JSONB field to empty array`);
-            } 
-            // Ne pas inclure les chaînes vides du tout pour les autres champs
+            // Pour les champs JSONB
+            if (['appliances_list', 'smart_home_features', 'security_features'].includes(field)) {
+              cleanValue = [];
+            }
+            // Pour les enums/text
+            else if (field === 'view_type') {
+              cleanValue = [];
+            }
+            // Pour les autres, skip
             else {
-              console.log(`  → Skipping empty field`);
-              return; // Skip ce champ
+              continue;
             }
           }
-          // Si c'est un array, vérifier qu'il ne contient pas de chaînes vides
-          else if (Array.isArray(value)) {
-            const cleaned = value.filter(v => v !== '' && v !== null && v !== undefined);
-            cleanedData[key] = cleaned; // Toujours inclure, même si vide
+          
+          workingData[field] = cleanValue;
+          
+          console.log(`Testing with field ${field}:`, cleanValue);
+          
+          const { data: testField, error: errorField } = await supabase
+            .from('properties')
+            .insert(workingData)
+            .select()
+            .single();
+          
+          if (errorField) {
+            console.error(`❌ PROBLEM FOUND! Field "${field}" causes error:`, errorField);
+            console.error(`Value that caused problem:`, cleanValue);
+            throw new Error(`CHAMP PROBLÉMATIQUE TROUVÉ: ${field} with value: ${JSON.stringify(cleanValue)}. Error: ${errorField.message}`);
           }
-          // Si c'est un objet, le nettoyer récursivement
-          else if (typeof value === 'object' && value !== null) {
-            const cleanedObj = Object.entries(value).reduce((acc, [k, v]) => {
-              if (v !== '' && v !== null && v !== undefined) acc[k] = v;
-              return acc;
-            }, {} as any);
-            cleanedData[key] = cleanedObj; // Toujours inclure, même si vide
-          }
-          // Valeurs définies et non-null
-          else if (value !== undefined && value !== null) {
-            cleanedData[key] = value;
-          }
-        });
-        
-        console.log('=== CLEANED DATA ===', cleanedData);
-        console.log('=== CLEANED KEYS ===', Object.keys(cleanedData));
-        
-        // TESTER avec des données MINIMALES d'abord
-        const testData: any = {
-          project_id: cleanedData.project_id || projectFromUrl,
-          property_type: cleanedData.property_type || 'apartment',
-          unit_number: cleanedData.unit_number || 'TEST-001',
-          property_status: 'available'
-        };
-
-        // Ajouter building_id seulement s'il est valide
-        if (cleanedData.building_id && cleanedData.building_id !== 'none') {
-          testData.building_id = cleanedData.building_id;
-        } else if (buildingFromUrl && buildingFromUrl !== 'none') {
-          testData.building_id = buildingFromUrl;
+          
+          // Supprimer le test
+          await supabase.from('properties').delete().eq('id', testField.id);
+          console.log(`✅ Field ${field} OK`);
         }
         
-        console.log('=== TEST WITH MINIMAL DATA FIRST ===', testData);
-
-        // Validation des champs obligatoires
-        if (!testData.project_id) {
-          throw new Error('Le projet est obligatoire. Veuillez sélectionner un projet avant de continuer.');
-        }
-        if (!testData.unit_number || testData.unit_number === '') {
-          throw new Error('Le numéro d\'unité est obligatoire');
-        }
-        if (!testData.property_type || testData.property_type === '') {
-          throw new Error('Le type de propriété est obligatoire');
-        }
-
+        console.log('✅ ALL FIELDS TESTED SUCCESSFULLY!');
+        
         if (isEdit && id) {
           const { error } = await supabase
             .from('properties')
-            .update(cleanedData)
+            .update(workingData)
             .eq('id', id);
           if (error) {
-            console.error('ERROR WITH UPDATE:', error);
             throw error;
           }
           return { id };
         } else {
-          // Essayer d'abord avec les données minimales
-          const { data: testProperty, error: testError } = await supabase
-            .from('properties')
-            .insert(testData)
-            .select()
-            .single();
-          
-          if (testError) {
-            console.error('ERROR WITH MINIMAL DATA:', testError);
-            // Si même les données minimales échouent, le problème est dans la table
-            throw new Error('Table configuration issue: ' + testError.message);
-          }
-          
-          console.log('✅ Minimal data worked! Now trying full data...');
-          
-          // Si ça marche, essayer avec toutes les données
-          // Mais d'abord supprimer la propriété test
-          await supabase
-            .from('properties')
-            .delete()
-            .eq('id', testProperty.id);
-          
           // Maintenant envoyer les vraies données
-          const { data: property, error } = await supabase
+          const { data: finalProperty, error: finalError } = await supabase
             .from('properties')
-            .insert(cleanedData)
+            .insert(workingData)
             .select()
             .single();
           
-          if (error) {
-            console.error('ERROR WITH FULL DATA:', error);
-            console.error('The problem is in these additional fields:', 
-              Object.keys(cleanedData).filter(k => !Object.keys(testData).includes(k))
-            );
-            throw error;
+          if (finalError) {
+            throw finalError;
           }
           
-          console.log('✅ SUCCESS:', property);
-          return property;
+          console.log('✅ Property created successfully:', finalProperty);
+          return finalProperty;
         }
+        
       } catch (error) {
-        console.error('FINAL ERROR:', error);
+        console.error('ERROR:', error);
         throw error;
       }
     },
