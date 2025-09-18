@@ -100,6 +100,19 @@ export default function PropertyForm() {
 
   const handleSave = async (data: PropertyFormData) => {
     try {
+      console.log('=== DEBUG DATA ===');
+      console.log('project_id type:', typeof data.project_id);
+      console.log('project_id value:', data.project_id);
+      console.log('project_id length:', data.project_id?.length);
+      console.log('building_id type:', typeof data.building_id);
+      console.log('building_id value:', data.building_id);
+      console.log('building_id length:', data.building_id?.length);
+
+      // Vérifier si les IDs sont vraiment des UUIDs valides
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      console.log('project_id is valid UUID:', uuidRegex.test(data.project_id || ''));
+      console.log('building_id is valid UUID:', uuidRegex.test(data.building_id || ''));
+      
       console.log('=== USING RPC FUNCTION ===');
       console.log('Raw form data:', data);
       console.log('URL params - project:', projectFromUrl, 'building:', buildingFromUrl);
