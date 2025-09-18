@@ -147,9 +147,20 @@ export default function PropertyForm() {
         return { id };
       } else {
         console.log('Attempting to insert:', essentialData);
+        
+        // Nettoyer complètement les données - supprimer toute propriété avec une valeur vide
+        const cleanedData: Record<string, any> = {};
+        for (const [key, value] of Object.entries(essentialData)) {
+          if (value !== null && value !== undefined && value !== '') {
+            cleanedData[key] = value;
+          }
+        }
+        
+        console.log('Cleaned data being sent to Supabase:', cleanedData);
+        
         const { data: newProperty, error } = await supabase
           .from('properties')
-          .insert(essentialData)
+          .insert(cleanedData as any)
           .select()
           .single();
         if (error) {
@@ -157,7 +168,7 @@ export default function PropertyForm() {
           console.error('Error code:', error.code);
           console.error('Error message:', error.message);
           console.error('Error details:', error.details);
-          console.error('Property data being sent:', essentialData);
+          console.error('Property data being sent:', cleanedData);
           throw error;
         }
         return newProperty;
