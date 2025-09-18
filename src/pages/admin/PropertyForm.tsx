@@ -11,12 +11,11 @@ import { ArrowLeft, ArrowRight, Check, Save, CheckCircle, ChevronLeft } from 'lu
 import { supabase } from '@/integrations/supabase/client';
 import { PropertyFormSteps } from '@/components/admin/properties/PropertyFormSteps';
 import { propertySchema, PropertyFormData, propertyFormSteps } from '@/schemas/property.schema';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 export default function PropertyForm() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toast } = useToast();
   const queryClient = useQueryClient();
   const isEdit = Boolean(id);
 
@@ -115,16 +114,13 @@ export default function PropertyForm() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['properties'] });
-      toast({
-        title: isEdit ? "Propriété mise à jour" : "Propriété créée",
+      toast.success(isEdit ? "Propriété mise à jour" : "Propriété créée", {
         description: "Les modifications ont été sauvegardées avec succès.",
       });
     },
     onError: (error) => {
-      toast({
-        title: "Erreur",
+      toast.error("Erreur", {
         description: `Erreur lors de la sauvegarde: ${error.message}`,
-        variant: "destructive",
       });
     }
   });
