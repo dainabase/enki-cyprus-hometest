@@ -1977,6 +1977,7 @@ export type Database = {
           has_wine_cellar: boolean | null
           has_wine_fridge: boolean | null
           heating_type: string | null
+          hvac_type: string | null
           id: string
           internal_area: number | null
           internet_ready: boolean | null
@@ -2129,6 +2130,7 @@ export type Database = {
           has_wine_cellar?: boolean | null
           has_wine_fridge?: boolean | null
           heating_type?: string | null
+          hvac_type?: string | null
           id?: string
           internal_area?: number | null
           internet_ready?: boolean | null
@@ -2281,6 +2283,7 @@ export type Database = {
           has_wine_cellar?: boolean | null
           has_wine_fridge?: boolean | null
           heating_type?: string | null
+          hvac_type?: string | null
           id?: string
           internal_area?: number | null
           internet_ready?: boolean | null
