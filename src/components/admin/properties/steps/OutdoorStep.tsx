@@ -147,7 +147,7 @@ export const OutdoorStep: React.FC<OutdoorStepProps> = ({ form }) => {
                       </FormDescription>
                     </div>
                     <FormControl>
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      <Switch checked={field.value || false} onCheckedChange={field.onChange} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -165,7 +165,7 @@ export const OutdoorStep: React.FC<OutdoorStepProps> = ({ form }) => {
                       </FormDescription>
                     </div>
                     <FormControl>
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      <Switch checked={field.value || false} onCheckedChange={field.onChange} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -180,7 +180,7 @@ export const OutdoorStep: React.FC<OutdoorStepProps> = ({ form }) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Type de piscine</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value || ""}>
                         <FormControl>
                           <SelectTrigger className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm">
                             <SelectValue placeholder="Sélectionner" />
@@ -231,7 +231,7 @@ export const OutdoorStep: React.FC<OutdoorStepProps> = ({ form }) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Type de parking</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value || ""}>
                       <FormControl>
                         <SelectTrigger className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm">
                           <SelectValue placeholder="Sélectionner" />

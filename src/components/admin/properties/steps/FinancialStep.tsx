@@ -84,7 +84,7 @@ export const FinancialStep: React.FC<FinancialStepProps> = ({ form }) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Taux TVA *</FormLabel>
-                    <Select onValueChange={value => field.onChange(parseFloat(value))} value={field.value?.toString()}>
+                    <Select onValueChange={value => field.onChange(parseFloat(value))} value={field.value?.toString() || "5"}>
                       <FormControl>
                         <SelectTrigger className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm">
                           <SelectValue />
@@ -243,7 +243,7 @@ export const FinancialStep: React.FC<FinancialStepProps> = ({ form }) => {
                   </FormDescription>
                 </div>
                 <FormControl>
-                  <Switch checked={field.value} onCheckedChange={field.onChange} />
+                  <Switch checked={field.value || false} onCheckedChange={field.onChange} />
                 </FormControl>
               </FormItem>
             )}
@@ -261,7 +261,7 @@ export const FinancialStep: React.FC<FinancialStepProps> = ({ form }) => {
                   </FormDescription>
                 </div>
                 <FormControl>
-                  <Switch checked={field.value} onCheckedChange={field.onChange} />
+                  <Switch checked={field.value || false} onCheckedChange={field.onChange} />
                 </FormControl>
               </FormItem>
             )}

@@ -30,7 +30,7 @@ export const DocumentationStep: React.FC<DocumentationStepProps> = ({ form }) =>
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Statut titre de propriété</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value || "pending"}>
                       <FormControl>
                         <SelectTrigger className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm">
                           <SelectValue placeholder="Sélectionner" />
@@ -141,7 +141,7 @@ export const DocumentationStep: React.FC<DocumentationStepProps> = ({ form }) =>
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Classe énergétique</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value || ""}>
                       <FormControl>
                         <SelectTrigger className="w-full md:w-48 border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm">
                           <SelectValue placeholder="Sélectionner" />
