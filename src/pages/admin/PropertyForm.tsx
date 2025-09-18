@@ -182,7 +182,7 @@ export default function PropertyForm() {
 
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50">
       {/* Header fixe */}
       <div className="h-32 bg-white border-b-2 border-slate-200 sticky top-0 z-10">
         <div className="h-full px-8 flex items-center justify-between">
@@ -238,13 +238,11 @@ export default function PropertyForm() {
                 >
                   <div className="flex items-center gap-3">
                     <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
-                      index < currentStepIndex
-                        ? 'bg-emerald-500 text-white'
-                        : currentStepIndex === index
+                      currentStepIndex === index
                         ? 'bg-white text-primary'
                         : 'bg-slate-200 text-slate-600'
                     }`}>
-                      {index < currentStepIndex ? <Check className="w-3 h-3" /> : index + 1}
+                      {index + 1}
                     </span>
                     <span className="font-medium">{step.title}</span>
                   </div>
@@ -255,7 +253,7 @@ export default function PropertyForm() {
         </div>
 
         {/* Contenu principal */}
-        <div className="flex-1 p-8">
+        <div className="flex-1 p-8 bg-slate-50">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSave)} className="space-y-8">
               <PropertyFormSteps

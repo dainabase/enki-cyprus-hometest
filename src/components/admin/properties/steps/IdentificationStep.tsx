@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { PropertyFormData } from '@/schemas/property.schema';
 
@@ -44,9 +45,15 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) 
   });
 
   return (
-    <div className="space-y-6">
-      {/* Projet et Bâtiment */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="space-y-8">
+      <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
+        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+          <CardTitle className="text-xl font-semibold text-foreground">Identification</CardTitle>
+          <CardDescription className="text-muted-foreground">Informations de base de la propriété</CardDescription>
+        </CardHeader>
+        <CardContent className="p-8 space-y-8">
+          {/* Projet et Bâtiment */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <FormField
           control={form.control}
           name="project_id"
@@ -55,7 +62,7 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) 
               <FormLabel>Projet *</FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm">
                     <SelectValue placeholder="Sélectionner un projet" />
                   </SelectTrigger>
                 </FormControl>
@@ -84,7 +91,7 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) 
                 disabled={!selectedProjectId}
               >
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm">
                     <SelectValue placeholder="Sélectionner un bâtiment" />
                   </SelectTrigger>
                 </FormControl>
@@ -104,10 +111,10 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) 
             </FormItem>
           )}
         />
-      </div>
+          </div>
 
-      {/* Unité et Code */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Unité et Code */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <FormField
           control={form.control}
           name="unit_number"
@@ -115,7 +122,7 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) 
             <FormItem>
               <FormLabel>Numéro d'unité *</FormLabel>
               <FormControl>
-                <Input placeholder="Ex: A-101, Villa 5" {...field} />
+                <Input placeholder="Ex: A-101, Villa 5" {...field} className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm" />
               </FormControl>
               <FormDescription>
                 Format: Bloc-Étage-Numéro ou nom de villa
@@ -132,7 +139,7 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) 
             <FormItem>
               <FormLabel>Code propriété</FormLabel>
               <FormControl>
-                <Input placeholder="Ex: MT-A101-2025" {...field} />
+                <Input placeholder="Ex: MT-A101-2025" {...field} className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm" />
               </FormControl>
               <FormDescription>
                 Code interne pour référence
@@ -141,10 +148,10 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) 
             </FormItem>
           )}
         />
-      </div>
+          </div>
 
-      {/* Type et Statut */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Type et Statut */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <FormField
           control={form.control}
           name="property_type"
@@ -153,7 +160,7 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) 
               <FormLabel>Type de propriété *</FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm">
                     <SelectValue placeholder="Sélectionner" />
                   </SelectTrigger>
                 </FormControl>
@@ -181,7 +188,7 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) 
               <FormLabel>Statut *</FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm">
                     <SelectValue placeholder="Sélectionner" />
                   </SelectTrigger>
                 </FormControl>
@@ -206,7 +213,7 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) 
               <FormLabel>Type de vente</FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm">
                     <SelectValue placeholder="Sélectionner" />
                   </SelectTrigger>
                 </FormControl>
@@ -220,10 +227,10 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) 
             </FormItem>
           )}
         />
-      </div>
+          </div>
 
-      {/* Ownership Type */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Ownership Type */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <FormField
           control={form.control}
           name="ownership_type"
@@ -232,7 +239,7 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) 
               <FormLabel>Type de propriété</FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm">
                     <SelectValue placeholder="Sélectionner" />
                   </SelectTrigger>
                 </FormControl>
@@ -254,7 +261,7 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) 
             <FormItem>
               <FormLabel>Sous-type</FormLabel>
               <FormControl>
-                <Input placeholder="Ex: Luxe, Standard, Économique" {...field} />
+                <Input placeholder="Ex: Luxe, Standard, Économique" {...field} className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm" />
               </FormControl>
               <FormDescription>
                 Catégorie ou niveau de finition
@@ -263,7 +270,9 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) 
             </FormItem>
           )}
         />
-      </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
