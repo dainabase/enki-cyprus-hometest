@@ -2457,6 +2457,33 @@ export type Database = {
         }
         Relationships: []
       }
+      test_properties: {
+        Row: {
+          building_id: string | null
+          created_at: string | null
+          id: string
+          project_id: string | null
+          property_type: string | null
+          unit_number: string | null
+        }
+        Insert: {
+          building_id?: string | null
+          created_at?: string | null
+          id?: string
+          project_id?: string | null
+          property_type?: string | null
+          unit_number?: string | null
+        }
+        Update: {
+          building_id?: string | null
+          created_at?: string | null
+          id?: string
+          project_id?: string | null
+          property_type?: string | null
+          unit_number?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -2505,6 +2532,15 @@ export type Database = {
         Returns: string
       }
       insert_property_minimal: {
+        Args: {
+          p_building_id: string
+          p_project_id: string
+          p_property_type: string
+          p_unit_number: string
+        }
+        Returns: string
+      }
+      insert_test_property: {
         Args: {
           p_building_id: string
           p_project_id: string
