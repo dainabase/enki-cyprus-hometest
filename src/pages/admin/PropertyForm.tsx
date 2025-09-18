@@ -2,13 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { PropertyFormStepsSimple } from '@/components/admin/properties/PropertyFormStepsSimple';
-import { PropertyFormData, propertySchema } from '@/schemas/property.schema';
-import { supabase } from '@/integrations/supabase/client';
+import { PropertyFormSteps } from '@/components/admin/properties/PropertyFormSteps';
 import { toast } from 'sonner';
 import { ArrowLeft, ArrowRight, Save, CheckCircle, ChevronLeft } from 'lucide-react';
 
@@ -25,7 +22,10 @@ const PropertyForm: React.FC = () => {
   const steps = [
     { id: 'identification', label: 'Identification', icon: '🏠' },
     { id: 'configuration', label: 'Configuration', icon: '🔧' },
-    { id: 'financial', label: 'Financier', icon: '💰' }
+    { id: 'equipment', label: 'Équipements', icon: '⚡' },
+    { id: 'outdoor', label: 'Extérieur', icon: '🌳' },
+    { id: 'financial', label: 'Financier', icon: '💰' },
+    { id: 'documentation', label: 'Documentation', icon: '📄' }
   ];
 
   const form = useForm<any>({
@@ -34,13 +34,63 @@ const PropertyForm: React.FC = () => {
       project_id: '',
       building_id: '',
       unit_number: '',
-      floor: 1,
+      floor_number: 1,
       surface_area: 0,
       bedrooms: 1,
       bathrooms: 1,
       price: 0,
       status: 'available',
-      property_type: 'apartment'
+      property_type: 'apartment',
+      furnished: false,
+      balcony: false,
+      terrace: false,
+      parking: false,
+      storage: false,
+      air_conditioning: false,
+      heating: false,
+      sea_view: false,
+      mountain_view: false,
+      city_view: false,
+      garden_view: false,
+      pool_view: false,
+      elevator: false,
+      fireplace: false,
+      garden: false,
+      swimming_pool: false,
+      gym: false,
+      spa: false,
+      concierge: false,
+      security: false,
+      gated_community: false,
+      golf_course: false,
+      tennis_court: false,
+      marina: false,
+      shopping_center: false,
+      restaurants: false,
+      schools: false,
+      hospitals: false,
+      public_transport: false,
+      highway_access: false,
+      airport_proximity: false,
+      finance_available: false,
+      title_deed_status: 'pending',
+      has_office: false,
+      has_maid_room: false,
+      has_dressing_room: false,
+      has_playroom: false,
+      has_wine_cellar: false,
+      has_pantry: false,
+      has_laundry_room: false,
+      has_private_garden: false,
+      has_private_pool: false,
+      balcony_count: 0,
+      terrace_count: 0,
+      parking_spaces: 0,
+      storage_spaces: 0,
+      appliances_list: [],
+      smart_home_features: [],
+      security_features: [],
+      view_type: []
     },
   });
 
@@ -148,18 +198,73 @@ const PropertyForm: React.FC = () => {
     
     if (property && isEdit) {
       console.log('📝 Loading property data into form:', property);
-      form.reset({
+      
+      // Map database fields to form fields, using defaults for missing properties
+      const mappedData = {
         project_id: property.project_id || '',
         building_id: property.building_id || '',
         unit_number: property.unit_number || '',
-        floor: property.floor || 1,
+        floor_number: property.floor || 1, // DB field: floor -> form field: floor_number
         surface_area: property.surface_area || 0,
         bedrooms: property.bedrooms || 1,
         bathrooms: property.bathrooms || 1,
         price: property.price || 0,
         status: property.status || 'available',
-        property_type: property.property_type || 'apartment'
-      });
+        property_type: property.property_type || 'apartment',
+        // Set defaults for form fields that don't exist in the simplified DB
+        furnished: false,
+        balcony: false,
+        terrace: false,
+        parking: false,
+        storage: false,
+        air_conditioning: false,
+        heating: false,
+        sea_view: false,
+        mountain_view: false,
+        city_view: false,
+        garden_view: false,
+        pool_view: false,
+        elevator: false,
+        fireplace: false,
+        garden: false,
+        swimming_pool: false,
+        gym: false,
+        spa: false,
+        concierge: false,
+        security: false,
+        gated_community: false,
+        golf_course: false,
+        tennis_court: false,
+        marina: false,
+        shopping_center: false,
+        restaurants: false,
+        schools: false,
+        hospitals: false,
+        public_transport: false,
+        highway_access: false,
+        airport_proximity: false,
+        finance_available: false,
+        title_deed_status: 'pending',
+        has_office: false,
+        has_maid_room: false,
+        has_dressing_room: false,
+        has_playroom: false,
+        has_wine_cellar: false,
+        has_pantry: false,
+        has_laundry_room: false,
+        has_private_garden: false,
+        has_private_pool: false,
+        balcony_count: 0,
+        terrace_count: 0,
+        parking_spaces: 0,
+        storage_spaces: 0,
+        appliances_list: [],
+        smart_home_features: [],
+        security_features: [],
+        view_type: []
+      };
+      
+      form.reset(mappedData);
     }
   }, [property, isEdit, form]);
 
@@ -178,13 +283,13 @@ const PropertyForm: React.FC = () => {
         return;
       }
 
-      // Prepare data for saving (only valid fields for properties_test table)
+      // Map form fields to database fields (only save fields that exist in properties_test)
       const cleanedData = {
         project_id: data.project_id,
         building_id: data.building_id,
         property_type: data.property_type,
         unit_number: data.unit_number,
-        floor: data.floor,
+        floor: data.floor_number, // form field: floor_number -> DB field: floor
         bedrooms: data.bedrooms,
         bathrooms: data.bathrooms,
         surface_area: data.surface_area,
@@ -305,11 +410,17 @@ const PropertyForm: React.FC = () => {
   const getCurrentStepFields = () => {
     switch (currentStep) {
       case 'identification':
-        return ['project_id', 'building_id', 'unit_number', 'floor', 'property_type'];
+        return ['project_id', 'building_id', 'unit_number', 'floor_number', 'property_type'];
       case 'configuration':
-        return ['surface_area', 'bedrooms', 'bathrooms'];
+        return ['surface_area', 'bedrooms', 'bathrooms', 'furnished'];
+      case 'equipment':
+        return ['air_conditioning', 'heating', 'elevator', 'fireplace'];
+      case 'outdoor':
+        return ['balcony', 'terrace', 'garden', 'parking'];
       case 'financial':
-        return ['price', 'status'];
+        return ['price', 'status', 'finance_available'];
+      case 'documentation':
+        return ['title_deed_status'];
       default:
         return [];
     }
@@ -403,7 +514,7 @@ const PropertyForm: React.FC = () => {
           {/* Main Form */}
           <div className="lg:col-span-3">
             <form onSubmit={form.handleSubmit(handleSave)} className="space-y-8">
-              <PropertyFormStepsSimple form={form} currentStep={currentStep} />
+              <PropertyFormSteps form={form} currentStep={currentStep} />
               
               {/* Navigation Buttons */}
               <Card>
