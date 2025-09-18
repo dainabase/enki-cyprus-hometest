@@ -60,7 +60,10 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) 
           render={({ field }) => (
             <FormItem>
               <FormLabel>Projet *</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+              <Select 
+                onValueChange={(value) => field.onChange(value || null)} 
+                value={field.value || ""}
+              >
                 <FormControl>
                   <SelectTrigger className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm">
                     <SelectValue placeholder="Sélectionner un projet" />
