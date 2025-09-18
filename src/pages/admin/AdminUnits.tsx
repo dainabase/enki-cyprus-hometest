@@ -264,8 +264,7 @@ const AdminUnits = () => {
             Exporter CSV
           </Button>
           <Button onClick={() => {
-            setEditingPropertyId(null);
-            setShowPropertyForm(true);
+            navigate('/admin/property-form');
           }} className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
             Nouvelle Propriété
@@ -612,37 +611,36 @@ const AdminUnits = () => {
         }}
       />
 
-      {/* PropertyForm Modal - Simplified for now */}
-      <Dialog open={showPropertyForm} onOpenChange={setShowPropertyForm}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>
-              {editingPropertyId ? 'Modifier la propriété' : 'Nouvelle propriété'}
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <p className="text-muted-foreground">
-              Le formulaire détaillé de propriété va s'ouvrir dans une nouvelle fenêtre.
-            </p>
-            <div className="flex gap-2">
-              <Button
-                onClick={() => {
-                  const url = `/admin/property-form${editingPropertyId ? `?id=${editingPropertyId}` : ''}`;
-                  navigate(url);
-                  setShowPropertyForm(false);
-                  setEditingPropertyId(null);
-                }}
-                className="flex-1"
-              >
-                Ouvrir le formulaire
-              </Button>
-              <Button variant="outline" onClick={() => setShowPropertyForm(false)}>
-                Annuler
-              </Button>
+      {/* Edit Property Modal - Only for editing existing properties */}
+      {editingPropertyId && (
+        <Dialog open={showPropertyForm} onOpenChange={setShowPropertyForm}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Modifier la propriété</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <p className="text-muted-foreground">
+                Le formulaire de modification va s'ouvrir dans une nouvelle fenêtre.
+              </p>
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => {
+                    navigate(`/admin/property-form?id=${editingPropertyId}`);
+                    setShowPropertyForm(false);
+                    setEditingPropertyId(null);
+                  }}
+                  className="flex-1"
+                >
+                  Ouvrir le formulaire
+                </Button>
+                <Button variant="outline" onClick={() => setShowPropertyForm(false)}>
+                  Annuler
+                </Button>
+              </div>
             </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };
