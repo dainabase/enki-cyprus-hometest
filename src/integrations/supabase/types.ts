@@ -2397,6 +2397,51 @@ export type Database = {
           },
         ]
       }
+      properties_test: {
+        Row: {
+          bathrooms: number | null
+          bedrooms: number | null
+          building_id: string
+          created_at: string | null
+          floor: number | null
+          id: string
+          price: number | null
+          project_id: string
+          property_type: string
+          status: string | null
+          surface_area: number | null
+          unit_number: string
+        }
+        Insert: {
+          bathrooms?: number | null
+          bedrooms?: number | null
+          building_id: string
+          created_at?: string | null
+          floor?: number | null
+          id?: string
+          price?: number | null
+          project_id: string
+          property_type: string
+          status?: string | null
+          surface_area?: number | null
+          unit_number: string
+        }
+        Update: {
+          bathrooms?: number | null
+          bedrooms?: number | null
+          building_id?: string
+          created_at?: string | null
+          floor?: number | null
+          id?: string
+          price?: number | null
+          project_id?: string
+          property_type?: string
+          status?: string | null
+          surface_area?: number | null
+          unit_number?: string
+        }
+        Relationships: []
+      }
       registration_drafts: {
         Row: {
           auto_save_enabled: boolean
@@ -2532,6 +2577,15 @@ export type Database = {
         Returns: string
       }
       insert_property_minimal: {
+        Args: {
+          p_building_id: string
+          p_project_id: string
+          p_property_type: string
+          p_unit_number: string
+        }
+        Returns: string
+      }
+      insert_property_test: {
         Args: {
           p_building_id: string
           p_project_id: string

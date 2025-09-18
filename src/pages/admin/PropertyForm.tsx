@@ -155,8 +155,8 @@ export default function PropertyForm() {
       
       console.log('Cleaned params to send:', params);
       
-      // ⚠️ NOUVEAU: Utiliser la fonction RPC minimale
-      const { data: result, error } = await supabase.rpc('insert_property_minimal', {
+      // ⚠️ NOUVEAU: Utiliser la fonction de test propre
+      const { data: result, error } = await supabase.rpc('insert_property_test', {
         p_project_id: cleanProjectId,
         p_building_id: cleanBuildingId,
         p_property_type: data.property_type || 'apartment',
