@@ -210,6 +210,10 @@ const AdminUnits = () => {
       penthouse: { label: 'Penthouse', className: 'bg-purple-50 text-purple-700' },
       villa: { label: 'Villa', className: 'bg-green-50 text-green-700' },
       studio: { label: 'Studio', className: 'bg-orange-50 text-orange-700' },
+      office: { label: 'Bureau', className: 'bg-indigo-50 text-indigo-700' },
+      commercial: { label: 'Commercial', className: 'bg-teal-50 text-teal-700' },
+      retail: { label: 'Commerce', className: 'bg-emerald-50 text-emerald-700' },
+      warehouse: { label: 'Entrepôt', className: 'bg-yellow-50 text-yellow-700' },
     };
     
     const config = typeConfig[type as keyof typeof typeConfig] || 
@@ -265,7 +269,7 @@ const AdminUnits = () => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate(`/admin/property/${row.id}`)}
+            onClick={() => navigate(`/admin/units/${row.id}`)}
             className="h-8 w-8 p-0"
           >
             <Eye className="h-4 w-4" />
@@ -273,7 +277,7 @@ const AdminUnits = () => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate(`/admin/property/${row.id}/edit`)}
+            onClick={() => navigate(`/admin/units/${row.id}/edit`)}
             className="h-8 w-8 p-0"
           >
             <Edit className="h-4 w-4" />
@@ -351,14 +355,14 @@ const AdminUnits = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-2 pt-2 border-t border-slate-200">
-                    <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/property/${property.id}`)}>
-                      <Eye className="h-4 w-4 mr-1" />
-                      Voir
-                    </Button>
-                    <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/property/${property.id}/edit`)}>
-                      <Edit className="h-4 w-4 mr-1" />
-                      Modifier
-                    </Button>
+                     <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/units/${property.id}`)}>
+                       <Eye className="h-4 w-4 mr-1" />
+                       Voir
+                     </Button>
+                     <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/units/${property.id}/edit`)}>
+                       <Edit className="h-4 w-4 mr-1" />
+                       Modifier
+                     </Button>
                   </div>
                 </div>
               </Card>
@@ -384,12 +388,12 @@ const AdminUnits = () => {
                   <div className="flex items-center gap-4">
                     <span className="font-semibold text-slate-900">{formatPrice(property.price)}</span>
                     <div className="flex items-center gap-2">
-                      <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/property/${property.id}`)}>
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/property/${property.id}/edit`)}>
-                        <Edit className="h-4 w-4" />
-                      </Button>
+                       <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/units/${property.id}`)}>
+                         <Eye className="h-4 w-4" />
+                       </Button>
+                       <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/units/${property.id}/edit`)}>
+                         <Edit className="h-4 w-4" />
+                       </Button>
                     </div>
                   </div>
                 </div>
@@ -411,12 +415,12 @@ const AdminUnits = () => {
                   <div className="flex items-center gap-3">
                     <span className="text-sm font-semibold text-slate-900">{formatPrice(property.price)}</span>
                     <div className="flex items-center gap-1">
-                      <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/property/${property.id}`)} className="h-7 w-7 p-0">
-                        <Eye className="h-3 w-3" />
-                      </Button>
-                      <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/property/${property.id}/edit`)} className="h-7 w-7 p-0">
-                        <Edit className="h-3 w-3" />
-                      </Button>
+                       <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/units/${property.id}`)} className="h-7 w-7 p-0">
+                         <Eye className="h-3 w-3" />
+                       </Button>
+                       <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/units/${property.id}/edit`)} className="h-7 w-7 p-0">
+                         <Edit className="h-3 w-3" />
+                       </Button>
                     </div>
                   </div>
                 </div>
@@ -468,14 +472,14 @@ const AdminUnits = () => {
                       Créé le {new Date(property.created_at).toLocaleDateString('fr-FR')}
                     </div>
                     <div className="flex items-center gap-2">
-                      <Button variant="clean" size="sm" onClick={() => navigate(`/admin/property/${property.id}`)}>
-                        <Eye className="h-4 w-4 mr-2" />
-                        Voir détails
-                      </Button>
-                      <Button variant="executive" size="sm" onClick={() => navigate(`/admin/property/${property.id}/edit`)}>
-                        <Edit className="h-4 w-4 mr-2" />
-                        Modifier
-                      </Button>
+                       <Button variant="clean" size="sm" onClick={() => navigate(`/admin/units/${property.id}`)}>
+                         <Eye className="h-4 w-4 mr-2" />
+                         Voir détails
+                       </Button>
+                       <Button variant="executive" size="sm" onClick={() => navigate(`/admin/units/${property.id}/edit`)}>
+                         <Edit className="h-4 w-4 mr-2" />
+                         Modifier
+                       </Button>
                     </div>
                   </div>
                 </div>
@@ -591,11 +595,15 @@ const AdminUnits = () => {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">Tous les types</SelectItem>
-                      <SelectItem value="apartment">Appartement</SelectItem>
-                      <SelectItem value="penthouse">Penthouse</SelectItem>
-                      <SelectItem value="villa">Villa</SelectItem>
-                      <SelectItem value="studio">Studio</SelectItem>
+                       <SelectItem value="all">Tous les types</SelectItem>
+                       <SelectItem value="apartment">Appartement</SelectItem>
+                       <SelectItem value="penthouse">Penthouse</SelectItem>
+                       <SelectItem value="villa">Villa</SelectItem>
+                       <SelectItem value="studio">Studio</SelectItem>
+                       <SelectItem value="office">Bureau</SelectItem>
+                       <SelectItem value="commercial">Commercial</SelectItem>
+                       <SelectItem value="retail">Commerce</SelectItem>
+                       <SelectItem value="warehouse">Entrepôt</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
