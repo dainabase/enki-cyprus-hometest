@@ -99,7 +99,7 @@ export default function PropertyWizard({ open, onClose, onSuccess }: PropertyWiz
               <label className="text-sm font-medium mb-1 block">
                 Développeur
               </label>
-              <Select value={selectedDeveloper} onValueChange={(value) => {
+              <Select value={selectedDeveloper || ""} onValueChange={(value) => {
                 setSelectedDeveloper(value);
                 setSelectedProject('');
                 setSelectedBuilding('');
@@ -123,7 +123,7 @@ export default function PropertyWizard({ open, onClose, onSuccess }: PropertyWiz
                 Programme Immobilier
               </label>
               <Select 
-                value={selectedProject} 
+                value={selectedProject || ""}
                 onValueChange={(value) => {
                   setSelectedProject(value);
                   setSelectedBuilding('');
@@ -149,7 +149,7 @@ export default function PropertyWizard({ open, onClose, onSuccess }: PropertyWiz
                 Bâtiment
               </label>
               <Select 
-                value={selectedBuilding} 
+                value={selectedBuilding || ""} 
                 onValueChange={setSelectedBuilding}
                 disabled={!selectedProject}
               >
