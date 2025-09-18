@@ -92,6 +92,26 @@ export default function PropertyForm() {
   useEffect(() => {
     if (property && isEdit) {
       console.log('Property data loaded for editing:', property);
+      
+      // Reset form with only the fields that exist in properties_test table
+      form.reset({
+        project_id: property.project_id || '',
+        building_id: property.building_id || null,
+        unit_number: property.unit_number || '',
+        property_type: property.property_type as any || 'apartment',
+        property_status: (property.status as any) || 'available',
+        bedrooms_count: property.bedrooms || 1,
+        bathrooms_count: property.bathrooms || 1,
+        internal_area: property.surface_area || 50,
+        price_excluding_vat: property.price || 100000,
+        // Set default values for other required fields
+        ownership_type: 'freehold',
+        wc_count: 0,
+        appliances_list: [],
+        smart_home_features: [],
+        security_features: [],
+        view_type: []
+      });
     }
   }, [property, isEdit, form]);
 
