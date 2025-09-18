@@ -30,8 +30,8 @@ export default function PropertyForm() {
   const form = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema),
     defaultValues: {
-      project_id: projectFromUrl || '',
-      building_id: buildingFromUrl || '',
+      project_id: projectFromUrl || null, // UUID ou null
+      building_id: buildingFromUrl || null, // UUID ou null
       property_status: 'available',
       ownership_type: 'freehold',
       bedrooms_count: 1,
@@ -102,7 +102,7 @@ export default function PropertyForm() {
       
       // Créer un objet avec seulement les champs essentiels d'abord
       const essentialData = {
-        project_id: data.project_id || projectFromUrl || '',
+        project_id: data.project_id || projectFromUrl || null, // UUID ou null, jamais ""
         building_id: data.building_id === 'none' || !data.building_id ? null : data.building_id,
         property_type: data.property_type || 'apartment',
         unit_number: data.unit_number || 'TBD'
@@ -110,9 +110,9 @@ export default function PropertyForm() {
 
       console.log('Essential data:', essentialData);
 
-      // Validation des champs obligatoires
+      // Validation des champs obligatoires - s'assurer que project_id n'est pas null/vide
       if (!essentialData.project_id) {
-        throw new Error('Le projet est obligatoire');
+        throw new Error('Le projet est obligatoire. Veuillez sélectionner un projet.');
       }
       if (!essentialData.unit_number) {
         throw new Error('Le numéro d\'unité est obligatoire');
