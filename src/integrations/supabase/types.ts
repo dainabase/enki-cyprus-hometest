@@ -2504,6 +2504,28 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      insert_property_safe: {
+        Args: {
+          p_bathrooms_count?: number
+          p_bedrooms_count?: number
+          p_building_id?: string
+          p_price_excluding_vat?: number
+          p_project_id: string
+          p_property_status?: string
+          p_property_type?: string
+          p_unit_number?: string
+        }
+        Returns: {
+          building_id: string
+          created_at: string
+          id: string
+          price_excluding_vat: number
+          project_id: string
+          property_status: string
+          property_type: string
+          unit_number: string
+        }[]
+      }
       log_admin_action: {
         Args: {
           p_action: string
