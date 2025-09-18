@@ -107,9 +107,7 @@ const AdminUnits = () => {
         .from('properties_test')
         .select(`
           id, unit_number, property_type, status, price, bedrooms, bathrooms,
-          surface_area, floor, created_at, project_id, building_id,
-          project:projects(id, title, city, cyprus_zone),
-          building:buildings(id, name)
+          surface_area, floor, created_at, project_id, building_id
         `, { count: 'exact' })
         .range(from, to)
         .order('created_at', { ascending: false });
@@ -126,9 +124,16 @@ const AdminUnits = () => {
       }
 
       const { data, error, count } = await query;
-      if (error) throw error;
+      if (error) {
+        console.error('❌ AdminUnits query error:', error);
+        throw error;
+      }
       
-      console.info('🏠 AdminUnits fetch', { totalCount: count, length: data?.length });
+      console.info('🏠 AdminUnits fetch success', { 
+        totalCount: count, 
+        length: data?.length, 
+        firstItem: data?.[0] 
+      });
       return { data, count };
     },
     { staleTime: 0, refetchOnMount: 'always' }
@@ -196,12 +201,12 @@ const AdminUnits = () => {
       )
     },
     {
-      key: 'project',
+      key: 'project_id',
       label: 'Projet',
       render: (value: any, row: Property) => (
         <div className="flex flex-col">
-          <span className="font-medium text-slate-900">{value?.title || 'Projet non lié'}</span>
-          <span className="text-xs text-slate-500">{value?.city} - {value?.cyprus_zone}</span>
+          <span className="font-medium text-slate-900">Projet ID</span>
+          <span className="text-xs text-slate-500">{value?.slice(0, 8)}...</span>
         </div>
       )
     },
@@ -251,9 +256,10 @@ const AdminUnits = () => {
     }
 
     if (error) {
+      console.error('❌ AdminUnits render error:', error);
       return (
         <Card variant="executive" padding="lg" className="text-center">
-          <p className="text-red-600">Erreur lors du chargement des propriétés</p>
+          <p className="text-red-600">Erreur lors du chargement des propriétés: {error.message}</p>
         </Card>
       );
     }
