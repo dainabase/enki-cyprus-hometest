@@ -118,29 +118,7 @@ export const EquipmentStep: React.FC<EquipmentStepProps> = ({ form }) => {
           <div>
             <h3 className="font-semibold mb-4">Chauffage et climatisation</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormField
-                control={form.control}
-                name="hvac_type"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Type de climatisation</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm">
-                          <SelectValue placeholder="Sélectionner" />
-                        </SelectTrigger>
-                      </FormControl>
-                  <SelectContent>
-                    <SelectItem value="central_ac">Climatisation centrale</SelectItem>
-                    <SelectItem value="split_units">Unités split</SelectItem>
-                    <SelectItem value="vrf_system">Système VRF</SelectItem>
-                    <SelectItem value="underfloor_heating">Chauffage au sol</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+              {/* Champ hvac_type supprimé car non présent dans la base de données */}
 
               <FormField
                 control={form.control}
