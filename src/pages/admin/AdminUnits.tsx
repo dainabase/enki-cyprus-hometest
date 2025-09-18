@@ -269,7 +269,7 @@ const AdminUnits = () => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate(`/admin/property-form?id=${row.id}`)}
+            onClick={() => setPreviewProperty(row)}
             className="h-8 w-8 p-0"
           >
             <Eye className="h-4 w-4" />
@@ -355,7 +355,7 @@ const AdminUnits = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-2 pt-2 border-t border-slate-200">
-                     <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/property-form?id=${property.id}`)}>
+                     <Button variant="ghost" size="sm" onClick={() => setPreviewProperty(property)}>
                         <Eye className="h-4 w-4 mr-1" />
                         Voir
                       </Button>
@@ -388,7 +388,7 @@ const AdminUnits = () => {
                   <div className="flex items-center gap-4">
                     <span className="font-semibold text-slate-900">{formatPrice(property.price)}</span>
                     <div className="flex items-center gap-2">
-                       <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/property-form?id=${property.id}`)}>
+                       <Button variant="ghost" size="sm" onClick={() => setPreviewProperty(property)}>
                           <Eye className="h-4 w-4" />
                         </Button>
                         <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/property-form/${property.id}`)}>
@@ -415,7 +415,7 @@ const AdminUnits = () => {
                   <div className="flex items-center gap-3">
                     <span className="text-sm font-semibold text-slate-900">{formatPrice(property.price)}</span>
                     <div className="flex items-center gap-1">
-                       <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/property-form?id=${property.id}`)} className="h-7 w-7 p-0">
+                       <Button variant="ghost" size="sm" onClick={() => setPreviewProperty(property)} className="h-7 w-7 p-0">
                           <Eye className="h-3 w-3" />
                         </Button>
                         <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/property-form/${property.id}`)} className="h-7 w-7 p-0">
@@ -472,7 +472,7 @@ const AdminUnits = () => {
                       Créé le {new Date(property.created_at).toLocaleDateString('fr-FR')}
                     </div>
                     <div className="flex items-center gap-2">
-                       <Button variant="clean" size="sm" onClick={() => navigate(`/admin/property-form?id=${property.id}`)}>
+                       <Button variant="clean" size="sm" onClick={() => setPreviewProperty(property)}>
                           <Eye className="h-4 w-4 mr-2" />
                           Voir détails
                         </Button>
@@ -667,6 +667,108 @@ const AdminUnits = () => {
               }}
             />
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal de preview de propriété */}
+      <Dialog open={!!previewProperty} onOpenChange={() => setPreviewProperty(null)}>
+        <DialogContent className="max-w-4xl max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle>Détails de la propriété {previewProperty?.reference || previewProperty?.unit_number}</DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="max-h-[60vh]">
+            {previewProperty && (
+              <div className="space-y-6 p-1">
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">Informations générales</h3>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-slate-600">Référence:</span>
+                        <span className="font-medium">{previewProperty.reference || previewProperty.unit_number}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-600">Type:</span>
+                        <span className="font-medium">{previewProperty.property_type}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-600">Statut:</span>
+                        {getStatusBadge(previewProperty.status)}
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-600">Prix:</span>
+                        <span className="font-medium text-lg">{formatPrice(previewProperty.price)}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">Configuration</h3>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-slate-600">Chambres:</span>
+                        <span className="font-medium">{previewProperty.bedrooms_count || 'N/A'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-600">Salles de bain:</span>
+                        <span className="font-medium">{previewProperty.bathrooms_count || 'N/A'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-600">Surface:</span>
+                        <span className="font-medium">{previewProperty.surface_area ? `${previewProperty.surface_area} m²` : 'N/A'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-600">Surface intérieure:</span>
+                        <span className="font-medium">{previewProperty.internal_area ? `${previewProperty.internal_area} m²` : 'N/A'}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Identifiants</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex justify-between">
+                      <span className="text-slate-600">Projet ID:</span>
+                      <span className="font-mono text-sm">{previewProperty.project_id || 'N/A'}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-600">Bâtiment ID:</span>
+                      <span className="font-mono text-sm">{previewProperty.building_id || 'N/A'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {previewProperty.description && (
+                  <>
+                    <Separator />
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold">Description</h3>
+                      <p className="text-slate-700">{previewProperty.description}</p>
+                    </div>
+                  </>
+                )}
+
+                <Separator />
+
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Dates</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex justify-between">
+                      <span className="text-slate-600">Créé le:</span>
+                      <span className="font-medium">{new Date(previewProperty.created_at).toLocaleDateString('fr-FR')}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-600">Modifié le:</span>
+                      <span className="font-medium">{new Date(previewProperty.updated_at).toLocaleDateString('fr-FR')}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </ScrollArea>
         </DialogContent>
       </Dialog>
     </div>
