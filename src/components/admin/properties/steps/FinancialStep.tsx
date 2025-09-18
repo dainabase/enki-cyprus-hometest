@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Crown, Calculator, TrendingUp } from 'lucide-react';
 import { PropertyFormData } from '@/schemas/property.schema';
 import { formatPrice } from '@/lib/utils/formatters';
@@ -29,7 +30,7 @@ export const FinancialStep: React.FC<FinancialStepProps> = ({ form }) => {
   const isGoldenVisa = priceIncludingVat >= 300000;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Alert Golden Visa */}
       {isGoldenVisa && (
         <Alert className="bg-yellow-50 border-yellow-200">
@@ -41,47 +42,54 @@ export const FinancialStep: React.FC<FinancialStepProps> = ({ form }) => {
         </Alert>
       )}
 
-      {/* Prix de base */}
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="font-semibold mb-4 flex items-center">
-          <Calculator className="w-4 h-4 mr-2" />
-          Prix de base
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormField
-            control={form.control}
-            name="price_excluding_vat"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Prix HT *</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number" 
-                    min="1"
-                    step="1000"
-                    placeholder="300000"
-                    {...field} 
-                    onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
-                  />
-                </FormControl>
+      <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
+        <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+          <CardTitle className="text-xl font-semibold text-foreground">Financier</CardTitle>
+          <CardDescription className="text-muted-foreground">Prix, commissions et conditions financières</CardDescription>
+        </CardHeader>
+        <CardContent className="p-8 space-y-8">
+          {/* Prix de base */}
+          <div>
+            <h3 className="font-semibold mb-4 flex items-center">
+              <Calculator className="w-4 h-4 mr-2" />
+              Prix de base
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="price_excluding_vat"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Prix HT *</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="1"
+                        step="1000"
+                        placeholder="300000"
+                        {...field} 
+                        onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
+                        className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm"
+                      />
+                    </FormControl>
                 <FormDescription>Prix hors taxes en euros</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="vat_rate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Taux TVA *</FormLabel>
-                <Select onValueChange={value => field.onChange(parseFloat(value))} value={field.value?.toString()}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
+              <FormField
+                control={form.control}
+                name="vat_rate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Taux TVA *</FormLabel>
+                    <Select onValueChange={value => field.onChange(parseFloat(value))} value={field.value?.toString()}>
+                      <FormControl>
+                        <SelectTrigger className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm">
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
                   <SelectContent>
                     <SelectItem value="5">5% (Résidentiel)</SelectItem>
                     <SelectItem value="19">19% (Commercial)</SelectItem>
@@ -122,72 +130,75 @@ export const FinancialStep: React.FC<FinancialStepProps> = ({ form }) => {
           <TrendingUp className="w-4 h-4 mr-2" />
           Commissions et frais
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormField
-            control={form.control}
-            name="commission_rate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Taux de commission (%)</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number" 
-                    min="0" 
-                    max="100" 
-                    step="0.1"
-                    {...field} 
-                    onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
-                  />
-                </FormControl>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="commission_rate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Taux de commission (%)</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0" 
+                        max="100" 
+                        step="0.1"
+                        {...field} 
+                        onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
+                        className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm"
+                      />
+                    </FormControl>
                 <FormDescription>Commission agence sur le prix HT</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="original_price"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Prix original</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number" 
-                    min="0"
-                    step="1000"
-                    {...field} 
-                    onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
-                  />
-                </FormControl>
-                <FormDescription>Prix initial si différent (pour calcul remise)</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-      </div>
+              <FormField
+                control={form.control}
+                name="original_price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Prix original</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        step="1000"
+                        {...field} 
+                        onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
+                        className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm"
+                      />
+                    </FormControl>
+                    <FormDescription>Prix initial si différent (pour calcul remise)</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
 
-      {/* Conditions de paiement */}
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="font-semibold mb-4">Conditions de paiement</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormField
-            control={form.control}
-            name="deposit_percentage"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Acompte (%)</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number" 
-                    min="0" 
-                    max="100" 
-                    step="5"
-                    {...field} 
-                    onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
-                  />
-                </FormControl>
+          {/* Conditions de paiement */}
+          <div>
+            <h3 className="font-semibold mb-4">Conditions de paiement</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="deposit_percentage"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Acompte (%)</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0" 
+                        max="100" 
+                        step="5"
+                        {...field} 
+                        onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
+                        className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm"
+                      />
+                    </FormControl>
                 <FormDescription>
                   Montant: {formatPrice(depositAmount)}
                 </FormDescription>
@@ -196,29 +207,30 @@ export const FinancialStep: React.FC<FinancialStepProps> = ({ form }) => {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="reservation_fee"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Frais de réservation</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number" 
-                    min="0"
-                    step="500"
-                    {...field} 
-                    onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
-                  />
-                </FormControl>
+              <FormField
+                control={form.control}
+                name="reservation_fee"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Frais de réservation</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        step="500"
+                        {...field} 
+                        onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
+                        className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm"
+                      />
+                    </FormControl>
                 <FormDescription>Montant de la réservation</FormDescription>
                 <FormMessage />
               </FormItem>
-            )}
-          />
-        </div>
+              )}
+            />
+            </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
           <FormField
             control={form.control}
             name="payment_plan_available"
@@ -254,99 +266,105 @@ export const FinancialStep: React.FC<FinancialStepProps> = ({ form }) => {
               </FormItem>
             )}
           />
-        </div>
+            </div>
 
-        {form.watch('finance_available') && (
-          <div className="mt-4">
-            <FormField
-              control={form.control}
-              name="minimum_cash_required"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Apport minimum requis</FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="number" 
-                      min="0"
-                      step="1000"
-                      {...field} 
-                      onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
-                    />
-                  </FormControl>
-                  <FormDescription>Montant minimum d'apport personnel</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {form.watch('finance_available') && (
+              <div className="mt-4">
+                <FormField
+                  control={form.control}
+                  name="minimum_cash_required"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Apport minimum requis</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="number" 
+                          min="0"
+                          step="1000"
+                          {...field} 
+                          onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
+                          className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm"
+                        />
+                      </FormControl>
+                      <FormDescription>Montant minimum d'apport personnel</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
           </div>
-        )}
-      </div>
 
-      {/* Charges annuelles */}
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="font-semibold mb-4">Charges et taxes annuelles</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <FormField
-            control={form.control}
-            name="annual_property_tax"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Taxe foncière annuelle</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number" 
-                    min="0"
-                    step="100"
-                    {...field} 
-                    onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
-                  />
-                </FormControl>
+          {/* Charges annuelles */}
+          <div>
+            <h3 className="font-semibold mb-4">Charges et taxes annuelles</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <FormField
+                control={form.control}
+                name="annual_property_tax"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Taxe foncière annuelle</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        step="100"
+                        {...field} 
+                        onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
+                        className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm"
+                      />
+                    </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="communal_fees_monthly"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Charges communes (mois)</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number" 
-                    min="0"
-                    step="10"
-                    {...field} 
-                    onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
-                  />
-                </FormControl>
+              <FormField
+                control={form.control}
+                name="communal_fees_monthly"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Charges communes (mois)</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        step="10"
+                        {...field} 
+                        onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
+                        className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm"
+                      />
+                    </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="maintenance_fee_monthly"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Frais d'entretien (mois)</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number" 
-                    min="0"
-                    step="10"
-                    {...field} 
-                    onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-      </div>
+              <FormField
+                control={form.control}
+                name="maintenance_fee_monthly"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Frais d'entretien (mois)</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        step="10"
+                        {...field} 
+                        onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
+                        className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
