@@ -98,41 +98,56 @@ export default function PropertyForm() {
   // Save mutation
   const saveMutation = useMutation({
     mutationFn: async (data: PropertyFormData) => {
-      const propertyData = {
-        ...data,
-        project_id: data.project_id || projectFromUrl || '', // Obligatoire
+      console.log('Form data before processing:', data);
+      
+      // Créer un objet avec seulement les champs essentiels d'abord
+      const essentialData = {
+        project_id: data.project_id || projectFromUrl || '',
         building_id: data.building_id === 'none' || !data.building_id ? null : data.building_id,
         property_type: data.property_type || 'apartment',
-        unit_number: data.unit_number || 'TBD'  // Obligatoire, au minimum "TBD"
+        unit_number: data.unit_number || 'TBD'
       };
 
+      console.log('Essential data:', essentialData);
+
       // Validation des champs obligatoires
-      if (!propertyData.project_id) {
+      if (!essentialData.project_id) {
         throw new Error('Le projet est obligatoire');
       }
-      if (!propertyData.unit_number) {
+      if (!essentialData.unit_number) {
         throw new Error('Le numéro d\'unité est obligatoire');
       }
-      if (!propertyData.property_type) {
+      if (!essentialData.property_type) {
         throw new Error('Le type de propriété est obligatoire');
       }
 
       if (isEdit && id) {
         const { error } = await supabase
           .from('properties')
-          .update(propertyData)
+          .update(essentialData)
           .eq('id', id);
         if (error) {
+          console.error('Supabase error details:', error);
+          console.error('Error code:', error.code);
+          console.error('Error message:', error.message);
+          console.error('Error details:', error.details);
+          console.error('Property data being sent:', essentialData);
           throw error;
         }
         return { id };
       } else {
+        console.log('Attempting to insert:', essentialData);
         const { data: newProperty, error } = await supabase
           .from('properties')
-          .insert(propertyData)
+          .insert(essentialData)
           .select()
           .single();
         if (error) {
+          console.error('Supabase insert error details:', error);
+          console.error('Error code:', error.code);
+          console.error('Error message:', error.message);
+          console.error('Error details:', error.details);
+          console.error('Property data being sent:', essentialData);
           throw error;
         }
         return newProperty;
