@@ -226,7 +226,7 @@ export const ConfigurationStep: React.FC<ConfigurationStepProps> = ({ form }) =>
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Orientation</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value || ""}>
                       <FormControl>
                         <SelectTrigger className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm">
                           <SelectValue placeholder="Sélectionner" />
@@ -263,7 +263,7 @@ export const ConfigurationStep: React.FC<ConfigurationStepProps> = ({ form }) =>
                       <FormLabel className="text-sm">Bureau</FormLabel>
                     </div>
                     <FormControl>
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      <Switch checked={field.value || false} onCheckedChange={field.onChange} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -278,7 +278,7 @@ export const ConfigurationStep: React.FC<ConfigurationStepProps> = ({ form }) =>
                       <FormLabel className="text-sm">Chambre service</FormLabel>
                     </div>
                     <FormControl>
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      <Switch checked={field.value || false} onCheckedChange={field.onChange} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -293,7 +293,7 @@ export const ConfigurationStep: React.FC<ConfigurationStepProps> = ({ form }) =>
                       <FormLabel className="text-sm">Dressing</FormLabel>
                     </div>
                     <FormControl>
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      <Switch checked={field.value || false} onCheckedChange={field.onChange} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -308,7 +308,7 @@ export const ConfigurationStep: React.FC<ConfigurationStepProps> = ({ form }) =>
                       <FormLabel className="text-sm">Buanderie</FormLabel>
                     </div>
                     <FormControl>
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      <Switch checked={field.value || false} onCheckedChange={field.onChange} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -323,7 +323,7 @@ export const ConfigurationStep: React.FC<ConfigurationStepProps> = ({ form }) =>
                       <FormLabel className="text-sm">Salle de jeu</FormLabel>
                     </div>
                     <FormControl>
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      <Switch checked={field.value || false} onCheckedChange={field.onChange} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -338,7 +338,7 @@ export const ConfigurationStep: React.FC<ConfigurationStepProps> = ({ form }) =>
                       <FormLabel className="text-sm">Cave à vin</FormLabel>
                     </div>
                     <FormControl>
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      <Switch checked={field.value || false} onCheckedChange={field.onChange} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -353,7 +353,7 @@ export const ConfigurationStep: React.FC<ConfigurationStepProps> = ({ form }) =>
                       <FormLabel className="text-sm">Garde-manger</FormLabel>
                     </div>
                     <FormControl>
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      <Switch checked={field.value || false} onCheckedChange={field.onChange} />
                     </FormControl>
                   </FormItem>
                 )}
