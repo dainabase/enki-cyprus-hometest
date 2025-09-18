@@ -94,9 +94,10 @@ export default function PropertyForm() {
     mutationFn: async (data: PropertyFormData) => {
       const propertyData = {
         ...data,
-        project_id: data.project_id || '',
+        project_id: data.project_id || null,
+        building_id: data.building_id || null,
         property_type: data.property_type || 'apartment',
-        unit_number: data.unit_number || ''
+        unit_number: data.unit_number || null
       };
 
       if (isEdit && id) {
