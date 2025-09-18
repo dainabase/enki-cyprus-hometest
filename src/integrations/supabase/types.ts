@@ -1891,6 +1891,7 @@ export type Database = {
           air_conditioning_type: string | null
           annual_property_tax: number | null
           appliances_list: Json | null
+          balcony_area: number | null
           balcony_count: number | null
           basement_area: number | null
           bathroom_fixtures_brand: string | null
@@ -1904,7 +1905,7 @@ export type Database = {
           commission_rate: number | null
           communal_fees_monthly: number | null
           countertop_material: string | null
-          covered_veranda_area: number | null
+          covered_verandas: number | null
           created_at: string | null
           created_by: string | null
           current_price: number | null
@@ -1928,7 +1929,6 @@ export type Database = {
           floor_number: number | null
           flooring_type: string | null
           furniture_package_value: number | null
-          garden_area: number | null
           garden_type: string | null
           golden_visa_eligible: boolean | null
           has_alarm_system: boolean | null
@@ -1980,6 +1980,7 @@ export type Database = {
           hvac_type: string | null
           id: string
           internal_area: number | null
+          internal_notes: string | null
           internet_ready: boolean | null
           investment_type: string | null
           is_available: boolean | null
@@ -1999,43 +2000,52 @@ export type Database = {
           parking_included: boolean | null
           parking_location: string | null
           parking_spaces: number | null
+          parking_type: string | null
           parking_type_unit: string | null
           payment_plan_available: boolean | null
           payment_plan_details: Json | null
           planning_permit_number: string | null
           plot_area: number | null
           pool_size: string | null
-          position_on_floor: string | null
+          pool_type: string | null
+          position_in_floor: string | null
           price_excluding_vat: number | null
           price_including_vat: number | null
           price_per_sqm: number | null
+          private_garden_area: number | null
           project_id: string
           property_code: string | null
           property_status: string | null
-          property_subtype: string | null
+          property_sub_type: string | null
           property_type: string
+          public_description: string | null
           referral_commission: number | null
           referral_commission_rate: number | null
           reservation_date: string | null
           reservation_fee: number | null
-          roof_terrace_area: number | null
+          roof_garden_area: number | null
           sale_type: string | null
+          security_features: Json | null
           smart_home_features: Json | null
           sold_date: string | null
           storage_area: number | null
           storage_location: string | null
+          storage_spaces: number | null
+          terrace_area: number | null
+          terrace_count: number | null
           title_deed_number: string | null
           title_deed_status: string | null
           total_covered_area: number | null
           total_rooms: number | null
           transfer_fee_amount: number | null
           transfer_fee_percentage: number | null
-          uncovered_veranda_area: number | null
+          uncovered_verandas: number | null
           unit_number: string
           updated_at: string | null
           vat_amount: number | null
           vat_rate: number | null
           view_quality: string | null
+          view_type: Json | null
           wall_finish: string | null
           wc_count: number | null
           windows_type: string | null
@@ -2044,6 +2054,7 @@ export type Database = {
           air_conditioning_type?: string | null
           annual_property_tax?: number | null
           appliances_list?: Json | null
+          balcony_area?: number | null
           balcony_count?: number | null
           basement_area?: number | null
           bathroom_fixtures_brand?: string | null
@@ -2057,7 +2068,7 @@ export type Database = {
           commission_rate?: number | null
           communal_fees_monthly?: number | null
           countertop_material?: string | null
-          covered_veranda_area?: number | null
+          covered_verandas?: number | null
           created_at?: string | null
           created_by?: string | null
           current_price?: number | null
@@ -2081,7 +2092,6 @@ export type Database = {
           floor_number?: number | null
           flooring_type?: string | null
           furniture_package_value?: number | null
-          garden_area?: number | null
           garden_type?: string | null
           golden_visa_eligible?: boolean | null
           has_alarm_system?: boolean | null
@@ -2133,6 +2143,7 @@ export type Database = {
           hvac_type?: string | null
           id?: string
           internal_area?: number | null
+          internal_notes?: string | null
           internet_ready?: boolean | null
           investment_type?: string | null
           is_available?: boolean | null
@@ -2152,43 +2163,52 @@ export type Database = {
           parking_included?: boolean | null
           parking_location?: string | null
           parking_spaces?: number | null
+          parking_type?: string | null
           parking_type_unit?: string | null
           payment_plan_available?: boolean | null
           payment_plan_details?: Json | null
           planning_permit_number?: string | null
           plot_area?: number | null
           pool_size?: string | null
-          position_on_floor?: string | null
+          pool_type?: string | null
+          position_in_floor?: string | null
           price_excluding_vat?: number | null
           price_including_vat?: number | null
           price_per_sqm?: number | null
+          private_garden_area?: number | null
           project_id: string
           property_code?: string | null
           property_status?: string | null
-          property_subtype?: string | null
+          property_sub_type?: string | null
           property_type: string
+          public_description?: string | null
           referral_commission?: number | null
           referral_commission_rate?: number | null
           reservation_date?: string | null
           reservation_fee?: number | null
-          roof_terrace_area?: number | null
+          roof_garden_area?: number | null
           sale_type?: string | null
+          security_features?: Json | null
           smart_home_features?: Json | null
           sold_date?: string | null
           storage_area?: number | null
           storage_location?: string | null
+          storage_spaces?: number | null
+          terrace_area?: number | null
+          terrace_count?: number | null
           title_deed_number?: string | null
           title_deed_status?: string | null
           total_covered_area?: number | null
           total_rooms?: number | null
           transfer_fee_amount?: number | null
           transfer_fee_percentage?: number | null
-          uncovered_veranda_area?: number | null
+          uncovered_verandas?: number | null
           unit_number: string
           updated_at?: string | null
           vat_amount?: number | null
           vat_rate?: number | null
           view_quality?: string | null
+          view_type?: Json | null
           wall_finish?: string | null
           wc_count?: number | null
           windows_type?: string | null
@@ -2197,6 +2217,7 @@ export type Database = {
           air_conditioning_type?: string | null
           annual_property_tax?: number | null
           appliances_list?: Json | null
+          balcony_area?: number | null
           balcony_count?: number | null
           basement_area?: number | null
           bathroom_fixtures_brand?: string | null
@@ -2210,7 +2231,7 @@ export type Database = {
           commission_rate?: number | null
           communal_fees_monthly?: number | null
           countertop_material?: string | null
-          covered_veranda_area?: number | null
+          covered_verandas?: number | null
           created_at?: string | null
           created_by?: string | null
           current_price?: number | null
@@ -2234,7 +2255,6 @@ export type Database = {
           floor_number?: number | null
           flooring_type?: string | null
           furniture_package_value?: number | null
-          garden_area?: number | null
           garden_type?: string | null
           golden_visa_eligible?: boolean | null
           has_alarm_system?: boolean | null
@@ -2286,6 +2306,7 @@ export type Database = {
           hvac_type?: string | null
           id?: string
           internal_area?: number | null
+          internal_notes?: string | null
           internet_ready?: boolean | null
           investment_type?: string | null
           is_available?: boolean | null
@@ -2305,43 +2326,52 @@ export type Database = {
           parking_included?: boolean | null
           parking_location?: string | null
           parking_spaces?: number | null
+          parking_type?: string | null
           parking_type_unit?: string | null
           payment_plan_available?: boolean | null
           payment_plan_details?: Json | null
           planning_permit_number?: string | null
           plot_area?: number | null
           pool_size?: string | null
-          position_on_floor?: string | null
+          pool_type?: string | null
+          position_in_floor?: string | null
           price_excluding_vat?: number | null
           price_including_vat?: number | null
           price_per_sqm?: number | null
+          private_garden_area?: number | null
           project_id?: string
           property_code?: string | null
           property_status?: string | null
-          property_subtype?: string | null
+          property_sub_type?: string | null
           property_type?: string
+          public_description?: string | null
           referral_commission?: number | null
           referral_commission_rate?: number | null
           reservation_date?: string | null
           reservation_fee?: number | null
-          roof_terrace_area?: number | null
+          roof_garden_area?: number | null
           sale_type?: string | null
+          security_features?: Json | null
           smart_home_features?: Json | null
           sold_date?: string | null
           storage_area?: number | null
           storage_location?: string | null
+          storage_spaces?: number | null
+          terrace_area?: number | null
+          terrace_count?: number | null
           title_deed_number?: string | null
           title_deed_status?: string | null
           total_covered_area?: number | null
           total_rooms?: number | null
           transfer_fee_amount?: number | null
           transfer_fee_percentage?: number | null
-          uncovered_veranda_area?: number | null
+          uncovered_verandas?: number | null
           unit_number?: string
           updated_at?: string | null
           vat_amount?: number | null
           vat_rate?: number | null
           view_quality?: string | null
+          view_type?: Json | null
           wall_finish?: string | null
           wc_count?: number | null
           windows_type?: string | null
