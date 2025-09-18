@@ -86,8 +86,8 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) 
             <FormItem>
               <FormLabel>Bâtiment</FormLabel>
               <Select 
-                onValueChange={field.onChange} 
-                value={field.value || ''}
+                onValueChange={(value) => field.onChange(value === "none" ? null : value)} 
+                value={field.value || "none"}
                 disabled={!selectedProjectId}
               >
                 <FormControl>
