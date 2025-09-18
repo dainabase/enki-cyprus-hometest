@@ -95,167 +95,20 @@ export default function PropertyForm() {
     }
   }, [property, isEdit, form]);
 
-  // Save mutation
-  const saveMutation = useMutation({
-    mutationFn: async (data: PropertyFormData) => {
-      try {
-        // TESTER AVEC SEULEMENT 4 CHAMPS D'ABORD
-        const absoluteMinimal = {
-          project_id: data.project_id || projectFromUrl,
-          building_id: data.building_id && data.building_id !== 'none' ? data.building_id : buildingFromUrl && buildingFromUrl !== 'none' ? buildingFromUrl : null,
-          property_type: 'apartment',
-          unit_number: 'TEST-' + Date.now()
-        };
-        
-        console.log('TEST 1: Absolute minimal (4 fields):', absoluteMinimal);
-        
-        const { data: test1, error: error1 } = await supabase
-          .from('properties')
-          .insert(absoluteMinimal)
-          .select()
-          .single();
-        
-        if (error1) {
-          console.error('❌ FAILED with 4 fields:', error1);
-          // Le problème est dans la structure de la table elle-même !
-          throw new Error('ERREUR CRITIQUE: La table properties a un problème de configuration. Vérifiez les valeurs par défaut des champs UUID dans Supabase: ' + error1.message);
-        }
-        
-        console.log('✅ SUCCESS with 4 fields!');
-        
-        // Supprimer le test
-        await supabase.from('properties').delete().eq('id', test1.id);
-        
-        // MAINTENANT AJOUTER LES CHAMPS UN PAR UN
-        const fieldsToAdd = [
-          'property_status',
-          'ownership_type', 
-          'bedrooms_count',
-          'bathrooms_count',
-          'wc_count',
-          'vat_rate',
-          'commission_rate',
-          'deposit_percentage',
-          'reservation_fee',
-          'payment_plan_available',
-          'finance_available',
-          'title_deed_status',
-          'sale_type',
-          'internal_area',
-          'has_office',
-          'has_maid_room',
-          'has_dressing_room',
-          'has_playroom',
-          'has_wine_cellar',
-          'has_pantry',
-          'has_laundry_room',
-          'has_kitchen_appliances',
-          'appliances_list',
-          'smart_home_features',
-          'security_features',
-          'balcony_count',
-          'terrace_count',
-          'has_private_garden',
-          'has_private_pool',
-          'parking_spaces',
-          'storage_spaces',
-          'view_type',
-          'price_excluding_vat'
-        ];
-        
-        let workingData: any = { ...absoluteMinimal };
-        
-        for (const field of fieldsToAdd) {
-          const value = data[field as keyof PropertyFormData];
-          
-          // Nettoyer la valeur
-          let cleanValue = value;
-          if (value === '') {
-            // Pour les champs JSONB
-            if (['appliances_list', 'smart_home_features', 'security_features'].includes(field)) {
-              cleanValue = [];
-            }
-            // Pour les enums/text
-            else if (field === 'view_type') {
-              cleanValue = [];
-            }
-            // Pour les autres, skip
-            else {
-              continue;
-            }
-          }
-          
-          workingData[field] = cleanValue;
-          
-          console.log(`Testing with field ${field}:`, cleanValue);
-          
-          const { data: testField, error: errorField } = await supabase
-            .from('properties')
-            .insert(workingData)
-            .select()
-            .single();
-          
-          if (errorField) {
-            console.error(`❌ PROBLEM FOUND! Field "${field}" causes error:`, errorField);
-            console.error(`Value that caused problem:`, cleanValue);
-            throw new Error(`CHAMP PROBLÉMATIQUE TROUVÉ: ${field} with value: ${JSON.stringify(cleanValue)}. Error: ${errorField.message}`);
-          }
-          
-          // Supprimer le test
-          await supabase.from('properties').delete().eq('id', testField.id);
-          console.log(`✅ Field ${field} OK`);
-        }
-        
-        console.log('✅ ALL FIELDS TESTED SUCCESSFULLY!');
-        
-        if (isEdit && id) {
-          const { error } = await supabase
-            .from('properties')
-            .update(workingData)
-            .eq('id', id);
-          if (error) {
-            throw error;
-          }
-          return { id };
-        } else {
-          // Maintenant envoyer les vraies données
-          const { data: finalProperty, error: finalError } = await supabase
-            .from('properties')
-            .insert(workingData)
-            .select()
-            .single();
-          
-          if (finalError) {
-            throw finalError;
-          }
-          
-          console.log('✅ Property created successfully:', finalProperty);
-          return finalProperty;
-        }
-        
-      } catch (error) {
-        console.error('ERROR:', error);
-        throw error;
-      }
-    },
-    onSuccess: (result) => {
-      queryClient.invalidateQueries({ queryKey: ['properties'] });
-      toast.success(isEdit ? "Propriété mise à jour" : "Propriété créée", {
-        description: "Les modifications ont été sauvegardées avec succès.",
-      });
-    },
-    onError: (error) => {
-      toast.error("Erreur", {
-        description: `Erreur lors de la sauvegarde: ${error.message}`,
-      });
-    }
-  });
+  // SUPPRIMÉ: Ancienne mutation qui utilisait .insert()
+  // Maintenant on utilise uniquement la fonction RPC
 
   const handleSave = async (data: PropertyFormData) => {
     try {
-      console.log('Using safe RPC function with data:', data);
+      console.log('=== USING RPC FUNCTION ===');
+      console.log('Data to send:', {
+        project_id: data.project_id,
+        building_id: data.building_id,
+        property_type: data.property_type,
+        unit_number: data.unit_number
+      });
       
-      // Utiliser la fonction RPC sécurisée
+      // ⚠️ IMPORTANT: Utiliser .rpc() PAS .from().insert() !
       const { data: result, error } = await supabase.rpc('insert_property_safe', {
         p_project_id: data.project_id || projectFromUrl,
         p_building_id: data.building_id && data.building_id !== 'none' ? data.building_id : buildingFromUrl && buildingFromUrl !== 'none' ? buildingFromUrl : null,
@@ -269,17 +122,38 @@ export default function PropertyForm() {
       
       if (error) {
         console.error('RPC Error:', error);
-        toast.error("Erreur lors de la création: " + error.message);
+        // Si la fonction n'existe pas
+        if (error.message.includes('function') || error.message.includes('does not exist')) {
+          toast.error('La fonction insert_property_safe n\'existe pas dans Supabase. Créez-la d\'abord !');
+          return;
+        }
+        toast.error("Erreur: " + error.message);
         return;
       }
       
-      console.log('✅ Property created successfully via RPC:', result);
-      toast.success("Propriété créée avec succès!");
-      queryClient.invalidateQueries({ queryKey: ['properties'] });
+      console.log('✅ Property created via RPC! ID:', result);
+      
+      // Récupérer la propriété complète si nécessaire
+      if (result && result.length > 0) {
+        const propertyId = result[0].id;
+        const { data: fullProperty } = await supabase
+          .from('properties')
+          .select('*')
+          .eq('id', propertyId)
+          .single();
+        
+        toast.success("Propriété créée avec succès!");
+        queryClient.invalidateQueries({ queryKey: ['properties'] });
+        
+        // Navigate or close based on context
+        if (typeof window !== 'undefined') {
+          window.history.back();
+        }
+      }
       
     } catch (error) {
-      console.error('Unexpected error:', error);
-      toast.error("Erreur inattendue lors de la création");
+      console.error('Final error:', error);
+      toast.error("Erreur: " + (error as any).message);
     }
   };
 
@@ -393,12 +267,6 @@ export default function PropertyForm() {
             </h1>
           </div>
           <div className="flex items-center gap-4">
-            {saveMutation.isSuccess && (
-              <div className="flex items-center text-emerald-600">
-                <CheckCircle className="w-5 h-5 mr-2" />
-                <span className="text-sm font-medium">Sauvegardé</span>
-              </div>
-            )}
             {/* Golden Visa Badge */}
             {isGoldenVisa && (
               <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300">
@@ -481,11 +349,10 @@ export default function PropertyForm() {
                       </Button>
                       <Button 
                         type="submit" 
-                        disabled={saveMutation.isPending}
                         className="flex items-center gap-2"
                       >
                         <Check className="h-4 w-4" />
-                        {saveMutation.isPending ? 'Sauvegarde...' : (isEdit ? 'Mettre à jour' : 'Créer la propriété')}
+                        {isEdit ? 'Mettre à jour' : 'Créer la propriété'}
                       </Button>
                     </>
                   ) : (
