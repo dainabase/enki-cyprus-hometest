@@ -95,6 +95,31 @@ export const EquipmentStep: React.FC<EquipmentStepProps> = ({ form }) => {
               />
             </div>
 
+            {/* Checkbox pour électroménager inclus */}
+            <FormField
+              control={form.control}
+              name="has_kitchen_appliances"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel className="text-sm font-medium">
+                      Électroménager inclus dans le prix
+                    </FormLabel>
+                    <FormDescription className="text-xs text-muted-foreground">
+                      Cochez si les appareils de cuisine sont inclus
+                    </FormDescription>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <div>
               <FormLabel className="text-sm font-medium">Électroménager inclus</FormLabel>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
