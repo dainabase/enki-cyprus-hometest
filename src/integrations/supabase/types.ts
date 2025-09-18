@@ -1888,7 +1888,6 @@ export type Database = {
       }
       properties: {
         Row: {
-          air_conditioning_type: string | null
           annual_property_tax: number | null
           appliances_list: Json | null
           balcony_area: number | null
@@ -2051,7 +2050,6 @@ export type Database = {
           windows_type: string | null
         }
         Insert: {
-          air_conditioning_type?: string | null
           annual_property_tax?: number | null
           appliances_list?: Json | null
           balcony_area?: number | null
@@ -2214,7 +2212,6 @@ export type Database = {
           windows_type?: string | null
         }
         Update: {
-          air_conditioning_type?: string | null
           annual_property_tax?: number | null
           appliances_list?: Json | null
           balcony_area?: number | null
