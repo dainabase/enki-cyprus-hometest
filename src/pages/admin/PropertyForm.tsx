@@ -104,8 +104,6 @@ export default function PropertyForm() {
   // Save mutation
   const saveMutation = useMutation({
     mutationFn: async (data: PropertyFormData) => {
-      console.log('💾 Début de la mutation avec les données:', data);
-      
       const propertyData = {
         ...data,
         project_id: data.project_id || '',
@@ -113,44 +111,38 @@ export default function PropertyForm() {
         unit_number: data.unit_number || ''
       };
 
-      console.log('📝 Données transformées pour Supabase:', propertyData);
-
       if (isEdit && id) {
-        console.log('🔄 Mode édition, mise à jour de la propriété ID:', id);
         const { error } = await supabase
           .from('properties')
           .update(propertyData)
           .eq('id', id);
         if (error) {
-          console.error('❌ Erreur lors de la mise à jour:', error);
           throw error;
         }
-        console.log('✅ Propriété mise à jour avec succès');
         return { id };
       } else {
-        console.log('➕ Mode création, insertion d\'une nouvelle propriété');
         const { data: newProperty, error } = await supabase
           .from('properties')
           .insert(propertyData)
           .select()
           .single();
         if (error) {
-          console.error('❌ Erreur lors de la création:', error);
           throw error;
         }
-        console.log('✅ Propriété créée avec succès:', newProperty);
         return newProperty;
       }
     },
     onSuccess: (result) => {
-      console.log('🎉 Succès de la sauvegarde:', result);
       queryClient.invalidateQueries({ queryKey: ['properties'] });
       toast.success(isEdit ? "Propriété mise à jour" : "Propriété créée", {
         description: "Les modifications ont été sauvegardées avec succès.",
       });
+      // Optionally clear draft after successful save
+      if (!isEdit) {
+        clearDraft();
+      }
     },
     onError: (error) => {
-      console.error('💥 Erreur lors de la sauvegarde:', error);
       toast.error("Erreur", {
         description: `Erreur lors de la sauvegarde: ${error.message}`,
       });
@@ -158,7 +150,6 @@ export default function PropertyForm() {
   });
 
   const handleSave = (data: PropertyFormData) => {
-    console.log('🔄 Tentative de sauvegarde avec les données:', data);
     saveMutation.mutate(data);
   };
 

@@ -38,7 +38,6 @@ export const propertySchema = z.object({
   // STEP 3: ÉQUIPEMENTS & FINITIONS
   kitchen_type: z.enum(['separate', 'open', 'semi_open', 'kitchen_corner']).optional(),
   kitchen_brand: z.string().optional(),
-  kitchen_appliances: z.array(z.string()).default([]),
   appliances_list: z.array(z.string()).default([]),
   hvac_type: z.enum(['central_ac', 'split_units', 'vrf_system', 'underfloor_heating']).optional(),
   heating_type: z.enum(['electric', 'gas', 'solar', 'heat_pump', 'none']).optional(),
