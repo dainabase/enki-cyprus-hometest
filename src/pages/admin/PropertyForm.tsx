@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { PropertyFormSteps } from '@/components/admin/properties/PropertyFormSteps';
 import { toast } from 'sonner';
 import { ArrowLeft, ArrowRight, Save, CheckCircle, ChevronLeft } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const PropertyForm: React.FC = () => {
   const navigate = useNavigate();
