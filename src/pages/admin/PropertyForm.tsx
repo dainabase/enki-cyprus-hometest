@@ -180,7 +180,7 @@ export default function PropertyForm() {
       if (result) {
         const propertyId = result; // result est maintenant directement l'UUID
         const { data: fullProperty } = await supabase
-          .from('properties')
+          .from('properties_test')
           .select('*')
           .eq('id', propertyId)
           .single();
