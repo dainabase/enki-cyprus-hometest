@@ -161,7 +161,7 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) 
           render={({ field }) => (
             <FormItem>
               <FormLabel>Type de propriété *</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value || ""}>
                 <FormControl>
                   <SelectTrigger className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm">
                     <SelectValue placeholder="Sélectionner" />
@@ -189,7 +189,7 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) 
           render={({ field }) => (
             <FormItem>
               <FormLabel>Statut *</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value || ""}>
                 <FormControl>
                   <SelectTrigger className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm">
                     <SelectValue placeholder="Sélectionner" />
@@ -214,7 +214,7 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) 
           render={({ field }) => (
             <FormItem>
               <FormLabel>Type de vente</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value || ""}>
                 <FormControl>
                   <SelectTrigger className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm">
                     <SelectValue placeholder="Sélectionner" />
@@ -240,7 +240,7 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) 
           render={({ field }) => (
             <FormItem>
               <FormLabel>Type de propriété</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+              <Select onValueChange={field.onChange} value={field.value || ""}>
                 <FormControl>
                   <SelectTrigger className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm">
                     <SelectValue placeholder="Sélectionner" />
