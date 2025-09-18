@@ -3,7 +3,8 @@ import { z } from 'zod';
 export const propertySchema = z.object({
   // STEP 1: IDENTIFICATION
   project_id: z.string().uuid("Sélectionnez un projet"),
-  building_id: z.string().nullable().optional(),
+  building_id: z.string().nullable().optional()
+    .transform(val => val === '' ? null : val),
   unit_number: z.string().min(1, "Numéro d'unité requis"),
   property_code: z.string().optional(),
   property_type: z.enum(['apartment', 'villa', 'penthouse', 'studio', 'townhouse', 'duplex', 'triplex', 'maisonette']),

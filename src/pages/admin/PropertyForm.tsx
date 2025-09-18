@@ -100,25 +100,63 @@ export default function PropertyForm() {
     mutationFn: async (data: PropertyFormData) => {
       console.log('Form data before processing:', data);
       
-      // Créer un objet avec SEULEMENT les champs essentiels, pas de spread operator
+      // Fonction pour nettoyer les UUID vides
+      const cleanPropertyData = (data: any) => {
+        const cleaned = { ...data };
+        
+        // Liste des champs UUID potentiels dans la table properties
+        const uuidFields = [
+          'developer_id',
+          'agent_id',
+          'owner_id',
+          'last_viewed_by',
+          'created_by',
+          'updated_by',
+          'building_id'
+        ];
+        
+        // Nettoyer chaque champ UUID
+        uuidFields.forEach(field => {
+          if (cleaned[field] === '' || cleaned[field] === undefined) {
+            delete cleaned[field]; // Supprimer le champ au lieu de null
+          }
+        });
+        
+        // Nettoyer tous les champs vides qui pourraient être des UUID, dates, ou nombres
+        Object.keys(cleaned).forEach(key => {
+          if (cleaned[key] === '') {
+            if (key.includes('_id') || key.includes('_at') || key.includes('_by')) {
+              delete cleaned[key]; // Supprimer les champs UUID/date vides
+            }
+          }
+        });
+        
+        return cleaned;
+      };
+
+      // Nettoyer les données avant traitement
+      const cleanedFormData = cleanPropertyData(data);
+      
+      // Créer les données essentielles à partir des données nettoyées
       const essentialData: any = {};
       
-      // Gérer les UUIDs - ils doivent être null ou des UUIDs valides, jamais ""
-      if (data.project_id && data.project_id !== '') {
-        essentialData.project_id = data.project_id;
-      } else if (projectFromUrl && projectFromUrl !== '') {
+      // Gérer les UUIDs obligatoires
+      if (cleanedFormData.project_id) {
+        essentialData.project_id = cleanedFormData.project_id;
+      } else if (projectFromUrl) {
         essentialData.project_id = projectFromUrl;
       }
       
-      if (data.building_id && data.building_id !== 'none' && data.building_id !== '') {
-        essentialData.building_id = data.building_id;
+      // Gérer les UUIDs optionnels seulement s'ils existent et ne sont pas vides
+      if (cleanedFormData.building_id && cleanedFormData.building_id !== 'none') {
+        essentialData.building_id = cleanedFormData.building_id;
       }
       
       // Champs obligatoires non-UUID
-      essentialData.property_type = data.property_type || 'apartment';
-      essentialData.unit_number = data.unit_number || 'TBD';
+      essentialData.property_type = cleanedFormData.property_type || 'apartment';
+      essentialData.unit_number = cleanedFormData.unit_number || 'TBD';
 
-      console.log('Essential data:', essentialData);
+      console.log('Essential data after cleaning:', essentialData);
 
       // Validation des champs obligatoires - s'assurer que project_id n'est pas null/vide
       if (!essentialData.project_id) {
@@ -146,21 +184,16 @@ export default function PropertyForm() {
         }
         return { id };
       } else {
+        console.log('=== DEBUG PROPERTY DATA ===');
+        Object.entries(essentialData).forEach(([key, value]) => {
+          console.log(`${key}:`, typeof value, value === '' ? 'EMPTY STRING' : value);
+        });
+        
         console.log('Attempting to insert:', essentialData);
-        
-        // Nettoyer complètement les données - supprimer toute propriété avec une valeur vide
-        const cleanedData: Record<string, any> = {};
-        for (const [key, value] of Object.entries(essentialData)) {
-          if (value !== null && value !== undefined && value !== '') {
-            cleanedData[key] = value;
-          }
-        }
-        
-        console.log('Cleaned data being sent to Supabase:', cleanedData);
         
         const { data: newProperty, error } = await supabase
           .from('properties')
-          .insert(cleanedData as any)
+          .insert(essentialData)
           .select()
           .single();
         if (error) {
@@ -168,7 +201,7 @@ export default function PropertyForm() {
           console.error('Error code:', error.code);
           console.error('Error message:', error.message);
           console.error('Error details:', error.details);
-          console.error('Property data being sent:', cleanedData);
+          console.error('Property data being sent:', essentialData);
           throw error;
         }
         return newProperty;
