@@ -99,117 +99,132 @@ export default function PropertyForm() {
   const saveMutation = useMutation({
     mutationFn: async (data: PropertyFormData) => {
       try {
-        console.log('=== DEBUG: RAW DATA ===', data);
+        console.log('=== DEBUGGING EACH FIELD ===');
         
-        // Liste exhaustive de TOUS les champs UUID possibles dans une table properties
-        const possibleUUIDFields = [
-          'id',
-          'owner_id',
-          'agent_id',
-          'developer_id',
-          'created_by',
-          'updated_by',
-          'last_viewed_by',
-          'reserved_by',
-          'sold_to',
-          'managed_by',
-          'verified_by'
-        ];
+        // Examiner chaque champ individuellement
+        const cleanedData: any = {};
         
-        // Créer un objet avec seulement les champs nécessaires
-        const minimalData: any = {
-          project_id: data.project_id || projectFromUrl,
-          property_type: data.property_type || 'apartment',
-          unit_number: data.unit_number || 'UNIT-001',
-          
-          // Ajouter les champs obligatoires avec valeurs par défaut
-          property_status: data.property_status || 'available',
-          ownership_type: data.ownership_type || 'freehold',
-          bedrooms_count: data.bedrooms_count || 1,
-          bathrooms_count: data.bathrooms_count || 1,
-          wc_count: data.wc_count || 0,
-          vat_rate: data.vat_rate || 5,
-          commission_rate: data.commission_rate || 5,
-          deposit_percentage: data.deposit_percentage || 30,
-          reservation_fee: data.reservation_fee || 5000,
-          payment_plan_available: data.payment_plan_available || false,
-          finance_available: data.finance_available || false,
-          title_deed_status: data.title_deed_status || 'pending'
-        };
-
-        // Ajouter building_id seulement s'il est valide
-        if (data.building_id && data.building_id !== 'none' && data.building_id !== '') {
-          minimalData.building_id = data.building_id;
-        } else if (buildingFromUrl && buildingFromUrl !== 'none') {
-          minimalData.building_id = buildingFromUrl;
-        }
-        
-        // Ajouter seulement les champs non-vides et non-UUID
         Object.entries(data).forEach(([key, value]) => {
-          // Skip si c'est un champ UUID potentiel et qu'il est vide
-          if (possibleUUIDFields.includes(key) && (!value || value === '')) {
-            console.log(`⏭️ Skipping empty UUID field: ${key}`);
-            return;
+          console.log(`Field: ${key}, Type: ${typeof value}, Value:`, value);
+          
+          // IMPORTANT : Détecter et nettoyer TOUTE chaîne vide
+          if (value === '') {
+            console.warn(`⚠️ EMPTY STRING FOUND: ${key}`);
+            
+            // CORRECTION CRITIQUE : Les champs JSONB ne peuvent pas recevoir de chaînes vides
+            if (key.includes('_list') || key.includes('features') || key === 'view_type') {
+              cleanedData[key] = []; // Array vide pour JSONB
+              console.log(`  → Converting JSONB field to empty array`);
+            } 
+            // Ne pas inclure les chaînes vides du tout pour les autres champs
+            else {
+              console.log(`  → Skipping empty field`);
+              return; // Skip ce champ
+            }
           }
-          
-          // Skip si c'est déjà dans minimalData
-          if (key in minimalData) return;
-          
-          // Ajouter seulement si la valeur est significative
-          if (value !== '' && value !== null && value !== undefined) {
-            minimalData[key] = value;
+          // Si c'est un array, vérifier qu'il ne contient pas de chaînes vides
+          else if (Array.isArray(value)) {
+            const cleaned = value.filter(v => v !== '' && v !== null && v !== undefined);
+            cleanedData[key] = cleaned; // Toujours inclure, même si vide
+          }
+          // Si c'est un objet, le nettoyer récursivement
+          else if (typeof value === 'object' && value !== null) {
+            const cleanedObj = Object.entries(value).reduce((acc, [k, v]) => {
+              if (v !== '' && v !== null && v !== undefined) acc[k] = v;
+              return acc;
+            }, {} as any);
+            cleanedData[key] = cleanedObj; // Toujours inclure, même si vide
+          }
+          // Valeurs définies et non-null
+          else if (value !== undefined && value !== null) {
+            cleanedData[key] = value;
           }
         });
         
-        console.log('=== MINIMAL DATA TO SEND ===', minimalData);
-        console.log('Keys being sent:', Object.keys(minimalData));
+        console.log('=== CLEANED DATA ===', cleanedData);
+        console.log('=== CLEANED KEYS ===', Object.keys(cleanedData));
         
+        // TESTER avec des données MINIMALES d'abord
+        const testData: any = {
+          project_id: cleanedData.project_id || projectFromUrl,
+          property_type: cleanedData.property_type || 'apartment',
+          unit_number: cleanedData.unit_number || 'TEST-001',
+          property_status: 'available'
+        };
+
+        // Ajouter building_id seulement s'il est valide
+        if (cleanedData.building_id && cleanedData.building_id !== 'none') {
+          testData.building_id = cleanedData.building_id;
+        } else if (buildingFromUrl && buildingFromUrl !== 'none') {
+          testData.building_id = buildingFromUrl;
+        }
+        
+        console.log('=== TEST WITH MINIMAL DATA FIRST ===', testData);
+
         // Validation des champs obligatoires
-        if (!minimalData.project_id) {
+        if (!testData.project_id) {
           throw new Error('Le projet est obligatoire. Veuillez sélectionner un projet avant de continuer.');
         }
-        if (!minimalData.unit_number || minimalData.unit_number === '') {
+        if (!testData.unit_number || testData.unit_number === '') {
           throw new Error('Le numéro d\'unité est obligatoire');
         }
-        if (!minimalData.property_type || minimalData.property_type === '') {
+        if (!testData.property_type || testData.property_type === '') {
           throw new Error('Le type de propriété est obligatoire');
         }
 
         if (isEdit && id) {
           const { error } = await supabase
             .from('properties')
-            .update(minimalData)
+            .update(cleanedData)
             .eq('id', id);
           if (error) {
-            console.error('=== SUPABASE ERROR DETAILS ===');
-            console.error('Error code:', error.code);
-            console.error('Error message:', error.message);
-            console.error('Error details:', error.details);
-            console.error('Error hint:', error.hint);
+            console.error('ERROR WITH UPDATE:', error);
             throw error;
           }
           return { id };
         } else {
+          // Essayer d'abord avec les données minimales
+          const { data: testProperty, error: testError } = await supabase
+            .from('properties')
+            .insert(testData)
+            .select()
+            .single();
+          
+          if (testError) {
+            console.error('ERROR WITH MINIMAL DATA:', testError);
+            // Si même les données minimales échouent, le problème est dans la table
+            throw new Error('Table configuration issue: ' + testError.message);
+          }
+          
+          console.log('✅ Minimal data worked! Now trying full data...');
+          
+          // Si ça marche, essayer avec toutes les données
+          // Mais d'abord supprimer la propriété test
+          await supabase
+            .from('properties')
+            .delete()
+            .eq('id', testProperty.id);
+          
+          // Maintenant envoyer les vraies données
           const { data: property, error } = await supabase
             .from('properties')
-            .insert(minimalData)
+            .insert(cleanedData)
             .select()
             .single();
           
           if (error) {
-            console.error('=== SUPABASE ERROR DETAILS ===');
-            console.error('Error code:', error.code);
-            console.error('Error message:', error.message);
-            console.error('Error details:', error.details);
-            console.error('Error hint:', error.hint);
+            console.error('ERROR WITH FULL DATA:', error);
+            console.error('The problem is in these additional fields:', 
+              Object.keys(cleanedData).filter(k => !Object.keys(testData).includes(k))
+            );
             throw error;
           }
           
-          console.log('✅ Property created successfully:', property);
+          console.log('✅ SUCCESS:', property);
           return property;
         }
       } catch (error) {
-        console.error('SUBMISSION ERROR:', error);
+        console.error('FINAL ERROR:', error);
         throw error;
       }
     },
