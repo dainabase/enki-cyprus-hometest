@@ -95,7 +95,7 @@ export default function PropertyForm() {
       const propertyData = {
         ...data,
         project_id: data.project_id || null,
-        building_id: data.building_id || null,
+        building_id: data.building_id === '' || data.building_id === 'none' ? null : data.building_id,
         property_type: data.property_type || 'apartment',
         unit_number: data.unit_number || null
       };
