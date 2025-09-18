@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { Card, Button, DataGrid } from '@/components/dainabase-ui';
 import { useSupabaseQuery, getPaginationRange } from '@/hooks/useSupabaseQuery';
 import { supabase } from '@/integrations/supabase/client';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { useViewPreference } from '@/hooks/useViewPreference';
 import { Badge } from '@/components/ui/badge';
@@ -97,6 +99,9 @@ const AdminUnits = () => {
     priceMin: '',
     priceMax: ''
   });
+  const [view, setView] = useState<'table' | 'cards' | 'list' | 'compact' | 'detailed'>('table');
+  const [isNewPropertyOpen, setIsNewPropertyOpen] = useState(false);
+  const [previewProperty, setPreviewProperty] = useState<Property | null>(null);
 
   // Fetch properties from properties_test table
   const { data: propertiesResponse, isLoading, error, refetch } = useSupabaseQuery(
@@ -674,7 +679,7 @@ const AdminUnits = () => {
       <Dialog open={!!previewProperty} onOpenChange={() => setPreviewProperty(null)}>
         <DialogContent className="max-w-4xl max-h-[80vh]">
           <DialogHeader>
-            <DialogTitle>Détails de la propriété {previewProperty?.reference || previewProperty?.unit_number}</DialogTitle>
+            <DialogTitle>Détails de la propriété {previewProperty?.unit_number}</DialogTitle>
           </DialogHeader>
           <ScrollArea className="max-h-[60vh]">
             {previewProperty && (
@@ -685,7 +690,7 @@ const AdminUnits = () => {
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span className="text-slate-600">Référence:</span>
-                        <span className="font-medium">{previewProperty.reference || previewProperty.unit_number}</span>
+                        <span className="font-medium">{previewProperty.unit_number}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-600">Type:</span>
@@ -707,11 +712,11 @@ const AdminUnits = () => {
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span className="text-slate-600">Chambres:</span>
-                        <span className="font-medium">{previewProperty.bedrooms_count || 'N/A'}</span>
+                        <span className="font-medium">{previewProperty.bedrooms || 'N/A'}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-600">Salles de bain:</span>
-                        <span className="font-medium">{previewProperty.bathrooms_count || 'N/A'}</span>
+                        <span className="font-medium">{previewProperty.bathrooms || 'N/A'}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-600">Surface:</span>
@@ -719,7 +724,7 @@ const AdminUnits = () => {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-600">Surface intérieure:</span>
-                        <span className="font-medium">{previewProperty.internal_area ? `${previewProperty.internal_area} m²` : 'N/A'}</span>
+                        <span className="font-medium">{previewProperty.surface_area ? `${previewProperty.surface_area} m²` : 'N/A'}</span>
                       </div>
                     </div>
                   </div>
@@ -741,12 +746,12 @@ const AdminUnits = () => {
                   </div>
                 </div>
 
-                {previewProperty.description && (
+                {previewProperty.unit_number && (
                   <>
                     <Separator />
                     <div className="space-y-4">
-                      <h3 className="text-lg font-semibold">Description</h3>
-                      <p className="text-slate-700">{previewProperty.description}</p>
+                      <h3 className="text-lg font-semibold">Notes</h3>
+                      <p className="text-slate-700">Propriété {previewProperty.unit_number}</p>
                     </div>
                   </>
                 )}
@@ -762,7 +767,7 @@ const AdminUnits = () => {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-600">Modifié le:</span>
-                      <span className="font-medium">{new Date(previewProperty.updated_at).toLocaleDateString('fr-FR')}</span>
+                      <span className="font-medium">{new Date(previewProperty.created_at).toLocaleDateString('fr-FR')}</span>
                     </div>
                   </div>
                 </div>
