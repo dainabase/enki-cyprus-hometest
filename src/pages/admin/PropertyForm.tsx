@@ -251,8 +251,36 @@ export default function PropertyForm() {
     }
   });
 
-  const handleSave = (data: PropertyFormData) => {
-    saveMutation.mutate(data);
+  const handleSave = async (data: PropertyFormData) => {
+    try {
+      console.log('Using safe RPC function with data:', data);
+      
+      // Utiliser la fonction RPC sécurisée
+      const { data: result, error } = await supabase.rpc('insert_property_safe', {
+        p_project_id: data.project_id || projectFromUrl,
+        p_building_id: data.building_id && data.building_id !== 'none' ? data.building_id : buildingFromUrl && buildingFromUrl !== 'none' ? buildingFromUrl : null,
+        p_property_type: data.property_type || 'apartment',
+        p_unit_number: data.unit_number || 'UNIT-' + Date.now(),
+        p_property_status: data.property_status || 'available',
+        p_price_excluding_vat: data.price_excluding_vat || 0,
+        p_bedrooms_count: data.bedrooms_count || 1,
+        p_bathrooms_count: data.bathrooms_count || 1
+      });
+      
+      if (error) {
+        console.error('RPC Error:', error);
+        toast.error("Erreur lors de la création: " + error.message);
+        return;
+      }
+      
+      console.log('✅ Property created successfully via RPC:', result);
+      toast.success("Propriété créée avec succès!");
+      queryClient.invalidateQueries({ queryKey: ['properties'] });
+      
+    } catch (error) {
+      console.error('Unexpected error:', error);
+      toast.error("Erreur inattendue lors de la création");
+    }
   };
 
   const handleSaveDraft = async () => {
