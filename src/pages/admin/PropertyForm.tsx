@@ -98,65 +98,78 @@ export default function PropertyForm() {
   // Save mutation
   const saveMutation = useMutation({
     mutationFn: async (data: PropertyFormData) => {
-      console.log('Form data before processing:', data);
+      console.log('=== DEBUGGING UUID ISSUE ===');
+      console.log('1. RAW FORM DATA:', data);
       
-      // Fonction pour nettoyer les UUID vides
-      const cleanPropertyData = (data: any) => {
-        const cleaned = { ...data };
-        
-        // Liste des champs UUID potentiels dans la table properties
-        const uuidFields = [
-          'developer_id',
-          'agent_id',
-          'owner_id',
-          'last_viewed_by',
-          'created_by',
-          'updated_by',
-          'building_id'
-        ];
-        
-        // Nettoyer chaque champ UUID
-        uuidFields.forEach(field => {
-          if (cleaned[field] === '' || cleaned[field] === undefined) {
-            delete cleaned[field]; // Supprimer le champ au lieu de null
-          }
-        });
-        
-        // Nettoyer tous les champs vides qui pourraient être des UUID, dates, ou nombres
-        Object.keys(cleaned).forEach(key => {
-          if (cleaned[key] === '') {
-            if (key.includes('_id') || key.includes('_at') || key.includes('_by')) {
-              delete cleaned[key]; // Supprimer les champs UUID/date vides
-            }
-          }
-        });
-        
-        return cleaned;
-      };
-
-      // Nettoyer les données avant traitement
-      const cleanedFormData = cleanPropertyData(data);
+      // Examiner chaque champ en détail
+      Object.entries(data).forEach(([key, value]) => {
+        if (value === '') {
+          console.warn(`⚠️ EMPTY STRING FOUND: ${key} = ""`);
+        }
+        if (value === null) {
+          console.log(`NULL VALUE: ${key} = null`);
+        }
+        if (value === undefined) {
+          console.log(`UNDEFINED VALUE: ${key} = undefined`);
+        }
+      });
       
-      // Créer les données essentielles à partir des données nettoyées
+      // Nettoyer TOUS les champs vides
+      const cleanedData = Object.entries(data).reduce((acc, [key, value]) => {
+        // Si c'est une chaîne vide et que le nom suggère un UUID
+        if (value === '' && (
+          key.includes('_id') || 
+          key.includes('_by') || 
+          key === 'id' ||
+          key === 'owner' ||
+          key === 'agent' ||
+          key === 'developer'
+        )) {
+          console.warn(`🔧 CLEANING EMPTY UUID: ${key}`);
+          // Ne pas inclure le champ du tout
+          return acc;
+        }
+        
+        // Pour tous les autres champs vides
+        if (value === '') {
+          // Si c'est potentiellement un UUID ou un champ relationnel
+          if (key.toLowerCase().includes('id') || 
+              key.toLowerCase().includes('uuid') ||
+              key.includes('_at') ||
+              key.includes('_by')) {
+            console.warn(`🔧 REMOVING EMPTY FIELD: ${key}`);
+            return acc; // Ne pas l'inclure
+          }
+        }
+        
+        // Garder le champ
+        acc[key] = value;
+        return acc;
+      }, {} as any);
+      
+      console.log('2. CLEANED DATA:', cleanedData);
+      console.log('3. CLEANED DATA KEYS:', Object.keys(cleanedData));
+      
+      // Créer les données essentielles pour Supabase
       const essentialData: any = {};
       
       // Gérer les UUIDs obligatoires
-      if (cleanedFormData.project_id) {
-        essentialData.project_id = cleanedFormData.project_id;
+      if (cleanedData.project_id) {
+        essentialData.project_id = cleanedData.project_id;
       } else if (projectFromUrl) {
         essentialData.project_id = projectFromUrl;
       }
       
       // Gérer les UUIDs optionnels seulement s'ils existent et ne sont pas vides
-      if (cleanedFormData.building_id && cleanedFormData.building_id !== 'none') {
-        essentialData.building_id = cleanedFormData.building_id;
+      if (cleanedData.building_id && cleanedData.building_id !== 'none') {
+        essentialData.building_id = cleanedData.building_id;
       }
       
       // Champs obligatoires non-UUID
-      essentialData.property_type = cleanedFormData.property_type || 'apartment';
-      essentialData.unit_number = cleanedFormData.unit_number || 'TBD';
+      essentialData.property_type = cleanedData.property_type || 'apartment';
+      essentialData.unit_number = cleanedData.unit_number || 'TBD';
 
-      console.log('Essential data after cleaning:', essentialData);
+      console.log('4. ESSENTIAL DATA FINAL:', essentialData);
 
       // Validation des champs obligatoires - s'assurer que project_id n'est pas null/vide
       if (!essentialData.project_id) {
@@ -189,19 +202,40 @@ export default function PropertyForm() {
           console.log(`${key}:`, typeof value, value === '' ? 'EMPTY STRING' : value);
         });
         
-        console.log('Attempting to insert:', essentialData);
+        // Super nettoyage final pour éliminer TOUTE chaîne vide
+        const superCleanData = JSON.parse(
+          JSON.stringify(essentialData, (key, value) => {
+            // Supprimer TOUTE chaîne vide
+            if (value === '') return undefined;
+            // Supprimer les null pour les champs non-nullable
+            if (value === null && key.includes('_id')) return undefined;
+            return value;
+          })
+        );
+
+        console.log('5. SUPER CLEAN DATA:', superCleanData);
+        console.log('6. Attempting to insert:', superCleanData);
         
         const { data: newProperty, error } = await supabase
           .from('properties')
-          .insert(essentialData)
+          .insert(superCleanData)
           .select()
           .single();
         if (error) {
-          console.error('Supabase insert error details:', error);
-          console.error('Error code:', error.code);
-          console.error('Error message:', error.message);
-          console.error('Error details:', error.details);
-          console.error('Property data being sent:', essentialData);
+          console.error('=== SUPABASE ERROR ===');
+          console.error('Error:', error);
+          console.error('Data that caused error:', superCleanData);
+          
+          // Essayer de déterminer quel champ pose problème
+          if (error.message.includes('uuid')) {
+            console.error('UUID ERROR - Check these fields:');
+            Object.entries(superCleanData).forEach(([key, value]) => {
+              if (typeof value === 'string' && value.length < 10) {
+                console.error(`Suspect field: ${key} = "${value}"`);
+              }
+            });
+          }
+          
           throw error;
         }
         return newProperty;
