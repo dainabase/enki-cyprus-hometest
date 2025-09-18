@@ -74,7 +74,7 @@ export default function PropertyForm() {
     queryFn: async () => {
       if (!id) return null;
       const { data, error } = await supabase
-        .from('properties')
+        .from('properties_test')
         .select(`
           *,
           project:projects(id, title, name),

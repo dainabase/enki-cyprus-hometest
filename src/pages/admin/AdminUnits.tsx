@@ -109,7 +109,7 @@ const AdminUnits = () => {
     queryKey: ['admin-units'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('properties')
+        .from('properties_test')
         .select(`
           *,
           project:project_id(
@@ -139,8 +139,8 @@ const AdminUnits = () => {
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
       const { error } = await supabase
-        .from('properties')
-        .update({ property_status: status as 'available' | 'reserved' | 'sold' | 'rented' | 'unavailable' })
+        .from('properties_test')
+        .update({ status: status as 'available' | 'reserved' | 'sold' | 'rented' | 'unavailable' })
         .eq('id', id);
       if (error) throw error;
     },
