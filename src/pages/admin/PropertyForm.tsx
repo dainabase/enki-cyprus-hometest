@@ -101,24 +101,49 @@ export default function PropertyForm() {
   const handleSave = async (data: PropertyFormData) => {
     try {
       console.log('=== USING RPC FUNCTION ===');
-      console.log('Data to send:', {
-        project_id: data.project_id,
-        building_id: data.building_id,
-        property_type: data.property_type,
-        unit_number: data.unit_number
-      });
+      console.log('Raw form data:', data);
+      console.log('URL params - project:', projectFromUrl, 'building:', buildingFromUrl);
       
-      // ⚠️ IMPORTANT: Utiliser .rpc() PAS .from().insert() !
-      const { data: result, error } = await supabase.rpc('insert_property_safe', {
-        p_project_id: data.project_id || projectFromUrl,
-        p_building_id: data.building_id && data.building_id !== 'none' ? data.building_id : buildingFromUrl && buildingFromUrl !== 'none' ? buildingFromUrl : null,
+      // ⚠️ CRITIQUE: Nettoyer TOUS les UUID pour éviter les chaînes vides
+      const cleanProjectId = data.project_id || projectFromUrl || null;
+      const cleanBuildingId = (() => {
+        const buildingFromForm = data.building_id && data.building_id !== 'none' ? data.building_id : null;
+        const buildingFromURL = buildingFromUrl && buildingFromUrl !== 'none' ? buildingFromUrl : null;
+        return buildingFromForm || buildingFromURL || null;
+      })();
+      
+      // Validation critique
+      if (!cleanProjectId) {
+        toast.error("Erreur: project_id est requis");
+        return;
+      }
+      
+      // Vérifier que ce ne sont pas des chaînes vides
+      if (cleanProjectId === '') {
+        toast.error("Erreur: project_id ne peut pas être une chaîne vide");
+        return;
+      }
+      
+      if (cleanBuildingId === '') {
+        toast.error("Erreur: building_id ne peut pas être une chaîne vide");
+        return;
+      }
+      
+      const params = {
+        p_project_id: cleanProjectId,
+        p_building_id: cleanBuildingId,
         p_property_type: data.property_type || 'apartment',
         p_unit_number: data.unit_number || 'UNIT-' + Date.now(),
         p_property_status: data.property_status || 'available',
         p_price_excluding_vat: data.price_excluding_vat || 0,
         p_bedrooms_count: data.bedrooms_count || 1,
         p_bathrooms_count: data.bathrooms_count || 1
-      });
+      };
+      
+      console.log('Cleaned params to send:', params);
+      
+      // ⚠️ IMPORTANT: Utiliser .rpc() PAS .from().insert() !
+      const { data: result, error } = await supabase.rpc('insert_property_safe', params);
       
       if (error) {
         console.error('RPC Error:', error);
@@ -131,7 +156,7 @@ export default function PropertyForm() {
         return;
       }
       
-      console.log('✅ Property created via RPC! ID:', result);
+      console.log('✅ Property created via RPC! Result:', result);
       
       // Récupérer la propriété complète si nécessaire
       if (result && result.length > 0) {
