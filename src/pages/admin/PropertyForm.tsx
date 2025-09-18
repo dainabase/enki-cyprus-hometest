@@ -142,8 +142,13 @@ export default function PropertyForm() {
       
       console.log('Cleaned params to send:', params);
       
-      // ⚠️ IMPORTANT: Utiliser .rpc() PAS .from().insert() !
-      const { data: result, error } = await supabase.rpc('insert_property_safe', params);
+      // ⚠️ NOUVEAU: Utiliser la fonction RPC minimale
+      const { data: result, error } = await supabase.rpc('insert_property_minimal', {
+        p_project_id: cleanProjectId,
+        p_building_id: cleanBuildingId,
+        p_property_type: data.property_type || 'apartment',
+        p_unit_number: data.unit_number || 'UNIT-' + Date.now()
+      });
       
       if (error) {
         console.error('RPC Error:', error);
@@ -159,8 +164,8 @@ export default function PropertyForm() {
       console.log('✅ Property created via RPC! Result:', result);
       
       // Récupérer la propriété complète si nécessaire
-      if (result && result.length > 0) {
-        const propertyId = result[0].id;
+      if (result) {
+        const propertyId = result; // result est maintenant directement l'UUID
         const { data: fullProperty } = await supabase
           .from('properties')
           .select('*')
