@@ -11,6 +11,7 @@ import { ArrowLeft, ArrowRight, Check, Save, CheckCircle, ChevronLeft } from 'lu
 import { supabase } from '@/integrations/supabase/client';
 import { PropertyFormSteps } from '@/components/admin/properties/PropertyFormSteps';
 import { propertySchema, PropertyFormData, propertyFormSteps } from '@/schemas/property.schema';
+import { useFormAutosave } from '@/hooks/useFormAutosave';
 import { toast } from 'sonner';
 
 export default function PropertyForm() {
@@ -56,6 +57,21 @@ export default function PropertyForm() {
       security_features: [],
       view_type: []
     },
+  });
+
+  // Autosave functionality
+  const {
+    sessionId,
+    isAutoSaving,
+    loadDraft,
+    clearDraft
+  } = useFormAutosave({
+    table: 'project_drafts', // Réutiliser la table pour les brouillons de propriétés
+    formData: form.watch(),
+    entityId: id,
+    enabled: true,
+    debounceMs: 2000,
+    showToasts: false
   });
 
   // Fetch property data for editing
@@ -144,6 +160,47 @@ export default function PropertyForm() {
   const handleSave = (data: PropertyFormData) => {
     console.log('🔄 Tentative de sauvegarde avec les données:', data);
     saveMutation.mutate(data);
+  };
+
+  const handleSaveDraft = async () => {
+    const formData = form.getValues();
+    try {
+      // Force une sauvegarde immédiate du brouillon
+      const user = await supabase.auth.getUser();
+      const userId = user.data.user?.id || null;
+
+      const draftData: any = {
+        form_data: formData,
+        session_id: sessionId,
+        current_step: currentStep.id,
+        step_index: currentStepIndex,
+        updated_at: new Date().toISOString()
+      };
+
+      if (userId) {
+        draftData.user_id = userId;
+      }
+
+      if (id) {
+        draftData.project_id = id;
+      }
+
+      const { error } = await supabase
+        .from('project_drafts')
+        .upsert(draftData, {
+          onConflict: id && userId ? 'user_id,project_id' : 'session_id'
+        });
+
+      if (error) {
+        console.error('Erreur lors de la sauvegarde du brouillon:', error);
+        toast.error('Erreur lors de la sauvegarde du brouillon');
+      } else {
+        toast.success('Brouillon sauvegardé avec succès');
+      }
+    } catch (error) {
+      console.error('Erreur:', error);
+      toast.error('Erreur lors de la sauvegarde du brouillon');
+    }
   };
 
   const handleNext = async () => {
@@ -289,14 +346,26 @@ export default function PropertyForm() {
 
                 <div className="flex items-center gap-4">
                   {currentStepIndex === propertyFormSteps.length - 1 ? (
-                    <Button 
-                      type="submit" 
-                      disabled={saveMutation.isPending}
-                      className="flex items-center gap-2"
-                    >
-                      <Save className="h-4 w-4" />
-                      {saveMutation.isPending ? 'Sauvegarde...' : (isEdit ? 'Mettre à jour' : 'Créer la propriété')}
-                    </Button>
+                    <>
+                      <Button 
+                        type="button" 
+                        variant="outline"
+                        onClick={handleSaveDraft}
+                        disabled={isAutoSaving}
+                        className="flex items-center gap-2"
+                      >
+                        <Save className="h-4 w-4" />
+                        {isAutoSaving ? 'Sauvegarde...' : 'Sauvegarder le brouillon'}
+                      </Button>
+                      <Button 
+                        type="submit" 
+                        disabled={saveMutation.isPending}
+                        className="flex items-center gap-2"
+                      >
+                        <Check className="h-4 w-4" />
+                        {saveMutation.isPending ? 'Sauvegarde...' : (isEdit ? 'Mettre à jour' : 'Créer la propriété')}
+                      </Button>
+                    </>
                   ) : (
                     <Button
                       type="button"
