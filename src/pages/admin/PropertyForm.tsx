@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -18,6 +18,11 @@ export default function PropertyForm() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const isEdit = Boolean(id);
+  
+  // Get URL search params for project and building
+  const [searchParams] = useSearchParams();
+  const projectFromUrl = searchParams.get('project');
+  const buildingFromUrl = searchParams.get('building');
 
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const currentStep = propertyFormSteps[currentStepIndex];
@@ -25,8 +30,9 @@ export default function PropertyForm() {
   const form = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema),
     defaultValues: {
+      project_id: projectFromUrl || '',
+      building_id: buildingFromUrl || '',
       property_status: 'available',
-      sale_type: 'sale',
       ownership_type: 'freehold',
       bedrooms_count: 1,
       bathrooms_count: 1,
@@ -94,11 +100,22 @@ export default function PropertyForm() {
     mutationFn: async (data: PropertyFormData) => {
       const propertyData = {
         ...data,
-        project_id: data.project_id || null,
+        project_id: data.project_id || projectFromUrl || '', // Obligatoire
         building_id: data.building_id === 'none' || !data.building_id ? null : data.building_id,
         property_type: data.property_type || 'apartment',
-        unit_number: data.unit_number || null
+        unit_number: data.unit_number || 'TBD'  // Obligatoire, au minimum "TBD"
       };
+
+      // Validation des champs obligatoires
+      if (!propertyData.project_id) {
+        throw new Error('Le projet est obligatoire');
+      }
+      if (!propertyData.unit_number) {
+        throw new Error('Le numéro d\'unité est obligatoire');
+      }
+      if (!propertyData.property_type) {
+        throw new Error('Le type de propriété est obligatoire');
+      }
 
       if (isEdit && id) {
         const { error } = await supabase
