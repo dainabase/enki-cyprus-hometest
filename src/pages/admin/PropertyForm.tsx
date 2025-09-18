@@ -76,11 +76,7 @@ export default function PropertyForm() {
       console.log('🔍 Fetching property with ID:', id);
       const { data, error } = await supabase
         .from('properties_test')
-        .select(`
-          *,
-          project:projects(id, title, name),
-          building:buildings(id, building_name, name)
-        `)
+        .select('*')
         .eq('id', id)
         .single();
       
