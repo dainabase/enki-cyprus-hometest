@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import PropertyWizard from '@/components/admin/properties/PropertyWizard';
 
 type ViewType = 'cards' | 'list' | 'table' | 'compact' | 'detailed';
 
@@ -42,8 +43,8 @@ interface FilterState {
   search: string;
   status: string;
   propertyType: string;
+  developer: string;
   project: string;
-  building: string;
   priceMin: string;
   priceMax: string;
 }
@@ -91,8 +92,8 @@ const AdminUnits = () => {
     search: '',
     status: 'all',
     propertyType: 'all',
+    developer: 'all',
     project: 'all',
-    building: 'all',
     priceMin: '',
     priceMax: ''
   });
@@ -122,6 +123,9 @@ const AdminUnits = () => {
       if (filters.propertyType !== 'all') {
         query = query.eq('property_type', filters.propertyType);
       }
+      if (filters.project !== 'all') {
+        query = query.eq('project_id', filters.project);
+      }
 
       const { data, error, count } = await query;
       if (error) {
@@ -137,6 +141,32 @@ const AdminUnits = () => {
       return { data, count };
     },
     { staleTime: 0, refetchOnMount: 'always' }
+  );
+
+  // Fetch projects for filter dropdown
+  const { data: projectsList } = useSupabaseQuery(
+    ['projects-list'],
+    async () => {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('id, title')
+        .order('title');
+      if (error) throw error;
+      return data;
+    }
+  );
+
+  // Fetch developers for filter dropdown  
+  const { data: developersList } = useSupabaseQuery(
+    ['developers-list'],
+    async () => {
+      const { data, error } = await supabase
+        .from('developers')
+        .select('id, name')
+        .order('name');
+      if (error) throw error;
+      return data;
+    }
   );
 
   const propertiesData = propertiesResponse?.data || [];
@@ -192,7 +222,7 @@ const AdminUnits = () => {
   const columns = [
     {
       key: 'unit_number',
-      label: 'Numéro d\'unité',
+      label: 'Référence',
       render: (value: string, row: Property) => (
         <div className="flex flex-col">
           <span className="font-semibold text-slate-900">{value || 'N/A'}</span>
@@ -205,7 +235,7 @@ const AdminUnits = () => {
       label: 'Projet',
       render: (value: any, row: Property) => (
         <div className="flex flex-col">
-          <span className="font-medium text-slate-900">Projet ID</span>
+          <span className="font-medium text-slate-900">Projet</span>
           <span className="text-xs text-slate-500">{value?.slice(0, 8)}...</span>
         </div>
       )
@@ -232,10 +262,20 @@ const AdminUnits = () => {
       label: 'Actions',
       render: (value: any, row: Property) => (
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate(`/admin/property/${row.id}`)}
+            className="h-8 w-8 p-0"
+          >
             <Eye className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate(`/admin/property/${row.id}/edit`)}
+            className="h-8 w-8 p-0"
+          >
             <Edit className="h-4 w-4" />
           </Button>
         </div>
@@ -259,7 +299,7 @@ const AdminUnits = () => {
       console.error('❌ AdminUnits render error:', error);
       return (
         <Card variant="executive" padding="lg" className="text-center">
-          <p className="text-red-600">Erreur lors du chargement des propriétés: {error.message}</p>
+          <p className="text-red-600">Erreur lors du chargement des propriétés: {(error as any).message}</p>
         </Card>
       );
     }
@@ -280,14 +320,179 @@ const AdminUnits = () => {
       );
     }
 
-    return (
-      <DataGrid
-        data={propertiesData}
-        columns={columns}
-        variant="executive"
-        className="shadow-lg"
-      />
-    );
+    switch (currentView) {
+      case 'table':
+        return (
+          <DataGrid
+            data={propertiesData}
+            columns={columns}
+            variant="executive"
+            className="shadow-lg"
+          />
+        );
+      case 'cards':
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {propertiesData.map((property) => (
+              <Card key={property.id} variant="executive" padding="lg" className="hover:shadow-xl transition-shadow">
+                <div className="space-y-4">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h3 className="font-semibold text-slate-900">{property.unit_number || 'N/A'}</h3>
+                      <p className="text-sm text-slate-600">Référence: {property.id.slice(0, 8)}...</p>
+                    </div>
+                    {getStatusBadge(property.status)}
+                  </div>
+                  <div className="space-y-2">
+                    {getPropertyTypeBadge(property.property_type)}
+                    <div className="text-sm text-slate-600">
+                      <p>Prix: {formatPrice(property.price)}</p>
+                      <p>Surface: {property.surface_area ? `${property.surface_area} m²` : 'N/A'}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 pt-2 border-t border-slate-200">
+                    <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/property/${property.id}`)}>
+                      <Eye className="h-4 w-4 mr-1" />
+                      Voir
+                    </Button>
+                    <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/property/${property.id}/edit`)}>
+                      <Edit className="h-4 w-4 mr-1" />
+                      Modifier
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        );
+      case 'list':
+        return (
+          <div className="space-y-4">
+            {propertiesData.map((property) => (
+              <Card key={property.id} variant="clean" padding="lg" className="hover:shadow-md transition-shadow">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div>
+                      <h3 className="font-semibold text-slate-900">{property.unit_number || 'N/A'}</h3>
+                      <p className="text-sm text-slate-600">Référence: {property.id.slice(0, 8)}...</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {getPropertyTypeBadge(property.property_type)}
+                      {getStatusBadge(property.status)}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <span className="font-semibold text-slate-900">{formatPrice(property.price)}</span>
+                    <div className="flex items-center gap-2">
+                      <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/property/${property.id}`)}>
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/property/${property.id}/edit`)}>
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        );
+      case 'compact':
+        return (
+          <div className="space-y-2">
+            {propertiesData.map((property) => (
+              <Card key={property.id} variant="clean" padding="sm" className="hover:shadow-sm transition-shadow">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="font-medium text-slate-900">{property.unit_number || 'N/A'}</span>
+                    {getPropertyTypeBadge(property.property_type)}
+                    {getStatusBadge(property.status)}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-semibold text-slate-900">{formatPrice(property.price)}</span>
+                    <div className="flex items-center gap-1">
+                      <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/property/${property.id}`)} className="h-7 w-7 p-0">
+                        <Eye className="h-3 w-3" />
+                      </Button>
+                      <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/property/${property.id}/edit`)} className="h-7 w-7 p-0">
+                        <Edit className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        );
+      case 'detailed':
+        return (
+          <div className="space-y-6">
+            {propertiesData.map((property) => (
+              <Card key={property.id} variant="executive" padding="lg" className="hover:shadow-xl transition-shadow">
+                <div className="space-y-6">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2">
+                      <h3 className="text-xl font-bold text-slate-900">{property.unit_number || 'N/A'}</h3>
+                      <p className="text-sm text-slate-600">Référence: {property.id}</p>
+                      <div className="flex items-center gap-2">
+                        {getPropertyTypeBadge(property.property_type)}
+                        {getStatusBadge(property.status)}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-slate-900">{formatPrice(property.price)}</div>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                    <div>
+                      <span className="text-slate-600">Surface:</span>
+                      <div className="font-medium">{property.surface_area ? `${property.surface_area} m²` : 'N/A'}</div>
+                    </div>
+                    <div>
+                      <span className="text-slate-600">Chambres:</span>
+                      <div className="font-medium">{property.bedrooms || 'N/A'}</div>
+                    </div>
+                    <div>
+                      <span className="text-slate-600">Salles de bain:</span>
+                      <div className="font-medium">{property.bathrooms || 'N/A'}</div>
+                    </div>
+                    <div>
+                      <span className="text-slate-600">Étage:</span>
+                      <div className="font-medium">{property.floor || 'N/A'}</div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-4 border-t border-slate-200">
+                    <div className="text-xs text-slate-500">
+                      Créé le {new Date(property.created_at).toLocaleDateString('fr-FR')}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button variant="clean" size="sm" onClick={() => navigate(`/admin/property/${property.id}`)}>
+                        <Eye className="h-4 w-4 mr-2" />
+                        Voir détails
+                      </Button>
+                      <Button variant="executive" size="sm" onClick={() => navigate(`/admin/property/${property.id}/edit`)}>
+                        <Edit className="h-4 w-4 mr-2" />
+                        Modifier
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        );
+      default:
+        return (
+          <DataGrid
+            data={propertiesData}
+            columns={columns}
+            variant="executive"
+            className="shadow-lg"
+          />
+        );
+    }
   };
 
   return (
@@ -356,11 +561,11 @@ const AdminUnits = () => {
           <Card variant="executive" padding="lg">
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-slate-900">Filtres de recherche</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Recherche</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">Référence</label>
                   <Input
-                    placeholder="Numéro d'unité..."
+                    placeholder="Rechercher par référence..."
                     value={filters.search}
                     onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
                   />
@@ -394,6 +599,34 @@ const AdminUnits = () => {
                     </SelectContent>
                   </Select>
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">Projet</label>
+                  <Select value={filters.project} onValueChange={(value) => setFilters(prev => ({ ...prev, project: value }))}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Tous les projets</SelectItem>
+                      {projectsList?.map((project) => (
+                        <SelectItem key={project.id} value={project.id}>{project.title}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">Développeur</label>
+                  <Select value={filters.developer} onValueChange={(value) => setFilters(prev => ({ ...prev, developer: value }))}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Tous les développeurs</SelectItem>
+                      {developersList?.map((developer) => (
+                        <SelectItem key={developer.id} value={developer.id}>{developer.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
           </Card>
@@ -403,15 +636,29 @@ const AdminUnits = () => {
         {renderContent()}
       </div>
 
-      {/* Dialog placeholder */}
+      {/* Property Wizard Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden">
+          <DialogHeader className="pb-4">
             <DialogTitle>Nouvelle Propriété</DialogTitle>
             <DialogDescription>
-              Formulaire de création d'une nouvelle propriété (à implémenter)
+              Créez une nouvelle propriété en suivant les étapes du formulaire
             </DialogDescription>
           </DialogHeader>
+          <div className="flex-1 overflow-y-auto">
+            <PropertyWizard 
+              open={isDialogOpen}
+              onClose={() => setIsDialogOpen(false)}
+              onSuccess={() => {
+                setIsDialogOpen(false);
+                refetch();
+                toast({
+                  title: "Propriété créée",
+                  description: "La nouvelle propriété a été créée avec succès"
+                });
+              }}
+            />
+          </div>
         </DialogContent>
       </Dialog>
     </div>
