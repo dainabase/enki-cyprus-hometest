@@ -2442,6 +2442,42 @@ export type Database = {
         }
         Relationships: []
       }
+      property_drafts: {
+        Row: {
+          auto_save_enabled: boolean
+          created_at: string
+          current_step: string
+          form_data: Json
+          id: string
+          property_id: string | null
+          session_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          auto_save_enabled?: boolean
+          created_at?: string
+          current_step?: string
+          form_data?: Json
+          id?: string
+          property_id?: string | null
+          session_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          auto_save_enabled?: boolean
+          created_at?: string
+          current_step?: string
+          form_data?: Json
+          id?: string
+          property_id?: string | null
+          session_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       registration_drafts: {
         Row: {
           auto_save_enabled: boolean

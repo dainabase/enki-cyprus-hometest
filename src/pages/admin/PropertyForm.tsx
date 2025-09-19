@@ -144,24 +144,10 @@ export default function PropertyForm() {
 
   const handleSave = async (data: PropertyFormData) => {
     try {
-      console.log('=== DEBUG DATA ===');
-      console.log('project_id type:', typeof data.project_id);
-      console.log('project_id value:', data.project_id);
-      console.log('project_id length:', data.project_id?.length);
-      console.log('building_id type:', typeof data.building_id);
-      console.log('building_id value:', data.building_id);
-      console.log('building_id length:', data.building_id?.length);
-
-      // Vérifier si les IDs sont vraiment des UUIDs valides
-      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-      console.log('project_id is valid UUID:', uuidRegex.test(data.project_id || ''));
-      console.log('building_id is valid UUID:', uuidRegex.test(data.building_id || ''));
+      console.log('=== SAVING PROPERTY DATA ===');
+      console.log('Form data:', data);
       
-      console.log('=== USING RPC FUNCTION ===');
-      console.log('Raw form data:', data);
-      console.log('URL params - project:', projectFromUrl, 'building:', buildingFromUrl);
-      
-      // ⚠️ CRITIQUE: Nettoyer TOUS les UUID pour éviter les chaînes vides
+      // Nettoyer les IDs
       const cleanProjectId = data.project_id || projectFromUrl || null;
       const cleanBuildingId = (() => {
         const buildingFromForm = data.building_id && data.building_id !== 'none' ? data.building_id : null;
@@ -169,77 +155,75 @@ export default function PropertyForm() {
         return buildingFromForm || buildingFromURL || null;
       })();
       
-      // Validation critique
+      // Validation
       if (!cleanProjectId) {
-        toast.error("Erreur: project_id est requis");
+        toast.error("Project ID est requis");
         return;
       }
       
-      // Vérifier que ce ne sont pas des chaînes vides
-      if (cleanProjectId === '') {
-        toast.error("Erreur: project_id ne peut pas être une chaîne vide");
-        return;
-      }
-      
-      if (cleanBuildingId === '') {
-        toast.error("Erreur: building_id ne peut pas être une chaîne vide");
-        return;
-      }
-      
-      const params = {
-        p_project_id: cleanProjectId,
-        p_building_id: cleanBuildingId,
-        p_property_type: data.property_type || 'apartment',
-        p_unit_number: data.unit_number || 'UNIT-' + Date.now(),
-        p_property_status: data.property_status || 'available',
-        p_price_excluding_vat: data.price_excluding_vat || 0,
-        p_bedrooms_count: data.bedrooms_count || 1,
-        p_bathrooms_count: data.bathrooms_count || 1
-      };
-      
-      console.log('Cleaned params to send:', params);
-      
-      // ⚠️ NOUVEAU: Utiliser la fonction de test propre
-      const { data: result, error } = await supabase.rpc('insert_property_test', {
-        p_project_id: cleanProjectId,
-        p_building_id: cleanBuildingId,
-        p_property_type: data.property_type || 'apartment',
-        p_unit_number: data.unit_number || 'UNIT-' + Date.now()
-      });
-      
-      if (error) {
-        console.error('RPC Error:', error);
-        // Si la fonction n'existe pas
-        if (error.message.includes('function') || error.message.includes('does not exist')) {
-          toast.error('La fonction insert_property_safe n\'existe pas dans Supabase. Créez-la d\'abord !');
+      if (isEdit) {
+        // Mode modification - utiliser UPDATE directement
+        const { error } = await supabase
+          .from('properties_test')
+          .update({
+            project_id: cleanProjectId,
+            building_id: cleanBuildingId,
+            unit_number: data.unit_number,
+            property_type: data.property_type,
+            status: data.property_status,
+            bedrooms: data.bedrooms_count,
+            bathrooms: data.bathrooms_count,
+            surface_area: data.internal_area,
+            price: data.price_excluding_vat,
+            floor: data.floor_number
+          })
+          .eq('id', id);
+        
+        if (error) {
+          console.error('Update error:', error);
+          toast.error("Erreur lors de la mise à jour: " + error.message);
           return;
         }
-        toast.error("Erreur: " + error.message);
-        return;
-      }
-      
-      console.log('✅ Property created via RPC! Result:', result);
-      
-      // Récupérer la propriété complète si nécessaire
-      if (result) {
-        const propertyId = result; // result est maintenant directement l'UUID
-        const { data: fullProperty } = await supabase
+        
+        toast.success("Propriété mise à jour avec succès!");
+      } else {
+        // Mode création - utiliser INSERT directement
+        const { data: result, error } = await supabase
           .from('properties_test')
-          .select('*')
-          .eq('id', propertyId)
+          .insert({
+            project_id: cleanProjectId,
+            building_id: cleanBuildingId,
+            unit_number: data.unit_number || 'UNIT-' + Date.now(),
+            property_type: data.property_type || 'apartment',
+            status: data.property_status || 'available',
+            bedrooms: data.bedrooms_count,
+            bathrooms: data.bathrooms_count,
+            surface_area: data.internal_area,
+            price: data.price_excluding_vat,
+            floor: data.floor_number
+          })
+          .select()
           .single();
         
-        toast.success("Propriété créée avec succès!");
-        queryClient.invalidateQueries({ queryKey: ['properties'] });
-        
-        // Navigate or close based on context
-        if (typeof window !== 'undefined') {
-          window.history.back();
+        if (error) {
+          console.error('Insert error:', error);
+          toast.error("Erreur lors de la création: " + error.message);
+          return;
         }
+        
+        console.log('✅ Property created:', result);
+        toast.success("Propriété créée avec succès!");
       }
       
+      // Invalider le cache et rediriger proprement
+      queryClient.invalidateQueries({ queryKey: ['properties'] });
+      queryClient.invalidateQueries({ queryKey: ['property', id] });
+      
+      // Redirection correcte
+      navigate('/admin/units');
+      
     } catch (error) {
-      console.error('Final error:', error);
+      console.error('Save error:', error);
       toast.error("Erreur: " + (error as any).message);
     }
   };
