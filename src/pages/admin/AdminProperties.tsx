@@ -20,6 +20,23 @@ import { PropertyViewSelector, PropertyViewType } from '@/components/admin/prope
 import { AppShell } from '@/components/dainabase-ui/AppShell';
 import { AdminSidebarExecutive } from '@/components/admin/AdminSidebarExecutive';
 
+const AdminHeader = () => (
+  <div className="h-32 px-6 flex items-center justify-between bg-white border-b border-slate-200">
+    <div className="flex items-center gap-4">
+      <a href="/" className="text-2xl font-bold text-slate-900 hover:text-slate-700 transition-colors uppercase">
+        ENKI-REALTY
+      </a>
+      <span className="text-slate-400">|</span>
+      <span className="text-lg text-slate-500">Admin Dashboard</span>
+    </div>
+    <div className="flex items-center gap-4">
+      <a href="/" className="text-base text-slate-600 hover:text-slate-900 transition-colors">
+        Retour au site
+      </a>
+    </div>
+  </div>
+);
+
 interface Property {
   id: string;
   unit_code: string;
@@ -431,63 +448,75 @@ const AdminProperties = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex justify-center items-center">
-        <div className="text-center space-y-4">
-          <LoadingSpinner />
-          <p className="text-slate-600">Chargement des propriétés...</p>
+      <AppShell
+        variant="executive"
+        header={<AdminHeader />}
+        sidebar={<AdminSidebarExecutive />}
+      >
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex justify-center items-center">
+          <div className="text-center space-y-4">
+            <LoadingSpinner />
+            <p className="text-slate-600">Chargement des propriétés...</p>
+          </div>
         </div>
-      </div>
+      </AppShell>
     );
   }
 
   return (
-    <div className="h-screen flex flex-col">
-      {/* Header Section - STICKY */}
-      <div className="sticky top-0 z-10 bg-white border-b border-slate-200 shadow-sm">
-        <div className="px-8 py-6">
-          <div className="flex items-start justify-between">
-            <div className="space-y-3">
-              <div>
-                <h1 className="text-3xl font-bold text-slate-900">Propriétés</h1>
-                <p className="text-slate-600">Gérez votre inventaire de propriétés immobilières</p>
+    <AppShell
+      variant="executive"
+      header={<AdminHeader />}
+      sidebar={<AdminSidebarExecutive />}
+    >
+      {/* Page Content */}
+      <div className="h-screen flex flex-col">
+        {/* Header Section - STICKY */}
+        <div className="sticky top-0 z-10 bg-white border-b border-slate-200 shadow-sm">
+          <div className="px-8 py-6">
+            <div className="flex items-start justify-between">
+              <div className="space-y-3">
+                <div>
+                  <h1 className="text-3xl font-bold text-slate-900">Propriétés</h1>
+                  <p className="text-slate-600">Gérez votre inventaire de propriétés immobilières</p>
+                </div>
+                <Button 
+                  variant="outline"
+                  onClick={() => navigate('/admin/ai-import-unified')} 
+                  className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200 gap-2"
+                  size="sm"
+                >
+                  <Brain className="w-4 h-4" />
+                  Import IA
+                </Button>
               </div>
-              <Button 
-                variant="outline"
-                onClick={() => navigate('/admin/ai-import-unified')} 
-                className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200 gap-2"
-                size="sm"
-              >
-                <Brain className="w-4 h-4" />
-                Import IA
-              </Button>
-            </div>
-            <div className="flex items-center gap-3">
-              <PropertyViewSelector
-                currentView={currentView}
-                onViewChange={changeView}
-              />
-              
-              <Button
-                variant="outline"
-                onClick={() => setShowFilters(!showFilters)}
-                className="gap-2 border-slate-200 hover:bg-slate-50"
-              >
-                <Filter className="w-4 h-4" />
-                Filtres
-              </Button>
-              
-              <Button 
-                onClick={() => navigate('/admin/properties/new')} 
-                className="bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 gap-2"
-                size="lg"
-              >
-                <Plus className="w-5 h-5" />
-                Nouvelle Propriété
-              </Button>
+              <div className="flex items-center gap-3">
+                <PropertyViewSelector
+                  currentView={currentView}
+                  onViewChange={changeView}
+                />
+                
+                <Button
+                  variant="outline"
+                  onClick={() => setShowFilters(!showFilters)}
+                  className="gap-2 border-slate-200 hover:bg-slate-50"
+                >
+                  <Filter className="w-4 h-4" />
+                  Filtres
+                </Button>
+                
+                <Button 
+                  onClick={() => navigate('/admin/properties/new')} 
+                  className="bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 gap-2"
+                  size="lg"
+                >
+                  <Plus className="w-5 h-5" />
+                  Nouvelle Propriété
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
       {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto bg-gradient-to-br from-slate-50 to-slate-100 px-8 py-6 space-y-6">
@@ -805,7 +834,8 @@ const AdminProperties = () => {
           )}
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </AppShell>
   );
 };
 
