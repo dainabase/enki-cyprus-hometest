@@ -10,13 +10,15 @@ import { PropertyFormData } from '@/schemas/property.schema';
 
 interface IdentificationStepProps {
   form: UseFormReturn<PropertyFormData>;
+  projects?: any[];
+  buildings?: any[];
 }
 
-export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) => {
+export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form, projects: propsProjects, buildings: propsBuildings }) => {
   const selectedProjectId = form.watch('project_id');
 
-  // Fetch projects
-  const { data: projects = [] } = useQuery({
+  // Fetch projects if not provided via props
+  const { data: fetchedProjects = [] } = useQuery({
     queryKey: ['projects-for-property'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -43,6 +45,10 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) 
     },
     enabled: !!selectedProjectId
   });
+
+  // Use provided props or fetched data
+  const projects = propsProjects || fetchedProjects;
+  const buildings = propsBuildings || fetchedBuildings;
 
   return (
     <div className="space-y-8">

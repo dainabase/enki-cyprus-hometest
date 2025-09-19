@@ -11,12 +11,14 @@ import { DocumentationStep } from './steps/DocumentationStep';
 interface PropertyFormStepsProps {
   form: UseFormReturn<PropertyFormData>;
   currentStep: string;
+  projects?: any[];
+  buildings?: any[];
 }
 
-export const PropertyFormSteps: React.FC<PropertyFormStepsProps> = ({ form, currentStep }) => {
+export const PropertyFormSteps: React.FC<PropertyFormStepsProps> = ({ form, currentStep, projects, buildings }) => {
   switch (currentStep) {
     case 'identification':
-      return <IdentificationStep form={form} />;
+      return <IdentificationStep form={form} projects={projects} buildings={buildings} />;
     case 'configuration':
       return <ConfigurationStep form={form} />;
     case 'equipment':

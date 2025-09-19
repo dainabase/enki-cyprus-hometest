@@ -99,7 +99,21 @@ export async function fetchProperties(filters: PropertyFilters = {}) {
   return data;
 }
 
-// Create new property
+// Fetch single property with full details
+export const fetchProperty = async (id: string) => {
+  const { data, error } = await supabase
+    .from('properties_final')
+    .select(`
+      *,
+      project:projects_clean(id, title, city),
+      building:buildings_enhanced(id, building_code, building_type)
+    `)
+    .eq('id', id)
+    .single();
+  
+  if (error) throw error;
+  return data;
+};
 export async function createProperty(data: PropertyFormData) {
   const { data: property, error } = await supabase
     .from('properties_final')

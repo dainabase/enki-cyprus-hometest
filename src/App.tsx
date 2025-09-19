@@ -78,6 +78,9 @@ const AppContent = () => {
               <Route path="/admin/property-form" element={<PrivateRoute adminOnly><PropertyForm /></PrivateRoute>} />
               <Route path="/admin/property-form/:id" element={<PrivateRoute adminOnly><PropertyForm /></PrivateRoute>} />
               <Route path="/admin/properties" element={<PrivateRoute adminOnly><AdminProperties /></PrivateRoute>} />
+              <Route path="/admin/properties/new" element={<PrivateRoute adminOnly><AdminPropertyForm /></PrivateRoute>} />
+              <Route path="/admin/properties/:id/edit" element={<PrivateRoute adminOnly><AdminPropertyForm /></PrivateRoute>} />
+              <Route path="/admin/properties/:id" element={<PrivateRoute adminOnly><AdminPropertyForm /></PrivateRoute>} />
               <Route path="/admin/*" element={<PrivateRoute adminOnly><AdminDashboard /></PrivateRoute>} />
               <Route path="/admin/projects/new" element={<PrivateRoute adminOnly><AdminProjectForm /></PrivateRoute>} />
               <Route path="/admin/projects/ai-import" element={<PrivateRoute adminOnly><AdminAIImport /></PrivateRoute>} />
