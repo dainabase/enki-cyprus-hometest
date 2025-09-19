@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Filter, Eye, Edit, Trash2, Building2, Home } from 'lucide-react';
+import { Plus, Filter, Eye, Edit, Trash2, Building2, Home, CheckSquare, Grid3X3, List, Table, AlignJustify, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useSupabaseQuery } from '@/hooks/useSupabaseQuery';
 import { Button } from '@/components/ui/button';
@@ -8,9 +8,9 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
+import { useViewPreference } from '@/hooks/useViewPreference';
 import { AppShell } from '@/components/dainabase-ui';
 import { AdminSidebarExecutive } from '@/components/admin/AdminSidebarExecutive';
-import AdminFooter from '@/components/admin/AdminFooter';
 import { 
   fetchProperties, 
   deleteProperty, 
@@ -20,10 +20,53 @@ import {
   PropertyFilters 
 } from '@/lib/supabase/properties';
 
+export type PropertyViewType = 'cards' | 'list' | 'table' | 'compact' | 'detailed';
+
+interface PropertyViewSelectorProps {
+  currentView: PropertyViewType;
+  onViewChange: (view: PropertyViewType) => void;
+}
+
+const PropertyViewSelector = ({ currentView, onViewChange }: PropertyViewSelectorProps) => {
+  const views = [
+    { id: 'cards' as PropertyViewType, icon: Grid3X3, label: 'Cartes' },
+    { id: 'list' as PropertyViewType, icon: List, label: 'Liste' },
+    { id: 'table' as PropertyViewType, icon: Table, label: 'Tableau' },
+    { id: 'compact' as PropertyViewType, icon: AlignJustify, label: 'Compact' },
+    { id: 'detailed' as PropertyViewType, icon: FileText, label: 'Détaillé' }
+  ];
+
+  return (
+    <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl shadow-sm p-1">
+      {views.map(({ id, icon: Icon, label }) => (
+        <Button
+          key={id}
+          variant="ghost"
+          size="sm"
+          onClick={() => onViewChange(id)}
+          className={`
+            h-10 px-4 rounded-lg transition-all duration-200 
+            ${currentView === id 
+              ? 'bg-slate-900 text-white shadow-md' 
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            }
+          `}
+          title={label}
+        >
+          <Icon className="h-4 w-4 mr-2" />
+          <span className="font-medium">{label}</span>
+        </Button>
+      ))}
+    </div>
+  );
+};
+
 const AdminProperties = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { currentView, changeView } = useViewPreference('properties-view', 'cards');
   const [showFilters, setShowFilters] = useState(false);
+  const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
   const [filters, setFilters] = useState<PropertyFilters>({});
 
   // Fetch properties
@@ -133,13 +176,18 @@ const AdminProperties = () => {
         <span className="text-lg text-slate-500">Propriétés</span>
       </div>
       <div className="flex items-center gap-4">
+        <PropertyViewSelector
+          currentView={currentView}
+          onViewChange={changeView}
+        />
+        
         <Button
           variant="outline"
           onClick={() => setShowFilters(!showFilters)}
           className="gap-2 border-slate-200 hover:bg-slate-50"
         >
           <Filter className="w-4 h-4" />
-          Filtres
+          Filtres & Tri
         </Button>
         
         <Button 
@@ -317,6 +365,55 @@ const AdminProperties = () => {
           </Card>
         )}
 
+        {/* Global Actions Bar */}
+        {selectedProperties.length > 0 && (
+          <Card className="border-l-4 border-l-primary">
+            <CardContent className="py-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <CheckSquare className="w-5 h-5 text-primary" />
+                    <span className="font-medium">
+                      {selectedProperties.length} propriété(s) sélectionnée(s)
+                    </span>
+                  </div>
+                  <Button variant="outline" size="sm" onClick={() => setSelectedProperties([])}>
+                    Tout désélectionner
+                  </Button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button 
+                    variant="destructive" 
+                    size="sm"
+                    onClick={() => {
+                      if (confirm(`Supprimer ${selectedProperties.length} propriété(s) sélectionnée(s) ?`)) {
+                        // Handle bulk delete
+                        Promise.all(selectedProperties.map(id => deleteProperty(id)))
+                          .then(() => {
+                            toast({ title: `${selectedProperties.length} propriété(s) supprimée(s)` });
+                            setSelectedProperties([]);
+                            refetch();
+                          })
+                          .catch((error) => {
+                            toast({
+                              variant: 'destructive',
+                              title: 'Erreur lors de la suppression',
+                              description: error.message
+                            });
+                          });
+                      }
+                    }}
+                    className="gap-2"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Supprimer la sélection
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Properties List */}
         <div className="grid gap-4">
           {properties?.map(property => (
@@ -324,6 +421,18 @@ const AdminProperties = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-start gap-4">
+                    <input
+                      type="checkbox"
+                      checked={selectedProperties.includes(property.id)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedProperties([...selectedProperties, property.id]);
+                        } else {
+                          setSelectedProperties(selectedProperties.filter(id => id !== property.id));
+                        }
+                      }}
+                      className="mt-2 rounded border-slate-300"
+                    />
                     <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
                       <Home className="w-6 h-6 text-primary" />
                     </div>
