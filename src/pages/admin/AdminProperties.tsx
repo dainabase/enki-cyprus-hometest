@@ -91,9 +91,9 @@ const AdminProperties = () => {
 
   const getStatusBadge = (status: string) => {
     const variants = {
-      available: 'success',
-      reserved: 'warning', 
-      sold: 'secondary'
+      available: 'default',
+      reserved: 'secondary', 
+      sold: 'destructive'
     } as const;
     
     const labels = {
