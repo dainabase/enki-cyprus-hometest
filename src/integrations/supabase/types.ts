@@ -1674,6 +1674,164 @@ export type Database = {
           },
         ]
       }
+      buildings_enhanced: {
+        Row: {
+          architectural_style: string | null
+          building_amenities: string[] | null
+          building_code: string
+          building_type: string | null
+          built_area_m2: number | null
+          common_area_m2: number | null
+          construction_start: string | null
+          construction_status: string | null
+          cooling_system: string | null
+          created_at: string | null
+          depth_meters: number | null
+          disability_access: boolean | null
+          emergency_exits: number | null
+          energy_rating: string | null
+          expected_completion: string | null
+          facade_length: number | null
+          foundation_type: string | null
+          ground_floor_units: number | null
+          has_bbq_area: boolean | null
+          has_elevator: boolean | null
+          has_gym: boolean | null
+          has_playground: boolean | null
+          has_pool: boolean | null
+          has_rooftop_terrace: boolean | null
+          has_sauna: boolean | null
+          has_storage_units: boolean | null
+          has_underground_parking: boolean | null
+          heating_system: string | null
+          height_meters: number | null
+          id: string
+          insulation_type: string | null
+          occupancy_permit_date: string | null
+          orientation: string | null
+          plot_area_m2: number | null
+          project_id: string | null
+          renovation_year: number | null
+          roof_type: string | null
+          smart_building_features: string[] | null
+          solar_panels: boolean | null
+          structural_frame: string | null
+          total_floors: number | null
+          total_units: number | null
+          typical_floor_units: number | null
+          units_available_count: number | null
+          units_sold_count: number | null
+          updated_at: string | null
+          year_built: number | null
+        }
+        Insert: {
+          architectural_style?: string | null
+          building_amenities?: string[] | null
+          building_code: string
+          building_type?: string | null
+          built_area_m2?: number | null
+          common_area_m2?: number | null
+          construction_start?: string | null
+          construction_status?: string | null
+          cooling_system?: string | null
+          created_at?: string | null
+          depth_meters?: number | null
+          disability_access?: boolean | null
+          emergency_exits?: number | null
+          energy_rating?: string | null
+          expected_completion?: string | null
+          facade_length?: number | null
+          foundation_type?: string | null
+          ground_floor_units?: number | null
+          has_bbq_area?: boolean | null
+          has_elevator?: boolean | null
+          has_gym?: boolean | null
+          has_playground?: boolean | null
+          has_pool?: boolean | null
+          has_rooftop_terrace?: boolean | null
+          has_sauna?: boolean | null
+          has_storage_units?: boolean | null
+          has_underground_parking?: boolean | null
+          heating_system?: string | null
+          height_meters?: number | null
+          id?: string
+          insulation_type?: string | null
+          occupancy_permit_date?: string | null
+          orientation?: string | null
+          plot_area_m2?: number | null
+          project_id?: string | null
+          renovation_year?: number | null
+          roof_type?: string | null
+          smart_building_features?: string[] | null
+          solar_panels?: boolean | null
+          structural_frame?: string | null
+          total_floors?: number | null
+          total_units?: number | null
+          typical_floor_units?: number | null
+          units_available_count?: number | null
+          units_sold_count?: number | null
+          updated_at?: string | null
+          year_built?: number | null
+        }
+        Update: {
+          architectural_style?: string | null
+          building_amenities?: string[] | null
+          building_code?: string
+          building_type?: string | null
+          built_area_m2?: number | null
+          common_area_m2?: number | null
+          construction_start?: string | null
+          construction_status?: string | null
+          cooling_system?: string | null
+          created_at?: string | null
+          depth_meters?: number | null
+          disability_access?: boolean | null
+          emergency_exits?: number | null
+          energy_rating?: string | null
+          expected_completion?: string | null
+          facade_length?: number | null
+          foundation_type?: string | null
+          ground_floor_units?: number | null
+          has_bbq_area?: boolean | null
+          has_elevator?: boolean | null
+          has_gym?: boolean | null
+          has_playground?: boolean | null
+          has_pool?: boolean | null
+          has_rooftop_terrace?: boolean | null
+          has_sauna?: boolean | null
+          has_storage_units?: boolean | null
+          has_underground_parking?: boolean | null
+          heating_system?: string | null
+          height_meters?: number | null
+          id?: string
+          insulation_type?: string | null
+          occupancy_permit_date?: string | null
+          orientation?: string | null
+          plot_area_m2?: number | null
+          project_id?: string | null
+          renovation_year?: number | null
+          roof_type?: string | null
+          smart_building_features?: string[] | null
+          solar_panels?: boolean | null
+          structural_frame?: string | null
+          total_floors?: number | null
+          total_units?: number | null
+          typical_floor_units?: number | null
+          units_available_count?: number | null
+          units_sold_count?: number | null
+          updated_at?: string | null
+          year_built?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "buildings_enhanced_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects_clean"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       checklists: {
         Row: {
           created_at: string
