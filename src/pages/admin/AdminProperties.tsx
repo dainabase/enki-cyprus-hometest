@@ -431,23 +431,17 @@ const AdminProperties = () => {
 
   if (isLoading) {
     return (
-      <AppShell
-        sidebar={<AdminSidebarExecutive />}
-      >
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex justify-center items-center">
-          <div className="text-center space-y-4">
-            <LoadingSpinner />
-            <p className="text-slate-600">Chargement des propriétés...</p>
-          </div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex justify-center items-center">
+        <div className="text-center space-y-4">
+          <LoadingSpinner />
+          <p className="text-slate-600">Chargement des propriétés...</p>
         </div>
-      </AppShell>
+      </div>
     );
   }
 
   return (
-    <AppShell
-      sidebar={<AdminSidebarExecutive />}
-    >
+    <div className="h-screen flex flex-col">
       {/* Header Section - STICKY */}
       <div className="sticky top-0 z-10 bg-white border-b border-slate-200 shadow-sm">
         <div className="px-8 py-6">
@@ -811,7 +805,7 @@ const AdminProperties = () => {
           )}
         </DialogContent>
       </Dialog>
-    </AppShell>
+    </div>
   );
 };
 
