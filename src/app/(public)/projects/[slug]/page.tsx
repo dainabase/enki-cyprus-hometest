@@ -23,7 +23,7 @@ export default function ProjectPage() {
       
       try {
         const { data, error } = await supabase
-          .from('projects')
+          .from('projects_clean')
           .select(`
             *,
             developer:developers(*),

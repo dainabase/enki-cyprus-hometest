@@ -65,7 +65,7 @@ export const ProjectStatusActions: React.FC<ProjectStatusActionsProps> = ({
   const updateStatusMutation = useMutation({
     mutationFn: async (newStatus: string) => {
       const { error } = await supabase
-        .from('projects')
+        .from('projects_clean')
         .update({ status: newStatus, updated_at: new Date().toISOString() })
         .eq('id', project.id);
       

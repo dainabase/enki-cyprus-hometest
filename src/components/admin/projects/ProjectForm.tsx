@@ -149,7 +149,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
       if (project) {
         // Update existing project
         const { error } = await supabase
-          .from('projects')
+          .from('projects_clean')
           .update(projectData)
           .eq('id', project.id);
         
@@ -161,7 +161,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
       } else {
         // Create new project
         const { data, error } = await supabase
-          .from('projects')
+          .from('projects_clean')
           .insert([projectData])
           .select()
           .single();

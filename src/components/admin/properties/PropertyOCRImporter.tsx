@@ -95,7 +95,7 @@ export const PropertyOCRImporter: React.FC<PropertyOCRImporterProps> = ({
         const batch = propertiesToInsert.slice(i, i + batchSize);
         
         const { error } = await supabase
-          .from('properties')
+          .from('properties_final')
           .insert(batch);
         
         if (error) throw error;

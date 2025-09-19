@@ -64,7 +64,7 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
       }
 
       const { error } = await supabase
-        .from('projects')
+        .from('projects_clean')
         .delete()
         .eq('id', projectId);
 

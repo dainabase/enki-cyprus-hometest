@@ -44,7 +44,7 @@ export default function PropertyWizard({ open, onClose, onSuccess }: PropertyWiz
     queryFn: async () => {
       if (!selectedDeveloper) return [];
       const { data, error } = await supabase
-        .from('projects')
+        .from('projects_clean')
         .select('id, title')
         .eq('developer_id', selectedDeveloper)
         .order('title');
@@ -60,7 +60,7 @@ export default function PropertyWizard({ open, onClose, onSuccess }: PropertyWiz
     queryFn: async () => {
       if (!selectedProject) return [];
       const { data, error } = await supabase
-        .from('buildings')
+        .from('buildings_enhanced')
         .select('id, name')
         .eq('project_id', selectedProject)
         .order('name');

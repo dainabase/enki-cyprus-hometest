@@ -37,48 +37,29 @@ const AdminHeader = () => (
   </div>
 );
 
-interface Property {
+type Property = {
   id: string;
   unit_code: string;
   property_type: string;
-  bedrooms_count?: number;
-  bathrooms_count?: number;
+  bedrooms?: number;
+  bathrooms?: number;
   internal_area_m2?: number;
   price: number;
-  price_per_m2?: number;
   golden_visa_eligible: boolean;
   status: string;
-  floor_number?: number;
-  balcony_area?: number;
-  terrace_area?: number;
-  parking_spaces?: number;
-  has_sea_view?: boolean;
-  has_mountain_view?: boolean;
-  has_city_view?: boolean;
-  is_furnished?: boolean;
-  project_id: string;
-  building_id?: string;
-  created_at: string;
-  updated_at: string;
-  project?: any;
-  building?: any;
-}
+  projects_clean?: { id: string; title: string; city: string } | null;
+  buildings_enhanced?: { id: string; building_code: string } | null;
+};
 
-interface PropertyFilters {
-  search?: string;
-  city?: string;
-  projectId?: string;
-  buildingId?: string;
-  developerId?: string;
-  propertyType?: string;
-  status?: string;
-  minPrice?: number;
-  maxPrice?: number;
-  bedrooms?: string;
-  goldenVisa?: string;
-  hasView?: boolean;
-  furnished?: boolean;
-}
+type PropertyFilters = {
+  city: string;
+  minPrice: number;
+  maxPrice: number;
+  goldenVisa: string;
+  status: string;
+  bedrooms: string;
+  propertyType: string;
+};
 
 
 const PropertyCard = ({ property, isSelected, onSelect, onEdit, onView }: { 
@@ -255,9 +236,7 @@ const AdminProperties = () => {
   });
   
   // State management
-  const [properties, setProperties] = useState<any[]>([]);
-  const [projects, setProjects] = useState<any[]>([]);
-  const [buildings, setBuildings] = useState<any[]>([]);
+  const [properties, setProperties] = useState<Property[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Fetch properties with relations
@@ -291,56 +270,11 @@ const AdminProperties = () => {
     }
   };
 
-  // Fetch projects for filter dropdown
-  const fetchProjects = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('projects_clean')
-        .select('id, title')
-        .order('title');
-      if (error) throw error;
-      setProjects(data || []);
-    } catch (error) {
-      console.error('Error fetching projects:', error);
-    }
-  };
-
-  // Fetch buildings for filter dropdown
-  const fetchBuildings = async () => {
-    try {
-      let query = supabase
-        .from('buildings_enhanced')
-        .select('id, building_code, project_id')
-        .order('building_code');
-      
-      if (filters.projectId) {
-        query = query.eq('project_id', filters.projectId);
-      }
-      
-      const { data, error } = await query;
-      if (error) throw error;
-      setBuildings(data || []);
-    } catch (error) {
-      console.error('Error fetching buildings:', error);
-    }
-  };
 
   // Effects
   useEffect(() => {
     fetchProperties();
-  }, [filters]);
-
-  useEffect(() => {
-    fetchProjects();
   }, []);
-
-  useEffect(() => {
-    if (filters.projectId) {
-      fetchBuildings();
-    } else {
-      setBuildings([]);
-    }
-  }, [filters.projectId]);
 
   // Delete mutation
   const deleteMutation = useMutation({

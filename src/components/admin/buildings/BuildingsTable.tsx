@@ -38,7 +38,7 @@ const BuildingsTable: React.FC<BuildingsTableProps> = React.memo(({ buildings, o
       }
 
       const { error } = await supabase
-        .from('buildings')
+        .from('buildings_enhanced')
         .delete()
         .eq('id', buildingId);
 
