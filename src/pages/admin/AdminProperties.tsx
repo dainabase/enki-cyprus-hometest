@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Plus, Filter, CheckSquare, Brain, Trash2, Eye, Edit, Grid3X3, List, Table, AlignJustify, FileText, Home, CheckCircle, XCircle, Clock, Star, Euro } from 'lucide-react';
+import { Plus, Filter, CheckSquare, Brain, Trash2, Eye, Edit, Grid3X3, List, Table, AlignJustify, FileText, Home, CheckCircle, XCircle, Clock, Star, Euro, Download } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
