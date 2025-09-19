@@ -1,6 +1,6 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { PropertyFormData } from '@/schemas/property.schema';
+import { PropertyDBData } from '@/schemas/property-db.schema';
 import { IdentificationStep } from './steps/IdentificationStep';
 import { ConfigurationStep } from './steps/ConfigurationStep';
 import { EquipmentStep } from './steps/EquipmentStep';
@@ -9,7 +9,7 @@ import { FinancialStep } from './steps/FinancialStep';
 import { DocumentationStep } from './steps/DocumentationStep';
 
 interface PropertyFormStepsProps {
-  form: UseFormReturn<PropertyFormData>;
+  form: UseFormReturn<PropertyDBData>;
   currentStep: string;
   projects?: any[];
   buildings?: any[];

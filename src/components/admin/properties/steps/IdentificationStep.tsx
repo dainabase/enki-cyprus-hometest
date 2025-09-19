@@ -6,10 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
-import { PropertyFormData } from '@/schemas/property.schema';
+import { PropertyDBData } from '@/schemas/property-db.schema';
 
 interface IdentificationStepProps {
-  form: UseFormReturn<PropertyFormData>;
+  form: UseFormReturn<PropertyDBData>;
   projects?: any[];
   buildings?: any[];
 }

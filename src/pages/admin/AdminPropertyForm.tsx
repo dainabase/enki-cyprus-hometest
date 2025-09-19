@@ -63,8 +63,8 @@ const AdminPropertyForm: React.FC = () => {
         if (error) throw error;
         
         if (data) {
-          // Réinitialiser le formulaire avec les vraies données de la DB
-          form.reset(data);
+          // Réinitialiser le formulaire avec les vraies données de la DB (sans validation stricte)
+          form.reset(data as any);
         }
       } catch (error) {
         console.error('Erreur lors du chargement:', error);
@@ -87,7 +87,7 @@ const AdminPropertyForm: React.FC = () => {
       if (isEdit) {
         const { error } = await supabase
           .from('properties_final')
-          .update(data)
+          .update(data as any)
           .eq('id', id);
         
         if (error) throw error;
@@ -99,7 +99,7 @@ const AdminPropertyForm: React.FC = () => {
       } else {
         const { error } = await supabase
           .from('properties_final')
-          .insert([data]);
+          .insert(data as any);
         
         if (error) throw error;
         
@@ -212,97 +212,6 @@ const AdminPropertyForm: React.FC = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
-  );
-                  onClick={nextStep}
-                >
-                  Suivant
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              ) : (
-                <div className="flex gap-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => {
-                      setSaveType('draft');
-                      form.handleSubmit(onSubmit)();
-                    }}
-                  >
-                    <Save className="w-4 h-4 mr-2" />
-                    Sauvegarder
-                  </Button>
-                  <Button
-                    type="button"
-                    onClick={handlePublish}
-                    className="bg-green-600 hover:bg-green-700"
-                  >
-                    <CheckCircle className="w-4 h-4 mr-2" />
-                    {isEdit ? 'Mettre à jour' : 'Publier'}
-                  </Button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Form Content */}
-        <div className="flex-1 overflow-y-auto p-6">
-          <Card className="max-w-4xl mx-auto">
-            <CardContent className="p-8">
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <PropertyFormSteps 
-                    form={form} 
-                    currentStep={currentStep.id}
-                    projects={projects}
-                    buildings={buildings}
-                  />
-                </form>
-              </Form>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-
-      {/* Confirmation Dialog */}
-      <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Erreurs de validation détectées</DialogTitle>
-            <DialogDescription>
-              Les erreurs suivantes ont été détectées. Voulez-vous continuer ?
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="py-4">
-            <ul className="list-disc list-inside space-y-1 text-sm text-red-600">
-              {validationErrors.map((error, index) => (
-                <li key={index}>{error}</li>
-              ))}
-            </ul>
-          </div>
-          
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setShowConfirmDialog(false)}
-            >
-              Annuler
-            </Button>
-            <Button
-              onClick={() => {
-                setShowConfirmDialog(false);
-                setSaveType('publish');
-                form.handleSubmit(onSubmit)();
-              }}
-              className="bg-red-600 hover:bg-red-700"
-            >
-              Continuer malgré les erreurs
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };

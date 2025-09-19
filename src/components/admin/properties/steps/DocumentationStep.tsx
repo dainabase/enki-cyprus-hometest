@@ -5,10 +5,10 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { PropertyFormData } from '@/schemas/property.schema';
+import { PropertyDBData } from '@/schemas/property-db.schema';
 
 interface DocumentationStepProps {
-  form: UseFormReturn<PropertyFormData>;
+  form: UseFormReturn<PropertyDBData>;
 }
 
 export const DocumentationStep: React.FC<DocumentationStepProps> = ({ form }) => {

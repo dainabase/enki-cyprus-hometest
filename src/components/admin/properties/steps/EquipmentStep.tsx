@@ -5,10 +5,10 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { PropertyFormData } from '@/schemas/property.schema';
+import { PropertyDBData } from '@/schemas/property-db.schema';
 
 interface EquipmentStepProps {
-  form: UseFormReturn<PropertyFormData>;
+  form: UseFormReturn<PropertyDBData>;
 }
 
 const kitchenAppliancesList = [

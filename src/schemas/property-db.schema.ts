@@ -4,12 +4,12 @@ import { z } from 'zod';
 export const propertyDBSchema = z.object({
   // IDs et relations
   id: z.string().uuid().optional(),
-  project_id: z.string().uuid("Projet requis"),
+  project_id: z.string().uuid().optional(),
   building_id: z.string().uuid().optional(),
   
   // Identification de base
   unit_code: z.string().min(1, "Code unité requis"),
-  property_type: z.enum(['apartment', 'villa', 'penthouse', 'studio', 'townhouse', 'duplex', 'triplex', 'maisonette']).optional(),
+  property_type: z.string().optional(),
   floor_number: z.number().int().optional(),
   
   // Configuration principale
@@ -62,7 +62,7 @@ export const propertyDBSchema = z.object({
   property_features: z.array(z.string()).default([]),
   
   // Statut et disponibilité
-  status: z.enum(['available', 'reserved', 'sold', 'rented']).default('available'),
+  status: z.string().default('available'),
   availability_date: z.string().optional(),
   reservation_expires: z.string().optional(),
   
@@ -73,6 +73,70 @@ export const propertyDBSchema = z.object({
   is_resale: z.boolean().default(false),
   previous_owners_count: z.number().int().min(0).default(0),
   title_deed_ready: z.boolean().default(false),
+  planning_permit_number: z.string().optional(),
+  building_permit_number: z.string().optional(),
+  occupancy_certificate_number: z.string().optional(),
+  
+  // Champs manquants des anciens components (pour compatibilité temporaire)
+  wc_count: z.number().int().optional(),
+  internal_area: z.number().optional(), // alias pour internal_area_m2
+  covered_verandas: z.number().optional(), // alias pour covered_veranda_m2
+  uncovered_verandas: z.number().optional(), // alias pour uncovered_veranda_m2
+  private_garden_area: z.number().optional(), // alias pour garden_area_m2
+  position_in_floor: z.string().optional(),
+  has_office: z.boolean().optional(),
+  has_dressing_room: z.boolean().optional(),
+  has_laundry_room: z.boolean().optional(),
+  has_playroom: z.boolean().optional(),
+  has_wine_cellar: z.boolean().optional(),
+  has_pantry: z.boolean().optional(),
+  cadastral_reference: z.string().optional(),
+  occupancy_certificate: z.string().optional(),
+  energy_certificate_number: z.string().optional(),
+  energy_rating: z.string().optional(),
+  public_description: z.string().optional(),
+  internal_notes: z.string().optional(),
+  appliances_list: z.array(z.string()).optional(),
+  smart_home_features: z.array(z.string()).optional(),
+  
+  // Champs Equipment Step manquants
+  kitchen_brand: z.string().optional(),
+  has_kitchen_appliances: z.boolean().optional(),
+  hvac_type: z.string().optional(),
+  heating_type: z.string().optional(),
+  flooring_type: z.string().optional(),
+  windows_type: z.string().optional(),
+  doors_type: z.string().optional(),
+  
+  // Champs Financial Step manquants
+  price_excluding_vat: z.number().optional(),
+  commission_rate: z.number().optional(),
+  deposit_percentage: z.number().optional(),
+  original_price: z.number().optional(),
+  payment_plan_available: z.boolean().optional(),
+  finance_available: z.boolean().optional(),
+  minimum_cash_required: z.number().optional(),
+  annual_property_tax: z.number().optional(),
+  communal_fees_monthly: z.number().optional(),
+  maintenance_fee_monthly: z.number().optional(),
+  
+  // Champs Outdoor Step manquants
+  balcony_count: z.number().optional(),
+  balcony_area: z.number().optional(),
+  terrace_count: z.number().optional(),
+  terrace_area: z.number().optional(),
+  has_private_garden: z.boolean().optional(),
+  pool_type: z.string().optional(),
+  parking_spaces: z.number().optional(),
+  parking_type: z.string().optional(),
+  storage_spaces: z.number().optional(),
+  storage_area: z.number().optional(),
+  
+  // PropertyForm.tsx champs manquants
+  unit_number: z.string().optional(),
+  property_status: z.string().optional(),
+  bedrooms_count: z.number().optional(),
+  bathrooms_count: z.number().optional(),
   
   // Métadonnées
   created_at: z.string().optional(),

@@ -24,7 +24,7 @@ const ProjectDetail = lazy(() => import("./pages/ProjectDetail"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Blog = lazy(() => import("./pages/Blog"));
-const PropertyForm = lazy(() => import("./pages/admin/PropertyForm"));
+// const PropertyForm = lazy(() => import("./pages/admin/PropertyForm")); // SUPPRIMÉ
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
@@ -77,8 +77,7 @@ const AppContent = () => {
           <Suspense fallback={<LoadingSpinner />}>
             <Routes>
               {/* Admin routes - without Layout */}
-              <Route path="/admin/property-form" element={<PrivateRoute adminOnly><PropertyForm /></PrivateRoute>} />
-              <Route path="/admin/property-form/:id" element={<PrivateRoute adminOnly><PropertyForm /></PrivateRoute>} />
+              {/* Routes anciennes PropertyForm supprimées */}
               <Route path="/admin/properties" element={<PrivateRoute adminOnly><AdminProperties /></PrivateRoute>} />
               <Route path="/admin/properties/new" element={<PrivateRoute adminOnly><AdminPropertyForm /></PrivateRoute>} />
               <Route path="/admin/properties/:id/edit" element={<PrivateRoute adminOnly><AdminPropertyForm /></PrivateRoute>} />
