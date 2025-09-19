@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Building2, 
@@ -113,9 +113,9 @@ export const AdminSidebarExecutive: React.FC = () => {
     const active = isActive(item.url);
     
     return (
-      <a
+      <Link
         key={item.url}
-        href={item.url}
+        to={item.url}
         className={`
           flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 relative
           ${active 
@@ -127,7 +127,7 @@ export const AdminSidebarExecutive: React.FC = () => {
       >
         <Icon className="w-5 h-5 flex-shrink-0" />
         <span className="font-medium">{item.title}</span>
-      </a>
+      </Link>
     );
   };
 
