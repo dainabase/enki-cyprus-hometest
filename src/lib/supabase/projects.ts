@@ -39,11 +39,10 @@ export interface ProjectFormData {
 // Fetch projects with optional filters
 export const fetchProjects = async (filters: ProjectFilters = {}) => {
   let query = supabase
-    .from('projects')
+    .from('projects_clean')
     .select(`
       *,
-      developer:developers(id, name, contact_info),
-      buildings!fk_buildings_project_id(count)
+      developer:developers(id, name, contact_info)
     `)
     .order('developer_id', { ascending: true })
     .order('title', { ascending: true });
@@ -53,7 +52,7 @@ export const fetchProjects = async (filters: ProjectFilters = {}) => {
     query = query.eq('developer_id', filters.developerId);
   }
   if (filters.zone) {
-    query = query.eq('cyprus_zone', filters.zone);
+    query = query.eq('zone', filters.zone);
   }
   if (filters.status) {
     query = query.eq('status', filters.status);
@@ -70,19 +69,10 @@ export const fetchProjects = async (filters: ProjectFilters = {}) => {
 // Fetch single project with full details
 export const fetchProject = async (id: string) => {
   const { data, error } = await supabase
-    .from('projects')
+    .from('projects_clean')
     .select(`
       *,
-      developer:developers(id, name, contact_info, logo, website),
-      buildings!fk_buildings_project_id(
-        id,
-        name,
-        total_floors,
-        total_units,
-        building_type,
-        construction_status,
-        energy_rating
-      )
+      developer:developers(id, name, contact_info, logo, website)
     `)
     .eq('id', id)
     .single();
@@ -94,11 +84,11 @@ export const fetchProject = async (id: string) => {
 // Create new project
 export const createProject = async (projectData: ProjectFormData) => {
   const { data, error } = await supabase
-    .from('projects')
+    .from('projects_clean')
     .insert([{
       ...projectData,
-      features: projectData.features || [],
-      photos: projectData.photos || []
+      photos: projectData.photos || [],
+      plans: projectData.plans || []
     }])
     .select()
     .single();
@@ -109,15 +99,8 @@ export const createProject = async (projectData: ProjectFormData) => {
 
 // Update existing project
 export const updateProject = async (id: string, projectData: Partial<ProjectFormData>) => {
-  console.log('🔄 UPDATE PROJECT - Données envoyées à Supabase:', {
-    id,
-    status_project: projectData.status_project,
-    statut_commercial: projectData.statut_commercial,
-    title: projectData.title
-  });
-  
   const { data, error } = await supabase
-    .from('projects')
+    .from('projects_clean')
     .update(projectData)
     .eq('id', id)
     .select()
@@ -128,13 +111,6 @@ export const updateProject = async (id: string, projectData: Partial<ProjectForm
     throw error;
   }
   
-  console.log('✅ UPDATE PROJECT RÉUSSI - Données retournées:', {
-    id: data.id,
-    status_project: data.status_project,
-    statut_commercial: data.statut_commercial,
-    title: data.title
-  });
-  
   return data;
 };
 
@@ -142,20 +118,20 @@ export const updateProject = async (id: string, projectData: Partial<ProjectForm
 export const deleteProject = async (id: string) => {
   // Check for dependent buildings first
   const { data: buildings, error: checkError } = await supabase
-    .from('buildings')
-    .select('id, name')
+    .from('buildings_enhanced')
+    .select('id, building_code')
     .eq('project_id', id);
 
   if (checkError) throw checkError;
 
   if (buildings && buildings.length > 0) {
-    const buildingNames = buildings.map(b => b.name).join(', ');
+    const buildingNames = buildings.map(b => b.building_code).join(', ');
     throw new Error(`Impossible de supprimer : ${buildings.length} bâtiment(s) associé(s) (${buildingNames})`);
   }
 
   // Proceed with deletion if no dependencies
   const { error } = await supabase
-    .from('projects')
+    .from('projects_clean')
     .delete()
     .eq('id', id);
   

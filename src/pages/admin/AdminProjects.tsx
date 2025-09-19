@@ -62,12 +62,12 @@ const AdminProjects = () => {
       const { from, to } = getPaginationRange(pagination);
       
       let query = supabase
-        .from('projects')
+        .from('projects_clean')
         .select(`
-          id, title, status, cyprus_zone, golden_visa_eligible, price, price_from,
-          completion_date_new, launch_date, units_available, units_sold, total_units, developer_id,
-          city, neighborhood, description, bedrooms_range, built_area_m2, 
-          total_units_new, parking_spaces, energy_rating, created_at, status_project, statut_commercial,
+          id, title, status, zone, golden_visa_eligible, price_range_min, price_range_max,
+          completion_date, launch_date, minimum_investment,
+          city, region, description, 
+          created_at, developer_id,
           developer:developers(id, name)
         `, { count: 'exact' })
         .range(from, to);
@@ -95,7 +95,7 @@ const AdminProjects = () => {
         query = query.eq('developer_id', filters.developerId);
       }
       if (filters.zone && filters.zone !== 'all') {
-        query = query.eq('cyprus_zone', filters.zone);
+        query = query.eq('zone', filters.zone);
       }
       if (filters.status && filters.status !== 'all') {
         query = query.eq('status', filters.status);
@@ -158,16 +158,16 @@ const AdminProjects = () => {
           bValue = b.city || '';
           break;
         case 'neighborhood':
-          aValue = a.neighborhood || '';
-          bValue = b.neighborhood || '';
+          aValue = a.region || '';
+          bValue = b.region || '';
           break;
         case 'zone':
-          aValue = a.cyprus_zone || '';
-          bValue = b.cyprus_zone || '';
+          aValue = a.zone || '';
+          bValue = b.zone || '';
           break;
         case 'price':
-          aValue = a.price || a.price_from || 0;
-          bValue = b.price || b.price_from || 0;
+          aValue = a.price_range_min || 0;
+          bValue = b.price_range_min || 0;
           break;
         default:
           aValue = a[sortField] || '';
@@ -284,7 +284,7 @@ const AdminProjects = () => {
 
     try {
       const { error } = await supabase
-        .from('projects')
+        .from('projects_clean')
         .delete()
         .in('id', selectedProjects);
 
