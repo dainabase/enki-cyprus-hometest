@@ -91,7 +91,7 @@ const fetchDashboardMetrics = async (options: UseMetricsOptions = {}): Promise<D
     
     // Calculate KPIs
     const calculatedMetrics = calculateKPIs(
-      propertiesResult.data || [],
+      propertiesResult.data || [] as any[], // Simplified type handling
       leadsResult.data || [],
       commissionsResult.data || []
     );

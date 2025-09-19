@@ -98,7 +98,7 @@ export const CSVImporter: React.FC<CSVImporterProps> = ({
         bathrooms: row.bathrooms,
         internal_area_m2: row.size_m2,
         price: row.price,
-        view_type: row.view_type ? [row.view_type] : [],
+        view_type: row.view_type || null, // Fix array vs string type
         orientation: row.orientation as 'north' | 'south' | 'east' | 'west' | 'north_east' | 'north_west' | 'south_east' | 'south_west' | undefined,
         parking_spaces: row.parking_spaces || 0,
         floor_number: row.floor || null,

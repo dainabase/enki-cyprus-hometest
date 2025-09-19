@@ -11,7 +11,7 @@ export interface BatchExportOptions {
 export class BatchPDFExporter {
   private async fetchPropertiesData(propertyIds: string[]) {
     const { data, error } = await supabase
-      .from('projects')
+      .from('projects_clean')
       .select(`
         *,
         building:buildings(*),

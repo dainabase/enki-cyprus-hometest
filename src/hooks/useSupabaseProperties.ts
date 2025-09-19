@@ -24,7 +24,7 @@ export const useSupabaseProperties = (options: UsePropertiesOptions = {}) => {
       setLoading(true);
       setError(null);
 
-      let query = supabase.from('projects').select('*');
+      let query = supabase.from('projects_clean').select('*');
 
       // Filtrage par type avec log pour debug
       console.log('🔍 Filter options:', options);
@@ -97,7 +97,7 @@ export const useSupabaseProperty = (id: string | undefined) => {
         setError(null);
 
         const { data, error: supabaseError } = await supabase
-          .from('projects')
+          .from('projects_clean')
           .select('*')
           .eq('id', id)
           .single();

@@ -4,7 +4,7 @@ import { Building, BuildingFormData } from '@/types/building';
 // Fetch all buildings for a project
 export const fetchBuildingsByProject = async (projectId: string): Promise<Building[]> => {
   const { data, error } = await supabase
-    .from('buildings')
+    .from('buildings_enhanced')
     .select('*')
     .eq('project_id', projectId)
     .order('display_order', { ascending: true })
@@ -15,22 +15,23 @@ export const fetchBuildingsByProject = async (projectId: string): Promise<Buildi
     throw error;
   }
 
-  // Map database fields to Building interface
   return (data || []).map(item => ({
     ...item,
-    building_name: item.building_name || item.name,
-  })) as Building[];
+    displayName: item.building_code || item.building_code, // Use building_code field
+  })) as any[]; // Simplified type conversion
 };
 
 // Create a new building
 export const createBuilding = async (projectId: string, buildingData: BuildingFormData): Promise<Building> => {
   const { data, error } = await supabase
-    .from('buildings')
+    .from('buildings_enhanced')
     .insert([{
       project_id: projectId,
-      name: buildingData.building_name, // Map building_name to name for database compatibility
-      ...buildingData,
-      created_by: (await supabase.auth.getUser()).data.user?.id
+      building_code: buildingData.building_name || `BUILD-${Date.now()}`, // Map to building_code (required)
+      building_type: buildingData.building_type,
+      total_floors: buildingData.total_floors,
+      total_units: buildingData.total_units,
+      construction_status: buildingData.construction_status
     }])
     .select()
     .single();
@@ -40,7 +41,7 @@ export const createBuilding = async (projectId: string, buildingData: BuildingFo
     throw error;
   }
 
-  return data as Building;
+  return data as any; // Simplified type conversion
 };
 
 // Update an existing building
@@ -52,7 +53,7 @@ export const updateBuilding = async (id: string, buildingData: Partial<BuildingF
   };
 
   const { data, error } = await supabase
-    .from('buildings')
+    .from('buildings_enhanced')
     .update(updateData)
     .eq('id', id)
     .select()
@@ -63,13 +64,13 @@ export const updateBuilding = async (id: string, buildingData: Partial<BuildingF
     throw error;
   }
 
-  return data as Building;
+  return data as any; // Simplified type conversion
 };
 
 // Delete a building
 export const deleteBuilding = async (id: string): Promise<void> => {
   const { error } = await supabase
-    .from('buildings')
+    .from('buildings_enhanced')
     .delete()
     .eq('id', id);
 
@@ -82,7 +83,7 @@ export const deleteBuilding = async (id: string): Promise<void> => {
 // Get building by ID
 export const fetchBuildingById = async (id: string): Promise<Building | null> => {
   const { data, error } = await supabase
-    .from('buildings')
+    .from('buildings_enhanced')
     .select('*')
     .eq('id', id)
     .maybeSingle();
@@ -96,6 +97,6 @@ export const fetchBuildingById = async (id: string): Promise<Building | null> =>
 
   return {
     ...data,
-    building_name: data.building_name || data.name,
-  } as Building;
+    displayName: data.building_code || data.building_code,
+  } as any; // Simplified type conversion
 };

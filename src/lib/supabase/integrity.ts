@@ -19,7 +19,7 @@ export async function checkHierarchyIntegrity(): Promise<OrphanData> {
   try {
     // Check for orphaned projects (projects without developers)
     const { data: orphanedProjects, error: projectError } = await supabase
-      .from('projects')
+    .from('projects_clean')
       .select('id, title, developer_id')
       .is('developer_id', null);
 
@@ -27,7 +27,7 @@ export async function checkHierarchyIntegrity(): Promise<OrphanData> {
 
     // Check for orphaned buildings (buildings without projects)
     const { data: orphanedBuildings, error: buildingError } = await supabase
-      .from('buildings')
+    .from('buildings_enhanced')
       .select('id, name, project_id')
       .is('project_id', null);
 
@@ -56,7 +56,7 @@ export async function checkHierarchyIntegrity(): Promise<OrphanData> {
 export async function checkProjectDependencies(projectId: string): Promise<DependencyCheck> {
   try {
     const { data: buildings, error } = await supabase
-      .from('buildings')
+    .from('buildings_enhanced')
       .select('id, name')
       .eq('project_id', projectId);
 
