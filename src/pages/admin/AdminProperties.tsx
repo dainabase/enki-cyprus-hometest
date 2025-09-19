@@ -8,6 +8,9 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
+import { AppShell } from '@/components/dainabase-ui';
+import { AdminSidebarExecutive } from '@/components/admin/AdminSidebarExecutive';
+import AdminFooter from '@/components/admin/AdminFooter';
 import { 
   fetchProperties, 
   deleteProperty, 
@@ -120,43 +123,44 @@ const AdminProperties = () => {
     );
   }
 
-  return (
-    <div className="h-screen flex flex-col">
-      {/* Header Section */}
-      <div className="sticky top-0 z-10 bg-white border-b border-slate-200 shadow-sm">
-        <div className="px-8 py-6">
-          <div className="flex items-start justify-between">
-            <div className="space-y-3">
-              <div>
-                <h1 className="text-3xl font-bold text-slate-900">Propriétés</h1>
-                <p className="text-slate-600">Gérez vos unités immobilières</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Button
-                variant="outline"
-                onClick={() => setShowFilters(!showFilters)}
-                className="gap-2 border-slate-200 hover:bg-slate-50"
-              >
-                <Filter className="w-4 h-4" />
-                Filtres
-              </Button>
-              
-              <Button 
-                onClick={() => navigate('/admin/properties/new')} 
-                className="bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 gap-2"
-                size="lg"
-              >
-                <Plus className="w-5 h-5" />
-                Nouvelle Propriété
-              </Button>
-            </div>
-          </div>
-        </div>
+  const AdminHeader = () => (
+    <div className="h-16 px-6 flex items-center justify-between bg-white border-b border-slate-200">
+      <div className="flex items-center gap-4">
+        <a href="/" className="text-2xl font-bold text-slate-900 hover:text-slate-700 transition-colors uppercase">
+          ENKI-REALTY
+        </a>
+        <span className="text-slate-400">|</span>
+        <span className="text-lg text-slate-500">Propriétés</span>
       </div>
+      <div className="flex items-center gap-4">
+        <Button
+          variant="outline"
+          onClick={() => setShowFilters(!showFilters)}
+          className="gap-2 border-slate-200 hover:bg-slate-50"
+        >
+          <Filter className="w-4 h-4" />
+          Filtres
+        </Button>
+        
+        <Button 
+          onClick={() => navigate('/admin/properties/new')} 
+          className="bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 gap-2"
+          size="lg"
+        >
+          <Plus className="w-5 h-5" />
+          Nouvelle Propriété
+        </Button>
+      </div>
+    </div>
+  );
 
-      {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto bg-gradient-to-br from-slate-50 to-slate-100 px-8 py-6 space-y-6">
+  return (
+    <AppShell
+      variant="executive"
+      header={<AdminHeader />}
+      sidebar={<AdminSidebarExecutive />}
+    >
+      <div className="h-full overflow-y-auto bg-gradient-to-br from-slate-50 to-slate-100 px-8 py-6 space-y-6">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-7 gap-4">
           <Card className="bg-white/80 backdrop-blur-sm border border-slate-200">
@@ -419,7 +423,7 @@ const AdminProperties = () => {
           )}
         </div>
       </div>
-    </div>
+    </AppShell>
   );
 };
 
