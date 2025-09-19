@@ -447,7 +447,9 @@ const AdminProperties = () => {
   return (
     <AppShell
       sidebar={<AdminSidebarExecutive />}
-      header={
+    >
+      {/* Header Section - STICKY */}
+      <div className="sticky top-0 z-10 bg-white border-b border-slate-200 shadow-sm">
         <div className="px-8 py-6">
           <div className="flex items-start justify-between">
             <div className="space-y-3">
@@ -491,8 +493,7 @@ const AdminProperties = () => {
             </div>
           </div>
         </div>
-      }
-    >
+      </div>
 
       {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto bg-gradient-to-br from-slate-50 to-slate-100 px-8 py-6 space-y-6">
