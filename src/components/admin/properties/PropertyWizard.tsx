@@ -61,7 +61,7 @@ export default function PropertyWizard({ open, onClose, onSuccess }: PropertyWiz
       if (!selectedProject) return [];
       const { data, error } = await supabase
         .from('buildings_enhanced')
-        .select('id, name')
+        .select('id, building_code')
         .eq('project_id', selectedProject)
         .order('name');
       if (error) throw error;
@@ -158,9 +158,9 @@ export default function PropertyWizard({ open, onClose, onSuccess }: PropertyWiz
                 </SelectTrigger>
                 <SelectContent>
                   {buildings?.map(building => (
-                    <SelectItem key={building.id} value={building.id}>
-                      {building.name}
-                    </SelectItem>
+            <SelectItem key={building.id} value={building.id}>
+              {building.building_code}
+            </SelectItem>
                   ))}
                 </SelectContent>
               </Select>

@@ -89,15 +89,15 @@ export const CSVImporter: React.FC<CSVImporterProps> = ({
 
       // Transform data to match database schema
       const propertiesToInsert = validData.map(row => ({
+        unit_code: row.unit_number || `UNIT-${Date.now()}`, // Required field mapping
         project_id: projectId,
         building_id: buildingId || null,
-        unit_number: row.unit_number,
         property_type: row.type as 'apartment' | 'villa' | 'penthouse' | 'studio' | 'townhouse' | 'duplex' | 'triplex' | 'maisonette',
-        property_status: row.status as 'available' | 'reserved' | 'sold' | 'rented' | 'unavailable',
-        bedrooms_count: row.bedrooms,
-        bathrooms_count: row.bathrooms,
-        internal_area: row.size_m2,
-        price_excluding_vat: row.price,
+        status: row.status || 'available', // Map property_status to status
+        bedrooms: row.bedrooms,
+        bathrooms: row.bathrooms,
+        internal_area_m2: row.size_m2,
+        price: row.price,
         view_type: row.view_type ? [row.view_type] : [],
         orientation: row.orientation as 'north' | 'south' | 'east' | 'west' | 'north_east' | 'north_west' | 'south_east' | 'south_west' | undefined,
         parking_spaces: row.parking_spaces || 0,

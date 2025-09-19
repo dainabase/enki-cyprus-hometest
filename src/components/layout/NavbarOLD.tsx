@@ -45,7 +45,7 @@ const Navbar = () => {
   useEffect(() => {
     let mounted = true;
     supabase
-      .from('projects')
+      .from('projects_clean')
       .select('id')
       .limit(1)
       .then(({ data, error }) => {

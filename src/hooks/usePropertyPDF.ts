@@ -10,7 +10,7 @@ export const usePropertyPDF = () => {
       
       // Fetch property data with relationships
       const { data, error } = await supabase
-        .from('projects')
+        .from('projects_clean')
         .select(`
           *,
           building:buildings(*),
@@ -53,7 +53,7 @@ export const usePropertyPDF = () => {
         
         // Fetch property data
         const { data, error } = await supabase
-          .from('projects')
+          .from('projects_clean')
           .select(`
             *,
             building:buildings(*),

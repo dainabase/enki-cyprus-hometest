@@ -41,7 +41,7 @@ const fetchDashboardMetrics = async (options: UseMetricsOptions = {}): Promise<D
     // Fetch all data in parallel
     const [propertiesResult, leadsResult, commissionsResult] = await Promise.all([
       supabase
-        .from('projects')
+        .from('projects_clean')
         .select(`
           id,
           price,

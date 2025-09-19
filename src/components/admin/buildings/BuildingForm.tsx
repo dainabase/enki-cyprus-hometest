@@ -87,7 +87,7 @@ const BuildingForm: React.FC<BuildingFormProps> = ({ building, projects, onSave,
 
     try {
       const buildingData = {
-        name: formData.name,
+        building_code: formData.name || `BUILD-${Date.now()}`, // Map name to building_code (required field)
         project_id: formData.project_id || null,
         total_floors: formData.total_floors,
         total_units: formData.total_units,
