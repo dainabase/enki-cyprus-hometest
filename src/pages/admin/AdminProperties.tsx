@@ -66,6 +66,7 @@ interface Property {
 
 interface PropertyFilters {
   search?: string;
+  city?: string;
   projectId?: string;
   buildingId?: string;
   developerId?: string;
@@ -73,9 +74,8 @@ interface PropertyFilters {
   status?: string;
   minPrice?: number;
   maxPrice?: number;
-  minBedrooms?: number;
-  maxBedrooms?: number;
-  goldenVisaOnly?: boolean;
+  bedrooms?: string;
+  goldenVisa?: string;
   hasView?: boolean;
   furnished?: boolean;
 }
@@ -243,7 +243,16 @@ const AdminProperties = () => {
   const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
-  const [filters, setFilters] = useState<PropertyFilters>({});
+  const [viewMode, setViewMode] = useState<'table' | 'gallery'>('gallery');
+  const [filters, setFilters] = useState<PropertyFilters>({
+    city: 'all',
+    minPrice: 0,
+    maxPrice: 999999999,
+    goldenVisa: 'all',
+    status: 'all',
+    bedrooms: 'all',
+    propertyType: 'all'
+  });
   
   // State management
   const [properties, setProperties] = useState<any[]>([]);
@@ -251,18 +260,28 @@ const AdminProperties = () => {
   const [buildings, setBuildings] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch properties
+  // Fetch properties with relations
   const fetchProperties = async () => {
     try {
       setIsLoading(true);
       const { data, error } = await supabase
         .from('properties_final')
-        .select('*')
+        .select(`
+          *,
+          projects_clean (
+            id,
+            title,
+            city
+          ),
+          buildings_enhanced (
+            id,
+            building_code
+          )
+        `)
         .order('unit_code');
       
       if (error) throw error;
       
-      // Simple properties without complex relations to avoid type issues
       setProperties(data || []);
     } catch (error: any) {
       console.error('Error fetching properties:', error);
@@ -380,69 +399,218 @@ const AdminProperties = () => {
   };
 
   const handleClearFilters = () => {
-    setFilters({});
+    setFilters({
+      city: 'all',
+      minPrice: 0,
+      maxPrice: 999999999,
+      goldenVisa: 'all',
+      status: 'all',
+      bedrooms: 'all',
+      propertyType: 'all'
+    });
   };
 
-  // Statistics
+  // Filter properties based on criteria
+  const filteredProperties = useMemo(() => {
+    return properties.filter(p => {
+      if (filters.city !== 'all' && p.projects_clean?.city !== filters.city) return false;
+      if (p.price < (filters.minPrice || 0) || p.price > (filters.maxPrice || 999999999)) return false;
+      if (filters.goldenVisa === 'eligible' && !p.golden_visa_eligible) return false;
+      if (filters.goldenVisa === 'not-eligible' && p.golden_visa_eligible) return false;
+      if (filters.status !== 'all' && p.status !== filters.status) return false;
+      if (filters.bedrooms !== 'all') {
+        if (filters.bedrooms === '4+' && (p.bedrooms || 0) < 4) return false;
+        if (filters.bedrooms !== '4+' && (p.bedrooms || 0) !== Number(filters.bedrooms)) return false;
+      }
+      if (filters.propertyType !== 'all' && p.property_type !== filters.propertyType) return false;
+      return true;
+    });
+  }, [properties, filters]);
+
+  // Statistics based on filtered properties
   const stats = useMemo(() => {
     return {
-      total: properties.length,
-      available: properties.filter(p => p.status === 'available').length,
-      sold: properties.filter(p => p.status === 'sold').length,
-      reserved: properties.filter(p => p.status === 'reserved').length,
-      goldenVisa: properties.filter(p => p.golden_visa_eligible).length,
-      avgPrice: properties.length > 0 ? Math.round(properties.reduce((sum, p) => sum + (p.price || 0), 0) / properties.length) : 0
+      total: filteredProperties.length,
+      available: filteredProperties.filter(p => p.status === 'available').length,
+      sold: filteredProperties.filter(p => p.status === 'sold').length,
+      reserved: filteredProperties.filter(p => p.status === 'reserved').length,
+      goldenVisa: filteredProperties.filter(p => p.golden_visa_eligible).length,
+      totalValue: filteredProperties.reduce((sum, p) => sum + (p.price || 0), 0),
+      avgPrice: filteredProperties.length > 0 ? Math.round(filteredProperties.reduce((sum, p) => sum + (p.price || 0), 0) / filteredProperties.length) : 0
     };
-  }, [properties]);
+  }, [filteredProperties]);
+
+  // Export to Excel (CSV format)
+  const exportToExcel = () => {
+    const headers = [
+      'Code Unité', 'Type', 'Projet', 'Bâtiment', 'Ville',
+      'Prix', 'Golden Visa', 'Chambres', 'SDB', 'Surface m²',
+      'Statut', 'Étage', 'Orientation', 'Vue'
+    ];
+    
+    const rows = filteredProperties.map(p => [
+      p.unit_code,
+      p.property_type,
+      p.projects_clean?.title || '',
+      p.buildings_enhanced?.building_code || '',
+      p.projects_clean?.city || '',
+      p.price,
+      p.golden_visa_eligible ? 'Oui' : 'Non',
+      p.bedrooms || '',
+      p.bathrooms || '',
+      p.internal_area_m2 || '',
+      p.status,
+      p.floor_number || '',
+      p.orientation || '',
+      p.view_type || ''
+    ]);
+    
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+    ].join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `properties_export_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+  };
 
   const renderPropertyView = () => {
-    if (currentView === 'cards') {
+    if (viewMode === 'gallery') {
       return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {properties.map((property) => (
-            <PropertyCard
-              key={property.id}
-              property={property}
-              isSelected={selectedProperties.includes(property.id)}
-              onSelect={handleSelectProperty}
-              onEdit={handleEditProperty}
-              onView={handleViewProperty}
-            />
+          {filteredProperties.map((property) => (
+            <div key={property.id} className="bg-white rounded-lg shadow-lg overflow-hidden">
+              {/* Image placeholder */}
+              <div className="h-48 bg-gray-200 relative">
+                {property.golden_visa_eligible && (
+                  <div className="absolute top-2 right-2 bg-yellow-500 text-white px-2 py-1 rounded text-xs font-bold">
+                    Golden Visa
+                  </div>
+                )}
+                <div className={`absolute top-2 left-2 px-2 py-1 rounded text-xs font-bold ${
+                  property.status === 'available' ? 'bg-green-500 text-white' :
+                  property.status === 'reserved' ? 'bg-yellow-500 text-white' :
+                  property.status === 'sold' ? 'bg-red-500 text-white' :
+                  'bg-blue-500 text-white'
+                }`}>
+                  {property.status}
+                </div>
+              </div>
+              
+              {/* Details */}
+              <div className="p-4">
+                <h3 className="font-bold text-lg mb-1">{property.unit_code}</h3>
+                <p className="text-sm text-gray-600 mb-2">
+                  {property.projects_clean?.title} - {property.buildings_enhanced?.building_code}
+                </p>
+                <p className="text-2xl font-bold text-blue-600 mb-2">
+                  €{property.price?.toLocaleString()}
+                </p>
+                <div className="flex gap-4 text-sm text-gray-600 mb-3">
+                  <span>🛏️ {property.bedrooms || 0} ch</span>
+                  <span>🚿 {property.bathrooms || 0} sdb</span>
+                  <span>📐 {property.internal_area_m2 || 0} m²</span>
+                </div>
+                <div className="flex gap-2">
+                  <Button size="sm" variant="outline" onClick={() => navigate(`/admin/properties/${property.id}/edit`)}>
+                    Éditer
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => handleViewProperty(property)}>
+                    Voir
+                  </Button>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       );
     }
 
-    if (currentView === 'list') {
-      return (
-        <div className="space-y-2">
-          {properties.map((property) => (
-            <PropertyListItem
-              key={property.id}
-              property={property}
-              isSelected={selectedProperties.includes(property.id)}
-              onSelect={handleSelectProperty}
-              onEdit={handleEditProperty}
-              onView={handleViewProperty}
-            />
-          ))}
-        </div>
-      );
-    }
-
-    // Default to cards for other views for now
+    // Table view
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {properties.map((property) => (
-          <PropertyCard
-            key={property.id}
-            property={property}
-            isSelected={selectedProperties.includes(property.id)}
-            onSelect={handleSelectProperty}
-            onEdit={handleEditProperty}
-            onView={handleViewProperty}
-          />
-        ))}
+      <div className="bg-white rounded-lg shadow">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <input
+                    type="checkbox"
+                    checked={selectedProperties.length === filteredProperties.length && filteredProperties.length > 0}
+                    onChange={handleSelectAll}
+                    className="w-4 h-4"
+                  />
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Propriété</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Projet</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prix</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Détails</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {filteredProperties.map((property) => (
+                <tr key={property.id} className="hover:bg-gray-50">
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <input
+                      type="checkbox"
+                      checked={selectedProperties.includes(property.id)}
+                      onChange={(e) => handleSelectProperty(property.id, e.target.checked)}
+                      className="w-4 h-4"
+                    />
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <div>
+                      <div className="text-sm font-medium text-gray-900">{property.unit_code}</div>
+                      <div className="text-sm text-gray-500">{property.property_type}</div>
+                    </div>
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <div>
+                      <div className="text-sm font-medium text-gray-900">{property.projects_clean?.title}</div>
+                      <div className="text-sm text-gray-500">{property.buildings_enhanced?.building_code}</div>
+                    </div>
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">€{property.price?.toLocaleString()}</div>
+                    {property.golden_visa_eligible && (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                        Golden Visa
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {property.bedrooms || 0} ch • {property.bathrooms || 0} sdb • {property.internal_area_m2 || 0} m²
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      property.status === 'available' ? 'bg-green-100 text-green-800' :
+                      property.status === 'reserved' ? 'bg-yellow-100 text-yellow-800' :
+                      property.status === 'sold' ? 'bg-red-100 text-red-800' :
+                      'bg-blue-100 text-blue-800'
+                    }`}>
+                      {property.status}
+                    </span>
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
+                    <div className="flex gap-2">
+                      <Button size="sm" variant="outline" onClick={() => navigate(`/admin/properties/${property.id}/edit`)}>
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => handleViewProperty(property)}>
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     );
   };
@@ -672,8 +840,8 @@ const AdminProperties = () => {
                   <div className="flex items-center space-x-2">
                     <Switch
                       id="golden-visa"
-                      checked={filters.goldenVisaOnly || false}
-                      onCheckedChange={(checked) => setFilters(prev => ({ ...prev, goldenVisaOnly: checked }))}
+                      checked={filters.goldenVisa === 'eligible'}
+                      onCheckedChange={(checked) => setFilters(prev => ({ ...prev, goldenVisa: checked ? 'eligible' : 'all' }))}
                     />
                     <Label htmlFor="golden-visa">Golden Visa</Label>
                   </div>
