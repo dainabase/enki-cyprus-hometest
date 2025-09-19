@@ -31,11 +31,7 @@ export interface PropertyFormData {
 export async function getPropertiesByBuilding(buildingId: string) {
   const { data, error } = await supabase
     .from('properties_final')
-    .select(`
-      *,
-      project:projects_clean(title, city),
-      building:buildings_enhanced(building_code, building_type)
-    `)
+    .select('*')
     .eq('building_id', buildingId)
     .order('unit_code');
 
@@ -47,11 +43,7 @@ export async function getPropertiesByBuilding(buildingId: string) {
 export async function getPropertiesByProject(projectId: string) {
   const { data, error } = await supabase
     .from('properties_final')
-    .select(`
-      *,
-      project:projects_clean(title, city),
-      building:buildings_enhanced(building_code, building_type)
-    `)
+    .select('*')
     .eq('project_id', projectId)
     .order('unit_code');
 
@@ -63,11 +55,7 @@ export async function getPropertiesByProject(projectId: string) {
 export async function fetchProperties(filters: PropertyFilters = {}) {
   let query = supabase
     .from('properties_final')
-    .select(`
-      *,
-      project:projects_clean(title, city, zone),
-      building:buildings_enhanced(building_code, building_type)
-    `)
+    .select('*')
     .order('project_id', { ascending: true })
     .order('unit_code', { ascending: true });
 
@@ -103,26 +91,20 @@ export async function fetchProperties(filters: PropertyFilters = {}) {
 export const fetchProperty = async (id: string) => {
   const { data, error } = await supabase
     .from('properties_final')
-    .select(`
-      *,
-      project:projects_clean(id, title, city),
-      building:buildings_enhanced(id, building_code, building_type)
-    `)
+    .select('*')
     .eq('id', id)
     .single();
   
   if (error) throw error;
   return data;
 };
+
+// Create new property
 export async function createProperty(data: PropertyFormData) {
   const { data: property, error } = await supabase
     .from('properties_final')
     .insert(data)
-    .select(`
-      *,
-      project:projects_clean(title, city),
-      building:buildings_enhanced(building_code, building_type)
-    `)
+    .select('*')
     .single();
 
   if (error) throw error;
@@ -135,11 +117,7 @@ export async function updateProperty(id: string, data: Partial<PropertyFormData>
     .from('properties_final')
     .update(data)
     .eq('id', id)
-    .select(`
-      *,
-      project:projects_clean(title, city),
-      building:buildings_enhanced(building_code, building_type)
-    `)
+    .select('*')
     .single();
 
   if (error) throw error;
@@ -160,11 +138,7 @@ export async function deleteProperty(id: string) {
 export async function getGoldenVisaProperties() {
   const { data, error } = await supabase
     .from('properties_final')
-    .select(`
-      *,
-      project:projects_clean(title, city),
-      building:buildings_enhanced(building_code)
-    `)
+    .select('*')
     .eq('golden_visa_eligible', true)
     .eq('status', 'available')
     .order('price', { ascending: false });

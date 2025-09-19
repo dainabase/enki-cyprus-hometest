@@ -256,45 +256,75 @@ const AdminPropertyForm: React.FC = () => {
       // Prepare data for database
       const processedData = {
         ...data,
-        // Ensure numeric fields are properly converted
-        bedrooms: data.bedrooms ? Number(data.bedrooms) : 0,
-        bathrooms: data.bathrooms ? Number(data.bathrooms) : 0,
+        // Map form arrays to property_features
+        property_features: [
+          ...(data.appliances_list || []),
+          ...(data.smart_home_features || [])
+        ],
+        
+        // Remove the original form fields that don't exist in DB
+        appliances_list: undefined,
+        smart_home_features: undefined,
+        
+        // Map form fields to actual DB columns
+        unit_code: data.unit_number || data.unit_code,
+        bedrooms_count: data.bedrooms ? Number(data.bedrooms) : 0,
+        bathrooms_count: data.bathrooms ? Number(data.bathrooms) : 0,
         internal_area_m2: data.internal_area_m2 ? Number(data.internal_area_m2) : 0,
-        balcony_area: data.balcony_area ? Number(data.balcony_area) : 0,
-        terrace_area: data.terrace_area ? Number(data.terrace_area) : 0,
-        private_garden_area: data.private_garden_area ? Number(data.private_garden_area) : 0,
-        storage_area: data.storage_area ? Number(data.storage_area) : 0,
-        price_excluding_vat: data.price_excluding_vat ? Number(data.price_excluding_vat) : 0,
-        vat_rate: data.vat_rate ? Number(data.vat_rate) : 5,
-        deposit_amount: data.deposit_amount ? Number(data.deposit_amount) : 0,
-        deposit_percentage: data.deposit_percentage ? Number(data.deposit_percentage) : 10,
-        ceiling_height: data.ceiling_height ? Number(data.ceiling_height) : 2.7,
-        parking_spaces: data.parking_spaces ? Number(data.parking_spaces) : 0,
-        distance_to_elevator: data.distance_to_elevator ? Number(data.distance_to_elevator) : 0,
-        distance_to_stairs: data.distance_to_stairs ? Number(data.distance_to_stairs) : 0,
+        floor_number: data.floor_number ? Number(data.floor_number) : null,
         
-        // Calculate derived fields
-        price_including_vat: (data.price_excluding_vat || 0) * (1 + (data.vat_rate || 5) / 100),
-        price_per_sqm: data.price_excluding_vat && data.internal_area_m2 ? 
-          data.price_excluding_vat / data.internal_area_m2 : 0,
-        golden_visa_eligible: (data.price_excluding_vat || 0) * (1 + (data.vat_rate || 5) / 100) >= 300000,
+        // Map boolean fields correctly
+        has_parking_space: data.parking_included || false,
+        parking_spaces_count: data.parking_spaces ? Number(data.parking_spaces) : 0,
         
-        // Set current price if not set
-        current_price: data.current_price || data.price_excluding_vat,
+        // Financial fields
+        price: data.price_excluding_vat ? Number(data.price_excluding_vat) : 0,
+        price_with_vat: data.price_excluding_vat ? 
+          Number(data.price_excluding_vat) * (1 + (Number(data.vat_rate) || 5) / 100) : 0,
+        price_per_m2: data.price_excluding_vat && data.internal_area_m2 ? 
+          Number(data.price_excluding_vat) / Number(data.internal_area_m2) : 0,
         
-        // Calculate total rooms
-        total_rooms: (data.bedrooms || 0) + 
-                    (data.has_office ? 1 : 0) + 
-                    (data.has_maid_room ? 1 : 0) + 
-                    (data.has_playroom ? 1 : 0) + 
-                    (data.has_wine_cellar ? 1 : 0),
+        // Golden Visa eligibility
+        golden_visa_eligible: data.price_excluding_vat ? 
+          (Number(data.price_excluding_vat) * (1 + (Number(data.vat_rate) || 5) / 100)) >= 300000 : false,
         
-        // Ensure boolean fields
-        is_available: data.status === 'available',
-        is_furnished: data.furniture_status === 'furnished',
-        minimum_investment_met: (data.price_excluding_vat || 0) * (1 + (data.vat_rate || 5) / 100) >= 300000,
+        // Outdoor areas
+        covered_veranda_m2: data.balcony_area ? Number(data.balcony_area) : 0,
+        uncovered_veranda_m2: data.terrace_area ? Number(data.terrace_area) : 0,
+        garden_area_m2: data.private_garden_area ? Number(data.private_garden_area) : 0,
+        storage_area_m2: data.storage_area ? Number(data.storage_area) : 0,
         
-        // Set status and metadata
+        // Remove fields that don't exist in the actual table
+        unit_number: undefined,
+        bedrooms: undefined,
+        bathrooms: undefined,
+        balcony_area: undefined,
+        terrace_area: undefined,
+        private_garden_area: undefined,
+        storage_area: undefined,
+        parking_included: undefined,
+        parking_spaces: undefined,
+        price_excluding_vat: undefined,
+        price_including_vat: undefined,
+        vat_rate: undefined,
+        vat_amount: undefined,
+        current_price: undefined,
+        original_price: undefined,
+        discount_amount: undefined,
+        discount_percentage: undefined,
+        minimum_investment_met: undefined,
+        deposit_amount: undefined,
+        deposit_percentage: undefined,
+        total_rooms: undefined,
+        wc_count: undefined,
+        ceiling_height: undefined,
+        distance_to_elevator: undefined,
+        distance_to_stairs: undefined,
+        
+        // Set proper status
+        status: data.status || 'available',
+        
+        // Set timestamps
         created_at: isEdit ? undefined : new Date().toISOString(),
         updated_at: new Date().toISOString()
       };
