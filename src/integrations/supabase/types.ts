@@ -3137,6 +3137,215 @@ export type Database = {
           },
         ]
       }
+      projects_clean: {
+        Row: {
+          address: string | null
+          ai_description: string | null
+          brochure_url: string | null
+          citizenship_eligible: boolean | null
+          city: string | null
+          commission_structure: Json | null
+          completion_date: string | null
+          conversion_rate: number | null
+          created_at: string | null
+          cyprus_government_approved: boolean | null
+          description: string | null
+          developer_bank_guarantee: boolean | null
+          developer_id: string | null
+          distance_airport: number | null
+          distance_beach: number | null
+          district: string | null
+          engagement_score: number | null
+          expected_roi: number | null
+          featured_image: string | null
+          golden_visa_eligible: boolean | null
+          has_beach_access: boolean | null
+          has_concierge: boolean | null
+          has_golf_course: boolean | null
+          has_kids_club: boolean | null
+          has_restaurants: boolean | null
+          has_security_24h: boolean | null
+          has_shopping_mall: boolean | null
+          has_spa_resort: boolean | null
+          has_tennis_courts: boolean | null
+          id: string
+          keywords: string[] | null
+          latitude: number | null
+          launch_date: string | null
+          longitude: number | null
+          marketing_highlights: string[] | null
+          meta_description: string | null
+          meta_title: string | null
+          minimum_investment: number | null
+          permanent_residency_eligible: boolean | null
+          phase: string | null
+          photos: string[] | null
+          plans: string[] | null
+          postal_code: string | null
+          price_range_max: number | null
+          price_range_min: number | null
+          project_amenities: string[] | null
+          referral_program: Json | null
+          region: string | null
+          schema_markup: Json | null
+          search_ranking: number | null
+          slug: string | null
+          status: string | null
+          subtitle: string | null
+          title: string
+          title_deeds_guaranteed: boolean | null
+          total_investment: number | null
+          translations: Json | null
+          unique_selling_points: string[] | null
+          updated_at: string | null
+          vat_scheme: string | null
+          video_url: string | null
+          view_count: number | null
+          virtual_tour_url: string | null
+          zone: string | null
+        }
+        Insert: {
+          address?: string | null
+          ai_description?: string | null
+          brochure_url?: string | null
+          citizenship_eligible?: boolean | null
+          city?: string | null
+          commission_structure?: Json | null
+          completion_date?: string | null
+          conversion_rate?: number | null
+          created_at?: string | null
+          cyprus_government_approved?: boolean | null
+          description?: string | null
+          developer_bank_guarantee?: boolean | null
+          developer_id?: string | null
+          distance_airport?: number | null
+          distance_beach?: number | null
+          district?: string | null
+          engagement_score?: number | null
+          expected_roi?: number | null
+          featured_image?: string | null
+          golden_visa_eligible?: boolean | null
+          has_beach_access?: boolean | null
+          has_concierge?: boolean | null
+          has_golf_course?: boolean | null
+          has_kids_club?: boolean | null
+          has_restaurants?: boolean | null
+          has_security_24h?: boolean | null
+          has_shopping_mall?: boolean | null
+          has_spa_resort?: boolean | null
+          has_tennis_courts?: boolean | null
+          id?: string
+          keywords?: string[] | null
+          latitude?: number | null
+          launch_date?: string | null
+          longitude?: number | null
+          marketing_highlights?: string[] | null
+          meta_description?: string | null
+          meta_title?: string | null
+          minimum_investment?: number | null
+          permanent_residency_eligible?: boolean | null
+          phase?: string | null
+          photos?: string[] | null
+          plans?: string[] | null
+          postal_code?: string | null
+          price_range_max?: number | null
+          price_range_min?: number | null
+          project_amenities?: string[] | null
+          referral_program?: Json | null
+          region?: string | null
+          schema_markup?: Json | null
+          search_ranking?: number | null
+          slug?: string | null
+          status?: string | null
+          subtitle?: string | null
+          title: string
+          title_deeds_guaranteed?: boolean | null
+          total_investment?: number | null
+          translations?: Json | null
+          unique_selling_points?: string[] | null
+          updated_at?: string | null
+          vat_scheme?: string | null
+          video_url?: string | null
+          view_count?: number | null
+          virtual_tour_url?: string | null
+          zone?: string | null
+        }
+        Update: {
+          address?: string | null
+          ai_description?: string | null
+          brochure_url?: string | null
+          citizenship_eligible?: boolean | null
+          city?: string | null
+          commission_structure?: Json | null
+          completion_date?: string | null
+          conversion_rate?: number | null
+          created_at?: string | null
+          cyprus_government_approved?: boolean | null
+          description?: string | null
+          developer_bank_guarantee?: boolean | null
+          developer_id?: string | null
+          distance_airport?: number | null
+          distance_beach?: number | null
+          district?: string | null
+          engagement_score?: number | null
+          expected_roi?: number | null
+          featured_image?: string | null
+          golden_visa_eligible?: boolean | null
+          has_beach_access?: boolean | null
+          has_concierge?: boolean | null
+          has_golf_course?: boolean | null
+          has_kids_club?: boolean | null
+          has_restaurants?: boolean | null
+          has_security_24h?: boolean | null
+          has_shopping_mall?: boolean | null
+          has_spa_resort?: boolean | null
+          has_tennis_courts?: boolean | null
+          id?: string
+          keywords?: string[] | null
+          latitude?: number | null
+          launch_date?: string | null
+          longitude?: number | null
+          marketing_highlights?: string[] | null
+          meta_description?: string | null
+          meta_title?: string | null
+          minimum_investment?: number | null
+          permanent_residency_eligible?: boolean | null
+          phase?: string | null
+          photos?: string[] | null
+          plans?: string[] | null
+          postal_code?: string | null
+          price_range_max?: number | null
+          price_range_min?: number | null
+          project_amenities?: string[] | null
+          referral_program?: Json | null
+          region?: string | null
+          schema_markup?: Json | null
+          search_ranking?: number | null
+          slug?: string | null
+          status?: string | null
+          subtitle?: string | null
+          title?: string
+          title_deeds_guaranteed?: boolean | null
+          total_investment?: number | null
+          translations?: Json | null
+          unique_selling_points?: string[] | null
+          updated_at?: string | null
+          vat_scheme?: string | null
+          video_url?: string | null
+          view_count?: number | null
+          virtual_tour_url?: string | null
+          zone?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projects_clean_developer_id_fkey"
+            columns: ["developer_id"]
+            isOneToOne: false
+            referencedRelation: "developers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       promoters: {
         Row: {
           commission_rate: number
