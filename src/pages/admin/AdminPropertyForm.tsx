@@ -67,140 +67,159 @@ const AdminPropertyForm: React.FC = () => {
   const form = useForm<any>({
     mode: 'onSubmit',
     defaultValues: {
-      // Identification
-      unit_number: '',
-      property_type: 'apartment',
-      floor_number: 1,
+      // Identification - PENTHOUSE COMPLET
+      unit_number: 'PH-DELUXE-001',
+      property_type: 'penthouse',
+      floor_number: 25,
       project_id: '',
       building_id: '',
       
-      // Configuration
-      bedrooms: 1,
-      bathrooms: 1,
-      internal_area_m2: 0,
-      total_rooms: 1,
-      wc_count: 1,
-      has_office: false,
-      has_maid_room: false,
-      has_playroom: false,
-      has_wine_cellar: false,
-      has_dressing_room: false,
-      has_guest_wc: false,
+      // Configuration - GRAND PENTHOUSE
+      bedrooms: 6,
+      bathrooms: 5,
+      internal_area_m2: 900,
+      total_rooms: 12,
+      wc_count: 3,
+      has_office: true,
+      has_maid_room: true,
+      has_playroom: true,
+      has_wine_cellar: true,
+      has_dressing_room: true,
+      has_guest_wc: true,
       
-      // Equipment
-      appliances_list: [],
-      smart_home_features: [],
-      has_kitchen_appliances: false,
-      has_smart_home: false,
-      has_fireplace: false,
-      has_underfloor_heating: false,
-      has_alarm_system: false,
-      has_video_intercom: false,
+      // Equipment - TOUT ÉQUIPÉ
+      appliances_list: [
+        'Four', 'Réfrigérateur', 'Hotte aspirante', 'Congélateur', 'Micro-ondes', 
+        'Machine à café', 'Lave-vaisselle', 'Plaque de cuisson', 'Cave à vin',
+        'Machine à glaçons', 'Four vapeur', 'Tiroir chauffant', 'Lave-linge',
+        'Sèche-linge', 'Aspirateur centralisé'
+      ],
+      smart_home_features: [
+        'Thermostat intelligent', 'Système de sécurité', 'Alarme incendie',
+        'Caméras surveillance', 'Interphone vidéo', 'Détecteurs fumée',
+        'Contrôle éclairage', 'Domotique centralisée', 'Volets automatiques',
+        'Système audio intégré', 'Contrôle température', 'Sécurité biométrique'
+      ],
+      has_kitchen_appliances: true,
+      has_smart_home: true,
+      has_fireplace: true,
+      has_underfloor_heating: true,
+      has_alarm_system: true,
+      has_video_intercom: true,
       
-      // Outdoor
-      balcony_area: 0,
-      terrace_area: 0,
-      has_balcony: false,
-      has_terrace: false,
-      has_private_garden: false,
-      has_roof_terrace: false,
-      has_private_pool: false,
-      private_garden_area: 0,
+      // Outdoor - ESPACES EXTÉRIEURS LUXUEUX
+      balcony_area: 150,
+      terrace_area: 300,
+      has_balcony: true,
+      has_terrace: true,
+      has_private_garden: true,
+      has_roof_terrace: true,
+      has_private_pool: true,
+      private_garden_area: 500,
       
-      // Views & Orientation
-      has_sea_view: false,
-      has_mountain_view: false,
-      has_city_view: false,
-      has_garden_view: false,
-      has_pool_view: false,
+      // Views & Orientation - VUES PANORAMIQUES
+      has_sea_view: true,
+      has_mountain_view: true,
+      has_city_view: true,
+      has_garden_view: true,
+      has_pool_view: true,
       orientation: 'south',
-      view_quality: 'partial',
+      view_quality: 'panoramic',
       
-      // Parking & Storage
-      parking_included: false,
-      parking_spaces: 0,
+      // Parking & Storage - ESPACES DE RANGEMENT
+      parking_included: true,
+      parking_spaces: 4,
       parking_type: 'covered',
-      has_storage_unit: false,
-      storage_area: 0,
+      has_storage_unit: true,
+      storage_area: 50,
       
-      // Financial
+      // Financial - 1.5M EUROS
       price: 0,
-      price_excluding_vat: 0,
+      price_excluding_vat: 1500000,
       vat_rate: 5,
-      price_including_vat: 0,
-      price_per_sqm: 0,
-      original_price: 0,
-      current_price: 0,
-      discount_amount: 0,
-      discount_percentage: 0,
-      golden_visa_eligible: false,
-      minimum_investment_met: false,
-      deposit_amount: 0,
+      price_including_vat: 1575000,
+      price_per_sqm: 1667,
+      original_price: 1600000,
+      current_price: 1500000,
+      discount_amount: 100000,
+      discount_percentage: 6.25,
+      golden_visa_eligible: true,
+      minimum_investment_met: true,
+      deposit_amount: 150000,
       deposit_percentage: 10,
-      payment_plan_available: false,
-      payment_plan_details: {},
+      payment_plan_available: true,
+      payment_plan_details: {
+        "installments": 24,
+        "monthly_amount": 56250,
+        "down_payment": 150000,
+        "final_payment": 1350000
+      },
       
       // Status & Availability
       status: 'available',
       is_available: true,
-      furniture_status: 'unfurnished',
-      is_furnished: false,
+      furniture_status: 'fully_furnished',
+      is_furnished: true,
       
-      // Documentation
-      public_description: '',
-      internal_notes: '',
-      title_deed_status: 'ready',
-      title_deed_number: '',
-      cadastral_reference: '',
-      occupancy_certificate: '',
-      building_permit_number: '',
-      planning_permit_number: '',
+      // Documentation - COMPLET
+      public_description: 'Penthouse d\'exception de 900m² avec terrasses panoramiques, piscine privée et finitions de prestige. Vue mer et montagne à 360°. Équipements haut de gamme et domotique intégrée.',
+      internal_notes: 'Propriété phare du projet - Client VIP uniquement. Visite sur RDV exclusivement. Négociation possible pour achat comptant.',
+      title_deed_status: 'available',
+      title_deed_number: 'TD-2024-PH-001',
+      cadastral_reference: 'CAD-LIM-2024-PH-001',
+      occupancy_certificate: 'OCC-2024-PH-DELUXE',
+      building_permit_number: 'BP-2023-TOWER-ELITE',
+      planning_permit_number: 'PP-2022-PENTHOUSE-001',
       
-      // Technical Details
-      ceiling_height: 2.7,
-      flooring_type: 'tiles',
-      kitchen_type: 'modern',
-      bathroom_fixtures_brand: '',
-      windows_type: 'aluminum',
-      doors_type: 'security',
-      heating_type: 'central',
-      hvac_type: 'split',
-      energy_rating: 'B',
-      energy_certificate_number: '',
+      // Technical Details - PRESTIGE
+      ceiling_height: 4.2,
+      flooring_type: 'marble',
+      kitchen_type: 'luxury',
+      bathroom_fixtures_brand: 'Villeroy & Boch',
+      windows_type: 'triple_glazing',
+      doors_type: 'smart_security',
+      heating_type: 'underfloor',
+      hvac_type: 'central_vrf',
+      energy_rating: 'A+',
+      energy_certificate_number: 'ENG-2024-PH-AAA-001',
       
-      // Additional Features
-      has_disabled_access: false,
-      has_private_elevator: false,
+      // Additional Features - TOUT INCLUS
+      has_disabled_access: true,
+      has_private_elevator: true,
       distance_to_elevator: 0,
-      distance_to_stairs: 0,
-      position_in_floor: 'corner',
-      entrance_type: 'private',
-      facing: ['south'],
+      distance_to_stairs: 5,
+      position_in_floor: 'entire_floor',
+      entrance_type: 'private_elevator',
+      facing: ['north', 'south', 'east', 'west'],
       
-      // Luxury Features
-      has_jacuzzi: false,
-      has_sauna: false,
-      has_home_cinema: false,
-      has_wine_fridge: false,
-      has_safe: false,
-      has_bbq_area: false,
-      has_pergola: false,
-      has_outdoor_kitchen: false,
-      has_automatic_irrigation: false,
+      // Luxury Features - ULTRA LUXE
+      has_jacuzzi: true,
+      has_sauna: true,
+      has_home_cinema: true,
+      has_wine_fridge: true,
+      has_safe: true,
+      has_bbq_area: true,
+      has_pergola: true,
+      has_outdoor_kitchen: true,
+      has_automatic_irrigation: true,
       
-      // Technology
+      // Technology - DERNIÈRES TECHNOLOGIES
       internet_ready: true,
-      has_satellite_tv: false,
-      has_fiber_optic: false,
-      has_electric_shutters: false,
-      has_electric_car_charger: false,
-      has_central_vacuum: false,
-      has_water_softener: false,
-      has_solar_panels: false,
+      has_satellite_tv: true,
+      has_fiber_optic: true,
+      has_electric_shutters: true,
+      has_electric_car_charger: true,
+      has_central_vacuum: true,
+      has_water_softener: true,
+      has_solar_panels: true,
       
-      // Security
+      // Security - SÉCURITÉ MAXIMALE
       has_security_door: true,
-      security_features: []
+      security_features: [
+        'Caméras 360°', 'Détecteurs mouvement', 'Alarme périmétrique',
+        'Contrôle accès biométrique', 'Surveillance 24h/24', 'Safe room',
+        'Détecteurs bris de glace', 'Système anti-intrusion'
+      ]
     }
   });
 
