@@ -321,6 +321,7 @@ const AdminPropertyForm: React.FC = () => {
         distance_to_elevator: undefined,
         distance_to_stairs: undefined,
         annual_property_tax: undefined,
+        balcony_count: undefined,
         
         // Set proper status
         status: data.status || 'available',
