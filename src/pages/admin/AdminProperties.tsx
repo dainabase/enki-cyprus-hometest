@@ -16,6 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { useViewPreference } from '@/hooks/useViewPreference';
 import { PDFExportButton } from '@/components/admin/properties/PDFExportButton';
+import { PropertyViewSelector, PropertyViewType } from '@/components/admin/properties/PropertyViewSelector';
 
 interface Property {
   id: string;
@@ -59,41 +60,6 @@ interface PropertyFilters {
   furnished?: boolean;
 }
 
-type ViewType = 'cards' | 'list' | 'table' | 'compact' | 'detailed';
-
-const PropertyViewSelector = ({ currentView, onViewChange }: { currentView: ViewType; onViewChange: (view: ViewType) => void }) => {
-  const views = [
-    { id: 'cards' as ViewType, icon: Grid3X3, label: 'Cartes' },
-    { id: 'list' as ViewType, icon: List, label: 'Liste' },
-    { id: 'table' as ViewType, icon: Table, label: 'Tableau' },
-    { id: 'compact' as ViewType, icon: AlignJustify, label: 'Compact' },
-    { id: 'detailed' as ViewType, icon: FileText, label: 'Détaillé' }
-  ];
-
-  return (
-    <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl shadow-sm p-1">
-      {views.map(({ id, icon: Icon, label }) => (
-        <Button
-          key={id}
-          variant="ghost"
-          size="sm"
-          onClick={() => onViewChange(id)}
-          className={`
-            h-10 px-4 rounded-lg transition-all duration-200 
-            ${currentView === id 
-              ? 'bg-slate-900 text-white shadow-md' 
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }
-          `}
-          title={label}
-        >
-          <Icon className="h-4 w-4 mr-2" />
-          <span className="font-medium">{label}</span>
-        </Button>
-      ))}
-    </div>
-  );
-};
 
 const PropertyCard = ({ property, isSelected, onSelect, onEdit, onView }: { 
   property: Property; 
@@ -467,9 +433,9 @@ const AdminProperties = () => {
         <div className="text-center space-y-4">
           <LoadingSpinner />
           <p className="text-slate-600">Chargement des propriétés...</p>
-        </div>
       </div>
-    );
+    </div>
+  );
   }
 
   return (
@@ -515,7 +481,7 @@ const AdminProperties = () => {
       {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto bg-gradient-to-br from-slate-50 to-slate-100 px-8 py-6 space-y-6">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-600">Total</CardTitle>
