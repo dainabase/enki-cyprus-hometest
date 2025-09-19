@@ -220,7 +220,7 @@ export default function PropertyForm() {
       queryClient.invalidateQueries({ queryKey: ['property', id] });
       
       // Redirection correcte
-      navigate('/admin/units');
+      navigate('/admin/properties');
       
     } catch (error) {
       console.error('Save error:', error);
