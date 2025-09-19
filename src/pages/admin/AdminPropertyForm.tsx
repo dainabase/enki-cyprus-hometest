@@ -210,20 +210,77 @@ const AdminPropertyForm: React.FC = () => {
   useEffect(() => {
     if (property && isEdit) {
       console.log('📝 Loading property data into form:', property);
-      // Reset form with simple property mapping
-      form.reset({
-        ...property,
-        // Ensure basic fields exist with fallbacks
+      
+      // Map database fields to form fields - only use properties that exist
+      const mappedData = {
+        // Identification fields
         unit_number: property.unit_code || '',
         property_type: property.property_type || 'apartment',
+        floor_number: property.floor_number || 1,
         project_id: property.project_id || '',
         building_id: property.building_id || '',
-        bedrooms: property.bedrooms || 1,
-        bathrooms: property.bathrooms || 1,
-        internal_area_m2: property.internal_area_m2 || 0,
-        price: property.price || 0,
-        status: property.status || 'available'
-      });
+        
+        // Configuration fields (map DB names to form names)
+        bedrooms_count: property.bedrooms || 1,
+        bathrooms_count: property.bathrooms || 1,
+        wc_count: property.wc_separate ? 1 : 0,
+        internal_area: property.internal_area_m2 || 0,
+        covered_verandas: property.covered_veranda_m2 || 0,
+        uncovered_verandas: property.uncovered_veranda_m2 || 0,
+        private_garden_area: property.garden_area_m2 || 0,
+        orientation: property.orientation || 'south',
+        
+        // Equipment fields
+        kitchen_type: property.kitchen_type || 'modern',
+        appliances_list: Array.isArray(property.property_features) ? property.property_features : [],
+        smart_home_features: Array.isArray(property.property_features) ? property.property_features : [],
+        flooring_type: 'tiles', // Default since not in DB
+        windows_type: 'aluminum', // Default since not in DB
+        doors_type: 'security', // Default since not in DB
+        
+        // Outdoor fields
+        balcony_count: property.has_balcony ? 1 : 0,
+        balcony_area: property.covered_veranda_m2 || 0,
+        terrace_count: property.has_terrace ? 1 : 0,
+        terrace_area: property.uncovered_veranda_m2 || 0,
+        has_private_garden: property.has_garden || false,
+        has_private_pool: property.has_private_pool || false,
+        parking_spaces: property.parking_spaces_count || 0,
+        storage_area: property.storage_area_m2 || 0,
+        view_type: property.view_type ? [property.view_type] : [],
+        
+        // Financial fields
+        price_excluding_vat: property.price || 0,
+        vat_rate: property.vat_rate || 5,
+        deposit_percentage: property.down_payment_percent || 10,
+        reservation_fee: property.reservation_fee || 0,
+        payment_plan_available: !!property.payment_plan,
+        finance_available: property.financing_available || false,
+        communal_fees_monthly: property.common_expenses_monthly || 0,
+        maintenance_fee_monthly: property.management_fee_monthly || 0,
+        
+        // Documentation fields  
+        title_deed_status: property.title_deed_status || 'ready',
+        title_deed_number: property.title_deed_number || '',
+        occupancy_certificate: property.occupancy_certificate_number || '',
+        building_permit_number: property.building_permit_number || '',
+        planning_permit_number: property.planning_permit_number || '',
+        
+        // Features from actual DB columns
+        has_balcony: property.has_balcony || false,
+        has_terrace: property.has_terrace || false,
+        has_jacuzzi: property.has_jacuzzi || false,
+        has_fireplace: property.has_fireplace || false,
+        has_storage_room: property.has_storage_room || false,
+        has_maid_room: property.has_maid_room || false,
+        
+        // Status
+        status: property.status || 'available',
+        furniture_status: property.furniture_status || 'unfurnished'
+      };
+      
+      console.log('📋 Mapped form data:', mappedData);
+      form.reset(mappedData);
     }
   }, [property, isEdit, form]);
 
