@@ -74,92 +74,70 @@ const AdminPropertyForm: React.FC = () => {
       project_id: '',
       building_id: '',
       
-      // Configuration - GRAND PENTHOUSE
-      bedrooms: 6,
-      bathrooms: 5,
-      internal_area_m2: 900,
-      total_rooms: 12,
+      // Configuration - GRAND PENTHOUSE (noms corrects des champs)
+      bedrooms_count: 6,
+      bathrooms_count: 5,
       wc_count: 3,
+      internal_area: 900,
+      covered_verandas: 150,
+      uncovered_verandas: 300,
+      private_garden_area: 500,
+      position_in_floor: 'entire_floor',
+      orientation: 'south',
       has_office: true,
       has_maid_room: true,
+      has_dressing_room: true,
+      has_laundry_room: true,
       has_playroom: true,
       has_wine_cellar: true,
-      has_dressing_room: true,
-      has_guest_wc: true,
+      has_pantry: true,
       
-      // Equipment - TOUT ÉQUIPÉ
-      appliances_list: [
-        'Four', 'Réfrigérateur', 'Hotte aspirante', 'Congélateur', 'Micro-ondes', 
-        'Machine à café', 'Lave-vaisselle', 'Plaque de cuisson', 'Cave à vin',
-        'Machine à glaçons', 'Four vapeur', 'Tiroir chauffant', 'Lave-linge',
-        'Sèche-linge', 'Aspirateur centralisé'
-      ],
-      smart_home_features: [
-        'Thermostat intelligent', 'Système de sécurité', 'Alarme incendie',
-        'Caméras surveillance', 'Interphone vidéo', 'Détecteurs fumée',
-        'Contrôle éclairage', 'Domotique centralisée', 'Volets automatiques',
-        'Système audio intégré', 'Contrôle température', 'Sécurité biométrique'
-      ],
+      // Equipment - TOUT ÉQUIPÉ (noms corrects)
+      kitchen_type: 'luxury',
+      kitchen_brand: 'Boffi',
       has_kitchen_appliances: true,
-      has_smart_home: true,
-      has_fireplace: true,
-      has_underfloor_heating: true,
-      has_alarm_system: true,
-      has_video_intercom: true,
+      appliances_list: [
+        'Réfrigérateur', 'Congélateur', 'Lave-vaisselle', 'Four', 'Micro-ondes', 
+        'Plaque de cuisson', 'Hotte aspirante', 'Machine à café', 'Cave à vin'
+      ],
+      hvac_type: 'central_ac',
+      heating_type: 'gas',
+      flooring_type: 'marble',
+      windows_type: 'aluminum',
+      doors_type: 'security',
+      smart_home_features: [
+        'Système de sécurité', 'Caméras surveillance', 'Contrôle éclairage', 
+        'Thermostat intelligent', 'Interphone vidéo', 'Domotique centralisée',
+        'Alarme incendie', 'Détecteurs fumée'
+      ],
       
-      // Outdoor - ESPACES EXTÉRIEURS LUXUEUX
+      // Outdoor - ESPACES EXTÉRIEURS LUXUEUX (noms corrects)
+      balcony_count: 3,
       balcony_area: 150,
+      terrace_count: 2,
       terrace_area: 300,
-      has_balcony: true,
-      has_terrace: true,
       has_private_garden: true,
-      has_roof_terrace: true,
       has_private_pool: true,
-      private_garden_area: 500,
-      
-      // Views & Orientation - VUES PANORAMIQUES
-      has_sea_view: true,
-      has_mountain_view: true,
-      has_city_view: true,
-      has_garden_view: true,
-      has_pool_view: true,
-      orientation: 'south',
-      view_quality: 'panoramic',
-      
-      // Parking & Storage - ESPACES DE RANGEMENT
-      parking_included: true,
+      pool_type: 'private',
       parking_spaces: 4,
-      parking_type: 'covered',
-      has_storage_unit: true,
+      parking_type: 'garage',
+      storage_spaces: 2,
       storage_area: 50,
+      view_type: ['sea', 'mountain', 'city', 'garden', 'pool'],
       
-      // Financial - 1.5M EUROS
-      price: 0,
+      // Financial - 1.5M EUROS (noms corrects)
       price_excluding_vat: 1500000,
       vat_rate: 5,
-      price_including_vat: 1575000,
-      price_per_sqm: 1667,
+      commission_rate: 5,
       original_price: 1600000,
-      current_price: 1500000,
-      discount_amount: 100000,
-      discount_percentage: 6.25,
-      golden_visa_eligible: true,
-      minimum_investment_met: true,
-      deposit_amount: 150000,
-      deposit_percentage: 10,
+      deposit_percentage: 30,
+      reservation_fee: 10000,
       payment_plan_available: true,
-      payment_plan_details: {
-        "installments": 24,
-        "monthly_amount": 56250,
-        "down_payment": 150000,
-        "final_payment": 1350000
-      },
-      
-      // Status & Availability
-      status: 'available',
-      is_available: true,
-      furniture_status: 'fully_furnished',
-      is_furnished: true,
+      finance_available: true,
+      minimum_cash_required: 450000,
+      annual_property_tax: 3500,
+      communal_fees_monthly: 450,
+      maintenance_fee_monthly: 200,
       
       // Documentation - COMPLET
       public_description: 'Penthouse d\'exception de 900m² avec terrasses panoramiques, piscine privée et finitions de prestige. Vue mer et montagne à 360°. Équipements haut de gamme et domotique intégrée.',
@@ -173,13 +151,7 @@ const AdminPropertyForm: React.FC = () => {
       
       // Technical Details - PRESTIGE
       ceiling_height: 4.2,
-      flooring_type: 'marble',
-      kitchen_type: 'luxury',
       bathroom_fixtures_brand: 'Villeroy & Boch',
-      windows_type: 'triple_glazing',
-      doors_type: 'smart_security',
-      heating_type: 'underfloor',
-      hvac_type: 'central_vrf',
       energy_rating: 'A+',
       energy_certificate_number: 'ENG-2024-PH-AAA-001',
       
@@ -188,7 +160,6 @@ const AdminPropertyForm: React.FC = () => {
       has_private_elevator: true,
       distance_to_elevator: 0,
       distance_to_stairs: 5,
-      position_in_floor: 'entire_floor',
       entrance_type: 'private_elevator',
       facing: ['north', 'south', 'east', 'west'],
       
