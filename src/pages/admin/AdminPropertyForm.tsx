@@ -320,6 +320,7 @@ const AdminPropertyForm: React.FC = () => {
         ceiling_height: undefined,
         distance_to_elevator: undefined,
         distance_to_stairs: undefined,
+        annual_property_tax: undefined,
         
         // Set proper status
         status: data.status || 'available',
