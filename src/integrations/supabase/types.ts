@@ -4045,6 +4045,252 @@ export type Database = {
           },
         ]
       }
+      properties_final: {
+        Row: {
+          availability_date: string | null
+          bank_loan_eligible: boolean | null
+          bathrooms: number | null
+          bedrooms: number | null
+          building_id: string | null
+          building_permit_number: string | null
+          capital_appreciation_estimate: number | null
+          common_expenses_monthly: number | null
+          covered_veranda_m2: number | null
+          created_at: string | null
+          currency: string | null
+          discount_percentage: number | null
+          down_payment_percent: number | null
+          encumbrance_check_date: string | null
+          financing_available: boolean | null
+          first_published_at: string | null
+          floor_number: number | null
+          furniture_status: string | null
+          garden_area_m2: number | null
+          golden_visa_eligible: boolean | null
+          has_balcony: boolean | null
+          has_fireplace: boolean | null
+          has_garden: boolean | null
+          has_jacuzzi: boolean | null
+          has_maid_room: boolean | null
+          has_parking_space: boolean | null
+          has_private_pool: boolean | null
+          has_storage_room: boolean | null
+          has_terrace: boolean | null
+          id: string
+          internal_area_m2: number | null
+          is_resale: boolean | null
+          kitchen_type: string | null
+          land_registry_fees: number | null
+          last_viewed_at: string | null
+          legal_check_completed: boolean | null
+          management_fee_monthly: number | null
+          occupancy_certificate_number: string | null
+          orientation: string | null
+          ownership_type: string | null
+          parking_spaces_count: number | null
+          payment_plan: Json | null
+          planning_permit_number: string | null
+          previous_owners_count: number | null
+          price: number | null
+          price_per_m2: number | null
+          price_with_vat: number | null
+          project_id: string | null
+          property_features: string[] | null
+          property_type: string | null
+          rental_potential_monthly: number | null
+          rental_yield_percent: number | null
+          reservation_expires: string | null
+          reservation_fee: number | null
+          roi_5_years: number | null
+          roof_terrace_m2: number | null
+          special_offer: string | null
+          stamp_duty: number | null
+          status: string | null
+          storage_area_m2: number | null
+          title_deed_number: string | null
+          title_deed_ready: boolean | null
+          title_deed_status: string | null
+          total_covered_area_m2: number | null
+          total_views: number | null
+          transfer_fee_amount: number | null
+          transfer_fee_percentage: number | null
+          uncovered_veranda_m2: number | null
+          unit_code: string
+          updated_at: string | null
+          vat_amount: number | null
+          vat_rate: number | null
+          view_type: string | null
+          wc_separate: boolean | null
+        }
+        Insert: {
+          availability_date?: string | null
+          bank_loan_eligible?: boolean | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          building_id?: string | null
+          building_permit_number?: string | null
+          capital_appreciation_estimate?: number | null
+          common_expenses_monthly?: number | null
+          covered_veranda_m2?: number | null
+          created_at?: string | null
+          currency?: string | null
+          discount_percentage?: number | null
+          down_payment_percent?: number | null
+          encumbrance_check_date?: string | null
+          financing_available?: boolean | null
+          first_published_at?: string | null
+          floor_number?: number | null
+          furniture_status?: string | null
+          garden_area_m2?: number | null
+          golden_visa_eligible?: boolean | null
+          has_balcony?: boolean | null
+          has_fireplace?: boolean | null
+          has_garden?: boolean | null
+          has_jacuzzi?: boolean | null
+          has_maid_room?: boolean | null
+          has_parking_space?: boolean | null
+          has_private_pool?: boolean | null
+          has_storage_room?: boolean | null
+          has_terrace?: boolean | null
+          id?: string
+          internal_area_m2?: number | null
+          is_resale?: boolean | null
+          kitchen_type?: string | null
+          land_registry_fees?: number | null
+          last_viewed_at?: string | null
+          legal_check_completed?: boolean | null
+          management_fee_monthly?: number | null
+          occupancy_certificate_number?: string | null
+          orientation?: string | null
+          ownership_type?: string | null
+          parking_spaces_count?: number | null
+          payment_plan?: Json | null
+          planning_permit_number?: string | null
+          previous_owners_count?: number | null
+          price?: number | null
+          price_per_m2?: number | null
+          price_with_vat?: number | null
+          project_id?: string | null
+          property_features?: string[] | null
+          property_type?: string | null
+          rental_potential_monthly?: number | null
+          rental_yield_percent?: number | null
+          reservation_expires?: string | null
+          reservation_fee?: number | null
+          roi_5_years?: number | null
+          roof_terrace_m2?: number | null
+          special_offer?: string | null
+          stamp_duty?: number | null
+          status?: string | null
+          storage_area_m2?: number | null
+          title_deed_number?: string | null
+          title_deed_ready?: boolean | null
+          title_deed_status?: string | null
+          total_covered_area_m2?: number | null
+          total_views?: number | null
+          transfer_fee_amount?: number | null
+          transfer_fee_percentage?: number | null
+          uncovered_veranda_m2?: number | null
+          unit_code: string
+          updated_at?: string | null
+          vat_amount?: number | null
+          vat_rate?: number | null
+          view_type?: string | null
+          wc_separate?: boolean | null
+        }
+        Update: {
+          availability_date?: string | null
+          bank_loan_eligible?: boolean | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          building_id?: string | null
+          building_permit_number?: string | null
+          capital_appreciation_estimate?: number | null
+          common_expenses_monthly?: number | null
+          covered_veranda_m2?: number | null
+          created_at?: string | null
+          currency?: string | null
+          discount_percentage?: number | null
+          down_payment_percent?: number | null
+          encumbrance_check_date?: string | null
+          financing_available?: boolean | null
+          first_published_at?: string | null
+          floor_number?: number | null
+          furniture_status?: string | null
+          garden_area_m2?: number | null
+          golden_visa_eligible?: boolean | null
+          has_balcony?: boolean | null
+          has_fireplace?: boolean | null
+          has_garden?: boolean | null
+          has_jacuzzi?: boolean | null
+          has_maid_room?: boolean | null
+          has_parking_space?: boolean | null
+          has_private_pool?: boolean | null
+          has_storage_room?: boolean | null
+          has_terrace?: boolean | null
+          id?: string
+          internal_area_m2?: number | null
+          is_resale?: boolean | null
+          kitchen_type?: string | null
+          land_registry_fees?: number | null
+          last_viewed_at?: string | null
+          legal_check_completed?: boolean | null
+          management_fee_monthly?: number | null
+          occupancy_certificate_number?: string | null
+          orientation?: string | null
+          ownership_type?: string | null
+          parking_spaces_count?: number | null
+          payment_plan?: Json | null
+          planning_permit_number?: string | null
+          previous_owners_count?: number | null
+          price?: number | null
+          price_per_m2?: number | null
+          price_with_vat?: number | null
+          project_id?: string | null
+          property_features?: string[] | null
+          property_type?: string | null
+          rental_potential_monthly?: number | null
+          rental_yield_percent?: number | null
+          reservation_expires?: string | null
+          reservation_fee?: number | null
+          roi_5_years?: number | null
+          roof_terrace_m2?: number | null
+          special_offer?: string | null
+          stamp_duty?: number | null
+          status?: string | null
+          storage_area_m2?: number | null
+          title_deed_number?: string | null
+          title_deed_ready?: boolean | null
+          title_deed_status?: string | null
+          total_covered_area_m2?: number | null
+          total_views?: number | null
+          transfer_fee_amount?: number | null
+          transfer_fee_percentage?: number | null
+          uncovered_veranda_m2?: number | null
+          unit_code?: string
+          updated_at?: string | null
+          vat_amount?: number | null
+          vat_rate?: number | null
+          view_type?: string | null
+          wc_separate?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "properties_final_building_id_fkey"
+            columns: ["building_id"]
+            isOneToOne: false
+            referencedRelation: "buildings_enhanced"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "properties_final_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects_clean"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       properties_test: {
         Row: {
           bathrooms: number | null
