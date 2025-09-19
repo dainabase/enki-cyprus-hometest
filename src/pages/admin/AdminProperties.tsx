@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Plus, Filter, CheckSquare, Brain, Trash2, Eye, Edit, Grid3X3, List, Table, AlignJustify, FileText, Home } from 'lucide-react';
@@ -259,84 +259,50 @@ const AdminProperties = () => {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [filters, setFilters] = useState<PropertyFilters>({});
   
-  // Fetch properties with relations
-  const { data: properties = [], isLoading } = useQuery({
-    queryKey: ['admin-properties', filters],
-    queryFn: async () => {
-      let query = supabase
+  // State management
+  const [properties, setProperties] = useState<any[]>([]);
+  const [projects, setProjects] = useState<any[]>([]);
+  const [buildings, setBuildings] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch properties
+  const fetchProperties = async () => {
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase
         .from('properties_final')
-        .select(`
-          *,
-          project:projects_clean(id, title, city, developer:developers(name)),
-          building:buildings_enhanced(id, building_code, name)
-        `)
+        .select('*')
         .order('unit_code');
       
-      // Apply filters
-      if (filters.search) {
-        query = query.or(`unit_code.ilike.%${filters.search}%,property_type.ilike.%${filters.search}%`);
-      }
-      if (filters.projectId) {
-        query = query.eq('project_id', filters.projectId);
-      }
-      if (filters.buildingId) {
-        query = query.eq('building_id', filters.buildingId);
-      }
-      if (filters.propertyType) {
-        query = query.eq('property_type', filters.propertyType);
-      }
-      if (filters.status) {
-        query = query.eq('status', filters.status);
-      }
-      if (filters.minPrice) {
-        query = query.gte('price', filters.minPrice);
-      }
-      if (filters.maxPrice) {
-        query = query.lte('price', filters.maxPrice);
-      }
-      if (filters.minBedrooms) {
-        query = query.gte('bedrooms_count', filters.minBedrooms);
-      }
-      if (filters.maxBedrooms) {
-        query = query.lte('bedrooms_count', filters.maxBedrooms);
-      }
-      if (filters.goldenVisaOnly) {
-        query = query.eq('golden_visa_eligible', true);
-      }
-      if (filters.hasView) {
-        query = query.or('has_sea_view.eq.true,has_mountain_view.eq.true,has_city_view.eq.true');
-      }
-      if (filters.furnished !== undefined) {
-        query = query.eq('is_furnished', filters.furnished);
-      }
-      
-      const { data, error } = await query;
       if (error) throw error;
-      return data || [];
-    },
-    staleTime: 0,
-    refetchOnMount: 'always',
-    refetchOnReconnect: 'always',
-    refetchOnWindowFocus: true
-  });
+      
+      // Simple properties without complex relations to avoid type issues
+      setProperties(data || []);
+    } catch (error: any) {
+      console.error('Error fetching properties:', error);
+      toast.error('Erreur lors du chargement des propriétés');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Fetch projects for filter dropdown
-  const { data: projects } = useQuery({
-    queryKey: ['projects-for-filter'],
-    queryFn: async () => {
+  const fetchProjects = async () => {
+    try {
       const { data, error } = await supabase
         .from('projects_clean')
         .select('id, title')
         .order('title');
       if (error) throw error;
-      return data;
+      setProjects(data || []);
+    } catch (error) {
+      console.error('Error fetching projects:', error);
     }
-  });
+  };
 
   // Fetch buildings for filter dropdown
-  const { data: buildings } = useQuery({
-    queryKey: ['buildings-for-filter', filters.projectId],
-    queryFn: async () => {
+  const fetchBuildings = async () => {
+    try {
       let query = supabase
         .from('buildings_enhanced')
         .select('id, building_code, project_id')
@@ -348,10 +314,28 @@ const AdminProperties = () => {
       
       const { data, error } = await query;
       if (error) throw error;
-      return data;
-    },
-    enabled: !!filters.projectId
-  });
+      setBuildings(data || []);
+    } catch (error) {
+      console.error('Error fetching buildings:', error);
+    }
+  };
+
+  // Effects
+  useEffect(() => {
+    fetchProperties();
+  }, [filters]);
+
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
+  useEffect(() => {
+    if (filters.projectId) {
+      fetchBuildings();
+    } else {
+      setBuildings([]);
+    }
+  }, [filters.projectId]);
 
   // Delete mutation
   const deleteMutation = useMutation({
