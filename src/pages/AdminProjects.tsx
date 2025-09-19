@@ -524,11 +524,11 @@ const AdminProjects = () => {
                                   <h3 className="font-semibold text-sm truncate">{project.title}</h3>
                                   <div className="flex items-center text-xs text-muted-foreground mt-1">
                                     <MapPin className="w-3 h-3 mr-1 flex-shrink-0" />
-                                    <span className="truncate">{typeof project.location === 'object' && project.location !== null ? (project.location as any).city : project.location}</span>
+                                    <span className="truncate">{project.city || 'Non spécifié'}</span>
                                   </div>
                                 </div>
                                 <Badge variant="outline" className="text-xs ml-2 flex-shrink-0">
-                                  {project.property_category || 'Résidentiel'}
+                                  {(project as any).property_type || 'Résidentiel'}
                                 </Badge>
                               </div>
                               
@@ -538,7 +538,7 @@ const AdminProjects = () => {
                               
                               <div className="flex items-center justify-between">
                                 <span className="font-semibold text-primary text-sm">
-                                  €{project.price?.toLocaleString()}
+                                  €{((project as any).price || 0).toLocaleString()}
                                 </span>
                                 <div className="flex gap-1">
                                   <Button
