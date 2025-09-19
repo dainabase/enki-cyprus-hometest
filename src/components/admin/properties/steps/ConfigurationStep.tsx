@@ -26,7 +26,7 @@ export const ConfigurationStep: React.FC<ConfigurationStepProps> = ({ form }) =>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <FormField
                 control={form.control}
-                name="bedrooms_count"
+                name="bedrooms"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Chambres *</FormLabel>
@@ -47,7 +47,7 @@ export const ConfigurationStep: React.FC<ConfigurationStepProps> = ({ form }) =>
 
               <FormField
                 control={form.control}
-                name="bathrooms_count"
+                name="bathrooms"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Salles de bain *</FormLabel>

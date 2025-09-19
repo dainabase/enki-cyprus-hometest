@@ -135,7 +135,7 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form, pr
           {/* Unit Code */}
           <FormField
             control={form.control}
-            name="unit_number"
+            name="unit_code"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-base font-semibold text-slate-700 flex items-center gap-2">
