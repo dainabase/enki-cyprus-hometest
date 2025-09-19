@@ -67,130 +67,119 @@ const AdminPropertyForm: React.FC = () => {
   const form = useForm<any>({
     mode: 'onSubmit',
     defaultValues: {
-      // Identification - PENTHOUSE COMPLET
-      unit_number: 'PH-DELUXE-001',
-      property_type: 'penthouse',
-      floor_number: 25,
+      // Identification
+      unit_number: '',
+      property_type: 'apartment',
+      floor_number: 1,
       project_id: '',
       building_id: '',
       
-      // Configuration - GRAND PENTHOUSE (noms corrects des champs)
-      bedrooms_count: 6,
-      bathrooms_count: 5,
-      wc_count: 3,
-      internal_area: 900,
-      covered_verandas: 150,
-      uncovered_verandas: 300,
-      private_garden_area: 500,
-      position_in_floor: 'entire_floor',
+      // Configuration
+      bedrooms_count: 1,
+      bathrooms_count: 1,
+      wc_count: 1,
+      internal_area: 0,
+      covered_verandas: 0,
+      uncovered_verandas: 0,
+      private_garden_area: 0,
+      position_in_floor: '',
       orientation: 'south',
-      has_office: true,
-      has_maid_room: true,
-      has_dressing_room: true,
-      has_laundry_room: true,
-      has_playroom: true,
-      has_wine_cellar: true,
-      has_pantry: true,
+      has_office: false,
+      has_maid_room: false,
+      has_dressing_room: false,
+      has_laundry_room: false,
+      has_playroom: false,
+      has_wine_cellar: false,
+      has_pantry: false,
       
-      // Equipment - TOUT ÉQUIPÉ (noms corrects)
-      kitchen_type: 'luxury',
-      kitchen_brand: 'Boffi',
-      has_kitchen_appliances: true,
-      appliances_list: [
-        'Réfrigérateur', 'Congélateur', 'Lave-vaisselle', 'Four', 'Micro-ondes', 
-        'Plaque de cuisson', 'Hotte aspirante', 'Machine à café', 'Cave à vin'
-      ],
-      hvac_type: 'central_ac',
-      heating_type: 'gas',
-      flooring_type: 'marble',
+      // Equipment
+      kitchen_type: 'modern',
+      kitchen_brand: '',
+      has_kitchen_appliances: false,
+      appliances_list: [],
+      hvac_type: 'split',
+      heating_type: 'central',
+      flooring_type: 'tiles',
       windows_type: 'aluminum',
       doors_type: 'security',
-      smart_home_features: [
-        'Système de sécurité', 'Caméras surveillance', 'Contrôle éclairage', 
-        'Thermostat intelligent', 'Interphone vidéo', 'Domotique centralisée',
-        'Alarme incendie', 'Détecteurs fumée'
-      ],
+      smart_home_features: [],
       
-      // Outdoor - ESPACES EXTÉRIEURS LUXUEUX (noms corrects)
-      balcony_count: 3,
-      balcony_area: 150,
-      terrace_count: 2,
-      terrace_area: 300,
-      has_private_garden: true,
-      has_private_pool: true,
+      // Outdoor
+      balcony_count: 0,
+      balcony_area: 0,
+      terrace_count: 0,
+      terrace_area: 0,
+      has_private_garden: false,
+      has_private_pool: false,
       pool_type: 'private',
-      parking_spaces: 4,
-      parking_type: 'garage',
-      storage_spaces: 2,
-      storage_area: 50,
-      view_type: ['sea', 'mountain', 'city', 'garden', 'pool'],
+      parking_spaces: 0,
+      parking_type: 'covered',
+      storage_spaces: 0,
+      storage_area: 0,
+      view_type: [],
       
-      // Financial - 1.5M EUROS (noms corrects)
-      price_excluding_vat: 1500000,
+      // Financial
+      price_excluding_vat: 0,
       vat_rate: 5,
-      commission_rate: 5,
-      original_price: 1600000,
-      deposit_percentage: 30,
-      reservation_fee: 10000,
-      payment_plan_available: true,
-      finance_available: true,
-      minimum_cash_required: 450000,
-      annual_property_tax: 3500,
-      communal_fees_monthly: 450,
-      maintenance_fee_monthly: 200,
+      commission_rate: 3,
+      original_price: 0,
+      deposit_percentage: 10,
+      reservation_fee: 0,
+      payment_plan_available: false,
+      finance_available: false,
+      minimum_cash_required: 0,
+      annual_property_tax: 0,
+      communal_fees_monthly: 0,
+      maintenance_fee_monthly: 0,
       
-      // Documentation - COMPLET
-      public_description: 'Penthouse d\'exception de 900m² avec terrasses panoramiques, piscine privée et finitions de prestige. Vue mer et montagne à 360°. Équipements haut de gamme et domotique intégrée.',
-      internal_notes: 'Propriété phare du projet - Client VIP uniquement. Visite sur RDV exclusivement. Négociation possible pour achat comptant.',
-      title_deed_status: 'available',
-      title_deed_number: 'TD-2024-PH-001',
-      cadastral_reference: 'CAD-LIM-2024-PH-001',
-      occupancy_certificate: 'OCC-2024-PH-DELUXE',
-      building_permit_number: 'BP-2023-TOWER-ELITE',
-      planning_permit_number: 'PP-2022-PENTHOUSE-001',
+      // Documentation
+      public_description: '',
+      internal_notes: '',
+      title_deed_status: 'ready',
+      title_deed_number: '',
+      cadastral_reference: '',
+      occupancy_certificate: '',
+      building_permit_number: '',
+      planning_permit_number: '',
       
-      // Technical Details - PRESTIGE
-      ceiling_height: 4.2,
-      bathroom_fixtures_brand: 'Villeroy & Boch',
-      energy_rating: 'A+',
-      energy_certificate_number: 'ENG-2024-PH-AAA-001',
+      // Technical Details
+      ceiling_height: 2.7,
+      bathroom_fixtures_brand: '',
+      energy_rating: 'B',
+      energy_certificate_number: '',
       
-      // Additional Features - TOUT INCLUS
-      has_disabled_access: true,
-      has_private_elevator: true,
+      // Additional Features
+      has_disabled_access: false,
+      has_private_elevator: false,
       distance_to_elevator: 0,
-      distance_to_stairs: 5,
-      entrance_type: 'private_elevator',
-      facing: ['north', 'south', 'east', 'west'],
+      distance_to_stairs: 0,
+      entrance_type: 'private',
+      facing: ['south'],
       
-      // Luxury Features - ULTRA LUXE
-      has_jacuzzi: true,
-      has_sauna: true,
-      has_home_cinema: true,
-      has_wine_fridge: true,
-      has_safe: true,
-      has_bbq_area: true,
-      has_pergola: true,
-      has_outdoor_kitchen: true,
-      has_automatic_irrigation: true,
+      // Luxury Features
+      has_jacuzzi: false,
+      has_sauna: false,
+      has_home_cinema: false,
+      has_wine_fridge: false,
+      has_safe: false,
+      has_bbq_area: false,
+      has_pergola: false,
+      has_outdoor_kitchen: false,
+      has_automatic_irrigation: false,
       
-      // Technology - DERNIÈRES TECHNOLOGIES
+      // Technology
       internet_ready: true,
-      has_satellite_tv: true,
-      has_fiber_optic: true,
-      has_electric_shutters: true,
-      has_electric_car_charger: true,
-      has_central_vacuum: true,
-      has_water_softener: true,
-      has_solar_panels: true,
+      has_satellite_tv: false,
+      has_fiber_optic: false,
+      has_electric_shutters: false,
+      has_electric_car_charger: false,
+      has_central_vacuum: false,
+      has_water_softener: false,
+      has_solar_panels: false,
       
-      // Security - SÉCURITÉ MAXIMALE
+      // Security
       has_security_door: true,
-      security_features: [
-        'Caméras 360°', 'Détecteurs mouvement', 'Alarme périmétrique',
-        'Contrôle accès biométrique', 'Surveillance 24h/24', 'Safe room',
-        'Détecteurs bris de glace', 'Système anti-intrusion'
-      ]
+      security_features: []
     }
   });
 
