@@ -84,10 +84,13 @@ const AdminPropertyForm: React.FC = () => {
   const onSubmit = async (data: PropertyDBData) => {
     setLoading(true);
     try {
+      // Remove generated columns (database calculates them automatically)
+      const { vat_amount, price_with_vat, golden_visa_eligible, price_per_m2, ...cleanData } = data;
+
       if (isEdit) {
         const { error } = await supabase
           .from('properties_final')
-          .update(data as any)
+          .update(cleanData as any)
           .eq('id', id);
         
         if (error) throw error;
@@ -99,7 +102,7 @@ const AdminPropertyForm: React.FC = () => {
       } else {
         const { error } = await supabase
           .from('properties_final')
-          .insert(data as any);
+          .insert(cleanData as any);
         
         if (error) throw error;
         
