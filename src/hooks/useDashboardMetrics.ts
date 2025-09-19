@@ -41,7 +41,7 @@ const fetchDashboardMetrics = async (options: UseMetricsOptions = {}): Promise<D
     // Fetch all data in parallel
     const [propertiesResult, leadsResult, commissionsResult] = await Promise.all([
       supabase
-        .from('projects_clean')
+        .from('projects')
         .select(`
           id,
           price,
@@ -91,7 +91,7 @@ const fetchDashboardMetrics = async (options: UseMetricsOptions = {}): Promise<D
     
     // Calculate KPIs
     const calculatedMetrics = calculateKPIs(
-      propertiesResult.data || [] as any[], // Simplified type handling
+      propertiesResult.data || [],
       leadsResult.data || [],
       commissionsResult.data || []
     );

@@ -54,8 +54,7 @@ const getNavigationStructure = (t: any) => ({
     items: [
       { title: t('admin.sidebar.developers'), url: '/admin/developers', icon: Users },
       { title: t('admin.sidebar.projects'), url: '/admin/projects', icon: FolderOpen },
-      { title: 'Bâtiments', url: '/admin/buildings', icon: Building },
-      { title: 'Propriétés', url: '/admin/properties', icon: Home }
+      { title: t('admin.sidebar.units'), url: '/admin/units', icon: Home }
     ]
   },
 

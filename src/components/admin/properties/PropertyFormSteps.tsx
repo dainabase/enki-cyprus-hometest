@@ -1,6 +1,6 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { PropertyDBData } from '@/schemas/property-db.schema';
+import { PropertyFormData } from '@/schemas/property.schema';
 import { IdentificationStep } from './steps/IdentificationStep';
 import { ConfigurationStep } from './steps/ConfigurationStep';
 import { EquipmentStep } from './steps/EquipmentStep';
@@ -9,16 +9,14 @@ import { FinancialStep } from './steps/FinancialStep';
 import { DocumentationStep } from './steps/DocumentationStep';
 
 interface PropertyFormStepsProps {
-  form: UseFormReturn<PropertyDBData>;
+  form: UseFormReturn<PropertyFormData>;
   currentStep: string;
-  projects?: any[];
-  buildings?: any[];
 }
 
-export const PropertyFormSteps: React.FC<PropertyFormStepsProps> = ({ form, currentStep, projects, buildings }) => {
+export const PropertyFormSteps: React.FC<PropertyFormStepsProps> = ({ form, currentStep }) => {
   switch (currentStep) {
     case 'identification':
-      return <IdentificationStep form={form} projects={projects} buildings={buildings} />;
+      return <IdentificationStep form={form} />;
     case 'configuration':
       return <ConfigurationStep form={form} />;
     case 'equipment':

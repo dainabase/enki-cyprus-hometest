@@ -8,7 +8,6 @@ import AdminFooter from '@/components/admin/AdminFooter';
 const AdminOverview = lazy(() => import('./AdminOverview').then(module => ({ default: module.AdminOverview })));
 const AdminDevelopers = lazy(() => import('./AdminDevelopers'));
 const AdminProjects = lazy(() => import('./AdminProjects'));
-const AdminProperties = lazy(() => import('./AdminProperties'));
 const AdminUnits = lazy(() => import('./AdminUnits'));
 const AdminCommissions = lazy(() => import('./AdminCommissions').then(module => ({ default: module.AdminCommissions })));
 const AdminUsers = lazy(() => import('./AdminUsers').then(module => ({ default: module.AdminUsers })));
@@ -75,7 +74,6 @@ const AdminDashboard = () => {
           <Route path="" element={<AdminOverview />} />
           <Route path="developers" element={<AdminDevelopers />} />
           <Route path="projects" element={<AdminProjects />} />
-          <Route path="properties" element={<AdminProperties />} />
           <Route path="units" element={<AdminUnits />} />
           <Route path="leads" element={<AdminLeads />} />
           <Route path="pipeline" element={<AdminPipeline />} />

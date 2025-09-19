@@ -24,13 +24,14 @@ export interface BuildingFormData {
 // Fetch buildings with optional filters
 export const fetchBuildings = async (filters: BuildingFilters = {}) => {
   let query = supabase
-    .from('buildings_enhanced')
+    .from('buildings')
     .select(`
       *,
-      project:projects_clean(id, title, zone)
+      project:projects(id, title, cyprus_zone),
+      properties:projects(properties(id, status))
     `)
     .order('project_id', { ascending: true })
-    .order('building_code', { ascending: true });
+    .order('name', { ascending: true });
 
   // Apply filters
   if (filters.projectId) {
@@ -54,13 +55,13 @@ export const fetchBuildings = async (filters: BuildingFilters = {}) => {
 // Fetch single building with full details
 export const fetchBuilding = async (id: string) => {
   const { data, error } = await supabase
-    .from('buildings_enhanced')
+    .from('buildings')
     .select(`
       *,
-      project:projects_clean(
+      project:projects(
         id,
         title,
-        zone,
+        cyprus_zone,
         developer:developers(name)
       )
     `)
@@ -74,9 +75,9 @@ export const fetchBuilding = async (id: string) => {
 // Create new building
 export const createBuilding = async (buildingData: BuildingFormData) => {
   const { data, error } = await supabase
-    .from('buildings_enhanced')
+    .from('buildings')
     .insert([{
-      building_code: buildingData.name,
+      name: buildingData.name,
       project_id: buildingData.project_id || null,
       total_floors: buildingData.total_floors,
       total_units: buildingData.total_units,
@@ -94,9 +95,9 @@ export const createBuilding = async (buildingData: BuildingFormData) => {
 // Update existing building
 export const updateBuilding = async (id: string, buildingData: Partial<BuildingFormData>) => {
   const { data, error } = await supabase
-    .from('buildings_enhanced')
+    .from('buildings')
     .update({
-      building_code: buildingData.name,
+      name: buildingData.name,
       project_id: buildingData.project_id || null,
       total_floors: buildingData.total_floors,
       total_units: buildingData.total_units,
@@ -125,7 +126,7 @@ export const deleteBuilding = async (id: string) => {
 
   // Proceed with deletion if no dependencies
   const { error } = await supabase
-    .from('buildings_enhanced')
+    .from('buildings')
     .delete()
     .eq('id', id);
   
@@ -135,8 +136,8 @@ export const deleteBuilding = async (id: string) => {
 // Fetch projects for dropdowns
 export const fetchProjectsForBuildings = async () => {
   const { data, error } = await supabase
-    .from('projects_clean')
-    .select('id, title, zone')
+    .from('projects')
+    .select('id, title, cyprus_zone')
     .order('title');
   
   if (error) throw error;

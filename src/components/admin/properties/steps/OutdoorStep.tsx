@@ -6,10 +6,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { PropertyDBData } from '@/schemas/property-db.schema';
+import { PropertyFormData } from '@/schemas/property.schema';
 
 interface OutdoorStepProps {
-  form: UseFormReturn<PropertyDBData>;
+  form: UseFormReturn<PropertyFormData>;
 }
 
 const viewTypes = [
@@ -29,7 +29,7 @@ export const OutdoorStep: React.FC<OutdoorStepProps> = ({ form }) => {
     if (checked) {
       form.setValue('view_type', [...current, viewType] as any);
     } else {
-      form.setValue('view_type', Array.isArray(current) ? current.filter(item => item !== viewType).join(',') : '');
+      form.setValue('view_type', current.filter(item => item !== viewType) as any);
     }
   };
 

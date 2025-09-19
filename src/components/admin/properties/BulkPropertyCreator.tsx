@@ -84,7 +84,7 @@ export default function BulkPropertyCreator({ developerId, projectId, buildingId
       }
 
       const { error } = await supabase
-        .from('properties_final')
+        .from('properties')
         .insert(properties);
       
       if (error) throw error;

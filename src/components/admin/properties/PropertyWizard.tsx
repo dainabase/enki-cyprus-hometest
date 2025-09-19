@@ -44,7 +44,7 @@ export default function PropertyWizard({ open, onClose, onSuccess }: PropertyWiz
     queryFn: async () => {
       if (!selectedDeveloper) return [];
       const { data, error } = await supabase
-        .from('projects_clean')
+        .from('projects')
         .select('id, title')
         .eq('developer_id', selectedDeveloper)
         .order('title');
@@ -60,8 +60,8 @@ export default function PropertyWizard({ open, onClose, onSuccess }: PropertyWiz
     queryFn: async () => {
       if (!selectedProject) return [];
       const { data, error } = await supabase
-        .from('buildings_enhanced')
-        .select('id, building_code')
+        .from('buildings')
+        .select('id, name')
         .eq('project_id', selectedProject)
         .order('name');
       if (error) throw error;
@@ -158,9 +158,9 @@ export default function PropertyWizard({ open, onClose, onSuccess }: PropertyWiz
                 </SelectTrigger>
                 <SelectContent>
                   {buildings?.map(building => (
-            <SelectItem key={building.id} value={building.id}>
-              {building.building_code}
-            </SelectItem>
+                    <SelectItem key={building.id} value={building.id}>
+                      {building.name}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>

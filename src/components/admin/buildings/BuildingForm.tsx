@@ -87,7 +87,7 @@ const BuildingForm: React.FC<BuildingFormProps> = ({ building, projects, onSave,
 
     try {
       const buildingData = {
-        building_code: formData.name || `BUILD-${Date.now()}`, // Map name to building_code (required field)
+        name: formData.name,
         project_id: formData.project_id || null,
         total_floors: formData.total_floors,
         total_units: formData.total_units,
@@ -99,7 +99,7 @@ const BuildingForm: React.FC<BuildingFormProps> = ({ building, projects, onSave,
       if (building) {
         // Update existing building
         const { error } = await supabase
-          .from('buildings_enhanced')
+          .from('buildings')
           .update(buildingData)
           .eq('id', building.id);
         
@@ -107,7 +107,7 @@ const BuildingForm: React.FC<BuildingFormProps> = ({ building, projects, onSave,
       } else {
         // Create new building
         const { error } = await supabase
-          .from('buildings_enhanced')
+          .from('buildings')
           .insert([buildingData]);
         
         if (error) throw error;

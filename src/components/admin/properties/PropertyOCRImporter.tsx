@@ -84,7 +84,6 @@ export const PropertyOCRImporter: React.FC<PropertyOCRImporterProps> = ({
 
       // Transform and insert properties
       const propertiesToInsert = mockProperties.map(property => ({
-        unit_code: property.unit_number || `UNIT-${Date.now()}`, // Map unit_number to unit_code
         project_id: projectId,
         building_id: buildingId || null,
         ...property
@@ -96,7 +95,7 @@ export const PropertyOCRImporter: React.FC<PropertyOCRImporterProps> = ({
         const batch = propertiesToInsert.slice(i, i + batchSize);
         
         const { error } = await supabase
-          .from('properties_final')
+          .from('properties')
           .insert(batch);
         
         if (error) throw error;

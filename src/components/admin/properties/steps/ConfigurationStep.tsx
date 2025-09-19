@@ -5,10 +5,10 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { PropertyDBData } from '@/schemas/property-db.schema';
+import { PropertyFormData } from '@/schemas/property.schema';
 
 interface ConfigurationStepProps {
-  form: UseFormReturn<PropertyDBData>;
+  form: UseFormReturn<PropertyFormData>;
 }
 
 export const ConfigurationStep: React.FC<ConfigurationStepProps> = ({ form }) => {
@@ -26,7 +26,7 @@ export const ConfigurationStep: React.FC<ConfigurationStepProps> = ({ form }) =>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <FormField
                 control={form.control}
-                name="bedrooms"
+                name="bedrooms_count"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Chambres *</FormLabel>
@@ -47,7 +47,7 @@ export const ConfigurationStep: React.FC<ConfigurationStepProps> = ({ form }) =>
 
               <FormField
                 control={form.control}
-                name="bathrooms"
+                name="bathrooms_count"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Salles de bain *</FormLabel>

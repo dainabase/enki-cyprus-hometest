@@ -10,7 +10,7 @@ export const usePropertyPDF = () => {
       
       // Fetch property data with relationships
       const { data, error } = await supabase
-        .from('projects_clean')
+        .from('projects')
         .select(`
           *,
           building:buildings(*),
@@ -32,7 +32,7 @@ export const usePropertyPDF = () => {
       });
 
       // Download
-      const fileName = `property-${data.slug || data.id || propertyId}.pdf`;
+      const fileName = `property-${data.project_code || data.url_slug || propertyId}.pdf`;
       pdf.save(fileName);
       
       toast.success('PDF generated successfully!', { id: 'pdf-generation' });
@@ -53,7 +53,7 @@ export const usePropertyPDF = () => {
         
         // Fetch property data
         const { data, error } = await supabase
-          .from('projects_clean')
+          .from('projects')
           .select(`
             *,
             building:buildings(*),
@@ -77,7 +77,7 @@ export const usePropertyPDF = () => {
         });
 
         // Download with delay to avoid browser blocking
-        const fileName = `property-${data.slug || data.id || propertyId}.pdf`;
+        const fileName = `property-${data.project_code || data.url_slug || propertyId}.pdf`;
         pdf.save(fileName);
         
         // Small delay between downloads

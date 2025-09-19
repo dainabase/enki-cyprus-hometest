@@ -121,9 +121,9 @@ const Admin = () => {
       
       // Load stats
       const [projectsCount, usersCount, projectsList] = await Promise.all([
-        supabase.from('projects_clean').select('*', { count: 'exact' }),
+        supabase.from('projects').select('*', { count: 'exact' }),
         supabase.from('profiles').select('*', { count: 'exact' }),
-        supabase.from('projects_clean').select('*').order('created_at', { ascending: false })
+        supabase.from('projects').select('*').order('created_at', { ascending: false })
       ]);
 
       setStats({
@@ -157,7 +157,7 @@ const Admin = () => {
       if (editingProject) {
         // Update existing project
         const { error } = await supabase
-          .from('projects_clean')
+          .from('projects')
           .update(projectData)
           .eq('id', editingProject.id);
 
@@ -170,7 +170,7 @@ const Admin = () => {
       } else {
         // Create new project
         const { error } = await supabase
-          .from('projects_clean')
+          .from('projects')
           .insert([projectData]);
 
         if (error) throw error;
@@ -200,7 +200,7 @@ const Admin = () => {
 
     try {
       const { error } = await supabase
-        .from('projects_clean')
+        .from('projects')
         .delete()
         .eq('id', projectId);
 

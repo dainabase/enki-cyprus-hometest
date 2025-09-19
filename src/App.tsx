@@ -24,7 +24,7 @@ const ProjectDetail = lazy(() => import("./pages/ProjectDetail"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Blog = lazy(() => import("./pages/Blog"));
-// const PropertyForm = lazy(() => import("./pages/admin/PropertyForm")); // SUPPRIMÉ
+const PropertyForm = lazy(() => import("./pages/admin/PropertyForm"));
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
@@ -38,11 +38,8 @@ const AdminProjects = lazy(() => import("./pages/admin/AdminProjects"));
 const AdminProjectForm = lazy(() => import("./pages/admin/AdminProjectForm"));
 const AdminAIImport = lazy(() => import("./pages/admin/AdminAIImport"));
 const AdminAIImportUnified = lazy(() => import("./pages/admin/AdminAIImportUnified"));
-const AdminProperties = lazy(() => import('./pages/admin/AdminProperties'));
-const AdminPropertyForm = lazy(() => import('./pages/admin/AdminPropertyForm'));
 const AdminProjectDetail = lazy(() => import("./pages/admin/AdminProjectDetail"));
 const AdminBuildings = lazy(() => import("./pages/admin/AdminBuildings"));
-
 const AdminLeads = lazy(() => import("./pages/admin/AdminLeads"));
 const AdminPerformance = lazy(() => import("./pages/admin/AdminPerformance"));
 const AdminSegmentation = lazy(() => import("./pages/admin/AdminSegmentation"));
@@ -77,11 +74,8 @@ const AppContent = () => {
           <Suspense fallback={<LoadingSpinner />}>
             <Routes>
               {/* Admin routes - without Layout */}
-              {/* Routes anciennes PropertyForm supprimées */}
-              <Route path="/admin/properties" element={<PrivateRoute adminOnly><AdminProperties /></PrivateRoute>} />
-              <Route path="/admin/properties/new" element={<PrivateRoute adminOnly><AdminPropertyForm /></PrivateRoute>} />
-              <Route path="/admin/properties/:id/edit" element={<PrivateRoute adminOnly><AdminPropertyForm /></PrivateRoute>} />
-              <Route path="/admin/properties/:id" element={<PrivateRoute adminOnly><AdminPropertyForm /></PrivateRoute>} />
+              <Route path="/admin/property-form" element={<PrivateRoute adminOnly><PropertyForm /></PrivateRoute>} />
+              <Route path="/admin/property-form/:id" element={<PrivateRoute adminOnly><PropertyForm /></PrivateRoute>} />
               <Route path="/admin/*" element={<PrivateRoute adminOnly><AdminDashboard /></PrivateRoute>} />
               <Route path="/admin/projects/new" element={<PrivateRoute adminOnly><AdminProjectForm /></PrivateRoute>} />
               <Route path="/admin/projects/ai-import" element={<PrivateRoute adminOnly><AdminAIImport /></PrivateRoute>} />

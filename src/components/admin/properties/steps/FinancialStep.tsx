@@ -7,11 +7,11 @@ import { Switch } from '@/components/ui/switch';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Crown, Calculator, TrendingUp } from 'lucide-react';
-import { PropertyDBData } from '@/schemas/property-db.schema';
+import { PropertyFormData } from '@/schemas/property.schema';
 import { formatPrice } from '@/lib/utils/formatters';
 
 interface FinancialStepProps {
-  form: UseFormReturn<PropertyDBData>;
+  form: UseFormReturn<PropertyFormData>;
 }
 
 export const FinancialStep: React.FC<FinancialStepProps> = ({ form }) => {
