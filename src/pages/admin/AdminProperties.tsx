@@ -1,39 +1,73 @@
-import React, { useState } from 'react';
-import { Plus, Filter, Eye, Edit, Trash2, Building2, Home, CheckSquare, Grid3X3, List, Table, AlignJustify, FileText } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
+import { Plus, Filter, CheckSquare, Brain, Trash2, Eye, Edit, Grid3X3, List, Table, AlignJustify, FileText, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useSupabaseQuery } from '@/hooks/useSupabaseQuery';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { useToast } from '@/hooks/use-toast';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { Badge } from '@/components/ui/badge';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { useViewPreference } from '@/hooks/useViewPreference';
-import { AppShell } from '@/components/dainabase-ui';
-import { AdminSidebarExecutive } from '@/components/admin/AdminSidebarExecutive';
-import { 
-  fetchProperties, 
-  deleteProperty, 
-  calculatePropertyStats,
-  fetchProjectsForProperties,
-  fetchBuildingsForProperties,
-  PropertyFilters 
-} from '@/lib/supabase/properties';
+import { PDFExportButton } from '@/components/admin/properties/PDFExportButton';
 
-export type PropertyViewType = 'cards' | 'list' | 'table' | 'compact' | 'detailed';
-
-interface PropertyViewSelectorProps {
-  currentView: PropertyViewType;
-  onViewChange: (view: PropertyViewType) => void;
+interface Property {
+  id: string;
+  unit_code: string;
+  property_type: string;
+  bedrooms_count?: number;
+  bathrooms_count?: number;
+  internal_area_m2?: number;
+  price: number;
+  price_per_m2?: number;
+  golden_visa_eligible: boolean;
+  status: string;
+  floor_number?: number;
+  balcony_area?: number;
+  terrace_area?: number;
+  parking_spaces?: number;
+  has_sea_view?: boolean;
+  has_mountain_view?: boolean;
+  has_city_view?: boolean;
+  is_furnished?: boolean;
+  project_id: string;
+  building_id?: string;
+  created_at: string;
+  updated_at: string;
+  project?: any;
+  building?: any;
 }
 
-const PropertyViewSelector = ({ currentView, onViewChange }: PropertyViewSelectorProps) => {
+interface PropertyFilters {
+  search?: string;
+  projectId?: string;
+  buildingId?: string;
+  propertyType?: string;
+  status?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  minBedrooms?: number;
+  maxBedrooms?: number;
+  goldenVisaOnly?: boolean;
+  hasView?: boolean;
+  furnished?: boolean;
+}
+
+type ViewType = 'cards' | 'list' | 'table' | 'compact' | 'detailed';
+
+const PropertyViewSelector = ({ currentView, onViewChange }: { currentView: ViewType; onViewChange: (view: ViewType) => void }) => {
   const views = [
-    { id: 'cards' as PropertyViewType, icon: Grid3X3, label: 'Cartes' },
-    { id: 'list' as PropertyViewType, icon: List, label: 'Liste' },
-    { id: 'table' as PropertyViewType, icon: Table, label: 'Tableau' },
-    { id: 'compact' as PropertyViewType, icon: AlignJustify, label: 'Compact' },
-    { id: 'detailed' as PropertyViewType, icon: FileText, label: 'Détaillé' }
+    { id: 'cards' as ViewType, icon: Grid3X3, label: 'Cartes' },
+    { id: 'list' as ViewType, icon: List, label: 'Liste' },
+    { id: 'table' as ViewType, icon: Table, label: 'Tableau' },
+    { id: 'compact' as ViewType, icon: AlignJustify, label: 'Compact' },
+    { id: 'detailed' as ViewType, icon: FileText, label: 'Détaillé' }
   ];
 
   return (
@@ -61,157 +95,444 @@ const PropertyViewSelector = ({ currentView, onViewChange }: PropertyViewSelecto
   );
 };
 
+const PropertyCard = ({ property, isSelected, onSelect, onEdit, onView }: { 
+  property: Property; 
+  isSelected: boolean; 
+  onSelect: (id: string, checked: boolean) => void;
+  onEdit: (property: Property) => void;
+  onView: (property: Property) => void;
+}) => {
+  return (
+    <Card className={`hover:shadow-lg transition-all duration-200 ${isSelected ? 'ring-2 ring-primary' : ''}`}>
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              checked={isSelected}
+              onChange={(e) => onSelect(property.id, e.target.checked)}
+              className="w-4 h-4 text-primary focus:ring-primary border-gray-300 rounded"
+            />
+            <div>
+              <CardTitle className="text-lg">{property.unit_code}</CardTitle>
+              <CardDescription className="text-sm">
+                {property.project?.title} {property.building?.building_code && `• ${property.building.building_code}`}
+              </CardDescription>
+            </div>
+          </div>
+          <div className="flex gap-1">
+            <Button variant="outline" size="sm" onClick={() => onView(property)}>
+              <Eye className="w-4 h-4" />
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => onEdit(property)}>
+              <Edit className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <div className="grid grid-cols-2 gap-4 text-sm">
+          <div>
+            <span className="text-slate-600">Type:</span>
+            <p className="font-medium">{property.property_type}</p>
+          </div>
+          <div>
+            <span className="text-slate-600">Prix:</span>
+            <p className="font-medium text-primary">€{property.price?.toLocaleString()}</p>
+          </div>
+          {property.bedrooms_count && (
+            <div>
+              <span className="text-slate-600">Chambres:</span>
+              <p className="font-medium">{property.bedrooms_count}</p>
+            </div>
+          )}
+          {property.internal_area_m2 && (
+            <div>
+              <span className="text-slate-600">Surface:</span>
+              <p className="font-medium">{property.internal_area_m2}m²</p>
+            </div>
+          )}
+        </div>
+        
+        <div className="flex gap-2 flex-wrap">
+          <Badge variant={property.status === 'available' ? 'default' : 'secondary'}>
+            {property.status}
+          </Badge>
+          {property.golden_visa_eligible && (
+            <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
+              Golden Visa
+            </Badge>
+          )}
+          {property.has_sea_view && (
+            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+              Vue mer
+            </Badge>
+          )}
+          {property.is_furnished && (
+            <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+              Meublé
+            </Badge>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+const PropertyListItem = ({ property, isSelected, onSelect, onEdit, onView }: { 
+  property: Property; 
+  isSelected: boolean; 
+  onSelect: (id: string, checked: boolean) => void;
+  onEdit: (property: Property) => void;
+  onView: (property: Property) => void;
+}) => {
+  return (
+    <div className={`flex items-center gap-4 p-4 bg-white rounded-lg border hover:shadow-md transition-all duration-200 ${isSelected ? 'ring-2 ring-primary' : ''}`}>
+      <input
+        type="checkbox"
+        checked={isSelected}
+        onChange={(e) => onSelect(property.id, e.target.checked)}
+        className="w-4 h-4 text-primary focus:ring-primary border-gray-300 rounded"
+      />
+      
+      <div className="flex-1 grid grid-cols-6 gap-4 items-center">
+        <div>
+          <p className="font-medium">{property.unit_code}</p>
+          <p className="text-sm text-slate-600">{property.property_type}</p>
+        </div>
+        
+        <div>
+          <p className="font-medium">{property.project?.title}</p>
+          <p className="text-sm text-slate-600">{property.building?.building_code}</p>
+        </div>
+        
+        <div>
+          <p className="font-medium">€{property.price?.toLocaleString()}</p>
+          {property.price_per_m2 && (
+            <p className="text-sm text-slate-600">€{property.price_per_m2}/m²</p>
+          )}
+        </div>
+        
+        <div>
+          {property.bedrooms_count && (
+            <p className="text-sm">{property.bedrooms_count} ch.</p>
+          )}
+          {property.internal_area_m2 && (
+            <p className="text-sm">{property.internal_area_m2}m²</p>
+          )}
+        </div>
+        
+        <div className="flex gap-1 flex-wrap">
+          <Badge variant={property.status === 'available' ? 'default' : 'secondary'} className="text-xs">
+            {property.status}
+          </Badge>
+          {property.golden_visa_eligible && (
+            <Badge variant="outline" className="text-xs bg-yellow-50 text-yellow-700 border-yellow-200">
+              GV
+            </Badge>
+          )}
+        </div>
+        
+        <div className="flex gap-1 justify-end">
+          <Button variant="outline" size="sm" onClick={() => onView(property)}>
+            <Eye className="w-4 h-4" />
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => onEdit(property)}>
+            <Edit className="w-4 h-4" />
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const AdminProperties = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
   const { currentView, changeView } = useViewPreference('properties-view', 'cards');
+  
+  // States
   const [showFilters, setShowFilters] = useState(false);
   const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [filters, setFilters] = useState<PropertyFilters>({});
-
-  // Fetch properties
-  const { data: properties, isLoading, error, refetch } = useSupabaseQuery(
-    ['admin-properties', filters],
-    () => fetchProperties(filters),
-    { staleTime: 0, refetchOnMount: 'always' }
-  );
+  
+  // Fetch properties with relations
+  const { data: properties = [], isLoading } = useQuery({
+    queryKey: ['admin-properties', filters],
+    queryFn: async () => {
+      let query = supabase
+        .from('properties_final')
+        .select(`
+          *,
+          project:projects_clean(id, title, city, developer:developers(name)),
+          building:buildings_enhanced(id, building_code, name)
+        `)
+        .order('unit_code');
+      
+      // Apply filters
+      if (filters.search) {
+        query = query.or(`unit_code.ilike.%${filters.search}%,property_type.ilike.%${filters.search}%`);
+      }
+      if (filters.projectId) {
+        query = query.eq('project_id', filters.projectId);
+      }
+      if (filters.buildingId) {
+        query = query.eq('building_id', filters.buildingId);
+      }
+      if (filters.propertyType) {
+        query = query.eq('property_type', filters.propertyType);
+      }
+      if (filters.status) {
+        query = query.eq('status', filters.status);
+      }
+      if (filters.minPrice) {
+        query = query.gte('price', filters.minPrice);
+      }
+      if (filters.maxPrice) {
+        query = query.lte('price', filters.maxPrice);
+      }
+      if (filters.minBedrooms) {
+        query = query.gte('bedrooms_count', filters.minBedrooms);
+      }
+      if (filters.maxBedrooms) {
+        query = query.lte('bedrooms_count', filters.maxBedrooms);
+      }
+      if (filters.goldenVisaOnly) {
+        query = query.eq('golden_visa_eligible', true);
+      }
+      if (filters.hasView) {
+        query = query.or('has_sea_view.eq.true,has_mountain_view.eq.true,has_city_view.eq.true');
+      }
+      if (filters.furnished !== undefined) {
+        query = query.eq('is_furnished', filters.furnished);
+      }
+      
+      const { data, error } = await query;
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 0,
+    refetchOnMount: 'always',
+    refetchOnReconnect: 'always',
+    refetchOnWindowFocus: true
+  });
 
   // Fetch projects for filter dropdown
-  const { data: projects } = useSupabaseQuery(
-    ['projects-for-properties'],
-    fetchProjectsForProperties
-  );
+  const { data: projects } = useQuery({
+    queryKey: ['projects-for-filter'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('projects_clean')
+        .select('id, title')
+        .order('title');
+      if (error) throw error;
+      return data;
+    }
+  });
 
   // Fetch buildings for filter dropdown
-  const { data: buildings } = useSupabaseQuery(
-    ['buildings-for-properties', filters.projectId],
-    () => fetchBuildingsForProperties(filters.projectId)
-  );
+  const { data: buildings } = useQuery({
+    queryKey: ['buildings-for-filter', filters.projectId],
+    queryFn: async () => {
+      let query = supabase
+        .from('buildings_enhanced')
+        .select('id, building_code, project_id')
+        .order('building_code');
+      
+      if (filters.projectId) {
+        query = query.eq('project_id', filters.projectId);
+      }
+      
+      const { data, error } = await query;
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!filters.projectId
+  });
 
-  React.useEffect(() => {
-    if (error) {
-      console.error('Erreur chargement propriétés:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Erreur de chargement',
-        description: (error as any).message || 'Impossible de charger les propriétés'
-      });
+  // Delete mutation
+  const deleteMutation = useMutation({
+    mutationFn: async (propertyIds: string[]) => {
+      const { error } = await supabase
+        .from('properties_final')
+        .delete()
+        .in('id', propertyIds);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-properties'] });
+      setSelectedProperties([]);
+      toast.success('Propriété(s) supprimée(s) avec succès');
+    },
+    onError: (error: any) => {
+      toast.error('Erreur lors de la suppression');
+      console.error(error);
     }
-  }, [error, toast]);
+  });
 
-  const handleDelete = async (id: string, unitCode: string) => {
-    if (!confirm(`Êtes-vous sûr de vouloir supprimer la propriété ${unitCode} ?`)) {
+  // Handlers
+  const handleSelectProperty = (propertyId: string, checked: boolean) => {
+    setSelectedProperties(prev => 
+      checked 
+        ? [...prev, propertyId]
+        : prev.filter(id => id !== propertyId)
+    );
+  };
+
+  const handleSelectAll = () => {
+    if (selectedProperties.length === properties.length) {
+      setSelectedProperties([]);
+    } else {
+      setSelectedProperties(properties.map(p => p.id));
+    }
+  };
+
+  const handleEditProperty = (property: Property) => {
+    navigate(`/admin/properties/${property.id}/edit`);
+  };
+
+  const handleViewProperty = (property: Property) => {
+    setSelectedProperty(property);
+    setIsDetailModalOpen(true);
+  };
+
+  const handleDeleteSelected = () => {
+    if (selectedProperties.length === 0) return;
+    
+    if (!confirm(`Êtes-vous sûr de vouloir supprimer ${selectedProperties.length} propriété(s) ?`)) {
       return;
     }
 
-    try {
-      await deleteProperty(id);
-      toast({
-        title: 'Propriété supprimée',
-        description: `La propriété ${unitCode} a été supprimée avec succès`
-      });
-      refetch();
-    } catch (error: any) {
-      console.error('Error deleting property:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Erreur',
-        description: error.message || 'Erreur lors de la suppression'
-      });
-    }
+    deleteMutation.mutate(selectedProperties);
   };
 
-  const stats = React.useMemo(() => {
-    return properties ? calculatePropertyStats(properties) : {
-      total: 0, available: 0, reserved: 0, sold: 0, goldenVisa: 0, averagePrice: 0, totalValue: 0
+  const handleClearFilters = () => {
+    setFilters({});
+  };
+
+  // Statistics
+  const stats = useMemo(() => {
+    return {
+      total: properties.length,
+      available: properties.filter(p => p.status === 'available').length,
+      sold: properties.filter(p => p.status === 'sold').length,
+      reserved: properties.filter(p => p.status === 'reserved').length,
+      goldenVisa: properties.filter(p => p.golden_visa_eligible).length,
+      avgPrice: properties.length > 0 ? Math.round(properties.reduce((sum, p) => sum + (p.price || 0), 0) / properties.length) : 0
     };
   }, [properties]);
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('fr-FR', { 
-      style: 'currency', 
-      currency: 'EUR',
-      minimumFractionDigits: 0
-    }).format(price);
-  };
+  const renderPropertyView = () => {
+    if (currentView === 'cards') {
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {properties.map((property) => (
+            <PropertyCard
+              key={property.id}
+              property={property}
+              isSelected={selectedProperties.includes(property.id)}
+              onSelect={handleSelectProperty}
+              onEdit={handleEditProperty}
+              onView={handleViewProperty}
+            />
+          ))}
+        </div>
+      );
+    }
 
-  const getStatusBadge = (status: string) => {
-    const variants = {
-      available: 'default',
-      reserved: 'secondary', 
-      sold: 'destructive'
-    } as const;
-    
-    const labels = {
-      available: 'Disponible',
-      reserved: 'Réservé',
-      sold: 'Vendu'
-    };
+    if (currentView === 'list') {
+      return (
+        <div className="space-y-2">
+          {properties.map((property) => (
+            <PropertyListItem
+              key={property.id}
+              property={property}
+              isSelected={selectedProperties.includes(property.id)}
+              onSelect={handleSelectProperty}
+              onEdit={handleEditProperty}
+              onView={handleViewProperty}
+            />
+          ))}
+        </div>
+      );
+    }
 
+    // Default to cards for other views for now
     return (
-      <Badge variant={variants[status as keyof typeof variants] || 'secondary'}>
-        {labels[status as keyof typeof labels] || status}
-      </Badge>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {properties.map((property) => (
+          <PropertyCard
+            key={property.id}
+            property={property}
+            isSelected={selectedProperties.includes(property.id)}
+            onSelect={handleSelectProperty}
+            onEdit={handleEditProperty}
+            onView={handleViewProperty}
+          />
+        ))}
+      </div>
     );
   };
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-2 text-muted-foreground">Chargement des propriétés...</p>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex justify-center items-center">
+        <div className="text-center space-y-4">
+          <LoadingSpinner />
+          <p className="text-slate-600">Chargement des propriétés...</p>
         </div>
       </div>
     );
   }
 
-  const AdminHeader = () => (
-    <div className="h-16 px-6 flex items-center justify-between bg-white border-b border-slate-200">
-      <div className="flex items-center gap-4">
-        <a href="/" className="text-2xl font-bold text-slate-900 hover:text-slate-700 transition-colors uppercase">
-          ENKI-REALTY
-        </a>
-        <span className="text-slate-400">|</span>
-        <span className="text-lg text-slate-500">Propriétés</span>
-      </div>
-      <div className="flex items-center gap-4">
-        <PropertyViewSelector
-          currentView={currentView}
-          onViewChange={changeView}
-        />
-        
-        <Button
-          variant="outline"
-          onClick={() => setShowFilters(!showFilters)}
-          className="gap-2 border-slate-200 hover:bg-slate-50"
-        >
-          <Filter className="w-4 h-4" />
-          Filtres & Tri
-        </Button>
-        
-        <Button 
-          onClick={() => navigate('/admin/properties/new')} 
-          className="bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 gap-2"
-          size="lg"
-        >
-          <Plus className="w-5 h-5" />
-          Nouvelle Propriété
-        </Button>
-      </div>
-    </div>
-  );
-
   return (
-    <AppShell
-      variant="executive"
-      header={<AdminHeader />}
-      sidebar={<AdminSidebarExecutive />}
-    >
-      <div className="h-full overflow-y-auto bg-gradient-to-br from-slate-50 to-slate-100 px-8 py-6 space-y-6">
+    <div className="h-screen flex flex-col">
+      {/* Header Section - STICKY */}
+      <div className="sticky top-0 z-10 bg-white border-b border-slate-200 shadow-sm">
+        <div className="px-8 py-6">
+          <div className="flex items-start justify-between">
+            <div className="space-y-3">
+              <div>
+                <h1 className="text-3xl font-bold text-slate-900">Propriétés</h1>
+                <p className="text-slate-600">Gérez votre inventaire de propriétés</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <PropertyViewSelector
+                currentView={currentView}
+                onViewChange={changeView}
+              />
+              
+              <Button
+                variant="outline"
+                onClick={() => setShowFilters(!showFilters)}
+                className="gap-2 border-slate-200 hover:bg-slate-50"
+              >
+                <Filter className="w-4 h-4" />
+                Filtres
+              </Button>
+              
+              <Button 
+                onClick={() => navigate('/admin/properties/new')} 
+                className="bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 gap-2"
+                size="lg"
+              >
+                <Plus className="w-5 h-5" />
+                Nouvelle Propriété
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto bg-gradient-to-br from-slate-50 to-slate-100 px-8 py-6 space-y-6">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-7 gap-4">
-          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200">
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-600">Total</CardTitle>
               <Home className="h-4 w-4 text-slate-500" />
@@ -220,8 +541,7 @@ const AdminProperties = () => {
               <div className="text-2xl font-bold text-slate-900">{stats.total}</div>
             </CardContent>
           </Card>
-
-          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200">
+          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-600">Disponibles</CardTitle>
             </CardHeader>
@@ -229,17 +549,7 @@ const AdminProperties = () => {
               <div className="text-2xl font-bold text-emerald-600">{stats.available}</div>
             </CardContent>
           </Card>
-
-          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-600">Réservées</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-orange-600">{stats.reserved}</div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200">
+          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-600">Vendues</CardTitle>
             </CardHeader>
@@ -247,8 +557,15 @@ const AdminProperties = () => {
               <div className="text-2xl font-bold text-blue-600">{stats.sold}</div>
             </CardContent>
           </Card>
-
-          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200">
+          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-slate-600">Réservées</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-orange-600">{stats.reserved}</div>
+            </CardContent>
+          </Card>
+          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-600">Golden Visa</CardTitle>
             </CardHeader>
@@ -256,22 +573,12 @@ const AdminProperties = () => {
               <div className="text-2xl font-bold text-yellow-600">{stats.goldenVisa}</div>
             </CardContent>
           </Card>
-
-          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200">
+          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-600">Prix Moyen</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-xl font-bold text-slate-900">{formatPrice(stats.averagePrice)}</div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-600">Valeur Totale</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-xl font-bold text-slate-900">{formatPrice(stats.totalValue)}</div>
+              <div className="text-lg font-bold text-purple-600">€{stats.avgPrice.toLocaleString()}</div>
             </CardContent>
           </Card>
         </div>
@@ -280,22 +587,41 @@ const AdminProperties = () => {
         {showFilters && (
           <Card className="bg-white/80 backdrop-blur-sm border border-slate-200">
             <CardHeader>
-              <CardTitle className="text-slate-900">Filtres</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-slate-900">Filtres</CardTitle>
+                <Button variant="outline" size="sm" onClick={handleClearFilters}>
+                  Effacer les filtres
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Projet</label>
+                <div>
+                  <Label htmlFor="search">Recherche</Label>
+                  <Input
+                    id="search"
+                    placeholder="Code unité, type..."
+                    value={filters.search || ''}
+                    onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="project">Projet</Label>
                   <Select 
                     value={filters.projectId || 'all'} 
-                    onValueChange={(value) => setFilters({...filters, projectId: value === 'all' ? undefined : value})}
+                    onValueChange={(value) => setFilters(prev => ({ 
+                      ...prev, 
+                      projectId: value === 'all' ? undefined : value,
+                      buildingId: undefined 
+                    }))}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Tous les projets" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">Tous les projets</SelectItem>
-                      {projects?.map(project => (
+                      {projects?.map((project) => (
                         <SelectItem key={project.id} value={project.id}>
                           {project.title}
                         </SelectItem>
@@ -304,31 +630,11 @@ const AdminProperties = () => {
                   </Select>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Bâtiment</label>
-                  <Select 
-                    value={filters.buildingId || 'all'} 
-                    onValueChange={(value) => setFilters({...filters, buildingId: value === 'all' ? undefined : value})}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Tous les bâtiments" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Tous les bâtiments</SelectItem>
-                      {buildings?.map(building => (
-                        <SelectItem key={building.id} value={building.id}>
-                          {building.building_code}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Statut</label>
+                <div>
+                  <Label htmlFor="status">Statut</Label>
                   <Select 
                     value={filters.status || 'all'} 
-                    onValueChange={(value) => setFilters({...filters, status: value === 'all' ? undefined : value})}
+                    onValueChange={(value) => setFilters(prev => ({ ...prev, status: value === 'all' ? undefined : value }))}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Tous les statuts" />
@@ -342,30 +648,20 @@ const AdminProperties = () => {
                   </Select>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Type</label>
-                  <Select 
-                    value={filters.propertyType || 'all'} 
-                    onValueChange={(value) => setFilters({...filters, propertyType: value === 'all' ? undefined : value})}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Tous les types" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Tous les types</SelectItem>
-                      <SelectItem value="apartment">Appartement</SelectItem>
-                      <SelectItem value="penthouse">Penthouse</SelectItem>
-                      <SelectItem value="villa">Villa</SelectItem>
-                      <SelectItem value="studio">Studio</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <div className="flex items-center space-x-2 pt-6">
+                  <Switch
+                    id="golden-visa"
+                    checked={filters.goldenVisaOnly || false}
+                    onCheckedChange={(checked) => setFilters(prev => ({ ...prev, goldenVisaOnly: checked }))}
+                  />
+                  <Label htmlFor="golden-visa">Golden Visa uniquement</Label>
                 </div>
               </div>
             </CardContent>
           </Card>
         )}
 
-        {/* Global Actions Bar */}
+        {/* Barre d'actions globales */}
         {selectedProperties.length > 0 && (
           <Card className="border-l-4 border-l-primary">
             <CardContent className="py-4">
@@ -382,31 +678,20 @@ const AdminProperties = () => {
                   </Button>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Button 
-                    variant="destructive" 
+                  <PDFExportButton 
+                    selectedPropertyIds={selectedProperties}
+                    variant="outline"
                     size="sm"
-                    onClick={() => {
-                      if (confirm(`Supprimer ${selectedProperties.length} propriété(s) sélectionnée(s) ?`)) {
-                        // Handle bulk delete
-                        Promise.all(selectedProperties.map(id => deleteProperty(id)))
-                          .then(() => {
-                            toast({ title: `${selectedProperties.length} propriété(s) supprimée(s)` });
-                            setSelectedProperties([]);
-                            refetch();
-                          })
-                          .catch((error) => {
-                            toast({
-                              variant: 'destructive',
-                              title: 'Erreur lors de la suppression',
-                              description: error.message
-                            });
-                          });
-                      }
-                    }}
-                    className="gap-2"
+                  />
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={handleDeleteSelected}
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                    disabled={deleteMutation.isPending}
                   >
-                    <Trash2 className="w-4 h-4" />
-                    Supprimer la sélection
+                    <Trash2 className="w-4 h-4 mr-1" />
+                    Supprimer
                   </Button>
                 </div>
               </div>
@@ -414,125 +699,152 @@ const AdminProperties = () => {
           </Card>
         )}
 
-        {/* Properties List */}
-        <div className="grid gap-4">
-          {properties?.map(property => (
-            <Card key={property.id} className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-start gap-4">
-                    <input
-                      type="checkbox"
-                      checked={selectedProperties.includes(property.id)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedProperties([...selectedProperties, property.id]);
-                        } else {
-                          setSelectedProperties(selectedProperties.filter(id => id !== property.id));
-                        }
-                      }}
-                      className="mt-2 rounded border-slate-300"
-                    />
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <Home className="w-6 h-6 text-primary" />
-                    </div>
-                    
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-lg">
-                          {property.unit_code}
-                        </h3>
-                        {property.golden_visa_eligible && (
-                          <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
-                            Golden Visa ✓
-                          </Badge>
-                        )}
-                        {getStatusBadge(property.status)}
-                      </div>
-                      
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <Building2 className="w-4 h-4" />
-                          <span>{property.project?.title}</span>
-                        </div>
-                        {property.building && (
-                          <div className="flex items-center gap-1">
-                            <span>Bâtiment {property.building.building_code}</span>
-                          </div>
-                        )}
-                        <span>{property.property_type}</span>
-                        {property.bedrooms && (
-                          <span>{property.bedrooms} ch.</span>
-                        )}
-                        {property.internal_area_m2 && (
-                          <span>{property.internal_area_m2} m²</span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+        {/* Main Content */}
+        <Card className="bg-white/80 backdrop-blur-sm border border-slate-200">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-slate-900">
+                  {properties.length} propriété(s)
+                </CardTitle>
+                <CardDescription>
+                  {selectedProperties.length > 0 && `${selectedProperties.length} sélectionnée(s)`}
+                </CardDescription>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleSelectAll}
+                >
+                  {selectedProperties.length === properties.length ? 'Tout désélectionner' : 'Tout sélectionner'}
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {properties.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-slate-600 mb-4">Aucune propriété trouvée</p>
+                <Button onClick={() => navigate('/admin/properties/new')}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Créer une propriété
+                </Button>
+              </div>
+            ) : (
+              renderPropertyView()
+            )}
+          </CardContent>
+        </Card>
+      </div>
 
-                  <div className="flex items-center gap-4">
-                    {property.price && (
-                      <div className="text-right">
-                        <div className="text-2xl font-bold text-slate-900">
-                          {formatPrice(property.price)}
-                        </div>
-                        {property.internal_area_m2 && (
-                          <div className="text-sm text-muted-foreground">
-                            {formatPrice(Math.round(property.price / property.internal_area_m2))}/m²
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => navigate(`/admin/properties/${property.id}`)}
-                      >
-                        <Eye className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => navigate(`/admin/properties/${property.id}/edit`)}
-                      >
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDelete(property.id, property.unit_code)}
-                        className="text-red-600 hover:text-red-700"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+      {/* Detail Modal */}
+      <Dialog open={isDetailModalOpen} onOpenChange={setIsDetailModalOpen}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>Détails de la propriété</DialogTitle>
+            <DialogDescription>
+              Informations complètes de la propriété {selectedProperty?.unit_code}
+            </DialogDescription>
+          </DialogHeader>
+          {selectedProperty && (
+            <div className="grid grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-medium text-slate-900">Informations générales</h4>
+                  <div className="mt-2 space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-slate-600">Code:</span>
+                      <span className="font-medium">{selectedProperty.unit_code}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-600">Type:</span>
+                      <span className="font-medium">{selectedProperty.property_type}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-600">Statut:</span>
+                      <Badge variant={selectedProperty.status === 'available' ? 'default' : 'secondary'}>
+                        {selectedProperty.status}
+                      </Badge>
                     </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
 
-          {properties?.length === 0 && (
-            <Card className="bg-white/80 backdrop-blur-sm border border-slate-200">
-              <CardContent className="p-12 text-center">
-                <Home className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Aucune propriété trouvée</h3>
-                <p className="text-muted-foreground mb-4">
-                  Commencez par créer votre première propriété
-                </p>
-                <Button onClick={() => navigate('/admin/properties/new')}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Nouvelle Propriété
-                </Button>
-              </CardContent>
-            </Card>
+                <div>
+                  <h4 className="font-medium text-slate-900">Caractéristiques</h4>
+                  <div className="mt-2 space-y-2 text-sm">
+                    {selectedProperty.bedrooms_count && (
+                      <div className="flex justify-between">
+                        <span className="text-slate-600">Chambres:</span>
+                        <span className="font-medium">{selectedProperty.bedrooms_count}</span>
+                      </div>
+                    )}
+                    {selectedProperty.bathrooms_count && (
+                      <div className="flex justify-between">
+                        <span className="text-slate-600">Salles de bain:</span>
+                        <span className="font-medium">{selectedProperty.bathrooms_count}</span>
+                      </div>
+                    )}
+                    {selectedProperty.internal_area_m2 && (
+                      <div className="flex justify-between">
+                        <span className="text-slate-600">Surface:</span>
+                        <span className="font-medium">{selectedProperty.internal_area_m2}m²</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-medium text-slate-900">Prix et financement</h4>
+                  <div className="mt-2 space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-slate-600">Prix:</span>
+                      <span className="font-medium text-primary">€{selectedProperty.price?.toLocaleString()}</span>
+                    </div>
+                    {selectedProperty.price_per_m2 && (
+                      <div className="flex justify-between">
+                        <span className="text-slate-600">Prix/m²:</span>
+                        <span className="font-medium">€{selectedProperty.price_per_m2}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between">
+                      <span className="text-slate-600">Golden Visa:</span>
+                      <Badge variant={selectedProperty.golden_visa_eligible ? 'default' : 'secondary'}>
+                        {selectedProperty.golden_visa_eligible ? 'Éligible' : 'Non éligible'}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="font-medium text-slate-900">Localisation</h4>
+                  <div className="mt-2 space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-slate-600">Projet:</span>
+                      <span className="font-medium">{selectedProperty.project?.title}</span>
+                    </div>
+                    {selectedProperty.building && (
+                      <div className="flex justify-between">
+                        <span className="text-slate-600">Bâtiment:</span>
+                        <span className="font-medium">{selectedProperty.building.building_code}</span>
+                      </div>
+                    )}
+                    {selectedProperty.floor_number && (
+                      <div className="flex justify-between">
+                        <span className="text-slate-600">Étage:</span>
+                        <span className="font-medium">{selectedProperty.floor_number}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
-        </div>
-      </div>
-    </AppShell>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };
 
