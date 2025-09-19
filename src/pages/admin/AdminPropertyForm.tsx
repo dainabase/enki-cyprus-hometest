@@ -68,7 +68,7 @@ const AdminPropertyForm: React.FC = () => {
     mode: 'onSubmit',
     defaultValues: {
       // Identification
-      unit_code: '',
+      unit_number: '',
       property_type: 'apartment',
       floor_number: 1,
       project_id: '',
@@ -235,7 +235,7 @@ const AdminPropertyForm: React.FC = () => {
       form.reset({
         ...property,
         // Ensure basic fields exist with fallbacks
-        unit_code: property.unit_code || '',
+        unit_number: property.unit_code || '',
         property_type: property.property_type || 'apartment',
         project_id: property.project_id || '',
         building_id: property.building_id || '',

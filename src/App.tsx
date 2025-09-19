@@ -38,9 +38,11 @@ const AdminProjects = lazy(() => import("./pages/admin/AdminProjects"));
 const AdminProjectForm = lazy(() => import("./pages/admin/AdminProjectForm"));
 const AdminAIImport = lazy(() => import("./pages/admin/AdminAIImport"));
 const AdminAIImportUnified = lazy(() => import("./pages/admin/AdminAIImportUnified"));
+const AdminProperties = lazy(() => import('./pages/admin/AdminProperties'));
+const AdminPropertyForm = lazy(() => import('./pages/admin/AdminPropertyForm'));
 const AdminProjectDetail = lazy(() => import("./pages/admin/AdminProjectDetail"));
 const AdminBuildings = lazy(() => import("./pages/admin/AdminBuildings"));
-const AdminProperties = lazy(() => import("./pages/admin/AdminProperties"));
+
 const AdminLeads = lazy(() => import("./pages/admin/AdminLeads"));
 const AdminPerformance = lazy(() => import("./pages/admin/AdminPerformance"));
 const AdminSegmentation = lazy(() => import("./pages/admin/AdminSegmentation"));
