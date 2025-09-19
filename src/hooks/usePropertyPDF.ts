@@ -32,7 +32,7 @@ export const usePropertyPDF = () => {
       });
 
       // Download
-      const fileName = `property-${data.project_code || data.url_slug || propertyId}.pdf`;
+      const fileName = `property-${data.slug || data.id || propertyId}.pdf`;
       pdf.save(fileName);
       
       toast.success('PDF generated successfully!', { id: 'pdf-generation' });
@@ -77,7 +77,7 @@ export const usePropertyPDF = () => {
         });
 
         // Download with delay to avoid browser blocking
-        const fileName = `property-${data.project_code || data.url_slug || propertyId}.pdf`;
+        const fileName = `property-${data.slug || data.id || propertyId}.pdf`;
         pdf.save(fileName);
         
         // Small delay between downloads

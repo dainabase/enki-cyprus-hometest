@@ -112,7 +112,7 @@ export async function synchronizeProjectPrices(projectId: string): Promise<void>
   try {
     // Get all buildings for this project
     const { data: buildings, error: buildingsError } = await supabase
-      .from('buildings')
+      .from('buildings_enhanced')
       .select('*')
       .eq('project_id', projectId);
 
@@ -140,8 +140,8 @@ export async function synchronizeBuildingPrices(buildingId: string): Promise<voi
   try {
     // Get the building and its project
     const { data: building, error: buildingError } = await supabase
-      .from('buildings')
-      .select('*, project:projects(*)')
+      .from('buildings_enhanced')
+      .select('*, project:projects_clean(*)')
       .eq('id', buildingId)
       .single();
 
@@ -163,7 +163,7 @@ export async function synchronizeBuildingStatus(buildingId: string): Promise<voi
   try {
     // Get the building
     const { data: building, error: buildingError } = await supabase
-      .from('buildings')
+      .from('buildings_enhanced')
       .select('*')
       .eq('id', buildingId)
       .single();
@@ -206,7 +206,7 @@ export async function validateHierarchyChain(
     // Validate project exists and is linked to developer if provided
     if (projectId) {
       const { data: project, error: projectError } = await supabase
-        .from('projects')
+        .from('projects_clean')
         .select('id, developer_id')
         .eq('id', projectId)
         .single();
@@ -221,7 +221,7 @@ export async function validateHierarchyChain(
     // Validate building exists and is linked to project if provided
     if (buildingId) {
       const { data: building, error: buildingError } = await supabase
-        .from('buildings')
+        .from('buildings_enhanced')
         .select('id, project_id')
         .eq('id', buildingId)
         .single();
@@ -264,11 +264,11 @@ export async function getHierarchyBreadcrumb(
     // If building ID is provided, get building and its project with developer
     if (buildingId) {
       const { data: buildingData, error: buildingError } = await supabase
-        .from('buildings')
+        .from('buildings_enhanced')
         .select(`
           id,
-          name,
-          project:projects(
+          building_code,
+          project:projects_clean(
             id,
             title,
             developer:developers(id, name)
@@ -278,7 +278,7 @@ export async function getHierarchyBreadcrumb(
         .single();
 
       if (!buildingError && buildingData) {
-        building = { id: buildingData.id, name: buildingData.name };
+        building = { id: buildingData.id, name: buildingData.building_code || buildingData.id };
         const typedProjectData = (buildingData as any).project as any;
         if (typedProjectData && typeof typedProjectData === 'object' && 'id' in typedProjectData) {
           project = { 
@@ -298,7 +298,7 @@ export async function getHierarchyBreadcrumb(
     // If only project ID is provided, get project with developer
     else if (projectId) {
       const { data: projectData, error: projectError } = await supabase
-        .from('projects')
+        .from('projects_clean')
         .select(`
           id,
           title,

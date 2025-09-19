@@ -108,7 +108,7 @@ const LexaiaPage = () => {
       if (propertyIds.length === 0) return [];
       
       const { data: properties } = await supabase
-        .from('projects')
+        .from('projects_clean')
         .select('id, title, price, location')
         .in('id', propertyIds);
       

@@ -92,9 +92,9 @@ const AdminProjects = () => {
     queryKey: ['admin-stats'],
     queryFn: async () => {
       const [projectsCount, usersCount, projects] = await Promise.all([
-        supabase.from('projects').select('*', { count: 'exact' }),
+        supabase.from('projects_clean').select('*', { count: 'exact' }),
         supabase.from('profiles').select('*', { count: 'exact' }),
-        supabase.from('projects').select('status')
+        supabase.from('projects_clean').select('status')
       ]);
 
       const published = projects.data?.length || 0;
@@ -115,7 +115,7 @@ const AdminProjects = () => {
     queryKey: ['admin-projects'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('projects')
+        .from('projects_clean')
         .select('*')
         .order('created_at', { ascending: false });
       
@@ -138,14 +138,14 @@ const AdminProjects = () => {
 
       if (editingProject) {
         const { error } = await supabase
-          .from('projects')
+          .from('projects_clean')
           .update(dataToSave)
           .eq('id', editingProject.id);
         if (error) throw error;
         return { action: 'updated', project: editingProject };
       } else {
         const { data, error } = await supabase
-          .from('projects')
+          .from('projects_clean')
           .insert([dataToSave])
           .select()
           .single();
@@ -203,7 +203,7 @@ const AdminProjects = () => {
   const deleteProjectMutation = useMutation({
     mutationFn: async (projectId: string) => {
       const { error } = await supabase
-        .from('projects')
+        .from('projects_clean')
         .delete()
         .eq('id', projectId);
       if (error) throw error;

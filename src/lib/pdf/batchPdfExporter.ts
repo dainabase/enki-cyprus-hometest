@@ -45,7 +45,7 @@ export class BatchPDFExporter {
         });
 
         // Create filename
-        const fileName = `${namePrefix}-${property.project_code || property.url_slug || property.id}.pdf`;
+        const fileName = `${namePrefix}-${property.slug || property.id}.pdf`;
         
         results.push({
           property,
@@ -93,8 +93,8 @@ export class BatchPDFExporter {
       let y = 75;
       
       // Summary statistics
-      const totalValue = properties.reduce((sum, p) => sum + (p.price || 0), 0);
-      const goldenVisaCount = properties.filter(p => p.golden_visa_eligible || (p.price && p.price >= 300000)).length;
+      const totalValue = properties.reduce((sum, p) => sum + ((p as any).price_from || (p as any).price || 0), 0);
+      const goldenVisaCount = properties.filter(p => p.golden_visa_eligible || ((p as any).price_from && (p as any).price_from >= 300000)).length;
       
       doc.setFontSize(14);
       doc.text('Summary Statistics', 20, y);
@@ -121,7 +121,7 @@ export class BatchPDFExporter {
           y = 20;
         }
         
-        const line = `${index + 1}. ${property.title || 'Untitled'} - €${(property.price || 0).toLocaleString()}`;
+        const line = `${index + 1}. ${property.title || 'Untitled'} - €${((property as any).price_from || (property as any).price || 0).toLocaleString()}`;
         doc.text(line, 20, y);
         y += 5;
       });

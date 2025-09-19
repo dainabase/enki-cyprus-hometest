@@ -42,7 +42,7 @@ const ProjectDetail = () => {
     queryKey: ['project', id],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('projects')
+        .from('projects_clean')
         .select(`
           *,
           project_images(url, caption, is_primary, display_order)
