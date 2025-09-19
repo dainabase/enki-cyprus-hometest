@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Plus, Filter, CheckSquare, Brain, Trash2, Eye, Edit, Grid3X3, List, Table, AlignJustify, FileText, Home } from 'lucide-react';
+import { Plus, Filter, CheckSquare, Brain, Trash2, Eye, Edit, Grid3X3, List, Table, AlignJustify, FileText, Home, CheckCircle, XCircle, Clock, Star, Euro } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -68,6 +68,7 @@ interface PropertyFilters {
   search?: string;
   projectId?: string;
   buildingId?: string;
+  developerId?: string;
   propertyType?: string;
   status?: string;
   minPrice?: number;
@@ -513,55 +514,77 @@ const AdminProperties = () => {
             </Button>
           </div>
         </div>
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        {/* Stats Cards - Single Row */}
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
           <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-600">Total</CardTitle>
-              <Home className="h-4 w-4 text-slate-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-slate-900">{stats.total}</div>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-slate-600">Total</p>
+                  <p className="text-xl font-bold text-slate-900">{stats.total}</p>
+                </div>
+                <Home className="h-5 w-5 text-blue-600" />
+              </div>
             </CardContent>
           </Card>
+          
           <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-600">Disponibles</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-emerald-600">{stats.available}</div>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-slate-600">Disponible</p>
+                  <p className="text-xl font-bold text-green-600">{stats.available}</p>
+                </div>
+                <CheckCircle className="h-5 w-5 text-green-600" />
+              </div>
             </CardContent>
           </Card>
+          
           <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-600">Vendues</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-blue-600">{stats.sold}</div>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-slate-600">Vendu</p>
+                  <p className="text-xl font-bold text-red-600">{stats.sold}</p>
+                </div>
+                <XCircle className="h-5 w-5 text-red-600" />
+              </div>
             </CardContent>
           </Card>
+          
           <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-600">Réservées</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-orange-600">{stats.reserved}</div>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-slate-600">Réservé</p>
+                  <p className="text-xl font-bold text-orange-600">{stats.reserved}</p>
+                </div>
+                <Clock className="h-5 w-5 text-orange-600" />
+              </div>
             </CardContent>
           </Card>
+          
           <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-600">Golden Visa</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-yellow-600">{stats.goldenVisa}</div>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-slate-600">Golden Visa</p>
+                  <p className="text-xl font-bold text-yellow-600">{stats.goldenVisa}</p>
+                </div>
+                <Star className="h-5 w-5 text-yellow-600" />
+              </div>
             </CardContent>
           </Card>
+          
           <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-600">Prix Moyen</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-lg font-bold text-purple-600">€{stats.avgPrice.toLocaleString()}</div>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-slate-600">Prix moyen</p>
+                  <p className="text-lg font-bold text-blue-600">€{stats.avgPrice.toLocaleString()}</p>
+                </div>
+                <Euro className="h-5 w-5 text-blue-600" />
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -570,15 +593,10 @@ const AdminProperties = () => {
         {showFilters && (
           <Card className="bg-white/80 backdrop-blur-sm border border-slate-200">
             <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-slate-900">Filtres</CardTitle>
-                <Button variant="outline" size="sm" onClick={handleClearFilters}>
-                  Effacer les filtres
-                </Button>
-              </div>
+              <CardTitle className="text-slate-900">Filtres</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 <div>
                   <Label htmlFor="search">Recherche</Label>
                   <Input
@@ -631,13 +649,34 @@ const AdminProperties = () => {
                   </Select>
                 </div>
 
-                <div className="flex items-center space-x-2 pt-6">
-                  <Switch
-                    id="golden-visa"
-                    checked={filters.goldenVisaOnly || false}
-                    onCheckedChange={(checked) => setFilters(prev => ({ ...prev, goldenVisaOnly: checked }))}
-                  />
-                  <Label htmlFor="golden-visa">Golden Visa uniquement</Label>
+                <div>
+                  <Label htmlFor="developer">Développeur</Label>
+                  <Select 
+                    value={filters.developerId || 'all'} 
+                    onValueChange={(value) => setFilters(prev => ({ ...prev, developerId: value === 'all' ? undefined : value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Tous les développeurs" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Tous les développeurs</SelectItem>
+                      {/* Add developers from projects */}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex items-center gap-4 pt-6">
+                  <Button variant="outline" size="sm" onClick={handleClearFilters}>
+                    Effacer les filtres
+                  </Button>
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="golden-visa"
+                      checked={filters.goldenVisaOnly || false}
+                      onCheckedChange={(checked) => setFilters(prev => ({ ...prev, goldenVisaOnly: checked }))}
+                    />
+                    <Label htmlFor="golden-visa">Golden Visa</Label>
+                  </div>
                 </div>
               </div>
             </CardContent>
