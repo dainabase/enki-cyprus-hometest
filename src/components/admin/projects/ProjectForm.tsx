@@ -130,20 +130,15 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
         description: formData.description,
         detailed_description: formData.detailed_description || null,
         developer_id: formData.developer_id || null,
+        city: formData.location?.city || 'Limassol', // Required field
         cyprus_zone: formData.cyprus_zone,
         status: formData.status,
-        type: formData.property_types.length > 0 ? formData.property_types[0] : 'apartment',
-        property_types: formData.property_types,
-        price: formData.price,
-        price_from: formData.price_from || null,
+        price_from: parseFloat(formData.price_from) || null, // Convert to number
         vat_rate: formData.vat_rate,
         completion_date: formData.completion_date || null,
         golden_visa_eligible: formData.golden_visa_eligible,
         units_available: formData.units_available,
-        total_units: formData.total_units,
-        location: formData.location,
-        features: [],
-        photos: []
+        total_units: formData.total_units
       };
 
       if (project) {

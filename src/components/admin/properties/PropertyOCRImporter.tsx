@@ -83,9 +83,11 @@ export const PropertyOCRImporter: React.FC<PropertyOCRImporterProps> = ({
       setProgress(80);
 
       // Transform and insert properties
-      const propertiesToInsert = mockProperties.map(property => ({
+      const propertiesToInsert = mockProperties.map((property, index) => ({
         project_id: projectId,
         building_id: buildingId || null,
+        developer_id: null, // Will be set by trigger
+        property_code: `${projectId}-OCR${index + 1}`, // Required field
         ...property
       }));
 

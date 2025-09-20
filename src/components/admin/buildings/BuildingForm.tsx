@@ -20,6 +20,7 @@ interface BuildingFormProps {
 
 interface BuildingFormData {
   name: string;
+  building_code: string; // Added missing field
   project_id: string;
   total_floors: number;
   total_units: number;
@@ -39,6 +40,7 @@ const BuildingForm: React.FC<BuildingFormProps> = ({ building, projects, onSave,
   
   const [formData, setFormData] = useState<BuildingFormData>({
     name: '',
+    building_code: 'A', // Add missing field
     project_id: '',
     total_floors: 1,
     total_units: 1,
@@ -55,6 +57,7 @@ const BuildingForm: React.FC<BuildingFormProps> = ({ building, projects, onSave,
     if (building) {
       setFormData({
         name: building.name || '',
+        building_code: building.building_code || 'A', // Add missing field
         project_id: building.project_id || '',
         total_floors: building.total_floors || 1,
         total_units: building.total_units || 1,
@@ -88,6 +91,7 @@ const BuildingForm: React.FC<BuildingFormProps> = ({ building, projects, onSave,
     try {
       const buildingData = {
         name: formData.name,
+        building_code: formData.building_code || 'A', // Required field
         project_id: formData.project_id || null,
         total_floors: formData.total_floors,
         total_units: formData.total_units,

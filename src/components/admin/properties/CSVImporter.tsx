@@ -88,24 +88,25 @@ export const CSVImporter: React.FC<CSVImporterProps> = ({
       setUploadProgress(30);
 
       // Transform data to match database schema
-      const propertiesToInsert = validData.map(row => ({
+      const propertiesToInsert = validData.map((row, index) => ({
         project_id: projectId,
         building_id: buildingId || null,
-        unit_number: row.unit_number,
-        property_type: row.type as 'apartment' | 'villa' | 'penthouse' | 'studio' | 'townhouse' | 'duplex' | 'triplex' | 'maisonette',
-        property_status: row.status as 'available' | 'reserved' | 'sold' | 'rented' | 'unavailable',
-        bedrooms_count: row.bedrooms,
-        bathrooms_count: row.bathrooms,
-        internal_area: row.size_m2,
-        price_excluding_vat: row.price,
-        view_type: row.view_type ? [row.view_type] : [],
-        orientation: row.orientation as 'north' | 'south' | 'east' | 'west' | 'north_east' | 'north_west' | 'south_east' | 'south_west' | undefined,
+        developer_id: null, // Will be set by trigger
+        property_code: `${projectId}-${row.unit_number || `U${index + 1}`}`, // Required field
+        unit_number: row.unit_number || `U${index + 1}`,
+        property_type: row.type || 'apartment',
+        property_status: row.status || 'available',
+        bedrooms_count: row.bedrooms || 1,
+        bathrooms_count: row.bathrooms || 1,
+        internal_area: row.size_m2 || 50, // Required field
+        price_excluding_vat: row.price || 100000, // Required field
+        orientation: row.orientation,
         parking_spaces: row.parking_spaces || 0,
         floor_number: row.floor || null,
-        vat_rate: 5, // Default VAT rate
-        commission_rate: 5, // Default commission rate
-        deposit_percentage: 30, // Default deposit
-        reservation_fee: 5000 // Default reservation fee
+        vat_rate: 5,
+        commission_rate: 5,
+        deposit_percentage: 30,
+        reservation_fee: 5000
       }));
 
       setUploadProgress(60);
