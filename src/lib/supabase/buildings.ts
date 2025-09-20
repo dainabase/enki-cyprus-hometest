@@ -9,6 +9,7 @@ export interface BuildingFilters {
 
 export interface BuildingFormData {
   name: string;
+  building_code?: string;
   project_id?: string;
   total_floors: number;
   total_units: number;
@@ -31,7 +32,7 @@ export const fetchBuildings = async (filters: BuildingFilters = {}) => {
       properties:projects(properties(id, status))
     `)
     .order('project_id', { ascending: true })
-    .order('name', { ascending: true });
+    .order('building_name', { ascending: true });
 
   // Apply filters
   if (filters.projectId) {
@@ -77,9 +78,10 @@ export const createBuilding = async (buildingData: BuildingFormData) => {
   const { data, error } = await supabase
     .from('buildings')
     .insert([{
-      name: buildingData.name,
+      building_code: buildingData.building_code || 'A',
+      building_name: buildingData.name,
       project_id: buildingData.project_id || null,
-      total_floors: buildingData.total_floors,
+      total_floors: buildingData.total_floors || 1,
       total_units: buildingData.total_units,
       building_type: buildingData.building_type,
       construction_status: buildingData.construction_status,
@@ -97,9 +99,10 @@ export const updateBuilding = async (id: string, buildingData: Partial<BuildingF
   const { data, error } = await supabase
     .from('buildings')
     .update({
-      name: buildingData.name,
+      building_code: buildingData.building_code || 'A',
+      building_name: buildingData.name,
       project_id: buildingData.project_id || null,
-      total_floors: buildingData.total_floors,
+      total_floors: buildingData.total_floors || 1,
       total_units: buildingData.total_units,
       building_type: buildingData.building_type,
       construction_status: buildingData.construction_status,

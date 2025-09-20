@@ -16,10 +16,7 @@ export const fetchBuildingsByProject = async (projectId: string): Promise<Buildi
   }
 
   // Map database fields to Building interface
-  return (data || []).map(item => ({
-    ...item,
-    building_name: item.building_name || item.name,
-  })) as Building[];
+  return (data || []) as Building[];
 };
 
 // Create a new building
@@ -28,8 +25,12 @@ export const createBuilding = async (projectId: string, buildingData: BuildingFo
     .from('buildings')
     .insert([{
       project_id: projectId,
-      name: buildingData.building_name, // Map building_name to name for database compatibility
-      ...buildingData,
+      building_code: buildingData.building_code || 'A',
+      building_name: buildingData.building_name,
+      building_type: buildingData.building_type,
+      total_floors: buildingData.total_floors || 1,
+      total_units: buildingData.total_units || 0,
+      construction_status: buildingData.construction_status,
       created_by: (await supabase.auth.getUser()).data.user?.id
     }])
     .select()
@@ -94,8 +95,5 @@ export const fetchBuildingById = async (id: string): Promise<Building | null> =>
 
   if (!data) return null;
 
-  return {
-    ...data,
-    building_name: data.building_name || data.name,
-  } as Building;
+  return data as Building;
 };

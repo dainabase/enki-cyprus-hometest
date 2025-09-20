@@ -157,9 +157,9 @@ export default function PropertyWizard({ open, onClose, onSuccess }: PropertyWiz
                   <SelectValue placeholder="Choisir un bâtiment" />
                 </SelectTrigger>
                 <SelectContent>
-                  {buildings?.map(building => (
-                    <SelectItem key={building.id} value={building.id}>
-                      {building.name}
+                  {Array.isArray(buildings) && buildings?.map((building: any) => (
+                    <SelectItem key={building?.id || 'unknown'} value={building?.id || ''}>
+                      {building?.building_name || building?.name || 'Unknown Building'}
                     </SelectItem>
                   ))}
                 </SelectContent>

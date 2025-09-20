@@ -91,10 +91,10 @@ export async function checkGoldenVisaCalculation(): Promise<TestResult> {
       };
     }
 
-    const inconsistencies = projects.filter(p => {
-      const shouldBeEligible = (p.price || 0) >= 300000;
+    const inconsistencies = Array.isArray(projects) ? projects.filter((p: any) => {
+      const shouldBeEligible = (p.price_from || 0) >= 300000;
       return shouldBeEligible !== p.golden_visa_eligible;
-    });
+    }) : [];
 
     return {
       name: "Calcul Golden Visa",

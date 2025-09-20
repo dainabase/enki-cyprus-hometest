@@ -100,9 +100,9 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) 
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="none">Aucun (villa individuelle)</SelectItem>
-                  {buildings.map(building => (
-                    <SelectItem key={building.id} value={building.id}>
-                      {building.building_name || building.name}
+                  {Array.isArray(buildings) && buildings.map((building: any) => (
+                    <SelectItem key={building?.id || 'unknown'} value={building?.id || ''}>
+                      {building?.building_name || building?.name || 'Unknown Building'}
                     </SelectItem>
                   ))}
                 </SelectContent>

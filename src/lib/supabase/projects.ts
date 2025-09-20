@@ -76,7 +76,7 @@ export const fetchProject = async (id: string) => {
       developer:developers(id, name, contact_info, logo, website),
       buildings!fk_buildings_project_id(
         id,
-        name,
+        building_name,
         total_floors,
         total_units,
         building_type,
@@ -96,7 +96,24 @@ export const createProject = async (projectData: ProjectFormData) => {
   const { data, error } = await supabase
     .from('projects')
     .insert([{
-      ...projectData,
+      title: projectData.title,
+      subtitle: projectData.subtitle,
+      description: projectData.description,
+      detailed_description: projectData.detailed_description,
+      developer_id: projectData.developer_id,
+      city: projectData.location?.city || 'Limassol',
+      cyprus_zone: projectData.cyprus_zone,
+      status: projectData.status,
+      status_project: projectData.status_project,
+      statut_commercial: projectData.statut_commercial,
+      type: projectData.type,
+      price_from: typeof projectData.price_from === 'string' ? parseFloat(projectData.price_from) : projectData.price_from,
+      vat_rate: projectData.vat_rate,
+      completion_date: projectData.completion_date,
+      golden_visa_eligible: projectData.golden_visa_eligible,
+      units_available: projectData.units_available,
+      total_units: projectData.total_units,
+      location: projectData.location,
       features: projectData.features || [],
       photos: projectData.photos || []
     }])
@@ -116,9 +133,15 @@ export const updateProject = async (id: string, projectData: Partial<ProjectForm
     title: projectData.title
   });
   
+  // Prepare update data with proper type conversion
+  const updateData = {
+    ...projectData,
+    price_from: typeof projectData.price_from === 'string' ? parseFloat(projectData.price_from) : projectData.price_from
+  };
+
   const { data, error } = await supabase
     .from('projects')
-    .update(projectData)
+    .update(updateData)
     .eq('id', id)
     .select()
     .single();
@@ -130,8 +153,6 @@ export const updateProject = async (id: string, projectData: Partial<ProjectForm
   
   console.log('✅ UPDATE PROJECT RÉUSSI - Données retournées:', {
     id: data.id,
-    status_project: data.status_project,
-    statut_commercial: data.statut_commercial,
     title: data.title
   });
   
@@ -143,13 +164,13 @@ export const deleteProject = async (id: string) => {
   // Check for dependent buildings first
   const { data: buildings, error: checkError } = await supabase
     .from('buildings')
-    .select('id, name')
+    .select('id, building_name')
     .eq('project_id', id);
 
   if (checkError) throw checkError;
 
   if (buildings && buildings.length > 0) {
-    const buildingNames = buildings.map(b => b.name).join(', ');
+    const buildingNames = buildings.map(b => b.building_name || `Building ${b.id}`).join(', ');
     throw new Error(`Impossible de supprimer : ${buildings.length} bâtiment(s) associé(s) (${buildingNames})`);
   }
 
