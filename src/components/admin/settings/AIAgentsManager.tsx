@@ -115,41 +115,51 @@ export default function AIAgentsManager() {
   });
 
   useEffect(() => {
-    loadAgentConfig();
+    loadAllAgentConfigs();
     loadStats();
-  }, [selectedAgent]);
+  }, []);
 
-  const loadAgentConfig = async () => {
+  useEffect(() => {
+    // Charger la config de l'agent sélectionné
+    const config = agentConfigs[selectedAgent.id];
+    if (config) {
+      setCurrentConfig(config);
+    } else {
+      setCurrentConfig({
+        provider: 'openai',
+        model_name: 'gpt-4-turbo-preview',
+        api_key_encrypted: '',
+        temperature: 0.7,
+        max_tokens: 1000,
+        system_prompt: selectedAgent.defaultPrompt,
+        is_active: false
+      });
+    }
+  }, [selectedAgent, agentConfigs]);
+
+  const loadAllAgentConfigs = async () => {
     try {
       const { data, error } = await supabase
         .from('ai_agents_config')
-        .select('*')
-        .eq('agent_name', selectedAgent.id)
-        .single();
+        .select('*');
 
       if (data) {
-        setCurrentConfig({
-          provider: data.provider || 'openai',
-          model_name: data.model_name || 'gpt-4-turbo-preview',
-          api_key_encrypted: data.api_key_encrypted || '',
-          temperature: data.temperature || 0.7,
-          max_tokens: data.max_tokens || 1000,
-          system_prompt: data.system_prompt || selectedAgent.defaultPrompt,
-          is_active: data.is_active || false
+        const configsMap = {};
+        data.forEach(config => {
+          configsMap[config.agent_name] = {
+            provider: config.provider || 'openai',
+            model_name: config.model_name || 'gpt-4-turbo-preview',
+            api_key_encrypted: config.api_key_encrypted || '',
+            temperature: config.temperature || 0.7,
+            max_tokens: config.max_tokens || 1000,
+            system_prompt: config.system_prompt || '',
+            is_active: config.is_active || false
+          };
         });
-      } else {
-        setCurrentConfig({
-          provider: 'openai',
-          model_name: 'gpt-4-turbo-preview',
-          api_key_encrypted: '',
-          temperature: 0.7,
-          max_tokens: 1000,
-          system_prompt: selectedAgent.defaultPrompt,
-          is_active: false
-        });
+        setAgentConfigs(configsMap);
       }
     } catch (error) {
-      console.error('Échec du chargement de la configuration:', error);
+      console.error('Échec du chargement des configurations:', error);
     }
   };
 
@@ -200,6 +210,12 @@ export default function AIAgentsManager() {
 
       if (error) throw error;
 
+      // Mettre à jour le cache local
+      setAgentConfigs(prev => ({
+        ...prev,
+        [selectedAgent.id]: currentConfig
+      }));
+
       toast.success('Configuration sauvegardée avec succès');
       await loadStats();
     } catch (error) {
@@ -207,6 +223,56 @@ export default function AIAgentsManager() {
       toast.error('Échec de la sauvegarde de la configuration');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleToggleAgent = async (agent, checked) => {
+    try {
+      const agentConfig = agentConfigs[agent.id] || {
+        provider: 'openai',
+        model_name: 'gpt-4-turbo-preview',
+        api_key_encrypted: '',
+        temperature: 0.7,
+        max_tokens: 1000,
+        system_prompt: agent.defaultPrompt,
+        is_active: false
+      };
+
+      const updatedConfig = { ...agentConfig, is_active: checked };
+
+      const { error } = await supabase
+        .from('ai_agents_config')
+        .upsert({
+          agent_name: agent.id,
+          agent_type: agent.type,
+          provider: updatedConfig.provider,
+          model_name: updatedConfig.model_name,
+          api_key_encrypted: updatedConfig.api_key_encrypted,
+          temperature: updatedConfig.temperature,
+          max_tokens: updatedConfig.max_tokens,
+          system_prompt: updatedConfig.system_prompt,
+          is_active: checked,
+          updated_at: new Date().toISOString()
+        });
+
+      if (error) throw error;
+
+      // Mettre à jour le cache local
+      setAgentConfigs(prev => ({
+        ...prev,
+        [agent.id]: updatedConfig
+      }));
+
+      // Si c'est l'agent actuellement sélectionné, mettre à jour currentConfig
+      if (selectedAgent.id === agent.id) {
+        setCurrentConfig(updatedConfig);
+      }
+
+      await loadStats();
+      toast.success(`${agent.name} ${checked ? 'activé' : 'désactivé'}`);
+    } catch (error) {
+      console.error('Erreur:', error);
+      toast.error('Erreur lors de la mise à jour');
     }
   };
 
@@ -300,37 +366,39 @@ export default function AIAgentsManager() {
       <div className="grid grid-cols-12 gap-6">
         {/* Sidebar avec liste des agents */}
         <div className="col-span-4 space-y-2">
-          {AI_AGENTS.map(agent => (
-            <Card 
-              key={agent.id}
-              className={`cursor-pointer transition-all hover:shadow-md ${
-                selectedAgent.id === agent.id ? 'ring-2 ring-primary border-primary' : ''
-              }`}
-              onClick={() => setSelectedAgent(agent)}
-            >
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-gray-100">
-                      <agent.icon className="w-5 h-5 text-gray-600" />
+          {AI_AGENTS.map(agent => {
+            const agentConfig = agentConfigs[agent.id] || { is_active: false };
+            
+            return (
+              <Card 
+                key={agent.id}
+                className={`cursor-pointer transition-all hover:shadow-md ${
+                  selectedAgent.id === agent.id ? 'ring-2 ring-primary border-primary' : ''
+                }`}
+                onClick={() => setSelectedAgent(agent)}
+              >
+                <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-gray-100">
+                        <agent.icon className="w-5 h-5 text-gray-600" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-sm text-gray-900">{agent.name}</CardTitle>
+                        <CardDescription className="text-xs mt-1">
+                          {agent.description}
+                        </CardDescription>
+                      </div>
                     </div>
-                    <div>
-                      <CardTitle className="text-sm text-gray-900">{agent.name}</CardTitle>
-                      <CardDescription className="text-xs mt-1">
-                        {agent.description}
-                      </CardDescription>
-                    </div>
+                    <Switch 
+                      checked={agentConfig.is_active}
+                      onCheckedChange={(checked) => handleToggleAgent(agent, checked)}
+                    />
                   </div>
-                  <Switch 
-                    checked={currentConfig.is_active}
-                    onCheckedChange={(checked) => 
-                      setCurrentConfig(prev => ({ ...prev, is_active: checked }))
-                    }
-                  />
-                </div>
-              </CardHeader>
-            </Card>
-          ))}
+                </CardHeader>
+              </Card>
+            );
+          })}
         </div>
 
         {/* Configuration panel */}
