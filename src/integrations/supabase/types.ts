@@ -118,98 +118,115 @@ export type Database = {
         }
         Relationships: []
       }
-      admin_codebase: {
+      ai_agents_config: {
         Row: {
-          component_type: string | null
+          agent_name: string
+          agent_type: string
+          api_key_encrypted: string | null
           created_at: string | null
-          dependencies: Json | null
-          exports: string[] | null
-          file_content: string
-          file_extension: string | null
-          file_name: string
-          file_path: string
-          file_size: number | null
-          folder_structure: string | null
           id: string
-          imports: string[] | null
+          is_active: boolean | null
+          last_used_at: string | null
+          max_tokens: number | null
+          model_name: string | null
+          provider: string
+          settings: Json | null
+          system_prompt: string | null
+          temperature: number | null
           updated_at: string | null
+          usage_count: number | null
         }
         Insert: {
-          component_type?: string | null
+          agent_name: string
+          agent_type: string
+          api_key_encrypted?: string | null
           created_at?: string | null
-          dependencies?: Json | null
-          exports?: string[] | null
-          file_content: string
-          file_extension?: string | null
-          file_name: string
-          file_path: string
-          file_size?: number | null
-          folder_structure?: string | null
           id?: string
-          imports?: string[] | null
+          is_active?: boolean | null
+          last_used_at?: string | null
+          max_tokens?: number | null
+          model_name?: string | null
+          provider: string
+          settings?: Json | null
+          system_prompt?: string | null
+          temperature?: number | null
           updated_at?: string | null
+          usage_count?: number | null
         }
         Update: {
-          component_type?: string | null
+          agent_name?: string
+          agent_type?: string
+          api_key_encrypted?: string | null
           created_at?: string | null
-          dependencies?: Json | null
-          exports?: string[] | null
-          file_content?: string
-          file_extension?: string | null
-          file_name?: string
-          file_path?: string
-          file_size?: number | null
-          folder_structure?: string | null
           id?: string
-          imports?: string[] | null
+          is_active?: boolean | null
+          last_used_at?: string | null
+          max_tokens?: number | null
+          model_name?: string | null
+          provider?: string
+          settings?: Json | null
+          system_prompt?: string | null
+          temperature?: number | null
           updated_at?: string | null
+          usage_count?: number | null
         }
         Relationships: []
       }
-      admin_metadata: {
+      ai_agents_logs: {
         Row: {
+          agent_id: string | null
+          cost_estimate: number | null
           created_at: string | null
+          created_by: string | null
+          duration_ms: number | null
+          entity_id: string | null
+          entity_type: string | null
+          error_message: string | null
           id: string
-          main_dependencies: Json | null
-          routing_library: string | null
-          state_management: string | null
-          styling_approach: string | null
-          total_components: number | null
-          total_files: number | null
-          total_pages: number | null
-          total_size_kb: number | null
-          typescript_enabled: boolean | null
-          ui_library: string | null
+          input_data: Json | null
+          output_data: Json | null
+          status: string | null
+          tokens_used: number | null
         }
         Insert: {
+          agent_id?: string | null
+          cost_estimate?: number | null
           created_at?: string | null
+          created_by?: string | null
+          duration_ms?: number | null
+          entity_id?: string | null
+          entity_type?: string | null
+          error_message?: string | null
           id?: string
-          main_dependencies?: Json | null
-          routing_library?: string | null
-          state_management?: string | null
-          styling_approach?: string | null
-          total_components?: number | null
-          total_files?: number | null
-          total_pages?: number | null
-          total_size_kb?: number | null
-          typescript_enabled?: boolean | null
-          ui_library?: string | null
+          input_data?: Json | null
+          output_data?: Json | null
+          status?: string | null
+          tokens_used?: number | null
         }
         Update: {
+          agent_id?: string | null
+          cost_estimate?: number | null
           created_at?: string | null
+          created_by?: string | null
+          duration_ms?: number | null
+          entity_id?: string | null
+          entity_type?: string | null
+          error_message?: string | null
           id?: string
-          main_dependencies?: Json | null
-          routing_library?: string | null
-          state_management?: string | null
-          styling_approach?: string | null
-          total_components?: number | null
-          total_files?: number | null
-          total_pages?: number | null
-          total_size_kb?: number | null
-          typescript_enabled?: boolean | null
-          ui_library?: string | null
+          input_data?: Json | null
+          output_data?: Json | null
+          status?: string | null
+          tokens_used?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "ai_agents_logs_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "ai_agents_config"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       amenities: {
         Row: {
