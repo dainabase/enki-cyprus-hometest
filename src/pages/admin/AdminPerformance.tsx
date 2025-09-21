@@ -204,7 +204,7 @@ export default function AdminPerformance() {
     // Load developer details
     const { data: projects } = await supabase
       .from('projects')
-      .select('id, title, status, price, created_at')
+      .select('id, title, status, price_from, created_at')
       .eq('developer_id', developer.developerId)
       .order('created_at', { ascending: false })
       .limit(10);
@@ -216,7 +216,7 @@ export default function AdminPerformance() {
       .order('date', { ascending: false })
       .limit(10);
 
-    setDeveloperProjects(projects || []);
+    setDeveloperProjects((projects as any) || []);
     setDeveloperCommissions(commissions || []);
   };
 

@@ -93,8 +93,8 @@ export const checkDataIntegrity = async (): Promise<IntegrityReport> => {
     // 4. Check for missing Golden Visa flags (properties >= 300k without flag)
     const { data: missingGoldenVisa, error: goldenVisaError } = await supabase
       .from('projects')
-      .select('id, title, price, golden_visa_eligible')
-      .gte('price', 300000)
+      .select('id, title, price_from, golden_visa_eligible')
+      .gte('price_from', 300000)
       .eq('golden_visa_eligible', false);
 
     if (goldenVisaError) throw goldenVisaError;
@@ -107,8 +107,8 @@ export const checkDataIntegrity = async (): Promise<IntegrityReport> => {
     // 5. Check for invalid prices (negative or zero prices)
     const { data: invalidPrices, error: priceError } = await supabase
       .from('projects')
-      .select('id, title, price')
-      .or('price.lte.0,price.is.null');
+      .select('id, title, price_from')
+      .or('price_from.lte.0,price_from.is.null');
 
     if (priceError) throw priceError;
 

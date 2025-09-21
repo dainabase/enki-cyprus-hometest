@@ -95,28 +95,19 @@ const Dashboard = () => {
     try {
       setIsLoading(true);
       
-      // Load favorites
+      // Load favorites - simplified to avoid relation issues
       const { data: favoritesData, error: favoritesError } = await supabase
         .from('favorites')
-        .select(`
-          id,
-          project_id,
-          created_at,
-          projects (
-            id,
-            title,
-            description,
-            property_category,
-            price,
-            location,
-            photos
-          )
-        `)
+        .select('id, project_id, created_at')
         .eq('user_id', user!.id)
         .order('created_at', { ascending: false });
 
-      if (favoritesError) throw favoritesError;
-      setFavorites(favoritesData || []);
+      if (favoritesError) {
+        console.error('Favorites error:', favoritesError);
+        setFavorites([]);
+      } else {
+        setFavorites(favoritesData as any || []);
+      }
 
       // Load checklists
       const { data: checklistsData, error: checklistsError } = await supabase

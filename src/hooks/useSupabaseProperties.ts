@@ -44,15 +44,15 @@ export const useSupabaseProperties = (options: UsePropertiesOptions = {}) => {
 
       // Filtrage par budget
       if (options.budgetMin !== undefined) {
-        query = query.gte('price', options.budgetMin);
+        query = query.gte('price_from', options.budgetMin);
       }
       if (options.budgetMax !== undefined) {
-        query = query.lte('price', options.budgetMax);
+        query = query.lte('price_from', options.budgetMax);
       }
 
       // Filtrage par localisation
       if (options.location) {
-        query = query.ilike('location->city', `%${options.location}%`);
+        query = query.ilike('city', `%${options.location}%`);
       }
 
       const { data, error: supabaseError } = await query;

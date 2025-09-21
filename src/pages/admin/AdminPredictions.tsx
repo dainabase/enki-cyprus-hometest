@@ -34,7 +34,7 @@ export default function AdminPredictions() {
     // Sales data
     const { data: projects } = await supabase
       .from('projects')
-      .select('created_at, price')
+      .select('created_at, price_from')
       .gte('created_at', sixMonthsAgo.toISOString())
       .order('created_at');
     

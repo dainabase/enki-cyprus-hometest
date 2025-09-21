@@ -49,7 +49,7 @@ const Projects = () => {
                          projectLocationStr.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesLocation = !selectedLocation || projectLocationStr.includes(selectedLocation);
     const matchesType = !selectedType || project.type === selectedType;
-    const matchesBudget = !selectedBudget || (project.price && Number(project.price) <= parseFloat(selectedBudget));
+    const matchesBudget = !selectedBudget || (project.price_from && Number(project.price_from) <= parseFloat(selectedBudget));
     return matchesQuery && matchesLocation && matchesType && matchesBudget;
   });
   return (

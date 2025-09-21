@@ -68,7 +68,7 @@ export const AdminAnalytics = () => {
       // Fetch sales by month
       const { data: projects } = await supabase
         .from('projects')
-        .select('created_at, price, status')
+        .select('created_at, price_from, status')
         .gte('created_at', startDate.toISOString())
         .order('created_at');
       
