@@ -243,34 +243,22 @@ export default function AIAgentsManager() {
   useEffect(() => {
     // Charger la config de l'agent sélectionné
     const config = agentConfigs[selectedAgent.id];
-    if (config) {
+    if (config && config.system_prompt) {
+      // Si on a une config en base avec un prompt, l'utiliser
       setCurrentConfig(config);
     } else {
-      // Si pas de config, créer avec le prompt par défaut COMPLET
+      // Si pas de config ou prompt vide, utiliser le prompt par défaut SANS sauvegarder
       const defaultConfig = {
         provider: 'openai',
         model_name: 'gpt-4-turbo-preview',
         api_key_encrypted: '',
         temperature: 0.7,
         max_tokens: 1000,
-        system_prompt: selectedAgent.defaultPrompt, // Utilise le prompt COMPLET
+        system_prompt: selectedAgent.defaultPrompt, // Prompt COMPLET par défaut
         is_active: false
       };
       setCurrentConfig(defaultConfig);
-      
-      // Sauvegarder automatiquement le prompt complet pour l'agent SEO
-      if (selectedAgent.id === 'seo-generator' && !config) {
-        console.log('🚀 Initialisation automatique du prompt SEO complet');
-        // Mettre à jour directement avec le prompt complet
-        setCurrentConfig(prevConfig => ({
-          ...prevConfig,
-          system_prompt: selectedAgent.defaultPrompt
-        }));
-        // Sauvegarder après mise à jour
-        setTimeout(() => {
-          handleSaveConfig();
-        }, 100);
-      }
+      // PAS DE SAUVEGARDE AUTOMATIQUE - L'utilisateur doit cliquer sur "Sauvegarder"
     }
   }, [selectedAgent, agentConfigs]);
 
@@ -638,6 +626,14 @@ export default function AIAgentsManager() {
                 </TabsList>
 
                 <TabsContent value="settings" className="space-y-4 mt-4">
+                  {selectedAgent.id === 'seo-generator' && !agentConfigs['seo-generator']?.system_prompt && (
+                    <Alert className="mb-4">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription>
+                        Le prompt système n'est pas encore configuré. Cliquez sur l'onglet "Prompt Système" puis "Sauvegarder" pour activer l'agent SEO avec le prompt complet.
+                      </AlertDescription>
+                    </Alert>
+                  )}
                   <div className="grid grid-cols-2 gap-4">
                     {/* Provider Selection */}
                     <div className="space-y-2">
