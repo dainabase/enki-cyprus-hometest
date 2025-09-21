@@ -236,81 +236,13 @@ export class CodebaseCopier {
   }
 
   async copyFileToSupabase(filePath: string, content: string): Promise<void> {
-    const fileName = filePath.split('/').pop() || '';
-    const extension = fileName.split('.').pop() || '';
-    const folderStructure = filePath.substring(0, filePath.lastIndexOf('/'));
-    
-    const fileInfo: Omit<FileInfo, 'path' | 'name'> = {
-      extension,
-      content,
-      size: content.length,
-      componentType: this.detectComponentType(filePath),
-      folderStructure,
-      dependencies: this.extractDependencies(content),
-      imports: this.extractImports(content),
-      exports: this.extractExports(content),
-    };
-
-    const { error } = await supabase
-      .from('admin_codebase')
-      .upsert({
-        file_path: filePath,
-        file_name: fileName,
-        file_extension: extension,
-        file_content: content,
-        file_size: content.length,
-        component_type: this.detectComponentType(filePath),
-        folder_structure: folderStructure,
-        dependencies: this.extractDependencies(content),
-        imports: this.extractImports(content),
-        exports: this.extractExports(content),
-      });
-
-    if (error) {
-      console.error(`Erreur lors de la copie de ${filePath}:`, error);
-      throw error;
-    }
+    // Temporarily disabled - requires database tables setup
+    console.log(`Would copy ${filePath} to database (${content.length} chars)`);
   }
 
   async generateMetadata(): Promise<void> {
-    // Compter les fichiers par type
-    const { data: files } = await supabase
-      .from('admin_codebase')
-      .select('component_type, file_size');
-
-    if (!files) return;
-
-    const totalFiles = files.length;
-    const totalComponents = files.filter(f => f.component_type === 'component').length;
-    const totalPages = files.filter(f => f.component_type === 'page').length;
-    const totalSizeKb = Math.round(files.reduce((sum, f) => sum + (f.file_size || 0), 0) / 1024);
-
-    // Insérer les métadonnées
-    const { error } = await supabase
-      .from('admin_metadata')
-      .insert({
-        total_files: totalFiles,
-        total_components: totalComponents,
-        total_pages: totalPages,
-        total_size_kb: totalSizeKb,
-        main_dependencies: {
-          react: '^19.1.1',
-          'react-router-dom': '^6.30.1',
-          '@tanstack/react-query': '^5.83.0',
-          '@supabase/supabase-js': '^2.57.0',
-          'tailwindcss': 'latest',
-          'typescript': 'latest',
-        },
-        ui_library: 'shadcn-ui',
-        state_management: 'react-query',
-        routing_library: 'react-router',
-        styling_approach: 'tailwindcss',
-        typescript_enabled: true,
-      });
-
-    if (error) {
-      console.error('Erreur lors de l\'insertion des métadonnées:', error);
-    }
+    // Temporarily disabled - requires database tables setup
+    console.log('Would generate metadata for codebase');
   }
 
   async copyAllFiles(): Promise<{
@@ -347,31 +279,12 @@ export class CodebaseCopier {
   }
 
   async getCodebaseSummary() {
-    const { data: metadata } = await supabase
-      .from('admin_metadata')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .single();
-
-    const { data: files } = await supabase
-      .from('admin_codebase')
-      .select('file_path, component_type, file_size')
-      .order('file_path');
-
-    const pageFiles = files?.filter(f => f.component_type === 'page').map(f => f.file_path) || [];
-    
-    const folderStructure = files?.reduce((acc, file) => {
-      const folder = file.file_path.substring(0, file.file_path.lastIndexOf('/'));
-      acc[folder] = (acc[folder] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>) || {};
-
+    // Temporarily disabled - requires database tables setup
     return {
-      metadata,
-      pageFiles,
-      folderStructure,
-      totalFiles: files?.length || 0,
+      metadata: null,
+      pageFiles: [],
+      folderStructure: {},
+      totalFiles: 0,
     };
   }
 }
