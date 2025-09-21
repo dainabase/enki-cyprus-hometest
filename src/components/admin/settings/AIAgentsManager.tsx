@@ -15,6 +15,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { AgentSEO } from '@/services/ai/AgentSEO';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 // Configuration des agents disponibles
 const AI_AGENTS = [
@@ -97,6 +99,13 @@ export default function AIAgentsManager() {
   const [testApiKey, setTestApiKey] = useState('');
   const [testInput, setTestInput] = useState('');
   const [testResult, setTestResult] = useState(null);
+  const [projetTest, setProjetTest] = useState({
+    nom_projet: 'Marina Residences',
+    zone: 'Limassol',
+    prix_min: 450000,
+    prix_max: 850000,
+    types: ['Apartment', 'Penthouse']
+  });
   const [stats, setStats] = useState({
     activeAgents: 0,
     apiCallsToday: 0,
@@ -277,35 +286,42 @@ export default function AIAgentsManager() {
   };
 
   const handleTestGeneration = async () => {
-    if (!testApiKey || !testInput) {
-      toast.error('Veuillez fournir une clé API et un texte de test');
+    if (!testApiKey) {
+      toast.error('Veuillez fournir une clé API OpenAI');
+      return;
+    }
+
+    if (selectedAgent.id !== 'seo-generator') {
+      toast.error('Ce test est spécifique à l\'agent SEO');
       return;
     }
 
     setTesting(true);
     try {
-      // Simulation d'appel API avec la vraie clé pour test
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const agentSEO = new AgentSEO(testApiKey);
       
-      const mockResult = {
-        metaTitle: "Villa de Luxe à Limassol | Vue Mer | Golden Visa",
-        metaDescription: "Découvrez cette villa exceptionnelle à Limassol avec vue panoramique sur la mer. Éligible Golden Visa. Investissement sécurisé à Chypre.",
-        keywords: ["villa luxe Limassol", "Golden Visa Chypre", "investissement immobilier", "vue mer"],
-        marketingPoints: [
-          "Propriété éligible Golden Visa (≥300k€)",
-          "Vue mer panoramique exceptionnelle",
-          "Quartier résidentiel premium",
-          "Rendement locatif attractif"
-        ]
-      };
+      // Utiliser les données de test du formulaire
+      const resultat = await agentSEO.testerAvecCleAPI(testApiKey, projetTest);
       
-      setTestResult(mockResult);
-      toast.success('Test de génération réussi!');
+      setTestResult(resultat);
+      toast.success('Test de génération SEO réussi!');
+      
+      // Log pour debug
+      console.log('✅ Résultat test SEO Chypre:', resultat);
+      
     } catch (error) {
-      toast.error('Échec du test de génération');
+      console.error('Erreur test SEO:', error);
+      toast.error(`Échec du test: ${error.message || 'Erreur inconnue'}`);
     } finally {
       setTesting(false);
     }
+  };
+
+  const lancerTestDemo = () => {
+    const agentSEO = new AgentSEO();
+    const resultatDemo = agentSEO.genererContenuDemo(projetTest);
+    setTestResult(resultatDemo);
+    toast.success('Contenu de démonstration généré (sans API)');
   };
 
   const handleTestAgent = async () => {
@@ -602,66 +618,227 @@ export default function AIAgentsManager() {
                 </TabsContent>
 
                 <TabsContent value="test" className="space-y-4 mt-4">
-                  <Card className="border-2 border-dashed">
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <TestTube className="w-5 h-5 text-gray-600" />
-                        Zone de Test
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="space-y-2">
-                        <Label>Clé API OpenAI pour test</Label>
-                        <Input 
-                          type="password"
-                          placeholder="sk-..."
-                          value={testApiKey}
-                          onChange={(e) => setTestApiKey(e.target.value)}
-                          className="font-mono"
-                        />
-                        <p className="text-xs text-gray-500">
-                          Cette clé est uniquement pour les tests, elle ne sera pas sauvegardée
-                        </p>
-                      </div>
+                  {selectedAgent.id === 'seo-generator' ? (
+                    <Card className="border-2 border-primary/20 bg-primary/5">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <TestTube className="w-5 h-5 text-gray-600" />
+                          Zone de Test Agent SEO - Marché Chypre
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <Alert>
+                          <AlertCircle className="w-4 h-4" />
+                          <AlertDescription>
+                            Testez l'agent SEO spécialisé pour le marché immobilier chypriote avec Golden Visa.
+                          </AlertDescription>
+                        </Alert>
 
-                      <div className="space-y-2">
-                        <Label>Texte de test</Label>
-                        <Textarea 
-                          placeholder="Propriété de luxe à Limassol, 3 chambres, vue mer..."
-                          rows={3}
-                          value={testInput}
-                          onChange={(e) => setTestInput(e.target.value)}
-                        />
-                      </div>
-
-                      <Button 
-                        onClick={handleTestGeneration}
-                        disabled={!testApiKey || !testInput || testing}
-                        className="w-full"
-                      >
-                        {testing ? (
-                          <>
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            Génération en cours...
-                          </>
-                        ) : (
-                          <>
-                            <Sparkles className="w-4 h-4 mr-2" />
-                            Tester la génération SEO
-                          </>
-                        )}
-                      </Button>
-
-                      {testResult && (
-                        <div className="p-4 bg-gray-50 rounded-lg space-y-2">
-                          <h4 className="font-semibold">Résultat :</h4>
-                          <pre className="text-xs overflow-auto">
-                            {JSON.stringify(testResult, null, 2)}
-                          </pre>
+                        <div className="space-y-2">
+                          <Label>Clé API OpenAI (test uniquement)</Label>
+                          <Input 
+                            type="password"
+                            placeholder="sk-..."
+                            value={testApiKey}
+                            onChange={(e) => setTestApiKey(e.target.value)}
+                            className="font-mono"
+                          />
+                          <p className="text-xs text-gray-500">
+                            Cette clé est uniquement pour les tests, elle ne sera pas sauvegardée
+                          </p>
                         </div>
-                      )}
-                    </CardContent>
-                  </Card>
+
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label>Nom du projet</Label>
+                            <Input 
+                              value={projetTest.nom_projet}
+                              onChange={(e) => setProjetTest(prev => ({ ...prev, nom_projet: e.target.value }))}
+                              placeholder="Marina Residences"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Zone à Chypre</Label>
+                            <Select 
+                              value={projetTest.zone}
+                              onValueChange={(value) => setProjetTest(prev => ({ ...prev, zone: value }))}
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Limassol">Limassol (Hub Business)</SelectItem>
+                                <SelectItem value="Paphos">Paphos (UNESCO)</SelectItem>
+                                <SelectItem value="Larnaca">Larnaca (Aéroport)</SelectItem>
+                                <SelectItem value="Nicosia">Nicosia (Capitale)</SelectItem>
+                                <SelectItem value="Famagusta">Famagusta (Plages)</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Prix minimum (€)</Label>
+                            <Input 
+                              type="number" 
+                              value={projetTest.prix_min}
+                              onChange={(e) => setProjetTest(prev => ({ ...prev, prix_min: parseInt(e.target.value) }))}
+                              placeholder="450000"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Prix maximum (€)</Label>
+                            <Input 
+                              type="number"
+                              value={projetTest.prix_max}
+                              onChange={(e) => setProjetTest(prev => ({ ...prev, prix_max: parseInt(e.target.value) }))}
+                              placeholder="850000" 
+                            />
+                          </div>
+                        </div>
+
+                        {projetTest.prix_min >= 300000 && (
+                          <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                            <div className="flex items-center gap-2">
+                              <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                              <span className="text-sm font-medium text-yellow-800">
+                                🏆 Éligible Golden Visa (≥300k€) - Génération optimisée
+                              </span>
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="flex gap-2">
+                          <Button 
+                            onClick={handleTestGeneration}
+                            disabled={!testApiKey || testing}
+                            className="flex-1"
+                          >
+                            {testing ? (
+                              <>
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                Génération SEO en cours...
+                              </>
+                            ) : (
+                              <>
+                                <Sparkles className="w-4 h-4 mr-2" />
+                                Tester avec API OpenAI
+                              </>
+                            )}
+                          </Button>
+                          
+                          <Button 
+                            variant="outline"
+                            onClick={lancerTestDemo}
+                            disabled={testing}
+                          >
+                            Mode Démo
+                          </Button>
+                        </div>
+
+                        {testResult && (
+                          <div className="mt-4 p-4 bg-gray-50 rounded-lg border">
+                            <h4 className="font-semibold mb-3 flex items-center gap-2">
+                              <CheckCircle className="w-4 h-4 text-green-600" />
+                              Contenu SEO généré - Marché Chypre
+                            </h4>
+                            <div className="space-y-3 text-sm">
+                              <div>
+                                <span className="font-medium text-green-700">
+                                  Titre Meta ({testResult.titre_meta?.length || 0} caractères) :
+                                </span>
+                                <p className="text-gray-700 bg-white p-2 rounded border-l-4 border-green-500">
+                                  {testResult.titre_meta}
+                                </p>
+                              </div>
+                              
+                              <div>
+                                <span className="font-medium text-blue-700">
+                                  Description Meta ({testResult.description_meta?.length || 0} caractères) :
+                                </span>
+                                <p className="text-gray-700 bg-white p-2 rounded border-l-4 border-blue-500">
+                                  {testResult.description_meta}
+                                </p>
+                              </div>
+                              
+                              <div>
+                                <span className="font-medium text-purple-700">Mots-clés :</span>
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                  {testResult.mots_cles?.map((mot, i) => (
+                                    <span key={i} className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">
+                                      {mot}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                              
+                              <div>
+                                <span className="font-medium text-orange-700">Points Marketing :</span>
+                                <ul className="list-none space-y-1 mt-1">
+                                  {testResult.points_marketing?.map((point, i) => (
+                                    <li key={i} className="text-gray-700 bg-white p-2 rounded border-l-4 border-orange-500">
+                                      {point}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                              
+                              <div>
+                                <span className="font-medium text-indigo-700">Audience Cible :</span>
+                                <p className="text-gray-700 bg-white p-2 rounded border-l-4 border-indigo-500">
+                                  {testResult.audience_cible}
+                                </p>
+                              </div>
+
+                              <div>
+                                <span className="font-medium text-gray-700">URL Slug :</span>
+                                <p className="text-gray-600 bg-white p-2 rounded border-l-4 border-gray-400 font-mono text-xs">
+                                  /{testResult.slug_url}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  ) : (
+                    <Card className="border-2 border-dashed">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <TestTube className="w-5 h-5 text-gray-600" />
+                          Zone de Test Générique
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                          <Label>Clé API pour test</Label>
+                          <Input 
+                            type="password"
+                            placeholder="sk-..."
+                            value={testApiKey}
+                            onChange={(e) => setTestApiKey(e.target.value)}
+                            className="font-mono"
+                          />
+                        </div>
+
+                        <Button 
+                          onClick={handleTestAgent}
+                          disabled={!testApiKey || testing}
+                          className="w-full"
+                        >
+                          {testing ? (
+                            <>
+                              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                              Test en cours...
+                            </>
+                          ) : (
+                            <>
+                              <TestTube className="w-4 h-4 mr-2" />
+                              Tester la Connexion
+                            </>
+                          )}
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  )}
                 </TabsContent>
 
                 <TabsContent value="usage" className="space-y-4 mt-4">
