@@ -101,16 +101,22 @@ const ProjectDetail = () => {
     );
   }
 
-  // Process gallery from project data
-  const gallery = buildGalleryFromProject(project);
-  const heroImage = getHeroImage(project);
-  const galleryUrls = getGalleryUrls(project);
+  // Process gallery from project data (handle SelectQueryError)
+  const projectImages = Array.isArray(project.project_images) ? project.project_images : [];
+  const gallery = buildGalleryFromProject({ ...project, project_images: projectImages } as any);
+  const heroImage = getHeroImage({ ...project, project_images: projectImages } as any);
+  const galleryUrls = getGalleryUrls({ ...project, project_images: projectImages } as any);
 
-  // Location data
-  const locationData = project.location as { ville?: string; adresse?: string; lat?: number; lng?: number };
-  const fullAddress = [locationData?.adresse, locationData?.ville].filter(Boolean).join(', ');
+  // Location data - using new schema fields
+  const locationData = {
+    ville: project.city,
+    adresse: project.full_address,
+    lat: project.gps_latitude,
+    lng: project.gps_longitude
+  };
+  const fullAddress = [project.full_address, project.city].filter(Boolean).join(', ');
 
-  // Units data
+  // Units data - using new schema fields
   type Unit = {
     type?: string;
     price?: string | number;
@@ -121,7 +127,7 @@ const ProjectDetail = () => {
     rooms?: number;
   };
   
-  const units: Unit[] = Array.isArray(project.units) ? (project.units as unknown as Unit[]) : [];
+  const units: Unit[] = [];
 
   // Room data for alternating cards
   const roomData = [
@@ -351,7 +357,7 @@ const ProjectDetail = () => {
                   {/* Floating Card Overlay */}
                   <div className="absolute -bottom-10 -left-10 bg-white p-8 rounded-3xl shadow-2xl">
                     <p className="text-4xl font-light mb-2 text-black">
-                      €{project.price_from?.toLocaleString() || project.price?.toLocaleString() || 'Sur demande'}
+                      €{project.price_from?.toLocaleString() || 'Sur demande'}
                     </p>
                     <p className="text-sm text-gray-500">Starting price</p>
                   </div>
@@ -520,10 +526,10 @@ const ProjectDetail = () => {
                 </div>
                 
                 {/* Bottom row images */}
-                {project.photos?.slice(3, 6).map((photo, index) => (
+                {Array.isArray(projectImages) && projectImages.slice(3, 6).map((image: any, index: number) => (
                   <img 
                     key={index + 3}
-                    src={photo}
+                    src={image.url || heroImage}
                     alt={`Gallery image ${index + 4} of ${project.title}`}
                     className="w-full h-[200px] object-cover image-hover"
                     style={{ borderRadius: '30px' }}
@@ -650,7 +656,7 @@ const ProjectDetail = () => {
                     transition={{ duration: 0.6 }}
                   >
                     <img 
-                      src={project.plans?.[0] || 'https://picsum.photos/600/400'}
+                      src={'https://picsum.photos/600/400'}
                       alt={`Floor plan of ${project.title}`}
                       className="w-full image-hover"
                       style={{ borderRadius: '40px' }}
@@ -695,7 +701,7 @@ const ProjectDetail = () => {
                   <TabsContent key={tabValue} value={tabValue} className="grid grid-cols-2 gap-20 items-center">
                     <div>
                       <img 
-                        src={project.plans?.[0] || 'https://picsum.photos/600/400'}
+                        src={'https://picsum.photos/600/400'}
                         alt={`${tabValue} floor plan of ${project.title}`}
                         className="w-full image-hover"
                         style={{ borderRadius: '40px' }}

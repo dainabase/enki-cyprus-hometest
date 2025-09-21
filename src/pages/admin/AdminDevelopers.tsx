@@ -104,7 +104,11 @@ export default function AdminDevelopers() {
         .order('name');
       
       if (error) throw error;
-      return data || [];
+      return (data || []).map((dev: any) => ({
+        ...dev,
+        key_projects: typeof dev.key_projects === 'string' ? dev.key_projects : JSON.stringify(dev.key_projects || ''),
+        contact_info: typeof dev.contact_info === 'object' ? dev.contact_info : {}
+      }));
     },
     staleTime: 0,
     refetchOnMount: 'always',

@@ -259,12 +259,12 @@ const AdminCodebaseCopier = () => {
                 <div className="space-y-3">
                   <h4 className="font-medium">Structure des dossiers</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-40 overflow-y-auto">
-                    {Object.entries(summary.folderStructure).map(([folder, count]) => (
-                      <div key={folder} className="flex justify-between items-center text-sm bg-muted/50 p-2 rounded">
-                        <span>{folder}</span>
-                        <Badge variant="outline">{count} fichiers</Badge>
-                      </div>
-                    ))}
+                     {Object.entries(summary.folderStructure).map(([folder, count]) => (
+                       <div key={folder} className="flex justify-between items-center text-sm bg-muted/50 p-2 rounded">
+                         <span>{folder}</span>
+                         <Badge variant="outline">{String(count)} fichiers</Badge>
+                       </div>
+                     ))}
                   </div>
                 </div>
               )}

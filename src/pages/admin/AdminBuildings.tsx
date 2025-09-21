@@ -43,11 +43,11 @@ const AdminBuildings = () => {
       let query = supabase
         .from('buildings')
         .select(`
-          id, name, building_type, construction_status, total_floors, total_units,
+          id, building_name, building_type, construction_status, total_floors, total_units,
           project:projects(id, title, cyprus_zone)
         `, { count: 'exact' })
         .order('project_id', { ascending: true })
-        .order('name', { ascending: true })
+        .order('building_name', { ascending: true })
         .range(from, to);
 
       // Apply filters
@@ -109,13 +109,13 @@ const AdminBuildings = () => {
   };
 
   const stats = React.useMemo(() => {
-    if (!buildingsData) return { total: 0, planning: 0, inProgress: 0, completed: 0 };
+    if (!buildingsData || !Array.isArray(buildingsData)) return { total: 0, planning: 0, inProgress: 0, completed: 0 };
     
     return {
       total: buildingsData.length,
-      planning: buildingsData.filter(b => b.construction_status === 'planning').length,
-      inProgress: buildingsData.filter(b => ['foundation', 'structure', 'finishing'].includes(b.construction_status)).length,
-      completed: buildingsData.filter(b => b.construction_status === 'completed').length
+      planning: buildingsData.filter(b => b?.construction_status === 'planning').length,
+      inProgress: buildingsData.filter(b => b?.construction_status && ['foundation', 'structure', 'finishing'].includes(b.construction_status)).length,
+      completed: buildingsData.filter(b => b?.construction_status === 'completed').length
     };
   }, [buildingsData]);
 

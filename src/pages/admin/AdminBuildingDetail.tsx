@@ -191,7 +191,7 @@ const AdminBuildingDetail = () => {
               Retour
             </Button>
             <div>
-              <h1 className="text-3xl font-bold text-foreground">{building.name}</h1>
+              <h1 className="text-3xl font-bold text-foreground">{building.building_name}</h1>
               <p className="text-muted-foreground mt-1">
                 {project?.title || 'Projet non assigné'}
               </p>
@@ -346,7 +346,7 @@ const AdminBuildingDetail = () => {
                   <div key={image.id} className="relative group">
                     <img
                       src={image.url}
-                      alt={image.caption || `Image du bâtiment ${building.name}`}
+                      alt={image.caption || `Image du bâtiment ${building.building_name}`}
                       className="w-full h-32 object-cover rounded border"
                     />
                     

@@ -268,19 +268,16 @@ const AdminProjectDetail = () => {
                   <div>
                     <p className="font-semibold">{project.cyprus_zone?.charAt(0).toUpperCase() + project.cyprus_zone?.slice(1)}</p>
                     <p className="text-sm text-muted-foreground">
-                      {typeof project.location === 'object' && project.location && 'city' in project.location 
-                        ? String(project.location.city || '') 
-                        : ''
-                      }
+                      {project.city || ''}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <h4 className="font-medium text-sm text-muted-foreground">TYPE</h4>
-                <p className="font-semibold capitalize">{project.property_category || 'Résidentiel'}</p>
-              </div>
+               <div className="space-y-2">
+                 <h4 className="font-medium text-sm text-muted-foreground">TYPE</h4>
+                 <p className="font-semibold capitalize">Résidentiel</p>
+               </div>
             </div>
 
             <Separator />
@@ -292,9 +289,9 @@ const AdminProjectDetail = () => {
                   <Euro className="w-4 h-4" />
                   PRIX MINIMUM
                 </h4>
-                <p className="text-2xl font-bold text-primary">
-                  €{project.price?.toLocaleString()}
-                </p>
+                 <p className="text-2xl font-bold text-primary">
+                   €{project.price_from?.toLocaleString() || 'Sur demande'}
+                 </p>
               </div>
 
               <div className="space-y-2">
@@ -319,8 +316,8 @@ const AdminProjectDetail = () => {
                   LIVRAISON
                 </h4>
                 <p className="font-semibold">
-                  {(project.completion_date_new || project.completion_date)
-                    ? new Date(project.completion_date_new || project.completion_date).toLocaleDateString('fr-FR', { year: 'numeric', month: '2-digit' })
+                  {project.completion_date
+                    ? new Date(project.completion_date).toLocaleDateString('fr-FR', { year: 'numeric', month: '2-digit' })
                     : 'Non définie'
                   }
                 </p>
@@ -443,7 +440,7 @@ const AdminProjectDetail = () => {
               <div>
                 <h4 className="text-muted-foreground text-xs">Livraison prévue</h4>
                 <p className="font-medium">
-                  {(project.completion_date_new || project.completion_date) ? new Date(project.completion_date_new || project.completion_date).toLocaleDateString('fr-FR', { year: 'numeric', month: '2-digit' }) : '—'}
+                  {project.completion_date ? new Date(project.completion_date).toLocaleDateString('fr-FR', { year: 'numeric', month: '2-digit' }) : '—'}
                 </p>
               </div>
               <div>
@@ -472,15 +469,15 @@ const AdminProjectDetail = () => {
               </div>
               <div>
                 <h4 className="text-muted-foreground text-xs">Étages / Parkings / Caves</h4>
-                <p className="font-medium">{[project.floors_total && `${project.floors_total} ét.`, project.parking_spaces && `${project.parking_spaces} pk`, project.storage_spaces && `${project.storage_spaces} st`].filter(Boolean).join(' · ') || '—'}</p>
+                <p className="font-medium">—</p>
               </div>
               <div>
                 <h4 className="text-muted-foreground text-xs">Unités</h4>
-                <p className="font-medium">{[project.total_units_new && `${project.total_units_new} tot.`, project.units_available_new && `${project.units_available_new} disp.`].filter(Boolean).join(' · ') || '—'}</p>
+                <p className="font-medium">{[project.total_units && `${project.total_units} tot.`, project.units_available && `${project.units_available} disp.`].filter(Boolean).join(' · ') || '—'}</p>
               </div>
               <div>
                 <h4 className="text-muted-foreground text-xs">Prix / ROI / Rendement</h4>
-                <p className="font-medium">{[project.price && `${Number(project.price).toLocaleString('fr-FR')} €`, project.roi_estimate_percent && `${project.roi_estimate_percent}% ROI`, project.rental_yield_percent && `${project.rental_yield_percent}% locatif`].filter(Boolean).join(' · ') || '—'}</p>
+                <p className="font-medium">{[project.price_from && `${Number(project.price_from).toLocaleString('fr-FR')} €`, project.roi_estimate_percent && `${project.roi_estimate_percent}% ROI`, project.rental_yield_percent && `${project.rental_yield_percent}% locatif`].filter(Boolean).join(' · ') || '—'}</p>
               </div>
             </div>
           </CardContent>
