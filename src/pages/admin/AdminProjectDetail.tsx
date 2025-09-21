@@ -583,7 +583,7 @@ const AdminProjectDetail = () => {
                     <CardContent className="p-4">
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <h4 className="font-semibold">{building.name}</h4>
+                          <h4 className="font-semibold">{building.building_name}</h4>
                           <Badge variant="outline" className="text-xs">
                             {building.building_type}
                           </Badge>
@@ -613,11 +613,9 @@ const AdminProjectDetail = () => {
                           >
                             {building.construction_status}
                           </Badge>
-                          {building.energy_rating && (
-                            <span className="text-muted-foreground">
-                              Énergie: {building.energy_rating}
-                            </span>
-                          )}
+                          <span className="text-muted-foreground">
+                            Construction: {building.construction_status}
+                          </span>
                         </div>
                       </div>
                     </CardContent>

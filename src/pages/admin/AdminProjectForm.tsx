@@ -155,7 +155,6 @@ const AdminProjectForm: React.FC = () => {
         title: projectData.title || '',
         project_code: projectData.project_code || '',
         developer_id: projectData.developer_id || '',
-        developer_id: projectData.developer_id || '',
         project_phase: projectData.project_phase || 'off-plan',
         launch_date: projectData.launch_date ? String(projectData.launch_date).substring(0, 7) : '', // Convert YYYY-MM-DD to YYYY-MM
         completion_date: projectData.completion_date ? String(projectData.completion_date).substring(0, 7) : '',
@@ -170,8 +169,8 @@ const AdminProjectForm: React.FC = () => {
         neighborhood: projectData.neighborhood || '',
         neighborhood_description: projectData.neighborhood_description || '',
         cyprus_zone: projectData.cyprus_zone || 'limassol',
-        gps_latitude: projectData.gps_latitude || getLocationValue('coordinates')?.lat || null,
-        gps_longitude: projectData.gps_longitude || getLocationValue('coordinates')?.lng || null,
+        gps_latitude: projectData.gps_latitude || null,
+        gps_longitude: projectData.gps_longitude || null,
         proximity_sea_km: projectData.proximity_sea_km || null,
         proximity_airport_km: projectData.proximity_airport_km || null,
         proximity_city_center_km: projectData.proximity_city_center_km || null,
@@ -182,26 +181,19 @@ const AdminProjectForm: React.FC = () => {
         built_area_m2: projectData.built_area_m2 ? Number(projectData.built_area_m2) : null,
         total_units: projectData.total_units ? Number(projectData.total_units) : null,
         units_available: projectData.units_available ? Number(projectData.units_available) : null,
-        built_area_m2: projectData.built_area_m2 ? Number(projectData.built_area_m2) : null,
-        land_area_m2: projectData.land_area_m2 ? Number(projectData.land_area_m2) : null,
-        building_certification: projectData.building_certification || '',
         maintenance_fees_yearly: projectData.maintenance_fees_yearly ? Number(projectData.maintenance_fees_yearly) : null,
         property_tax_yearly: projectData.property_tax_yearly ? Number(projectData.property_tax_yearly) : null,
         hoa_fees_monthly: projectData.hoa_fees_monthly ? Number(projectData.hoa_fees_monthly) : null,
-        internet_speed_mbps: projectData.internet_speed_mbps ? Number(projectData.internet_speed_mbps) : null,
         pet_policy: projectData.pet_policy || '',
         
         // Pricing with proper number conversion
-        price: projectData.price ? Number(projectData.price) : 0,
-        price_from_new: projectData.price_from_new ? Number(projectData.price_from_new) : null,
+        price_from: projectData.price_from ? Number(projectData.price_from) : null,
         price_to: projectData.price_to ? Number(projectData.price_to) : null,
         price_per_m2: projectData.price_per_m2 ? Number(projectData.price_per_m2) : null,
-        vat_rate_new: projectData.vat_rate_new ? Number(projectData.vat_rate_new) : projectData.vat_rate ? Number(projectData.vat_rate) : 5,
-        vat_included: projectData.vat_included || false,
-        golden_visa_eligible_new: projectData.golden_visa_eligible_new || projectData.golden_visa_eligible || false,
+        vat_rate: projectData.vat_rate ? Number(projectData.vat_rate) : 5,
+        golden_visa_eligible: projectData.golden_visa_eligible || false,
         roi_estimate_percent: projectData.roi_estimate_percent ? Number(projectData.roi_estimate_percent) : null,
         rental_yield_percent: projectData.rental_yield_percent ? Number(projectData.rental_yield_percent) : null,
-        financing_available: projectData.financing_available || false,
         
         // Media - Parse photos from database (prioritize categorized_photos over photos)
         photos: (() => {
@@ -249,8 +241,7 @@ const AdminProjectForm: React.FC = () => {
         })(),
         photo_gallery_urls: Array.isArray(projectData.photo_gallery_urls) ? projectData.photo_gallery_urls : [],
         video_tour_urls: Array.isArray(projectData.video_tour_urls) ? projectData.video_tour_urls : [],
-        floor_plan_urls: Array.isArray(projectData.floor_plan_urls) ? projectData.floor_plan_urls : [],
-        virtual_tour_url_new: projectData.virtual_tour_url_new || projectData.virtual_tour_url || '',
+        virtual_tour_url: projectData.virtual_tour_url || '',
         project_presentation_url: projectData.project_presentation_url || '',
         youtube_tour_url: projectData.youtube_tour_url || '',
         vimeo_tour_url: projectData.vimeo_tour_url || '',
@@ -258,22 +249,20 @@ const AdminProjectForm: React.FC = () => {
         model_3d_urls: Array.isArray(projectData.model_3d_urls) ? projectData.model_3d_urls : [],
         
         // Features & Amenities
-        features: Array.isArray(projectData.features) ? projectData.features : [],
         amenities: Array.isArray(projectData.amenities) ? projectData.amenities : [],
         surrounding_amenities: Array.isArray(projectData.surrounding_amenities) ? projectData.surrounding_amenities : [],
         
         // Marketing
         project_narrative: projectData.project_narrative || '',
-        meta_title_new: projectData.meta_title_new || projectData.meta_title || '',
-        meta_description_new: projectData.meta_description_new || projectData.meta_description || '',
+        meta_title: projectData.meta_title || '',
+        meta_description: projectData.meta_description || '',
         meta_keywords: Array.isArray(projectData.meta_keywords) ? projectData.meta_keywords : [],
         marketing_highlights: Array.isArray(projectData.marketing_highlights) ? projectData.marketing_highlights : [],
         target_audience: Array.isArray(projectData.target_audience) ? projectData.target_audience : [],
-        featured_new: projectData.featured_new || projectData.featured_property || false,
+        featured_project: projectData.featured_project || false,
         
         // Status
-        status_project: projectData.status_project || 'disponible',
-        statut_commercial: projectData.statut_commercial || 'prelancement'
+        status: projectData.status || 'planning',
       });
       
       // Ne PAS forcer le re-render ici car cela efface les données
@@ -422,9 +411,8 @@ const AdminProjectForm: React.FC = () => {
         const freshProject = await fetchProject(id);
         if (freshProject) {
           console.log('🔄 Données fraîches récupérées:', {
-            total_units_new: freshProject.total_units_new,
-            units_available_new: freshProject.units_available_new,
-            energy_rating: freshProject.energy_rating,
+            total_units: freshProject.total_units,
+            units_available: freshProject.units_available,
             roi_estimate_percent: freshProject.roi_estimate_percent,
             rental_yield_percent: freshProject.rental_yield_percent
           });
@@ -435,9 +423,8 @@ const AdminProjectForm: React.FC = () => {
           // Remettre à jour le formulaire avec les données fraîches de la base
           form.reset({
             ...currentFormValues,
-            total_units_new: freshProject.total_units_new ? Number(freshProject.total_units_new) : null,
-            units_available_new: freshProject.units_available_new ? Number(freshProject.units_available_new) : null,
-            energy_rating: freshProject.energy_rating || '',
+            total_units: freshProject.total_units ? Number(freshProject.total_units) : null,
+            units_available: freshProject.units_available ? Number(freshProject.units_available) : null,
             roi_estimate_percent: freshProject.roi_estimate_percent ? Number(freshProject.roi_estimate_percent) : null,
             rental_yield_percent: freshProject.rental_yield_percent ? Number(freshProject.rental_yield_percent) : null,
             photos: (() => {

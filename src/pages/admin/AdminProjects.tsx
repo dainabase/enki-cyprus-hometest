@@ -64,11 +64,11 @@ const AdminProjects = () => {
       let query = supabase
         .from('projects')
         .select(`
-          id, title, status, cyprus_zone, golden_visa_eligible, price, price_from,
-          completion_date_new, launch_date, units_available, units_sold, total_units, developer_id,
-          city, neighborhood, description, bedrooms_range, built_area_m2, 
-          total_units_new, parking_spaces, energy_rating, created_at, status_project, statut_commercial,
-          developer:developers(id, name)
+          id, title, status, cyprus_zone, golden_visa_eligible, price_from,
+          completion_date, launch_date, units_available, units_sold, total_units, developer_id,
+          city, neighborhood, description, built_area_m2, 
+          created_at,
+          developers(id, name)
         `, { count: 'exact' })
         .range(from, to);
 
@@ -150,24 +150,24 @@ const AdminProjects = () => {
       
       switch (sortField) {
         case 'developer':
-          aValue = getDeveloper(a.developer)?.name || '';
-          bValue = getDeveloper(b.developer)?.name || '';
+          aValue = (a as any).developers?.name || '';
+          bValue = (b as any).developers?.name || '';
           break;
         case 'city':
-          aValue = a.city || '';
-          bValue = b.city || '';
+          aValue = (a as any).city || '';
+          bValue = (b as any).city || '';
           break;
         case 'neighborhood':
-          aValue = a.neighborhood || '';
-          bValue = b.neighborhood || '';
+          aValue = (a as any).neighborhood || '';
+          bValue = (b as any).neighborhood || '';
           break;
         case 'zone':
-          aValue = a.cyprus_zone || '';
-          bValue = b.cyprus_zone || '';
+          aValue = (a as any).cyprus_zone || '';
+          bValue = (b as any).cyprus_zone || '';
           break;
         case 'price':
-          aValue = a.price || a.price_from || 0;
-          bValue = b.price || b.price_from || 0;
+          aValue = (a as any).price_from || 0;
+          bValue = (b as any).price_from || 0;
           break;
         default:
           aValue = a[sortField] || '';
@@ -191,7 +191,7 @@ const AdminProjects = () => {
     
     return sortedProjects.reduce((acc, project) => {
       const developerId = project.developer_id || 'no-developer';
-      const developer = getDeveloper(project.developer);
+      const developer = getDeveloper(project.developers);
       const developerName = developer?.name || 'Sans développeur';
       
       if (!acc[developerId]) {

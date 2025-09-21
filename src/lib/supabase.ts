@@ -9,6 +9,7 @@ export interface DatabaseProperty {
   detailed_description?: string;
   type: string;
   price: number;
+  price_from?: number;
   location: {
     lat: number;
     lng: number;
