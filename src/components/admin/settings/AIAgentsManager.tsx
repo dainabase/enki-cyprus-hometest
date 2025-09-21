@@ -132,9 +132,15 @@ export default function AIAgentsManager() {
     // Charger la config de l'agent sélectionné
     const config = agentConfigs[selectedAgent.id];
     if (config) {
-      setCurrentConfig(config);
+      // Si le prompt système est vide, utiliser le prompt par défaut
+      const configWithPrompt = {
+        ...config,
+        system_prompt: config.system_prompt || selectedAgent.defaultPrompt
+      };
+      setCurrentConfig(configWithPrompt);
     } else {
-      setCurrentConfig({
+      // Créer une nouvelle config avec le prompt par défaut
+      const defaultConfig = {
         provider: 'openai',
         model_name: 'gpt-4-turbo-preview',
         api_key_encrypted: '',
@@ -142,7 +148,19 @@ export default function AIAgentsManager() {
         max_tokens: 1000,
         system_prompt: selectedAgent.defaultPrompt,
         is_active: false
-      });
+      };
+      setCurrentConfig(defaultConfig);
+      
+      // Optionellement, sauvegarder le prompt par défaut immédiatement
+      if (selectedAgent.id === 'seo-generator') {
+        console.log('🚀 Initialisation automatique du prompt SEO');
+        setTimeout(() => {
+          setAgentConfigs(prev => ({
+            ...prev,
+            [selectedAgent.id]: defaultConfig
+          }));
+        }, 100);
+      }
     }
   }, [selectedAgent, agentConfigs]);
 
@@ -152,8 +170,13 @@ export default function AIAgentsManager() {
         .from('ai_agents_config')
         .select('*');
 
+      if (error) {
+        console.error('Erreur chargement configs:', error);
+        return;
+      }
+
+      const configsMap = {};
       if (data) {
-        const configsMap = {};
         data.forEach(config => {
           configsMap[config.agent_name] = {
             provider: config.provider || 'openai',
@@ -165,8 +188,9 @@ export default function AIAgentsManager() {
             is_active: config.is_active || false
           };
         });
-        setAgentConfigs(configsMap);
       }
+      setAgentConfigs(configsMap);
+      console.log('✅ Configurations chargées:', configsMap);
     } catch (error) {
       console.error('Échec du chargement des configurations:', error);
     }
@@ -202,22 +226,51 @@ export default function AIAgentsManager() {
   const handleSaveConfig = async () => {
     setSaving(true);
     try {
-      const { error } = await supabase
-        .from('ai_agents_config')
-        .upsert({
-          agent_name: selectedAgent.id,
-          agent_type: selectedAgent.type,
-          provider: currentConfig.provider,
-          model_name: currentConfig.model_name,
-          api_key_encrypted: currentConfig.api_key_encrypted,
-          temperature: currentConfig.temperature,
-          max_tokens: currentConfig.max_tokens,
-          system_prompt: currentConfig.system_prompt,
-          is_active: currentConfig.is_active,
-          updated_at: new Date().toISOString()
-        });
+      console.log('💾 Sauvegarde config pour:', selectedAgent.id, currentConfig);
 
-      if (error) throw error;
+      // Vérifier si l'agent existe déjà
+      const { data: existingAgent } = await supabase
+        .from('ai_agents_config')
+        .select('id')
+        .eq('agent_name', selectedAgent.id)
+        .maybeSingle();
+
+      let result;
+      if (existingAgent) {
+        // Mettre à jour
+        result = await supabase
+          .from('ai_agents_config')
+          .update({
+            agent_type: selectedAgent.type,
+            provider: currentConfig.provider,
+            model_name: currentConfig.model_name,
+            api_key_encrypted: currentConfig.api_key_encrypted,
+            temperature: currentConfig.temperature,
+            max_tokens: currentConfig.max_tokens,
+            system_prompt: currentConfig.system_prompt,
+            is_active: currentConfig.is_active,
+            updated_at: new Date().toISOString()
+          })
+          .eq('agent_name', selectedAgent.id);
+      } else {
+        // Insérer
+        result = await supabase
+          .from('ai_agents_config')
+          .insert({
+            agent_name: selectedAgent.id,
+            agent_type: selectedAgent.type,
+            provider: currentConfig.provider,
+            model_name: currentConfig.model_name,
+            api_key_encrypted: currentConfig.api_key_encrypted,
+            temperature: currentConfig.temperature,
+            max_tokens: currentConfig.max_tokens,
+            system_prompt: currentConfig.system_prompt,
+            is_active: currentConfig.is_active,
+            updated_at: new Date().toISOString()
+          });
+      }
+
+      if (result.error) throw result.error;
 
       // Mettre à jour le cache local
       setAgentConfigs(prev => ({
@@ -227,9 +280,11 @@ export default function AIAgentsManager() {
 
       toast.success('Configuration sauvegardée avec succès');
       await loadStats();
+      
+      console.log('✅ Configuration sauvegardée');
     } catch (error) {
-      console.error('Erreur de sauvegarde:', error);
-      toast.error('Échec de la sauvegarde de la configuration');
+      console.error('❌ Erreur de sauvegarde:', error);
+      toast.error(`Échec de la sauvegarde: ${error.message}`);
     } finally {
       setSaving(false);
     }
@@ -237,6 +292,8 @@ export default function AIAgentsManager() {
 
   const handleToggleAgent = async (agent, checked) => {
     try {
+      console.log(`🔄 Toggle agent ${agent.id} to ${checked}`);
+      
       const agentConfig = agentConfigs[agent.id] || {
         provider: 'openai',
         model_name: 'gpt-4-turbo-preview',
@@ -249,22 +306,51 @@ export default function AIAgentsManager() {
 
       const updatedConfig = { ...agentConfig, is_active: checked };
 
-      const { error } = await supabase
+      // Vérifier si l'agent existe déjà
+      const { data: existingAgent } = await supabase
         .from('ai_agents_config')
-        .upsert({
-          agent_name: agent.id,
-          agent_type: agent.type,
-          provider: updatedConfig.provider,
-          model_name: updatedConfig.model_name,
-          api_key_encrypted: updatedConfig.api_key_encrypted,
-          temperature: updatedConfig.temperature,
-          max_tokens: updatedConfig.max_tokens,
-          system_prompt: updatedConfig.system_prompt,
-          is_active: checked,
-          updated_at: new Date().toISOString()
-        });
+        .select('id')
+        .eq('agent_name', agent.id)
+        .maybeSingle();
 
-      if (error) throw error;
+      let result;
+      if (existingAgent) {
+        // Mettre à jour
+        result = await supabase
+          .from('ai_agents_config')
+          .update({
+            provider: updatedConfig.provider,
+            model_name: updatedConfig.model_name,
+            api_key_encrypted: updatedConfig.api_key_encrypted,
+            temperature: updatedConfig.temperature,
+            max_tokens: updatedConfig.max_tokens,
+            system_prompt: updatedConfig.system_prompt,
+            is_active: checked,
+            updated_at: new Date().toISOString()
+          })
+          .eq('agent_name', agent.id);
+      } else {
+        // Insérer
+        result = await supabase
+          .from('ai_agents_config')
+          .insert({
+            agent_name: agent.id,
+            agent_type: agent.type,
+            provider: updatedConfig.provider,
+            model_name: updatedConfig.model_name,
+            api_key_encrypted: updatedConfig.api_key_encrypted,
+            temperature: updatedConfig.temperature,
+            max_tokens: updatedConfig.max_tokens,
+            system_prompt: updatedConfig.system_prompt,
+            is_active: checked,
+            updated_at: new Date().toISOString()
+          });
+      }
+
+      if (result.error) {
+        console.error('Erreur DB:', result.error);
+        throw result.error;
+      }
 
       // Mettre à jour le cache local
       setAgentConfigs(prev => ({
@@ -279,9 +365,11 @@ export default function AIAgentsManager() {
 
       await loadStats();
       toast.success(`${agent.name} ${checked ? 'activé' : 'désactivé'}`);
+      
+      console.log('✅ Agent mis à jour avec succès');
     } catch (error) {
-      console.error('Erreur:', error);
-      toast.error('Erreur lors de la mise à jour');
+      console.error('❌ Erreur toggle agent:', error);
+      toast.error(`Erreur lors de la mise à jour: ${error.message}`);
     }
   };
 
