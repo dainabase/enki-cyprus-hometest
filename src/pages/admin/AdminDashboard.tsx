@@ -10,7 +10,7 @@ const AdminDevelopers = lazy(() => import('./AdminDevelopers'));
 const AdminProjects = lazy(() => import('./AdminProjects'));
 const AdminUnits = lazy(() => import('./AdminUnits'));
 const AdminCommissions = lazy(() => import('./AdminCommissions').then(module => ({ default: module.AdminCommissions })));
-const AdminUsers = lazy(() => import('./AdminUsers').then(module => ({ default: module.AdminUsers })));
+const AdminSettings = lazy(() => import('./AdminSettings'));
 const AdminAnalytics = lazy(() => import('./AdminAnalytics').then(module => ({ default: module.AdminAnalytics })));
 const AdminPredictions = lazy(() => import('./AdminPredictions'));
 const AdminSegmentation = lazy(() => import('./AdminSegmentation'));
@@ -84,7 +84,7 @@ const AdminDashboard = () => {
           <Route path="performance" element={<AdminPerformance />} />
           <Route path="documentation" element={<AdminDocumentation />} />
           <Route path="reports" element={<AdminReports />} />
-          <Route path="settings" element={<AdminContent />} />
+          <Route path="settings" element={<AdminSettings />} />
           {process.env.NODE_ENV === 'development' && (
             <Route path="tests" element={<AdminTests />} />
           )}

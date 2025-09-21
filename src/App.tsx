@@ -43,6 +43,7 @@ const AdminBuildings = lazy(() => import("./pages/admin/AdminBuildings"));
 const AdminLeads = lazy(() => import("./pages/admin/AdminLeads"));
 const AdminPerformance = lazy(() => import("./pages/admin/AdminPerformance"));
 const AdminSegmentation = lazy(() => import("./pages/admin/AdminSegmentation"));
+const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
 
 // Test integration page (dev mode only)
 const AdminTestIntegration = lazy(() => import("./pages/admin/AdminTestIntegration").then(module => ({ default: module.default })));
