@@ -151,7 +151,7 @@ const IntegrityReport = () => {
             ) : (
               <Alert className="border-yellow-200 bg-yellow-50">
                 <AlertDescription className="text-yellow-800">
-                  ⚠️ {totalOrphans} élément(s) orphelin(s) détecté(s) nécessitant une attention.
+                  {totalOrphans} élément(s) orphelin(s) détecté(s) nécessitant une attention.
                 </AlertDescription>
               </Alert>
             )}

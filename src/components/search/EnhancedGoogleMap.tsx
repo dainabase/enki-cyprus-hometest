@@ -64,7 +64,7 @@ const EnhancedGoogleMap: React.FC<EnhancedGoogleMapProps> = ({
   const getPropertyIcon = (type: string, isSelected: boolean = false) => {
     const iconSize = isSelected ? 50 : 40;
     const icons: Record<string, string> = {
-      villa: '🏖️',
+      villa: '🏠',
       apartment: '🏢',
       penthouse: '🏰',
       commercial: '🏪',

@@ -59,9 +59,9 @@ const GoogleMapComponent = ({
   const getPropertyIcon = (type: Property['type']) => {
     const iconSize = 40;
     const icons = {
-      villa: '🏖️',
+      villa: '🏠',
       apartment: '🏢',
-      penthouse: '🏰',
+      penthouse: '🏢',
       commercial: '🏪'
     };
     
@@ -78,7 +78,7 @@ const GoogleMapComponent = ({
   };
 
 const onLoad = useCallback((map: google.maps.Map) => {
-  console.log('🗺️ Google Map loaded, centering on Cyprus...');
+  console.log('Google Map loaded, centering on Cyprus...');
   if (!window.google) {
     console.error('❌ Google Maps API not loaded properly');
     return;
@@ -119,7 +119,7 @@ useEffect(() => {
         title: property.title,
       });
       marker.addListener('click', () => {
-        console.log(`🏠 Property clicked: ${property.title}`);
+        console.log(`Property clicked: ${property.title}`);
         setSelectedProperty(property);
         onPropertySelect?.(property);
       });
@@ -130,9 +130,9 @@ useEffect(() => {
 
     if (markers.length > 0) {
       clustererRef.current = new MarkerClusterer({ markers, map });
-      console.log('🎯 Marker clustering initialized successfully');
+      console.log('Marker clustering initialized successfully');
     } else {
-      console.warn('⚠️ No markers to cluster');
+      console.warn('No markers to cluster');
     }
   } catch (error) {
     console.error('❌ Error initializing advanced markers/clusterer:', error);

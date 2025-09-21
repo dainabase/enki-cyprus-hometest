@@ -58,9 +58,9 @@ const EnhancedMap: React.FC<EnhancedMapProps> = ({
   const getPropertyIcon = (type: Property['type']) => {
     const iconSize = 40;
     const icons = {
-      villa: '🏖️',
+      villa: '🏠',
       apartment: '🏢',
-      penthouse: '🏰',
+      penthouse: '🏢',
       commercial: '🏪',
       maison: '🏠'
     };
@@ -76,7 +76,7 @@ const EnhancedMap: React.FC<EnhancedMapProps> = ({
   };
 
   const onLoad = useCallback((map: google.maps.Map) => {
-    console.log('🗺️ Google Map loaded, centering on Cyprus');
+    console.log('Google Map loaded, centering on Cyprus');
     setMap(map);
   }, []);
 
@@ -120,7 +120,7 @@ const EnhancedMap: React.FC<EnhancedMapProps> = ({
           }, index * 200);
 
           marker.addListener('click', () => {
-            console.log(`🏠 Property selected: ${property.title}`);
+            console.log(`Property selected: ${property.title}`);
             setSelectedProperty(property);
             onPropertySelect?.(property);
             
@@ -141,7 +141,7 @@ const EnhancedMap: React.FC<EnhancedMapProps> = ({
             markers, 
             map
           });
-          console.log(`🎯 Marker clustering initialized with ${markers.length} markers`);
+          console.log(`Marker clustering initialized with ${markers.length} markers`);
         }
       } catch (error) {
         console.error('❌ Error creating markers:', error);

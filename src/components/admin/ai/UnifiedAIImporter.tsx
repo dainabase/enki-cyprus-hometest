@@ -47,7 +47,7 @@ export function UnifiedAIImporter() {
     try {
       setDocument(prev => prev ? {...prev, status: 'processing'} : null);
       
-      console.log('🏢 ÉTAPE 3: Extraction développeur avec système robuste...');
+      console.log('ÉTAPE 3: Extraction développeur avec système robuste...');
       
       // Upload du fichier vers Supabase storage
       const fileName = `${Date.now()}-${document.file.name}`;
@@ -65,7 +65,7 @@ export function UnifiedAIImporter() {
         .from('project-documents')
         .getPublicUrl(`ai-imports/${fileName}`);
       
-      console.log('📄 Fichier uploadé:', publicUrl);
+      console.log('Fichier uploadé:', publicUrl);
       
       // Appel à l'edge function avec timeout et retry
       const { data, error } = await supabase.functions.invoke('simple-pdf-extractor', {
@@ -99,11 +99,11 @@ export function UnifiedAIImporter() {
         setExtractedDeveloper(fallbackDeveloper);
         setDocument(prev => prev ? {...prev, status: 'completed'} : null);
         setCurrentStep(4);
-        console.log('⚠️ Utilisation données fallback');
+        console.log('Utilisation données fallback');
       }
       
     } catch (error) {
-      console.error('💥 Erreur complète extraction développeur:', error);
+      console.error('Erreur complète extraction développeur:', error);
       setDocument(prev => prev ? {...prev, status: 'error'} : null);
       
       // Afficher l'erreur à l'utilisateur
@@ -205,7 +205,7 @@ export function UnifiedAIImporter() {
                     
                     {document.status === 'uploaded' && (
                       <Button onClick={extractDeveloper} className="w-full bg-green-600 hover:bg-green-700">
-                        🏢 Extraire les infos développeur
+                        Extraire les infos développeur
                       </Button>
                     )}
                   </div>

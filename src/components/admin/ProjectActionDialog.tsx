@@ -37,7 +37,7 @@ export const ProjectActionDialog: React.FC<ProjectActionDialogProps> = ({
   validationErrors = [],
   isLoading = false
 }) => {
-  console.log('🚀 ProjectActionDialog rendered:', {
+  console.log('ProjectActionDialog rendered:', {
     isOpen,
     action,
     projectTitle,
@@ -97,7 +97,7 @@ export const ProjectActionDialog: React.FC<ProjectActionDialogProps> = ({
       case 'added':
         return <span className="text-emerald-600">✓ Ajouté</span>;
       case 'modified':
-        return <span className="text-blue-600">✏️ Modifié</span>;
+        return <span className="text-blue-600">Modifié</span>;
       case 'removed':
         return <span className="text-red-600">✗ Supprimé</span>;
     }

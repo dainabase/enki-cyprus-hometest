@@ -41,7 +41,7 @@ const HealthCheckPanel = () => {
       case 'fail':
         return <Badge variant="destructive">❌ FAIL</Badge>;
       case 'warning':
-        return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">⚠️ WARNING</Badge>;
+        return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">WARNING</Badge>;
       default:
         return <Badge variant="outline">UNKNOWN</Badge>;
     }

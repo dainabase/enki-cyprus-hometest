@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Edit, Trash2, Building2, Users, Calendar, AlertTriangle } from 'lucide-react';
+import { Plus, Edit, Trash2, Building2, Users, Calendar, AlertTriangle, Waves, Dumbbell, Sparkles, Car, Shield } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -315,24 +315,40 @@ export function BuildingsSection({ projectId }: BuildingsSectionProps) {
                 {/* Amenities */}
                 <div className="mt-4 flex flex-wrap gap-2">
                   {building.has_pool && (
-                    <Badge variant="secondary" className="text-xs">🏊‍♂️ Piscine</Badge>
+                    <Badge variant="secondary" className="text-xs flex items-center gap-1">
+                      <Waves className="w-3 h-3" />
+                      Piscine
+                    </Badge>
                   )}
                   {building.has_gym && (
-                    <Badge variant="secondary" className="text-xs">💪 Gym</Badge>
+                    <Badge variant="secondary" className="text-xs flex items-center gap-1">
+                      <Dumbbell className="w-3 h-3" />
+                      Gym
+                    </Badge>
                   )}
                   {building.has_spa && (
-                    <Badge variant="secondary" className="text-xs">🧖‍♀️ Spa</Badge>
+                    <Badge variant="secondary" className="text-xs flex items-center gap-1">
+                      <Sparkles className="w-3 h-3" />
+                      Spa
+                    </Badge>
                   )}
                   {building.has_parking && (
-                    <Badge variant="secondary" className="text-xs">
-                      🚗 Parking {building.parking_type && `(${building.parking_type})`}
+                    <Badge variant="secondary" className="text-xs flex items-center gap-1">
+                      <Car className="w-3 h-3" />
+                      Parking {building.parking_type && `(${building.parking_type})`}
                     </Badge>
                   )}
                   {building.has_security_system && (
-                    <Badge variant="secondary" className="text-xs">🔐 Sécurité</Badge>
+                    <Badge variant="secondary" className="text-xs flex items-center gap-1">
+                      <Shield className="w-3 h-3" />
+                      Sécurité
+                    </Badge>
                   )}
                   {building.has_concierge && (
-                    <Badge variant="secondary" className="text-xs">🧑‍💼 Concierge</Badge>
+                    <Badge variant="secondary" className="text-xs flex items-center gap-1">
+                      <Users className="w-3 h-3" />
+                      Concierge
+                    </Badge>
                   )}
                 </div>
               </CardContent>

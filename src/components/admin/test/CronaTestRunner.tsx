@@ -36,7 +36,7 @@ export const CronaTestRunner: React.FC = () => {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          🏗️ Test Complet Crona Groupe
+          Test Complet Crona Groupe
         </CardTitle>
         <CardDescription>
           Test de création complète: Développeur → Projet → Bâtiments (20 appartements + 4 maisons)
@@ -119,7 +119,7 @@ export const CronaTestRunner: React.FC = () => {
                 <Card>
                   <CardHeader className="pb-3">
                     <CardTitle className="text-sm flex items-center gap-2">
-                      🏗️ Projet
+                      Projet
                     </CardTitle>
                   </CardHeader>
                   <CardContent>

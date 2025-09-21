@@ -70,7 +70,7 @@ const PropertySearch = ({ properties, onFilteredProperties, onPropertySelect }: 
       });
     }
 
-    console.log(`📊 Filtered results: ${filtered.length} properties`);
+    console.log(`Filtered results: ${filtered.length} properties`);
     onFilteredProperties(filtered);
   };
 
@@ -79,7 +79,7 @@ const PropertySearch = ({ properties, onFilteredProperties, onPropertySelect }: 
     setTypeFilter('all');
     setPriceRange('all');
     onFilteredProperties(properties);
-    console.log('🗑️ Filters cleared, showing all properties');
+    console.log('Filters cleared, showing all properties');
   };
 
   return (
@@ -172,7 +172,7 @@ const PropertySearch = ({ properties, onFilteredProperties, onPropertySelect }: 
           onClick={() => handleSearch('Mersini')}
           className="text-xs bg-primary/10 text-primary"
         >
-          🏖️ Mersini Beach (Test)
+          Mersini Beach (Test)
         </Button>
       </div>
     </motion.div>

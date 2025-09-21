@@ -53,7 +53,7 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
 
   // DEBUG: Log what we receive and validate photos
   React.useEffect(() => {
-    console.log('🖼️ CategorizedMediaUploader received:', {
+    console.log('CategorizedMediaUploader received:', {
       field_value: field.value,
       field_value_type: typeof field.value,
       field_value_length: field.value?.length || 0,
@@ -64,9 +64,9 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
     if (field.value && Array.isArray(field.value)) {
       field.value.forEach((photo, index) => {
         if (!photo || !photo.url) {
-          console.warn(`🖼️ Invalid photo at index ${index}:`, photo);
+          console.warn(`Invalid photo at index ${index}:`, photo);
         } else {
-          console.log(`🖼️ Valid photo ${index}:`, { url: photo.url, category: photo.category });
+          console.log(`Valid photo ${index}:`, { url: photo.url, category: photo.category });
         }
       });
     }

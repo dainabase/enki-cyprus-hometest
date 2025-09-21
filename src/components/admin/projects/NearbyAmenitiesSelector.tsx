@@ -50,14 +50,14 @@ const categoryIcons = {
 };
 
 const categoryLabels = {
-  education: '🎓 Éducation',
-  transport: '🚌 Transport',
-  health: '🏥 Santé',
-  shopping: '🛒 Shopping',
-  leisure: '🎭 Loisirs',
-  services: '🏛️ Services',
-  dining: '🍽️ Restauration',
-  nature: '🌳 Nature'
+  education: 'Éducation',
+  transport: 'Transport',
+  health: 'Santé',
+  shopping: 'Shopping',
+  leisure: 'Loisirs',
+  services: 'Services',
+  dining: 'Restauration',
+  nature: 'Nature'
 };
 
 export const NearbyAmenitiesSelector: React.FC<NearbyAmenitiesSelectorProps> = ({ 

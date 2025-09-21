@@ -20,6 +20,10 @@ import { BuildingsSection } from './BuildingsSection';
 import { ProjectFormData } from '@/schemas/projectSchema';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { 
+  Building, MapPin, Home, Zap, Landmark, Building2, Waves, Shield, 
+  Sprout, Accessibility, Map as MapIcon, Palmtree, Users, Heart 
+} from 'lucide-react';
 
 interface ProjectFormStepsProps {
   form: UseFormReturn<ProjectFormData>;
@@ -325,7 +329,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
-                    📍 Adresse complète *
+                    <MapPin className="w-4 h-4" />
+                    Adresse complète *
                     <span className="text-xs text-muted-foreground">(remplit automatiquement les champs ci-dessous)</span>
                   </FormLabel>
                   <FormControl>
@@ -346,7 +351,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 name="city"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Ville * 🏙️</FormLabel>
+                    <FormLabel className="flex items-center gap-2">
+                      <Building className="w-4 h-4" />
+                      Ville *
+                    </FormLabel>
                     <FormControl>
                       <Input 
                         placeholder="Auto-rempli" 
@@ -364,7 +372,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 name="region"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Région 🗺️</FormLabel>
+                    <FormLabel className="flex items-center gap-2">
+                      <MapPin className="w-4 h-4" />
+                      Région
+                    </FormLabel>
                     <FormControl>
                       <Input 
                         placeholder="Auto-rempli" 
@@ -382,7 +393,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 name="neighborhood"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Quartier 🏘️</FormLabel>
+                    <FormLabel className="flex items-center gap-2">
+                      <Home className="w-4 h-4" />
+                      Quartier
+                    </FormLabel>
                     <FormControl>
                       <Input 
                         placeholder="Ex: Marina, Old Town..." 
@@ -399,7 +413,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 name="cyprus_zone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Zone Chypre ⚡</FormLabel>
+                    <FormLabel className="flex items-center gap-2">
+                      <Zap className="w-4 h-4" />
+                      Zone Chypre
+                    </FormLabel>
                     <FormControl>
                       <Input 
                         placeholder="Auto-rempli" 
@@ -421,7 +438,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 name="district"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>District 🏛️</FormLabel>
+                    <FormLabel className="flex items-center gap-2">
+                      <Landmark className="w-4 h-4" />
+                      District
+                    </FormLabel>
                     <FormControl>
                       <Input 
                         placeholder="Ex: Germasogeia, Agios Athanasios..." 
@@ -438,7 +458,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 name="municipality"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Municipalité 🏘️</FormLabel>
+                    <FormLabel className="flex items-center gap-2">
+                      <Building2 className="w-4 h-4" />
+                      Municipalité
+                    </FormLabel>
                     <FormControl>
                       <Input 
                         placeholder="Ex: Municipality of Limassol" 
@@ -688,7 +711,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 name="architect_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Architecte 🏗️</FormLabel>
+                    <FormLabel className="flex items-center gap-2">
+                      <Building2 className="w-4 h-4" />
+                      Architecte
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder="Nom du cabinet d'architecture" {...field} />
                     </FormControl>
@@ -754,7 +780,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 name="seismic_rating"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Norme sismique 🌊</FormLabel>
+                    <FormLabel className="flex items-center gap-2">
+                      <Waves className="w-4 h-4" />
+                      Norme sismique
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder="Ex: Eurocode 8" {...field} />
                     </FormControl>
@@ -768,7 +797,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 name="warranty_years"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Garantie (années) 🛡️</FormLabel>
+                    <FormLabel className="flex items-center gap-2">
+                      <Shield className="w-4 h-4" />
+                      Garantie (années)
+                    </FormLabel>
                     <FormControl>
                       <Input 
                         type="number" 
@@ -878,7 +910,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="sustainability_certifications"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Certifications écologiques 🌱</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <Sprout className="w-4 h-4" />
+                    Certifications écologiques
+                  </FormLabel>
                   <FormControl>
                     <div className="space-y-2">
                       <Input 
@@ -925,7 +960,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="accessibility_features"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Accessibilité PMR ♿</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <Accessibility className="w-4 h-4" />
+                    Accessibilité PMR
+                  </FormLabel>
                   <FormControl>
                     <div className="space-y-2">
                       <Input 
@@ -1265,7 +1303,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="interactive_map_url"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Carte interactive 🗺️</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <MapIcon className="w-4 h-4" />
+                    Carte interactive
+                  </FormLabel>
                   <FormControl>
                     <Input placeholder="https://..." {...field} />
                   </FormControl>
@@ -1307,7 +1348,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="map_image"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Image carte localisation 📍</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4" />
+                    Image carte localisation
+                  </FormLabel>
                   <FormControl>
                     <Input placeholder="URL de l'image de la carte" {...field} />
                   </FormControl>
@@ -1426,7 +1470,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="lifestyle_amenities"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Services lifestyle 🏝️</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <Palmtree className="w-4 h-4" />
+                    Services lifestyle
+                  </FormLabel>
                   <FormControl>
                     <div className="space-y-2">
                       <Input 
@@ -1472,7 +1519,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="community_features"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Espaces communs 👥</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <Users className="w-4 h-4" />
+                    Espaces communs
+                  </FormLabel>
                   <FormControl>
                     <div className="space-y-2">
                       <Input 
@@ -1518,7 +1568,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="wellness_features"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Bien-être & Santé 🧘</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <Heart className="w-4 h-4" />
+                    Bien-être & Santé
+                  </FormLabel>
                   <FormControl>
                     <div className="space-y-2">
                       <Input 
