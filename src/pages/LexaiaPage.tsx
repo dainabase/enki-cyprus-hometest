@@ -109,14 +109,14 @@ const LexaiaPage = () => {
       
       const { data: properties } = await supabase
         .from('projects')
-        .select('id, title, price, location')
+        .select('id, title, price_from, city')
         .in('id', propertyIds);
       
       return properties?.map(p => ({
         id: p.id,
         title: p.title,
-        price: p.price,
-        location: typeof p.location === 'string' ? p.location : (p.location as any)?.city || p.location,
+        price: p.price_from,
+        location: p.city,
         selected: false
       })) || [];
     },

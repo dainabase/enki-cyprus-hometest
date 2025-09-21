@@ -147,11 +147,12 @@ const Admin = () => {
   const handleSaveProject = async () => {
     try {
       const projectData = {
-        ...formData,
-        features: Array.isArray(formData.features) ? formData.features : String(formData.features).split(',').map(f => f.trim()),
-        detailed_features: Array.isArray(formData.detailed_features) ? formData.detailed_features : String(formData.detailed_features).split(',').map(f => f.trim()),
-        photos: Array.isArray(formData.photos) ? formData.photos : String(formData.photos).split(',').map(f => f.trim()),
-        plans: Array.isArray(formData.plans) ? formData.plans : String(formData.plans).split(',').map(f => f.trim())
+        title: formData.title || '',
+        description: formData.description || '',
+        city: (formData as any).location?.city || (formData as any).city || '',
+        price_from: formData.price || 0,
+        vat_rate: 5,
+        status: 'planning'
       };
 
       if (editingProject) {

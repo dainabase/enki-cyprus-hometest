@@ -129,11 +129,12 @@ const AdminProjects = () => {
   const saveProjectMutation = useMutation({
     mutationFn: async (projectData: ProjectFormData) => {
       const dataToSave = {
-        ...projectData,
-        features: Array.isArray(projectData.features) ? projectData.features : [],
-        detailed_features: Array.isArray(projectData.detailed_features) ? projectData.detailed_features : [],
-        photos: Array.isArray(projectData.photos) ? projectData.photos : [],
-        plans: Array.isArray(projectData.plans) ? projectData.plans : []
+        title: projectData.title || '',
+        description: projectData.description || '',
+        city: (projectData as any).location?.city || (projectData as any).city || '',
+        price_from: projectData.price || 0,
+        vat_rate: 5,
+        status: 'planning'
       };
 
       if (editingProject) {
@@ -152,12 +153,12 @@ const AdminProjects = () => {
         if (error) throw error;
         
         // Trigger interests generation for new projects
-        if (dataToSave.location?.city) {
+        if (dataToSave.city) {
           try {
             await supabase.functions.invoke('fetch-interests', {
               body: { 
                 projectId: data.id, 
-                location: dataToSave.location.city 
+                location: dataToSave.city
               }
             });
           } catch (err) {
@@ -499,7 +500,7 @@ const AdminProjects = () => {
                           <CardContent className="p-0">
                             {/* Project Image */}
                             <div className="relative h-32 bg-muted">
-                              {project.photos && project.photos.length > 0 ? (
+                              {Array.isArray(project.photo_gallery_urls) && project.photo_gallery_urls.length > 0 ? (
                                 <img
                                   src={project.photos[0]}
                                   alt={project.title}
@@ -524,12 +525,12 @@ const AdminProjects = () => {
                                   <h3 className="font-semibold text-sm truncate">{project.title}</h3>
                                   <div className="flex items-center text-xs text-muted-foreground mt-1">
                                     <MapPin className="w-3 h-3 mr-1 flex-shrink-0" />
-                                    <span className="truncate">{typeof project.location === 'object' && project.location !== null ? (project.location as any).city : project.location}</span>
+                                    <span className="truncate">{project.city}</span>
                                   </div>
                                 </div>
-                                <Badge variant="outline" className="text-xs ml-2 flex-shrink-0">
-                                  {project.property_category || 'Résidentiel'}
-                                </Badge>
+                                 <Badge variant="outline" className="text-xs ml-2 flex-shrink-0">
+                                   Résidentiel
+                                 </Badge>
                               </div>
                               
                               <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
@@ -537,9 +538,9 @@ const AdminProjects = () => {
                               </p>
                               
                               <div className="flex items-center justify-between">
-                                <span className="font-semibold text-primary text-sm">
-                                  €{project.price?.toLocaleString()}
-                                </span>
+                                 <span className="font-semibold text-primary text-sm">
+                                   €{project.price_from?.toLocaleString() || 'N/A'}
+                                 </span>
                                 <div className="flex gap-1">
                                   <Button
                                     variant="outline"

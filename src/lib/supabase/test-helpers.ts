@@ -50,7 +50,7 @@ export async function checkProjectBuildingRelations(): Promise<TestResult> {
   try {
     const { data: orphanBuildings, error } = await supabase
       .from('buildings')
-      .select('id, name')
+      .select('id, building_name')
       .is('project_id', null);
 
     if (error) throw error;
@@ -79,7 +79,7 @@ export async function checkGoldenVisaCalculation(): Promise<TestResult> {
   try {
     const { data: projects, error } = await supabase
       .from('projects')
-      .select('id, title, price, golden_visa_eligible');
+      .select('id, title, price_from, golden_visa_eligible');
 
     if (error) throw error;
 
@@ -118,7 +118,7 @@ export async function checkPriceConsistency(): Promise<TestResult> {
   try {
     const { data: projects, error } = await supabase
       .from('projects')
-      .select('id, title, price');
+      .select('id, title, price_from');
 
     if (error) throw error;
 
@@ -130,7 +130,7 @@ export async function checkPriceConsistency(): Promise<TestResult> {
       };
     }
 
-    const invalidPrices = projects.filter(p => (p.price || 0) <= 0);
+    const invalidPrices = projects.filter(p => (p.price_from || 0) <= 0);
 
     return {
       name: "Cohérence des Prix",
@@ -188,23 +188,17 @@ export async function seedDemoData(): Promise<DemoDataResult> {
         subtitle: "Luxury Beachfront Living",
         description: "Premium residential complex with stunning sea views",
         developer_id: dev1.id,
+        city: "Limassol",
+        region: "Limassol District",
         cyprus_zone: "limassol",
         status: "under_construction",
-        type: "apartment",
-        price: 450000,
-        price_from: "€450,000",
+        price_from: 450000,
         vat_rate: 5,
         golden_visa_eligible: true,
         units_available: 25,
         total_units: 50,
-        location: {
-          city: "Limassol",
-          address: "Seafront Avenue 123",
-          lat: 34.7040,
-          lng: 33.0371
-        },
-        features: ["Sea view", "Private parking", "Swimming pool"],
-        photos: []
+        gps_latitude: 34.7040,
+        gps_longitude: 33.0371
       }])
       .select()
       .single();
@@ -218,23 +212,17 @@ export async function seedDemoData(): Promise<DemoDataResult> {
         subtitle: "Exclusive Villa Collection",
         description: "Luxury villas with panoramic mountain views",
         developer_id: dev2.id,
+        city: "Paphos",
+        region: "Paphos District",
         cyprus_zone: "paphos",
         status: "planning",
-        type: "villa",
-        price: 750000,
-        price_from: "€750,000",
+        price_from: 750000,
         vat_rate: 5,
         golden_visa_eligible: true,
         units_available: 8,
         total_units: 12,
-        location: {
-          city: "Paphos",
-          address: "Mountain Ridge Road 45",
-          lat: 34.7571,
-          lng: 32.4069
-        },
-        features: ["Mountain view", "Private garden", "Garage"],
-        photos: []
+        gps_latitude: 34.7571,
+        gps_longitude: 32.4069
       }])
       .select()
       .single();
@@ -245,7 +233,8 @@ export async function seedDemoData(): Promise<DemoDataResult> {
     const { data: building1, error: building1Error } = await supabase
       .from('buildings')
       .insert([{
-        name: "Tower A",
+        building_name: "Tower A",
+        building_code: "TA001",
         project_id: project1.id,
         total_floors: 12,
         total_units: 30,
@@ -261,7 +250,8 @@ export async function seedDemoData(): Promise<DemoDataResult> {
     const { data: building2, error: building2Error } = await supabase
       .from('buildings')
       .insert([{
-        name: "Villa Block 1",
+        building_name: "Villa Block 1",
+        building_code: "VB001",
         project_id: project2.id,
         total_floors: 3,
         total_units: 6,
@@ -308,7 +298,7 @@ export async function getGlobalStatistics() {
     const buildings = buildingsResult.data || [];
 
     // Calculate statistics
-    const totalValue = projects.reduce((sum, p) => sum + (p.price || 0), 0);
+    const totalValue = projects.reduce((sum, p) => sum + (p.price_from || 0), 0);
     const totalUnits = buildings.reduce((sum, b) => sum + (b.total_units || 0), 0);
     const goldenVisaProjects = projects.filter(p => p.golden_visa_eligible).length;
 
