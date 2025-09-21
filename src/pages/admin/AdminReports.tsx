@@ -69,7 +69,7 @@ export default function AdminReports() {
         setReportData(data);
         setTotals({
           count: data.length,
-          totalValue: data.reduce((sum, p) => sum + (Number(p.price) || 0), 0),
+          totalValue: data.reduce((sum, p) => sum + (Number(p.price_from) || 0), 0),
           goldenVisa: data.filter(p => p.golden_visa_eligible).length
         });
       }
