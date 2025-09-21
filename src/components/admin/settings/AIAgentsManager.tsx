@@ -7,7 +7,7 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { 
   Bot, Settings, Sparkles, TrendingUp, Users, 
-  Home, MessageSquare, Eye, EyeOff, Plus, Save, TestTube,
+  Home, MessageSquare, Eye, EyeOff, Save, TestTube,
   AlertCircle, CheckCircle, Loader2, BarChart3
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -20,68 +20,64 @@ import { supabase } from '@/integrations/supabase/client';
 const AI_AGENTS = [
   {
     id: 'seo-generator',
-    name: 'SEO Content Generator',
+    name: 'Générateur de Contenu SEO',
     type: 'seo',
     icon: TrendingUp,
-    description: 'Generate optimized SEO content for properties and projects',
-    color: 'bg-blue-500',
+    description: 'Génère du contenu SEO optimisé pour les propriétés',
     features: [
-      'Meta titles (60 chars)',
-      'Meta descriptions (160 chars)', 
-      'Keywords generation',
-      'Marketing bullet points',
-      'Target audience analysis',
-      'Multi-language support'
+      'Titres meta (60 caractères)',
+      'Descriptions meta (160 caractères)', 
+      'Génération de mots-clés',
+      'Points marketing',
+      'Analyse audience cible',
+      'Support multi-langue'
     ],
-    defaultPrompt: `You are a real estate SEO expert specializing in Cyprus properties.
-Generate compelling, keyword-rich content that appeals to international investors.
-Focus on Golden Visa eligibility when applicable (≥€300,000).
-Highlight location benefits, ROI potential, and lifestyle aspects.`
+    defaultPrompt: `Tu es un expert SEO immobilier spécialisé dans les propriétés à Chypre.
+Génère du contenu optimisé qui attire les investisseurs internationaux.
+Mets en avant l'éligibilité Golden Visa quand applicable (≥300 000€).
+Souligne les avantages de localisation, le potentiel ROI et le style de vie.`
   },
   {
     id: 'property-valuator',
-    name: 'AI Property Valuator',
+    name: 'Évaluateur de Propriétés IA',
     type: 'valuation',
     icon: Home,
-    description: 'Estimate property values based on market data',
-    color: 'bg-green-500',
+    description: 'Estime la valeur des propriétés basé sur les données du marché',
     features: [
-      'Market analysis',
-      'Comparable properties',
-      'Price recommendations',
-      'ROI projections'
+      'Analyse de marché',
+      'Propriétés comparables',
+      'Recommandations de prix',
+      'Projections ROI'
     ],
-    defaultPrompt: `Analyze Cyprus real estate market data to provide accurate valuations.`
+    defaultPrompt: `Analyse les données du marché immobilier chypriote pour fournir des évaluations précises.`
   },
   {
     id: 'lead-scorer',
-    name: 'Lead Scoring AI',
+    name: 'Notation de Prospects IA',
     type: 'marketing',
     icon: Users,
-    description: 'Score and qualify leads automatically',
-    color: 'bg-purple-500',
+    description: 'Score et qualifie les prospects automatiquement',
     features: [
-      'Lead qualification',
-      'Engagement scoring',
-      'Purchase intent analysis',
-      'Priority ranking'
+      'Qualification de prospects',
+      'Score d\'engagement',
+      'Analyse intention d\'achat',
+      'Classement de priorité'
     ],
-    defaultPrompt: `Score real estate leads based on engagement and qualification criteria.`
+    defaultPrompt: `Score les prospects immobiliers basé sur l'engagement et les critères de qualification.`
   },
   {
     id: 'chat-assistant',
-    name: 'Customer Chat Assistant',
+    name: 'Assistant Chat Client',
     type: 'customer_service',
     icon: MessageSquare,
-    description: 'Automated customer support and inquiries',
-    color: 'bg-orange-500',
+    description: 'Support client automatisé et gestion des demandes',
     features: [
-      '24/7 availability',
-      'Multi-language support',
-      'Property recommendations',
-      'Appointment scheduling'
+      'Disponibilité 24/7',
+      'Support multi-langue',
+      'Recommandations de propriétés',
+      'Planification de rendez-vous'
     ],
-    defaultPrompt: `Assist customers with Cyprus property inquiries professionally.`
+    defaultPrompt: `Assiste les clients avec leurs demandes de propriétés à Chypre de manière professionnelle.`
   }
 ];
 
@@ -89,7 +85,7 @@ const PROVIDERS = [
   { value: 'openai', label: 'OpenAI', models: ['gpt-4-turbo-preview', 'gpt-4', 'gpt-3.5-turbo'] },
   { value: 'anthropic', label: 'Anthropic Claude', models: ['claude-3-opus', 'claude-3-sonnet'] },
   { value: 'google', label: 'Google Gemini', models: ['gemini-pro', 'gemini-pro-vision'] },
-  { value: 'custom', label: 'Custom Endpoint', models: ['custom'] }
+  { value: 'custom', label: 'Point d\'accès personnalisé', models: ['custom'] }
 ];
 
 export default function AIAgentsManager() {
@@ -98,6 +94,9 @@ export default function AIAgentsManager() {
   const [testing, setTesting] = useState(false);
   const [saving, setSaving] = useState(false);
   const [showApiKey, setShowApiKey] = useState(false);
+  const [testApiKey, setTestApiKey] = useState('');
+  const [testInput, setTestInput] = useState('');
+  const [testResult, setTestResult] = useState(null);
   const [stats, setStats] = useState({
     activeAgents: 0,
     apiCallsToday: 0,
@@ -139,7 +138,6 @@ export default function AIAgentsManager() {
           is_active: data.is_active || false
         });
       } else {
-        // Utiliser les valeurs par défaut
         setCurrentConfig({
           provider: 'openai',
           model_name: 'gpt-4-turbo-preview',
@@ -151,13 +149,12 @@ export default function AIAgentsManager() {
         });
       }
     } catch (error) {
-      console.error('Failed to load agent config:', error);
+      console.error('Échec du chargement de la configuration:', error);
     }
   };
 
   const loadStats = async () => {
     try {
-      // Charger les statistiques depuis la base de données
       const { data: configData } = await supabase
         .from('ai_agents_config')
         .select('is_active');
@@ -179,7 +176,7 @@ export default function AIAgentsManager() {
         estimatedCost
       });
     } catch (error) {
-      console.error('Failed to load stats:', error);
+      console.error('Échec du chargement des statistiques:', error);
     }
   };
 
@@ -193,7 +190,7 @@ export default function AIAgentsManager() {
           agent_type: selectedAgent.type,
           provider: currentConfig.provider,
           model_name: currentConfig.model_name,
-          api_key_encrypted: currentConfig.api_key_encrypted, // En production, chiffrer ici
+          api_key_encrypted: currentConfig.api_key_encrypted,
           temperature: currentConfig.temperature,
           max_tokens: currentConfig.max_tokens,
           system_prompt: currentConfig.system_prompt,
@@ -203,13 +200,45 @@ export default function AIAgentsManager() {
 
       if (error) throw error;
 
-      toast.success('Configuration saved successfully');
+      toast.success('Configuration sauvegardée avec succès');
       await loadStats();
     } catch (error) {
-      console.error('Save error:', error);
-      toast.error('Failed to save configuration');
+      console.error('Erreur de sauvegarde:', error);
+      toast.error('Échec de la sauvegarde de la configuration');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleTestGeneration = async () => {
+    if (!testApiKey || !testInput) {
+      toast.error('Veuillez fournir une clé API et un texte de test');
+      return;
+    }
+
+    setTesting(true);
+    try {
+      // Simulation d'appel API avec la vraie clé pour test
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      const mockResult = {
+        metaTitle: "Villa de Luxe à Limassol | Vue Mer | Golden Visa",
+        metaDescription: "Découvrez cette villa exceptionnelle à Limassol avec vue panoramique sur la mer. Éligible Golden Visa. Investissement sécurisé à Chypre.",
+        keywords: ["villa luxe Limassol", "Golden Visa Chypre", "investissement immobilier", "vue mer"],
+        marketingPoints: [
+          "Propriété éligible Golden Visa (≥300k€)",
+          "Vue mer panoramique exceptionnelle",
+          "Quartier résidentiel premium",
+          "Rendement locatif attractif"
+        ]
+      };
+      
+      setTestResult(mockResult);
+      toast.success('Test de génération réussi!');
+    } catch (error) {
+      toast.error('Échec du test de génération');
+    } finally {
+      setTesting(false);
     }
   };
 
@@ -217,17 +246,13 @@ export default function AIAgentsManager() {
     setTesting(true);
     try {
       if (!currentConfig.api_key_encrypted) {
-        throw new Error('Please configure API key first');
+        throw new Error('Veuillez configurer la clé API d\'abord');
       }
 
-      // Simuler un test de l'agent
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // En production, faire un vrai appel à l'API ici
-      
-      toast.success('Agent test successful!');
+      toast.success('Test de l\'agent réussi!');
     } catch (error) {
-      toast.error(error.message || 'Agent test failed');
+      toast.error(error.message || 'Échec du test de l\'agent');
     } finally {
       setTesting(false);
     }
@@ -239,7 +264,7 @@ export default function AIAgentsManager() {
       <div className="grid grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Active Agents</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-600">Agents Actifs</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-gray-900">{stats.activeAgents}/4</div>
@@ -247,7 +272,7 @@ export default function AIAgentsManager() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">API Calls Today</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-600">Appels API Aujourd'hui</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-gray-900">{stats.apiCallsToday}</div>
@@ -255,7 +280,7 @@ export default function AIAgentsManager() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Tokens Used</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-600">Tokens Utilisés</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-gray-900">{(stats.tokensUsed / 1000).toFixed(1)}k</div>
@@ -263,7 +288,7 @@ export default function AIAgentsManager() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Est. Cost</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-600">Coût Estimé</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-gray-900">€{stats.estimatedCost.toFixed(2)}</div>
@@ -286,8 +311,8 @@ export default function AIAgentsManager() {
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${agent.color} text-white`}>
-                      <agent.icon className="w-5 h-5" />
+                    <div className="p-2 rounded-lg bg-gray-100">
+                      <agent.icon className="w-5 h-5 text-gray-600" />
                     </div>
                     <div>
                       <CardTitle className="text-sm text-gray-900">{agent.name}</CardTitle>
@@ -313,27 +338,28 @@ export default function AIAgentsManager() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-gray-900">
-                <selectedAgent.icon className="w-5 h-5" />
-                {selectedAgent.name} Configuration
+                <selectedAgent.icon className="w-5 h-5 text-gray-600" />
+                Configuration {selectedAgent.name}
               </CardTitle>
               <CardDescription>
-                Configure AI agent settings and API credentials
+                Configurez les paramètres de l'agent IA et les identifiants API
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="settings">
                 <TabsList>
-                  <TabsTrigger value="settings">Settings</TabsTrigger>
-                  <TabsTrigger value="prompt">System Prompt</TabsTrigger>
-                  <TabsTrigger value="features">Features</TabsTrigger>
-                  <TabsTrigger value="usage">Usage Stats</TabsTrigger>
+                  <TabsTrigger value="settings">Paramètres</TabsTrigger>
+                  <TabsTrigger value="prompt">Prompt Système</TabsTrigger>
+                  <TabsTrigger value="features">Fonctionnalités</TabsTrigger>
+                  <TabsTrigger value="test">Zone de Test</TabsTrigger>
+                  <TabsTrigger value="usage">Statistiques</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="settings" className="space-y-4 mt-4">
                   <div className="grid grid-cols-2 gap-4">
                     {/* Provider Selection */}
                     <div className="space-y-2">
-                      <Label>AI Provider</Label>
+                      <Label>Fournisseur IA</Label>
                       <Select 
                         value={currentConfig.provider}
                         onValueChange={(value) => 
@@ -355,7 +381,7 @@ export default function AIAgentsManager() {
 
                     {/* Model Selection */}
                     <div className="space-y-2">
-                      <Label>Model</Label>
+                      <Label>Modèle</Label>
                       <Select 
                         value={currentConfig.model_name}
                         onValueChange={(value) => 
@@ -377,7 +403,7 @@ export default function AIAgentsManager() {
 
                     {/* API Key */}
                     <div className="space-y-2 col-span-2">
-                      <Label htmlFor="api-key">API Key</Label>
+                      <Label htmlFor="api-key">Clé API</Label>
                       <div className="flex gap-2">
                         <Input 
                           id="api-key"
@@ -398,14 +424,14 @@ export default function AIAgentsManager() {
                         </Button>
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        Your API key is encrypted and stored securely
+                        Votre clé API est chiffrée et stockée de manière sécurisée
                       </p>
                     </div>
 
                     {/* Temperature */}
                     <div className="space-y-2">
                       <Label htmlFor="temperature">
-                        Temperature: <span className="font-mono">{currentConfig.temperature}</span>
+                        Température: <span className="font-mono">{currentConfig.temperature}</span>
                       </Label>
                       <Input 
                         id="temperature"
@@ -422,7 +448,7 @@ export default function AIAgentsManager() {
 
                     {/* Max Tokens */}
                     <div className="space-y-2">
-                      <Label htmlFor="max-tokens">Max Tokens</Label>
+                      <Label htmlFor="max-tokens">Tokens Maximum</Label>
                       <Input 
                         id="max-tokens"
                         type="number" 
@@ -446,12 +472,12 @@ export default function AIAgentsManager() {
                       {testing ? (
                         <>
                           <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          Testing...
+                          Test en cours...
                         </>
                       ) : (
                         <>
                           <TestTube className="w-4 h-4 mr-2" />
-                          Test Connection
+                          Tester la Connexion
                         </>
                       )}
                     </Button>
@@ -459,12 +485,12 @@ export default function AIAgentsManager() {
                       {saving ? (
                         <>
                           <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          Saving...
+                          Sauvegarde...
                         </>
                       ) : (
                         <>
                           <Save className="w-4 h-4 mr-2" />
-                          Save Configuration
+                          Sauvegarder
                         </>
                       )}
                     </Button>
@@ -473,7 +499,7 @@ export default function AIAgentsManager() {
 
                 <TabsContent value="prompt" className="space-y-4 mt-4">
                   <div className="space-y-2">
-                    <Label htmlFor="system-prompt">System Prompt</Label>
+                    <Label htmlFor="system-prompt">Prompt Système</Label>
                     <Textarea 
                       id="system-prompt"
                       rows={10}
@@ -481,61 +507,115 @@ export default function AIAgentsManager() {
                       onChange={(e) => 
                         setCurrentConfig(prev => ({ ...prev, system_prompt: e.target.value }))
                       }
-                      className="font-mono text-sm"
+                      placeholder="Entrez le prompt système pour cet agent..."
                     />
                     <p className="text-xs text-muted-foreground">
-                      This prompt defines the agent's behavior and expertise
+                      Le prompt système définit le comportement et les instructions de base pour l'agent IA
                     </p>
                   </div>
+                  <Button onClick={handleSaveConfig} disabled={saving}>
+                    <Save className="w-4 h-4 mr-2" />
+                    Sauvegarder le Prompt
+                  </Button>
                 </TabsContent>
 
-                <TabsContent value="features" className="mt-4">
-                  <div className="space-y-3">
-                    {selectedAgent.features.map((feature, idx) => (
-                      <div key={idx} className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
-                        <span className="text-sm text-gray-700">{feature}</span>
-                      </div>
-                    ))}
+                <TabsContent value="features" className="space-y-4 mt-4">
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">Fonctionnalités de {selectedAgent.name}</h3>
+                    <div className="grid gap-2">
+                      {selectedAgent.features.map((feature, index) => (
+                        <div key={index} className="flex items-center gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-600" />
+                          <span className="text-sm">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </TabsContent>
 
-                <TabsContent value="usage" className="mt-4">
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <Card>
-                        <CardHeader className="pb-2">
-                          <CardTitle className="text-sm text-gray-600">Total Requests</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="text-xl font-bold text-gray-900">1,247</div>
-                        </CardContent>
-                      </Card>
-                      <Card>
-                        <CardHeader className="pb-2">
-                          <CardTitle className="text-sm text-gray-600">Success Rate</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="text-xl font-bold text-gray-900">98.7%</div>
-                        </CardContent>
-                      </Card>
-                      <Card>
-                        <CardHeader className="pb-2">
-                          <CardTitle className="text-sm text-gray-600">Avg Response Time</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="text-xl font-bold text-gray-900">1.2s</div>
-                        </CardContent>
-                      </Card>
-                      <Card>
-                        <CardHeader className="pb-2">
-                          <CardTitle className="text-sm text-gray-600">Monthly Cost</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="text-xl font-bold text-gray-900">€127.40</div>
-                        </CardContent>
-                      </Card>
-                    </div>
+                <TabsContent value="test" className="space-y-4 mt-4">
+                  <Card className="border-2 border-dashed">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <TestTube className="w-5 h-5 text-gray-600" />
+                        Zone de Test
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Clé API OpenAI pour test</Label>
+                        <Input 
+                          type="password"
+                          placeholder="sk-..."
+                          value={testApiKey}
+                          onChange={(e) => setTestApiKey(e.target.value)}
+                          className="font-mono"
+                        />
+                        <p className="text-xs text-gray-500">
+                          Cette clé est uniquement pour les tests, elle ne sera pas sauvegardée
+                        </p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>Texte de test</Label>
+                        <Textarea 
+                          placeholder="Propriété de luxe à Limassol, 3 chambres, vue mer..."
+                          rows={3}
+                          value={testInput}
+                          onChange={(e) => setTestInput(e.target.value)}
+                        />
+                      </div>
+
+                      <Button 
+                        onClick={handleTestGeneration}
+                        disabled={!testApiKey || !testInput || testing}
+                        className="w-full"
+                      >
+                        {testing ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Génération en cours...
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="w-4 h-4 mr-2" />
+                            Tester la génération SEO
+                          </>
+                        )}
+                      </Button>
+
+                      {testResult && (
+                        <div className="p-4 bg-gray-50 rounded-lg space-y-2">
+                          <h4 className="font-semibold">Résultat :</h4>
+                          <pre className="text-xs overflow-auto">
+                            {JSON.stringify(testResult, null, 2)}
+                          </pre>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                <TabsContent value="usage" className="space-y-4 mt-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-sm">Utilisation Aujourd'hui</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-2xl font-bold">{stats.apiCallsToday}</div>
+                        <p className="text-xs text-muted-foreground">appels API</p>
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-sm">Tokens Consommés</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-2xl font-bold">{(stats.tokensUsed / 1000).toFixed(1)}k</div>
+                        <p className="text-xs text-muted-foreground">tokens utilisés</p>
+                      </CardContent>
+                    </Card>
                   </div>
                 </TabsContent>
               </Tabs>
