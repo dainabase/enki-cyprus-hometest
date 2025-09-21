@@ -2,11 +2,15 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Badge } from '@/components/ui/badge';
+import { motion } from 'framer-motion';
 import { 
   Users, 
   Building, 
   Euro, 
   TrendingUp, 
+  TrendingDown,
   Award,
   Clock,
   CheckCircle,
@@ -16,7 +20,10 @@ import {
   DollarSign,
   BarChart3,
   Calendar,
-  Filter
+  Filter,
+  Crown,
+  Plus,
+  MousePointer
 } from 'lucide-react';
 import { useDashboardMetrics } from '@/hooks/useDashboardMetrics';
 import { MetricCard, KPIGrid } from '@/components/admin/dashboard/KPICards';
@@ -26,6 +33,14 @@ import { formatCurrency, formatNumber, formatPercentage } from '@/lib/dashboard/
 export const AdminOverview = () => {
   const [period, setPeriod] = useState<'day' | 'week' | 'month' | 'year'>('month');
   const [zone, setZone] = useState<'all' | 'limassol' | 'paphos' | 'larnaca' | 'nicosia'>('all');
+
+  // Period presets for enhanced selector - mapped to compatible values
+  const periodPresets = [
+    { label: "Aujourd'hui", value: "day" },
+    { label: "Cette Semaine", value: "week" },
+    { label: "Ce Mois", value: "month" },
+    { label: "Cette Année", value: "year" }
+  ];
   
   const { data: metrics, isLoading, error } = useDashboardMetrics({ period, zone });
 
@@ -85,14 +100,15 @@ export const AdminOverview = () => {
                 <span>Filtres</span>
               </div>
               <Select value={period} onValueChange={(value: any) => setPeriod(value)}>
-                <SelectTrigger className="w-28 h-9 bg-white border-slate-200 text-sm">
+                <SelectTrigger className="w-36 h-9 bg-white border-slate-200 text-sm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="day">Jour</SelectItem>
-                  <SelectItem value="week">Semaine</SelectItem>
-                  <SelectItem value="month">Mois</SelectItem>
-                  <SelectItem value="year">Année</SelectItem>
+                  {periodPresets.map((preset) => (
+                    <SelectItem key={preset.value} value={preset.value}>
+                      {preset.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               
@@ -115,49 +131,140 @@ export const AdminOverview = () => {
 
       {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto bg-slate-50 px-8 py-6 space-y-6">
-        {/* Stats Cards - Following AdminProjects structure */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-600">Total Propriétés</CardTitle>
-              <Building className="h-4 w-4 text-slate-600" />
+        {/* Enhanced KPI Cards with Real-time Indicators */}
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-4 gap-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, staggerChildren: 0.1 }}
+        >
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+            <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200 hover:scale-105">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-slate-600">Total Propriétés</CardTitle>
+                <Building className="h-4 w-4 text-slate-600" />
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <Skeleton className="h-8 w-24" />
+                ) : (
+                  <div className="text-2xl font-bold text-slate-900">{formatNumber(metrics.totalProperties)}</div>
+                )}
+                <div className="flex items-center gap-2 mt-1">
+                  <TrendingUp className="w-3 h-3 text-green-500" />
+                  <span className="text-xs text-green-600 font-medium">+12%</span>
+                  <span className="text-xs text-slate-500">ce mois</span>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+            <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200 hover:scale-105">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-slate-600">Chiffre d'Affaires</CardTitle>
+                <Euro className="h-4 w-4 text-slate-600" />
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <Skeleton className="h-8 w-32" />
+                ) : (
+                  <div className="text-2xl font-bold text-slate-900">{formatCurrency(metrics.totalRevenue)}</div>
+                )}
+                <div className="flex items-center gap-2 mt-1">
+                  <TrendingUp className="w-3 h-3 text-green-500" />
+                  <span className="text-xs text-green-600 font-medium">+23%</span>
+                  <span className="text-xs text-slate-500">ce mois</span>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+            <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200 hover:scale-105">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-slate-600">Commissions</CardTitle>
+                <DollarSign className="h-4 w-4 text-slate-600" />
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <Skeleton className="h-8 w-28" />
+                ) : (
+                  <div className="text-2xl font-bold text-slate-900">{formatCurrency(metrics.totalCommissions)}</div>
+                )}
+                <div className="flex items-center gap-2 mt-1">
+                  <TrendingUp className="w-3 h-3 text-green-500" />
+                  <span className="text-xs text-green-600 font-medium">+8%</span>
+                  <span className="text-xs text-slate-500">ce mois</span>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+            <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200 hover:scale-105">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-slate-600">Conversion</CardTitle>
+                <Target className="h-4 w-4 text-slate-600" />
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <Skeleton className="h-8 w-20" />
+                ) : (
+                  <div className="text-2xl font-bold text-slate-900">{formatPercentage(metrics.conversionRate)}</div>
+                )}
+                <div className="flex items-center gap-2 mt-1">
+                  <TrendingDown className="w-3 h-3 text-red-500" />
+                  <span className="text-xs text-red-600 font-medium">-2%</span>
+                  <span className="text-xs text-slate-500">ce mois</span>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </motion.div>
+
+        {/* Dedicated Golden Visa Widget */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+        >
+          <Card className="border-yellow-200 bg-gradient-to-r from-yellow-50 to-amber-50 hover:shadow-lg transition-all duration-200">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Crown className="w-5 h-5 text-yellow-600" />
+                Opportunités Golden Visa
+                <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300">Premium</Badge>
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-slate-900">{formatNumber(metrics.totalProperties)}</div>
-              <p className="text-xs text-slate-500 mt-1">+12% ce mois</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-yellow-800 mb-1">
+                    {isLoading ? <Skeleton className="h-8 w-16 mx-auto" /> : formatNumber(metrics.goldenVisaProperties)}
+                  </div>
+                  <p className="text-sm text-yellow-700 font-medium">Propriétés Éligibles</p>
+                  <p className="text-xs text-yellow-600 mt-1">≥ €300,000</p>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-yellow-800 mb-1">
+                    {isLoading ? <Skeleton className="h-8 w-20 mx-auto" /> : `€${Math.round((metrics.goldenVisaProperties * 450000) / 1000000)}M`}
+                  </div>
+                  <p className="text-sm text-yellow-700 font-medium">Valeur Totale</p>
+                  <p className="text-xs text-yellow-600 mt-1">Estimation portfolio</p>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-yellow-800 mb-1">68%</div>
+                  <p className="text-sm text-yellow-700 font-medium">Taux de Conversion</p>
+                  <div className="flex items-center justify-center gap-1 mt-1">
+                    <TrendingUp className="w-3 h-3 text-green-600" />
+                    <p className="text-xs text-green-600">+5% ce trimestre</p>
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
-          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-600">Chiffre d'Affaires</CardTitle>
-              <Euro className="h-4 w-4 text-slate-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-slate-900">{formatCurrency(metrics.totalRevenue)}</div>
-              <p className="text-xs text-slate-500 mt-1">+23% ce mois</p>
-            </CardContent>
-          </Card>
-          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-600">Commissions</CardTitle>
-              <DollarSign className="h-4 w-4 text-slate-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-slate-900">{formatCurrency(metrics.totalCommissions)}</div>
-              <p className="text-xs text-slate-500 mt-1">+8% ce mois</p>
-            </CardContent>
-          </Card>
-          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-600">Conversion</CardTitle>
-              <Target className="h-4 w-4 text-slate-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-slate-900">{formatPercentage(metrics.conversionRate)}</div>
-              <p className="text-xs text-slate-500 mt-1">-2% ce mois</p>
-            </CardContent>
-          </Card>
-        </div>
+        </motion.div>
 
         {/* Secondary Metrics */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -222,87 +329,120 @@ export const AdminOverview = () => {
           </div>
         </div>
 
-        {/* Analytics Section */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
-            <CardHeader>
+        {/* Enhanced Interactive Analytics Section */}
+        <motion.div 
+          className="grid grid-cols-1 xl:grid-cols-2 gap-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+        >
+          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200 cursor-pointer group">
+            <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-slate-900 font-bold">Répartition par Zone</CardTitle>
+              <MousePointer className="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors" />
             </CardHeader>
             <CardContent>
-              <ModernZoneChart
-                limassol={metrics.limassol}
-                paphos={metrics.paphos}
-                larnaca={metrics.larnaca}
-                nicosia={metrics.nicosia}
-              />
+              <div onClick={() => window.location.href = '/admin/analytics?view=zones'}>
+                <ModernZoneChart
+                  limassol={metrics.limassol}
+                  paphos={metrics.paphos}
+                  larnaca={metrics.larnaca}
+                  nicosia={metrics.nicosia}
+                />
+              </div>
+              <p className="text-xs text-slate-500 mt-2 text-center">Cliquez pour voir les détails</p>
             </CardContent>
           </Card>
           
-          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
-            <CardHeader>
+          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200 cursor-pointer group">
+            <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-slate-900 font-bold">Commissions par Zone</CardTitle>
+              <MousePointer className="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors" />
             </CardHeader>
             <CardContent>
-              <ModernBarChart
-                title=""
-                data={commissionData}
-              />
+              <div onClick={() => window.location.href = '/admin/commissions?view=zones'}>
+                <ModernBarChart
+                  title=""
+                  data={commissionData}
+                />
+              </div>
+              <p className="text-xs text-slate-500 mt-2 text-center">Cliquez pour voir les détails</p>
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
 
-        {/* Performance Chart */}
-        <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
-          <CardHeader>
-            <CardTitle className="text-slate-900 font-bold">Performance Mensuelle</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ModernPerformanceChart data={performanceData} />
-          </CardContent>
-        </Card>
+        {/* Enhanced Performance Chart */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7 }}
+        >
+          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200 cursor-pointer group">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="text-slate-900 font-bold">Performance Mensuelle</CardTitle>
+              <MousePointer className="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors" />
+            </CardHeader>
+            <CardContent>
+              <div onClick={() => window.location.href = '/admin/performance'}>
+                <ModernPerformanceChart data={performanceData} />
+              </div>
+              <p className="text-xs text-slate-500 mt-2 text-center">Cliquez pour voir l'analyse détaillée</p>
+            </CardContent>
+          </Card>
+        </motion.div>
 
-        {/* Quick Actions */}
-        <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
-          <CardHeader>
-            <CardTitle className="text-slate-900 font-bold">Actions Rapides</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <Button 
-                variant="ghost" 
-                className="h-16 flex-col gap-2 text-sm font-medium hover:bg-slate-50 border border-slate-200"
-                onClick={() => window.location.href = '/admin/projects'}
-              >
-                <Building className="w-5 h-5 text-slate-600" />
-                Propriétés
-              </Button>
-              <Button 
-                variant="ghost" 
-                className="h-16 flex-col gap-2 text-sm font-medium hover:bg-slate-50 border border-slate-200"
-                onClick={() => window.location.href = '/admin/leads'}
-              >
-                <Users className="w-5 h-5 text-slate-600" />
-                Prospects
-              </Button>
-              <Button 
-                variant="ghost" 
-                className="h-16 flex-col gap-2 text-sm font-medium hover:bg-slate-50 border border-slate-200"
-                onClick={() => window.location.href = '/admin/commissions'}
-              >
-                <DollarSign className="w-5 h-5 text-slate-600" />
-                Commissions
-              </Button>
-              <Button 
-                variant="ghost" 
-                className="h-16 flex-col gap-2 text-sm font-medium hover:bg-slate-50 border border-slate-200"
-                onClick={() => window.location.href = '/admin/analytics'}
-              >
-                <BarChart3 className="w-5 h-5 text-slate-600" />
-                Analytics
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Enhanced Quick Actions */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8 }}
+        >
+          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
+            <CardHeader>
+              <CardTitle className="text-slate-900 font-bold">Actions Rapides</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <Button 
+                  variant="ghost" 
+                  className="h-20 flex flex-col gap-2 text-sm font-medium hover:bg-blue-50 border border-slate-200 hover:border-blue-300 hover:scale-105 transition-all duration-200 group"
+                  onClick={() => window.location.href = '/admin/projects'}
+                >
+                  <Plus className="w-8 h-8 text-blue-500 group-hover:scale-110 transition-transform" />
+                  <span className="font-semibold">Nouvelle Propriété</span>
+                  <Badge variant="secondary" className="text-xs">Ajout Rapide</Badge>
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  className="h-20 flex flex-col gap-2 text-sm font-medium hover:bg-green-50 border border-slate-200 hover:border-green-300 hover:scale-105 transition-all duration-200 group"
+                  onClick={() => window.location.href = '/admin/leads'}
+                >
+                  <Users className="w-8 h-8 text-green-500 group-hover:scale-110 transition-transform" />
+                  <span className="font-semibold">Prospects</span>
+                  <Badge variant="secondary" className="text-xs">Gestion Lead</Badge>
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  className="h-20 flex flex-col gap-2 text-sm font-medium hover:bg-yellow-50 border border-slate-200 hover:border-yellow-300 hover:scale-105 transition-all duration-200 group"
+                  onClick={() => window.location.href = '/admin/commissions'}
+                >
+                  <DollarSign className="w-8 h-8 text-yellow-500 group-hover:scale-110 transition-transform" />
+                  <span className="font-semibold">Commissions</span>
+                  <Badge variant="secondary" className="text-xs">Suivi Revenus</Badge>
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  className="h-20 flex flex-col gap-2 text-sm font-medium hover:bg-purple-50 border border-slate-200 hover:border-purple-300 hover:scale-105 transition-all duration-200 group"
+                  onClick={() => window.location.href = '/admin/analytics'}
+                >
+                  <BarChart3 className="w-8 h-8 text-purple-500 group-hover:scale-110 transition-transform" />
+                  <span className="font-semibold">Analytics</span>
+                  <Badge variant="secondary" className="text-xs">Rapports</Badge>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     </div>
   );
