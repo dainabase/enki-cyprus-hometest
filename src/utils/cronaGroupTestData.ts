@@ -52,19 +52,17 @@ export const createCronaGroupTestData = async (): Promise<TestDataResult> => {
         subtitle: 'Luxury Residential Complex',
         description: 'Un complexe résidentiel de luxe au cœur de Limassol, offrant appartements modernes et maisons familiales avec jardins privés.',
         detailed_description: 'Square Garden représente l\'excellence de l\'immobilier chypriote. Ce projet exclusif combine architecture contemporaine et espaces verts, créant un environnement de vie exceptionnel. Chaque unité est conçue avec des matériaux haut de gamme et des finitions luxueuses.',
-        type: 'mixed',
-        price: 350000,
-        price_from: '280000',
+        price_from: 280000,
         golden_visa_eligible: true, // Will be auto-set by trigger
         developer_id: developer.id,
         cyprus_zone: 'limassol',
+        city: 'Limassol',
+        region: 'Limassol',
+        neighborhood: 'Marina',
+        full_address: 'Limassol Marina District',
+        gps_latitude: 34.6851,
+        gps_longitude: 33.0439,
         status: 'under_construction',
-        location: {
-          city: 'Limassol',
-          address: 'Limassol Marina District',
-          lat: 34.6851,
-          lng: 33.0439
-        },
         completion_date: '2025-06-30',
         units_available: 24, // 20 appartements + 4 maisons
         total_units: 24,
@@ -106,24 +104,26 @@ export const createCronaGroupTestData = async (): Promise<TestDataResult> => {
     
     // Bâtiment A: 20 Appartements
     const apartmentBuilding = {
-      name: 'Square Garden - Building A (Apartments)',
+      building_name: 'Square Garden - Building A (Apartments)',
+      building_code: 'SQG-A',
       project_id: project.id,
       building_type: 'residential',
       construction_status: 'structure',
       total_floors: 5,
       total_units: 20,
-      energy_rating: 'A+'
+      energy_rating: 'A'
     };
 
     // Bâtiment B: 4 Maisons
     const houseBuilding = {
-      name: 'Square Garden - Building B (Houses)',
+      building_name: 'Square Garden - Building B (Houses)',
+      building_code: 'SQG-B',
       project_id: project.id,
       building_type: 'residential',
       construction_status: 'structure',
       total_floors: 2,
       total_units: 4,
-      energy_rating: 'A+'
+      energy_rating: 'A'
     };
 
     const { data: buildings, error: buildingError } = await supabase
@@ -228,8 +228,8 @@ export const validateCronaGroupData = async () => {
       buildings,
       details: {
         totalUnits,
-        apartments: buildings.find(b => b.name.includes('Apartments'))?.total_units || 0,
-        houses: buildings.find(b => b.name.includes('Houses'))?.total_units || 0
+        apartments: buildings.find(b => b.building_name.includes('Apartments'))?.total_units || 0,
+        houses: buildings.find(b => b.building_name.includes('Houses'))?.total_units || 0
       }
     };
 

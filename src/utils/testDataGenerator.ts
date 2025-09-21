@@ -153,7 +153,7 @@ export const generateTestData = async () => {
         commissions.push({
           promoter_id: promoters[0].id, // Use existing promoter
           project_id: project.id,
-          amount: project.price * (developer.commission_rate / 100),
+          amount: project.price_from * (developer.commission_rate / 100),
           status: Math.random() > 0.5 ? 'pending' : 'paid',
           date: new Date().toISOString()
         });

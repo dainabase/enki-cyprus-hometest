@@ -38,7 +38,7 @@ export const runFullCronaTest = async () => {
     
     // Test Golden Visa
     const goldenVisaTest = validationResult.project?.golden_visa_eligible;
-    console.log(`🏆 Golden Visa: ${goldenVisaTest ? '✅ Activé' : '❌ Désactivé'} (prix: €${validationResult.project?.price})`);
+    console.log(`🏆 Golden Visa: ${goldenVisaTest ? '✅ Activé' : '❌ Désactivé'} (prix: €${validationResult.project?.price_from})`);
 
     // Test hiérarchie
     const hierarchyTest = validationResult.buildings?.every(b => b.project_id === validationResult.project?.id);

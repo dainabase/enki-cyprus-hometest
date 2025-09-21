@@ -237,11 +237,10 @@ const AdminTests = () => {
       .insert({
         title: 'Test Project CRUD',
         description: 'Test description',
-        type: 'apartment',
-        price: 100000,
+        city: 'Test City',
+        price_from: 100000,
         developer_id: developers[0].id,
-        status: 'available',
-        location: { city: 'Test City' }
+        status: 'available'
       })
       .select()
       .single();
@@ -264,10 +263,12 @@ const AdminTests = () => {
     const { data: created, error: createError } = await supabase
       .from('buildings')
       .insert({
-        name: 'Test Building CRUD',
+        building_name: 'Test Building CRUD',
+        building_code: 'TEST001',
         project_id: projects[0].id,
         building_type: 'residential',
-        construction_status: 'planning'
+        construction_status: 'planning',
+        total_floors: 5
       })
       .select()
       .single();

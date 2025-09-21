@@ -189,8 +189,8 @@ export const fixDataIntegrityIssues = async () => {
     // 2. Fix invalid prices (set to minimum valid price)
     const { error: priceFixError } = await supabase
       .from('projects')
-      .update({ price: 50000 })
-      .or('price.lte.0,price.is.null');
+      .update({ price_from: 50000 })
+      .or('price_from.lte.0,price_from.is.null');
 
     if (priceFixError) throw priceFixError;
 
