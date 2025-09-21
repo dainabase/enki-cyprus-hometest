@@ -32,6 +32,8 @@ export const projectSchema = z.object({
   region: z.string().optional(),
   neighborhood: z.string().optional(),
   neighborhood_description: z.string().optional(),
+  district: z.string().optional(),
+  municipality: z.string().optional(),
   gps_latitude: z.number().min(-90).max(90).optional(),
   gps_longitude: z.number().min(-180).max(180).optional(),
   proximity_sea_km: z.number().min(0).optional(),
@@ -63,9 +65,10 @@ export const projectSchema = z.object({
   roi_estimate_percent: z.number().min(0).max(100).optional(),
   rental_yield_percent: z.number().min(0).max(100).optional(),
   financing_available: z.boolean().default(false),
-  financing_options: z.record(z.any()).optional(),
-  payment_plan: z.record(z.any()).optional(),
+  financing_options: z.any().optional(),
+  payment_plan: z.any().optional(),
   incentives: z.array(z.string()).optional(),
+  transfer_fee: z.number().min(0).optional(),
 
   // MEDIA
   photos: z.array(z.object({
@@ -80,6 +83,11 @@ export const projectSchema = z.object({
   project_presentation_url: z.string().optional(),
   youtube_tour_url: z.string().optional(),
   vimeo_tour_url: z.string().optional(),
+  vr_tour_url: z.string().optional(),
+  ar_experience_url: z.string().optional(),
+  metaverse_preview_url: z.string().optional(),
+  interactive_map_url: z.string().optional(),
+  map_image: z.string().optional(),
   floor_plan_urls: z.array(z.string()).optional(),
   drone_footage_urls: z.array(z.string()).optional(),
   model_3d_urls: z.array(z.string()).optional(),
@@ -89,6 +97,7 @@ export const projectSchema = z.object({
   finishing_level: z.enum(['basic', 'standard', 'premium', 'luxury']).optional(),
   design_style: z.string().optional(),
   architect_name: z.string().optional(),
+  architect_license_number: z.string().optional(),
   builder_name: z.string().optional(),
   energy_rating: z.enum(['A+', 'A', 'B', 'C', 'D', 'E', 'F', 'G']).optional(),
   building_certification: z.string().optional(),
@@ -113,9 +122,14 @@ export const projectSchema = z.object({
   meta_keywords: z.array(z.string()).optional(),
   marketing_highlights: z.array(z.string()).optional(),
   target_audience: z.array(z.string()).optional(),
+  url_slug: z.string().optional(),
 
   // FEATURES & AMENITIES
   features: z.array(z.string()).default([]),
+  detailed_features: z.array(z.string()).optional(),
+  lifestyle_amenities: z.array(z.string()).optional(),
+  community_features: z.array(z.string()).optional(),
+  wellness_features: z.array(z.string()).optional(),
   surrounding_amenities: z.array(z.object({
     nearby_amenity_id: z.string().min(1, "ID requis"),
     distance_km: z.number().optional(),
@@ -128,6 +142,8 @@ export const projectSchema = z.object({
   statut_commercial: z.enum(['prelancement', 'lancement_commercial', 'en_commercialisation', 'derniere_opportunite', 'vendu']).default('prelancement'),
   construction_phase: z.enum(['planned', 'in_progress', 'completion', 'finished']).default('planned'),
   featured_new: z.boolean().default(false),
+  after_sales_service: z.boolean().optional(),
+  nft_ownership_available: z.boolean().optional(),
 
   // LOCATION OBJECT (legacy compatibility)
   location: z.object({

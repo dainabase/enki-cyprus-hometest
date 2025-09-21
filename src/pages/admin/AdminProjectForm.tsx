@@ -284,9 +284,9 @@ const AdminProjectForm: React.FC = () => {
       // Prepare data for database with proper types and fixes
       const processedData = {
         ...data,
-        // Fix date formats - convert YYYY-MM to YYYY-MM-01 for database
-        launch_date: data.launch_date ? `${data.launch_date}-01` : null,
-        completion_date_new: data.completion_date_new ? `${data.completion_date_new}-01` : null,
+        // Fix date formats - keep dates as they are (already properly formatted)
+        launch_date: data.launch_date || null,
+        completion_date_new: data.completion_date_new || null,
         
         // Ensure numeric fields are properly converted
         total_units_new: data.total_units_new ? Number(data.total_units_new) : null,
