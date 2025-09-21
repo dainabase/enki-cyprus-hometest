@@ -261,7 +261,12 @@ export default function AIAgentsManager() {
       // Sauvegarder automatiquement le prompt complet pour l'agent SEO
       if (selectedAgent.id === 'seo-generator' && !config) {
         console.log('🚀 Initialisation automatique du prompt SEO complet');
-        // Planifier la sauvegarde après le rendu
+        // Mettre à jour directement avec le prompt complet
+        setCurrentConfig(prevConfig => ({
+          ...prevConfig,
+          system_prompt: selectedAgent.defaultPrompt
+        }));
+        // Sauvegarder après mise à jour
         setTimeout(() => {
           handleSaveConfig();
         }, 100);
