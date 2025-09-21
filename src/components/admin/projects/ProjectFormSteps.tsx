@@ -1185,10 +1185,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 <FormItem>
                   <FormControl>
                     <CategorizedMediaUploader
-                      value={field.value || []}
-                      onChange={field.onChange}
-                      label="Télécharger photos"
-                      accept="image/*"
+                      field={{
+                        value: field.value as any || [],
+                        onChange: field.onChange
+                      }}
                       bucketName="projects"
                     />
                   </FormControl>
@@ -1567,8 +1567,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           render={({ field }) => (
             <FormItem>
               <AmenitiesSelector
-                amenities={field.value || []}
-                onAmenitiesChange={field.onChange}
+                selectedAmenities={field.value || []}
+                onChange={field.onChange}
               />
               <FormMessage />
             </FormItem>
