@@ -33,7 +33,7 @@ const PropertySearch = ({ properties, onFilteredProperties, onPropertySelect }: 
   };
 
   const filterProperties = (term: string, type: string, price: string) => {
-    console.log(`🔍 Filtering properties - Term: "${term}", Type: "${type}", Price: "${price}"`);
+    console.log(`Filtering properties - Term: "${term}", Type: "${type}", Price: "${price}"`);
     
     let filtered = properties;
 
@@ -148,7 +148,7 @@ const PropertySearch = ({ properties, onFilteredProperties, onPropertySelect }: 
           onClick={() => handleSearch('Paphos')}
           className="text-xs"
         >
-          📍 Paphos
+          Paphos
         </Button>
         <Button
           variant="ghost"
@@ -156,7 +156,7 @@ const PropertySearch = ({ properties, onFilteredProperties, onPropertySelect }: 
           onClick={() => handleSearch('Limassol')}
           className="text-xs"
         >
-          📍 Limassol
+          Limassol
         </Button>
         <Button
           variant="ghost"
@@ -164,7 +164,7 @@ const PropertySearch = ({ properties, onFilteredProperties, onPropertySelect }: 
           onClick={() => handleSearch('Nicosie')}
           className="text-xs"
         >
-          📍 Nicosie
+          Nicosie
         </Button>
         <Button
           variant="ghost"

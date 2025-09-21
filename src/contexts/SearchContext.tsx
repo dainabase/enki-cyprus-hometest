@@ -142,7 +142,7 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children, allPro
 
   // Debounced filter function
   const debouncedFilter = debounce((properties: Property[], filters: SearchFilters) => {
-    console.log('🔍 Filtering properties with filters:', filters);
+    console.log('Filtering properties with filters:', filters);
     dispatch({ type: 'SET_LOADING', payload: true });
 
     let filtered = [...properties];
@@ -186,7 +186,7 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children, allPro
       );
     }
 
-    console.log(`📊 Filtered results: ${filtered.length} properties out of ${properties.length}`);
+    console.log(`Filtered results: ${filtered.length} properties out of ${properties.length}`);
     dispatch({ type: 'SET_FILTERED_PROPERTIES', payload: filtered });
   }, 300);
 

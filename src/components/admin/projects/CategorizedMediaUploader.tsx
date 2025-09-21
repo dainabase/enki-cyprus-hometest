@@ -298,7 +298,7 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
                             e.currentTarget.onerror = null; 
                             e.currentTarget.src = '/placeholder.svg'; 
                           }}
-                          onLoad={() => console.log('🖼️ Image loaded successfully:', photo.url)}
+                          onLoad={() => console.log('Image loaded successfully:', photo.url)}
                         />
                         
                         {/* Actions overlay */}

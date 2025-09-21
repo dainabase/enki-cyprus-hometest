@@ -87,14 +87,14 @@ const EnhancedGoogleMap: React.FC<EnhancedGoogleMapProps> = ({
   };
 
   const onLoad = useCallback((map: google.maps.Map) => {
-    console.log('🗺️ Enhanced Google Map loaded for search');
+    console.log('Enhanced Google Map loaded for search');
     setMap(map);
   }, []);
 
   // Update map center and zoom when selected property changes
   useEffect(() => {
     if (map && mapCenter) {
-      console.log(`🎯 Centering map on selected property: ${mapCenter.lat}, ${mapCenter.lng} (zoom: ${mapZoom})`);
+      console.log(`Centering map on selected property: ${mapCenter.lat}, ${mapCenter.lng} (zoom: ${mapZoom})`);
       map.panTo(mapCenter);
       map.setZoom(mapZoom);
     }
@@ -104,7 +104,7 @@ const EnhancedGoogleMap: React.FC<EnhancedGoogleMapProps> = ({
   useEffect(() => {
     if (!isLoaded || !map || !window.google) return;
 
-    console.log(`📍 Updating map with ${filteredProperties.length} filtered properties`);
+    console.log(`Updating map with ${filteredProperties.length} filtered properties`);
 
     // Cleanup existing markers
     try {
@@ -146,7 +146,7 @@ const EnhancedGoogleMap: React.FC<EnhancedGoogleMapProps> = ({
           markers, 
           map
         });
-        console.log(`🎯 Marker clustering initialized with ${markers.length} markers`);
+        console.log(`Marker clustering initialized with ${markers.length} markers`);
       }
     } catch (error) {
       console.error('❌ Error creating markers:', error);

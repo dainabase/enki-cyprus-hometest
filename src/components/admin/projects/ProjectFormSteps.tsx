@@ -22,7 +22,10 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { 
   Building, MapPin, Home, Zap, Landmark, Building2, Waves, Shield, 
-  Sprout, Accessibility, Map as MapIcon, Palmtree, Users, Heart 
+  Sprout, Accessibility, Map as MapIcon, Palmtree, Users, Heart,
+  HardHat, Palette, Sparkles, FileText, CreditCard, Gift, 
+  PiggyBank, BarChart3, Youtube, Video, Headphones, Smartphone,
+  Globe, Search, Star, Target, Link
 } from 'lucide-react';
 
 interface ProjectFormStepsProps {
@@ -728,7 +731,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 name="builder_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Constructeur 👷</FormLabel>
+                    <FormLabel className="flex items-center gap-2">
+                      <HardHat className="w-4 h-4" />
+                      Constructeur
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder="Nom de l'entreprise de construction" {...field} />
                     </FormControl>
@@ -742,7 +748,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 name="design_style"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Style architectural 🎨</FormLabel>
+                    <FormLabel className="flex items-center gap-2">
+                      <Palette className="w-4 h-4" />
+                      Style architectural
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder="Ex: Moderne, Méditerranéen, Minimaliste..." {...field} />
                     </FormControl>
@@ -756,7 +765,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 name="finishing_level"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Niveau de finition ✨</FormLabel>
+                    <FormLabel className="flex items-center gap-2">
+                      <Sparkles className="w-4 h-4" />
+                      Niveau de finition
+                    </FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
@@ -1010,7 +1022,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="building_insurance"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Assurance bâtiment 📋</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <FileText className="w-4 h-4" />
+                    Assurance bâtiment
+                  </FormLabel>
                   <FormControl>
                     <Input placeholder="Nom de la compagnie d'assurance et détails" {...field} />
                   </FormControl>
@@ -1103,7 +1118,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="transfer_fee"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Frais de transfert (€) 📝</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <FileText className="w-4 h-4" />
+                    Frais de transfert (€)
+                  </FormLabel>
                   <FormControl>
                     <Input 
                       type="number" 
@@ -1122,7 +1140,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="payment_plan"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Plan de paiement 💳</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <CreditCard className="w-4 h-4" />
+                    Plan de paiement
+                  </FormLabel>
                   <FormControl>
                     <Textarea 
                       placeholder="Ex: 30% à la signature, 40% pendant construction, 30% à la livraison"
@@ -1142,7 +1163,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="incentives"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Avantages & Promotions 🎁</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <Gift className="w-4 h-4" />
+                    Avantages & Promotions
+                  </FormLabel>
                   <FormControl>
                     <div className="space-y-2">
                       <Input 
@@ -1188,7 +1212,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="financing_options"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Détails financement bancaire 🏦</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <PiggyBank className="w-4 h-4" />
+                    Détails financement bancaire
+                  </FormLabel>
                   <FormControl>
                     <Textarea 
                       placeholder="Ex: Partenariat avec Bank of Cyprus, taux à partir de 3.5%, LTV jusqu'à 70%..."
@@ -1247,7 +1274,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="project_presentation_url"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>URL présentation projet 📊</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <BarChart3 className="w-4 h-4" />
+                    URL présentation projet
+                  </FormLabel>
                   <FormControl>
                     <Input placeholder="https://..." {...field} />
                   </FormControl>
@@ -1261,7 +1291,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="youtube_tour_url"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Vidéo YouTube 📹</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <Youtube className="w-4 h-4" />
+                    Vidéo YouTube
+                  </FormLabel>
                   <FormControl>
                     <Input placeholder="https://youtube.com/watch?v=..." {...field} />
                   </FormControl>
@@ -1275,7 +1308,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="vimeo_tour_url"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Vidéo Vimeo 🎥</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <Video className="w-4 h-4" />
+                    Vidéo Vimeo
+                  </FormLabel>
                   <FormControl>
                     <Input placeholder="https://vimeo.com/..." {...field} />
                   </FormControl>
@@ -1289,7 +1325,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="vr_tour_url"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Visite VR 360° 🥽</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <Headphones className="w-4 h-4" />
+                    Visite VR 360°
+                  </FormLabel>
                   <FormControl>
                     <Input placeholder="https://..." {...field} />
                   </FormControl>
@@ -1320,7 +1359,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="ar_experience_url"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Expérience AR 📱</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <Smartphone className="w-4 h-4" />
+                    Expérience AR
+                  </FormLabel>
                   <FormControl>
                     <Input placeholder="URL de l'expérience en réalité augmentée" {...field} />
                   </FormControl>
@@ -1334,7 +1376,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="metaverse_preview_url"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Visite Metaverse 🌐</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <Globe className="w-4 h-4" />
+                    Visite Metaverse
+                  </FormLabel>
                   <FormControl>
                     <Input placeholder="URL de l'espace metaverse" {...field} />
                   </FormControl>
@@ -1378,7 +1423,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="features"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Caractéristiques principales 🌟</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <Star className="w-4 h-4" />
+                    Caractéristiques principales
+                  </FormLabel>
                   <FormControl>
                     <div className="space-y-2">
                       <Input 
@@ -1424,7 +1472,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="detailed_features"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Équipements détaillés 📋</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <FileText className="w-4 h-4" />
+                    Équipements détaillés
+                  </FormLabel>
                   <FormControl>
                     <div className="space-y-2">
                       <Input 
@@ -1676,7 +1727,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="meta_keywords"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Mots-clés SEO 🔍</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <Search className="w-4 h-4" />
+                    Mots-clés SEO
+                  </FormLabel>
                   <FormControl>
                     <div className="space-y-2">
                       <Input 
@@ -1722,7 +1776,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="marketing_highlights"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Points marketing forts 💫</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <Star className="w-4 h-4" />
+                    Points marketing forts
+                  </FormLabel>
                   <FormControl>
                     <div className="space-y-2">
                       <Input 
@@ -1768,7 +1825,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="target_audience"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Cibles clients 🎯</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <Target className="w-4 h-4" />
+                    Cibles clients
+                  </FormLabel>
                   <FormControl>
                     <div className="space-y-2">
                       <Input 
@@ -1814,7 +1874,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               name="url_slug"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>URL personnalisée (slug) 🔗</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <Link className="w-4 h-4" />
+                    URL personnalisée (slug)
+                  </FormLabel>
                   <FormControl>
                     <Input 
                       placeholder="marina-towers-limassol"

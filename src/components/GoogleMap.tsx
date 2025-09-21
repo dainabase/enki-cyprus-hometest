@@ -86,7 +86,7 @@ const onLoad = useCallback((map: google.maps.Map) => {
   setMap(map);
   map.setCenter({ lat: 35.1264, lng: 33.4299 });
   map.setZoom(9);
-  console.log('📍 Map centered on Cyprus (35.1264, 33.4299) with zoom 9');
+  console.log('Map centered on Cyprus (35.1264, 33.4299) with zoom 9');
 }, []);
 
 // Create Advanced Markers and cluster when map and API are ready

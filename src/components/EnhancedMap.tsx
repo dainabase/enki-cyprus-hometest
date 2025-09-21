@@ -84,7 +84,7 @@ const EnhancedMap: React.FC<EnhancedMapProps> = ({
   useEffect(() => {
     if (!isLoaded || !map || !window.google) return;
 
-    console.log(`📍 Updating markers with ${state.filteredProperties.length} filtered properties`);
+    console.log(`Updating markers with ${state.filteredProperties.length} filtered properties`);
 
     // Cleanup des markers existants
     try {
