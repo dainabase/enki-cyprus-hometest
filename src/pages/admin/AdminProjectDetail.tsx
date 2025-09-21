@@ -36,12 +36,11 @@ const AdminProjectDetail = () => {
           developer:developers(id, name, contact_info, logo, website),
           buildings!fk_buildings_project_id(
             id,
-            name,
+            building_name,
             total_floors,
             total_units,
             building_type,
-            construction_status,
-            energy_rating
+            construction_status
           ),
           project_amenities:project_amenities(
             is_available,

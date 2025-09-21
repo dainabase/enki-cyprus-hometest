@@ -526,15 +526,15 @@ const ProjectDetail = () => {
                 </div>
                 
                 {/* Bottom row images */}
-                {Array.isArray(projectImages) && projectImages.slice(3, 6).map((image: any, index: number) => (
+                {/* Bottom row images - temporarily disabled due to schema issues */}
+                {false && (
                   <img 
-                    key={index + 3}
-                    src={image.url || heroImage}
-                    alt={`Gallery image ${index + 4} of ${project.title}`}
+                    src={heroImage}
+                    alt={`Gallery image of ${project.title}`}
                     className="w-full h-[200px] object-cover image-hover"
                     style={{ borderRadius: '30px' }}
                   />
-                ))}
+                )}
               </motion.div>
             </div>
           </section>

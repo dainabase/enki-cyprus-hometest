@@ -52,7 +52,7 @@ export const transformDatabaseProperty = (dbProperty: DatabaseProperty): Propert
     description: dbProperty.description,
     detailedDescription: dbProperty.detailed_description,
     type: dbProperty.type as Property['type'],
-    price: `€${dbProperty.price.toLocaleString()}`,
+    price: dbProperty.price_from ? `€${dbProperty.price_from.toLocaleString()}` : 'Prix sur demande',
     priceValue: dbProperty.price,
     location: dbProperty.location.city,
     coordinates: { lat: dbProperty.location.lat, lng: dbProperty.location.lng },

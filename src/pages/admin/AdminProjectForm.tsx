@@ -136,9 +136,8 @@ const AdminProjectForm: React.FC = () => {
     if (project && isEdit) {
       console.log('📝 Loading project data into form:', project);
       console.log('📊 Project data values:', {
-        total_units_new: project.total_units_new,
-        units_available_new: project.units_available_new,
-        energy_rating: project.energy_rating,
+        total_units: project.total_units,
+        units_available: project.units_available,
         roi_estimate_percent: project.roi_estimate_percent,
         rental_yield_percent: project.rental_yield_percent,
         categorized_photos: project.categorized_photos
@@ -148,23 +147,18 @@ const AdminProjectForm: React.FC = () => {
       const projectData = project;
       // Helper function to safely access location data
       const getLocationValue = (field: string) => {
-        if (typeof projectData.location === 'object' && projectData.location !== null) {
-          return (projectData.location as any)[field];
-        }
-        return null;
+        return projectData.city || null;
       };
 
       form.reset({
-        // Basics
+        // Basics - Project Info
         title: projectData.title || '',
         project_code: projectData.project_code || '',
         developer_id: projectData.developer_id || '',
-        property_category: projectData.property_category || 'residential',
-        property_sub_type: Array.isArray(projectData.property_sub_type) ? projectData.property_sub_type : 
-                          Array.isArray(projectData.property_types) ? projectData.property_types : ['apartment'],
+        developer_id: projectData.developer_id || '',
         project_phase: projectData.project_phase || 'off-plan',
         launch_date: projectData.launch_date ? String(projectData.launch_date).substring(0, 7) : '', // Convert YYYY-MM-DD to YYYY-MM
-        completion_date_new: projectData.completion_date_new ? String(projectData.completion_date_new).substring(0, 7) : '',
+        completion_date: projectData.completion_date ? String(projectData.completion_date).substring(0, 7) : '',
         exclusive_commercialization: projectData.exclusive_commercialization || false,
         description: projectData.description || '',
         detailed_description: projectData.detailed_description || '',
@@ -186,15 +180,10 @@ const AdminProjectForm: React.FC = () => {
         // Specifications with proper number conversion
         land_area_m2: projectData.land_area_m2 ? Number(projectData.land_area_m2) : null,
         built_area_m2: projectData.built_area_m2 ? Number(projectData.built_area_m2) : null,
-        total_units_new: projectData.total_units_new ? Number(projectData.total_units_new) : null,
-        units_available_new: projectData.units_available_new ? Number(projectData.units_available_new) : null,
-        bedrooms_range: projectData.bedrooms_range || '',
-        bathrooms_range: projectData.bathrooms_range || '',
-        floors_total: projectData.floors_total ? Number(projectData.floors_total) : null,
-        parking_spaces: projectData.parking_spaces ? Number(projectData.parking_spaces) : null,
-        storage_spaces: projectData.storage_spaces ? Number(projectData.storage_spaces) : null,
-        energy_rating: projectData.energy_rating || '',
-        construction_year: projectData.construction_year ? Number(projectData.construction_year) : null,
+        total_units: projectData.total_units ? Number(projectData.total_units) : null,
+        units_available: projectData.units_available ? Number(projectData.units_available) : null,
+        built_area_m2: projectData.built_area_m2 ? Number(projectData.built_area_m2) : null,
+        land_area_m2: projectData.land_area_m2 ? Number(projectData.land_area_m2) : null,
         building_certification: projectData.building_certification || '',
         maintenance_fees_yearly: projectData.maintenance_fees_yearly ? Number(projectData.maintenance_fees_yearly) : null,
         property_tax_yearly: projectData.property_tax_yearly ? Number(projectData.property_tax_yearly) : null,
