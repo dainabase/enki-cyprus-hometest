@@ -1,4 +1,5 @@
 import { TrendingUp, Home, Users, MessageSquare } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface ContenuSEO {
   titre_meta: string;
@@ -301,6 +302,9 @@ export class AgentSEO {
   }
 
   private async appelerOpenAI(promptUtilisateur: string): Promise<any> {
+    // Charger le prompt système depuis la config
+    const systemPrompt = await this.getSystemPromptFromConfig();
+    
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -312,7 +316,7 @@ export class AgentSEO {
         messages: [
           { 
             role: 'system', 
-            content: this.getSystemPrompt()
+            content: systemPrompt  // Utiliser le prompt de la config
           },
           { 
             role: 'user', 
@@ -334,10 +338,30 @@ export class AgentSEO {
     return JSON.parse(data.choices[0].message.content);
   }
 
-  private getSystemPrompt(): string {
-    // Utiliser le prompt système complet depuis la configuration de l'agent
-    const agentSEO = AI_AGENTS.find(agent => agent.id === 'seo-generator');
-    return agentSEO?.defaultPrompt || 'Tu es un expert SEO immobilier.';
+  private async getSystemPromptFromConfig(): Promise<string> {
+    try {
+      // Charger le prompt depuis la base de données
+      const { data, error } = await supabase
+        .from('ai_agents_config')
+        .select('system_prompt')
+        .eq('agent_name', 'seo-generator')
+        .eq('is_active', true)
+        .maybeSingle();
+
+      if (error || !data?.system_prompt) {
+        console.log('⚠️ Prompt non trouvé en base, utilisation du prompt par défaut');
+        // Si pas de prompt en base, utiliser le prompt par défaut de AI_AGENTS
+        const agentSEO = AI_AGENTS.find(agent => agent.id === 'seo-generator');
+        return agentSEO?.defaultPrompt || 'Tu es un expert SEO immobilier.';
+      }
+
+      console.log('✅ Prompt chargé depuis la configuration');
+      return data.system_prompt;
+    } catch (error) {
+      console.error('❌ Erreur chargement prompt:', error);
+      const agentSEO = AI_AGENTS.find(agent => agent.id === 'seo-generator');
+      return agentSEO?.defaultPrompt || 'Tu es un expert SEO immobilier.';
+    }
   }
 
   private determinerSegmentClient(donnees: DonneesProjet, estGoldenVisa: boolean): string {
