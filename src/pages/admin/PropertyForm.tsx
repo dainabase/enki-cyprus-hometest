@@ -73,14 +73,14 @@ export default function PropertyForm() {
     queryKey: ['property', id],
     queryFn: async () => {
       if (!id) return null;
-      console.log('🔍 Fetching property with ID:', id);
+      console.log('Fetching property with ID:', id);
       const { data, error } = await supabase
         .from('properties_test')
         .select('*')
         .eq('id', id)
         .single();
       
-      console.log('🔍 Property query result:', { data, error });
+      console.log('Property query result:', { data, error });
       if (error) {
         console.error('❌ Error fetching property:', error);
         throw error;
@@ -92,9 +92,9 @@ export default function PropertyForm() {
 
   // Load property data into form
   useEffect(() => {
-    console.log('🔄 useEffect triggered:', { property, isEdit, propertyLoaded: !!property });
+    console.log('useEffect triggered:', { property, isEdit, propertyLoaded: !!property });
     if (property && isEdit) {
-      console.log('📝 Loading property data into form:', property);
+      console.log('Loading property data into form:', property);
       
       // Reset form with only the fields that exist in properties_test table
       form.reset({

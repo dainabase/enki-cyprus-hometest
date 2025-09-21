@@ -26,7 +26,7 @@ const AdminCodebaseCopier = () => {
     setResult(null);
     
     try {
-      toast.info('🚀 Début de la copie du codebase...');
+      toast.info('Début de la copie du codebase...');
       
       // Simuler le progrès
       const progressInterval = setInterval(() => {

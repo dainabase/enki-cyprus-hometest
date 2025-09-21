@@ -106,7 +106,7 @@ const AdminProjects = () => {
 
       const { data, error, count } = await query;
       if (error) throw error;
-      console.info('🔎 AdminProjects fetch', { totalCount: count, length: data?.length, first: data?.[0]?.id });
+      console.info('AdminProjects fetch', { totalCount: count, length: data?.length, first: data?.[0]?.id });
       return { data, count };
     },
     { staleTime: 0, refetchOnMount: 'always', refetchOnReconnect: 'always', refetchOnWindowFocus: true }

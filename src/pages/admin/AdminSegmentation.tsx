@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useTranslation } from 'react-i18next';
 import { Badge } from '@/components/ui/badge';
+import { Trophy, Diamond, Zap, Star, Sparkles, Moon } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -51,42 +52,42 @@ export default function AdminSegmentation() {
       id: 'golden-visa',
       name: t('segmentation.segments.goldenVisa'),
       criteria: 'budget_min.gte.300000,golden_visa_interest.eq.true',
-      icon: '🏆',
+      icon: 'Trophy',
       color: 'bg-yellow-600'
     },
     {
       id: 'high-budget',
       name: t('segmentation.segments.highBudget'),
       criteria: 'budget_min.gte.500000',
-      icon: '💎',
+      icon: 'Diamond',
       color: 'bg-purple-600'
     },
     {
       id: 'urgent',
       name: t('segmentation.segments.urgent'),
       criteria: 'urgency.in.(immediate,1_month,3_months)',
-      icon: '⚡',
+      icon: 'Zap',
       color: 'bg-red-600'
     },
     {
       id: 'qualified',
       name: t('segmentation.segments.qualified'),
       criteria: 'score.gte.4',
-      icon: '⭐',
+      icon: 'Star',
       color: 'bg-green-600'
     },
     {
       id: 'new-leads',
       name: t('segmentation.segments.newLeads'),
       criteria: `created_at.gte.${new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()}`,
-      icon: '🆕',
+      icon: 'Sparkles',
       color: 'bg-blue-600'
     },
     {
       id: 'dormant',
       name: t('segmentation.segments.dormant'),
       criteria: `status.eq.contacted,updated_at.lt.${new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()}`,
-      icon: '😴',
+      icon: 'Moon',
       color: 'bg-gray-600'
     }
   ];
@@ -284,7 +285,13 @@ export default function AdminSegmentation() {
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <span className="text-2xl">{segment.icon}</span>
+                   {(() => {
+                     const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = {
+                       Trophy, Diamond, Zap, Star, Sparkles, Moon
+                     };
+                     const IconComponent = iconMap[segment.icon];
+                     return IconComponent ? <IconComponent className="w-6 h-6 text-gray-600" /> : null;
+                   })()}
                   <span className="text-lg">{segment.name}</span>
                 </div>
                 <Badge variant="secondary" className={`${segment.color} text-white`}>

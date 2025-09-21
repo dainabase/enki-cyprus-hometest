@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Plus } from 'lucide-react';
+import { Plus, Building, Landmark, Waves, Castle, Mountain } from 'lucide-react';
 import { useDebounceCallback } from '@/hooks/useDebounceCallback';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -653,12 +653,12 @@ export default function AdminDevelopers() {
                       <SelectValue placeholder="Sélectionner une ville" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Limassol">🏙️ Limassol</SelectItem>
-                      <SelectItem value="Larnaca">🏛️ Larnaca</SelectItem>
-                      <SelectItem value="Paphos">🏖️ Paphos</SelectItem>
-                      <SelectItem value="Famagusta">🏺 Famagusta</SelectItem>
-                      <SelectItem value="Kyrenia">⛰️ Kyrenia</SelectItem>
-                      <SelectItem value="Nicosia">🏛️ Nicosia</SelectItem>
+                       <SelectItem value="Limassol"><Building className="w-4 h-4 inline mr-2" />Limassol</SelectItem>
+                       <SelectItem value="Larnaca"><Landmark className="w-4 h-4 inline mr-2" />Larnaca</SelectItem>
+                       <SelectItem value="Paphos"><Waves className="w-4 h-4 inline mr-2" />Paphos</SelectItem>
+                       <SelectItem value="Famagusta"><Castle className="w-4 h-4 inline mr-2" />Famagusta</SelectItem>
+                       <SelectItem value="Kyrenia"><Mountain className="w-4 h-4 inline mr-2" />Kyrenia</SelectItem>
+                       <SelectItem value="Nicosia"><Landmark className="w-4 h-4 inline mr-2" />Nicosia</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

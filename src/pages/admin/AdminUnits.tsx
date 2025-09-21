@@ -138,7 +138,7 @@ const AdminUnits = () => {
         throw error;
       }
       
-      console.info('🏠 AdminUnits fetch success', { 
+      console.info('AdminUnits fetch success', { 
         totalCount: count, 
         length: data?.length, 
         firstItem: data?.[0] 
@@ -283,7 +283,7 @@ const AdminUnits = () => {
             variant="ghost"
             size="sm"
             onClick={() => {
-              console.log('📝 Navigating to edit property:', row.id);
+              console.log('Navigating to edit property:', row.id);
               navigate(`/admin/property-form/${row.id}`);
             }}
             className="h-8 w-8 p-0"

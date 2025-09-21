@@ -134,8 +134,8 @@ const AdminProjectForm: React.FC = () => {
   // Load project data into form when editing with improved data handling
   useEffect(() => {
     if (project && isEdit) {
-      console.log('📝 Loading project data into form:', project);
-      console.log('📊 Project data values:', {
+       console.log('Loading project data into form:', project);
+       console.log('Project data values:', {
         total_units: project.total_units,
         units_available: project.units_available,
         roi_estimate_percent: project.roi_estimate_percent,
@@ -197,46 +197,46 @@ const AdminProjectForm: React.FC = () => {
         
         // Media - Parse photos from database (prioritize categorized_photos over photos)
         photos: (() => {
-          console.log('📸 Processing photos from database');
+          console.log('Processing photos from database');
           
           // First try categorized_photos which is the new format
           if (projectData.categorized_photos && Array.isArray(projectData.categorized_photos)) {
-            console.log('📸 Using categorized_photos:', projectData.categorized_photos);
+            console.log('Using categorized_photos:', projectData.categorized_photos);
             return projectData.categorized_photos.filter((photo: any) => photo && typeof photo === 'object' && photo.url);
           }
           
           // Fallback to old photos field
           if (projectData.photos && Array.isArray(projectData.photos)) {
-            console.log('📸 Using legacy photos field:', projectData.photos);
+            console.log('Using legacy photos field:', projectData.photos);
             const parsed = projectData.photos
               .filter((photo: any) => photo !== null && photo !== undefined)
               .map((photo: any, index: number) => {
                 if (typeof photo === 'string') {
                   try {
                     const parsedPhoto = JSON.parse(photo);
-                    console.log(`📸 Parsed photo ${index}:`, parsedPhoto);
+                    console.log(`Parsed photo ${index}:`, parsedPhoto);
                     return parsedPhoto;
                   } catch (e) {
-                    console.error(`📸 Failed to parse photo ${index}:`, photo, e);
+                    console.error(`Failed to parse photo ${index}:`, photo, e);
                     return { url: photo, category: 'hero', isPrimary: false, caption: '' };
                   }
                 }
                 
                 if (typeof photo === 'object' && photo.url) {
-                  console.log(`📸 Photo ${index} already object:`, photo);
+                  console.log(`Photo ${index} already object:`, photo);
                   return photo;
                 }
                 
-                console.warn(`📸 Invalid photo format at index ${index}:`, photo);
+                console.warn(`Invalid photo format at index ${index}:`, photo);
                 return null;
               })
               .filter((photo: any) => photo !== null);
             
-            console.log('📸 Final parsed photos:', parsed);
+            console.log('Final parsed photos:', parsed);
             return parsed;
           }
           
-          console.log('📸 No photos found in project data');
+          console.log('No photos found in project data');
           return [];
         })(),
         photo_gallery_urls: Array.isArray(projectData.photo_gallery_urls) ? projectData.photo_gallery_urls : [],
@@ -266,20 +266,20 @@ const AdminProjectForm: React.FC = () => {
       });
       
       // Ne PAS forcer le re-render ici car cela efface les données
-      console.log('📝 Form data loaded successfully');
+      console.log('Form data loaded successfully');
     }
   }, [project, isEdit, form]);
 
   // Enhanced submit handler with comprehensive data processing
   const onSubmit = async (data: any) => {
     try {
-      console.log('💾 Submitting project data:', data);
-      console.log('💾 Specific fields check:');
-      console.log('💾 - title:', data.title);
-      console.log('💾 - energy_rating:', data.energy_rating);
-      console.log('💾 - pet_policy:', data.pet_policy);
-      console.log('💾 - total_units_new:', data.total_units_new);
-      console.log('💾 - land_area_m2:', data.land_area_m2);
+       console.log('Submitting project data:', data);
+       console.log('Specific fields check:');
+       console.log('- title:', data.title);
+       console.log('- energy_rating:', data.energy_rating);
+       console.log('- pet_policy:', data.pet_policy);
+       console.log('- total_units_new:', data.total_units_new);
+       console.log('- land_area_m2:', data.land_area_m2);
       
       // Prepare data for database with proper types and fixes
       const processedData = {
@@ -354,7 +354,7 @@ const AdminProjectForm: React.FC = () => {
         model_3d_urls: Array.isArray(data.model_3d_urls) ? data.model_3d_urls : []
       };
       
-      console.log('💾 Processed data with fixed dates:', processedData);
+      console.log('Processed data with fixed dates:', processedData);
       
       if (isEdit) {
         const { data: updateResult, error } = await supabase
@@ -407,10 +407,10 @@ const AdminProjectForm: React.FC = () => {
   const refreshFormData = async () => {
     if (isEdit && id) {
       try {
-        console.log('🔄 Rechargement des données du projet depuis la base');
+        console.log('Rechargement des données du projet depuis la base');
         const freshProject = await fetchProject(id);
         if (freshProject) {
-          console.log('🔄 Données fraîches récupérées:', {
+          console.log('Données fraîches récupérées:', {
             total_units: freshProject.total_units,
             units_available: freshProject.units_available,
             roi_estimate_percent: freshProject.roi_estimate_percent,
