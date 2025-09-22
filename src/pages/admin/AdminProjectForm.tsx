@@ -145,16 +145,18 @@ const AdminProjectForm: React.FC = () => {
   // Load project data into form when editing with CORRECTED MAPPINGS
   useEffect(() => {
     if (project && isEdit) {
-       console.log('🔍 Loading project data into form:', project);
-       console.log('🔍 Project key values:', {
-        developer_id: project.developer_id,
-        statut_commercial: project.statut_commercial,
-        launch_month: project.launch_month,
-        completion_month: project.completion_month,
-        total_units: project.total_units,
-        units_available: project.units_available,
-        price_from: project.price_from,
-        golden_visa_eligible: project.golden_visa_eligible
+      const projectData = project as any; // Type casting pour éviter les erreurs TypeScript
+       
+      console.log('🔍 Loading project data into form:', project);
+      console.log('🔍 Project key values:', {
+        developer_id: projectData.developer_id,
+        statut_commercial: projectData.statut_commercial,
+        launch_month: projectData.launch_month,
+        completion_month: projectData.completion_month,
+        total_units: projectData.total_units,
+        units_available: projectData.units_available,
+        price_from: projectData.price_from,
+        golden_visa_eligible: projectData.golden_visa_eligible
       });
       
       // Charger les bâtiments depuis la table buildings
@@ -196,8 +198,6 @@ const AdminProjectForm: React.FC = () => {
       
       // Charger les données du projet ET les bâtiments
       loadBuildingsData().then(buildings => {
-        const projectData = project;
-        
         // Préparer les données du formulaire avec TOUS les champs correctement mappés
         const formData = {
           // Basics - MAPPING CORRIGÉ
@@ -331,11 +331,11 @@ const AdminProjectForm: React.FC = () => {
           meta_description_new: projectData.meta_description || '', // Version avec _new
           meta_keywords: Array.isArray(projectData.meta_keywords) ? 
             projectData.meta_keywords : 
-            (projectData.meta_keywords ? projectData.meta_keywords.split(',').map(k => k.trim()) : []),
+            (projectData.meta_keywords ? projectData.meta_keywords.split(',').map((k: string) => k.trim()) : []),
           marketing_highlights: Array.isArray(projectData.marketing_highlights) ? projectData.marketing_highlights : [],
           target_audience: Array.isArray(projectData.target_audience) ? 
             projectData.target_audience : 
-            (projectData.target_audience ? projectData.target_audience.split(',').map(k => k.trim()) : []),
+            (projectData.target_audience ? projectData.target_audience.split(',').map((k: string) => k.trim()) : []),
           url_slug: projectData.url_slug || '',
           featured_project: projectData.featured_project || false, // Version sans _new
           featured_new: projectData.featured_project || false, // Version avec _new
