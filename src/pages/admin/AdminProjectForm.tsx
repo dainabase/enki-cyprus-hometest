@@ -158,11 +158,36 @@ const AdminProjectForm: React.FC = () => {
           converted: convertedAmenities 
         });
         
-        // Convertir les photos si nécessaire
-        const categorizedPhotos = convertPhotosToCategorized(
-          projectData.categorized_photos || projectData.photos || []
-        );
-        console.log('📸 Photos converted:', categorizedPhotos);
+        // Ajouter un log pour débugger les photos
+        console.log('📸 Photos raw data:', {
+          photos: projectData.photos,
+          categorized_photos: projectData.categorized_photos
+        });
+
+        // Convertir les photos correctement
+        const photos = (() => {
+          // Si on a des photos catégorisées
+          if (projectData.categorized_photos && 
+              typeof projectData.categorized_photos === 'object' &&
+              !Array.isArray(projectData.categorized_photos)) {
+            return projectData.categorized_photos;
+          }
+          
+          // Si on a un array de photos simples
+          if (projectData.photos && Array.isArray(projectData.photos)) {
+            return {
+              exterior: projectData.photos.map((url, index) => ({
+                url: url,
+                caption: `Photo ${index + 1}`,
+                is_primary: index === 0
+              }))
+            };
+          }
+          
+          return { exterior: [], interior: [], amenities: [], views: [], plans: [] };
+        })();
+        
+        console.log('📸 Photos converted:', photos);
         
         // Préparer TOUTES les données du formulaire
         const formData = {
@@ -226,7 +251,7 @@ const AdminProjectForm: React.FC = () => {
           buildings: buildingsData || [],
           
           // MEDIA
-          photos: categorizedPhotos,
+          photos: photos,
           photo_gallery_urls: projectData.photo_gallery_urls || [],
           video_tour_urls: projectData.video_tour_urls || [],
           virtual_tour_url: projectData.virtual_tour_url || '',
