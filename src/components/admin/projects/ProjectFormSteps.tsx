@@ -873,147 +873,378 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             <FormField
               control={form.control}
               name="construction_materials"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Matériaux de construction 🧱</FormLabel>
-                  <FormControl>
-                    <div className="space-y-2">
-                      <Input 
-                        placeholder="Tapez et appuyez sur Entrée (Ex: Béton armé, Pierre naturelle, Double vitrage...)"
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault();
-                            const value = e.currentTarget.value;
-                            if (value) {
-                              field.onChange([...(field.value || []), value]);
-                              e.currentTarget.value = '';
-                            }
-                          }
-                        }}
-                      />
-                      <div className="flex flex-wrap gap-2">
-                        {(field.value || []).map((material, index) => (
-                          <Badge key={index} variant="outline">
-                            {material}
-                            <button
+              render={({ field }) => {
+                const predefinedMaterials = [
+                  'Béton armé',
+                  'Pierre naturelle',
+                  'Brique',
+                  'Bois',
+                  'Acier',
+                  'Verre',
+                  'Marbre',
+                  'Granit',
+                  'Aluminium',
+                  'PVC',
+                  'Composite',
+                  'Terre cuite',
+                  'Ardoise',
+                  'Zinc',
+                  'Cuivre',
+                  'Béton préfabriqué',
+                  'Isolation laine de roche',
+                  'Isolation polyuréthane',
+                  'Plâtre',
+                  'Céramique'
+                ];
+
+                return (
+                  <FormItem>
+                    <FormLabel>Matériaux de construction 🧱</FormLabel>
+                    <FormControl>
+                      <div className="space-y-4">
+                        {/* Boutons de sélection rapide */}
+                        <div className="flex justify-between items-center mb-3">
+                          <span className="text-sm font-medium text-muted-foreground">Sélection rapide :</span>
+                          <div className="space-x-2">
+                            <Button
                               type="button"
-                              onClick={() => {
-                                const newMaterials = [...(field.value || [])];
-                                newMaterials.splice(index, 1);
-                                field.onChange(newMaterials);
-                              }}
-                              className="ml-1"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => field.onChange([...predefinedMaterials])}
                             >
-                              ×
-                            </button>
-                          </Badge>
-                        ))}
+                              Tout sélectionner
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => field.onChange([])}
+                            >
+                              Tout déselectionner
+                            </Button>
+                          </div>
+                        </div>
+                        
+                        {/* Grille de checkboxes prédéfinies */}
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                          {predefinedMaterials.map((material) => (
+                            <label key={material} className="flex items-center space-x-2 cursor-pointer p-3 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors">
+                              <input
+                                type="checkbox"
+                                className="rounded border-border text-primary focus:ring-primary"
+                                checked={field.value?.includes(material) || false}
+                                onChange={(e) => {
+                                  const current = field.value || [];
+                                  if (e.target.checked) {
+                                    field.onChange([...current, material]);
+                                  } else {
+                                    field.onChange(current.filter(m => m !== material));
+                                  }
+                                }}
+                              />
+                              <span className="text-sm font-medium">{material}</span>
+                            </label>
+                          ))}
+                        </div>
+                        
+                        {/* Option pour ajouter des éléments personnalisés */}
+                        <div className="pt-4 border-t">
+                          <Input 
+                            placeholder="Ajouter un matériau personnalisé..."
+                            onKeyPress={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                const value = e.currentTarget.value;
+                                if (value && !field.value?.includes(value)) {
+                                  field.onChange([...(field.value || []), value]);
+                                  e.currentTarget.value = '';
+                                }
+                              }
+                            }}
+                          />
+                        </div>
+                        
+                        {/* Affichage des éléments sélectionnés */}
+                        {field.value && field.value.length > 0 && (
+                          <div className="flex flex-wrap gap-2 pt-2">
+                            {field.value.map((material, index) => (
+                              <Badge key={index} variant="outline" className="gap-1">
+                                {material}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const newMaterials = [...field.value];
+                                    newMaterials.splice(index, 1);
+                                    field.onChange(newMaterials);
+                                  }}
+                                  className="ml-1 hover:text-destructive"
+                                >
+                                  ×
+                                </button>
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
 
             {/* Certifications durabilité */}
             <FormField
               control={form.control}
               name="sustainability_certifications"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <Sprout className="w-4 h-4" />
-                    Certifications écologiques
-                  </FormLabel>
-                  <FormControl>
-                    <div className="space-y-2">
-                      <Input 
-                        placeholder="Ex: LEED Gold, BREEAM Excellent, Energy Star..."
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault();
-                            const value = e.currentTarget.value;
-                            if (value) {
-                              field.onChange([...(field.value || []), value]);
-                              e.currentTarget.value = '';
-                            }
-                          }
-                        }}
-                      />
-                      <div className="flex flex-wrap gap-2">
-                        {(field.value || []).map((cert, index) => (
-                          <Badge key={index} variant="secondary" className="bg-green-100">
-                            {cert}
-                            <button
+              render={({ field }) => {
+                const predefinedCertifications = [
+                  'LEED Gold',
+                  'LEED Platinum',
+                  'BREEAM Excellent',
+                  'BREEAM Outstanding',
+                  'HQE',
+                  'WELL',
+                  'Energy Star',
+                  'Passivhaus',
+                  'BBC',
+                  'RT2020',
+                  'RE2020',
+                  'Minergie',
+                  'Living Building',
+                  'DGNB',
+                  'Zero Carbon',
+                  'Net Zero Energy',
+                  'Green Building',
+                  'Cradle to Cradle',
+                  'EDGE',
+                  'Green Star'
+                ];
+
+                return (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-2">
+                      <Sprout className="w-4 h-4" />
+                      Certifications écologiques
+                    </FormLabel>
+                    <FormControl>
+                      <div className="space-y-4">
+                        {/* Boutons de sélection rapide */}
+                        <div className="flex justify-between items-center mb-3">
+                          <span className="text-sm font-medium text-muted-foreground">Sélection rapide :</span>
+                          <div className="space-x-2">
+                            <Button
                               type="button"
-                              onClick={() => {
-                                const newCerts = [...(field.value || [])];
-                                newCerts.splice(index, 1);
-                                field.onChange(newCerts);
-                              }}
-                              className="ml-1"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => field.onChange([...predefinedCertifications])}
                             >
-                              ×
-                            </button>
-                          </Badge>
-                        ))}
+                              Tout sélectionner
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => field.onChange([])}
+                            >
+                              Tout déselectionner
+                            </Button>
+                          </div>
+                        </div>
+                        
+                        {/* Grille de checkboxes prédéfinies */}
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                          {predefinedCertifications.map((cert) => (
+                            <label key={cert} className="flex items-center space-x-2 cursor-pointer p-3 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors">
+                              <input
+                                type="checkbox"
+                                className="rounded border-border text-primary focus:ring-primary"
+                                checked={field.value?.includes(cert) || false}
+                                onChange={(e) => {
+                                  const current = field.value || [];
+                                  if (e.target.checked) {
+                                    field.onChange([...current, cert]);
+                                  } else {
+                                    field.onChange(current.filter(c => c !== cert));
+                                  }
+                                }}
+                              />
+                              <span className="text-sm font-medium">{cert}</span>
+                            </label>
+                          ))}
+                        </div>
+                        
+                        {/* Option pour ajouter des éléments personnalisés */}
+                        <div className="pt-4 border-t">
+                          <Input 
+                            placeholder="Ajouter une certification personnalisée..."
+                            onKeyPress={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                const value = e.currentTarget.value;
+                                if (value && !field.value?.includes(value)) {
+                                  field.onChange([...(field.value || []), value]);
+                                  e.currentTarget.value = '';
+                                }
+                              }
+                            }}
+                          />
+                        </div>
+                        
+                        {/* Affichage des éléments sélectionnés */}
+                        {field.value && field.value.length > 0 && (
+                          <div className="flex flex-wrap gap-2 pt-2">
+                            {field.value.map((cert, index) => (
+                              <Badge key={index} variant="secondary" className="gap-1 bg-green-100">
+                                {cert}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const newCerts = [...field.value];
+                                    newCerts.splice(index, 1);
+                                    field.onChange(newCerts);
+                                  }}
+                                  className="ml-1 hover:text-destructive"
+                                >
+                                  ×
+                                </button>
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
 
             {/* Caractéristiques d'accessibilité */}
             <FormField
               control={form.control}
               name="accessibility_features"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <Accessibility className="w-4 h-4" />
-                    Accessibilité PMR
-                  </FormLabel>
-                  <FormControl>
-                    <div className="space-y-2">
-                      <Input 
-                        placeholder="Ex: Ascenseur PMR, Rampes d'accès, Portes larges..."
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault();
-                            const value = e.currentTarget.value;
-                            if (value) {
-                              field.onChange([...(field.value || []), value]);
-                              e.currentTarget.value = '';
-                            }
-                          }
-                        }}
-                      />
-                      <div className="flex flex-wrap gap-2">
-                        {(field.value || []).map((feature, index) => (
-                          <Badge key={index} variant="outline" className="border-blue-300">
-                            {feature}
-                            <button
+              render={({ field }) => {
+                const predefinedAccessibilityFeatures = [
+                  'Ascenseur PMR',
+                  'Rampes d\'accès',
+                  'Portes larges (90cm+)',
+                  'Salle de bain PMR',
+                  'WC PMR',
+                  'Barres d\'appui',
+                  'Sol antidérapant',
+                  'Signalétique braille',
+                  'Boucle magnétique',
+                  'Éclairage adapté',
+                  'Parking PMR',
+                  'Chemin podotactile',
+                  'Interphone adapté',
+                  'Monte-escalier',
+                  'Plain-pied',
+                  'Poignées ergonomiques',
+                  'Hauteur comptoirs adaptée',
+                  'Contraste visuel',
+                  'Alarme visuelle',
+                  'Télécommande d\'ouverture'
+                ];
+
+                return (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-2">
+                      <Accessibility className="w-4 h-4" />
+                      Accessibilité PMR
+                    </FormLabel>
+                    <FormControl>
+                      <div className="space-y-4">
+                        {/* Boutons de sélection rapide */}
+                        <div className="flex justify-between items-center mb-3">
+                          <span className="text-sm font-medium text-muted-foreground">Sélection rapide :</span>
+                          <div className="space-x-2">
+                            <Button
                               type="button"
-                              onClick={() => {
-                                const newFeatures = [...(field.value || [])];
-                                newFeatures.splice(index, 1);
-                                field.onChange(newFeatures);
-                              }}
-                              className="ml-1"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => field.onChange([...predefinedAccessibilityFeatures])}
                             >
-                              ×
-                            </button>
-                          </Badge>
-                        ))}
+                              Tout sélectionner
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => field.onChange([])}
+                            >
+                              Tout déselectionner
+                            </Button>
+                          </div>
+                        </div>
+                        
+                        {/* Grille de checkboxes prédéfinies */}
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                          {predefinedAccessibilityFeatures.map((feature) => (
+                            <label key={feature} className="flex items-center space-x-2 cursor-pointer p-3 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors">
+                              <input
+                                type="checkbox"
+                                className="rounded border-border text-primary focus:ring-primary"
+                                checked={field.value?.includes(feature) || false}
+                                onChange={(e) => {
+                                  const current = field.value || [];
+                                  if (e.target.checked) {
+                                    field.onChange([...current, feature]);
+                                  } else {
+                                    field.onChange(current.filter(f => f !== feature));
+                                  }
+                                }}
+                              />
+                              <span className="text-sm font-medium">{feature}</span>
+                            </label>
+                          ))}
+                        </div>
+                        
+                        {/* Option pour ajouter des éléments personnalisés */}
+                        <div className="pt-4 border-t">
+                          <Input 
+                            placeholder="Ajouter une caractéristique d'accessibilité personnalisée..."
+                            onKeyPress={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                const value = e.currentTarget.value;
+                                if (value && !field.value?.includes(value)) {
+                                  field.onChange([...(field.value || []), value]);
+                                  e.currentTarget.value = '';
+                                }
+                              }
+                            }}
+                          />
+                        </div>
+                        
+                        {/* Affichage des éléments sélectionnés */}
+                        {field.value && field.value.length > 0 && (
+                          <div className="flex flex-wrap gap-2 pt-2">
+                            {field.value.map((feature, index) => (
+                              <Badge key={index} variant="outline" className="gap-1 border-blue-300">
+                                {feature}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const newFeatures = [...field.value];
+                                    newFeatures.splice(index, 1);
+                                    field.onChange(newFeatures);
+                                  }}
+                                  className="ml-1 hover:text-destructive"
+                                >
+                                  ×
+                                </button>
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
 
             {/* Assurance bâtiment */}
@@ -1421,246 +1652,651 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             <FormField
               control={form.control}
               name="features"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <Star className="w-4 h-4" />
-                    Caractéristiques principales
-                  </FormLabel>
-                  <FormControl>
-                    <div className="space-y-2">
-                      <Input 
-                        placeholder="Ex: Piscine privée, Terrasse panoramique, Cave à vin..."
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault();
-                            const value = e.currentTarget.value;
-                            if (value && !field.value?.includes(value)) {
-                              field.onChange([...(field.value || []), value]);
-                              e.currentTarget.value = '';
-                            }
-                          }
-                        }}
-                      />
-                      <div className="flex flex-wrap gap-2">
-                        {(field.value || []).map((feature, index) => (
-                          <Badge key={index} variant="default" className="gap-1">
-                            {feature}
-                            <button
+              render={({ field }) => {
+                const predefinedFeatures = [
+                  'Piscine privée',
+                  'Terrasse panoramique',
+                  'Cave à vin',
+                  'Jardin privatif',
+                  'Garage privé',
+                  'Dressing',
+                  'Cheminée',
+                  'Buanderie',
+                  'Bureau',
+                  'Salle de jeux',
+                  'Jacuzzi',
+                  'Sauna',
+                  'Salle de cinéma',
+                  'Bibliothèque',
+                  'Cellier',
+                  'Suite parentale',
+                  'Appartement de service',
+                  'Ascenseur privé',
+                  'Toit-terrasse',
+                  'Pergola',
+                  'Solarium',
+                  'Vérandas',
+                  'Bow-window',
+                  'Loggia'
+                ];
+
+                return (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-2">
+                      <Star className="w-4 h-4" />
+                      Caractéristiques principales
+                    </FormLabel>
+                    <FormControl>
+                      <div className="space-y-4">
+                        {/* Boutons de sélection rapide */}
+                        <div className="flex justify-between items-center mb-3">
+                          <span className="text-sm font-medium text-muted-foreground">Sélection rapide :</span>
+                          <div className="space-x-2">
+                            <Button
                               type="button"
-                              onClick={() => {
-                                const newFeatures = [...(field.value || [])];
-                                newFeatures.splice(index, 1);
-                                field.onChange(newFeatures);
-                              }}
-                              className="ml-1"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => field.onChange([...predefinedFeatures])}
                             >
-                              ×
-                            </button>
-                          </Badge>
-                        ))}
+                              Tout sélectionner
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => field.onChange([])}
+                            >
+                              Tout déselectionner
+                            </Button>
+                          </div>
+                        </div>
+                        
+                        {/* Grille de checkboxes prédéfinies */}
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                          {predefinedFeatures.map((feature) => (
+                            <label key={feature} className="flex items-center space-x-2 cursor-pointer p-3 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors">
+                              <input
+                                type="checkbox"
+                                className="rounded border-border text-primary focus:ring-primary"
+                                checked={field.value?.includes(feature) || false}
+                                onChange={(e) => {
+                                  const current = field.value || [];
+                                  if (e.target.checked) {
+                                    field.onChange([...current, feature]);
+                                  } else {
+                                    field.onChange(current.filter(f => f !== feature));
+                                  }
+                                }}
+                              />
+                              <span className="text-sm font-medium">{feature}</span>
+                            </label>
+                          ))}
+                        </div>
+                        
+                        {/* Option pour ajouter des éléments personnalisés */}
+                        <div className="pt-4 border-t">
+                          <Input 
+                            placeholder="Ajouter une caractéristique personnalisée..."
+                            onKeyPress={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                const value = e.currentTarget.value;
+                                if (value && !field.value?.includes(value)) {
+                                  field.onChange([...(field.value || []), value]);
+                                  e.currentTarget.value = '';
+                                }
+                              }
+                            }}
+                          />
+                        </div>
+                        
+                        {/* Affichage des éléments sélectionnés */}
+                        {field.value && field.value.length > 0 && (
+                          <div className="flex flex-wrap gap-2 pt-2">
+                            {field.value.map((feature, index) => (
+                              <Badge key={index} variant="default" className="gap-1">
+                                {feature}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const newFeatures = [...field.value];
+                                    newFeatures.splice(index, 1);
+                                    field.onChange(newFeatures);
+                                  }}
+                                  className="ml-1 hover:text-destructive"
+                                >
+                                  ×
+                                </button>
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
 
             <FormField
               control={form.control}
               name="detailed_features"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <FileText className="w-4 h-4" />
-                    Équipements détaillés
-                  </FormLabel>
-                  <FormControl>
-                    <div className="space-y-2">
-                      <Input 
-                        placeholder="Ex: Climatisation VRV, Chauffage au sol, Volets électriques..."
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault();
-                            const value = e.currentTarget.value;
-                            if (value) {
-                              field.onChange([...(field.value || []), value]);
-                              e.currentTarget.value = '';
-                            }
-                          }
-                        }}
-                      />
-                      <div className="flex flex-wrap gap-2">
-                        {(field.value || []).map((feature, index) => (
-                          <Badge key={index} variant="outline">
-                            {feature}
-                            <button
+              render={({ field }) => {
+                const predefinedEquipments = [
+                  'Climatisation VRV',
+                  'Chauffage au sol',
+                  'Volets électriques',
+                  'Domotique',
+                  'Alarme',
+                  'Vidéosurveillance',
+                  'Interphone vidéo',
+                  'Porte blindée',
+                  'Double vitrage',
+                  'Triple vitrage',
+                  'Isolation phonique',
+                  'Panneaux solaires',
+                  'Pompe à chaleur',
+                  'VMC double flux',
+                  'Adoucisseur d\'eau',
+                  'Osmoseur',
+                  'Aspiration centralisée',
+                  'Stores électriques',
+                  'Éclairage LED',
+                  'Fibre optique',
+                  'Wi-Fi',
+                  'Système audio intégré',
+                  'Éclairage automatique',
+                  'Contrôle d\'accès'
+                ];
+
+                return (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-2">
+                      <FileText className="w-4 h-4" />
+                      Équipements détaillés
+                    </FormLabel>
+                    <FormControl>
+                      <div className="space-y-4">
+                        {/* Boutons de sélection rapide */}
+                        <div className="flex justify-between items-center mb-3">
+                          <span className="text-sm font-medium text-muted-foreground">Sélection rapide :</span>
+                          <div className="space-x-2">
+                            <Button
                               type="button"
-                              onClick={() => {
-                                const newFeatures = [...(field.value || [])];
-                                newFeatures.splice(index, 1);
-                                field.onChange(newFeatures);
-                              }}
-                              className="ml-1"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => field.onChange([...predefinedEquipments])}
                             >
-                              ×
-                            </button>
-                          </Badge>
-                        ))}
+                              Tout sélectionner
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => field.onChange([])}
+                            >
+                              Tout déselectionner
+                            </Button>
+                          </div>
+                        </div>
+                        
+                        {/* Grille de checkboxes prédéfinies */}
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                          {predefinedEquipments.map((equipment) => (
+                            <label key={equipment} className="flex items-center space-x-2 cursor-pointer p-3 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors">
+                              <input
+                                type="checkbox"
+                                className="rounded border-border text-primary focus:ring-primary"
+                                checked={field.value?.includes(equipment) || false}
+                                onChange={(e) => {
+                                  const current = field.value || [];
+                                  if (e.target.checked) {
+                                    field.onChange([...current, equipment]);
+                                  } else {
+                                    field.onChange(current.filter(f => f !== equipment));
+                                  }
+                                }}
+                              />
+                              <span className="text-sm font-medium">{equipment}</span>
+                            </label>
+                          ))}
+                        </div>
+                        
+                        {/* Option pour ajouter des éléments personnalisés */}
+                        <div className="pt-4 border-t">
+                          <Input 
+                            placeholder="Ajouter un équipement personnalisé..."
+                            onKeyPress={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                const value = e.currentTarget.value;
+                                if (value && !field.value?.includes(value)) {
+                                  field.onChange([...(field.value || []), value]);
+                                  e.currentTarget.value = '';
+                                }
+                              }
+                            }}
+                          />
+                        </div>
+                        
+                        {/* Affichage des éléments sélectionnés */}
+                        {field.value && field.value.length > 0 && (
+                          <div className="flex flex-wrap gap-2 pt-2">
+                            {field.value.map((feature, index) => (
+                              <Badge key={index} variant="outline" className="gap-1">
+                                {feature}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const newFeatures = [...field.value];
+                                    newFeatures.splice(index, 1);
+                                    field.onChange(newFeatures);
+                                  }}
+                                  className="ml-1 hover:text-destructive"
+                                >
+                                  ×
+                                </button>
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
 
             <FormField
               control={form.control}
               name="lifestyle_amenities"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <Palmtree className="w-4 h-4" />
-                    Services lifestyle
-                  </FormLabel>
-                  <FormControl>
-                    <div className="space-y-2">
-                      <Input 
-                        placeholder="Ex: Conciergerie 24/7, Service voiturier, Chef privé..."
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault();
-                            const value = e.currentTarget.value;
-                            if (value) {
-                              field.onChange([...(field.value || []), value]);
-                              e.currentTarget.value = '';
-                            }
-                          }
-                        }}
-                      />
-                      <div className="flex flex-wrap gap-2">
-                        {(field.value || []).map((amenity, index) => (
-                          <Badge key={index} variant="secondary" className="bg-purple-100">
-                            {amenity}
-                            <button
+              render={({ field }) => {
+                const predefinedServices = [
+                  'Conciergerie 24/7',
+                  'Service voiturier',
+                  'Chef privé',
+                  'Femme de ménage',
+                  'Jardinier',
+                  'Service blanchisserie',
+                  'Room service',
+                  'Navette plage',
+                  'Location vélos',
+                  'Babysitting',
+                  'Personal trainer',
+                  'Service courses',
+                  'Majordome',
+                  'Spa à domicile',
+                  'Cours de yoga',
+                  'Service traiteur',
+                  'Organisation événements',
+                  'Pet sitting',
+                  'Transfert aéroport',
+                  'Location yacht',
+                  'Guide touristique',
+                  'Service pressing',
+                  'Livraison repas',
+                  'Maintenance technique'
+                ];
+
+                return (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-2">
+                      <Palmtree className="w-4 h-4" />
+                      Services lifestyle
+                    </FormLabel>
+                    <FormControl>
+                      <div className="space-y-4">
+                        {/* Boutons de sélection rapide */}
+                        <div className="flex justify-between items-center mb-3">
+                          <span className="text-sm font-medium text-muted-foreground">Sélection rapide :</span>
+                          <div className="space-x-2">
+                            <Button
                               type="button"
-                              onClick={() => {
-                                const newAmenities = [...(field.value || [])];
-                                newAmenities.splice(index, 1);
-                                field.onChange(newAmenities);
-                              }}
-                              className="ml-1"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => field.onChange([...predefinedServices])}
                             >
-                              ×
-                            </button>
-                          </Badge>
-                        ))}
+                              Tout sélectionner
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => field.onChange([])}
+                            >
+                              Tout déselectionner
+                            </Button>
+                          </div>
+                        </div>
+                        
+                        {/* Grille de checkboxes prédéfinies */}
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                          {predefinedServices.map((service) => (
+                            <label key={service} className="flex items-center space-x-2 cursor-pointer p-3 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors">
+                              <input
+                                type="checkbox"
+                                className="rounded border-border text-primary focus:ring-primary"
+                                checked={field.value?.includes(service) || false}
+                                onChange={(e) => {
+                                  const current = field.value || [];
+                                  if (e.target.checked) {
+                                    field.onChange([...current, service]);
+                                  } else {
+                                    field.onChange(current.filter(f => f !== service));
+                                  }
+                                }}
+                              />
+                              <span className="text-sm font-medium">{service}</span>
+                            </label>
+                          ))}
+                        </div>
+                        
+                        {/* Option pour ajouter des éléments personnalisés */}
+                        <div className="pt-4 border-t">
+                          <Input 
+                            placeholder="Ajouter un service personnalisé..."
+                            onKeyPress={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                const value = e.currentTarget.value;
+                                if (value && !field.value?.includes(value)) {
+                                  field.onChange([...(field.value || []), value]);
+                                  e.currentTarget.value = '';
+                                }
+                              }
+                            }}
+                          />
+                        </div>
+                        
+                        {/* Affichage des éléments sélectionnés */}
+                        {field.value && field.value.length > 0 && (
+                          <div className="flex flex-wrap gap-2 pt-2">
+                            {field.value.map((amenity, index) => (
+                              <Badge key={index} variant="secondary" className="gap-1 bg-purple-100">
+                                {amenity}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const newAmenities = [...field.value];
+                                    newAmenities.splice(index, 1);
+                                    field.onChange(newAmenities);
+                                  }}
+                                  className="ml-1 hover:text-destructive"
+                                >
+                                  ×
+                                </button>
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
 
             <FormField
               control={form.control}
               name="community_features"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <Users className="w-4 h-4" />
-                    Espaces communs
-                  </FormLabel>
-                  <FormControl>
-                    <div className="space-y-2">
-                      <Input 
-                        placeholder="Ex: Salle de réunion, Espace coworking, Cinéma privé..."
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault();
-                            const value = e.currentTarget.value;
-                            if (value) {
-                              field.onChange([...(field.value || []), value]);
-                              e.currentTarget.value = '';
-                            }
-                          }
-                        }}
-                      />
-                      <div className="flex flex-wrap gap-2">
-                        {(field.value || []).map((feature, index) => (
-                          <Badge key={index} variant="outline" className="border-orange-300">
-                            {feature}
-                            <button
+              render={({ field }) => {
+                const predefinedCommunityFeatures = [
+                  'Salle de réunion',
+                  'Espace coworking',
+                  'Cinéma privé',
+                  'Salle de réception',
+                  'Business center',
+                  'Lobby luxueux',
+                  'Rooftop lounge',
+                  'Bar/Lounge',
+                  'Restaurant',
+                  'Café',
+                  'Bibliothèque commune',
+                  'Kids club',
+                  'Teen room',
+                  'Salle de jeux',
+                  'Billard',
+                  'Bowling',
+                  'Golf simulator',
+                  'Wine cellar commune',
+                  'Cuisine commune',
+                  'BBQ area',
+                  'Terrasse commune',
+                  'Jardin communautaire',
+                  'Aire de jeux enfants',
+                  'Parking visiteurs'
+                ];
+
+                return (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-2">
+                      <Users className="w-4 h-4" />
+                      Espaces communs
+                    </FormLabel>
+                    <FormControl>
+                      <div className="space-y-4">
+                        {/* Boutons de sélection rapide */}
+                        <div className="flex justify-between items-center mb-3">
+                          <span className="text-sm font-medium text-muted-foreground">Sélection rapide :</span>
+                          <div className="space-x-2">
+                            <Button
                               type="button"
-                              onClick={() => {
-                                const newFeatures = [...(field.value || [])];
-                                newFeatures.splice(index, 1);
-                                field.onChange(newFeatures);
-                              }}
-                              className="ml-1"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => field.onChange([...predefinedCommunityFeatures])}
                             >
-                              ×
-                            </button>
-                          </Badge>
-                        ))}
+                              Tout sélectionner
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => field.onChange([])}
+                            >
+                              Tout déselectionner
+                            </Button>
+                          </div>
+                        </div>
+                        
+                        {/* Grille de checkboxes prédéfinies */}
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                          {predefinedCommunityFeatures.map((feature) => (
+                            <label key={feature} className="flex items-center space-x-2 cursor-pointer p-3 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors">
+                              <input
+                                type="checkbox"
+                                className="rounded border-border text-primary focus:ring-primary"
+                                checked={field.value?.includes(feature) || false}
+                                onChange={(e) => {
+                                  const current = field.value || [];
+                                  if (e.target.checked) {
+                                    field.onChange([...current, feature]);
+                                  } else {
+                                    field.onChange(current.filter(f => f !== feature));
+                                  }
+                                }}
+                              />
+                              <span className="text-sm font-medium">{feature}</span>
+                            </label>
+                          ))}
+                        </div>
+                        
+                        {/* Option pour ajouter des éléments personnalisés */}
+                        <div className="pt-4 border-t">
+                          <Input 
+                            placeholder="Ajouter un espace commun personnalisé..."
+                            onKeyPress={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                const value = e.currentTarget.value;
+                                if (value && !field.value?.includes(value)) {
+                                  field.onChange([...(field.value || []), value]);
+                                  e.currentTarget.value = '';
+                                }
+                              }
+                            }}
+                          />
+                        </div>
+                        
+                        {/* Affichage des éléments sélectionnés */}
+                        {field.value && field.value.length > 0 && (
+                          <div className="flex flex-wrap gap-2 pt-2">
+                            {field.value.map((feature, index) => (
+                              <Badge key={index} variant="outline" className="gap-1 border-orange-300">
+                                {feature}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const newFeatures = [...field.value];
+                                    newFeatures.splice(index, 1);
+                                    field.onChange(newFeatures);
+                                  }}
+                                  className="ml-1 hover:text-destructive"
+                                >
+                                  ×
+                                </button>
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
 
             <FormField
               control={form.control}
               name="wellness_features"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <Heart className="w-4 h-4" />
-                    Bien-être & Santé
-                  </FormLabel>
-                  <FormControl>
-                    <div className="space-y-2">
-                      <Input 
-                        placeholder="Ex: Spa, Hammam, Salle de yoga, Parcours santé..."
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault();
-                            const value = e.currentTarget.value;
-                            if (value) {
-                              field.onChange([...(field.value || []), value]);
-                              e.currentTarget.value = '';
-                            }
-                          }
-                        }}
-                      />
-                      <div className="flex flex-wrap gap-2">
-                        {(field.value || []).map((feature, index) => (
-                          <Badge key={index} variant="secondary" className="bg-green-100">
-                            {feature}
-                            <button
+              render={({ field }) => {
+                const predefinedWellnessFeatures = [
+                  'Spa',
+                  'Hammam',
+                  'Sauna',
+                  'Salle de yoga',
+                  'Salle de fitness',
+                  'Piscine intérieure',
+                  'Jacuzzi',
+                  'Parcours santé',
+                  'Court de tennis',
+                  'Court de paddle',
+                  'Court de squash',
+                  'Basketball',
+                  'Volleyball',
+                  'Mini golf',
+                  'Pétanque',
+                  'Table ping-pong',
+                  'Salle de massage',
+                  'Cryothérapie',
+                  'Salt room',
+                  'Meditation room',
+                  'Piscine olympique',
+                  'Aquagym',
+                  'Bain turc',
+                  'Salle de pilates'
+                ];
+
+                return (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-2">
+                      <Heart className="w-4 h-4" />
+                      Bien-être & Santé
+                    </FormLabel>
+                    <FormControl>
+                      <div className="space-y-4">
+                        {/* Boutons de sélection rapide */}
+                        <div className="flex justify-between items-center mb-3">
+                          <span className="text-sm font-medium text-muted-foreground">Sélection rapide :</span>
+                          <div className="space-x-2">
+                            <Button
                               type="button"
-                              onClick={() => {
-                                const newFeatures = [...(field.value || [])];
-                                newFeatures.splice(index, 1);
-                                field.onChange(newFeatures);
-                              }}
-                              className="ml-1"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => field.onChange([...predefinedWellnessFeatures])}
                             >
-                              ×
-                            </button>
-                          </Badge>
-                        ))}
+                              Tout sélectionner
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => field.onChange([])}
+                            >
+                              Tout déselectionner
+                            </Button>
+                          </div>
+                        </div>
+                        
+                        {/* Grille de checkboxes prédéfinies */}
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                          {predefinedWellnessFeatures.map((feature) => (
+                            <label key={feature} className="flex items-center space-x-2 cursor-pointer p-3 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors">
+                              <input
+                                type="checkbox"
+                                className="rounded border-border text-primary focus:ring-primary"
+                                checked={field.value?.includes(feature) || false}
+                                onChange={(e) => {
+                                  const current = field.value || [];
+                                  if (e.target.checked) {
+                                    field.onChange([...current, feature]);
+                                  } else {
+                                    field.onChange(current.filter(f => f !== feature));
+                                  }
+                                }}
+                              />
+                              <span className="text-sm font-medium">{feature}</span>
+                            </label>
+                          ))}
+                        </div>
+                        
+                        {/* Option pour ajouter des éléments personnalisés */}
+                        <div className="pt-4 border-t">
+                          <Input 
+                            placeholder="Ajouter un équipement bien-être personnalisé..."
+                            onKeyPress={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                const value = e.currentTarget.value;
+                                if (value && !field.value?.includes(value)) {
+                                  field.onChange([...(field.value || []), value]);
+                                  e.currentTarget.value = '';
+                                }
+                              }
+                            }}
+                          />
+                        </div>
+                        
+                        {/* Affichage des éléments sélectionnés */}
+                        {field.value && field.value.length > 0 && (
+                          <div className="flex flex-wrap gap-2 pt-2">
+                            {field.value.map((feature, index) => (
+                              <Badge key={index} variant="secondary" className="gap-1 bg-green-100">
+                                {feature}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const newFeatures = [...field.value];
+                                    newFeatures.splice(index, 1);
+                                    field.onChange(newFeatures);
+                                  }}
+                                  className="ml-1 hover:text-destructive"
+                                >
+                                  ×
+                                </button>
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
           </CardContent>
         </Card>
