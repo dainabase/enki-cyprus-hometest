@@ -44,14 +44,21 @@ export const ProjectCardView = ({
     }).format(price);
   };
 
-  const getDeveloperName = (developer: any) => {
-    if (!developer || typeof developer !== 'object') return 'Non défini';
-    return developer.name || 'Non défini';
+  const getDeveloperName = (project: any) => {
+    // Essayer d'abord project.developer (objet)
+    if (project.developer && typeof project.developer === 'object') {
+      return project.developer.name || 'Non défini';
+    }
+    // Sinon essayer developers (array - ancien format)
+    if (project.developers && Array.isArray(project.developers) && project.developers[0]) {
+      return project.developers[0].name || 'Non défini';
+    }
+    return 'Non défini';
   };
 
   // Group projects by developer
   const groupedByDeveloper = projects.reduce((acc, project) => {
-    const developerName = getDeveloperName(project.developer);
+    const developerName = getDeveloperName(project);
     if (!acc[developerName]) acc[developerName] = [];
     acc[developerName].push(project);
     return acc;
@@ -121,6 +128,17 @@ export const ProjectCardView = ({
                             {project.status === 'delivered' && 'Livré'}
                             {project.status === 'sold' && 'Vendu'}
                           </Badge>
+                          
+                          {/* Statut commercial */}
+                          {project.statut_commercial && (
+                            <Badge variant="outline" className="bg-blue-50">
+                              {project.statut_commercial === 'pre_commercialisation' ? 'Pré-commercialisation' :
+                               project.statut_commercial === 'commercialisation' ? 'En commercialisation' :
+                               project.statut_commercial === 'reserve' ? 'Réservé' :
+                               project.statut_commercial === 'vendu' ? 'Vendu' : 
+                               project.statut_commercial}
+                            </Badge>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -144,12 +162,12 @@ export const ProjectCardView = ({
                       </span>
                     </div>
                     
-                    {project.completion_date && (
+                    {(project.completion_month || project.completion_date) && (
                       <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 transition-colors">
                         <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center">
                           <Calendar className="h-4 w-4 text-slate-700" />
                         </div>
-                        <span className="text-slate-700 font-medium">Livraison: {project.completion_date}</span>
+                        <span className="text-slate-700 font-medium">Livraison : {project.completion_month || project.completion_date}</span>
                       </div>
                     )}
                     

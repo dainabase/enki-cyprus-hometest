@@ -64,11 +64,13 @@ const AdminProjects = () => {
       let query = supabase
         .from('projects')
         .select(`
-          id, title, status, cyprus_zone, golden_visa_eligible, price_from,
-          completion_date, launch_date, units_available, units_sold, total_units, developer_id,
-          city, neighborhood, description, built_area_m2, 
-          created_at,
-          developers(id, name)
+          *,
+          developer:developers!projects_developer_id_fkey(
+            id,
+            name,
+            logo,
+            contact_info
+          )
         `, { count: 'exact' })
         .range(from, to);
 
@@ -191,7 +193,7 @@ const AdminProjects = () => {
     
     return sortedProjects.reduce((acc, project) => {
       const developerId = project.developer_id || 'no-developer';
-      const developer = getDeveloper(project.developers);
+      const developer = getDeveloper(project.developer);
       const developerName = developer?.name || 'Sans développeur';
       
       if (!acc[developerId]) {

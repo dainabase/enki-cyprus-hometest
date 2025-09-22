@@ -61,9 +61,16 @@ export const ProjectDetailedView = ({
     }).format(price);
   };
 
-  const getDeveloperName = (developer: any) => {
-    if (!developer || typeof developer !== 'object') return 'Non défini';
-    return developer.name || 'Non défini';
+  const getDeveloperName = (project: any) => {
+    // Essayer d'abord project.developer (objet)
+    if (project.developer && typeof project.developer === 'object') {
+      return project.developer.name || 'Non défini';
+    }
+    // Sinon essayer developers (array - ancien format)
+    if (project.developers && Array.isArray(project.developers) && project.developers[0]) {
+      return project.developers[0].name || 'Non défini';
+    }
+    return 'Non défini';
   };
 
   return (
@@ -106,12 +113,31 @@ export const ProjectDetailedView = ({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-4 mb-3">
                     <h3 className="text-2xl font-bold text-slate-900">{project.title}</h3>
-                    <Badge className={getStatusColor(project.status)}>
-                      {project.status === 'available' && 'Disponible'}
-                      {project.status === 'under_construction' && 'En construction'}
-                      {project.status === 'delivered' && 'Livré'}
-                      {project.status === 'sold' && 'Vendu'}
-                    </Badge>
+              <Badge className={getStatusColor(project.status)}>
+                {project.status === 'available' && 'Disponible'}
+                {project.status === 'under_construction' && 'En construction'}
+                {project.status === 'delivered' && 'Livré'}
+                {project.status === 'sold' && 'Vendu'}
+              </Badge>
+              
+              {/* Statut commercial */}
+              {project.statut_commercial && (
+                <Badge variant="outline" className="bg-blue-50">
+                  {project.statut_commercial === 'pre_commercialisation' ? 'Pré-commercialisation' :
+                   project.statut_commercial === 'commercialisation' ? 'En commercialisation' :
+                   project.statut_commercial === 'reserve' ? 'Réservé' :
+                   project.statut_commercial === 'vendu' ? 'Vendu' : 
+                   project.statut_commercial}
+                </Badge>
+              )}
+              
+              {/* Date de livraison */}
+              {project.completion_month && (
+                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                  <Calendar className="w-3 h-3" />
+                  <span>Livraison : {project.completion_month}</span>
+                </div>
+              )}
                     
                     <div className="flex items-center gap-2 bg-gradient-to-r from-emerald-50 to-green-50 px-4 py-2 rounded-full border border-emerald-200">
                       <Euro className="h-5 w-5 text-emerald-600" />

@@ -12,7 +12,7 @@ interface ProjectTableViewProps {
   onSelectionChange: (ids: string[]) => void;
 }
 
-type SortField = 'title' | 'developer' | 'city' | 'price' | 'completion_date_new' | 'launch_date' | 'cyprus_zone';
+type SortField = 'title' | 'developer' | 'city' | 'price' | 'completion_month' | 'launch_date' | 'cyprus_zone';
 type SortOrder = 'asc' | 'desc';
 
 export const ProjectTableView = ({ 
@@ -41,9 +41,16 @@ export const ProjectTableView = ({
     }
   };
 
-  const getDeveloperName = (developer: any) => {
-    if (!developer || typeof developer !== 'object') return 'Non défini';
-    return developer.name || 'Non défini';
+  const getDeveloperName = (project: any) => {
+    // Essayer d'abord project.developer (objet)
+    if (project.developer && typeof project.developer === 'object') {
+      return project.developer.name || 'Non défini';
+    }
+    // Sinon essayer developers (array - ancien format)
+    if (project.developers && Array.isArray(project.developers) && project.developers[0]) {
+      return project.developers[0].name || 'Non défini';
+    }
+    return 'Non défini';
   };
 
   const formatPrice = (price: number) => {
@@ -93,8 +100,8 @@ export const ProjectTableView = ({
 
     switch (sortField) {
       case 'developer':
-        aValue = getDeveloperName(a.developer);
-        bValue = getDeveloperName(b.developer);
+        aValue = getDeveloperName(a);
+        bValue = getDeveloperName(b);
         break;
       case 'price':
         aValue = a.price || a.price_from || 0;
@@ -207,9 +214,9 @@ export const ProjectTableView = ({
               <Button 
                 variant="ghost" 
                 className="h-auto p-0 font-bold text-white hover:bg-white/10"
-                onClick={() => handleSort('completion_date_new')}
+                onClick={() => handleSort('completion_month')}
               >
-                Livraison <SortIcon field="completion_date_new" />
+                Livraison <SortIcon field="completion_month" />
               </Button>
             </TableHead>
             <TableHead className="text-white font-bold border-0 w-32">Actions</TableHead>
@@ -258,7 +265,7 @@ export const ProjectTableView = ({
                   <div className="text-xs text-slate-500 truncate">{project.neighborhood}</div>
                 )}
               </TableCell>
-              <TableCell className="text-slate-600 py-4">{getDeveloperName(project.developer)}</TableCell>
+              <TableCell className="text-slate-600 py-4">{getDeveloperName(project)}</TableCell>
               <TableCell className="text-slate-600 py-4">{project.city || '-'}</TableCell>
               <TableCell className="text-slate-600 py-4">{project.cyprus_zone || '-'}</TableCell>
               <TableCell className="py-4">
@@ -282,6 +289,17 @@ export const ProjectTableView = ({
                         month: 'short' 
                       })}
                     </span>
+                  </div>
+                ) : (
+                  <span className="text-slate-400">-</span>
+                )}
+              </TableCell>
+              <TableCell className="py-4">
+                {/* Date de livraison */}
+                {project.completion_month ? (
+                  <div className="flex items-center gap-1 text-slate-600">
+                    <Calendar className="h-3 w-3" />
+                    <span className="text-xs">{project.completion_month}</span>
                   </div>
                 ) : (
                   <span className="text-slate-400">-</span>

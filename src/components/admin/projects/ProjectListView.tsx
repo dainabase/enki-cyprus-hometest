@@ -43,9 +43,16 @@ export const ProjectListView = ({
     }).format(price);
   };
 
-  const getDeveloperName = (developer: any) => {
-    if (!developer || typeof developer !== 'object') return 'Non défini';
-    return developer.name || 'Non défini';
+  const getDeveloperName = (project: any) => {
+    // Essayer d'abord project.developer (objet)
+    if (project.developer && typeof project.developer === 'object') {
+      return project.developer.name || 'Non défini';
+    }
+    // Sinon essayer developers (array - ancien format)
+    if (project.developers && Array.isArray(project.developers) && project.developers[0]) {
+      return project.developers[0].name || 'Non défini';
+    }
+    return 'Non défini';
   };
 
   return (
@@ -94,6 +101,17 @@ export const ProjectListView = ({
                     {project.status === 'sold' && 'Vendu'}
                   </Badge>
                   
+                  {/* Statut commercial */}
+                  {project.statut_commercial && (
+                    <Badge variant="outline" className="bg-blue-50">
+                      {project.statut_commercial === 'pre_commercialisation' ? 'Pré-commercialisation' :
+                       project.statut_commercial === 'commercialisation' ? 'En commercialisation' :
+                       project.statut_commercial === 'reserve' ? 'Réservé' :
+                       project.statut_commercial === 'vendu' ? 'Vendu' : 
+                       project.statut_commercial}
+                    </Badge>
+                  )}
+                  
                   <div className="flex items-center gap-2 bg-gradient-to-r from-emerald-50 to-green-50 px-3 py-1 rounded-full border border-emerald-200">
                     <Euro className="h-4 w-4 text-emerald-600" />
                     <span className="font-bold text-emerald-800">
@@ -107,8 +125,16 @@ export const ProjectListView = ({
                     <div className="w-6 h-6 bg-slate-100 rounded-lg flex items-center justify-center">
                       <Building className="h-3 w-3 text-slate-700" />
                     </div>
-                    <span className="font-medium text-slate-700">{getDeveloperName(project.developer)}</span>
+                    <span className="font-medium text-slate-700">{getDeveloperName(project)}</span>
                   </div>
+                  
+                  {/* Date de livraison */}
+                  {project.completion_month && (
+                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                      <Calendar className="w-3 h-3" />
+                      <span>Livraison : {project.completion_month}</span>
+                    </div>
+                  )}
                   
                   <div className="flex items-center space-x-2">
                     <div className="w-6 h-6 bg-slate-100 rounded-lg flex items-center justify-center">

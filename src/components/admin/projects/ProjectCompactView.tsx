@@ -43,9 +43,16 @@ export const ProjectCompactView = ({
     }).format(price);
   };
 
-  const getDeveloperName = (developer: any) => {
-    if (!developer || typeof developer !== 'object') return 'Non défini';
-    return developer.name || 'Non défini';
+  const getDeveloperName = (project: any) => {
+    // Essayer d'abord project.developer (objet)
+    if (project.developer && typeof project.developer === 'object') {
+      return project.developer.name || 'Non défini';
+    }
+    // Sinon essayer developers (array - ancien format)
+    if (project.developers && Array.isArray(project.developers) && project.developers[0]) {
+      return project.developers[0].name || 'Non défini';
+    }
+    return 'Non défini';
   };
 
   return (
@@ -92,7 +99,7 @@ export const ProjectCompactView = ({
               </div>
               
               <div className="truncate font-semibold text-slate-700">
-                {getDeveloperName(project.developer)}
+                {getDeveloperName(project)}
               </div>
               
               <div className="truncate text-slate-600">
@@ -111,11 +118,30 @@ export const ProjectCompactView = ({
                   {project.status === 'delivered' && 'Livré'}
                   {project.status === 'sold' && 'Vendu'}
                 </Badge>
+                
+                {/* Statut commercial */}
+                {project.statut_commercial && (
+                  <Badge variant="outline" className="bg-blue-50 text-xs">
+                    {project.statut_commercial === 'pre_commercialisation' ? 'Pré-comm' :
+                     project.statut_commercial === 'commercialisation' ? 'En comm' :
+                     project.statut_commercial === 'reserve' ? 'Réservé' :
+                     project.statut_commercial === 'vendu' ? 'Vendu' : 
+                     project.statut_commercial}
+                  </Badge>
+                )}
+                
                 {(project.golden_visa_eligible || project.golden_visa_eligible_new) && (
                   <Star className="h-3 w-3 text-amber-500" />
                 )}
                 {project.exclusive_commercialization && (
                   <Crown className="h-3 w-3 text-purple-500" />
+                )}
+                
+                {/* Date de livraison */}
+                {project.completion_month && (
+                  <span className="text-xs text-muted-foreground">
+                    {project.completion_month}
+                  </span>
                 )}
               </div>
             </div>
