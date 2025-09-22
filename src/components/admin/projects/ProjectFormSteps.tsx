@@ -642,8 +642,13 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       <Button
                         type="button"
                         onClick={async () => {
+                          console.log('🔘 Bouton "Détecter commodités" cliqué');
+                          
                           const address = form.watch('full_address');
+                          console.log('📍 Adresse récupérée:', address);
+                          
                           if (!address) {
+                            console.log('❌ Pas d\'adresse');
                             toast({
                               title: "Adresse requise",
                               description: "Veuillez entrer l'adresse du projet dans l'onglet Localisation",
@@ -652,6 +657,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                             return;
                           }
                           
+                          console.log('🚀 Début détection avec adresse:', address);
+                          
                           const loadingToast = toast({
                             title: "🗺️ Détection en cours...",
                             description: "Recherche des commodités via Google Maps (30-60s)",
@@ -659,12 +666,18 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                           });
                           
                           try {
+                            console.log('📦 Import GoogleMapsAgent...');
                             // Import dynamique pour éviter les erreurs de build
                             const { GoogleMapsAgent } = await import('@/services/googleMapsAgent');
+                            console.log('✅ GoogleMapsAgent importé');
+                            
                             const agent = new GoogleMapsAgent();
+                            console.log('👤 Agent créé');
                             
                             // Rechercher les commodités
+                            console.log('🔍 Appel findNearbyPlaces avec:', address, '2km');
                             const places = await agent.findNearbyPlaces(address, 2);
+                            console.log('📊 Résultats reçus:', places);
                             
                             if (places.length === 0) {
                               toast({
