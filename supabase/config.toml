@@ -91,3 +91,6 @@ verify_jwt = true
 
 [functions.fetch-interests]
 verify_jwt = false
+
+[functions.google-maps-agent]
+verify_jwt = false
