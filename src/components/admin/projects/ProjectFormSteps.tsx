@@ -27,8 +27,9 @@ import {
   Sprout, Accessibility, Map as MapIcon, Palmtree, Users, Heart,
   HardHat, Palette, Sparkles, FileText, CreditCard, Gift, 
   PiggyBank, BarChart3, Youtube, Video, Headphones, Smartphone,
-  Globe, Search, Star, Target, Link, Plus
+  Globe, Search, Star, Target, Link, Plus, Brain
 } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 interface ProjectFormStepsProps {
   form: UseFormReturn<ProjectFormData>;
@@ -953,6 +954,67 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             <CardTitle>Marketing & SEO</CardTitle>
           </CardHeader>
           <CardContent className="p-6 space-y-6">
+            {/* Bouton générateur SEO */}
+            <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-semibold text-purple-900">
+                      Générateur de contenu SEO
+                    </h3>
+                    <p className="text-sm text-purple-700 mt-1">
+                      Générez automatiquement les métadonnées et descriptions optimisées
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        // Récupérer les données du projet
+                        const projectData = form.getValues();
+                        
+                        // Appeler le générateur SEO
+                        const { data, error } = await supabase
+                          .from('projects')
+                          .select('*')
+                          .eq('id', projectId)
+                          .single();
+                          
+                        if (data) {
+                          // TODO: Connecter avec le générateur SEO
+                          toast({
+                            title: "Génération SEO",
+                            description: "Le contenu SEO va être généré..."
+                          });
+                          
+                          // Simuler la génération
+                          setTimeout(() => {
+                            form.setValue('meta_title', `${data.title} - Investissement immobilier Chypre | Golden Visa`);
+                            form.setValue('meta_description', `Découvrez ${data.title} à ${data.city}, projet immobilier d'exception à Chypre. ${data.total_units} unités disponibles. Éligible Golden Visa. Investissez dès ${data.price_from}€.`);
+                            form.setValue('meta_keywords', ['immobilier chypre', 'golden visa', data.city, data.cyprus_zone, 'investissement'].filter(Boolean));
+                            
+                            toast({
+                              title: "Contenu SEO généré",
+                              description: "Les champs ont été remplis automatiquement"
+                            });
+                          }, 1000);
+                        }
+                      } catch (error) {
+                        toast({
+                          title: "Erreur",
+                          description: "Impossible de générer le contenu SEO",
+                          variant: "destructive"
+                        });
+                      }
+                    }}
+                    className="bg-gradient-to-r from-purple-600 to-blue-600"
+                  >
+                    <Brain className="w-4 h-4 mr-2" />
+                    Générer le SEO
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
             <FormField
               control={form.control}
               name="meta_title"
