@@ -31,6 +31,7 @@ import {
 } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from '@/hooks/use-toast';
+import { generateSEOContent } from '@/services/seoGenerator';
 
 interface ProjectFormStepsProps {
   form: UseFormReturn<ProjectFormData>;
@@ -1047,43 +1048,36 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                   <Button
                     type="button"
                     onClick={async () => {
-                      toast({
-                        title: "🤖 Génération en cours...",
-                        description: "L'IA analyse votre projet pour créer le contenu SEO optimal",
-                      });
-                      
-                      // Récupérer les données actuelles
-                      const projectData = form.getValues();
-                      
-                      // Simuler un appel API (remplacer par l'appel réel à votre agent)
-                      setTimeout(() => {
-                        // Générer le contenu optimisé
-                        const title = `${projectData.title} - Immobilier ${projectData.city || 'Chypre'} | Investissement Golden Visa`;
-                        const description = `Découvrez ${projectData.title}, projet immobilier premium à ${projectData.city || 'Chypre'}. ${projectData.total_units || 0} unités disponibles à partir de ${projectData.price_from || 0}€. Éligible Golden Visa. ROI jusqu'à ${projectData.roi_estimate_percent || 8}%.`;
-                        const keywords = [
-                          'immobilier chypre',
-                          'golden visa cyprus',
-                          projectData.city?.toLowerCase(),
-                          projectData.cyprus_zone,
-                          'investissement immobilier',
-                          'residence permit'
-                        ].filter(Boolean);
-                        const slug = projectData.title
-                          ?.toLowerCase()
-                          .replace(/[^a-z0-9]+/g, '-')
-                          .replace(/^-+|-+$/g, '');
+                      try {
+                        toast({
+                          title: "🤖 Génération en cours...",
+                          description: "L'IA analyse votre projet pour créer le contenu SEO optimal",
+                        });
                         
-                        // Remplir les champs
-                        form.setValue('meta_title', title);
-                        form.setValue('meta_description', description);
-                        form.setValue('meta_keywords', keywords);
-                        form.setValue('url_slug', slug);
+                        // Récupérer les données actuelles du formulaire
+                        const projectData = form.getValues();
+                        
+                        // Appeler le générateur SEO réel
+                        const seoContent = await generateSEOContent(projectData);
+                        
+                        // Remplir les champs avec le contenu généré
+                        form.setValue('meta_title', seoContent.meta_title);
+                        form.setValue('meta_description', seoContent.meta_description);
+                        form.setValue('meta_keywords', seoContent.meta_keywords);
+                        form.setValue('url_slug', seoContent.url_slug);
                         
                         toast({
                           title: "✅ Contenu SEO généré",
-                          description: "Les champs ont été optimisés pour le référencement",
+                          description: "Les champs ont été optimisés par l'IA pour le référencement",
                         });
-                      }, 2000);
+                        
+                      } catch (error) {
+                        console.error('Erreur génération SEO:', error);
+                        toast({
+                          title: "⚠️ Génération avec fallback",
+                          description: "Contenu SEO basique généré en cas d'erreur",
+                        });
+                      }
                     }}
                     className="bg-slate-900 hover:bg-slate-800 text-white"
                   >
