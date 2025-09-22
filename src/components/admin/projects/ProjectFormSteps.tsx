@@ -13,7 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from '@/components/ui/form';
 import { MediaUploader } from './MediaUploader';
 import { CategorizedMediaUploader } from './CategorizedMediaUploader';
-import { SimplifiedNearbyAmenities } from './SimplifiedNearbyAmenities';
+
 import { BuildingCards } from './BuildingCards';
 import { AmenitiesSelector } from './AmenitiesSelector';
 import PropertySubTypeSelector from './PropertySubTypeSelector';
@@ -29,6 +29,7 @@ import {
   PiggyBank, BarChart3, Youtube, Video, Headphones, Smartphone,
   Globe, Search, Star, Target, Link, Plus, Brain
 } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from '@/hooks/use-toast';
 
 interface ProjectFormStepsProps {
@@ -506,19 +507,68 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           </CardContent>
         </Card>
 
-        <FormField
-          control={form.control}
-          name="surrounding_amenities"
-          render={({ field }) => (
-            <FormItem>
-              <SimplifiedNearbyAmenities
-                value={field.value as any || []}
-                onChange={field.onChange}
-              />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {/* Commodités de proximité avec checkboxes */}
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <MapPin className="w-5 h-5" />
+              Commodités de Proximité
+            </CardTitle>
+            <CardDescription>
+              Sélectionnez les points d'intérêt à proximité du projet
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[
+                { name: "Plage", type: "beach", icon: "🏖️" },
+                { name: "Restaurant", type: "restaurant", icon: "🍽️" },
+                { name: "Centre commercial", type: "shopping", icon: "🛍️" },
+                { name: "École", type: "education", icon: "🎓" },
+                { name: "Hôpital", type: "healthcare", icon: "🏥" },
+                { name: "Marina", type: "marina", icon: "⛵" },
+                { name: "Golf", type: "golf", icon: "⛳" },
+                { name: "Casino", type: "casino", icon: "🎰" },
+                { name: "Parc", type: "park", icon: "🌳" },
+                { name: "Salle de sport", type: "gym", icon: "🏋️" },
+                { name: "Aéroport", type: "airport", icon: "✈️" },
+                { name: "Autoroute", type: "highway", icon: "🛣️" },
+                { name: "Supermarché", type: "supermarket", icon: "🛒" },
+                { name: "Pharmacie", type: "pharmacy", icon: "💊" }
+              ].map((amenity) => {
+                const surroundingAmenities = form.watch('surrounding_amenities') || [];
+                const isChecked = surroundingAmenities.some((a: any) => 
+                  a.nearby_amenity_id === amenity.type
+                );
+                
+                return (
+                  <div key={amenity.type} className="flex items-center space-x-3 p-3 rounded-lg border hover:bg-accent">
+                    <Checkbox
+                      checked={isChecked}
+                      onCheckedChange={(checked) => {
+                        const current = form.watch('surrounding_amenities') || [];
+                        if (checked) {
+                          form.setValue('surrounding_amenities', [
+                            ...current,
+                            { nearby_amenity_id: amenity.type, distance_km: 0, details: amenity.name }
+                          ]);
+                        } else {
+                          form.setValue('surrounding_amenities', 
+                            current.filter((a: any) => 
+                              a.nearby_amenity_id !== amenity.type
+                            )
+                          );
+                        }
+                      }}
+                    />
+                    <span className="text-2xl">{amenity.icon}</span>
+                    <span className="font-medium">{amenity.name}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   };
