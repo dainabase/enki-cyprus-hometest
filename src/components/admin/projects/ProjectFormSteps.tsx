@@ -17,7 +17,9 @@ import { NearbyAmenitiesSelector } from './NearbyAmenitiesSelector';
 import { AmenitiesSelector } from './AmenitiesSelector';
 import PropertySubTypeSelector from './PropertySubTypeSelector';
 import { BuildingsSection } from './BuildingsSection';
+import { BuildingSection } from './BuildingSection';
 import { ProjectFormData } from '@/schemas/projectSchema';
+import { ProjectBuilding } from '@/types/building.project';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { 
@@ -25,7 +27,7 @@ import {
   Sprout, Accessibility, Map as MapIcon, Palmtree, Users, Heart,
   HardHat, Palette, Sparkles, FileText, CreditCard, Gift, 
   PiggyBank, BarChart3, Youtube, Video, Headphones, Smartphone,
-  Globe, Search, Star, Target, Link
+  Globe, Search, Star, Target, Link, Plus
 } from 'lucide-react';
 
 interface ProjectFormStepsProps {
@@ -99,14 +101,14 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                     <Select onValueChange={field.onChange} value={field.value || 'residential'}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Sélectionnez" />
+                          <SelectValue placeholder="Sélectionner" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                         <SelectItem value="residential">Résidentiel</SelectItem>
-                         <SelectItem value="commercial">Commercial</SelectItem>
-                         <SelectItem value="mixed">Mixte</SelectItem>
-                         <SelectItem value="industrial">Industriel</SelectItem>
+                        <SelectItem value="residential">Résidentiel</SelectItem>
+                        <SelectItem value="commercial">Commercial</SelectItem>
+                        <SelectItem value="mixed">Mixte</SelectItem>
+                        <SelectItem value="industrial">Industriel</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -114,103 +116,68 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 )}
               />
 
-              <div className="md:col-span-2">
-                <PropertySubTypeSelector form={form} />
-              </div>
+              <FormField
+                control={form.control}
+                name="developer_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Développeur *</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Sélectionner un développeur" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {developers?.map((developer) => (
+                          <SelectItem key={developer.id} value={developer.id}>
+                            {developer.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="project_phase"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phase projet *</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Phase" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="off-plan">Off-plan</SelectItem>
+                        <SelectItem value="under-construction">En construction</SelectItem>
+                        <SelectItem value="completed">Terminé</SelectItem>
+                        <SelectItem value="ready-to-move">Prêt à emménager</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             <FormField
               control={form.control}
-              name="developer_id"
+              name="property_sub_type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Développeur *</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value || ''}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Sélectionnez un développeur" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="z-50 bg-background">
-                      {developers?.map((dev) => (
-                        <SelectItem key={dev.id} value={dev.id}>
-                          {dev.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Phase du projet */}
-            <FormField
-              control={form.control}
-              name="project_phase"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phase du projet</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value || 'off-plan'}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Sélectionnez la phase" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="off-plan">Sur plan</SelectItem>
-                      <SelectItem value="under-construction">En construction</SelectItem>
-                      <SelectItem value="completed">Achevé</SelectItem>
-                      <SelectItem value="ready-to-move">Prêt à emménager</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Points de vente uniques */}
-            <FormField
-              control={form.control}
-              name="unique_selling_points"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Points forts du projet</FormLabel>
+                  <FormLabel>Types de propriété *</FormLabel>
                   <FormControl>
-                    <div className="space-y-2">
-                      <Input 
-                        placeholder="Ex: Vue mer panoramique, Proche écoles internationales..."
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault();
-                            const value = e.currentTarget.value;
-                            if (value) {
-                              const current = field.value || [];
-                              field.onChange([...current, value]);
-                              e.currentTarget.value = '';
-                            }
-                          }
-                        }}
-                      />
-                      <div className="flex flex-wrap gap-2">
-                        {(field.value || []).map((point, index) => (
-                          <Badge key={index} variant="secondary" className="gap-1">
-                            {point}
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const newPoints = [...(field.value || [])];
-                                newPoints.splice(index, 1);
-                                field.onChange(newPoints);
-                              }}
-                              className="ml-1 text-xs hover:text-destructive"
-                            >
-                              ×
-                            </button>
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
+                    <PropertySubTypeSelector
+                      selectedTypes={field.value || []}
+                      onChange={field.onChange}
+                      category={form.watch('property_category') || 'residential'}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -225,7 +192,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                   <FormItem>
                     <FormLabel>Date de lancement</FormLabel>
                     <FormControl>
-                      <Input type="month" {...field} />
+                      <Input type="date" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -237,9 +204,9 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 name="completion_date_new"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Date de livraison</FormLabel>
+                    <FormLabel>Date de livraison prévue</FormLabel>
                     <FormControl>
-                      <Input type="month" {...field} />
+                      <Input type="date" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -249,40 +216,13 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
             <FormField
               control={form.control}
-              name="exclusive_commercialization"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                   <FormLabel className="text-base font-medium">
-                      Commercialisation exclusive
-                   </FormLabel>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-          </CardContent>
-        </Card>
-
-        <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
-          <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
-            <CardTitle className="text-xl font-semibold text-foreground">Descriptions</CardTitle>
-          </CardHeader>
-          <CardContent className="p-6 space-y-6">
-            <FormField
-              control={form.control}
               name="description"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Description courte *</FormLabel>
                   <FormControl>
                     <Textarea 
-                      placeholder="Description courte pour les listes et aperçus"
+                      placeholder="Description courte du projet pour les listes..."
                       rows={3}
                       {...field} 
                     />
@@ -300,8 +240,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                   <FormLabel>Description détaillée</FormLabel>
                   <FormControl>
                     <Textarea 
-                      placeholder="Description complète du projet"
-                      rows={6}
+                      placeholder="Description complète du projet, de ses avantages, de son emplacement..."
+                      rows={5}
                       {...field} 
                     />
                   </FormControl>
@@ -315,1326 +255,79 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     );
   };
 
-  const renderLocationStep = () => {
+  const renderBuildingsStep = () => {
+    const buildingsValue = form.watch('buildings') || [];
+    
+    const addBuilding = () => {
+      const newBuilding: ProjectBuilding = {
+        building_name: `Bâtiment ${buildingsValue.length + 1}`,
+        building_type: 'apartment_building',
+        construction_status: 'planned',
+        total_floors: 0,
+        total_units: 0,
+        units_available: 0
+      };
+      form.setValue('buildings', [...buildingsValue, newBuilding]);
+    };
+
+    const updateBuilding = (index: number, building: ProjectBuilding) => {
+      const newBuildings = [...buildingsValue];
+      newBuildings[index] = building;
+      form.setValue('buildings', newBuildings);
+    };
+
+    const removeBuilding = (index: number) => {
+      const newBuildings = [...buildingsValue];
+      newBuildings.splice(index, 1);
+      form.setValue('buildings', newBuildings);
+    };
+
     return (
       <div className="space-y-8">
-        <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
+        <Card className="border-2 border-slate-300 shadow-lg">
           <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
-            <CardTitle className="text-xl font-semibold text-foreground">Adresse & Localisation</CardTitle>
-            <CardDescription className="text-muted-foreground">
-              L'adresse complète remplit automatiquement tous les champs ci-dessous
+            <CardTitle className="flex items-center gap-2">
+              <Building2 className="w-6 h-6" />
+              Gestion des Bâtiments
+            </CardTitle>
+            <CardDescription>
+              Configurez les bâtiments qui composent votre projet. Chaque bâtiment peut avoir ses propres caractéristiques et équipements.
             </CardDescription>
           </CardHeader>
-          <CardContent className="p-6 space-y-6">
-            <FormField
-              control={form.control}
-              name="full_address"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4" />
-                    Adresse complète *
-                    <span className="text-xs text-muted-foreground">(remplit automatiquement les champs ci-dessous)</span>
-                  </FormLabel>
-                  <FormControl>
-                    <Input 
-                      placeholder="Tapez l'adresse complète à Chypre... Ex: 28 Amathountos Avenue, Marina, Limassol"
-                      {...field}
-                      className="text-base"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <FormField
-                control={form.control}
-                name="city"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex items-center gap-2">
-                      <Building className="w-4 h-4" />
-                      Ville *
-                    </FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="Auto-rempli" 
-                        {...field}
-                        className="bg-green-50 border-green-200"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="region"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4" />
-                      Région
-                    </FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="Auto-rempli" 
-                        {...field}
-                        className="bg-green-50 border-green-200"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="neighborhood"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex items-center gap-2">
-                      <Home className="w-4 h-4" />
-                      Quartier
-                    </FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="Ex: Marina, Old Town..." 
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="cyprus_zone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex items-center gap-2">
-                      <Zap className="w-4 h-4" />
-                      Zone Chypre
-                    </FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="Auto-rempli" 
-                        {...field}
-                        className="bg-green-50 border-green-200"
-                        readOnly
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            {/* District et Municipalité */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="district"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex items-center gap-2">
-                      <Landmark className="w-4 h-4" />
-                      District
-                    </FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="Ex: Germasogeia, Agios Athanasios..." 
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="municipality"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex items-center gap-2">
-                      <Building2 className="w-4 h-4" />
-                      Municipalité
-                    </FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="Ex: Municipality of Limassol" 
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <FormField
-              control={form.control}
-              name="neighborhood_description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description du quartier</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="Décrivez l'ambiance et les caractéristiques du quartier (optionnel)"
-                      rows={3}
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </CardContent>
-        </Card>
-
-        <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
-          <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
-            <CardTitle className="text-xl font-semibold text-foreground">Coordonnées GPS</CardTitle>
-          </CardHeader>
-          <CardContent className="p-6 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="gps_latitude"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Latitude</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        step="any"
-                        placeholder="34.6856"
-                        {...field}
-                        onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="gps_longitude"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Longitude</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        step="any"
-                        placeholder="33.0393"
-                        {...field}
-                        onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Proximités (en km)</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <FormField
-                control={form.control}
-                name="proximity_sea_km"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Mer</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        step="0.1"
-                        placeholder="0.5"
-                        {...field}
-                        onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="proximity_airport_km"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Aéroport</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        step="0.1"
-                        placeholder="15"
-                        {...field}
-                        onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="proximity_city_center_km"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Centre-ville</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        step="0.1"
-                        placeholder="2"
-                        {...field}
-                        onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="proximity_highway_km"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Autoroute</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        step="0.1"
-                        placeholder="1"
-                        {...field}
-                        onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        <FormField
-          control={form.control}
-          name="surrounding_amenities"
-          render={({ field }) => (
-            <FormItem>
-              <NearbyAmenitiesSelector
-                projectId={projectId}
-                value={field.value as any || []}
-                onChange={(amenities) => field.onChange(amenities)}
-              />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
-    );
-  };
-
-  const renderSpecificationsStep = () => {
-    return (
-      <div className="space-y-8">
-        <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
-          <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
-            <CardTitle className="text-xl font-semibold text-foreground">Surfaces & Dimensions</CardTitle>
-          </CardHeader>
-          <CardContent className="p-6 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="land_area_m2"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Surface terrain (m²)</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        placeholder="1500"
-                        {...field}
-                        onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="built_area_m2"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Surface construite (m²)</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        placeholder="1200"
-                        {...field}
-                        onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-2 border-slate-300 shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
-            <CardTitle>Construction & Architecture</CardTitle>
-          </CardHeader>
-          <CardContent className="p-6 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="architect_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex items-center gap-2">
-                      <Building2 className="w-4 h-4" />
-                      Architecte
-                    </FormLabel>
-                    <FormControl>
-                      <Input placeholder="Nom du cabinet d'architecture" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="builder_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex items-center gap-2">
-                      <HardHat className="w-4 h-4" />
-                      Constructeur
-                    </FormLabel>
-                    <FormControl>
-                      <Input placeholder="Nom de l'entreprise de construction" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="design_style"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex items-center gap-2">
-                      <Palette className="w-4 h-4" />
-                      Style architectural
-                    </FormLabel>
-                    <FormControl>
-                      <Input placeholder="Ex: Moderne, Méditerranéen, Minimaliste..." {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="finishing_level"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex items-center gap-2">
-                      <Sparkles className="w-4 h-4" />
-                      Niveau de finition
-                    </FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Sélectionner" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="basic">Basique</SelectItem>
-                        <SelectItem value="standard">Standard</SelectItem>
-                        <SelectItem value="premium">Premium</SelectItem>
-                        <SelectItem value="luxury">Luxe</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="seismic_rating"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex items-center gap-2">
-                      <Waves className="w-4 h-4" />
-                      Norme sismique
-                    </FormLabel>
-                    <FormControl>
-                      <Input placeholder="Ex: Eurocode 8" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="warranty_years"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex items-center gap-2">
-                      <Shield className="w-4 h-4" />
-                      Garantie (années)
-                    </FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        placeholder="10"
-                        {...field}
-                        onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : null)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="renovation_year"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Année rénovation (si applicable)</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        placeholder="2023"
-                        {...field}
-                        onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : null)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="smoking_policy"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Politique fumeurs 🚭</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Sélectionner" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="allowed">Autorisé</SelectItem>
-                        <SelectItem value="restricted">Restrictions</SelectItem>
-                        <SelectItem value="forbidden">Interdit</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            {/* Matériaux de construction */}
-            <FormField
-              control={form.control}
-              name="construction_materials"
-              render={({ field }) => {
-                const predefinedMaterials = [
-                  'Béton armé',
-                  'Pierre naturelle',
-                  'Brique',
-                  'Bois',
-                  'Acier',
-                  'Verre',
-                  'Marbre',
-                  'Granit',
-                  'Aluminium',
-                  'PVC',
-                  'Composite',
-                  'Terre cuite',
-                  'Ardoise',
-                  'Zinc',
-                  'Cuivre',
-                  'Béton préfabriqué',
-                  'Isolation laine de roche',
-                  'Isolation polyuréthane',
-                  'Plâtre',
-                  'Céramique'
-                ];
-
-                return (
-                  <FormItem>
-                    <FormLabel>Matériaux de construction 🧱</FormLabel>
-                    <FormControl>
-                      <div className="space-y-4">
-                        {/* Boutons de sélection rapide */}
-                        <div className="flex justify-between items-center mb-3">
-                          <span className="text-sm font-medium text-muted-foreground">Sélection rapide :</span>
-                          <div className="space-x-2">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => field.onChange([...predefinedMaterials])}
-                            >
-                              Tout sélectionner
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => field.onChange([])}
-                            >
-                              Tout déselectionner
-                            </Button>
-                          </div>
-                        </div>
-                        
-                        {/* Grille de checkboxes prédéfinies */}
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                          {predefinedMaterials.map((material) => (
-                            <label key={material} className="flex items-center space-x-2 cursor-pointer p-3 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors">
-                              <input
-                                type="checkbox"
-                                className="rounded border-border text-primary focus:ring-primary"
-                                checked={field.value?.includes(material) || false}
-                                onChange={(e) => {
-                                  const current = field.value || [];
-                                  if (e.target.checked) {
-                                    field.onChange([...current, material]);
-                                  } else {
-                                    field.onChange(current.filter(m => m !== material));
-                                  }
-                                }}
-                              />
-                              <span className="text-sm font-medium">{material}</span>
-                            </label>
-                          ))}
-                        </div>
-                        
-                        {/* Option pour ajouter des éléments personnalisés */}
-                        <div className="pt-4 border-t">
-                          <Input 
-                            placeholder="Ajouter un matériau personnalisé..."
-                            onKeyPress={(e) => {
-                              if (e.key === 'Enter') {
-                                e.preventDefault();
-                                const value = e.currentTarget.value;
-                                if (value && !field.value?.includes(value)) {
-                                  field.onChange([...(field.value || []), value]);
-                                  e.currentTarget.value = '';
-                                }
-                              }
-                            }}
-                          />
-                        </div>
-                        
-                        {/* Affichage des éléments sélectionnés */}
-                        {field.value && field.value.length > 0 && (
-                          <div className="flex flex-wrap gap-2 pt-2">
-                            {field.value.map((material, index) => (
-                              <Badge key={index} variant="outline" className="gap-1">
-                                {material}
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    const newMaterials = [...field.value];
-                                    newMaterials.splice(index, 1);
-                                    field.onChange(newMaterials);
-                                  }}
-                                  className="ml-1 hover:text-destructive"
-                                >
-                                  ×
-                                </button>
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
-            />
-
-            {/* Certifications durabilité */}
-            <FormField
-              control={form.control}
-              name="sustainability_certifications"
-              render={({ field }) => {
-                const predefinedCertifications = [
-                  'LEED Gold',
-                  'LEED Platinum',
-                  'BREEAM Excellent',
-                  'BREEAM Outstanding',
-                  'HQE',
-                  'WELL',
-                  'Energy Star',
-                  'Passivhaus',
-                  'BBC',
-                  'RT2020',
-                  'RE2020',
-                  'Minergie',
-                  'Living Building',
-                  'DGNB',
-                  'Zero Carbon',
-                  'Net Zero Energy',
-                  'Green Building',
-                  'Cradle to Cradle',
-                  'EDGE',
-                  'Green Star'
-                ];
-
-                return (
-                  <FormItem>
-                    <FormLabel className="flex items-center gap-2">
-                      <Sprout className="w-4 h-4" />
-                      Certifications écologiques
-                    </FormLabel>
-                    <FormControl>
-                      <div className="space-y-4">
-                        {/* Boutons de sélection rapide */}
-                        <div className="flex justify-between items-center mb-3">
-                          <span className="text-sm font-medium text-muted-foreground">Sélection rapide :</span>
-                          <div className="space-x-2">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => field.onChange([...predefinedCertifications])}
-                            >
-                              Tout sélectionner
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => field.onChange([])}
-                            >
-                              Tout déselectionner
-                            </Button>
-                          </div>
-                        </div>
-                        
-                        {/* Grille de checkboxes prédéfinies */}
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                          {predefinedCertifications.map((cert) => (
-                            <label key={cert} className="flex items-center space-x-2 cursor-pointer p-3 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors">
-                              <input
-                                type="checkbox"
-                                className="rounded border-border text-primary focus:ring-primary"
-                                checked={field.value?.includes(cert) || false}
-                                onChange={(e) => {
-                                  const current = field.value || [];
-                                  if (e.target.checked) {
-                                    field.onChange([...current, cert]);
-                                  } else {
-                                    field.onChange(current.filter(c => c !== cert));
-                                  }
-                                }}
-                              />
-                              <span className="text-sm font-medium">{cert}</span>
-                            </label>
-                          ))}
-                        </div>
-                        
-                        {/* Option pour ajouter des éléments personnalisés */}
-                        <div className="pt-4 border-t">
-                          <Input 
-                            placeholder="Ajouter une certification personnalisée..."
-                            onKeyPress={(e) => {
-                              if (e.key === 'Enter') {
-                                e.preventDefault();
-                                const value = e.currentTarget.value;
-                                if (value && !field.value?.includes(value)) {
-                                  field.onChange([...(field.value || []), value]);
-                                  e.currentTarget.value = '';
-                                }
-                              }
-                            }}
-                          />
-                        </div>
-                        
-                        {/* Affichage des éléments sélectionnés */}
-                        {field.value && field.value.length > 0 && (
-                          <div className="flex flex-wrap gap-2 pt-2">
-                            {field.value.map((cert, index) => (
-                              <Badge key={index} variant="secondary" className="gap-1 bg-green-100">
-                                {cert}
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    const newCerts = [...field.value];
-                                    newCerts.splice(index, 1);
-                                    field.onChange(newCerts);
-                                  }}
-                                  className="ml-1 hover:text-destructive"
-                                >
-                                  ×
-                                </button>
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
-            />
-
-            {/* Caractéristiques d'accessibilité */}
-            <FormField
-              control={form.control}
-              name="accessibility_features"
-              render={({ field }) => {
-                const predefinedAccessibilityFeatures = [
-                  'Ascenseur PMR',
-                  'Rampes d\'accès',
-                  'Portes larges (90cm+)',
-                  'Salle de bain PMR',
-                  'WC PMR',
-                  'Barres d\'appui',
-                  'Sol antidérapant',
-                  'Signalétique braille',
-                  'Boucle magnétique',
-                  'Éclairage adapté',
-                  'Parking PMR',
-                  'Chemin podotactile',
-                  'Interphone adapté',
-                  'Monte-escalier',
-                  'Plain-pied',
-                  'Poignées ergonomiques',
-                  'Hauteur comptoirs adaptée',
-                  'Contraste visuel',
-                  'Alarme visuelle',
-                  'Télécommande d\'ouverture'
-                ];
-
-                return (
-                  <FormItem>
-                    <FormLabel className="flex items-center gap-2">
-                      <Accessibility className="w-4 h-4" />
-                      Accessibilité PMR
-                    </FormLabel>
-                    <FormControl>
-                      <div className="space-y-4">
-                        {/* Boutons de sélection rapide */}
-                        <div className="flex justify-between items-center mb-3">
-                          <span className="text-sm font-medium text-muted-foreground">Sélection rapide :</span>
-                          <div className="space-x-2">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => field.onChange([...predefinedAccessibilityFeatures])}
-                            >
-                              Tout sélectionner
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => field.onChange([])}
-                            >
-                              Tout déselectionner
-                            </Button>
-                          </div>
-                        </div>
-                        
-                        {/* Grille de checkboxes prédéfinies */}
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                          {predefinedAccessibilityFeatures.map((feature) => (
-                            <label key={feature} className="flex items-center space-x-2 cursor-pointer p-3 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors">
-                              <input
-                                type="checkbox"
-                                className="rounded border-border text-primary focus:ring-primary"
-                                checked={field.value?.includes(feature) || false}
-                                onChange={(e) => {
-                                  const current = field.value || [];
-                                  if (e.target.checked) {
-                                    field.onChange([...current, feature]);
-                                  } else {
-                                    field.onChange(current.filter(f => f !== feature));
-                                  }
-                                }}
-                              />
-                              <span className="text-sm font-medium">{feature}</span>
-                            </label>
-                          ))}
-                        </div>
-                        
-                        {/* Option pour ajouter des éléments personnalisés */}
-                        <div className="pt-4 border-t">
-                          <Input 
-                            placeholder="Ajouter une caractéristique d'accessibilité personnalisée..."
-                            onKeyPress={(e) => {
-                              if (e.key === 'Enter') {
-                                e.preventDefault();
-                                const value = e.currentTarget.value;
-                                if (value && !field.value?.includes(value)) {
-                                  field.onChange([...(field.value || []), value]);
-                                  e.currentTarget.value = '';
-                                }
-                              }
-                            }}
-                          />
-                        </div>
-                        
-                        {/* Affichage des éléments sélectionnés */}
-                        {field.value && field.value.length > 0 && (
-                          <div className="flex flex-wrap gap-2 pt-2">
-                            {field.value.map((feature, index) => (
-                              <Badge key={index} variant="outline" className="gap-1 border-blue-300">
-                                {feature}
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    const newFeatures = [...field.value];
-                                    newFeatures.splice(index, 1);
-                                    field.onChange(newFeatures);
-                                  }}
-                                  className="ml-1 hover:text-destructive"
-                                >
-                                  ×
-                                </button>
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
-            />
-
-            {/* Assurance bâtiment */}
-            <FormField
-              control={form.control}
-              name="building_insurance"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <FileText className="w-4 h-4" />
-                    Assurance bâtiment
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="Nom de la compagnie d'assurance et détails" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </CardContent>
-        </Card>
-      </div>
-    );
-  };
-
-  const renderPricingStep = () => {
-    return (
-      <div className="space-y-8">
-        <Card className="border-2 border-slate-300 shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
-            <CardTitle>Prix & Investissement</CardTitle>
-          </CardHeader>
-          <CardContent className="p-6 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <FormField
-                control={form.control}
-                name="price_from_new"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Prix à partir de (€)</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        placeholder="300000"
-                        {...field}
-                        onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="price_to"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Prix jusqu'à (€)</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        placeholder="800000"
-                        {...field}
-                        onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="price_per_m2"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Prix par m² (€)</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        placeholder="2500"
-                        {...field}
-                        onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-2 border-slate-300 shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
-            <CardTitle>Options de Financement & Paiement</CardTitle>
-          </CardHeader>
-          <CardContent className="p-6 space-y-6">
-            <FormField
-              control={form.control}
-              name="transfer_fee"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <FileText className="w-4 h-4" />
-                    Frais de transfert (€)
-                  </FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="number" 
-                      placeholder="12000"
-                      {...field}
-                      onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="payment_plan"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <CreditCard className="w-4 h-4" />
-                    Plan de paiement
-                  </FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="Ex: 30% à la signature, 40% pendant construction, 30% à la livraison"
-                      rows={3}
-                      {...field}
-                      value={typeof field.value === 'string' ? field.value : JSON.stringify(field.value || {})}
-                      onChange={(e) => field.onChange(e.target.value)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="incentives"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <Gift className="w-4 h-4" />
-                    Avantages & Promotions
-                  </FormLabel>
-                  <FormControl>
-                    <div className="space-y-2">
-                      <Input 
-                        placeholder="Ex: Frais de notaire offerts, Mobilier inclus, Remise early bird 5%..."
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault();
-                            const value = e.currentTarget.value;
-                            if (value) {
-                              field.onChange([...(field.value || []), value]);
-                              e.currentTarget.value = '';
-                            }
-                          }
-                        }}
-                      />
-                      <div className="flex flex-wrap gap-2">
-                        {(field.value || []).map((incentive, index) => (
-                          <Badge key={index} variant="default" className="bg-green-600">
-                            {incentive}
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const newIncentives = [...(field.value || [])];
-                                newIncentives.splice(index, 1);
-                                field.onChange(newIncentives);
-                              }}
-                              className="ml-1"
-                            >
-                              ×
-                            </button>
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="financing_options"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <PiggyBank className="w-4 h-4" />
-                    Détails financement bancaire
-                  </FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="Ex: Partenariat avec Bank of Cyprus, taux à partir de 3.5%, LTV jusqu'à 70%..."
-                      rows={3}
-                      {...field}
-                      value={typeof field.value === 'string' ? field.value : JSON.stringify(field.value || {})}
-                      onChange={(e) => field.onChange(e.target.value)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </CardContent>
-        </Card>
-      </div>
-    );
-  };
-
-  const renderMediaStep = () => {
-    return (
-      <div className="space-y-8">
-        <Card className="border-2 border-slate-300 shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
-            <CardTitle>Photos du projet</CardTitle>
-          </CardHeader>
           <CardContent className="p-6">
-            <FormField
-              control={form.control}
-              name="photos"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <CategorizedMediaUploader
-                      field={{
-                        value: field.value as any || [],
-                        onChange: field.onChange
-                      }}
-                      bucketName="projects"
+            <div className="space-y-6">
+              {buildingsValue.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Building2 className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                  <p className="text-lg font-medium">Aucun bâtiment configuré</p>
+                  <p className="text-sm">Commencez par ajouter votre premier bâtiment</p>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {buildingsValue.map((building, index) => (
+                    <BuildingSection
+                      key={index}
+                      building={building}
+                      index={index}
+                      form={form}
+                      onChange={updateBuilding}
+                      onRemove={removeBuilding}
+                      canRemove={buildingsValue.length > 1}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                  ))}
+                </div>
               )}
-            />
-          </CardContent>
-        </Card>
-
-        <Card className="border-2 border-slate-300 shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
-            <CardTitle>Contenu Multimédia</CardTitle>
-          </CardHeader>
-          <CardContent className="p-6 space-y-6">
-            <FormField
-              control={form.control}
-              name="project_presentation_url"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <BarChart3 className="w-4 h-4" />
-                    URL présentation projet
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="youtube_tour_url"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <Youtube className="w-4 h-4" />
-                    Vidéo YouTube
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://youtube.com/watch?v=..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="vimeo_tour_url"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <Video className="w-4 h-4" />
-                    Vidéo Vimeo
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://vimeo.com/..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="vr_tour_url"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <Headphones className="w-4 h-4" />
-                    Visite VR 360°
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="interactive_map_url"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <MapIcon className="w-4 h-4" />
-                    Carte interactive
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="ar_experience_url"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <Smartphone className="w-4 h-4" />
-                    Expérience AR
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="URL de l'expérience en réalité augmentée" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="metaverse_preview_url"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <Globe className="w-4 h-4" />
-                    Visite Metaverse
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="URL de l'espace metaverse" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="map_image"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4" />
-                    Image carte localisation
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="URL de l'image de la carte" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              
+              <Button
+                type="button"
+                onClick={addBuilding}
+                className="w-full border-2 border-dashed border-primary/30 hover:border-primary/50 bg-primary/5 hover:bg-primary/10"
+                variant="outline"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Ajouter un bâtiment
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -1646,45 +339,38 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
       <div className="space-y-8">
         <Card className="border-2 border-slate-300 shadow-lg">
           <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
-            <CardTitle>Caractéristiques détaillées</CardTitle>
+            <CardTitle>Prestations du Projet</CardTitle>
+            <CardDescription>
+              Commodités et services disponibles pour l'ensemble du projet (pas pour des propriétés individuelles)
+            </CardDescription>
           </CardHeader>
           <CardContent className="p-6 space-y-6">
             <FormField
               control={form.control}
-              name="features"
+              name="project_amenities"
               render={({ field }) => {
-                const predefinedFeatures = [
-                  'Piscine privée',
-                  'Terrasse panoramique',
-                  'Cave à vin',
-                  'Jardin privatif',
-                  'Garage privé',
-                  'Dressing',
-                  'Cheminée',
-                  'Buanderie',
-                  'Bureau',
-                  'Salle de jeux',
-                  'Jacuzzi',
-                  'Sauna',
-                  'Salle de cinéma',
-                  'Bibliothèque',
-                  'Cellier',
-                  'Suite parentale',
-                  'Appartement de service',
-                  'Ascenseur privé',
-                  'Toit-terrasse',
-                  'Pergola',
-                  'Solarium',
-                  'Vérandas',
-                  'Bow-window',
-                  'Loggia'
+                const predefinedProjectAmenities = [
+                  // Amenities communes du PROJET (pas individuelles)
+                  'Piscine commune',
+                  'Parking visiteurs', 
+                  'Espace vert commun',
+                  'Hall d\'accueil',
+                  'Sécurité 24h/24',
+                  'Accès sécurisé',
+                  'Vidéosurveillance périmètre',
+                  'Gardien',
+                  'Interphone général',
+                  'Éclairage extérieur',
+                  'Aménagement paysager',
+                  'Allées piétonnes',
+                  'Ramassage ordures'
                 ];
 
                 return (
                   <FormItem>
                     <FormLabel className="flex items-center gap-2">
                       <Star className="w-4 h-4" />
-                      Caractéristiques principales
+                      Commodités communes du projet
                     </FormLabel>
                     <FormControl>
                       <div className="space-y-4">
@@ -1696,7 +382,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                               type="button"
                               variant="outline"
                               size="sm"
-                              onClick={() => field.onChange([...predefinedFeatures])}
+                              onClick={() => field.onChange([...predefinedProjectAmenities])}
                             >
                               Tout sélectionner
                             </Button>
@@ -1713,22 +399,22 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                         
                         {/* Grille de checkboxes prédéfinies */}
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                          {predefinedFeatures.map((feature) => (
-                            <label key={feature} className="flex items-center space-x-2 cursor-pointer p-3 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors">
+                          {predefinedProjectAmenities.map((amenity) => (
+                            <label key={amenity} className="flex items-center space-x-2 cursor-pointer p-3 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors">
                               <input
                                 type="checkbox"
                                 className="rounded border-border text-primary focus:ring-primary"
-                                checked={field.value?.includes(feature) || false}
+                                checked={field.value?.includes(amenity) || false}
                                 onChange={(e) => {
                                   const current = field.value || [];
                                   if (e.target.checked) {
-                                    field.onChange([...current, feature]);
+                                    field.onChange([...current, amenity]);
                                   } else {
-                                    field.onChange(current.filter(f => f !== feature));
+                                    field.onChange(current.filter(f => f !== amenity));
                                   }
                                 }}
                               />
-                              <span className="text-sm font-medium">{feature}</span>
+                              <span className="text-sm font-medium">{amenity}</span>
                             </label>
                           ))}
                         </div>
@@ -1736,267 +422,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                         {/* Option pour ajouter des éléments personnalisés */}
                         <div className="pt-4 border-t">
                           <Input 
-                            placeholder="Ajouter une caractéristique personnalisée..."
-                            onKeyPress={(e) => {
-                              if (e.key === 'Enter') {
-                                e.preventDefault();
-                                const value = e.currentTarget.value;
-                                if (value && !field.value?.includes(value)) {
-                                  field.onChange([...(field.value || []), value]);
-                                  e.currentTarget.value = '';
-                                }
-                              }
-                            }}
-                          />
-                        </div>
-                        
-                        {/* Affichage des éléments sélectionnés */}
-                        {field.value && field.value.length > 0 && (
-                          <div className="flex flex-wrap gap-2 pt-2">
-                            {field.value.map((feature, index) => (
-                              <Badge key={index} variant="default" className="gap-1">
-                                {feature}
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    const newFeatures = [...field.value];
-                                    newFeatures.splice(index, 1);
-                                    field.onChange(newFeatures);
-                                  }}
-                                  className="ml-1 hover:text-destructive"
-                                >
-                                  ×
-                                </button>
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
-            />
-
-            <FormField
-              control={form.control}
-              name="detailed_features"
-              render={({ field }) => {
-                const predefinedEquipments = [
-                  'Climatisation VRV',
-                  'Chauffage au sol',
-                  'Volets électriques',
-                  'Domotique',
-                  'Alarme',
-                  'Vidéosurveillance',
-                  'Interphone vidéo',
-                  'Porte blindée',
-                  'Double vitrage',
-                  'Triple vitrage',
-                  'Isolation phonique',
-                  'Panneaux solaires',
-                  'Pompe à chaleur',
-                  'VMC double flux',
-                  'Adoucisseur d\'eau',
-                  'Osmoseur',
-                  'Aspiration centralisée',
-                  'Stores électriques',
-                  'Éclairage LED',
-                  'Fibre optique',
-                  'Wi-Fi',
-                  'Système audio intégré',
-                  'Éclairage automatique',
-                  'Contrôle d\'accès'
-                ];
-
-                return (
-                  <FormItem>
-                    <FormLabel className="flex items-center gap-2">
-                      <FileText className="w-4 h-4" />
-                      Équipements détaillés
-                    </FormLabel>
-                    <FormControl>
-                      <div className="space-y-4">
-                        {/* Boutons de sélection rapide */}
-                        <div className="flex justify-between items-center mb-3">
-                          <span className="text-sm font-medium text-muted-foreground">Sélection rapide :</span>
-                          <div className="space-x-2">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => field.onChange([...predefinedEquipments])}
-                            >
-                              Tout sélectionner
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => field.onChange([])}
-                            >
-                              Tout déselectionner
-                            </Button>
-                          </div>
-                        </div>
-                        
-                        {/* Grille de checkboxes prédéfinies */}
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                          {predefinedEquipments.map((equipment) => (
-                            <label key={equipment} className="flex items-center space-x-2 cursor-pointer p-3 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors">
-                              <input
-                                type="checkbox"
-                                className="rounded border-border text-primary focus:ring-primary"
-                                checked={field.value?.includes(equipment) || false}
-                                onChange={(e) => {
-                                  const current = field.value || [];
-                                  if (e.target.checked) {
-                                    field.onChange([...current, equipment]);
-                                  } else {
-                                    field.onChange(current.filter(f => f !== equipment));
-                                  }
-                                }}
-                              />
-                              <span className="text-sm font-medium">{equipment}</span>
-                            </label>
-                          ))}
-                        </div>
-                        
-                        {/* Option pour ajouter des éléments personnalisés */}
-                        <div className="pt-4 border-t">
-                          <Input 
-                            placeholder="Ajouter un équipement personnalisé..."
-                            onKeyPress={(e) => {
-                              if (e.key === 'Enter') {
-                                e.preventDefault();
-                                const value = e.currentTarget.value;
-                                if (value && !field.value?.includes(value)) {
-                                  field.onChange([...(field.value || []), value]);
-                                  e.currentTarget.value = '';
-                                }
-                              }
-                            }}
-                          />
-                        </div>
-                        
-                        {/* Affichage des éléments sélectionnés */}
-                        {field.value && field.value.length > 0 && (
-                          <div className="flex flex-wrap gap-2 pt-2">
-                            {field.value.map((feature, index) => (
-                              <Badge key={index} variant="outline" className="gap-1">
-                                {feature}
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    const newFeatures = [...field.value];
-                                    newFeatures.splice(index, 1);
-                                    field.onChange(newFeatures);
-                                  }}
-                                  className="ml-1 hover:text-destructive"
-                                >
-                                  ×
-                                </button>
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
-            />
-
-            <FormField
-              control={form.control}
-              name="lifestyle_amenities"
-              render={({ field }) => {
-                const predefinedServices = [
-                  'Conciergerie 24/7',
-                  'Service voiturier',
-                  'Chef privé',
-                  'Femme de ménage',
-                  'Jardinier',
-                  'Service blanchisserie',
-                  'Room service',
-                  'Navette plage',
-                  'Location vélos',
-                  'Babysitting',
-                  'Personal trainer',
-                  'Service courses',
-                  'Majordome',
-                  'Spa à domicile',
-                  'Cours de yoga',
-                  'Service traiteur',
-                  'Organisation événements',
-                  'Pet sitting',
-                  'Transfert aéroport',
-                  'Location yacht',
-                  'Guide touristique',
-                  'Service pressing',
-                  'Livraison repas',
-                  'Maintenance technique'
-                ];
-
-                return (
-                  <FormItem>
-                    <FormLabel className="flex items-center gap-2">
-                      <Palmtree className="w-4 h-4" />
-                      Services lifestyle
-                    </FormLabel>
-                    <FormControl>
-                      <div className="space-y-4">
-                        {/* Boutons de sélection rapide */}
-                        <div className="flex justify-between items-center mb-3">
-                          <span className="text-sm font-medium text-muted-foreground">Sélection rapide :</span>
-                          <div className="space-x-2">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => field.onChange([...predefinedServices])}
-                            >
-                              Tout sélectionner
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => field.onChange([])}
-                            >
-                              Tout déselectionner
-                            </Button>
-                          </div>
-                        </div>
-                        
-                        {/* Grille de checkboxes prédéfinies */}
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                          {predefinedServices.map((service) => (
-                            <label key={service} className="flex items-center space-x-2 cursor-pointer p-3 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors">
-                              <input
-                                type="checkbox"
-                                className="rounded border-border text-primary focus:ring-primary"
-                                checked={field.value?.includes(service) || false}
-                                onChange={(e) => {
-                                  const current = field.value || [];
-                                  if (e.target.checked) {
-                                    field.onChange([...current, service]);
-                                  } else {
-                                    field.onChange(current.filter(f => f !== service));
-                                  }
-                                }}
-                              />
-                              <span className="text-sm font-medium">{service}</span>
-                            </label>
-                          ))}
-                        </div>
-                        
-                        {/* Option pour ajouter des éléments personnalisés */}
-                        <div className="pt-4 border-t">
-                          <Input 
-                            placeholder="Ajouter un service personnalisé..."
+                            placeholder="Ajouter une commodité personnalisée..."
                             onKeyPress={(e) => {
                               if (e.key === 'Enter') {
                                 e.preventDefault();
@@ -2014,7 +440,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                         {field.value && field.value.length > 0 && (
                           <div className="flex flex-wrap gap-2 pt-2">
                             {field.value.map((amenity, index) => (
-                              <Badge key={index} variant="secondary" className="gap-1 bg-purple-100">
+                              <Badge key={index} variant="default" className="gap-1">
                                 {amenity}
                                 <button
                                   type="button"
@@ -2063,11 +489,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                   'Golf simulator',
                   'Wine cellar commune',
                   'Cuisine commune',
-                  'BBQ area',
-                  'Terrasse commune',
-                  'Jardin communautaire',
-                  'Aire de jeux enfants',
-                  'Parking visiteurs'
+                  'BBQ area'
                 ];
 
                 return (
@@ -2168,136 +590,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 );
               }}
             />
-
-            <FormField
-              control={form.control}
-              name="wellness_features"
-              render={({ field }) => {
-                const predefinedWellnessFeatures = [
-                  'Spa',
-                  'Hammam',
-                  'Sauna',
-                  'Salle de yoga',
-                  'Salle de fitness',
-                  'Piscine intérieure',
-                  'Jacuzzi',
-                  'Parcours santé',
-                  'Court de tennis',
-                  'Court de paddle',
-                  'Court de squash',
-                  'Basketball',
-                  'Volleyball',
-                  'Mini golf',
-                  'Pétanque',
-                  'Table ping-pong',
-                  'Salle de massage',
-                  'Cryothérapie',
-                  'Salt room',
-                  'Meditation room',
-                  'Piscine olympique',
-                  'Aquagym',
-                  'Bain turc',
-                  'Salle de pilates'
-                ];
-
-                return (
-                  <FormItem>
-                    <FormLabel className="flex items-center gap-2">
-                      <Heart className="w-4 h-4" />
-                      Bien-être & Santé
-                    </FormLabel>
-                    <FormControl>
-                      <div className="space-y-4">
-                        {/* Boutons de sélection rapide */}
-                        <div className="flex justify-between items-center mb-3">
-                          <span className="text-sm font-medium text-muted-foreground">Sélection rapide :</span>
-                          <div className="space-x-2">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => field.onChange([...predefinedWellnessFeatures])}
-                            >
-                              Tout sélectionner
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => field.onChange([])}
-                            >
-                              Tout déselectionner
-                            </Button>
-                          </div>
-                        </div>
-                        
-                        {/* Grille de checkboxes prédéfinies */}
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                          {predefinedWellnessFeatures.map((feature) => (
-                            <label key={feature} className="flex items-center space-x-2 cursor-pointer p-3 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors">
-                              <input
-                                type="checkbox"
-                                className="rounded border-border text-primary focus:ring-primary"
-                                checked={field.value?.includes(feature) || false}
-                                onChange={(e) => {
-                                  const current = field.value || [];
-                                  if (e.target.checked) {
-                                    field.onChange([...current, feature]);
-                                  } else {
-                                    field.onChange(current.filter(f => f !== feature));
-                                  }
-                                }}
-                              />
-                              <span className="text-sm font-medium">{feature}</span>
-                            </label>
-                          ))}
-                        </div>
-                        
-                        {/* Option pour ajouter des éléments personnalisés */}
-                        <div className="pt-4 border-t">
-                          <Input 
-                            placeholder="Ajouter un équipement bien-être personnalisé..."
-                            onKeyPress={(e) => {
-                              if (e.key === 'Enter') {
-                                e.preventDefault();
-                                const value = e.currentTarget.value;
-                                if (value && !field.value?.includes(value)) {
-                                  field.onChange([...(field.value || []), value]);
-                                  e.currentTarget.value = '';
-                                }
-                              }
-                            }}
-                          />
-                        </div>
-                        
-                        {/* Affichage des éléments sélectionnés */}
-                        {field.value && field.value.length > 0 && (
-                          <div className="flex flex-wrap gap-2 pt-2">
-                            {field.value.map((feature, index) => (
-                              <Badge key={index} variant="secondary" className="gap-1 bg-green-100">
-                                {feature}
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    const newFeatures = [...field.value];
-                                    newFeatures.splice(index, 1);
-                                    field.onChange(newFeatures);
-                                  }}
-                                  className="ml-1 hover:text-destructive"
-                                >
-                                  ×
-                                </button>
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
-            />
           </CardContent>
         </Card>
 
@@ -2318,12 +610,427 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     );
   };
 
+  // Render the rest of the steps from the original file
+  const renderLocationStep = () => {
+    return (
+      <div className="space-y-8">
+        <Card className="border-2 border-slate-300 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+            <CardTitle>Localisation</CardTitle>
+          </CardHeader>
+          <CardContent className="p-6 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="city"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Ville *</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ex: Limassol" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="cyprus_zone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Zone de Chypre</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Sélectionner une zone" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="limassol">Limassol</SelectItem>
+                        <SelectItem value="nicosia">Nicosie</SelectItem>
+                        <SelectItem value="paphos">Paphos</SelectItem>
+                        <SelectItem value="larnaca">Larnaca</SelectItem>
+                        <SelectItem value="famagusta">Famagouste</SelectItem>
+                        <SelectItem value="kyrenia">Kyrenia</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <FormField
+              control={form.control}
+              name="full_address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Adresse complète</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Adresse du projet" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="gps_latitude"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Latitude GPS</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        step="any"
+                        placeholder="34.6851" 
+                        {...field}
+                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="gps_longitude"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Longitude GPS</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        step="any"
+                        placeholder="33.0280" 
+                        {...field}
+                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        <FormField
+          control={form.control}
+          name="surrounding_amenities"
+          render={({ field }) => (
+            <FormItem>
+              <NearbyAmenitiesSelector
+                value={field.value || []}
+                onChange={field.onChange}
+              />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+    );
+  };
+
+  const renderSpecificationsStep = () => {
+    return (
+      <div className="space-y-8">
+        <Card className="border-2 border-slate-300 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+            <CardTitle>Spécifications générales</CardTitle>
+          </CardHeader>
+          <CardContent className="p-6 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <FormField
+                control={form.control}
+                name="land_area_m2"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Surface terrain (m²)</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        placeholder="2500"
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="built_area_m2"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Surface construite (m²)</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        placeholder="1800"
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="parking_spaces"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Places de parking</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        placeholder="50"
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="bedrooms_range"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Gamme chambres</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ex: 1-4 chambres" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="bathrooms_range"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Gamme salles de bain</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ex: 1-3 salles de bain" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
+  const renderPricingStep = () => {
+    return (
+      <div className="space-y-8">
+        <Card className="border-2 border-slate-300 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+            <CardTitle>Prix et investissement</CardTitle>
+          </CardHeader>
+          <CardContent className="p-6 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <FormField
+                control={form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Prix de base *</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        placeholder="350000"
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="price_from_new"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Prix à partir de</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        placeholder="300000"
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="price_to"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Prix jusqu'à</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        placeholder="800000"
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="golden_visa_eligible_new"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base">Éligible Golden Visa</FormLabel>
+                      <div className="text-sm text-muted-foreground">
+                        Automatiquement activé si prix ≥ 300,000€
+                      </div>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="financing_available"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base">Financement disponible</FormLabel>
+                      <div className="text-sm text-muted-foreground">
+                        Possibilité de crédit bancaire
+                      </div>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
+  const renderMediaStep = () => {
+    return (
+      <div className="space-y-8">
+        <Card className="border-2 border-slate-300 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+            <CardTitle>Photos du projet</CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <FormField
+              control={form.control}
+              name="photos"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <CategorizedMediaUploader
+                      field={{
+                        value: field.value as any || [],
+                        onChange: field.onChange
+                      }}
+                      bucketName="projects"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </Card>
+
+        <Card className="border-2 border-slate-300 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+            <CardTitle>Contenu Multimédia</CardTitle>
+          </CardHeader>
+          <CardContent className="p-6 space-y-6">
+            <FormField
+              control={form.control}
+              name="youtube_tour_url"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    <Youtube className="w-4 h-4" />
+                    Vidéo YouTube
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="https://youtube.com/watch?v=..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="vr_tour_url"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    <Headphones className="w-4 h-4" />
+                    Visite VR 360°
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="https://..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
   const renderMarketingStep = () => {
     return (
       <div className="space-y-8">
         <Card className="border-2 border-slate-300 shadow-lg">
           <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
-            <CardTitle>SEO & Référencement</CardTitle>
+            <CardTitle>Marketing & SEO</CardTitle>
           </CardHeader>
           <CardContent className="p-6 space-y-6">
             <FormField
@@ -2358,188 +1065,58 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="meta_keywords"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <Search className="w-4 h-4" />
-                    Mots-clés SEO
-                  </FormLabel>
-                  <FormControl>
-                    <div className="space-y-2">
-                      <Input 
-                        placeholder="Tapez un mot-clé et appuyez sur Entrée"
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault();
-                            const value = e.currentTarget.value.trim();
-                            if (value && !field.value?.includes(value)) {
-                              field.onChange([...(field.value || []), value]);
-                              e.currentTarget.value = '';
-                            }
-                          }
-                        }}
-                      />
-                      <div className="flex flex-wrap gap-2">
-                        {(field.value || []).map((keyword, index) => (
-                          <Badge key={index} variant="secondary">
-                            {keyword}
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const newKeywords = [...(field.value || [])];
-                                newKeywords.splice(index, 1);
-                                field.onChange(newKeywords);
-                              }}
-                              className="ml-1"
-                            >
-                              ×
-                            </button>
-                          </Badge>
-                        ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="status_project"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Statut projet</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Statut" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="disponible">Disponible</SelectItem>
+                        <SelectItem value="en_construction">En construction</SelectItem>
+                        <SelectItem value="livre">Livré</SelectItem>
+                        <SelectItem value="pret_a_emmenager">Prêt à emménager</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="featured_new"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base">Projet en vedette</FormLabel>
+                      <div className="text-sm text-muted-foreground">
+                        Afficher en priorité
                       </div>
                     </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="marketing_highlights"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <Star className="w-4 h-4" />
-                    Points marketing forts
-                  </FormLabel>
-                  <FormControl>
-                    <div className="space-y-2">
-                      <Input 
-                        placeholder="Ex: Meilleur ROI de la région, Vendu à 60%, Prix de lancement..."
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault();
-                            const value = e.currentTarget.value;
-                            if (value) {
-                              field.onChange([...(field.value || []), value]);
-                              e.currentTarget.value = '';
-                            }
-                          }
-                        }}
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
                       />
-                      <div className="flex flex-wrap gap-2">
-                        {(field.value || []).map((highlight, index) => (
-                          <Badge key={index} variant="default" className="bg-blue-600">
-                            {highlight}
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const newHighlights = [...(field.value || [])];
-                                newHighlights.splice(index, 1);
-                                field.onChange(newHighlights);
-                              }}
-                              className="ml-1"
-                            >
-                              ×
-                            </button>
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="target_audience"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <Target className="w-4 h-4" />
-                    Cibles clients
-                  </FormLabel>
-                  <FormControl>
-                    <div className="space-y-2">
-                      <Input 
-                        placeholder="Ex: Investisseurs Golden Visa, Familles expatriées, Retraités européens..."
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault();
-                            const value = e.currentTarget.value;
-                            if (value) {
-                              field.onChange([...(field.value || []), value]);
-                              e.currentTarget.value = '';
-                            }
-                          }
-                        }}
-                      />
-                      <div className="flex flex-wrap gap-2">
-                        {(field.value || []).map((audience, index) => (
-                          <Badge key={index} variant="outline">
-                            {audience}
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const newAudience = [...(field.value || [])];
-                                newAudience.splice(index, 1);
-                                field.onChange(newAudience);
-                              }}
-                              className="ml-1"
-                            >
-                              ×
-                            </button>
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="url_slug"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <Link className="w-4 h-4" />
-                    URL personnalisée (slug)
-                  </FormLabel>
-                  <FormControl>
-                    <Input 
-                      placeholder="marina-towers-limassol"
-                      {...field}
-                      onChange={(e) => {
-                        const value = e.target.value
-                          .toLowerCase()
-                          .replace(/[^a-z0-9-]/g, '-')
-                          .replace(/-+/g, '-');
-                        field.onChange(value);
-                      }}
-                    />
-                  </FormControl>
-                  <p className="text-xs text-muted-foreground">
-                    URL finale : https://enki-realty.com/projects/{field.value || 'url-slug'}
-                  </p>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
           </CardContent>
         </Card>
       </div>
     );
   };
 
+  // Main switch based on current step
   switch (currentStep) {
     case 'basics':
       return renderBasicsStep();
@@ -2551,6 +1128,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
       return renderPricingStep();
     case 'media':
       return renderMediaStep();
+    case 'buildings':
+      return renderBuildingsStep();
     case 'amenities':
       return renderAmenitiesStep();
     case 'marketing':

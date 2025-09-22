@@ -124,12 +124,38 @@ export const projectSchema = z.object({
   target_audience: z.array(z.string()).optional(),
   url_slug: z.string().optional(),
 
-  // FEATURES & AMENITIES
-  features: z.array(z.string()).default([]),
-  detailed_features: z.array(z.string()).optional(),
-  lifestyle_amenities: z.array(z.string()).optional(),
-  community_features: z.array(z.string()).optional(),
-  wellness_features: z.array(z.string()).optional(),
+  // PROJECT-LEVEL FEATURES (common amenities for the entire project)
+  project_amenities: z.array(z.string()).default([]), // Amenities communes du projet
+  community_features: z.array(z.string()).optional(), // Espaces communs
+  
+  // BUILDINGS DATA
+  buildings: z.array(z.object({
+    id: z.string().optional(),
+    building_name: z.string().min(1, "Nom requis"),
+    building_type: z.enum(['apartment_building', 'villa_complex', 'mixed_residence', 'residential']),
+    building_code: z.string().optional(),
+    total_floors: z.number().min(0).optional(),
+    total_units: z.number().min(0).optional(),
+    units_available: z.number().min(0).optional(),
+    construction_status: z.enum(['planned', 'construction', 'delivered']),
+    expected_completion: z.string().optional(),
+    actual_completion: z.string().optional(),
+    building_class: z.enum(['A+', 'A', 'B', 'C']).optional(),
+    energy_certificate: z.string().optional(),
+    elevator_count: z.number().min(0).optional(),
+    has_generator: z.boolean().optional(),
+    has_security_system: z.boolean().optional(),
+    has_cctv: z.boolean().optional(),
+    has_concierge: z.boolean().optional(),
+    has_pool: z.boolean().optional(),
+    has_gym: z.boolean().optional(),
+    has_spa: z.boolean().optional(),
+    has_playground: z.boolean().optional(),
+    has_garden: z.boolean().optional(),
+    has_parking: z.boolean().optional(),
+    parking_type: z.enum(['underground', 'outdoor', 'covered']).optional(),
+    display_order: z.number().optional()
+  })).default([]),
   surrounding_amenities: z.array(z.object({
     nearby_amenity_id: z.string().min(1, "ID requis"),
     distance_km: z.number().optional(),
@@ -231,10 +257,16 @@ export const projectFormSteps = [
     ]
   },
   {
+    id: 'buildings',
+    title: 'Bâtiments',
+    icon: 'Building2',
+    fields: ['buildings']
+  },
+  {
     id: 'amenities',
-    title: 'Prestations',
+    title: 'Prestations Projet',
     icon: 'Star',
-    component: 'AmenitiesSelector'
+    fields: ['project_amenities', 'community_features']
   },
   {
     id: 'marketing',
