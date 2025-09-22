@@ -14,6 +14,7 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescripti
 import { MediaUploader } from './MediaUploader';
 import { CategorizedMediaUploader } from './CategorizedMediaUploader';
 import { SimplifiedNearbyAmenities } from './SimplifiedNearbyAmenities';
+import { BuildingCards } from './BuildingCards';
 import { AmenitiesSelector } from './AmenitiesSelector';
 import PropertySubTypeSelector from './PropertySubTypeSelector';
 import { BuildingSection } from './BuildingSection';
@@ -351,41 +352,15 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             </CardDescription>
           </CardHeader>
           <CardContent className="p-6">
-            <div className="space-y-6">
-              {buildingsValue.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <Building2 className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                  <p className="text-lg font-medium">Aucun bâtiment configuré</p>
-                  <p className="text-sm">Commencez par ajouter votre premier bâtiment</p>
-                </div>
-              ) : (
-                <div className="space-y-6">
-                  {buildingsValue.map((building, index) => (
-                     <BuildingSection
-                       key={index}
-                       building={building as ProjectBuilding}
-                       index={index}
-                       totalBuildings={buildingsValue.length}
-                       form={form}
-                       onChange={updateBuilding}
-                       onRemove={removeBuilding}
-                       onDuplicate={duplicateBuilding}
-                       canRemove={buildingsValue.length > 1}
-                    />
-                  ))}
-                </div>
-              )}
-              
-              <Button
-                type="button"
-                onClick={addBuilding}
-                className="w-full border-2 border-dashed border-primary/30 hover:border-primary/50 bg-primary/5 hover:bg-primary/10"
-                variant="outline"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Ajouter un bâtiment
-              </Button>
-            </div>
+            <BuildingCards
+              buildings={buildingsValue}
+              onEdit={(index) => {
+                // Functionality to be implemented: open building detail editor
+                console.log('Edit building at index:', index);
+              }}
+              onDelete={removeBuilding}
+              onAdd={addBuilding}
+            />
           </CardContent>
         </Card>
       </div>
