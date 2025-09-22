@@ -328,9 +328,17 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     // Initialiser avec un bâtiment par défaut si aucun
     React.useEffect(() => {
       if (buildingsValue.length === 0) {
-        addBuilding();
+        const newBuilding: any = {
+          building_name: `Bâtiment 1`,
+          building_type: 'apartment_building',
+          construction_status: 'planned',
+          total_floors: 0,
+          total_units: 0,
+          units_available: 0
+        };
+        form.setValue('buildings', [newBuilding]);
       }
-    }, []);
+    }, [buildingsValue.length, form]);
 
     return (
       <div className="space-y-8">
