@@ -105,8 +105,66 @@ export const AmenitiesSelector: React.FC<AmenitiesSelectorProps> = ({
   };
 
   const renderIcon = (iconName: string) => {
-    const IconComponent = LucideIcons[iconName as keyof typeof LucideIcons] as React.ComponentType<any>;
-    return IconComponent ? <IconComponent className="w-4 h-4" /> : <LucideIcons.Circle className="w-4 h-4" />;
+    // Si pas d'icône définie, retourner null au lieu d'un cercle
+    if (!iconName || iconName === 'Circle') {
+      return null;
+    }
+    
+    // Mapper certains noms d'icônes si nécessaire
+    const iconMap: Record<string, string> = {
+      'Pool': 'Waves',
+      'Gym': 'Dumbbell',
+      'Spa': 'Sparkles',
+      'Restaurant': 'UtensilsCrossed',
+      'Bar': 'Wine',
+      'Cinema': 'Film',
+      'Business': 'Briefcase',
+      'Kids': 'Baby',
+      'Tennis': 'CircleDot',
+      'Beach': 'Umbrella',
+      'Parking': 'Car',
+      'Security': 'Shield',
+      'Concierge': 'Bell'
+    };
+    
+    const mappedIcon = iconMap[iconName] || iconName;
+    const IconComponent = LucideIcons[mappedIcon as keyof typeof LucideIcons] as React.ComponentType<any>;
+    
+    // Si l'icône n'existe pas, ne rien afficher
+    return IconComponent ? <IconComponent className="w-4 h-4" /> : null;
+  };
+
+  const getAmenityNameFr = (amenity: any) => {
+    // Si une traduction française existe, l'utiliser
+    if (amenity.name_fr) return amenity.name_fr;
+    
+    // Sinon, mapper les noms anglais courants
+    const translations: Record<string, string> = {
+      'Swimming Pool': 'Piscine',
+      'Gym': 'Salle de sport',
+      'Spa': 'Spa',
+      'Sauna': 'Sauna',
+      'Steam Room': 'Hammam',
+      'Jacuzzi': 'Jacuzzi',
+      'Parking': 'Parking',
+      'Underground Parking': 'Parking souterrain',
+      'Security 24/7': 'Sécurité 24/7',
+      'Concierge': 'Conciergerie',
+      'Restaurant': 'Restaurant',
+      'Bar': 'Bar',
+      'Clubhouse': 'Club-house',
+      'Cinema Room': 'Salle de cinéma',
+      'Business Center': 'Centre d\'affaires',
+      'Kids Club': 'Club enfants',
+      'Playground': 'Aire de jeux',
+      'Tennis Court': 'Court de tennis',
+      'Beach Access': 'Accès plage',
+      'Garden': 'Jardin',
+      'BBQ Area': 'Espace barbecue',
+      'Helipad': 'Héliport'
+    };
+    
+    return translations[amenity.name_en] || amenity.name_en;
   };
 
   if (isLoading) {
@@ -190,7 +248,7 @@ export const AmenitiesSelector: React.FC<AmenitiesSelectorProps> = ({
                       <div className="flex items-center gap-2 flex-1 min-w-0">
                         {renderIcon(amenity.icon)}
                         <span className="text-sm font-medium truncate">
-                          {amenity.name_en}
+                          {getAmenityNameFr(amenity)}
                         </span>
                         {amenity.is_premium && (
                           <Star className="w-3 h-3 text-yellow-500 flex-shrink-0" />
