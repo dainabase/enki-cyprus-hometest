@@ -293,6 +293,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
   const renderBuildingsStep = () => {
     const buildingsValue = form.watch('buildings') || [];
+    const [isInitialized, setIsInitialized] = React.useState(false);
     
     const addBuilding = () => {
       const newBuilding: ProjectBuilding = {
@@ -324,9 +325,9 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
       form.setValue('buildings', [...buildingsValue, newBuilding]);
     };
 
-    // Initialiser avec un bâtiment par défaut si aucun
+    // Initialiser avec un bâtiment par défaut si aucun - version sécurisée
     React.useEffect(() => {
-      if (buildingsValue.length === 0) {
+      if (!isInitialized && buildingsValue.length === 0 && !projectId) {
         console.log('🏗️ Initializing default building');
         const defaultBuilding: ProjectBuilding = {
           building_name: `Bâtiment 1`,
@@ -337,8 +338,9 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           units_available: 0
         };
         form.setValue('buildings', [defaultBuilding]);
+        setIsInitialized(true);
       }
-    }, [buildingsValue.length]); // Ajouter la dépendance nécessaire mais de façon contrôlée
+    }, [isInitialized, projectId]); // Utiliser un flag pour éviter les boucles
 
     return (
       <div className="space-y-8">
