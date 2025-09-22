@@ -166,25 +166,40 @@ const AdminProjectForm: React.FC = () => {
 
         // Convertir les photos correctement
         const photos = (() => {
-          // Si on a des photos catégorisées
-          if (projectData.categorized_photos && 
-              typeof projectData.categorized_photos === 'object' &&
-              !Array.isArray(projectData.categorized_photos)) {
-            return projectData.categorized_photos;
-          }
-          
-          // Si on a un array de photos simples
-          if (projectData.photos && Array.isArray(projectData.photos)) {
-            return {
-              exterior: projectData.photos.map((url, index) => ({
-                url: url,
-                caption: `Photo ${index + 1}`,
-                is_primary: index === 0
-              }))
+          try {
+            // Si on a des photos catégorisées valides
+            if (projectData.categorized_photos && 
+                typeof projectData.categorized_photos === 'object' &&
+                !Array.isArray(projectData.categorized_photos) &&
+                Object.keys(projectData.categorized_photos).length > 0) {
+              return projectData.categorized_photos;
+            }
+            
+            // Si on a un array de photos simples
+            if (projectData.photos && Array.isArray(projectData.photos) && projectData.photos.length > 0) {
+              return {
+                exterior: projectData.photos
+                  .filter(url => url && typeof url === 'string')
+                  .map((url, index) => ({
+                    url: url,
+                    caption: `Photo ${index + 1}`,
+                    is_primary: index === 0
+                  }))
+              };
+            }
+            
+            // Format par défaut
+            return { 
+              exterior: [], 
+              interior: [], 
+              amenities: [], 
+              views: [], 
+              plans: [] 
             };
+          } catch (error) {
+            console.error('Erreur conversion photos:', error);
+            return { exterior: [], interior: [], amenities: [], views: [], plans: [] };
           }
-          
-          return { exterior: [], interior: [], amenities: [], views: [], plans: [] };
         })();
         
         console.log('📸 Photos converted:', photos);
