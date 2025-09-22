@@ -24,18 +24,19 @@ export const AmenitiesSelector: React.FC<AmenitiesSelectorProps> = ({
     queryKey: ['amenities'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('amenities')
+        .from('amenities_reference')
         .select('*')
         .order('category', { ascending: true })
         .order('sort_order', { ascending: true });
       
       if (error) throw error;
+      console.log('🏊 Amenities loaded from DB:', data);
       return data;
     }
   });
 
   const filteredAmenities = amenities?.filter(amenity =>
-    amenity.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    amenity.name_en.toLowerCase().includes(searchTerm.toLowerCase()) ||
     amenity.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -46,6 +47,7 @@ export const AmenitiesSelector: React.FC<AmenitiesSelectorProps> = ({
   }, {} as Record<string, any[]>);
 
   const toggleAmenity = (amenityId: string) => {
+    console.log('🏊 Toggling amenity:', amenityId, 'Current selection:', selectedAmenities);
     if (selectedAmenities.includes(amenityId)) {
       onChange(selectedAmenities.filter(id => id !== amenityId));
     } else {
@@ -153,13 +155,13 @@ export const AmenitiesSelector: React.FC<AmenitiesSelectorProps> = ({
                     }`}
                   >
                     <Checkbox
-                      checked={selectedAmenities.includes(amenity.id)}
-                      onCheckedChange={() => toggleAmenity(amenity.id)}
+                      checked={selectedAmenities.includes(amenity.code)}
+                      onCheckedChange={() => toggleAmenity(amenity.code)}
                     />
                     <div className="flex items-center gap-2 flex-1 min-w-0">
                       {renderIcon(amenity.icon)}
                       <span className="text-sm font-medium truncate">
-                        {amenity.name}
+                        {amenity.name_en}
                       </span>
                       {amenity.is_premium && (
                         <Star className="w-3 h-3 text-yellow-500 flex-shrink-0" />

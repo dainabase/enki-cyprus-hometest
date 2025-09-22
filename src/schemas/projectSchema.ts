@@ -48,15 +48,12 @@ export const projectSchema = z.object({
   built_area_m2: z.number().min(0).optional(),
   total_units: z.number().min(0).optional(), // CORRECTED: was total_units_new
   units_available: z.number().min(0).optional(), // CORRECTED: was units_available_new
-  bedrooms_range: z.string().optional(),
-  bathrooms_range: z.string().optional(),
   floors_total: z.number().min(0).optional(),
   parking_spaces: z.number().min(0).optional(),
   storage_spaces: z.number().min(0).optional(),
   smart_home_features: z.record(z.string(), z.boolean()).optional(),
 
   // PRICING - CORRECTED: Using real DB field names without _new
-  price: z.number().min(0, "Prix requis"),
   price_from: z.number().min(0).optional(), // CORRECTED: was price_from_new
   price_to: z.number().min(0).optional(),
   price_per_m2: z.number().min(0).optional(),
@@ -101,7 +98,7 @@ export const projectSchema = z.object({
   metaverse_preview_url: z.string().optional(),
   interactive_map_url: z.string().optional(),
   map_image: z.string().optional(),
-  floor_plan_urls: z.array(z.string()).optional(),
+  
   drone_footage_urls: z.array(z.string()).optional(),
   model_3d_urls: z.array(z.string()).optional(),
   master_plan_pdf: z.string().optional(),
@@ -190,29 +187,7 @@ export const projectSchema = z.object({
   featured_project: z.boolean().default(false), // CORRECTED: was featured_new
   after_sales_service: z.boolean().optional(),
   nft_ownership_available: z.boolean().optional()
-}).refine(
-  (data) => {
-    if (data.golden_visa_eligible && data.price < 300000) {
-      return false;
-    }
-    return true;
-  },
-  {
-    message: "Pour être éligible Golden Visa, le prix minimum doit être ≥ 300,000€",
-    path: ["golden_visa_eligible"],
-  }
-).refine(
-  (data) => {
-    if (data.price_to && data.price_from && data.price_to < data.price_from) {
-      return false;
-    }
-    return true;
-  },
-  {
-    message: "Le prix maximum ne peut être inférieur au prix minimum",
-    path: ["price_to"],
-  }
-);
+});
 
 export type ProjectFormData = z.infer<typeof projectSchema>;
 
@@ -256,8 +231,7 @@ export const projectFormSteps = [
     icon: 'Ruler',
     fields: [
       'land_area_m2', 'built_area_m2', 'total_units', 'units_available', // CORRECTED: removed _new suffix
-      'bedrooms_range', 'bathrooms_range', 'floors_total', 
-      'parking_spaces', 'storage_spaces'
+      'floors_total', 'parking_spaces', 'storage_spaces'
     ]
   },
   {
@@ -265,7 +239,7 @@ export const projectFormSteps = [
     title: 'Prix & Investissement',
     icon: 'Euro',
     fields: [
-      'price', 'price_from', 'price_to', 'price_per_m2', 'vat_rate', // CORRECTED: removed _new suffix
+      'price_from', 'price_to', 'price_per_m2', 'vat_rate', // CORRECTED: removed _new suffix
       'vat_included', 'golden_visa_eligible', 'roi_estimate_percent', // CORRECTED: removed _new suffix
       'rental_yield_percent', 'financing_available'
     ]
@@ -278,7 +252,7 @@ export const projectFormSteps = [
       'photos', 'youtube_tour_url', 'vr_tour_url', 'virtual_tour_url', // CORRECTED: removed _new suffix
       'project_presentation_url', 'vimeo_tour_url', 'master_plan_pdf',
       'brochure_pdf', 'price_list_pdf', 'technical_specs_pdf', 'model_3d_urls',
-      'floor_plan_urls', 'ar_experience_url', 'metaverse_preview_url'
+      'ar_experience_url', 'metaverse_preview_url'
     ]
   },
   {

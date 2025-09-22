@@ -112,7 +112,7 @@ export const NearbyAmenitiesSelector: React.FC<NearbyAmenitiesSelectorProps> = (
       
       // UNIQUEMENT si selectedAmenities est vide (première charge)
       if (selectedAmenities.length === 0) {
-        console.log('🔄 Loading existing amenities from DB:', formattedAmenities);
+        console.log('📍 Loading existing surrounding amenities from DB:', formattedAmenities);
         setSelectedAmenities(formattedAmenities);
         onChange(formattedAmenities);
       }

@@ -616,32 +616,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="bedrooms_range"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Gamme chambres</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Ex: 1-4 chambres" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="bathrooms_range"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Gamme salles de bain</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Ex: 1-3 salles de bain" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </div>
           </CardContent>
         </Card>
@@ -658,25 +632,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           </CardHeader>
           <CardContent className="p-6 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Prix de base *</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        min="0"
-                        placeholder="350000"
-                        {...field}
-                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="price_from"
@@ -956,12 +911,12 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
             <FormField
               control={form.control}
-              name="floor_plan_urls"
+              name="model_3d_urls"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
                     <MapIcon className="w-4 h-4" />
-                    Plans d'étage
+                    Modèles 3D
                   </FormLabel>
                   <FormControl>
                     <Input 
