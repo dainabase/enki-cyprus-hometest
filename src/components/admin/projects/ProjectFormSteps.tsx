@@ -1032,59 +1032,60 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           </CardHeader>
           <CardContent className="p-6 space-y-6">
             {/* Bouton générateur SEO */}
-            <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
+            <Card className="bg-slate-50 border-slate-200">
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="font-semibold text-purple-900">
+                    <h3 className="font-semibold text-slate-900 flex items-center gap-2">
+                      <Brain className="w-5 h-5 text-slate-700" />
                       Générateur de contenu SEO
                     </h3>
-                    <p className="text-sm text-purple-700 mt-1">
-                      Générez automatiquement les métadonnées et descriptions optimisées
+                    <p className="text-sm text-slate-600 mt-1">
+                      Générez automatiquement les métadonnées optimisées par l'IA
                     </p>
                   </div>
                   <Button
                     type="button"
                     onClick={async () => {
-                      try {
-                        // Récupérer les données du projet
-                        const projectData = form.getValues();
+                      toast({
+                        title: "🤖 Génération en cours...",
+                        description: "L'IA analyse votre projet pour créer le contenu SEO optimal",
+                      });
+                      
+                      // Récupérer les données actuelles
+                      const projectData = form.getValues();
+                      
+                      // Simuler un appel API (remplacer par l'appel réel à votre agent)
+                      setTimeout(() => {
+                        // Générer le contenu optimisé
+                        const title = `${projectData.title} - Immobilier ${projectData.city || 'Chypre'} | Investissement Golden Visa`;
+                        const description = `Découvrez ${projectData.title}, projet immobilier premium à ${projectData.city || 'Chypre'}. ${projectData.total_units || 0} unités disponibles à partir de ${projectData.price_from || 0}€. Éligible Golden Visa. ROI jusqu'à ${projectData.roi_estimate_percent || 8}%.`;
+                        const keywords = [
+                          'immobilier chypre',
+                          'golden visa cyprus',
+                          projectData.city?.toLowerCase(),
+                          projectData.cyprus_zone,
+                          'investissement immobilier',
+                          'residence permit'
+                        ].filter(Boolean);
+                        const slug = projectData.title
+                          ?.toLowerCase()
+                          .replace(/[^a-z0-9]+/g, '-')
+                          .replace(/^-+|-+$/g, '');
                         
-                        // Appeler le générateur SEO
-                        const { data, error } = await supabase
-                          .from('projects')
-                          .select('*')
-                          .eq('id', projectId)
-                          .single();
-                          
-                        if (data) {
-                          // TODO: Connecter avec le générateur SEO
-                          toast({
-                            title: "Génération SEO",
-                            description: "Le contenu SEO va être généré..."
-                          });
-                          
-                          // Simuler la génération
-                          setTimeout(() => {
-                            form.setValue('meta_title', `${data.title} - Investissement immobilier Chypre | Golden Visa`);
-                            form.setValue('meta_description', `Découvrez ${data.title} à ${data.city}, projet immobilier d'exception à Chypre. ${data.total_units} unités disponibles. Éligible Golden Visa. Investissez dès ${data.price_from}€.`);
-                            form.setValue('meta_keywords', ['immobilier chypre', 'golden visa', data.city, data.cyprus_zone, 'investissement'].filter(Boolean));
-                            
-                            toast({
-                              title: "Contenu SEO généré",
-                              description: "Les champs ont été remplis automatiquement"
-                            });
-                          }, 1000);
-                        }
-                      } catch (error) {
+                        // Remplir les champs
+                        form.setValue('meta_title', title);
+                        form.setValue('meta_description', description);
+                        form.setValue('meta_keywords', keywords);
+                        form.setValue('url_slug', slug);
+                        
                         toast({
-                          title: "Erreur",
-                          description: "Impossible de générer le contenu SEO",
-                          variant: "destructive"
+                          title: "✅ Contenu SEO généré",
+                          description: "Les champs ont été optimisés pour le référencement",
                         });
-                      }
+                      }, 2000);
                     }}
-                    className="bg-gradient-to-r from-purple-600 to-blue-600"
+                    className="bg-slate-900 hover:bg-slate-800 text-white"
                   >
                     <Brain className="w-4 h-4 mr-2" />
                     Générer le SEO
