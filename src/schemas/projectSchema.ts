@@ -211,7 +211,7 @@ export const projectFormSteps = [
     icon: 'FileText',
     fields: [
       'title', 'project_code', 'developer_id', 'property_category', 
-      'property_sub_type', 'launch_date', 
+      'property_sub_type', 'project_phase', 'launch_date', 
       'completion_date_new', 'description', 'detailed_description'
     ]
   },
@@ -223,7 +223,7 @@ export const projectFormSteps = [
       'full_address', 'city', 'region', 'neighborhood',
       'neighborhood_description', 'gps_latitude', 'gps_longitude',
       'proximity_sea_km', 'proximity_airport_km', 'proximity_city_center_km',
-      'cyprus_zone'
+      'cyprus_zone', 'surrounding_amenities'
     ]
   },
   {
@@ -236,7 +236,7 @@ export const projectFormSteps = [
     id: 'amenities',
     title: 'Équipements Communs',
     icon: 'Star',
-    fields: ['amenities']
+    fields: ['amenities', 'project_amenities', 'community_features']
   },
   {
     id: 'specifications',
@@ -260,33 +260,20 @@ export const projectFormSteps = [
   },
   {
     id: 'media',
-    title: 'Médias',
+    title: 'Photos & Vidéos',
     icon: 'Image',
     fields: [
-      'photos', 'virtual_tour_url_new', 'project_presentation_url', 
-      'youtube_tour_url', 'vimeo_tour_url', 'photo_gallery_urls', 
-      'video_tour_urls', 'floor_plan_urls', 'drone_footage_urls', 'model_3d_urls'
+      'photos', 'youtube_tour_url', 'vr_tour_url', 'virtual_tour_url_new',
+      'project_presentation_url', 'vimeo_tour_url'
     ]
-  },
-  {
-    id: 'buildings',
-    title: 'Bâtiments',
-    icon: 'Building2',
-    fields: ['buildings']
-  },
-  {
-    id: 'amenities',
-    title: 'Prestations Projet',
-    icon: 'Star',
-    fields: ['project_amenities', 'community_features']
   },
   {
     id: 'marketing',
     title: 'Marketing & SEO',
     icon: 'Megaphone',
     fields: [
-      'project_narrative', 'meta_title_new', 'meta_description_new',
-      'marketing_highlights', 'target_audience', 'features', 'status_project', 'statut_commercial', 'construction_phase', 'featured_new'
+      'meta_title_new', 'meta_description_new', 'status_project', 
+      'featured_new', 'statut_commercial', 'construction_phase'
     ]
   }
 ];
