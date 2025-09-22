@@ -164,43 +164,57 @@ const AdminProjectForm: React.FC = () => {
           categorized_photos: projectData.categorized_photos
         });
 
-        // Convertir les photos correctement
-        const photos = (() => {
-          try {
-            // Si on a des photos catégorisées valides
-            if (projectData.categorized_photos && 
-                typeof projectData.categorized_photos === 'object' &&
-                !Array.isArray(projectData.categorized_photos) &&
-                Object.keys(projectData.categorized_photos).length > 0) {
-              return projectData.categorized_photos;
-            }
+        // Conversion sécurisée des photos
+        let photos = { exterior: [], interior: [], amenities: [], views: [], plans: [] };
+
+        try {
+          // Log pour debug
+          console.log('📸 Photos data:', {
+            photos: projectData.photos,
+            categorized: projectData.categorized_photos,
+            type_photos: typeof projectData.photos,
+            type_categorized: typeof projectData.categorized_photos
+          });
+          
+          // Vérifier d'abord categorized_photos
+          if (projectData.categorized_photos && 
+              typeof projectData.categorized_photos === 'object' &&
+              !Array.isArray(projectData.categorized_photos)) {
             
-            // Si on a un array de photos simples
-            if (projectData.photos && Array.isArray(projectData.photos) && projectData.photos.length > 0) {
-              return {
-                exterior: projectData.photos
-                  .filter(url => url && typeof url === 'string')
-                  .map((url, index) => ({
-                    url: url,
-                    caption: `Photo ${index + 1}`,
-                    is_primary: index === 0
-                  }))
-              };
-            }
-            
-            // Format par défaut
-            return { 
-              exterior: [], 
-              interior: [], 
-              amenities: [], 
-              views: [], 
-              plans: [] 
+            // S'assurer que chaque catégorie existe
+            photos = {
+              exterior: projectData.categorized_photos.exterior || [],
+              interior: projectData.categorized_photos.interior || [],
+              amenities: projectData.categorized_photos.amenities || [],
+              views: projectData.categorized_photos.views || [],
+              plans: projectData.categorized_photos.plans || []
             };
-          } catch (error) {
-            console.error('Erreur conversion photos:', error);
-            return { exterior: [], interior: [], amenities: [], views: [], plans: [] };
+            
+          } else if (projectData.photos && Array.isArray(projectData.photos)) {
+            // Convertir array simple en catégorisé
+            photos = {
+              exterior: projectData.photos
+                .filter(p => p && (typeof p === 'string' || (p && p.url)))
+                .map((photo, index) => {
+                  if (typeof photo === 'string') {
+                    return { url: photo, caption: `Photo ${index + 1}`, is_primary: index === 0 };
+                  }
+                  return photo;
+                }),
+              interior: [],
+              amenities: [],
+              views: [],
+              plans: []
+            };
           }
-        })();
+          
+          console.log('📸 Photos converties:', photos);
+          
+        } catch (photoError) {
+          console.error('❌ Erreur conversion photos:', photoError);
+          // Valeur par défaut en cas d'erreur
+          photos = { exterior: [], interior: [], amenities: [], views: [], plans: [] };
+        }
         
         console.log('📸 Photos converted:', photos);
         

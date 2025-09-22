@@ -1040,6 +1040,19 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             <CardTitle>Photos du projet</CardTitle>
           </CardHeader>
           <CardContent className="p-6">
+            {/* Vérification de sécurité */}
+            {(() => {
+              const photos = form.watch('photos');
+              console.log('📸 Current photos state:', photos);
+              
+              // S'assurer que photos est un objet valide
+              if (!photos || typeof photos !== 'object') {
+                form.setValue('photos', []);
+              }
+              
+              return null;
+            })()}
+            
             <FormField
               control={form.control}
               name="photos"
@@ -1048,7 +1061,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                   <FormControl>
                     <CategorizedMediaUploader
                       field={{
-                        value: field.value as any || [],
+                        value: (field.value as any) || [],
                         onChange: field.onChange
                       }}
                       bucketName="projects"
