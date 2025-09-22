@@ -46,24 +46,29 @@ export interface Property {
 }
 
 // Fonction de transformation des données Supabase vers l'interface Property
-export const transformDatabaseProperty = (dbProperty: DatabaseProperty): Property => {
+export const transformDatabaseProperty = (dbProperty: any): Property => {
   return {
     id: dbProperty.id,
-    title: dbProperty.title,
-    description: dbProperty.description,
-    detailedDescription: dbProperty.detailed_description,
-    type: dbProperty.type as Property['type'],
+    title: dbProperty.title || 'Titre non disponible',
+    description: dbProperty.description || dbProperty.detailed_description || 'Description non disponible',
+    detailedDescription: dbProperty.detailed_description || dbProperty.description,
+    type: (dbProperty.property_sub_type?.[0] || dbProperty.type || 'apartment') as Property['type'],
     price: dbProperty.price_from ? `€${dbProperty.price_from.toLocaleString()}` : 'Prix sur demande',
-    priceValue: dbProperty.price,
-    location: dbProperty.location.city,
-    coordinates: { lat: dbProperty.location.lat, lng: dbProperty.location.lng },
-    bedrooms: 2, // Valeur par défaut, à extraire des features si nécessaire
-    bathrooms: 1, // Valeur par défaut, à extraire des features si nécessaire
-    area: 80, // Valeur par défaut, à extraire des features si nécessaire
-    features: dbProperty.features,
-    detailedFeatures: dbProperty.detailed_features,
-    photos: dbProperty.photos,
-    plans: dbProperty.plans,
-    virtualTour: dbProperty.virtual_tour,
+    priceValue: dbProperty.price_from || dbProperty.price_to || 0,
+    location: dbProperty.city || 'Localisation non disponible',
+    coordinates: { 
+      lat: dbProperty.gps_latitude || 35.1264, 
+      lng: dbProperty.gps_longitude || 33.4299 
+    },
+    bedrooms: dbProperty.bedrooms_count || 2,
+    bathrooms: dbProperty.bathrooms_count || 1,
+    area: dbProperty.internal_area || dbProperty.built_area_m2 || 80,
+    features: Array.isArray(dbProperty.features) ? dbProperty.features : 
+              Array.isArray(dbProperty.amenities) ? dbProperty.amenities : [],
+    detailedFeatures: Array.isArray(dbProperty.detailed_features) ? dbProperty.detailed_features : [],
+    photos: Array.isArray(dbProperty.photos) ? dbProperty.photos : 
+            Array.isArray(dbProperty.photo_gallery_urls) ? dbProperty.photo_gallery_urls : [],
+    plans: Array.isArray(dbProperty.plans) ? dbProperty.plans : [],
+    virtualTour: dbProperty.virtual_tour || dbProperty.virtual_tour_url,
   };
 };

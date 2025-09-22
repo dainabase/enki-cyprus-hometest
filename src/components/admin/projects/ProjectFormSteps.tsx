@@ -327,6 +327,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     // Initialiser avec un bâtiment par défaut si aucun
     React.useEffect(() => {
       if (buildingsValue.length === 0) {
+        console.log('🏗️ Initializing default building');
         const defaultBuilding: ProjectBuilding = {
           building_name: `Bâtiment 1`,
           building_type: 'apartment_building',
@@ -337,7 +338,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         };
         form.setValue('buildings', [defaultBuilding]);
       }
-    }, []); // Retirer les dépendances problématiques
+    }, [buildingsValue.length]); // Ajouter la dépendance nécessaire mais de façon contrôlée
 
     return (
       <div className="space-y-8">
