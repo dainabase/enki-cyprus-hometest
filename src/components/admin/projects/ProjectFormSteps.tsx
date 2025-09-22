@@ -16,7 +16,6 @@ import { CategorizedMediaUploader } from './CategorizedMediaUploader';
 import { NearbyAmenitiesSelector } from './NearbyAmenitiesSelector';
 import { AmenitiesSelector } from './AmenitiesSelector';
 import PropertySubTypeSelector from './PropertySubTypeSelector';
-import { BuildingsSection } from './BuildingsSection';
 import { BuildingSection } from './BuildingSection';
 import { ProjectFormData } from '@/schemas/projectSchema';
 import { ProjectBuilding } from '@/types/building.project';
@@ -296,7 +295,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     const buildingsValue = form.watch('buildings') || [];
     
     const addBuilding = () => {
-      const newBuilding: any = {
+      const newBuilding: ProjectBuilding = {
         building_name: `Bâtiment ${buildingsValue.length + 1}`,
         building_type: 'apartment_building',
         construction_status: 'planned',
@@ -328,7 +327,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     // Initialiser avec un bâtiment par défaut si aucun
     React.useEffect(() => {
       if (buildingsValue.length === 0) {
-        const newBuilding: any = {
+        const defaultBuilding: ProjectBuilding = {
           building_name: `Bâtiment 1`,
           building_type: 'apartment_building',
           construction_status: 'planned',
@@ -336,9 +335,9 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           total_units: 0,
           units_available: 0
         };
-        form.setValue('buildings', [newBuilding]);
+        form.setValue('buildings', [defaultBuilding]);
       }
-    }, [buildingsValue.length, form]);
+    }, []); // Retirer les dépendances problématiques
 
     return (
       <div className="space-y-8">
