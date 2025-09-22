@@ -38,7 +38,9 @@ const AdminProjectForm: React.FC = () => {
       property_sub_type: ['apartment'],
       project_phase: 'off-plan',
       launch_date: '',
+      launch_month: '', // AJOUT du champ correct
       completion_date_new: '',
+      completion_month: '', // AJOUT du champ correct
       exclusive_commercialization: false,
       description: '',
       detailed_description: '',
@@ -60,8 +62,10 @@ const AdminProjectForm: React.FC = () => {
       // Specifications
       land_area_m2: null,
       built_area_m2: null,
-      total_units_new: null,
-      units_available_new: null,
+      total_units: null, // Version sans _new
+      total_units_new: null, // Version avec _new pour compatibilité
+      units_available: null, // Version sans _new
+      units_available_new: null, // Version avec _new pour compatibilité
       bedrooms_range: '',
       bathrooms_range: '',
       floors_total: null,
@@ -78,12 +82,15 @@ const AdminProjectForm: React.FC = () => {
       
       // Pricing
       price: 0,
-      price_from_new: null,
+      price_from: null, // Version sans _new
+      price_from_new: null, // Version avec _new pour compatibilité
       price_to: null,
       price_per_m2: null,
-      vat_rate_new: 19,
+      vat_rate: 19, // Version sans _new
+      vat_rate_new: 19, // Version avec _new pour compatibilité
       vat_included: false,
-      golden_visa_eligible_new: false,
+      golden_visa_eligible: false, // Version sans _new
+      golden_visa_eligible_new: false, // Version avec _new pour compatibilité
       roi_estimate_percent: null,
       rental_yield_percent: null,
       financing_available: false,
@@ -93,7 +100,8 @@ const AdminProjectForm: React.FC = () => {
       photo_gallery_urls: [],
       video_tour_urls: [],
       floor_plan_urls: [],
-      virtual_tour_url_new: '',
+      virtual_tour_url: '', // Version sans _new
+      virtual_tour_url_new: '', // Version avec _new pour compatibilité
       project_presentation_url: '',
       youtube_tour_url: '',
       vimeo_tour_url: '',
@@ -107,12 +115,15 @@ const AdminProjectForm: React.FC = () => {
       
       // Marketing
       project_narrative: '',
-      meta_title_new: '',
-      meta_description_new: '',
+      meta_title: '', // Version sans _new
+      meta_title_new: '', // Version avec _new pour compatibilité
+      meta_description: '', // Version sans _new
+      meta_description_new: '', // Version avec _new pour compatibilité
       meta_keywords: [],
       marketing_highlights: [],
       target_audience: [],
-      featured_new: false,
+      featured_project: false, // Version sans _new
+      featured_new: false, // Version avec _new pour compatibilité
       
       // Status
       status_project: 'disponible',
@@ -125,22 +136,25 @@ const AdminProjectForm: React.FC = () => {
     queryKey: ['project', id],
     queryFn: () => fetchProject(id!),
     enabled: !!id && isEdit,
-    staleTime: 0, // Toujours considérer les données comme obsolètes
-    gcTime: 0, // Ne pas garder en cache
+    staleTime: 0,
+    gcTime: 0,
     refetchOnWindowFocus: false,
     refetchOnMount: true
   });
 
-  // Load project data into form when editing with improved data handling
+  // Load project data into form when editing with CORRECTED MAPPINGS
   useEffect(() => {
     if (project && isEdit) {
-       console.log('Loading project data into form:', project);
-       console.log('Project data values:', {
+       console.log('🔍 Loading project data into form:', project);
+       console.log('🔍 Project key values:', {
+        developer_id: project.developer_id,
+        statut_commercial: project.statut_commercial,
+        launch_month: project.launch_month,
+        completion_month: project.completion_month,
         total_units: project.total_units,
         units_available: project.units_available,
-        roi_estimate_percent: project.roi_estimate_percent,
-        rental_yield_percent: project.rental_yield_percent,
-        categorized_photos: project.categorized_photos
+        price_from: project.price_from,
+        golden_visa_eligible: project.golden_visa_eligible
       });
       
       // Charger les bâtiments depuis la table buildings
@@ -152,7 +166,7 @@ const AdminProjectForm: React.FC = () => {
           .order('display_order', { ascending: true });
         
         if (buildingsData) {
-          console.log('Buildings loaded:', buildingsData);
+          console.log('🏢 Buildings loaded:', buildingsData);
           return buildingsData.map(b => ({
             building_name: b.building_name,
             building_type: b.building_type,
@@ -183,185 +197,194 @@ const AdminProjectForm: React.FC = () => {
       // Charger les données du projet ET les bâtiments
       loadBuildingsData().then(buildings => {
         const projectData = project;
-        // Helper function to safely access location data
-        const getLocationValue = (field: string) => {
-          return projectData.city || null;
-        };
-
-        form.reset({
-          // Basics - Project Info - CORRIGER LES MAPPINGS
+        
+        // Préparer les données du formulaire avec TOUS les champs correctement mappés
+        const formData = {
+          // Basics - MAPPING CORRIGÉ
           title: projectData.title || '',
           project_code: projectData.project_code || '',
           developer_id: projectData.developer_id || '',
-          property_category: 'residential', // Valeur par défaut
-          property_sub_type: ['apartment'], // Valeur par défaut
+          property_category: projectData.property_category || 'residential',
+          property_sub_type: projectData.property_sub_type || ['apartment'],
           project_phase: projectData.project_phase || 'off-plan',
           statut_commercial: projectData.statut_commercial || 'pre_commercialisation',
-          launch_month: '', // Valeur par défaut
-          completion_month: '', // Valeur par défaut
+          launch_month: projectData.launch_month || '', // CORRIGÉ - Utiliser le bon nom de champ
+          launch_date: projectData.launch_month || '', // Pour compatibilité
+          completion_month: projectData.completion_month || '', // CORRIGÉ - Utiliser le bon nom de champ
+          completion_date_new: projectData.completion_month || '', // Pour compatibilité
           exclusive_commercialization: projectData.exclusive_commercialization || false,
           description: projectData.description || '',
           detailed_description: projectData.detailed_description || '',
         
-        // Location
-        full_address: projectData.full_address || getLocationValue('address') || '',
-        city: projectData.city || getLocationValue('city') || '',
-        region: projectData.region || '',
-        neighborhood: projectData.neighborhood || '',
-        neighborhood_description: projectData.neighborhood_description || '',
-        cyprus_zone: projectData.cyprus_zone || 'limassol',
-        gps_latitude: projectData.gps_latitude || null,
-        gps_longitude: projectData.gps_longitude || null,
-        proximity_sea_km: projectData.proximity_sea_km || null,
-        proximity_airport_km: projectData.proximity_airport_km || null,
-        proximity_city_center_km: projectData.proximity_city_center_km || null,
-        proximity_highway_km: projectData.proximity_highway_km || null,
+          // Location
+          full_address: projectData.full_address || projectData.address || '',
+          city: projectData.city || '',
+          region: projectData.region || '',
+          neighborhood: projectData.neighborhood || '',
+          neighborhood_description: projectData.neighborhood_description || '',
+          cyprus_zone: projectData.cyprus_zone || 'limassol',
+          gps_latitude: projectData.gps_latitude || null,
+          gps_longitude: projectData.gps_longitude || null,
+          proximity_sea_km: projectData.proximity_sea_km || null,
+          proximity_airport_km: projectData.proximity_airport_km || null,
+          proximity_city_center_km: projectData.proximity_city_center_km || null,
+          proximity_highway_km: projectData.proximity_highway_km || null,
         
-        // Specifications with proper number conversion
-        land_area_m2: projectData.land_area_m2 ? Number(projectData.land_area_m2) : null,
-        built_area_m2: projectData.built_area_m2 ? Number(projectData.built_area_m2) : null,
-        total_units: projectData.total_units ? Number(projectData.total_units) : null,
-        units_available: projectData.units_available ? Number(projectData.units_available) : null,
-        maintenance_fees_yearly: projectData.maintenance_fees_yearly ? Number(projectData.maintenance_fees_yearly) : null,
-        property_tax_yearly: projectData.property_tax_yearly ? Number(projectData.property_tax_yearly) : null,
-        hoa_fees_monthly: projectData.hoa_fees_monthly ? Number(projectData.hoa_fees_monthly) : null,
-        pet_policy: projectData.pet_policy || '',
+          // Specifications - MAPPING CORRIGÉ avec les DEUX versions
+          land_area_m2: projectData.land_area_m2 ? Number(projectData.land_area_m2) : null,
+          built_area_m2: projectData.built_area_m2 ? Number(projectData.built_area_m2) : null,
+          total_units: projectData.total_units ? Number(projectData.total_units) : null, // Version sans _new
+          total_units_new: projectData.total_units ? Number(projectData.total_units) : null, // Version avec _new
+          units_available: projectData.units_available ? Number(projectData.units_available) : null, // Version sans _new
+          units_available_new: projectData.units_available ? Number(projectData.units_available) : null, // Version avec _new
+          bedrooms_range: projectData.bedrooms_range || '',
+          bathrooms_range: projectData.bathrooms_range || '',
+          floors_total: projectData.floors_total ? Number(projectData.floors_total) : null,
+          parking_spaces: projectData.parking_spaces ? Number(projectData.parking_spaces) : null,
+          storage_spaces: projectData.storage_spaces ? Number(projectData.storage_spaces) : null,
+          energy_rating: projectData.energy_rating || '',
+          construction_year: projectData.construction_year ? Number(projectData.construction_year) : null,
+          building_certification: projectData.building_certification || '',
+          maintenance_fees_yearly: projectData.maintenance_fees_yearly ? Number(projectData.maintenance_fees_yearly) : null,
+          property_tax_yearly: projectData.property_tax_yearly ? Number(projectData.property_tax_yearly) : null,
+          hoa_fees_monthly: projectData.hoa_fees_monthly ? Number(projectData.hoa_fees_monthly) : null,
+          internet_speed_mbps: projectData.internet_speed_mbps ? Number(projectData.internet_speed_mbps) : null,
+          pet_policy: projectData.pet_policy || '',
         
-        // Pricing - CORRIGER LES MAPPINGS
-        price: 0, // Valeur par défaut
-        price_from_new: projectData.price_from ? Number(projectData.price_from) : null, // MAPPING CORRIGÉ
-        price_to: projectData.price_to ? Number(projectData.price_to) : null,
-        price_per_m2: projectData.price_per_m2 ? Number(projectData.price_per_m2) : null,
-        vat_rate_new: projectData.vat_rate ? Number(projectData.vat_rate) : 5, // MAPPING CORRIGÉ
-        golden_visa_eligible_new: projectData.golden_visa_eligible || false, // MAPPING CORRIGÉ
-        roi_estimate_percent: projectData.roi_estimate_percent ? Number(projectData.roi_estimate_percent) : null,
-        rental_yield_percent: projectData.rental_yield_percent ? Number(projectData.rental_yield_percent) : null,
-        financing_available: false, // Valeur par défaut
+          // Pricing - MAPPING CORRIGÉ avec les DEUX versions
+          price: projectData.price ? Number(projectData.price) : 0,
+          price_from: projectData.price_from ? Number(projectData.price_from) : null, // Version sans _new
+          price_from_new: projectData.price_from ? Number(projectData.price_from) : null, // Version avec _new
+          price_to: projectData.price_to ? Number(projectData.price_to) : null,
+          price_per_m2: projectData.price_per_m2 ? Number(projectData.price_per_m2) : null,
+          vat_rate: projectData.vat_rate ? Number(projectData.vat_rate) : 5, // Version sans _new
+          vat_rate_new: projectData.vat_rate ? Number(projectData.vat_rate) : 5, // Version avec _new
+          vat_included: projectData.vat_included || false,
+          golden_visa_eligible: projectData.golden_visa_eligible || false, // Version sans _new
+          golden_visa_eligible_new: projectData.golden_visa_eligible || false, // Version avec _new
+          roi_estimate_percent: projectData.roi_estimate_percent ? Number(projectData.roi_estimate_percent) : null,
+          rental_yield_percent: projectData.rental_yield_percent ? Number(projectData.rental_yield_percent) : null,
+          financing_available: projectData.financing_available || false,
         
-        // Buildings - CHARGER DEPUIS LA TABLE BUILDINGS
-        buildings: buildings || [], // AJOUTÉ
+          // Buildings - IMPORTANT
+          buildings: buildings || [],
         
-        // Media - Parse photos from database (prioritize categorized_photos over photos)
-        photos: (() => {
-          console.log('Processing photos from database');
-          
-          // First try categorized_photos which is the new format
-          if (projectData.categorized_photos && Array.isArray(projectData.categorized_photos)) {
-            console.log('Using categorized_photos:', projectData.categorized_photos);
-            return projectData.categorized_photos.filter((photo: any) => photo && typeof photo === 'object' && photo.url);
-          }
-          
-          // Fallback to old photos field
-          if (projectData.photos && Array.isArray(projectData.photos)) {
-            console.log('Using legacy photos field:', projectData.photos);
-            const parsed = projectData.photos
-              .filter((photo: any) => photo !== null && photo !== undefined)
-              .map((photo: any, index: number) => {
-                if (typeof photo === 'string') {
-                  try {
-                    const parsedPhoto = JSON.parse(photo);
-                    console.log(`Parsed photo ${index}:`, parsedPhoto);
-                    return parsedPhoto;
-                  } catch (e) {
-                    console.error(`Failed to parse photo ${index}:`, photo, e);
-                    return { url: photo, category: 'hero', isPrimary: false, caption: '' };
-                  }
-                }
-                
-                if (typeof photo === 'object' && photo.url) {
-                  console.log(`Photo ${index} already object:`, photo);
-                  return photo;
-                }
-                
-                console.warn(`Invalid photo format at index ${index}:`, photo);
-                return null;
-              })
-              .filter((photo: any) => photo !== null);
+          // Media
+          photos: (() => {
+            console.log('📸 Processing photos from database');
             
-            console.log('Final parsed photos:', parsed);
-            return parsed;
-          }
-          
-          console.log('No photos found in project data');
-          return [];
-        })(),
-        photo_gallery_urls: Array.isArray(projectData.photo_gallery_urls) ? projectData.photo_gallery_urls : [],
-        video_tour_urls: Array.isArray(projectData.video_tour_urls) ? projectData.video_tour_urls : [],
-        virtual_tour_url_new: projectData.virtual_tour_url || '', // MAPPING CORRIGÉ
-        master_plan_pdf: projectData.master_plan_url || '',
-        brochure_pdf: projectData.brochure_url || '',
-        project_presentation_url: projectData.project_presentation_url || '',
-        youtube_tour_url: projectData.youtube_tour_url || '',
-        vimeo_tour_url: projectData.vimeo_tour_url || '',
-        drone_footage_urls: Array.isArray(projectData.drone_footage_urls) ? projectData.drone_footage_urls : [],
-        model_3d_urls: Array.isArray(projectData.model_3d_urls) ? projectData.model_3d_urls : [],
+            if (projectData.categorized_photos && Array.isArray(projectData.categorized_photos)) {
+              console.log('Using categorized_photos:', projectData.categorized_photos);
+              return projectData.categorized_photos.filter((photo: any) => photo && typeof photo === 'object' && photo.url);
+            }
+            
+            if (projectData.photos && Array.isArray(projectData.photos)) {
+              console.log('Using legacy photos field:', projectData.photos);
+              const parsed = projectData.photos
+                .filter((photo: any) => photo !== null && photo !== undefined)
+                .map((photo: any, index: number) => {
+                  if (typeof photo === 'string') {
+                    try {
+                      const parsedPhoto = JSON.parse(photo);
+                      return parsedPhoto;
+                    } catch (e) {
+                      return { url: photo, category: 'hero', isPrimary: false, caption: '' };
+                    }
+                  }
+                  
+                  if (typeof photo === 'object' && photo.url) {
+                    return photo;
+                  }
+                  
+                  return null;
+                })
+                .filter((photo: any) => photo !== null);
+              
+              return parsed;
+            }
+            
+            return [];
+          })(),
+          photo_gallery_urls: Array.isArray(projectData.photo_gallery_urls) ? projectData.photo_gallery_urls : [],
+          video_tour_urls: Array.isArray(projectData.video_tour_urls) ? projectData.video_tour_urls : [],
+          floor_plan_urls: Array.isArray(projectData.floor_plan_urls) ? projectData.floor_plan_urls : [],
+          virtual_tour_url: projectData.virtual_tour_url || '', // Version sans _new
+          virtual_tour_url_new: projectData.virtual_tour_url || '', // Version avec _new
+          master_plan_pdf: projectData.master_plan_url || '',
+          brochure_pdf: projectData.brochure_url || '',
+          project_presentation_url: projectData.project_presentation_url || '',
+          youtube_tour_url: projectData.youtube_tour_url || '',
+          vimeo_tour_url: projectData.vimeo_tour_url || '',
+          drone_footage_urls: Array.isArray(projectData.drone_footage_urls) ? projectData.drone_footage_urls : [],
+          model_3d_urls: Array.isArray(projectData.model_3d_urls) ? projectData.model_3d_urls : [],
         
-        // Features & Amenities
-        amenities: Array.isArray(projectData.amenities) ? projectData.amenities : [],
-        surrounding_amenities: Array.isArray(projectData.surrounding_amenities) ? projectData.surrounding_amenities : [],
+          // Features & Amenities
+          features: Array.isArray(projectData.features) ? projectData.features : [],
+          amenities: Array.isArray(projectData.amenities) ? projectData.amenities : [],
+          surrounding_amenities: Array.isArray(projectData.surrounding_amenities) ? projectData.surrounding_amenities : [],
         
-        // Marketing - CORRIGER LES MAPPINGS
-        project_narrative: projectData.project_narrative || '',
-        meta_title_new: projectData.meta_title || '', // MAPPING CORRIGÉ
-        meta_description_new: projectData.meta_description || '', // MAPPING CORRIGÉ
-        meta_keywords: Array.isArray(projectData.meta_keywords) ? 
-          projectData.meta_keywords : 
-          (projectData.meta_keywords ? projectData.meta_keywords.split(',').map(k => k.trim()) : []),
-        marketing_highlights: Array.isArray(projectData.marketing_highlights) ? projectData.marketing_highlights : [],
-        target_audience: Array.isArray(projectData.target_audience) ? 
-          projectData.target_audience : 
-          (projectData.target_audience ? projectData.target_audience.split(',').map(k => k.trim()) : []),
-        url_slug: projectData.url_slug || '',
-        featured_new: projectData.featured_project || false, // MAPPING CORRIGÉ
-        construction_phase: projectData.construction_phase || 'planned',
+          // Marketing - MAPPING CORRIGÉ avec les DEUX versions
+          project_narrative: projectData.project_narrative || '',
+          meta_title: projectData.meta_title || '', // Version sans _new
+          meta_title_new: projectData.meta_title || '', // Version avec _new
+          meta_description: projectData.meta_description || '', // Version sans _new
+          meta_description_new: projectData.meta_description || '', // Version avec _new
+          meta_keywords: Array.isArray(projectData.meta_keywords) ? 
+            projectData.meta_keywords : 
+            (projectData.meta_keywords ? projectData.meta_keywords.split(',').map(k => k.trim()) : []),
+          marketing_highlights: Array.isArray(projectData.marketing_highlights) ? projectData.marketing_highlights : [],
+          target_audience: Array.isArray(projectData.target_audience) ? 
+            projectData.target_audience : 
+            (projectData.target_audience ? projectData.target_audience.split(',').map(k => k.trim()) : []),
+          url_slug: projectData.url_slug || '',
+          featured_project: projectData.featured_project || false, // Version sans _new
+          featured_new: projectData.featured_project || false, // Version avec _new
+          construction_phase: projectData.construction_phase || 'planned',
         
-        // Status
-        status: projectData.status || 'active'
+          // Status
+          status: projectData.status || 'active',
+          status_project: projectData.status_project || 'disponible'
+        };
+        
+        console.log('✅ Form data prepared with all mappings:', formData);
+        
+        // Reset le formulaire avec les données complètes
+        form.reset(formData);
+        
+        console.log('✅ Form reset completed');
+        console.log('📊 Form values after reset:', form.getValues());
       });
-      
-      console.log('Form data loaded successfully with buildings');
-    });
-  }
-}, [project, isEdit, form, id]); // Ajouter id aux dépendances
+    }
+  }, [project, isEdit, form, id]);
 
-  // Enhanced submit handler with comprehensive data processing
+  // Enhanced submit handler with CORRECTED MAPPINGS
   const onSubmit = async (data: any) => {
     try {
-       console.log('Submitting project data:', data);
-       console.log('Specific fields check:');
-       console.log('- title:', data.title);
-       console.log('- energy_rating:', data.energy_rating);
-       console.log('- pet_policy:', data.pet_policy);
-       console.log('- total_units_new:', data.total_units_new);
-       console.log('- land_area_m2:', data.land_area_m2);
+       console.log('📤 Submitting project data:', data);
       
-      // Prepare data for database with proper types and fixes
-      const processedData = {
-        ...data,
-        // Fix date formats - keep dates as they are (already properly formatted)
-        launch_date: data.launch_date || null,
-        completion_date_new: data.completion_date_new || null,
+      // Préparer les données pour la base avec les BONS NOMS DE CHAMPS
+      const dbData = {
+        // Basics
+        title: data.title,
+        project_code: data.project_code,
+        developer_id: data.developer_id,
+        property_category: data.property_category || 'residential',
+        property_sub_type: data.property_sub_type || ['apartment'],
+        project_phase: data.project_phase || 'off-plan',
+        statut_commercial: data.statut_commercial || 'pre_commercialisation',
+        launch_month: data.launch_month || data.launch_date || null, // Utiliser le bon nom pour la DB
+        completion_month: data.completion_month || data.completion_date_new || null, // Utiliser le bon nom pour la DB
+        exclusive_commercialization: Boolean(data.exclusive_commercialization),
+        description: data.description,
+        detailed_description: data.detailed_description,
         
-        // Ensure numeric fields are properly converted
-        total_units_new: data.total_units_new ? Number(data.total_units_new) : null,
-        units_available_new: data.units_available_new ? Number(data.units_available_new) : null,
-        land_area_m2: data.land_area_m2 ? Number(data.land_area_m2) : null,
-        built_area_m2: data.built_area_m2 ? Number(data.built_area_m2) : null,
-        floors_total: data.floors_total ? Number(data.floors_total) : null,
-        parking_spaces: data.parking_spaces ? Number(data.parking_spaces) : null,
-        storage_spaces: data.storage_spaces ? Number(data.storage_spaces) : null,
-        construction_year: data.construction_year ? Number(data.construction_year) : null,
-        maintenance_fees_yearly: data.maintenance_fees_yearly ? Number(data.maintenance_fees_yearly) : null,
-        property_tax_yearly: data.property_tax_yearly ? Number(data.property_tax_yearly) : null,
-        hoa_fees_monthly: data.hoa_fees_monthly ? Number(data.hoa_fees_monthly) : null,
-        internet_speed_mbps: data.internet_speed_mbps ? Number(data.internet_speed_mbps) : null,
-        price: data.price ? Number(data.price) : 0,
-        price_from_new: data.price_from_new ? Number(data.price_from_new) : null,
-        price_to: data.price_to ? Number(data.price_to) : null,
-        price_per_m2: data.price_per_m2 ? Number(data.price_per_m2) : null,
-        vat_rate_new: data.vat_rate_new ? Number(data.vat_rate_new) : 5,
-        roi_estimate_percent: data.roi_estimate_percent ? Number(data.roi_estimate_percent) : null,
-        rental_yield_percent: data.rental_yield_percent ? Number(data.rental_yield_percent) : null,
+        // Location
+        full_address: data.full_address,
+        city: data.city,
+        region: data.region,
+        neighborhood: data.neighborhood,
+        neighborhood_description: data.neighborhood_description,
+        cyprus_zone: data.cyprus_zone || 'limassol',
         gps_latitude: data.gps_latitude ? Number(data.gps_latitude) : null,
         gps_longitude: data.gps_longitude ? Number(data.gps_longitude) : null,
         proximity_sea_km: data.proximity_sea_km ? Number(data.proximity_sea_km) : null,
@@ -369,51 +392,78 @@ const AdminProjectForm: React.FC = () => {
         proximity_city_center_km: data.proximity_city_center_km ? Number(data.proximity_city_center_km) : null,
         proximity_highway_km: data.proximity_highway_km ? Number(data.proximity_highway_km) : null,
         
-        // Ensure boolean fields are properly set
-        exclusive_commercialization: Boolean(data.exclusive_commercialization),
+        // Specifications - Utiliser les bons noms pour la DB
+        land_area_m2: data.land_area_m2 ? Number(data.land_area_m2) : null,
+        built_area_m2: data.built_area_m2 ? Number(data.built_area_m2) : null,
+        total_units: data.total_units || data.total_units_new ? Number(data.total_units || data.total_units_new) : null,
+        units_available: data.units_available || data.units_available_new ? Number(data.units_available || data.units_available_new) : null,
+        bedrooms_range: data.bedrooms_range,
+        bathrooms_range: data.bathrooms_range,
+        floors_total: data.floors_total ? Number(data.floors_total) : null,
+        parking_spaces: data.parking_spaces ? Number(data.parking_spaces) : null,
+        storage_spaces: data.storage_spaces ? Number(data.storage_spaces) : null,
+        energy_rating: data.energy_rating,
+        construction_year: data.construction_year ? Number(data.construction_year) : null,
+        building_certification: data.building_certification,
+        maintenance_fees_yearly: data.maintenance_fees_yearly ? Number(data.maintenance_fees_yearly) : null,
+        property_tax_yearly: data.property_tax_yearly ? Number(data.property_tax_yearly) : null,
+        hoa_fees_monthly: data.hoa_fees_monthly ? Number(data.hoa_fees_monthly) : null,
+        internet_speed_mbps: data.internet_speed_mbps ? Number(data.internet_speed_mbps) : null,
+        pet_policy: data.pet_policy,
+        
+        // Pricing - Utiliser les bons noms pour la DB
+        price: data.price ? Number(data.price) : 0,
+        price_from: data.price_from || data.price_from_new ? Number(data.price_from || data.price_from_new) : null,
+        price_to: data.price_to ? Number(data.price_to) : null,
+        price_per_m2: data.price_per_m2 ? Number(data.price_per_m2) : null,
+        vat_rate: data.vat_rate || data.vat_rate_new ? Number(data.vat_rate || data.vat_rate_new) : 5,
         vat_included: Boolean(data.vat_included),
-        golden_visa_eligible_new: Boolean(data.golden_visa_eligible_new),
+        golden_visa_eligible: Boolean(data.golden_visa_eligible || data.golden_visa_eligible_new),
+        roi_estimate_percent: data.roi_estimate_percent ? Number(data.roi_estimate_percent) : null,
+        rental_yield_percent: data.rental_yield_percent ? Number(data.rental_yield_percent) : null,
         financing_available: Boolean(data.financing_available),
-        featured_new: Boolean(data.featured_new),
         
-        // Store photos in the new categorized_photos field
+        // Media
         categorized_photos: data.photos || [],
-        
-        // Ensure text fields are not null/undefined
-        energy_rating: data.energy_rating || null,
-        pet_policy: data.pet_policy || null,
-        building_certification: data.building_certification || null,
-        bedrooms_range: data.bedrooms_range || null,
-        bathrooms_range: data.bathrooms_range || null,
-        project_narrative: data.project_narrative || null,
-        meta_title_new: data.meta_title_new || null,
-        meta_description_new: data.meta_description_new || null,
-        virtual_tour_url_new: data.virtual_tour_url_new || null,
-        project_presentation_url: data.project_presentation_url || null,
-        youtube_tour_url: data.youtube_tour_url || null,
-        vimeo_tour_url: data.vimeo_tour_url || null,
-        
-        // Ensure arrays are properly handled
-        features: Array.isArray(data.features) ? data.features : [],
-        amenities: Array.isArray(data.amenities) ? data.amenities : [],
-        surrounding_amenities: Array.isArray(data.surrounding_amenities) ? data.surrounding_amenities : [],
-        meta_keywords: Array.isArray(data.meta_keywords) ? data.meta_keywords : [],
-        marketing_highlights: Array.isArray(data.marketing_highlights) ? data.marketing_highlights : [],
-        target_audience: Array.isArray(data.target_audience) ? data.target_audience : [],
-        property_sub_type: Array.isArray(data.property_sub_type) ? data.property_sub_type : ['apartment'],
         photo_gallery_urls: Array.isArray(data.photo_gallery_urls) ? data.photo_gallery_urls : [],
         video_tour_urls: Array.isArray(data.video_tour_urls) ? data.video_tour_urls : [],
         floor_plan_urls: Array.isArray(data.floor_plan_urls) ? data.floor_plan_urls : [],
+        virtual_tour_url: data.virtual_tour_url || data.virtual_tour_url_new || '',
+        master_plan_url: data.master_plan_pdf || '',
+        brochure_url: data.brochure_pdf || '',
+        project_presentation_url: data.project_presentation_url || '',
+        youtube_tour_url: data.youtube_tour_url || '',
+        vimeo_tour_url: data.vimeo_tour_url || '',
         drone_footage_urls: Array.isArray(data.drone_footage_urls) ? data.drone_footage_urls : [],
-        model_3d_urls: Array.isArray(data.model_3d_urls) ? data.model_3d_urls : []
+        model_3d_urls: Array.isArray(data.model_3d_urls) ? data.model_3d_urls : [],
+        
+        // Features & Amenities
+        features: Array.isArray(data.features) ? data.features : [],
+        amenities: Array.isArray(data.amenities) ? data.amenities : [],
+        surrounding_amenities: Array.isArray(data.surrounding_amenities) ? data.surrounding_amenities : [],
+        
+        // Marketing - Utiliser les bons noms pour la DB
+        project_narrative: data.project_narrative,
+        meta_title: data.meta_title || data.meta_title_new || '',
+        meta_description: data.meta_description || data.meta_description_new || '',
+        meta_keywords: Array.isArray(data.meta_keywords) ? data.meta_keywords : [],
+        marketing_highlights: Array.isArray(data.marketing_highlights) ? data.marketing_highlights : [],
+        target_audience: Array.isArray(data.target_audience) ? data.target_audience : [],
+        url_slug: data.url_slug || '',
+        featured_project: Boolean(data.featured_project || data.featured_new),
+        construction_phase: data.construction_phase || 'planned',
+        
+        // Status
+        status: data.status || 'active',
+        status_project: data.status_project || 'disponible'
       };
       
-      console.log('Processed data with fixed dates:', processedData);
+      console.log('✅ Processed DB data with correct field names:', dbData);
       
       if (isEdit) {
         const { data: updateResult, error } = await supabase
           .from('projects')
-          .update(processedData)
+          .update(dbData)
           .eq('id', id)
           .select();
         
@@ -424,18 +474,41 @@ const AdminProjectForm: React.FC = () => {
         
         console.log('✅ Update success:', updateResult);
         
+        // Sauvegarder aussi les bâtiments si présents
+        if (data.buildings && data.buildings.length > 0) {
+          console.log('💾 Saving buildings:', data.buildings);
+          
+          // D'abord supprimer les anciens bâtiments
+          await supabase
+            .from('buildings')
+            .delete()
+            .eq('project_id', id);
+          
+          // Puis insérer les nouveaux
+          for (const building of data.buildings) {
+            const { error: buildingError } = await supabase
+              .from('buildings')
+              .insert({
+                ...building,
+                project_id: id
+              });
+            
+            if (buildingError) {
+              console.error('❌ Building save error:', buildingError);
+            }
+          }
+        }
+        
         toast.success('Projet mis à jour avec succès');
         
         // Invalider le cache pour forcer le rechargement des données
         await queryClient.invalidateQueries({ queryKey: ['project', id] });
         await queryClient.refetchQueries({ queryKey: ['project', id] });
         
-        // Pas de setFormKey ici car cela efface les données affichées
-        
       } else {
         const { data: insertData, error } = await supabase
           .from('projects')
-          .insert([processedData])
+          .insert([dbData])
           .select();
           
         if (error) {
@@ -461,15 +534,10 @@ const AdminProjectForm: React.FC = () => {
   const refreshFormData = async () => {
     if (isEdit && id) {
       try {
-        console.log('Rechargement des données du projet depuis la base');
+        console.log('🔄 Rechargement des données du projet depuis la base');
         const freshProject = await fetchProject(id);
         if (freshProject) {
-          console.log('Données fraîches récupérées:', {
-            total_units: freshProject.total_units,
-            units_available: freshProject.units_available,
-            roi_estimate_percent: freshProject.roi_estimate_percent,
-            rental_yield_percent: freshProject.rental_yield_percent
-          });
+          console.log('📊 Données fraîches récupérées:', freshProject);
           
           // Récupérer les valeurs actuelles du formulaire
           const currentFormValues = form.getValues();
@@ -478,7 +546,9 @@ const AdminProjectForm: React.FC = () => {
           form.reset({
             ...currentFormValues,
             total_units: freshProject.total_units ? Number(freshProject.total_units) : null,
+            total_units_new: freshProject.total_units ? Number(freshProject.total_units) : null,
             units_available: freshProject.units_available ? Number(freshProject.units_available) : null,
+            units_available_new: freshProject.units_available ? Number(freshProject.units_available) : null,
             roi_estimate_percent: freshProject.roi_estimate_percent ? Number(freshProject.roi_estimate_percent) : null,
             rental_yield_percent: freshProject.rental_yield_percent ? Number(freshProject.rental_yield_percent) : null,
             photos: (() => {
