@@ -10,7 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from '@/components/ui/form';
 import { MediaUploader } from './MediaUploader';
 import { CategorizedMediaUploader } from './CategorizedMediaUploader';
 import { NearbyAmenitiesSelector } from './NearbyAmenitiesSelector';
@@ -182,16 +182,48 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               )}
             />
 
+            <FormField
+              control={form.control}
+              name="statut_commercial"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phase commerciale *</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Sélectionner" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="pre_commercialisation">Pré-commercialisation</SelectItem>
+                      <SelectItem value="commercialisation">En commercialisation</SelectItem>
+                      <SelectItem value="reduction_prix">Réduction de prix</SelectItem>
+                      <SelectItem value="dernieres_opportunites">Dernières opportunités</SelectItem>
+                      <SelectItem value="vendu">Vendu</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="launch_date"
+                name="launch_month"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Date de lancement</FormLabel>
+                    <FormLabel>Mois de lancement</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <Input 
+                        type="month" 
+                        placeholder="2026-01"
+                        {...field} 
+                      />
                     </FormControl>
+                    <FormDescription>
+                      Format: Janvier 2026 = 2026-01
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -199,13 +231,20 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
               <FormField
                 control={form.control}
-                name="completion_date_new"
+                name="completion_month"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Date de livraison prévue</FormLabel>
+                    <FormLabel>Mois de livraison prévue</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <Input 
+                        type="month"
+                        placeholder="2027-03"
+                        {...field} 
+                      />
                     </FormControl>
+                    <FormDescription>
+                      Format: Mars 2027 = 2027-03
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -1087,29 +1126,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="status_project"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Statut projet</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Statut" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="disponible">Disponible</SelectItem>
-                        <SelectItem value="en_construction">En construction</SelectItem>
-                        <SelectItem value="livre">Livré</SelectItem>
-                        <SelectItem value="pret_a_emmenager">Prêt à emménager</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
                 name="featured_new"
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
@@ -1125,6 +1141,30 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                         onCheckedChange={field.onChange}
                       />
                     </FormControl>
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="construction_phase"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phase de construction</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Phase" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="planned">Planifiée</SelectItem>
+                        <SelectItem value="in_progress">En cours</SelectItem>
+                        <SelectItem value="completion">Finition</SelectItem>
+                        <SelectItem value="finished">Terminée</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
                   </FormItem>
                 )}
               />

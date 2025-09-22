@@ -19,8 +19,9 @@ export const projectSchema = z.object({
     'mixed_use', 'other'
   ])).min(1, "Sélectionnez au moins un type"),
   project_phase: z.enum(['off-plan', 'under-construction', 'completed', 'ready-to-move']),
-  launch_date: z.string().optional(),
-  completion_date_new: z.string().optional(),
+  statut_commercial: z.enum(['pre_commercialisation', 'commercialisation', 'reduction_prix', 'dernieres_opportunites', 'vendu']).default('pre_commercialisation'),
+  launch_month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, "Format YYYY-MM requis").optional(),
+  completion_month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, "Format YYYY-MM requis").optional(),
   unique_selling_points: z.array(z.string()).optional(),
   exclusive_commercialization: z.boolean().default(false),
   description: z.string().min(10, "Description trop courte"),
@@ -213,8 +214,6 @@ export const projectSchema = z.object({
   // Niveau: PROJET
   // Description: Statuts commercial et de construction
   // ============================================
-  status_project: z.enum(['disponible', 'en_construction', 'livre', 'pret_a_emmenager']).default('disponible'),
-  statut_commercial: z.enum(['prelancement', 'lancement_commercial', 'en_commercialisation', 'derniere_opportunite', 'vendu']).default('prelancement'),
   construction_phase: z.enum(['planned', 'in_progress', 'completion', 'finished']).default('planned'),
   featured_new: z.boolean().default(false),
   after_sales_service: z.boolean().optional(),
@@ -252,8 +251,8 @@ export const projectFormSteps = [
     icon: 'FileText',
     fields: [
       'title', 'project_code', 'developer_id', 'property_category', 
-      'property_sub_type', 'project_phase', 'launch_date', 
-      'completion_date_new', 'description', 'detailed_description'
+      'property_sub_type', 'project_phase', 'statut_commercial', 'launch_month', 
+      'completion_month', 'description', 'detailed_description'
     ]
   },
   {
@@ -317,8 +316,7 @@ export const projectFormSteps = [
     fields: [
       'meta_title_new', 'meta_description_new', 'meta_keywords', 
       'marketing_highlights', 'target_audience', 'url_slug', 'og_title',
-      'og_description', 'og_image', 'status_project', 'featured_new', 
-      'statut_commercial', 'construction_phase'
+      'og_description', 'og_image', 'featured_new', 'construction_phase'
     ]
   }
 ];
