@@ -626,7 +626,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                     />
                   </div>
 
-                  {/* Bouton futur pour l'agent Google Maps */}
+                  {/* Bouton pour l'agent Google Maps */}
                   <div className="mt-6 p-4 bg-white rounded-lg border border-blue-200">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
@@ -640,11 +640,111 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       </div>
                       <Button
                         type="button"
-                        variant="outline"
-                        disabled
-                        className="opacity-50"
+                        onClick={async () => {
+                          const address = form.watch('full_address');
+                          if (!address) {
+                            toast({
+                              title: "Adresse requise",
+                              description: "Veuillez entrer l'adresse du projet dans l'onglet Localisation",
+                              variant: "destructive"
+                            });
+                            return;
+                          }
+                          
+                          const loadingToast = toast({
+                            title: "🗺️ Détection en cours...",
+                            description: "Recherche des commodités via Google Maps (30-60s)",
+                            duration: 60000,
+                          });
+                          
+                          try {
+                            // Import dynamique pour éviter les erreurs de build
+                            const { GoogleMapsAgent } = await import('@/services/googleMapsAgent');
+                            const agent = new GoogleMapsAgent();
+                            
+                            // Rechercher les commodités
+                            const places = await agent.findNearbyPlaces(address, 2);
+                            
+                            if (places.length === 0) {
+                              toast({
+                                title: "⚠️ Aucun résultat",
+                                description: "Aucune commodité trouvée. Vérifiez l'adresse ou configurez l'API Google Maps.",
+                                variant: "destructive"
+                              });
+                              return;
+                            }
+                            
+                            // Remplir automatiquement les commodités détectées
+                            const existingAmenities = form.watch('surrounding_amenities') || [];
+                            const newAmenities = places.map(place => ({
+                              nearby_amenity_id: place.type,
+                              distance_km: place.distance_km,
+                              details: `${place.name} (${place.rating ? place.rating + '⭐' : 'Auto-détecté'})`
+                            }));
+                            
+                            // Fusionner avec les amenités existantes
+                            const allAmenities = [...existingAmenities];
+                            newAmenities.forEach(newAmenity => {
+                              const exists = allAmenities.find(a => a.nearby_amenity_id === newAmenity.nearby_amenity_id);
+                              if (!exists) {
+                                allAmenities.push(newAmenity);
+                              }
+                            });
+                            
+                            form.setValue('surrounding_amenities', allAmenities);
+                            
+                            // Remplir les distances principales
+                            const beach = places.find(p => p.type === 'beach');
+                            if (beach && !form.watch('proximity_sea_km')) {
+                              form.setValue('proximity_sea_km', beach.distance_km);
+                            }
+                            
+                            const airport = places.find(p => p.type === 'airport');
+                            if (airport && !form.watch('proximity_airport_km')) {
+                              form.setValue('proximity_airport_km', airport.distance_km);
+                            }
+                            
+                            // Calculer les distances via géocodage
+                            const coordinates = await agent.geocodeAddress(address);
+                            if (coordinates) {
+                            const distances = await agent.calculateDistances(coordinates.lat, coordinates.lng);
+                            Object.entries(distances).forEach(([key, value]) => {
+                              const currentValues = form.getValues();
+                              if (value && !(currentValues as any)[key]) {
+                                form.setValue(key as any, value);
+                              }
+                            });
+                            }
+                            
+                            toast({
+                              title: "✅ Détection terminée",
+                              description: `${places.length} commodités trouvées et intégrées automatiquement`,
+                              duration: 5000,
+                            });
+                            
+                            // Scroll vers les résultats
+                            setTimeout(() => {
+                              const amenitiesSection = document.querySelector('[name="surrounding_amenities"]');
+                              if (amenitiesSection) {
+                                amenitiesSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                              }
+                            }, 500);
+                            
+                          } catch (error) {
+                            console.error('Erreur agent Google Maps:', error);
+                            toast({
+                              title: "❌ Erreur de détection",
+                              description: "Impossible de détecter les commodités. Vérifiez la configuration Google Maps API.",
+                              variant: "destructive"
+                            });
+                          } finally {
+                            loadingToast.dismiss();
+                          }
+                        }}
+                        className="bg-blue-600 hover:bg-blue-700 text-white"
                       >
-                        Bientôt disponible
+                        <MapPin className="w-4 h-4 mr-2" />
+                        Détecter commodités
                       </Button>
                     </div>
                   </div>
