@@ -679,7 +679,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               />
               <FormField
                 control={form.control}
-                name="price_from_new"
+                name="price_from"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Prix à partir de</FormLabel>
@@ -720,7 +720,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="golden_visa_eligible_new"
+                name="golden_visa_eligible"
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                     <div className="space-y-0.5">
@@ -1025,7 +1025,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           <CardContent className="p-6 space-y-6">
             <FormField
               control={form.control}
-              name="meta_title_new"
+              name="meta_title"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Titre SEO</FormLabel>
@@ -1039,7 +1039,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
             <FormField
               control={form.control}
-              name="meta_description_new"
+              name="meta_description"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Description SEO</FormLabel>
@@ -1132,7 +1132,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="featured_new"
+                name="featured_project"
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                     <div className="space-y-0.5">
