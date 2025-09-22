@@ -12,6 +12,7 @@ import { fetchProject } from '@/lib/supabase/projects';
 import { toast } from 'sonner';
 import { ArrowLeft, ArrowRight, Save, CheckCircle, ChevronLeft } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { convertLegacyAmenities, convertPhotosToCategorized } from '@/utils/amenitiesMapper';
 
 const AdminProjectForm: React.FC = () => {
   const navigate = useNavigate();
@@ -62,8 +63,6 @@ const AdminProjectForm: React.FC = () => {
       built_area_m2: null,
       total_units: null,
       units_available: null,
-      bedrooms_range: '',
-      bathrooms_range: '',
       floors_total: null,
       parking_spaces: null,
       storage_spaces: null,
@@ -77,7 +76,6 @@ const AdminProjectForm: React.FC = () => {
       pet_policy: '',
       
       // Pricing
-      price: 0,
       price_from: null,
       price_to: null,
       price_per_m2: null,
@@ -92,7 +90,6 @@ const AdminProjectForm: React.FC = () => {
       photos: [],
       photo_gallery_urls: [],
       video_tour_urls: [],
-      floor_plan_urls: [],
       virtual_tour_url: '',
       project_presentation_url: '',
       youtube_tour_url: '',
@@ -123,7 +120,7 @@ const AdminProjectForm: React.FC = () => {
     }
   });
 
-  // Fetch project data for editing with stable cache configuration
+  // Fetch project data for editing
   const { data: project, isLoading } = useQuery({
     queryKey: ['project', id],
     queryFn: () => fetchProject(id!),
@@ -134,22 +131,12 @@ const AdminProjectForm: React.FC = () => {
     refetchOnMount: true
   });
 
-  // Debug logs
-  console.log('🔍 DEBUG - État du formulaire:', {
-    id: id,
-    isEdit: isEdit,
-    projectLoaded: !!project,
-    projectData: project,
-    formValues: form.getValues()
-  });
-
-  // Load project data into form when editing with CORRECTED MAPPINGS
+  // Load project data into form when editing
   useEffect(() => {
     const loadProjectData = async () => {
       if (!project || !isEdit) return;
       
-      console.log('🔄 DÉBUT DU CHARGEMENT DES DONNÉES');
-      console.log('📦 Données projet reçues:', project);
+      console.log('🔄 Loading project data:', project);
       
       try {
         // Charger les bâtiments
@@ -159,14 +146,27 @@ const AdminProjectForm: React.FC = () => {
           .eq('project_id', id)
           .order('display_order', { ascending: true });
         
-        console.log('🏢 Bâtiments chargés:', buildingsData);
+        console.log('🏢 Buildings loaded:', buildingsData);
         
         // Cast en any pour éviter les erreurs TypeScript
         const projectData = project as any;
         
+        // Convertir les amenities legacy en codes modernes
+        const convertedAmenities = convertLegacyAmenities(projectData.amenities || []);
+        console.log('🔄 Amenities converted:', { 
+          original: projectData.amenities, 
+          converted: convertedAmenities 
+        });
+        
+        // Convertir les photos si nécessaire
+        const categorizedPhotos = convertPhotosToCategorized(
+          projectData.categorized_photos || projectData.photos || []
+        );
+        console.log('📸 Photos converted:', categorizedPhotos);
+        
         // Préparer TOUTES les données du formulaire
         const formData = {
-          // BASICS - Utilise les VRAIS noms de champs de la DB
+          // BASICS
           title: projectData.title || '',
           project_code: projectData.project_code || '',
           developer_id: projectData.developer_id || '',
@@ -199,8 +199,6 @@ const AdminProjectForm: React.FC = () => {
           built_area_m2: projectData.built_area_m2 ? Number(projectData.built_area_m2) : null,
           total_units: projectData.total_units ? Number(projectData.total_units) : null,
           units_available: projectData.units_available ? Number(projectData.units_available) : null,
-          bedrooms_range: projectData.bedrooms_range || '',
-          bathrooms_range: projectData.bathrooms_range || '',
           floors_total: projectData.floors_total ? Number(projectData.floors_total) : null,
           parking_spaces: projectData.parking_spaces ? Number(projectData.parking_spaces) : null,
           storage_spaces: projectData.storage_spaces ? Number(projectData.storage_spaces) : null,
@@ -214,7 +212,6 @@ const AdminProjectForm: React.FC = () => {
           pet_policy: projectData.pet_policy || '',
           
           // PRICING
-          price: projectData.price ? Number(projectData.price) : 0,
           price_from: projectData.price_from ? Number(projectData.price_from) : null,
           price_to: projectData.price_to ? Number(projectData.price_to) : null,
           price_per_m2: projectData.price_per_m2 ? Number(projectData.price_per_m2) : null,
@@ -229,7 +226,7 @@ const AdminProjectForm: React.FC = () => {
           buildings: buildingsData || [],
           
           // MEDIA
-          photos: projectData.categorized_photos || projectData.photos || [],
+          photos: categorizedPhotos,
           photo_gallery_urls: projectData.photo_gallery_urls || [],
           video_tour_urls: projectData.video_tour_urls || [],
           virtual_tour_url: projectData.virtual_tour_url || '',
@@ -240,10 +237,9 @@ const AdminProjectForm: React.FC = () => {
           vimeo_tour_url: projectData.vimeo_tour_url || '',
           drone_footage_urls: projectData.drone_footage_urls || [],
           model_3d_urls: projectData.model_3d_urls || [],
-          floor_plan_urls: projectData.floor_plan_urls || [],
           
-          // AMENITIES
-          amenities: projectData.amenities || [],
+          // AMENITIES (convertis)
+          amenities: convertedAmenities,
           surrounding_amenities: projectData.surrounding_amenities || [],
           
           // MARKETING
@@ -261,7 +257,7 @@ const AdminProjectForm: React.FC = () => {
           status: projectData.status || 'active'
         };
         
-        console.log('📝 Données préparées pour le formulaire:', formData);
+        console.log('📝 Form data prepared:', formData);
         
         // Reset le formulaire avec les données
         form.reset(formData);
@@ -269,23 +265,10 @@ const AdminProjectForm: React.FC = () => {
         // Forcer la mise à jour
         form.trigger();
         
-        console.log('✅ Formulaire mis à jour avec succès');
-        console.log('🔍 Valeurs actuelles du formulaire:', form.getValues());
-        
-        // DEBUG EXTRÊME - Forçage des valeurs après 1 seconde
-        setTimeout(() => {
-          console.log('🔥 FORÇAGE DES VALEURS APRÈS 1 SECONDE');
-          form.setValue('developer_id', projectData.developer_id);
-          form.setValue('statut_commercial', projectData.statut_commercial);
-          form.setValue('launch_month', projectData.launch_month);
-          form.setValue('completion_month', projectData.completion_month);
-          form.setValue('total_units', projectData.total_units);
-          form.setValue('buildings', buildingsData || []);
-          console.log('🔥 Valeurs forcées:', form.getValues());
-        }, 1000);
+        console.log('✅ Form updated successfully');
         
       } catch (error) {
-        console.error('❌ Erreur lors du chargement:', error);
+        console.error('❌ Error loading data:', error);
         toast.error('Erreur lors du chargement des données');
       }
     };
@@ -293,22 +276,32 @@ const AdminProjectForm: React.FC = () => {
     loadProjectData();
   }, [project, isEdit, form, id]);
 
-  // Enhanced submit handler with CORRECTED MAPPINGS
+  // Enhanced submit handler
   const onSubmit = async (data: any) => {
     try {
-      console.log('📤 Données du formulaire à sauvegarder:', data);
+      console.log('📤 Submitting form data:', data);
       
-      // Mapper directement les champs SANS transformation complexe
-      const dbData = {
-        ...data, // Prendre TOUTES les données du formulaire
-        // Convertir les nombres si nécessaire
-        total_units: data.total_units ? Number(data.total_units) : null,
-        units_available: data.units_available ? Number(data.units_available) : null,
-        price_from: data.price_from ? Number(data.price_from) : null,
-        vat_rate: data.vat_rate ? Number(data.vat_rate) : 5,
+      // Préparer les données pour la DB
+      const dbData: any = {
+        ...data
       };
       
-      console.log('💾 Données préparées pour la DB:', dbData);
+      // Supprimer les champs qui n'existent pas dans la DB
+      delete dbData.buildings; // Géré séparément
+      
+      // Convertir les nombres
+      if (dbData.total_units) dbData.total_units = Number(dbData.total_units);
+      if (dbData.units_available) dbData.units_available = Number(dbData.units_available);
+      if (dbData.price_from) dbData.price_from = Number(dbData.price_from);
+      if (dbData.price_to) dbData.price_to = Number(dbData.price_to);
+      if (dbData.vat_rate) dbData.vat_rate = Number(dbData.vat_rate);
+      
+      // Assurer que les amenities sont au format code
+      if (dbData.amenities && Array.isArray(dbData.amenities)) {
+        dbData.amenities = dbData.amenities.filter(Boolean);
+      }
+      
+      console.log('💾 Data prepared for DB:', dbData);
       
       if (isEdit) {
         const { data: updateResult, error } = await supabase
@@ -318,9 +311,12 @@ const AdminProjectForm: React.FC = () => {
           .select()
           .single();
         
-        if (error) throw error;
+        if (error) {
+          console.error('❌ Update error:', error);
+          throw error;
+        }
         
-        console.log('✅ Mise à jour réussie:', updateResult);
+        console.log('✅ Update successful:', updateResult);
         toast.success('Projet mis à jour avec succès');
         
         // Invalider et recharger
@@ -333,48 +329,51 @@ const AdminProjectForm: React.FC = () => {
           .insert([dbData])
           .select();
           
-        if (error) throw error;
-        console.log('✅ Insert success:', insertData);
+        if (error) {
+          console.error('❌ Insert error:', error);
+          throw error;
+        }
+        
+        console.log('✅ Insert successful:', insertData);
         toast.success('Projet créé avec succès');
         
         navigate('/admin/projects');
       }
-    } catch (error) {
-      console.error('❌ Erreur:', error);
-      toast.error('Erreur lors de la sauvegarde');
+    } catch (error: any) {
+      console.error('❌ Save error:', error);
+      toast.error(error.message || 'Erreur lors de la sauvegarde');
     }
   };
 
   const refreshFormData = async () => {
     if (isEdit && id) {
       try {
-        console.log('🔄 Rechargement des données du projet depuis la base');
+        console.log('🔄 Refreshing project data');
         const freshProject = await fetchProject(id);
         if (freshProject) {
-          console.log('📊 Données fraîches récupérées:', freshProject);
+          console.log('📊 Fresh data retrieved:', freshProject);
           
           // Récupérer les valeurs actuelles du formulaire
           const currentFormValues = form.getValues();
           
+          // Convertir les amenities si nécessaire
+          const convertedAmenities = convertLegacyAmenities((freshProject as any).amenities || []);
+          
           // Remettre à jour le formulaire avec les données fraîches de la base
           form.reset({
             ...currentFormValues,
-            total_units: freshProject.total_units ? Number(freshProject.total_units) : null,
-            units_available: freshProject.units_available ? Number(freshProject.units_available) : null,
-            roi_estimate_percent: freshProject.roi_estimate_percent ? Number(freshProject.roi_estimate_percent) : null,
-            rental_yield_percent: freshProject.rental_yield_percent ? Number(freshProject.rental_yield_percent) : null,
-            photos: (() => {
-              if (freshProject.categorized_photos && Array.isArray(freshProject.categorized_photos)) {
-                return freshProject.categorized_photos.filter((photo: any) => photo && typeof photo === 'object' && photo.url);
-              }
-              return [];
-            })()
+            total_units: (freshProject as any).total_units ? Number((freshProject as any).total_units) : null,
+            units_available: (freshProject as any).units_available ? Number((freshProject as any).units_available) : null,
+            roi_estimate_percent: (freshProject as any).roi_estimate_percent ? Number((freshProject as any).roi_estimate_percent) : null,
+            rental_yield_percent: (freshProject as any).rental_yield_percent ? Number((freshProject as any).rental_yield_percent) : null,
+            amenities: convertedAmenities,
+            photos: convertPhotosToCategorized((freshProject as any).categorized_photos || (freshProject as any).photos || [])
           });
           
-          console.log('✅ Formulaire mis à jour avec les données fraîches');
+          console.log('✅ Form refreshed with fresh data');
         }
       } catch (error) {
-        console.error('❌ Erreur lors du rechargement des données:', error);
+        console.error('❌ Error refreshing data:', error);
       }
     }
   };
