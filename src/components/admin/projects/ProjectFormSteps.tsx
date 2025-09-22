@@ -639,6 +639,17 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                           </p>
                         </div>
                       </div>
+                      {/* Bouton de test simple */}
+                      <Button
+                        type="button"
+                        onClick={() => {
+                          console.log('🔥 TEST: Bouton de test cliqué !');
+                          alert('Bouton fonctionne !');
+                        }}
+                        className="bg-green-600 hover:bg-green-700 text-white mr-2"
+                      >
+                        TEST
+                      </Button>
                       <Button
                         type="button"
                         onClick={async () => {
