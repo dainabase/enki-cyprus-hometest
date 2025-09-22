@@ -52,7 +52,7 @@ const PropertyResultCard = memo(({ property, onClick }: PropertyResultCardProps)
         {/* Prix et détails */}
         <div className="flex items-center gap-4 text-sm mb-3">
           <span className="font-bold text-xl text-primary">{property.price}€</span>
-          <span className="text-gray-600">📍 {property.location}</span>
+          <span className="text-gray-600">📍 {(property as any).city || property.location || 'Location non définie'}</span>
           <span className="text-gray-600">🏠 {property.size}m²</span>
         </div>
         

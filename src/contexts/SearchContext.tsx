@@ -180,7 +180,7 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children, allPro
       const searchTerm = (filters.location || filters.searchQuery).toLowerCase();
       filtered = filtered.filter(property =>
         property.title.toLowerCase().includes(searchTerm) ||
-        property.location.toLowerCase().includes(searchTerm) ||
+        ((property as any).city || property.location || '').toLowerCase().includes(searchTerm) ||
         property.description.toLowerCase().includes(searchTerm) ||
         property.features.some(feature => feature.toLowerCase().includes(searchTerm))
       );

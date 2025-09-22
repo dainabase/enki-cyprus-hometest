@@ -41,7 +41,7 @@ const PropertySearch = ({ properties, onFilteredProperties, onPropertySelect }: 
     if (term) {
       filtered = filtered.filter(property => 
         property.title.toLowerCase().includes(term.toLowerCase()) ||
-        property.location.toLowerCase().includes(term.toLowerCase()) ||
+        ((property as any).city || property.location || '').toLowerCase().includes(term.toLowerCase()) ||
         property.description.toLowerCase().includes(term.toLowerCase())
       );
     }

@@ -36,9 +36,8 @@ const Carousel3D: React.FC<Carousel3DProps> = ({ properties, interests, onIntere
   if (properties.length === 0) return null;
 
   const currentProperty = properties[currentSlide];
-  const locationKey = typeof currentProperty.location === 'string' 
-    ? currentProperty.location.toLowerCase() 
-    : (currentProperty.location as any)?.city?.toLowerCase() || 'limassol';
+  const locationKey = (currentProperty as any).city?.toLowerCase() || 
+                     (currentProperty as any).location?.toLowerCase() || 'limassol';
   const rawInterests = (interests && (interests as any)[locationKey]) ?? (interests as any)?.['limassol'];
   const currentInterests: ProjectInterest[] = Array.isArray(rawInterests) ? rawInterests : [];
 
@@ -66,14 +65,12 @@ const Carousel3D: React.FC<Carousel3DProps> = ({ properties, interests, onIntere
                         {property.type}
                       </Badge>
                       <h3 className="text-2xl font-bold mb-2">{property.title}</h3>
-                      <div className="flex items-center gap-2 mb-2">
-                        <MapPin className="w-4 h-4" />
-                        <span>
-                          {typeof property.location === 'string' 
-                            ? property.location 
-                            : (property.location as any)?.city || property.location}
-                        </span>
-                      </div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <MapPin className="w-4 h-4" />
+                          <span>
+                            {(currentProperty as any).city || (currentProperty as any).location || 'Location non définie'}
+                          </span>
+                        </div>
                       <div className="text-xl font-bold">{property.price}</div>
                     </div>
                   </div>

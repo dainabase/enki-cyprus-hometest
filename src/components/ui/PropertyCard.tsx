@@ -60,7 +60,7 @@ const PropertyCard = memo(({ property, index = 0, onClick, className = '' }: Pro
           src={heroImage 
             ? `https://ccsakftsslurjgnjwdci.supabase.co/functions/v1/image-proxy?url=${encodeURIComponent(heroImage)}`
             : '/placeholder.svg'}
-          alt={`Photo du bien: ${property.title} - ${property.location}`}
+          alt={`Photo du bien: ${property.title} - ${(property as any).city || property.location || 'Chypre'}`}
           aspectRatio="4/3"
           className=""
           loading="lazy"
@@ -106,7 +106,7 @@ const PropertyCard = memo(({ property, index = 0, onClick, className = '' }: Pro
           {/* Location */}
           <div className="flex items-center text-muted-foreground mb-3">
             <MapPin className="w-4 h-4 mr-1 text-primary" />
-            <span className="text-sm">{property.location}</span>
+            <span className="text-sm">{(property as any).city || property.location || 'Location non définie'}</span>
           </div>
 
           {/* Description */}
