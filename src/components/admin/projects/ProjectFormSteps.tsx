@@ -31,7 +31,8 @@ import {
   Stethoscope, Smile, PawPrint, ShoppingCart, Store, ShoppingBag, 
   School, GraduationCap, Library, Globe2, Baby, BookOpen, Bus, Car, 
   Plane, Anchor, Fuel, Mail, Trees, Flag, Dumbbell, Circle, Dice1, 
-  Film, Drama, UtensilsCrossed, Coffee, Wine, Pizza, Utensils, Music, Church
+  Film, Drama, UtensilsCrossed, Coffee, Wine, Pizza, Utensils, Music, Church,
+  Navigation, Route
 } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from '@/hooks/use-toast';
@@ -508,6 +509,147 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                   </FormItem>
                 )}
               />
+            </div>
+
+            {/* Distances stratégiques */}
+            <div className="col-span-full">
+              <Card className="bg-blue-50 border-blue-200">
+                <CardHeader>
+                  <CardTitle className="text-blue-900 flex items-center gap-2">
+                    <Navigation className="w-5 h-5" />
+                    Distances Stratégiques
+                  </CardTitle>
+                  <CardDescription className="text-blue-700">
+                    Distances depuis le projet vers les points d'intérêt majeurs
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="proximity_sea_km"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center gap-2">
+                            <Waves className="w-4 h-4" />
+                            Distance de la mer (km)
+                          </FormLabel>
+                          <FormControl>
+                            <Input 
+                              type="number" 
+                              step="0.1" 
+                              placeholder="0.5"
+                              {...field} 
+                              onChange={e => field.onChange(parseFloat(e.target.value))}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Distance jusqu'à la plage la plus proche
+                          </FormDescription>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="proximity_city_center_km"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center gap-2">
+                            <Building2 className="w-4 h-4" />
+                            Distance du centre-ville (km)
+                          </FormLabel>
+                          <FormControl>
+                            <Input 
+                              type="number" 
+                              step="0.1" 
+                              placeholder="2.0"
+                              {...field}
+                              onChange={e => field.onChange(parseFloat(e.target.value))}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Distance jusqu'au centre-ville principal
+                          </FormDescription>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="proximity_airport_km"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center gap-2">
+                            <Plane className="w-4 h-4" />
+                            Distance de l'aéroport (km)
+                          </FormLabel>
+                          <FormControl>
+                            <Input 
+                              type="number" 
+                              step="0.1" 
+                              placeholder="15"
+                              {...field}
+                              onChange={e => field.onChange(parseFloat(e.target.value))}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Distance jusqu'à l'aéroport le plus proche
+                          </FormDescription>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="proximity_highway_km"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center gap-2">
+                            <Route className="w-4 h-4" />
+                            Distance de l'autoroute (km)
+                          </FormLabel>
+                          <FormControl>
+                            <Input 
+                              type="number" 
+                              step="0.1" 
+                              placeholder="1.0"
+                              {...field}
+                              onChange={e => field.onChange(parseFloat(e.target.value))}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Distance jusqu'à l'accès autoroutier
+                          </FormDescription>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  {/* Bouton futur pour l'agent Google Maps */}
+                  <div className="mt-6 p-4 bg-white rounded-lg border border-blue-200">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <MapPin className="w-5 h-5 text-blue-600" />
+                        <div>
+                          <p className="font-semibold text-slate-900">Agent de Localisation IA</p>
+                          <p className="text-sm text-slate-600">
+                            Détection automatique des commodités via Google Maps
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        disabled
+                        className="opacity-50"
+                      >
+                        Bientôt disponible
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </CardContent>
         </Card>
