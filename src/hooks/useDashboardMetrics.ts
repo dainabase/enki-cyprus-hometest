@@ -44,7 +44,8 @@ const fetchDashboardMetrics = async (options: UseMetricsOptions = {}): Promise<D
         .from('projects')
         .select(`
           id,
-          price,
+          price_from,
+          price_to,
           status,
           golden_visa_eligible,
           created_at,
@@ -52,8 +53,7 @@ const fetchDashboardMetrics = async (options: UseMetricsOptions = {}): Promise<D
           built_area_m2,
           vat_rate,
           commission_rate,
-          cyprus_zone,
-          transfer_fee
+          cyprus_zone
         `)
         .match(zoneFilter),
       
