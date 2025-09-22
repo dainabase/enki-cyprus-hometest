@@ -663,14 +663,26 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 name="price_from"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Prix à partir de</FormLabel>
+                    <FormLabel>Prix à partir de (€)</FormLabel>
                     <FormControl>
                       <Input 
                         type="number" 
                         min="0"
                         placeholder="300000"
                         {...field}
-                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                        onChange={(e) => {
+                          field.onChange(parseInt(e.target.value) || 0);
+                          // Détection automatique Golden Visa
+                          const price = parseFloat(e.target.value);
+                          if (price >= 300000) {
+                            form.setValue('golden_visa_eligible', true);
+                            toast({
+                              title: "✨ Éligible Golden Visa",
+                              description: "Ce projet est automatiquement éligible au Golden Visa (≥300,000€)",
+                              duration: 3000,
+                            });
+                          }
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -697,6 +709,21 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 )}
               />
             </div>
+
+            {/* Indicateur Golden Visa */}
+            {form.watch('golden_visa_eligible') && (
+              <div className="col-span-full">
+                <div className="flex items-center gap-2 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                  <Star className="w-5 h-5 text-amber-600" />
+                  <div>
+                    <p className="font-semibold text-amber-900">Projet éligible Golden Visa</p>
+                    <p className="text-sm text-amber-700">
+                      Prix minimum de 300,000€ atteint pour l'obtention du visa doré
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
