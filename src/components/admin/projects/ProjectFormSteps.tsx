@@ -174,9 +174,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                   <FormLabel>Types de propriété *</FormLabel>
                   <FormControl>
                     <PropertySubTypeSelector
-                      selectedTypes={field.value || []}
-                      onChange={field.onChange}
-                      category={form.watch('property_category') || 'residential'}
+                      form={form}
                     />
                   </FormControl>
                   <FormMessage />
@@ -259,7 +257,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     const buildingsValue = form.watch('buildings') || [];
     
     const addBuilding = () => {
-      const newBuilding: ProjectBuilding = {
+      const newBuilding: any = {
         building_name: `Bâtiment ${buildingsValue.length + 1}`,
         building_type: 'apartment_building',
         construction_status: 'planned',
@@ -305,9 +303,9 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               ) : (
                 <div className="space-y-6">
                   {buildingsValue.map((building, index) => (
-                    <BuildingSection
-                      key={index}
-                      building={building}
+                     <BuildingSection
+                       key={index}
+                       building={building as ProjectBuilding}
                       index={index}
                       form={form}
                       onChange={updateBuilding}
@@ -723,7 +721,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           render={({ field }) => (
             <FormItem>
               <NearbyAmenitiesSelector
-                value={field.value || []}
+                value={field.value as any || []}
                 onChange={field.onChange}
               />
               <FormMessage />
