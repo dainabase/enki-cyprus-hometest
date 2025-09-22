@@ -13,7 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from '@/components/ui/form';
 import { MediaUploader } from './MediaUploader';
 import { CategorizedMediaUploader } from './CategorizedMediaUploader';
-import { NearbyAmenitiesSelector } from './NearbyAmenitiesSelector';
+import { SimplifiedNearbyAmenities } from './SimplifiedNearbyAmenities';
 import { AmenitiesSelector } from './AmenitiesSelector';
 import PropertySubTypeSelector from './PropertySubTypeSelector';
 import { BuildingSection } from './BuildingSection';
@@ -535,7 +535,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           name="surrounding_amenities"
           render={({ field }) => (
             <FormItem>
-              <NearbyAmenitiesSelector
+              <SimplifiedNearbyAmenities
                 value={field.value as any || []}
                 onChange={field.onChange}
               />
