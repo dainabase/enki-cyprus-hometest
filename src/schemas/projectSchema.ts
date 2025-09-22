@@ -70,7 +70,11 @@ export const projectSchema = z.object({
   incentives: z.array(z.string()).optional(),
   transfer_fee: z.number().min(0).optional(),
 
-  // MEDIA
+  // ============================================
+  // MEDIA - Contenus multimédias
+  // Niveau: PROJET
+  // Description: Photos, vidéos et présentations du projet
+  // ============================================
   photos: z.array(z.object({
     url: z.string(),
     category: z.enum(['hero', 'exterior_1', 'exterior_2', 'interior_1', 'interior_2', 'panoramic_view', 'sea_view', 'mountain_view', 'amenities', 'plans', 'kitchen', 'bedroom', 'bathroom', 'balcony', 'garden']),
@@ -92,7 +96,11 @@ export const projectSchema = z.object({
   drone_footage_urls: z.array(z.string()).optional(),
   model_3d_urls: z.array(z.string()).optional(),
 
-  // CONSTRUCTION
+  // ============================================
+  // CONSTRUCTION - Détails techniques
+  // Niveau: PROJET
+  // Description: Informations sur la construction et certifications
+  // ============================================
   construction_materials: z.array(z.string()).optional(),
   finishing_level: z.enum(['basic', 'standard', 'premium', 'luxury']).optional(),
   design_style: z.string().optional(),
@@ -115,7 +123,11 @@ export const projectSchema = z.object({
   sustainability_certifications: z.array(z.string()).optional(),
   warranty_years: z.number().min(0).optional(),
 
-  // MARKETING
+  // ============================================
+  // MARKETING - SEO et promotion
+  // Niveau: PROJET
+  // Description: Données marketing et référencement
+  // ============================================
   project_narrative: z.string().optional(),
   meta_title_new: z.string().optional(),
   meta_description_new: z.string().optional(),
@@ -124,11 +136,18 @@ export const projectSchema = z.object({
   target_audience: z.array(z.string()).optional(),
   url_slug: z.string().optional(),
 
-  // PROJECT-LEVEL FEATURES (common amenities for the entire project)
-  project_amenities: z.array(z.string()).default([]), // Amenities communes du projet
-  community_features: z.array(z.string()).optional(), // Espaces communs
+  // ============================================
+  // AMENITIES - Équipements communs
+  // Niveau: PROJET
+  // Description: Services et équipements pour tout le projet
+  // ============================================
+  amenities: z.array(z.string()).default([]), // IDs des amenities depuis la DB
   
-  // BUILDINGS DATA
+  // ============================================
+  // BUILDINGS - Structures du projet
+  // Niveau: BÂTIMENT (nested)
+  // Description: Liste des bâtiments composant le projet
+  // ============================================
   buildings: z.array(z.object({
     id: z.string().optional(),
     building_name: z.string().min(1, "Nom requis"),
@@ -156,28 +175,29 @@ export const projectSchema = z.object({
     parking_type: z.enum(['underground', 'outdoor', 'covered']).optional(),
     display_order: z.number().optional()
   })).default([]),
+
+  // ============================================
+  // NEARBY AMENITIES - Commodités environnantes
+  // Niveau: PROJET
+  // Description: Équipements à proximité du projet
+  // ============================================
   surrounding_amenities: z.array(z.object({
     nearby_amenity_id: z.string().min(1, "ID requis"),
     distance_km: z.number().optional(),
     details: z.string().optional()
   })).default([]),
-  amenities: z.array(z.string()).optional(),
 
-  // STATUS
+  // ============================================
+  // STATUS - État du projet
+  // Niveau: PROJET
+  // Description: Statuts commercial et de construction
+  // ============================================
   status_project: z.enum(['disponible', 'en_construction', 'livre', 'pret_a_emmenager']).default('disponible'),
   statut_commercial: z.enum(['prelancement', 'lancement_commercial', 'en_commercialisation', 'derniere_opportunite', 'vendu']).default('prelancement'),
   construction_phase: z.enum(['planned', 'in_progress', 'completion', 'finished']).default('planned'),
   featured_new: z.boolean().default(false),
   after_sales_service: z.boolean().optional(),
-  nft_ownership_available: z.boolean().optional(),
-
-  // LOCATION OBJECT (legacy compatibility)
-  location: z.object({
-    city: z.string(),
-    address: z.string().optional(),
-    lat: z.number().optional(),
-    lng: z.number().optional()
-  }).optional()
+  nft_ownership_available: z.boolean().optional()
 }).refine(
   (data) => {
     if (data.golden_visa_eligible_new && data.price < 300000) {
@@ -236,7 +256,7 @@ export const projectFormSteps = [
     id: 'amenities',
     title: 'Équipements Communs',
     icon: 'Star',
-    fields: ['amenities', 'project_amenities', 'community_features']
+    fields: ['amenities']
   },
   {
     id: 'specifications',
