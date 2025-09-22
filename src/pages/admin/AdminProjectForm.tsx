@@ -143,24 +143,65 @@ const AdminProjectForm: React.FC = () => {
         categorized_photos: project.categorized_photos
       });
       
-      // Reset form with project data
-      const projectData = project;
-      // Helper function to safely access location data
-      const getLocationValue = (field: string) => {
-        return projectData.city || null;
+      // Charger les bâtiments depuis la table buildings
+      const loadBuildingsData = async () => {
+        const { data: buildingsData, error } = await supabase
+          .from('buildings')
+          .select('*')
+          .eq('project_id', id)
+          .order('display_order', { ascending: true });
+        
+        if (buildingsData) {
+          console.log('Buildings loaded:', buildingsData);
+          return buildingsData.map(b => ({
+            building_name: b.building_name,
+            building_type: b.building_type,
+            building_code: b.building_code,
+            construction_status: b.construction_status,
+            total_floors: b.total_floors,
+            total_units: b.total_units,
+            units_available: b.units_available,
+            building_class: b.building_class,
+            energy_certificate: b.energy_certificate,
+            elevator_count: b.elevator_count,
+            has_generator: b.has_generator,
+            has_security_system: b.has_security_system,
+            has_cctv: b.has_cctv,
+            has_concierge: b.has_concierge,
+            has_pool: b.has_pool,
+            has_gym: b.has_gym,
+            has_spa: b.has_spa,
+            has_playground: b.has_playground,
+            has_garden: b.has_garden,
+            has_parking: b.has_parking,
+            parking_type: b.parking_type
+          }));
+        }
+        return [];
       };
+      
+      // Charger les données du projet ET les bâtiments
+      loadBuildingsData().then(buildings => {
+        const projectData = project;
+        // Helper function to safely access location data
+        const getLocationValue = (field: string) => {
+          return projectData.city || null;
+        };
 
-      form.reset({
-        // Basics - Project Info
-        title: projectData.title || '',
-        project_code: projectData.project_code || '',
-        developer_id: projectData.developer_id || '',
-        project_phase: projectData.project_phase || 'off-plan',
-        launch_date: projectData.launch_date ? String(projectData.launch_date).substring(0, 7) : '', // Convert YYYY-MM-DD to YYYY-MM
-        completion_date: projectData.completion_date ? String(projectData.completion_date).substring(0, 7) : '',
-        exclusive_commercialization: projectData.exclusive_commercialization || false,
-        description: projectData.description || '',
-        detailed_description: projectData.detailed_description || '',
+        form.reset({
+          // Basics - Project Info - CORRIGER LES MAPPINGS
+          title: projectData.title || '',
+          project_code: projectData.project_code || '',
+          developer_id: projectData.developer_id || '',
+          property_category: 'residential', // Valeur par défaut
+          property_sub_type: ['apartment'], // Valeur par défaut
+          project_phase: projectData.project_phase || 'off-plan',
+          statut_commercial: projectData.statut_commercial || 'pre_commercialisation',
+          launch_month: '', // Valeur par défaut
+          completion_month: '', // Valeur par défaut
+          exclusive_commercialization: projectData.exclusive_commercialization || false,
+          description: projectData.description || '',
+          detailed_description: projectData.detailed_description || '',
         
         // Location
         full_address: projectData.full_address || getLocationValue('address') || '',
@@ -186,14 +227,19 @@ const AdminProjectForm: React.FC = () => {
         hoa_fees_monthly: projectData.hoa_fees_monthly ? Number(projectData.hoa_fees_monthly) : null,
         pet_policy: projectData.pet_policy || '',
         
-        // Pricing with proper number conversion
-        price_from: projectData.price_from ? Number(projectData.price_from) : null,
+        // Pricing - CORRIGER LES MAPPINGS
+        price: 0, // Valeur par défaut
+        price_from_new: projectData.price_from ? Number(projectData.price_from) : null, // MAPPING CORRIGÉ
         price_to: projectData.price_to ? Number(projectData.price_to) : null,
         price_per_m2: projectData.price_per_m2 ? Number(projectData.price_per_m2) : null,
-        vat_rate: projectData.vat_rate ? Number(projectData.vat_rate) : 5,
-        golden_visa_eligible: projectData.golden_visa_eligible || false,
+        vat_rate_new: projectData.vat_rate ? Number(projectData.vat_rate) : 5, // MAPPING CORRIGÉ
+        golden_visa_eligible_new: projectData.golden_visa_eligible || false, // MAPPING CORRIGÉ
         roi_estimate_percent: projectData.roi_estimate_percent ? Number(projectData.roi_estimate_percent) : null,
         rental_yield_percent: projectData.rental_yield_percent ? Number(projectData.rental_yield_percent) : null,
+        financing_available: false, // Valeur par défaut
+        
+        // Buildings - CHARGER DEPUIS LA TABLE BUILDINGS
+        buildings: buildings || [], // AJOUTÉ
         
         // Media - Parse photos from database (prioritize categorized_photos over photos)
         photos: (() => {
@@ -241,7 +287,9 @@ const AdminProjectForm: React.FC = () => {
         })(),
         photo_gallery_urls: Array.isArray(projectData.photo_gallery_urls) ? projectData.photo_gallery_urls : [],
         video_tour_urls: Array.isArray(projectData.video_tour_urls) ? projectData.video_tour_urls : [],
-        virtual_tour_url: projectData.virtual_tour_url || '',
+        virtual_tour_url_new: projectData.virtual_tour_url || '', // MAPPING CORRIGÉ
+        master_plan_pdf: projectData.master_plan_url || '',
+        brochure_pdf: projectData.brochure_url || '',
         project_presentation_url: projectData.project_presentation_url || '',
         youtube_tour_url: projectData.youtube_tour_url || '',
         vimeo_tour_url: projectData.vimeo_tour_url || '',
@@ -252,23 +300,29 @@ const AdminProjectForm: React.FC = () => {
         amenities: Array.isArray(projectData.amenities) ? projectData.amenities : [],
         surrounding_amenities: Array.isArray(projectData.surrounding_amenities) ? projectData.surrounding_amenities : [],
         
-        // Marketing
+        // Marketing - CORRIGER LES MAPPINGS
         project_narrative: projectData.project_narrative || '',
-        meta_title: projectData.meta_title || '',
-        meta_description: projectData.meta_description || '',
-        meta_keywords: Array.isArray(projectData.meta_keywords) ? projectData.meta_keywords : [],
+        meta_title_new: projectData.meta_title || '', // MAPPING CORRIGÉ
+        meta_description_new: projectData.meta_description || '', // MAPPING CORRIGÉ
+        meta_keywords: Array.isArray(projectData.meta_keywords) ? 
+          projectData.meta_keywords : 
+          (projectData.meta_keywords ? projectData.meta_keywords.split(',').map(k => k.trim()) : []),
         marketing_highlights: Array.isArray(projectData.marketing_highlights) ? projectData.marketing_highlights : [],
-        target_audience: Array.isArray(projectData.target_audience) ? projectData.target_audience : [],
-        featured_project: projectData.featured_project || false,
+        target_audience: Array.isArray(projectData.target_audience) ? 
+          projectData.target_audience : 
+          (projectData.target_audience ? projectData.target_audience.split(',').map(k => k.trim()) : []),
+        url_slug: projectData.url_slug || '',
+        featured_new: projectData.featured_project || false, // MAPPING CORRIGÉ
+        construction_phase: projectData.construction_phase || 'planned',
         
         // Status
-        status: projectData.status || 'planning',
+        status: projectData.status || 'active'
       });
       
-      // Ne PAS forcer le re-render ici car cela efface les données
-      console.log('Form data loaded successfully');
-    }
-  }, [project, isEdit, form]);
+      console.log('Form data loaded successfully with buildings');
+    });
+  }
+}, [project, isEdit, form, id]); // Ajouter id aux dépendances
 
   // Enhanced submit handler with comprehensive data processing
   const onSubmit = async (data: any) => {

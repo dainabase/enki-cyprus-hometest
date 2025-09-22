@@ -46,8 +46,8 @@ export const projectSchema = z.object({
   // SPECIFICATIONS
   land_area_m2: z.number().min(0).optional(),
   built_area_m2: z.number().min(0).optional(),
-  total_units_new: z.number().min(0).optional(),
-  units_available_new: z.number().min(0).optional(),
+  total_units: z.number().min(0).optional(),
+  units_available: z.number().min(0).optional(),
   bedrooms_range: z.string().optional(),
   bathrooms_range: z.string().optional(),
   floors_total: z.number().min(0).optional(),
