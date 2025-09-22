@@ -69,25 +69,20 @@ export const fetchProjects = async (filters: ProjectFilters = {}) => {
 
 // Fetch single project with full details
 export const fetchProject = async (id: string) => {
+  console.log('🔍 Fetching project with ID:', id);
+  
   const { data, error } = await supabase
     .from('projects')
-    .select(`
-      *,
-      developer:developers(id, name, contact_info, logo, website),
-      buildings!fk_buildings_project_id(
-        id,
-        building_name,
-        total_floors,
-        total_units,
-        building_type,
-        construction_status,
-        energy_rating
-      )
-    `)
+    .select('*')  // Sélectionne TOUT au lieu de champs spécifiques
     .eq('id', id)
     .single();
   
-  if (error) throw error;
+  if (error) {
+    console.error('❌ Error fetching project:', error);
+    throw error;
+  }
+  
+  console.log('✅ Project fetched successfully:', data);
   return data;
 };
 
