@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Search, Star, Info } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { convertLegacyAmenities } from '@/utils/amenitiesMapper';
 import * as LucideIcons from 'lucide-react';
 
 interface AmenitiesSelectorProps {
@@ -19,6 +20,17 @@ export const AmenitiesSelector: React.FC<AmenitiesSelectorProps> = ({
   onChange
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [convertedAmenities, setConvertedAmenities] = useState<string[]>([]);
+
+  // Convertir les amenities legacy au chargement
+  useEffect(() => {
+    const converted = convertLegacyAmenities(selectedAmenities);
+    setConvertedAmenities(converted);
+    console.log('🔄 Amenities conversion:', { 
+      original: selectedAmenities, 
+      converted 
+    });
+  }, [selectedAmenities]);
 
   const { data: amenities, isLoading } = useQuery({
     queryKey: ['amenities'],
@@ -46,12 +58,20 @@ export const AmenitiesSelector: React.FC<AmenitiesSelectorProps> = ({
     return acc;
   }, {} as Record<string, any[]>);
 
-  const toggleAmenity = (amenityId: string) => {
-    console.log('🏊 Toggling amenity:', amenityId, 'Current selection:', selectedAmenities);
-    if (selectedAmenities.includes(amenityId)) {
-      onChange(selectedAmenities.filter(id => id !== amenityId));
+  const toggleAmenity = (amenityCode: string) => {
+    console.log('🏊 Toggling amenity:', amenityCode, 'Current selection:', convertedAmenities);
+    
+    // Utiliser les amenities converties pour la comparaison
+    if (convertedAmenities.includes(amenityCode)) {
+      // Retirer de la liste convertie
+      const newConverted = convertedAmenities.filter(code => code !== amenityCode);
+      setConvertedAmenities(newConverted);
+      onChange(newConverted); // Sauvegarder les codes anglais
     } else {
-      onChange([...selectedAmenities, amenityId]);
+      // Ajouter à la liste convertie
+      const newConverted = [...convertedAmenities, amenityCode];
+      setConvertedAmenities(newConverted);
+      onChange(newConverted); // Sauvegarder les codes anglais
     }
   };
 
@@ -112,6 +132,7 @@ export const AmenitiesSelector: React.FC<AmenitiesSelectorProps> = ({
           </div>
         </CardContent>
       </Card>
+
       <div className="space-y-2">
         <Label>Rechercher des prestations</Label>
         <div className="relative">
@@ -127,8 +148,13 @@ export const AmenitiesSelector: React.FC<AmenitiesSelectorProps> = ({
 
       <div className="mb-4 p-3 bg-muted rounded-lg">
         <p className="text-sm text-muted-foreground">
-          <strong>{selectedAmenities.length}</strong> prestation(s) sélectionnée(s)
+          <strong>{convertedAmenities.length}</strong> prestation(s) sélectionnée(s)
         </p>
+        {convertedAmenities.length > 0 && (
+          <p className="text-xs text-muted-foreground mt-1">
+            Codes: {convertedAmenities.join(', ')}
+          </p>
+        )}
       </div>
 
       <div className="grid gap-6">
@@ -145,30 +171,34 @@ export const AmenitiesSelector: React.FC<AmenitiesSelectorProps> = ({
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                {items.map((amenity) => (
-                  <label
-                    key={amenity.id}
-                    className={`flex items-center space-x-3 cursor-pointer p-3 rounded-lg border transition-colors hover:bg-accent ${
-                      selectedAmenities.includes(amenity.id) 
-                        ? 'border-primary bg-primary/5' 
-                        : 'border-border'
-                    }`}
-                  >
-                    <Checkbox
-                      checked={selectedAmenities.includes(amenity.code)}
-                      onCheckedChange={() => toggleAmenity(amenity.code)}
-                    />
-                    <div className="flex items-center gap-2 flex-1 min-w-0">
-                      {renderIcon(amenity.icon)}
-                      <span className="text-sm font-medium truncate">
-                        {amenity.name_en}
-                      </span>
-                      {amenity.is_premium && (
-                        <Star className="w-3 h-3 text-yellow-500 flex-shrink-0" />
-                      )}
-                    </div>
-                  </label>
-                ))}
+                {items.map((amenity) => {
+                  const isSelected = convertedAmenities.includes(amenity.code);
+                  
+                  return (
+                    <label
+                      key={amenity.id}
+                      className={`flex items-center space-x-3 cursor-pointer p-3 rounded-lg border transition-colors hover:bg-accent ${
+                        isSelected
+                          ? 'border-primary bg-primary/5' 
+                          : 'border-border'
+                      }`}
+                    >
+                      <Checkbox
+                        checked={isSelected}
+                        onCheckedChange={() => toggleAmenity(amenity.code)}
+                      />
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        {renderIcon(amenity.icon)}
+                        <span className="text-sm font-medium truncate">
+                          {amenity.name_en}
+                        </span>
+                        {amenity.is_premium && (
+                          <Star className="w-3 h-3 text-yellow-500 flex-shrink-0" />
+                        )}
+                      </div>
+                    </label>
+                  );
+                })}
               </div>
             </CardContent>
           </Card>
