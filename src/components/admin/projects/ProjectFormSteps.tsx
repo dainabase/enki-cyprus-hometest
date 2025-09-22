@@ -293,7 +293,20 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
   const renderBuildingsStep = () => {
     const buildingsValue = form.watch('buildings') || [];
-    const [isInitialized, setIsInitialized] = React.useState(false);
+    
+    // ✅ CORRECTION: Initialisation directe sans useEffect ni état local
+    // Si aucun bâtiment et nouveau projet, initialiser avec un bâtiment par défaut
+    if (buildingsValue.length === 0 && !projectId) {
+      const defaultBuilding: ProjectBuilding = {
+        building_name: `Bâtiment 1`,
+        building_type: 'apartment_building',
+        construction_status: 'planned',
+        total_floors: 0,
+        total_units: 0,
+        units_available: 0
+      };
+      form.setValue('buildings', [defaultBuilding]);
+    }
     
     const addBuilding = () => {
       const newBuilding: ProjectBuilding = {
@@ -324,23 +337,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
       const newBuilding = { ...buildingToDuplicate, building_name: `${buildingToDuplicate.building_name} - Copie` };
       form.setValue('buildings', [...buildingsValue, newBuilding]);
     };
-
-    // Initialiser avec un bâtiment par défaut si aucun - version sécurisée
-    React.useEffect(() => {
-      if (!isInitialized && buildingsValue.length === 0 && !projectId) {
-        console.log('🏗️ Initializing default building');
-        const defaultBuilding: ProjectBuilding = {
-          building_name: `Bâtiment 1`,
-          building_type: 'apartment_building',
-          construction_status: 'planned',
-          total_floors: 0,
-          total_units: 0,
-          units_available: 0
-        };
-        form.setValue('buildings', [defaultBuilding]);
-        setIsInitialized(true);
-      }
-    }, [isInitialized, projectId]); // Utiliser un flag pour éviter les boucles
 
     return (
       <div className="space-y-8">
