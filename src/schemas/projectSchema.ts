@@ -227,6 +227,18 @@ export const projectFormSteps = [
     ]
   },
   {
+    id: 'buildings',
+    title: 'Bâtiments',
+    icon: 'Building2',
+    fields: ['buildings']
+  },
+  {
+    id: 'amenities',
+    title: 'Équipements Communs',
+    icon: 'Star',
+    fields: ['amenities']
+  },
+  {
     id: 'specifications',
     title: 'Spécifications',
     icon: 'Ruler',

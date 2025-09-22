@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Search, Star } from 'lucide-react';
+import { Search, Star, Info } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import * as LucideIcons from 'lucide-react';
 
@@ -93,6 +93,23 @@ export const AmenitiesSelector: React.FC<AmenitiesSelectorProps> = ({
 
   return (
     <div className="space-y-6">
+      <Card className="bg-blue-50 border-blue-200">
+        <CardContent className="pt-6">
+          <div className="flex items-start gap-3">
+            <Info className="h-5 w-5 text-blue-600 mt-0.5" />
+            <div className="text-sm space-y-1">
+              <p className="font-semibold text-blue-900">
+                Équipements et Services Communs du Projet
+              </p>
+              <p className="text-blue-700">
+                Sélectionnez uniquement les équipements disponibles pour TOUS les résidents du projet.
+                Les équipements spécifiques aux propriétés individuelles (suite parentale, terrasse privée, etc.) 
+                seront configurés lors de la création de chaque propriété.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
       <div className="space-y-2">
         <Label>Rechercher des prestations</Label>
         <div className="relative">

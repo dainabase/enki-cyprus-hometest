@@ -280,6 +280,19 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
       form.setValue('buildings', newBuildings);
     };
 
+    const duplicateBuilding = (index: number) => {
+      const buildingToDuplicate = buildingsValue[index];
+      const newBuilding = { ...buildingToDuplicate, building_name: `${buildingToDuplicate.building_name} - Copie` };
+      form.setValue('buildings', [...buildingsValue, newBuilding]);
+    };
+
+    // Initialiser avec un bâtiment par défaut si aucun
+    React.useEffect(() => {
+      if (buildingsValue.length === 0) {
+        addBuilding();
+      }
+    }, []);
+
     return (
       <div className="space-y-8">
         <Card className="border-2 border-slate-300 shadow-lg">
@@ -306,11 +319,13 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                      <BuildingSection
                        key={index}
                        building={building as ProjectBuilding}
-                      index={index}
-                      form={form}
-                      onChange={updateBuilding}
-                      onRemove={removeBuilding}
-                      canRemove={buildingsValue.length > 1}
+                       index={index}
+                       totalBuildings={buildingsValue.length}
+                       form={form}
+                       onChange={updateBuilding}
+                       onRemove={removeBuilding}
+                       onDuplicate={duplicateBuilding}
+                       canRemove={buildingsValue.length > 1}
                     />
                   ))}
                 </div>

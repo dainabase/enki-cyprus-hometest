@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { Badge } from '@/components/ui/badge';
-import { Trash2, Building2, Layers, Users, Zap, Shield } from 'lucide-react';
+import { Trash2, Building2, Layers, Users, Zap, Shield, Copy } from 'lucide-react';
 import { UseFormReturn } from 'react-hook-form';
 import { ProjectFormData } from '@/schemas/projectSchema';
 import { ProjectBuilding } from '@/types/building.project';
@@ -14,18 +14,22 @@ import { ProjectBuilding } from '@/types/building.project';
 interface BuildingSectionProps {
   building: ProjectBuilding;
   index: number;
+  totalBuildings: number;
   form: UseFormReturn<ProjectFormData>;
   onChange: (index: number, building: ProjectBuilding) => void;
   onRemove: (index: number) => void;
+  onDuplicate: (index: number) => void;
   canRemove: boolean;
 }
 
 export const BuildingSection: React.FC<BuildingSectionProps> = ({
   building,
   index,
+  totalBuildings,
   form,
   onChange,
   onRemove,
+  onDuplicate,
   canRemove
 }) => {
   const updateBuilding = (field: keyof ProjectBuilding, value: any) => {
@@ -48,11 +52,21 @@ export const BuildingSection: React.FC<BuildingSectionProps> = ({
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <Building2 className="w-5 h-5" />
-            Bâtiment {index + 1}
+            Bâtiment {index + 1} sur {totalBuildings}
             {building.building_name && ` - ${building.building_name}`}
           </CardTitle>
           <div className="flex items-center gap-2">
             {getStatusBadge(building.construction_status)}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => onDuplicate(index)}
+              className="h-8 px-2"
+            >
+              <Copy className="h-4 w-4 mr-1" />
+              Dupliquer
+            </Button>
             {canRemove && (
               <Button
                 type="button"
