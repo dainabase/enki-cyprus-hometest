@@ -84,7 +84,9 @@ export const AmenitiesSelector: React.FC<AmenitiesSelectorProps> = ({
       business: 'Business',
       lifestyle: 'Lifestyle',
       connectivity: 'Connectivité',
-      outdoor: 'Extérieur'
+      outdoor: 'Extérieur',
+      community: 'Communauté',
+      infrastructure: 'Infrastructure'
     };
     return titles[category] || category;
   };
@@ -98,7 +100,9 @@ export const AmenitiesSelector: React.FC<AmenitiesSelectorProps> = ({
       business: 'Briefcase',
       lifestyle: 'Coffee',
       connectivity: 'Wifi',
-      outdoor: 'Trees'
+      outdoor: 'Trees',
+      community: 'Users',
+      infrastructure: 'Building2'
     };
     const IconComponent = LucideIcons[icons[category] || 'Circle'] as React.ComponentType<any>;
     return <IconComponent className="w-5 h-5" />;
