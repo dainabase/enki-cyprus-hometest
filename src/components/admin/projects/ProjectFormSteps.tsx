@@ -787,6 +787,183 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="vimeo_tour_url"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    <Video className="w-4 h-4" />
+                    Vidéo Vimeo
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="https://vimeo.com/..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </Card>
+
+        <Card className="border-2 border-slate-300 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+            <CardTitle>Documents du Projet</CardTitle>
+          </CardHeader>
+          <CardContent className="p-6 space-y-4">
+            <FormField
+              control={form.control}
+              name="master_plan_pdf"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    <FileText className="w-4 h-4" />
+                    Plan de masse (PDF)
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="https://..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="brochure_pdf"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    <FileText className="w-4 h-4" />
+                    Brochure (PDF)
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="https://..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="price_list_pdf"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    <FileText className="w-4 h-4" />
+                    Grille tarifaire (PDF)
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="https://..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="technical_specs_pdf"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    <FileText className="w-4 h-4" />
+                    Spécifications techniques (PDF)
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="https://..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </Card>
+
+        <Card className="border-2 border-slate-300 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+            <CardTitle>Modèles 3D et Plans</CardTitle>
+          </CardHeader>
+          <CardContent className="p-6 space-y-4">
+            <FormField
+              control={form.control}
+              name="model_3d_urls"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    <Globe className="w-4 h-4" />
+                    Liens modèles 3D
+                  </FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Séparez par des virgules: https://..."
+                      {...field}
+                      value={Array.isArray(field.value) ? field.value.join(', ') : field.value || ''}
+                      onChange={(e) => field.onChange(e.target.value.split(',').map(k => k.trim()).filter(k => k))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="floor_plan_urls"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    <MapIcon className="w-4 h-4" />
+                    Plans d'étage
+                  </FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Séparez par des virgules: https://..."
+                      {...field}
+                      value={Array.isArray(field.value) ? field.value.join(', ') : field.value || ''}
+                      onChange={(e) => field.onChange(e.target.value.split(',').map(k => k.trim()).filter(k => k))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="ar_experience_url"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    <Smartphone className="w-4 h-4" />
+                    Expérience AR
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="https://..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="metaverse_preview_url"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    <Globe className="w-4 h-4" />
+                    Aperçu Metaverse
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="https://..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </CardContent>
         </Card>
       </div>
@@ -826,6 +1003,80 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       placeholder="Description pour les moteurs de recherche (160 caractères max)"
                       rows={3}
                       {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="meta_keywords"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Mots-clés SEO</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Séparez par des virgules: immobilier, chypre, investissement..."
+                      {...field}
+                      value={Array.isArray(field.value) ? field.value.join(', ') : field.value || ''}
+                      onChange={(e) => field.onChange(e.target.value.split(',').map(k => k.trim()).filter(k => k))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="marketing_highlights"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Points Marketing</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Séparez par des virgules: Vue mer, Golden Visa, Près plage..."
+                      {...field}
+                      value={Array.isArray(field.value) ? field.value.join(', ') : field.value || ''}
+                      onChange={(e) => field.onChange(e.target.value.split(',').map(k => k.trim()).filter(k => k))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="target_audience"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Audience Cible</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Séparez par des virgules: Investisseurs, Retraités, Familles..."
+                      {...field}
+                      value={Array.isArray(field.value) ? field.value.join(', ') : field.value || ''}
+                      onChange={(e) => field.onChange(e.target.value.split(',').map(k => k.trim()).filter(k => k))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="url_slug"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>URL Slug</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="marina-towers-limassol"
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />

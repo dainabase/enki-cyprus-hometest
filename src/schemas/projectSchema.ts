@@ -52,7 +52,7 @@ export const projectSchema = z.object({
   floors_total: z.number().min(0).optional(),
   parking_spaces: z.number().min(0).optional(),
   storage_spaces: z.number().min(0).optional(),
-  smart_home_features: z.record(z.any()).optional(),
+  smart_home_features: z.record(z.string(), z.boolean()).optional(),
 
   // PRICING
   price: z.number().min(0, "Prix requis"),
@@ -65,8 +65,20 @@ export const projectSchema = z.object({
   roi_estimate_percent: z.number().min(0).max(100).optional(),
   rental_yield_percent: z.number().min(0).max(100).optional(),
   financing_available: z.boolean().default(false),
-  financing_options: z.any().optional(),
-  payment_plan: z.any().optional(),
+  financing_options: z.object({
+    bank_loan: z.boolean().optional(),
+    developer_financing: z.boolean().optional(),
+    payment_plan_available: z.boolean().optional(),
+    crypto_accepted: z.boolean().optional(),
+    cash_discount: z.number().min(0).max(100).optional()
+  }).optional(),
+  payment_plan: z.object({
+    deposit_percent: z.number().min(0).max(100).optional(),
+    installments_count: z.number().min(0).optional(),
+    installment_frequency: z.enum(['monthly', 'quarterly', 'semi-annual', 'annual']).optional(),
+    completion_payment_percent: z.number().min(0).max(100).optional(),
+    notes: z.string().optional()
+  }).optional(),
   incentives: z.array(z.string()).optional(),
   transfer_fee: z.number().min(0).optional(),
 
@@ -95,6 +107,11 @@ export const projectSchema = z.object({
   floor_plan_urls: z.array(z.string()).optional(),
   drone_footage_urls: z.array(z.string()).optional(),
   model_3d_urls: z.array(z.string()).optional(),
+  master_plan_pdf: z.string().optional(),
+  brochure_pdf: z.string().optional(),
+  price_list_pdf: z.string().optional(),
+  technical_specs_pdf: z.string().optional(),
+  legal_documents_urls: z.array(z.string()).optional(),
 
   // ============================================
   // CONSTRUCTION - Détails techniques
@@ -135,6 +152,10 @@ export const projectSchema = z.object({
   marketing_highlights: z.array(z.string()).optional(),
   target_audience: z.array(z.string()).optional(),
   url_slug: z.string().optional(),
+  og_title: z.string().optional(),
+  og_description: z.string().optional(),
+  og_image: z.string().optional(),
+  seo_agent_content: z.string().optional(),
 
   // ============================================
   // AMENITIES - Équipements communs
@@ -284,7 +305,9 @@ export const projectFormSteps = [
     icon: 'Image',
     fields: [
       'photos', 'youtube_tour_url', 'vr_tour_url', 'virtual_tour_url_new',
-      'project_presentation_url', 'vimeo_tour_url'
+      'project_presentation_url', 'vimeo_tour_url', 'master_plan_pdf',
+      'brochure_pdf', 'price_list_pdf', 'technical_specs_pdf', 'model_3d_urls',
+      'floor_plan_urls', 'ar_experience_url', 'metaverse_preview_url'
     ]
   },
   {
@@ -292,8 +315,10 @@ export const projectFormSteps = [
     title: 'Marketing & SEO',
     icon: 'Megaphone',
     fields: [
-      'meta_title_new', 'meta_description_new', 'status_project', 
-      'featured_new', 'statut_commercial', 'construction_phase'
+      'meta_title_new', 'meta_description_new', 'meta_keywords', 
+      'marketing_highlights', 'target_audience', 'url_slug', 'og_title',
+      'og_description', 'og_image', 'status_project', 'featured_new', 
+      'statut_commercial', 'construction_phase'
     ]
   }
 ];
