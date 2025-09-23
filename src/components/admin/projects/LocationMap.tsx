@@ -1,6 +1,8 @@
 import { GoogleMap, Marker, Circle, InfoWindow } from '@react-google-maps/api';
 import { useState, useCallback, memo } from 'react';
 import { useGoogleMapsContext } from '@/contexts/GoogleMapsContext';
+import { Button } from '@/components/ui/button';
+import { Map, Satellite } from 'lucide-react';
 
 interface LocationMapProps {
   address: string;
@@ -61,6 +63,7 @@ export const LocationMap = memo(({
   const { isLoaded, loadError } = useGoogleMapsContext();
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [selectedCommodity, setSelectedCommodity] = useState<any>(null);
+  const [mapType, setMapType] = useState<'roadmap' | 'satellite'>('roadmap');
 
   const center = {
     lat: latitude || 34.7072,  // Default: Limassol
@@ -108,13 +111,37 @@ export const LocationMap = memo(({
   }
 
   return (
-    <GoogleMap
-        mapContainerStyle={mapContainerStyle}
+    <div className="relative h-[500px] w-full rounded-lg overflow-hidden">
+      {/* Bouton de bascule vue */}
+      <div className="absolute top-2 right-2 z-10">
+        <Button
+          size="sm"
+          variant="secondary"
+          onClick={() => setMapType(mapType === 'roadmap' ? 'satellite' : 'roadmap')}
+          className="shadow-lg"
+        >
+          {mapType === 'roadmap' ? (
+            <>
+              <Satellite className="h-4 w-4 mr-1" />
+              Satellite
+            </>
+          ) : (
+            <>
+              <Map className="h-4 w-4 mr-1" />
+              Carte
+            </>
+          )}
+        </Button>
+      </div>
+      
+      <GoogleMap
+        mapContainerStyle={{ width: '100%', height: '100%' }}
         center={center}
         zoom={14}
         onLoad={onLoad}
         onUnmount={onUnmount}
         options={{
+          mapTypeId: mapType,
           streetViewControl: false,
           mapTypeControl: false,
           fullscreenControl: false,
@@ -186,6 +213,7 @@ export const LocationMap = memo(({
           </InfoWindow>
         )}
       </GoogleMap>
+    </div>
   );
 });
 

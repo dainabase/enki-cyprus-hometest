@@ -74,89 +74,146 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
 }
 
 async function findStrategicDistances(lat: number, lng: number) {
-  console.log('Recherche des distances stratégiques...');
+  console.log(`📍 Recherche distances stratégiques pour: ${lat}, ${lng}`);
   
   const strategicDistances = {
-    nearest_beach: null as number | null,
-    airport_distance: null as number | null,
-    city_center_distance: null as number | null,
-    highway_distance: null as number | null
+    proximity_sea_km: null as number | null,
+    proximity_airport_km: null as number | null,
+    proximity_city_center_km: null as number | null,
+    proximity_highway_km: null as number | null
   };
 
-  const strategicSearches = [
-    {
-      query: 'beach OR sea OR seafront OR waterfront OR plage OR mer',
-      field: 'nearest_beach',
-      radius: 15000
-    },
-    {
-      query: 'airport OR aéroport Larnaca OR Paphos airport',
-      field: 'airport_distance',
-      radius: 60000
-    },
-    {
-      query: 'city center OR downtown OR centre ville Limassol OR Paphos center OR Larnaca center',
-      field: 'city_center_distance',
-      radius: 20000
-    },
-    {
-      query: 'highway OR motorway OR autoroute OR A1 OR A6',
-      field: 'highway_distance',
-      radius: 15000
-    }
-  ];
-
-  for (const search of strategicSearches) {
-    try {
-      const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?` +
-        `query=${encodeURIComponent(search.query)}` +
-        `&location=${lat},${lng}` +
-        `&radius=${search.radius}` +
-        `&key=${GOOGLE_MAPS_API_KEY}`;
-      
-      const response = await fetch(url);
-      
-      if (response.ok) {
-        const data = await response.json();
-        
-        if (data.results && data.results.length > 0) {
-          const nearest = data.results[0];
-          const distance = calculateDistance(
-            lat, lng,
-            nearest.geometry.location.lat,
-            nearest.geometry.location.lng
-          );
-          
-          strategicDistances[search.field as keyof typeof strategicDistances] = distance;
-          console.log(`${search.field}: ${distance} km`);
+  // RECHERCHE SPÉCIFIQUE POUR CHYPRE
+  
+  // 1. PLAGE - Recherche TRÈS locale d'abord
+  try {
+    // D'abord chercher dans un rayon très proche (2km)
+    const beachNearbyUrl = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?` +
+      `location=${lat},${lng}` +
+      `&radius=2000` +
+      `&keyword=beach|sea|waterfront|coast|shore` +
+      `&key=${GOOGLE_MAPS_API_KEY}`;
+    
+    const beachResponse = await fetch(beachNearbyUrl);
+    const beachData = await beachResponse.json();
+    
+    if (beachData.results && beachData.results.length > 0) {
+      let minDistance = Infinity;
+      for (const place of beachData.results) {
+        const distance = calculateDistance(
+          lat, lng,
+          place.geometry.location.lat,
+          place.geometry.location.lng
+        );
+        if (distance < minDistance) {
+          minDistance = distance;
         }
       }
-    } catch (error) {
-      console.error(`Erreur ${search.field}:`, error);
+      strategicDistances.proximity_sea_km = Math.round(minDistance * 10) / 10;
+      console.log(`✅ Plage trouvée par recherche: ${strategicDistances.proximity_sea_km} km`);
     }
-  }
-
-  if (!strategicDistances.nearest_beach) {
-    const cyprusBeaches = [
-      { name: "Limassol Beach", lat: 34.6786, lng: 33.0413 },
-      { name: "Ladies Mile Beach", lat: 34.6065, lng: 33.0102 },
-      { name: "Paphos Beach", lat: 34.7550, lng: 32.4051 },
-      { name: "Larnaca Beach", lat: 34.9178, lng: 33.6367 }
-    ];
     
-    let minDistance = Infinity;
-    for (const beach of cyprusBeaches) {
-      const distance = calculateDistance(lat, lng, beach.lat, beach.lng);
-      if (distance < minDistance) {
-        minDistance = distance;
+    // Si pas trouvé, utiliser les coordonnées des plages connues
+    if (!strategicDistances.proximity_sea_km) {
+      const cyprusBeaches = [
+        // Limassol beaches
+        { name: "Dasoudi Beach", lat: 34.6786, lng: 33.0413 },
+        { name: "Ladies Mile Beach", lat: 34.6065, lng: 33.0102 },
+        { name: "Akti Olympion Beach", lat: 34.6624, lng: 33.0287 },
+        { name: "Pareklisia Beach", lat: 34.6847, lng: 33.0983 },
+        { name: "Governor's Beach", lat: 34.6429, lng: 33.1813 },
+        // Paphos beaches
+        { name: "Coral Bay Beach", lat: 34.8550, lng: 32.3673 },
+        { name: "Paphos Municipal Beach", lat: 34.7550, lng: 32.4051 },
+        // Larnaca beaches
+        { name: "Finikoudes Beach", lat: 34.9140, lng: 33.6367 },
+        { name: "Mackenzie Beach", lat: 34.8850, lng: 33.6340 }
+      ];
+      
+      let minDistance = Infinity;
+      for (const beach of cyprusBeaches) {
+        const distance = calculateDistance(lat, lng, beach.lat, beach.lng);
+        if (distance < minDistance) {
+          minDistance = distance;
+        }
       }
+      strategicDistances.proximity_sea_km = Math.round(minDistance * 10) / 10;
+      console.log(`✅ Plage calculée manuellement: ${strategicDistances.proximity_sea_km} km`);
     }
-    
-    if (minDistance < Infinity) {
-      strategicDistances.nearest_beach = Math.round(minDistance * 10) / 10;
-    }
+  } catch (error) {
+    console.error('Erreur recherche plage:', error);
   }
 
+  // 2. AÉROPORTS DE CHYPRE
+  const airports = [
+    { name: "Larnaca Airport", lat: 34.8751, lng: 33.6248 },
+    { name: "Paphos Airport", lat: 34.7180, lng: 32.4857 }
+  ];
+  
+  let minAirportDistance = Infinity;
+  for (const airport of airports) {
+    const distance = calculateDistance(lat, lng, airport.lat, airport.lng);
+    if (distance < minAirportDistance) {
+      minAirportDistance = distance;
+    }
+  }
+  strategicDistances.proximity_airport_km = Math.round(minAirportDistance * 10) / 10;
+  console.log(`✅ Aéroport le plus proche: ${strategicDistances.proximity_airport_km} km`);
+
+  // 3. CENTRES-VILLES DE CHYPRE
+  const cityCenters = [
+    { name: "Limassol City Center", lat: 34.6741, lng: 33.0442 },
+    { name: "Paphos City Center", lat: 34.7720, lng: 32.4297 },
+    { name: "Larnaca City Center", lat: 34.9178, lng: 33.6345 },
+    { name: "Nicosia City Center", lat: 35.1856, lng: 33.3823 }
+  ];
+  
+  let minCityDistance = Infinity;
+  for (const city of cityCenters) {
+    const distance = calculateDistance(lat, lng, city.lat, city.lng);
+    if (distance < minCityDistance) {
+      minCityDistance = distance;
+    }
+  }
+  strategicDistances.proximity_city_center_km = Math.round(minCityDistance * 10) / 10;
+  console.log(`✅ Centre-ville le plus proche: ${strategicDistances.proximity_city_center_km} km`);
+
+  // 4. AUTOROUTES - Recherche Google Maps
+  try {
+    const highwayUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?` +
+      `query=highway+OR+motorway+OR+A1+OR+A6&location=${lat},${lng}&radius=10000` +
+      `&key=${GOOGLE_MAPS_API_KEY}`;
+    
+    const highwayResponse = await fetch(highwayUrl);
+    const highwayData = await highwayResponse.json();
+    
+    if (highwayData.results && highwayData.results.length > 0) {
+      const nearest = highwayData.results[0];
+      strategicDistances.proximity_highway_km = calculateDistance(
+        lat, lng,
+        nearest.geometry.location.lat,
+        nearest.geometry.location.lng
+      );
+    } else {
+      // Fallback : autoroutes principales de Chypre
+      const highways = [
+        { name: "A1 Limassol", lat: 34.6950, lng: 33.0550 },
+        { name: "A6 Paphos", lat: 34.7680, lng: 32.4450 }
+      ];
+      let minHighwayDistance = Infinity;
+      for (const highway of highways) {
+        const distance = calculateDistance(lat, lng, highway.lat, highway.lng);
+        if (distance < minHighwayDistance) {
+          minHighwayDistance = distance;
+        }
+      }
+      strategicDistances.proximity_highway_km = Math.round(minHighwayDistance * 10) / 10;
+    }
+  } catch (error) {
+    console.error('Erreur recherche autoroute:', error);
+  }
+
+  console.log('📏 Distances finales:', strategicDistances);
   return strategicDistances;
 }
 
