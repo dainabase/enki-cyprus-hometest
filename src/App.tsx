@@ -46,8 +46,8 @@ const AdminPerformance = lazy(() => import("./pages/admin/AdminPerformance"));
 const AdminSegmentation = lazy(() => import("./pages/admin/AdminSegmentation"));
 const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
 
-// Test integration page (dev mode only)
-const AdminTestIntegration = lazy(() => import("./pages/admin/AdminTestIntegration").then(module => ({ default: module.default })));
+// Test integration page (dev mode only) - simplified import
+const AdminTestIntegration = lazy(() => import("./pages/admin/AdminTestIntegration"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -55,6 +55,7 @@ const queryClient = new QueryClient({
       staleTime: 5 * 60 * 1000, // 5 minutes
       gcTime: 10 * 60 * 1000, // 10 minutes
       retry: (failureCount, error) => {
+        // @ts-ignore
         if (error?.message?.includes('network')) return false;
         return failureCount < 2;
       },
@@ -62,8 +63,27 @@ const queryClient = new QueryClient({
   },
 });
 
-// App component rendering
+// Error Fallback Component
+const ErrorFallback = () => (
+  <div className="min-h-screen flex items-center justify-center bg-slate-50">
+    <div className="text-center p-8 max-w-md">
+      <h2 className="text-2xl font-bold text-slate-900 mb-4">
+        Une erreur est survenue
+      </h2>
+      <p className="text-slate-600 mb-4">
+        Veuillez recharger la page pour continuer.
+      </p>
+      <button 
+        onClick={() => window.location.reload()}
+        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+      >
+        Recharger la page
+      </button>
+    </div>
+  </div>
+);
 
+// App component rendering
 const AppContent = () => {
   useEffect(() => {
     initGA();
@@ -74,46 +94,88 @@ const AppContent = () => {
       <TooltipProvider>
         <GoogleMapsProvider>
           <FilterProvider>
-          <Suspense fallback={<LoadingSpinner />}>
-            <Routes>
-              {/* Admin routes - without Layout */}
-              <Route path="/admin/property-form" element={<PrivateRoute adminOnly><PropertyForm /></PrivateRoute>} />
-              <Route path="/admin/property-form/:id" element={<PrivateRoute adminOnly><PropertyForm /></PrivateRoute>} />
-              <Route path="/admin/*" element={<PrivateRoute adminOnly><AdminDashboard /></PrivateRoute>} />
-              <Route path="/admin/projects/new" element={<PrivateRoute adminOnly><AdminProjectForm /></PrivateRoute>} />
-              <Route path="/admin/projects/ai-import" element={<PrivateRoute adminOnly><AdminAIImport /></PrivateRoute>} />
-              <Route path="/admin/ai-import-unified" element={<PrivateRoute adminOnly><AdminAIImportUnified /></PrivateRoute>} />
-              <Route path="/admin/projects/:id" element={<PrivateRoute adminOnly><AdminProjectDetail /></PrivateRoute>} />
-              <Route path="/admin/projects/:id/edit" element={<PrivateRoute adminOnly><AdminProjectForm /></PrivateRoute>} />
-              <Route path="/admin-test" element={<PrivateRoute adminOnly><AdminTestIntegration /></PrivateRoute>} />
-              
-              {/* Public routes - with Layout */}
-              <Route path="/*" element={
-                <Layout>
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/search" element={<Search />} />
-                    <Route path="/projects" element={<Projects />} />
-                    <Route path="/projects/:slug" element={<PublicProjectPage />} />
-                    <Route path="/project/:id" element={<ProjectDetail />} />
-                    <Route path="/project-detail/:id" element={<ProjectDetail />} />
-                    <Route path="/about" element={<About />} />
-                    <Route path="/blog" element={<Blog />} />
-                    <Route path="/contact" element={<Contact />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                    <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-                    <Route path="/lexaia" element={<LexaiaPage />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </Layout>
-              } />
-            </Routes>
-          </Suspense>
-          <CookieConsentBanner />
-          <Sonner />
-        </FilterProvider>
+            <Suspense fallback={<LoadingSpinner />}>
+              <Routes>
+                {/* Admin routes - without Layout */}
+                <Route path="/admin/*" element={
+                  <PrivateRoute adminOnly>
+                    <AdminDashboard />
+                  </PrivateRoute>
+                } />
+                <Route path="/admin-property-form" element={
+                  <PrivateRoute adminOnly>
+                    <PropertyForm />
+                  </PrivateRoute>
+                } />
+                <Route path="/admin-property-form/:id" element={
+                  <PrivateRoute adminOnly>
+                    <PropertyForm />
+                  </PrivateRoute>
+                } />
+                <Route path="/admin-projects/new" element={
+                  <PrivateRoute adminOnly>
+                    <AdminProjectForm />
+                  </PrivateRoute>
+                } />
+                <Route path="/admin-projects/ai-import" element={
+                  <PrivateRoute adminOnly>
+                    <AdminAIImport />
+                  </PrivateRoute>
+                } />
+                <Route path="/admin-ai-import-unified" element={
+                  <PrivateRoute adminOnly>
+                    <AdminAIImportUnified />
+                  </PrivateRoute>
+                } />
+                <Route path="/admin-projects/:id" element={
+                  <PrivateRoute adminOnly>
+                    <AdminProjectDetail />
+                  </PrivateRoute>
+                } />
+                <Route path="/admin-projects/:id/edit" element={
+                  <PrivateRoute adminOnly>
+                    <AdminProjectForm />
+                  </PrivateRoute>
+                } />
+                {process.env.NODE_ENV === 'development' && (
+                  <Route path="/admin-test" element={
+                    <PrivateRoute adminOnly>
+                      <AdminTestIntegration />
+                    </PrivateRoute>
+                  } />
+                )}
+                
+                {/* Public routes - with Layout */}
+                <Route path="/*" element={
+                  <Layout>
+                    <Routes>
+                      <Route path="/" element={<Home />} />
+                      <Route path="/search" element={<Search />} />
+                      <Route path="/projects" element={<Projects />} />
+                      <Route path="/projects/:slug" element={<PublicProjectPage />} />
+                      <Route path="/project/:id" element={<ProjectDetail />} />
+                      <Route path="/project-detail/:id" element={<ProjectDetail />} />
+                      <Route path="/about" element={<About />} />
+                      <Route path="/blog" element={<Blog />} />
+                      <Route path="/contact" element={<Contact />} />
+                      <Route path="/login" element={<Login />} />
+                      <Route path="/register" element={<Register />} />
+                      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                      <Route path="/dashboard" element={
+                        <PrivateRoute>
+                          <Dashboard />
+                        </PrivateRoute>
+                      } />
+                      <Route path="/lexaia" element={<LexaiaPage />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </Layout>
+                } />
+              </Routes>
+            </Suspense>
+            <CookieConsentBanner />
+            <Sonner />
+          </FilterProvider>
         </GoogleMapsProvider>
       </TooltipProvider>
     </BrowserRouter>
@@ -121,9 +183,8 @@ const AppContent = () => {
 };
 
 const App = () => {
-  // App function called
   return (
-    <ErrorBoundary fallback={<div className="p-6 text-center"><p>Une erreur est survenue. Veuillez recharger la page.</p></div>}>
+    <ErrorBoundary fallback={<ErrorFallback />}>
       <HelmetProvider>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
