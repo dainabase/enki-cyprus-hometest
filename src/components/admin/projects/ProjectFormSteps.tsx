@@ -35,7 +35,7 @@ import {
   Plane, Anchor, Fuel, Mail, Trees, Flag, Dumbbell, Circle, Dice1, 
   Film, Drama, UtensilsCrossed, Coffee, Wine, Pizza, Utensils, Music, Church,
   Navigation, Route, Loader2, ParkingSquare as ParkingCircle, Train, 
-  Croissant, Flame, Camera, Hotel, Shirt, Scissors, ChevronRight, ChevronDown, Eye, EyeOff
+  Croissant, Flame, Camera, Hotel, Shirt, Scissors, ChevronRight, ChevronDown, Eye, EyeOff, Clock
 } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
@@ -66,13 +66,13 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     'transport_public', // 3. Transport public
     'hospital',         // 4. Hôpital
     'pharmacy',         // 5. Pharmacie
-    'shopping_center',  // 6. Centre commercial (NOUVEAU)
-    'university',       // 7. Université (NOUVEAU)
+    'shopping_center',  // 6. Centre commercial
+    'university',       // 7. Université
     'beach',           // 8. Plage
     'bank',            // 9. Banque
     'restaurant',      // 10. Restaurant
     'gym',             // 11. Salle de sport
-    'cafe'             // 12. Café (NOUVEAU)
+    'cafe'             // 12. Café
   ];
 
   const amenityOptions = [
@@ -458,255 +458,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
   const renderAmenitiesStep = () => {
     return (
       <div className="space-y-8">
-        {/* CARTE 1: Interface complète des commodités */}
-        <Card className="border-2 border-slate-300 shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="flex items-center gap-2">
-                  <Navigation className="w-5 h-5" />
-                  Commodités & Services de proximité
-                </CardTitle>
-                <CardDescription>
-                  Analysez et configurez les commodités disponibles autour du projet
-                </CardDescription>
-              </div>
-              <Button
-                type="button"
-                onClick={handleDetectAll}
-                disabled={!form.watch('full_address') || isDetecting}
-                variant="outline"
-                size="sm"
-              >
-                {isDetecting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Détection...
-                  </>
-                ) : (
-                  <>
-                    <MapPin className="mr-2 h-4 w-4" />
-                    Détecter automatiquement
-                  </>
-                )}
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent className="p-6 relative">
-            {/* Overlay de chargement */}
-            {isDetecting && (
-              <div className="absolute inset-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm z-50 flex items-center justify-center rounded-lg">
-                <div className="text-center">
-                  <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
-                  <p className="text-sm font-medium">Analyse en cours...</p>
-                  <p className="text-xs text-gray-500 mt-1">10-15 secondes</p>
-                </div>
-              </div>
-            )}
-
-            {/* Sélecteur de rayon de détection - VERSION BOUTONS */}
-            <div className="space-y-2 mb-6">
-              <Label className="text-sm font-medium">Rayon de détection</Label>
-              <div className="flex gap-2">
-                {[0.5, 1, 2, 3, 5].map((radius) => (
-                  <Button
-                    key={radius}
-                    type="button"
-                    size="sm"
-                    variant={detectionRadius === radius ? "default" : "outline"}
-                    onClick={() => setDetectionRadius(radius)}
-                    className="flex-1"
-                  >
-                    {radius < 1 ? `${radius * 1000}m` : `${radius}km`}
-                  </Button>
-                ))}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Recherche dans un rayon de {detectionRadius} km autour de l'adresse
-              </p>
-            </div>
-
-            {/* Interface principale en grille */}
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-              {/* COLONNE GAUCHE : Tableau des commodités (3/5) */}
-              <div className="lg:col-span-3 space-y-6">
-                {/* Tableau des commodités détectées */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-base font-semibold">Commodités de proximité</Label>
-                    {form.watch('surrounding_amenities')?.length > 0 && (
-                      <span className="text-sm text-muted-foreground">
-                        {form.watch('surrounding_amenities')?.length} commodités détectées
-                      </span>
-                    )}
-                  </div>
-                  
-                  {form.watch('surrounding_amenities')?.length > 0 ? (
-                    <div className="bg-white rounded-lg border overflow-hidden">
-                      <table className="w-full">
-                        <thead className="bg-gray-50 border-b">
-                          <tr>
-                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Type
-                            </th>
-                            <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Distance
-                            </th>
-                            <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-20">
-                              Proximité
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                          {form.watch('surrounding_amenities')
-                            ?.sort((a, b) => a.distance_km - b.distance_km)
-                            ?.map((amenity, index) => {
-                              // Options des commodités avec icônes
-                              const amenityOptions = [
-                                { value: 'transport_public', label: 'Transport public', icon: <Bus className="h-4 w-4" /> },
-                                { value: 'beach', label: 'Plage', icon: <Waves className="h-4 w-4" /> },
-                                { value: 'hospital', label: 'Hôpital', icon: <Building2 className="h-4 w-4" /> },
-                                { value: 'pharmacy', label: 'Pharmacie', icon: <Heart className="h-4 w-4" /> },
-                                { value: 'school', label: 'École', icon: <GraduationCap className="h-4 w-4" /> },
-                                { value: 'university', label: 'Université', icon: <School className="h-4 w-4" /> },
-                                { value: 'supermarket', label: 'Supermarché', icon: <ShoppingCart className="h-4 w-4" /> },
-                                { value: 'shopping_center', label: 'Centre commercial', icon: <Store className="h-4 w-4" /> },
-                                { value: 'restaurant', label: 'Restaurant', icon: <UtensilsCrossed className="h-4 w-4" /> },
-                                { value: 'cafe', label: 'Café', icon: <Coffee className="h-4 w-4" /> },
-                                { value: 'bank', label: 'Banque', icon: <Landmark className="h-4 w-4" /> },
-                                { value: 'atm', label: 'ATM', icon: <CreditCard className="h-4 w-4" /> },
-                                { value: 'post_office', label: 'Bureau de poste', icon: <Mail className="h-4 w-4" /> },
-                                { value: 'park', label: 'Parc', icon: <Trees className="h-4 w-4" /> },
-                                { value: 'gym', label: 'Salle de sport', icon: <Dumbbell className="h-4 w-4" /> },
-                                { value: 'spa', label: 'Spa', icon: <Sparkles className="h-4 w-4" /> },
-                                { value: 'cinema', label: 'Cinéma', icon: <Film className="h-4 w-4" /> },
-                                { value: 'parking', label: 'Parking', icon: <ParkingCircle className="h-4 w-4" /> },
-                                { value: 'gas_station', label: 'Station essence', icon: <Fuel className="h-4 w-4" /> },
-                                { value: 'church', label: 'Église', icon: <Church className="h-4 w-4" /> },
-                                { value: 'airport', label: 'Aéroport', icon: <Plane className="h-4 w-4" /> },
-                                { value: 'train_station', label: 'Gare', icon: <Train className="h-4 w-4" /> },
-                                { value: 'bus_station', label: 'Arrêt de bus', icon: <Bus className="h-4 w-4" /> },
-                                { value: 'dentist', label: 'Dentiste', icon: <Heart className="h-4 w-4" /> },
-                                { value: 'veterinary_care', label: 'Vétérinaire', icon: <Heart className="h-4 w-4" /> },
-                                { value: 'physiotherapist', label: 'Kinésithérapeute', icon: <Heart className="h-4 w-4" /> },
-                                { value: 'bakery', label: 'Boulangerie', icon: <Croissant className="h-4 w-4" /> },
-                                { value: 'bar', label: 'Bar', icon: <Wine className="h-4 w-4" /> },
-                                { value: 'night_club', label: 'Discothèque', icon: <Music className="h-4 w-4" /> },
-                                { value: 'police', label: 'Police', icon: <Shield className="h-4 w-4" /> },
-                                { value: 'fire_station', label: 'Pompiers', icon: <Flame className="h-4 w-4" /> },
-                                { value: 'city_hall', label: 'Mairie', icon: <Building className="h-4 w-4" /> },
-                                { value: 'museum', label: 'Musée', icon: <Building2 className="h-4 w-4" /> },
-                                { value: 'art_gallery', label: 'Galerie d\'art', icon: <Palette className="h-4 w-4" /> },
-                                { value: 'library', label: 'Bibliothèque', icon: <BookOpen className="h-4 w-4" /> },
-                                { value: 'tourist_attraction', label: 'Attraction touristique', icon: <Camera className="h-4 w-4" /> },
-                                { value: 'hotel', label: 'Hôtel', icon: <Hotel className="h-4 w-4" /> },
-                                { value: 'laundry', label: 'Laverie', icon: <Shirt className="h-4 w-4" /> },
-                                { value: 'hair_salon', label: 'Salon de coiffure', icon: <Scissors className="h-4 w-4" /> }
-                              ];
-                              
-                              const option = amenityOptions.find(opt => opt.value === amenity.nearby_amenity_id);
-                              if (!option) return null;
-                              
-                              // Déterminer la couleur selon la distance
-                              const getProximityColor = (distance: number) => {
-                                if (distance <= 0.5) return 'text-green-600 bg-green-50';
-                                if (distance <= 1) return 'text-blue-600 bg-blue-50';
-                                if (distance <= 2) return 'text-yellow-600 bg-yellow-50';
-                                return 'text-gray-600 bg-gray-50';
-                              };
-                              
-                              const getProximityLabel = (distance: number) => {
-                                if (distance <= 0.5) return '⭐ Immédiat';
-                                if (distance <= 1) return '👍 Proche';
-                                if (distance <= 2) return '✓ Accessible';
-                                return '📍 Éloigné';
-                              };
-                              
-                              return (
-                                <tr key={`${amenity.nearby_amenity_id}-${index}`} className="hover:bg-gray-50 transition-colors">
-                                  <td className="px-4 py-3">
-                                    <div className="flex items-center gap-2">
-                                      <div className="text-gray-400">
-                                        {option.icon}
-                                      </div>
-                                      <span className="font-medium text-sm text-gray-900">
-                                        {option.label}
-                                      </span>
-                                    </div>
-                                  </td>
-                                  <td className="px-4 py-3 text-right">
-                                    <span className="text-sm font-semibold text-gray-700">
-                                      {amenity.distance_km} km
-                                    </span>
-                                  </td>
-                                  <td className="px-4 py-3">
-                                    <div className="flex justify-center">
-                                      <span className={`text-xs font-medium px-2 py-1 rounded-full ${getProximityColor(amenity.distance_km)}`}>
-                                        {getProximityLabel(amenity.distance_km)}
-                                      </span>
-                                    </div>
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                        </tbody>
-                      </table>
-                    </div>
-                  ) : (
-                    <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-                      <MapPin className="mx-auto h-12 w-12 text-gray-400" />
-                      <p className="mt-2 text-sm text-gray-600">
-                        Aucune commodité détectée
-                      </p>
-                      <p className="text-xs text-gray-500 mt-1">
-                        Utilisez la détection automatique pour analyser la zone
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* COLONNE DROITE : Carte (2/5) */}
-              <div className="lg:col-span-2">
-                <div className="sticky top-4">
-                  <h4 className="font-medium text-sm mb-3">Visualisation sur carte</h4>
-                  {(() => {
-                    const lat = form.watch('gps_latitude');
-                    const lng = form.watch('gps_longitude');
-                    
-                    const latNum = typeof lat === 'number' ? lat : parseFloat(lat as string);
-                    const lngNum = typeof lng === 'number' ? lng : parseFloat(lng as string);
-                    const hasValidCoords = !isNaN(latNum) && !isNaN(lngNum) && latNum !== 0 && lngNum !== 0;
-                    
-                    if (hasValidCoords) {
-                      return (
-                        <LocationMap
-                          center={{ lat: latNum, lng: lngNum }}
-                          markers={mapCommodities.map(c => ({
-                            position: { lat: c.lat, lng: c.lng },
-                            title: c.name
-                          }))}
-                          radius={detectionRadius}
-                        />
-                      );
-                    } else {
-                      return (
-                        <div className="h-[500px] bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
-                          <div className="text-center text-gray-500">
-                            <MapPin className="h-12 w-12 mx-auto mb-3 opacity-30" />
-                            <p className="text-sm">Entrez une adresse pour afficher la carte</p>
-                          </div>
-                        </div>
-                      );
-                    }
-                  })()}
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* CARTE 2: Prestations internes du projet */}
+        {/* CARTE UNIQUE: Prestations internes du projet */}
         <Card className="border-2 border-slate-300 shadow-lg">
           <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
             <CardTitle>Prestations du Projet</CardTitle>
@@ -734,14 +486,14 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     );
   };
 
-  // Google Places Autocomplete initialization
+  // Google Places Autocomplete initialization - AMÉLIORATION DE LA DÉTECTION
   useEffect(() => {
     if (currentStep === 'location' && window.google) {
       const input = document.getElementById('address-autocomplete');
       if (input) {
         const autocomplete = new window.google.maps.places.Autocomplete(input as HTMLInputElement, {
           types: ['address'],
-          componentRestrictions: { country: 'cy' }, // Cyprus only
+          componentRestrictions: { country: 'cy' },
           fields: ['address_components', 'geometry', 'formatted_address']
         });
 
@@ -754,36 +506,122 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             
             let city = '';
             let postalCode = '';
+            let detectedZone = '';
+            
+            // Extraire la ville et le code postal depuis les composants d'adresse
             addressComponents.forEach(component => {
+              // Chercher la ville
               if (component.types.includes('locality')) {
                 city = component.long_name;
               }
+              // Alternative pour la ville
+              if (!city && component.types.includes('administrative_area_level_1')) {
+                city = component.long_name;
+              }
+              // Code postal
               if (component.types.includes('postal_code')) {
                 postalCode = component.long_name;
               }
             });
 
-            // Map city to geographical zone
-            const zoneMap = {
+            // AMÉLIORATION: Mapping complet des villes/zones vers les districts
+            const zoneMapping: { [key: string]: string } = {
+              // Limassol et ses variations
               'Limassol': 'limassol',
+              'Lemesos': 'limassol',
+              'Λεμεσός': 'limassol',
+              'Germasogeia': 'limassol',
+              'Yermasoyia': 'limassol',
+              'Agios Tychon': 'limassol',
+              'Agios Athanasios': 'limassol',
+              'Mouttagiaka': 'limassol',
+              'Parekklisia': 'limassol',
+              'Pyrgos': 'limassol',
+              'Erimi': 'limassol',
+              
+              // Paphos et ses variations
               'Paphos': 'paphos',
+              'Pafos': 'paphos',
+              'Πάφος': 'paphos',
+              'Kato Paphos': 'paphos',
+              'Peyia': 'paphos',
+              'Coral Bay': 'paphos',
+              'Chloraka': 'paphos',
+              'Kissonerga': 'paphos',
+              'Tala': 'paphos',
+              'Kouklia': 'paphos',
+              
+              // Larnaca et ses variations
               'Larnaca': 'larnaca',
+              'Larnaka': 'larnaca',
+              'Λάρνακα': 'larnaca',
+              'Oroklini': 'larnaca',
+              'Pyla': 'larnaca',
+              'Livadia': 'larnaca',
+              'Dromolaxia': 'larnaca',
+              'Tersefanou': 'larnaca',
+              
+              // Nicosia et ses variations
               'Nicosia': 'nicosia',
+              'Lefkosia': 'nicosia',
+              'Λευκωσία': 'nicosia',
+              'Strovolos': 'nicosia',
+              'Lakatamia': 'nicosia',
+              'Latsia': 'nicosia',
+              'Engomi': 'nicosia',
+              'Agios Dometios': 'nicosia',
+              'Aglantzia': 'nicosia',
+              
+              // Famagusta et ses variations
               'Famagusta': 'famagusta',
-              'Kyrenia': 'kyrenia'
+              'Ammochostos': 'famagusta',
+              'Αμμόχωστος': 'famagusta',
+              'Paralimni': 'famagusta',
+              'Ayia Napa': 'famagusta',
+              'Protaras': 'famagusta',
+              'Deryneia': 'famagusta',
+              'Sotira': 'famagusta',
+              
+              // Kyrenia et ses variations
+              'Kyrenia': 'kyrenia',
+              'Girne': 'kyrenia',
+              'Κερύνεια': 'kyrenia'
             };
 
-            const detectedZone = Object.keys(zoneMap).find(zone => 
-              city.toLowerCase().includes(zone.toLowerCase())
-            );
+            // Chercher la zone en vérifiant toutes les clés
+            for (const [cityName, zone] of Object.entries(zoneMapping)) {
+              if (city.toLowerCase().includes(cityName.toLowerCase()) || 
+                  place.formatted_address.toLowerCase().includes(cityName.toLowerCase())) {
+                detectedZone = zone;
+                break;
+              }
+            }
 
-            // Update form fields
+            // Si pas de zone détectée, utiliser l'adresse complète
+            if (!detectedZone) {
+              const fullAddress = place.formatted_address.toLowerCase();
+              for (const [cityName, zone] of Object.entries(zoneMapping)) {
+                if (fullAddress.includes(cityName.toLowerCase())) {
+                  detectedZone = zone;
+                  break;
+                }
+              }
+            }
+
+            // Mise à jour des champs du formulaire
             form.setValue('full_address', place.formatted_address);
             form.setValue('city', city);
             form.setValue('gps_latitude', lat);
             form.setValue('gps_longitude', lng);
+            
+            // Définir la zone géographique si détectée
             if (detectedZone) {
-              form.setValue('cyprus_zone', zoneMap[detectedZone]);
+              form.setValue('cyprus_zone', detectedZone);
+              console.log('✅ Zone détectée automatiquement:', detectedZone);
+              toast.success(`Zone géographique détectée : ${detectedZone}`);
+            } else {
+              console.log('⚠️ Zone non détectée pour la ville:', city);
+              toast.warning('Zone géographique non détectée, veuillez la sélectionner manuellement');
             }
           }
         });
@@ -854,7 +692,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     }
   };
 
-  // 🚨 AUDIT FUNCTION WITH COMPLETE FRAUD DETECTION
   // Mapping complet des types Google Maps vers les types de la base de données
   const GOOGLE_TO_DB_TYPE_MAPPING: Record<string, string> = {
     // Transport
@@ -937,7 +774,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     try {
       console.log('🚀 Début de la détection automatique');
       console.log('📍 Adresse:', address);
-      console.log('🚀 Détection avec rayon:', detectionRadius, 'km'); // IMPORTANT
+      console.log('🚀 Détection avec rayon:', detectionRadius, 'km');
       
       const { data: result, error } = await supabase.functions.invoke('google-maps-agent', {
         body: {
@@ -959,57 +796,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           form.setValue('gps_longitude', result.location.lng);
           console.log('🌍 Coordonnées GPS:', result.location);
         }
-        
-        const GOOGLE_TO_DB_TYPE_MAPPING: Record<string, string> = {
-          'transit_station': 'transport_public',
-          'bus_station': 'transport_public',
-          'train_station': 'transport_public',
-          'subway_station': 'transport_public',
-          'airport': 'airport',
-          'hospital': 'hospital',
-          'pharmacy': 'pharmacy',
-          'doctor': 'pharmacy',
-          'dentist': 'dentist',
-          'veterinary_care': 'veterinary_care',
-          'physiotherapist': 'physiotherapist',
-          'school': 'school',
-          'primary_school': 'school',
-          'secondary_school': 'school',
-          'university': 'university',
-          'supermarket': 'supermarket',
-          'shopping_mall': 'shopping_center',
-          'grocery_or_supermarket': 'supermarket',
-          'convenience_store': 'supermarket',
-          'bakery': 'bakery',
-          'bank': 'bank',
-          'atm': 'atm',
-          'post_office': 'post_office',
-          'restaurant': 'restaurant',
-          'cafe': 'cafe',
-          'bar': 'bar',
-          'night_club': 'night_club',
-          'gym': 'gym',
-          'spa': 'spa',
-          'beauty_salon': 'spa',
-          'movie_theater': 'cinema',
-          'park': 'park',
-          'church': 'church',
-          'parking': 'parking',
-          'gas_station': 'gas_station',
-          'police': 'police',
-          'fire_station': 'fire_station',
-          'city_hall': 'city_hall',
-          'courthouse': 'city_hall',
-          'embassy': 'city_hall',
-          'museum': 'museum',
-          'art_gallery': 'art_gallery',
-          'library': 'library',
-          'tourist_attraction': 'tourist_attraction',
-          'lodging': 'hotel',
-          'hotel': 'hotel',
-          'laundry': 'laundry',
-          'hair_care': 'hair_salon'
-        };
         
         const commoditiesMap = new Map<string, any>();
         
@@ -1044,7 +830,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
         console.log(`📍 ${nearbyAmenities.length} types de commodités uniques détectés`);
         console.log(`✅ ${preSelected.size} commodités pré-sélectionnées pour affichage`);
-        console.log('Commodités:', nearbyAmenities);
         
         if (result.strategicDistances) {
           const distances = {
@@ -1068,8 +853,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           console.log('- Aéroport Paphos:', distances.paphos_airport_distance, 'km');
           console.log('- Centre-ville:', distances.city_center_distance, 'km');
           console.log('- Autoroute:', distances.highway_distance, 'km');
-          
-          console.log('📏 Distances stratégiques mises à jour:', result.strategicDistances);
           
           toast.success(
             `✅ Détection complète! ${nearbyAmenities.length} types de commodités trouvés`
@@ -1106,81 +889,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
   // Render the restructured location step
   const renderLocationStep = () => {
-    // Liste complète des commodités disponibles
-    const commoditiesList = [
-      { id: 'transport_public', label: 'Transport public' },
-      { id: 'beach', label: 'Plage' },
-      { id: 'hospital', label: 'Hôpital' },
-      { id: 'pharmacy', label: 'Pharmacie' },
-      { id: 'school', label: 'École' },
-      { id: 'university', label: 'Université' },
-      { id: 'supermarket', label: 'Supermarché' },
-      { id: 'shopping_center', label: 'Centre commercial' },
-      { id: 'restaurant', label: 'Restaurant' },
-      { id: 'cafe', label: 'Café' },
-      { id: 'bank', label: 'Banque' },
-      { id: 'atm', label: 'ATM' },
-      { id: 'post_office', label: 'Bureau de poste' },
-      { id: 'park', label: 'Parc' },
-      { id: 'gym', label: 'Salle de sport' },
-      { id: 'spa', label: 'Spa' },
-      { id: 'cinema', label: 'Cinéma' },
-      { id: 'parking', label: 'Parking' },
-      { id: 'gas_station', label: 'Station essence' },
-      { id: 'church', label: 'Église' },
-      { id: 'airport', label: 'Aéroport' },
-      { id: 'train_station', label: 'Gare' },
-      { id: 'bus_station', label: 'Arrêt de bus' },
-      { id: 'dentist', label: 'Dentiste' },
-      { id: 'veterinary_care', label: 'Vétérinaire' },
-      { id: 'physiotherapist', label: 'Kinésithérapeute' },
-      { id: 'bakery', label: 'Boulangerie' },
-      { id: 'bar', label: 'Bar' },
-      { id: 'night_club', label: 'Discothèque' },
-      { id: 'police', label: 'Police' },
-      { id: 'fire_station', label: 'Pompiers' },
-      { id: 'city_hall', label: 'Mairie' },
-      { id: 'museum', label: 'Musée' },
-      { id: 'art_gallery', label: 'Galerie d\'art' },
-      { id: 'library', label: 'Bibliothèque' },
-      { id: 'tourist_attraction', label: 'Attraction touristique' },
-      { id: 'hotel', label: 'Hôtel' },
-      { id: 'laundry', label: 'Laverie' },
-      { id: 'hair_salon', label: 'Salon de coiffure' }
-    ];
-
-    const COMMODITY_ICONS: { [key: string]: string } = {
-      hospital: '🏥',
-      pharmacy: '💊',
-      school: '🎓',
-      university: '🎓',
-      supermarket: '🛒',
-      restaurant: '🍽️',
-      bank: '🏦',
-      atm: '🏧',
-      bus_station: '🚌',
-      gym: '💪',
-      park: '🌳',
-      cafe: '☕'
-    };
-
-    const handleCommodityChange = (commodityId: string, checked: boolean) => {
-      const existing = form.watch('surrounding_amenities') || [];
-      if (checked) {
-        if (!existing.find(a => a.nearby_amenity_id === commodityId)) {
-          form.setValue('surrounding_amenities', [
-            ...existing,
-            { nearby_amenity_id: commodityId, distance_km: 0, details: '' }
-          ]);
-        }
-      } else {
-        form.setValue('surrounding_amenities', 
-          existing.filter(a => a.nearby_amenity_id !== commodityId)
-        );
-      }
-    };
-
-
     return (
       <div className="space-y-8">
         {/* CARTE 1: Localisation */}
@@ -1228,7 +936,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className="bg-gray-50">
-                          <SelectValue placeholder="Auto-détectée depuis l'adresse" />
+                          <SelectValue placeholder="Sélectionner la zone" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -1241,7 +949,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       </SelectContent>
                     </Select>
                     <FormDescription>
-                      Détectée automatiquement depuis l'adresse
+                      {field.value ? 'Zone détectée automatiquement' : 'Sera détectée depuis l\'adresse'}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -1257,10 +965,9 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                     <FormLabel>Ville</FormLabel>
                     <FormControl>
                       <Input 
-                        placeholder="Auto-remplie"
+                        placeholder="Auto-remplie depuis l'adresse"
                         {...field}
                         className="bg-gray-50"
-                        readOnly
                       />
                     </FormControl>
                     <FormDescription>
@@ -1326,7 +1033,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           </CardContent>
         </Card>
 
-        {/* CARTE 2: Distances & Commodités - STRUCTURE CORRIGÉE */}
+        {/* CARTE 2: Distances & Commodités - VERSION SIMPLIFIÉE SANS COULEURS */}
         <Card className="border-2 border-slate-300 shadow-lg">
           <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
             <div className="flex items-center justify-between">
@@ -1394,325 +1101,323 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               </p>
             </div>
 
-            {/* GRILLE PRINCIPALE CORRIGÉE */}
+            {/* GRILLE PRINCIPALE */}
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
               {/* COLONNE GAUCHE : Contrôles (3/5) */}
               <div className="lg:col-span-3 space-y-6">
-{/* Distances stratégiques avec 2 aéroports */}
-<div className="space-y-2">
-  <Label className="text-base font-semibold">Distances stratégiques</Label>
-  
-  <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-    <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200">
-      <div className="flex items-center gap-2 mb-2">
-        <Waves className="h-5 w-5 text-blue-600" />
-        <span className="text-sm font-semibold">Mer / Plage</span>
-      </div>
-      <p className="text-2xl font-bold text-blue-900">
-        {form.watch('proximity_sea_km') || '—'} km
-      </p>
-      {form.watch('proximity_sea_km') && form.watch('proximity_sea_km') > 1 && (
-        <p className="text-xs text-blue-700 mt-1">
-          🚗 ~{Math.round(form.watch('proximity_sea_km') * 2)} min voiture
-        </p>
-      )}
-    </div>
-    
-    <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border border-green-200">
-      <div className="flex items-center gap-2 mb-2">
-        <Building2 className="h-5 w-5 text-green-600" />
-        <span className="text-sm font-semibold">Centre-ville</span>
-      </div>
-      <p className="text-2xl font-bold text-green-900">
-        {form.watch('proximity_city_center_km') || '—'} km
-      </p>
-      {form.watch('proximity_city_center_km') > 0 && (
-        <p className="text-xs text-green-700 mt-1">
-          🚗 ~{Math.round(form.watch('proximity_city_center_km') * 2.5)} min voiture
-        </p>
-      )}
-    </div>
-    
-    <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg border border-purple-200">
-      <div className="flex items-center gap-2 mb-2">
-        <Car className="h-5 w-5 text-purple-600" />
-        <span className="text-sm font-semibold">Autoroute</span>
-      </div>
-      <p className="text-2xl font-bold text-purple-900">
-        {form.watch('proximity_highway_km') || '—'} km
-      </p>
-      {form.watch('proximity_highway_km') > 0 && (
-        <p className="text-xs text-purple-700 mt-1">
-          🚗 ~{Math.round(form.watch('proximity_highway_km') * 2)} min voiture
-        </p>
-      )}
-    </div>
-    
-    <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-lg border border-orange-200">
-      <div className="flex items-center gap-2 mb-2">
-        <Plane className="h-5 w-5 text-orange-600" />
-        <span className="text-sm font-semibold">Aéroport Larnaca</span>
-      </div>
-      <p className="text-2xl font-bold text-orange-900">
-        {(() => {
-          const dist = form.watch('proximity_airport_km');
-          if (dist) return dist;
-          const lat = form.watch('gps_latitude');
-          const lng = form.watch('gps_longitude');
-          if (lat && lng) {
-            const larnaca = { lat: 34.8751, lng: 33.6248 };
-            const R = 6371;
-            const dLat = (larnaca.lat - lat) * Math.PI / 180;
-            const dLon = (larnaca.lng - lng) * Math.PI / 180;
-            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-              Math.cos(lat * Math.PI / 180) * Math.cos(larnaca.lat * Math.PI / 180) *
-              Math.sin(dLon/2) * Math.sin(dLon/2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            return Math.round(R * c * 10) / 10;
-          }
-          return '—';
-        })()} km
-      </p>
-      <p className="text-xs text-orange-700 mt-1">
-        🚗 ~{Math.round((form.watch('proximity_airport_km') || 67) * 1.2)} min voiture
-      </p>
-    </div>
-    
-    <div className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 rounded-lg border border-pink-200">
-      <div className="flex items-center gap-2 mb-2">
-        <Plane className="h-5 w-5 text-pink-600" />
-        <span className="text-sm font-semibold">Aéroport Paphos</span>
-      </div>
-      <p className="text-2xl font-bold text-pink-900">
-        {(() => {
-          const lat = form.watch('gps_latitude');
-          const lng = form.watch('gps_longitude');
-          if (lat && lng) {
-            const paphos = { lat: 34.7180, lng: 32.4857 };
-            const R = 6371;
-            const dLat = (paphos.lat - lat) * Math.PI / 180;
-            const dLon = (paphos.lng - lng) * Math.PI / 180;
-            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-              Math.cos(lat * Math.PI / 180) * Math.cos(paphos.lat * Math.PI / 180) *
-              Math.sin(dLon/2) * Math.sin(dLon/2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            return Math.round(R * c * 10) / 10;
-          }
-          return '—';
-        })()} km
-      </p>
-      <p className="text-xs text-pink-700 mt-1">
-        🚗 ~{Math.round(55 * 1.2)} min voiture
-      </p>
-    </div>
-  </div>
-</div>
-
-{/* Commodités de proximité - VERSION AVEC CHECKBOXES FONCTIONNELS */}
-<div className="space-y-4">
-  <div className="flex items-center justify-between">
-    <Label className="text-base font-semibold">Commodités de proximité</Label>
-  </div>
-  
-  {form.watch('surrounding_amenities')?.length > 0 && (
-      <div className="flex items-center gap-4">
-        <span className="text-sm text-muted-foreground">
-          {selectedAmenities.size} / {form.watch('surrounding_amenities')?.length} sélectionnées pour affichage
-        </span>
-        <Button
-          type="button"
-          size="sm"
-          variant="outline"
-          onClick={() => {
-            const amenities = form.watch('surrounding_amenities') || [];
-            if (selectedAmenities.size === amenities.length) {
-              // Tout désélectionner
-              setSelectedAmenities(new Set());
-              form.setValue('surrounding_amenities', amenities.map(a => ({
-                ...a,
-                selected: false
-              })));
-            } else {
-              // Tout sélectionner
-              const allTypes = new Set(amenities.map(a => a.nearby_amenity_id));
-              setSelectedAmenities(allTypes);
-              form.setValue('surrounding_amenities', amenities.map(a => ({
-                ...a,
-                selected: true
-              })));
-            }
-          }}
-        >
-          {selectedAmenities.size === form.watch('surrounding_amenities')?.length 
-            ? 'Tout désélectionner' 
-            : 'Tout sélectionner'}
-        </Button>
-      </div>
-    )}
-  
-  {form.watch('surrounding_amenities')?.length > 0 ? (
-    <div className="space-y-4">
-      {/* Section 1 : Commodités ESSENTIELLES */}
-      <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-        <h4 className="text-sm font-semibold text-blue-900 mb-3 flex items-center gap-2">
-          <Star className="h-4 w-4" />
-          Commodités essentielles (critères d'achat principaux)
-        </h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {form.watch('surrounding_amenities')
-            ?.filter(a => ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id))
-            ?.sort((a, b) => a.distance_km - b.distance_km)
-            ?.map((amenity, idx) => {
-              const option = amenityOptions.find(opt => opt.value === amenity.nearby_amenity_id);
-              if (!option) return null;
-              
-              const isSelected = selectedAmenities.has(amenity.nearby_amenity_id || '');
-              const getTimeLabel = (dist) => {
-                if (dist <= 0.5) return '⚡ 5 min à pied';
-                if (dist <= 1) return '👟 10 min à pied';
-                if (dist <= 2) return '🚶 20 min à pied';
-                return `🚗 ${Math.round(dist * 2.5)} min voiture`;
-              };
-              
-              return (
-                <div 
-                  key={`ess-${amenity.nearby_amenity_id}-${idx}`} 
-                  className={`bg-white rounded-lg p-3 border transition-all ${
-                    isSelected ? 'ring-2 ring-blue-500' : ''
-                  }`}
-                >
-                  <div className="flex items-start gap-3">
-                    <input
-                      type="checkbox"
-                      checked={isSelected}
-                      onChange={(e) => {
-                        console.log(`🔄 CLICK! ${amenity.nearby_amenity_id}: ${e.target.checked}`);
-                        
-                        // MÉTHODE SIMPLE : Toggle direct dans le state
-                        const currentSelected = selectedAmenities;
-                        const newSelected = new Set(currentSelected);
-                        
-                        if (e.target.checked) {
-                          newSelected.add(amenity.nearby_amenity_id || '');
-                          console.log('✅ AJOUTÉ:', amenity.nearby_amenity_id);
-                        } else {
-                          newSelected.delete(amenity.nearby_amenity_id || '');
-                          console.log('❌ SUPPRIMÉ:', amenity.nearby_amenity_id);
-                        }
-                        
-                        setSelectedAmenities(newSelected);
-                        console.log('📊 TOTAL SÉLECTIONS:', newSelected.size);
-                      }}
-                      className="mt-1 h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                    />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-blue-600">{option.icon}</span>
-                        <span className="font-medium text-sm">{option.label}</span>
+                {/* Distances stratégiques SANS COULEURS et avec icônes Lucide */}
+                <div className="space-y-2">
+                  <Label className="text-base font-semibold">Distances stratégiques</Label>
+                  
+                  <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Waves className="h-5 w-5 text-gray-600" />
+                        <span className="text-sm font-semibold">Mer / Plage</span>
                       </div>
-                      <div className="mt-1 flex items-center gap-2">
-                        <span className="text-xs font-bold">{amenity.distance_km} km</span>
-                        <span className="text-xs text-gray-600">{getTimeLabel(amenity.distance_km)}</span>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {form.watch('proximity_sea_km') || '—'} km
+                      </p>
+                      {form.watch('proximity_sea_km') && form.watch('proximity_sea_km') > 1 && (
+                        <p className="text-xs text-gray-600 mt-1 flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          ~{Math.round(form.watch('proximity_sea_km') * 2)} min voiture
+                        </p>
+                      )}
+                    </div>
+                    
+                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Building2 className="h-5 w-5 text-gray-600" />
+                        <span className="text-sm font-semibold">Centre-ville</span>
                       </div>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {form.watch('proximity_city_center_km') || '—'} km
+                      </p>
+                      {form.watch('proximity_city_center_km') > 0 && (
+                        <p className="text-xs text-gray-600 mt-1 flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          ~{Math.round(form.watch('proximity_city_center_km') * 2.5)} min voiture
+                        </p>
+                      )}
+                    </div>
+                    
+                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Car className="h-5 w-5 text-gray-600" />
+                        <span className="text-sm font-semibold">Autoroute</span>
+                      </div>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {form.watch('proximity_highway_km') || '—'} km
+                      </p>
+                      {form.watch('proximity_highway_km') > 0 && (
+                        <p className="text-xs text-gray-600 mt-1 flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          ~{Math.round(form.watch('proximity_highway_km') * 2)} min voiture
+                        </p>
+                      )}
+                    </div>
+                    
+                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Plane className="h-5 w-5 text-gray-600" />
+                        <span className="text-sm font-semibold">Aéroport Larnaca</span>
+                      </div>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {(() => {
+                          const dist = form.watch('proximity_airport_km');
+                          if (dist) return dist;
+                          const lat = form.watch('gps_latitude');
+                          const lng = form.watch('gps_longitude');
+                          if (lat && lng) {
+                            const larnaca = { lat: 34.8751, lng: 33.6248 };
+                            const R = 6371;
+                            const dLat = (larnaca.lat - lat) * Math.PI / 180;
+                            const dLon = (larnaca.lng - lng) * Math.PI / 180;
+                            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                              Math.cos(lat * Math.PI / 180) * Math.cos(larnaca.lat * Math.PI / 180) *
+                              Math.sin(dLon/2) * Math.sin(dLon/2);
+                            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                            return Math.round(R * c * 10) / 10;
+                          }
+                          return '—';
+                        })()} km
+                      </p>
+                      <p className="text-xs text-gray-600 mt-1 flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        ~{Math.round((form.watch('proximity_airport_km') || 67) * 1.2)} min voiture
+                      </p>
+                    </div>
+                    
+                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Plane className="h-5 w-5 text-gray-600" />
+                        <span className="text-sm font-semibold">Aéroport Paphos</span>
+                      </div>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {(() => {
+                          const lat = form.watch('gps_latitude');
+                          const lng = form.watch('gps_longitude');
+                          if (lat && lng) {
+                            const paphos = { lat: 34.7180, lng: 32.4857 };
+                            const R = 6371;
+                            const dLat = (paphos.lat - lat) * Math.PI / 180;
+                            const dLon = (paphos.lng - lng) * Math.PI / 180;
+                            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                              Math.cos(lat * Math.PI / 180) * Math.cos(paphos.lat * Math.PI / 180) *
+                              Math.sin(dLon/2) * Math.sin(dLon/2);
+                            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                            return Math.round(R * c * 10) / 10;
+                          }
+                          return '—';
+                        })()} km
+                      </p>
+                      <p className="text-xs text-gray-600 mt-1 flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        ~{Math.round(55 * 1.2)} min voiture
+                      </p>
                     </div>
                   </div>
                 </div>
-              );
-            })}
-        </div>
-      </div>
-      
-      {/* Section 2 : Autres commodités AVEC CHECKBOXES FONCTIONNELS */}
-      {form.watch('surrounding_amenities')?.filter(a => !ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id)).length > 0 && (
-        <div className="bg-gray-50 rounded-lg border">
-          <details open>
-            <summary className="p-4 cursor-pointer font-semibold text-sm text-gray-700 hover:bg-gray-100">
-              <span className="inline-flex items-center gap-2">
-                <ChevronDown className="h-4 w-4" />
-                Autres commodités ({form.watch('surrounding_amenities')?.filter(a => !ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id)).length})
-                <span className="text-xs font-normal text-gray-500 ml-2">
-                  Cliquez les cases pour sélectionner celles à afficher
-                </span>
-              </span>
-            </summary>
-            <div className="p-4 pt-0">
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                {form.watch('surrounding_amenities')
-                  ?.filter(a => !ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id))
-                  ?.sort((a, b) => a.distance_km - b.distance_km)
-                  ?.map((amenity, idx) => {
-                    const option = amenityOptions.find(opt => opt.value === amenity.nearby_amenity_id);
-                    if (!option) return null;
-                    
-                    const isSelected = selectedAmenities.has(amenity.nearby_amenity_id || '');
-                    
-                    return (
-                      <div 
-                        key={`other-${amenity.nearby_amenity_id}-${idx}`} 
-                        className={`bg-white rounded-lg p-3 border transition-all cursor-pointer hover:shadow-md ${
-                          isSelected ? 'ring-2 ring-gray-500 bg-gray-50' : ''
-                        }`}
+
+                {/* Commodités de proximité - VERSION AVEC CHECKBOXES FONCTIONNELS */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-base font-semibold">Commodités de proximité</Label>
+                  </div>
+                  
+                  {form.watch('surrounding_amenities')?.length > 0 && (
+                    <div className="flex items-center gap-4">
+                      <span className="text-sm text-muted-foreground">
+                        {selectedAmenities.size} / {form.watch('surrounding_amenities')?.length} sélectionnées pour affichage
+                      </span>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
                         onClick={() => {
-                          console.log(`🎯 Card cliquée pour ${amenity.nearby_amenity_id}`);
-                          const newSelected = new Set(selectedAmenities);
-                          if (isSelected) {
-                            newSelected.delete(amenity.nearby_amenity_id || '');
+                          const amenities = form.watch('surrounding_amenities') || [];
+                          if (selectedAmenities.size === amenities.length) {
+                            // Tout désélectionner
+                            setSelectedAmenities(new Set());
+                            form.setValue('surrounding_amenities', amenities.map(a => ({
+                              ...a,
+                              selected: false
+                            })));
                           } else {
-                            newSelected.add(amenity.nearby_amenity_id || '');
+                            // Tout sélectionner
+                            const allTypes = new Set(amenities.map(a => a.nearby_amenity_id));
+                            setSelectedAmenities(allTypes);
+                            form.setValue('surrounding_amenities', amenities.map(a => ({
+                              ...a,
+                              selected: true
+                            })));
                           }
-                          setSelectedAmenities(newSelected);
-                          console.log(`✅ Nouvelles sélections:`, Array.from(newSelected));
                         }}
                       >
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="checkbox"
-                            checked={isSelected}
-                            onChange={(e) => {
-                              e.stopPropagation();
-                              console.log(`📝 Input checkbox pour ${amenity.nearby_amenity_id}: ${e.target.checked}`);
-                              const newSelected = new Set(selectedAmenities);
-                              if (e.target.checked) {
-                                newSelected.add(amenity.nearby_amenity_id || '');
-                              } else {
-                                newSelected.delete(amenity.nearby_amenity_id || '');
-                              }
-                              setSelectedAmenities(newSelected);
-                              console.log(`✅ Input nouvelles sélections:`, Array.from(newSelected));
-                            }}
-                            className="h-4 w-4 text-gray-600 rounded border-gray-300"
-                            onClick={(e) => e.stopPropagation()}
-                          />
-                          <span className="text-gray-600">{option.icon}</span>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium">{option.label}</p>
-                            <p className="text-xs text-gray-500">{amenity.distance_km} km</p>
-                          </div>
+                        {selectedAmenities.size === form.watch('surrounding_amenities')?.length 
+                          ? 'Tout désélectionner' 
+                          : 'Tout sélectionner'}
+                      </Button>
+                    </div>
+                  )}
+                  
+                  {form.watch('surrounding_amenities')?.length > 0 ? (
+                    <div className="space-y-4">
+                      {/* Section 1 : Commodités ESSENTIELLES */}
+                      <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                        <h4 className="text-sm font-semibold text-blue-900 mb-3 flex items-center gap-2">
+                          <Star className="h-4 w-4" />
+                          Commodités essentielles (critères d'achat principaux)
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                          {form.watch('surrounding_amenities')
+                            ?.filter(a => ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id))
+                            ?.sort((a, b) => a.distance_km - b.distance_km)
+                            ?.map((amenity, idx) => {
+                              const option = amenityOptions.find(opt => opt.value === amenity.nearby_amenity_id);
+                              if (!option) return null;
+                              
+                              const isSelected = selectedAmenities.has(amenity.nearby_amenity_id || '');
+                              const getTimeLabel = (dist) => {
+                                if (dist <= 0.5) return '⚡ 5 min à pied';
+                                if (dist <= 1) return '👟 10 min à pied';
+                                if (dist <= 2) return '🚶 20 min à pied';
+                                return `${Math.round(dist * 2.5)} min voiture`;
+                              };
+                              
+                              return (
+                                <div 
+                                  key={`ess-${amenity.nearby_amenity_id}-${idx}`} 
+                                  className={`bg-white rounded-lg p-3 border transition-all ${
+                                    isSelected ? 'ring-2 ring-blue-500' : ''
+                                  }`}
+                                >
+                                  <div className="flex items-start gap-3">
+                                    <input
+                                      type="checkbox"
+                                      checked={isSelected}
+                                      onChange={(e) => {
+                                        const currentSelected = selectedAmenities;
+                                        const newSelected = new Set(currentSelected);
+                                        
+                                        if (e.target.checked) {
+                                          newSelected.add(amenity.nearby_amenity_id || '');
+                                        } else {
+                                          newSelected.delete(amenity.nearby_amenity_id || '');
+                                        }
+                                        
+                                        setSelectedAmenities(newSelected);
+                                      }}
+                                      className="mt-1 h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                                    />
+                                    <div className="flex-1">
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-blue-600">{option.icon}</span>
+                                        <span className="font-medium text-sm">{option.label}</span>
+                                      </div>
+                                      <div className="mt-1 flex items-center gap-2">
+                                        <span className="text-xs font-bold">{amenity.distance_km} km</span>
+                                        <span className="text-xs text-gray-600 flex items-center gap-1">
+                                          <Clock className="h-3 w-3" />
+                                          {getTimeLabel(amenity.distance_km)}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
                         </div>
                       </div>
-                    );
-                  })}
-              </div>
-            </div>
-          </details>
-        </div>
-      )}
-      
-      {/* Note d'information */}
-      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-        <p className="text-xs text-amber-800">
-          <strong>💡 Info :</strong> Cliquez sur les cases ou les cartes pour sélectionner les commodités qui apparaîtront sur le site public. 
-          Les commodités essentielles sont pré-sélectionnées par défaut.
-        </p>
-      </div>
-    </div>
-  ) : (
-    <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-      <MapPin className="mx-auto h-12 w-12 text-gray-400" />
-      <p className="mt-2 text-sm text-gray-600">Aucune commodité détectée</p>
-    </div>
-  )}
-</div>
+                      
+                      {/* Section 2 : Autres commodités */}
+                      {form.watch('surrounding_amenities')?.filter(a => !ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id)).length > 0 && (
+                        <div className="bg-gray-50 rounded-lg border">
+                          <details open>
+                            <summary className="p-4 cursor-pointer font-semibold text-sm text-gray-700 hover:bg-gray-100">
+                              <span className="inline-flex items-center gap-2">
+                                <ChevronDown className="h-4 w-4" />
+                                Autres commodités ({form.watch('surrounding_amenities')?.filter(a => !ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id)).length})
+                                <span className="text-xs font-normal text-gray-500 ml-2">
+                                  Cliquez les cases pour sélectionner celles à afficher
+                                </span>
+                              </span>
+                            </summary>
+                            <div className="p-4 pt-0">
+                              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                                {form.watch('surrounding_amenities')
+                                  ?.filter(a => !ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id))
+                                  ?.sort((a, b) => a.distance_km - b.distance_km)
+                                  ?.map((amenity, idx) => {
+                                    const option = amenityOptions.find(opt => opt.value === amenity.nearby_amenity_id);
+                                    if (!option) return null;
+                                    
+                                    const isSelected = selectedAmenities.has(amenity.nearby_amenity_id || '');
+                                    
+                                    return (
+                                      <div 
+                                        key={`other-${amenity.nearby_amenity_id}-${idx}`} 
+                                        className={`bg-white rounded-lg p-3 border transition-all cursor-pointer hover:shadow-md ${
+                                          isSelected ? 'ring-2 ring-gray-500 bg-gray-50' : ''
+                                        }`}
+                                        onClick={() => {
+                                          const newSelected = new Set(selectedAmenities);
+                                          if (isSelected) {
+                                            newSelected.delete(amenity.nearby_amenity_id || '');
+                                          } else {
+                                            newSelected.add(amenity.nearby_amenity_id || '');
+                                          }
+                                          setSelectedAmenities(newSelected);
+                                        }}
+                                      >
+                                        <div className="flex items-center gap-2">
+                                          <input
+                                            type="checkbox"
+                                            checked={isSelected}
+                                            onChange={(e) => {
+                                              e.stopPropagation();
+                                              const newSelected = new Set(selectedAmenities);
+                                              if (e.target.checked) {
+                                                newSelected.add(amenity.nearby_amenity_id || '');
+                                              } else {
+                                                newSelected.delete(amenity.nearby_amenity_id || '');
+                                              }
+                                              setSelectedAmenities(newSelected);
+                                            }}
+                                            className="h-4 w-4 text-gray-600 rounded border-gray-300"
+                                            onClick={(e) => e.stopPropagation()}
+                                          />
+                                          <span className="text-gray-600">{option.icon}</span>
+                                          <div className="flex-1 min-w-0">
+                                            <p className="text-sm font-medium">{option.label}</p>
+                                            <p className="text-xs text-gray-500">{amenity.distance_km} km</p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                              </div>
+                            </div>
+                          </details>
+                        </div>
+                      )}
+                      
+                      {/* Note d'information */}
+                      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                        <p className="text-xs text-amber-800">
+                          <strong>💡 Info :</strong> Cliquez sur les cases ou les cartes pour sélectionner les commodités qui apparaîtront sur le site public. 
+                          Les commodités essentielles sont pré-sélectionnées par défaut.
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                      <MapPin className="mx-auto h-12 w-12 text-gray-400" />
+                      <p className="mt-2 text-sm text-gray-600">Aucune commodité détectée</p>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* COLONNE DROITE : Carte (2/5) */}
@@ -2293,58 +1998,58 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                          ].filter(Boolean);
                          
                          const seoSlug = projectData.title
-                           .toLowerCase()
-                           .normalize('NFD')
-                           .replace(/[\u0300-\u036f]/g, '') // Enlever accents
+                           ?.toLowerCase()
                            .replace(/[^a-z0-9]+/g, '-')
-                           .replace(/^-+|-+$/g, '')
-                           .substring(0, 60); // Limite longueur
+                           .replace(/^-+|-+$/g, '');
                          
                          // Mise à jour des champs
-                         form.setValue('meta_title', seoTitle);
-                         form.setValue('meta_description', seoDescription);
-                         form.setValue('meta_keywords', seoKeywords);
-                         form.setValue('url_slug', seoSlug);
+                         form.setValue('seo_title', seoTitle);
+                         form.setValue('seo_description', seoDescription);
+                         form.setValue('seo_keywords', seoKeywords);
+                         form.setValue('project_slug', seoSlug);
                          
-                         // Afficher le résultat
-                         toast("✅ Contenu SEO généré avec succès !", {
-                           description: "Vérifiez et ajustez si nécessaire les textes générés",
+                         // Génération des OG tags
+                         form.setValue('og_title', seoTitle);
+                         form.setValue('og_description', seoDescription.substring(0, 160));
+                         
+                         toast.dismiss(loadingToastId);
+                         toast("✅ Contenu SEO généré avec succès", {
+                           description: "Métadonnées optimisées pour les moteurs de recherche",
                            duration: 5000,
                          });
                          
-                         // Scroll vers les champs SEO pour les voir
-                         const seoSection = document.querySelector('[name="meta_title"]');
-                         if (seoSection) {
-                           seoSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                         }
-                         
                        } catch (error) {
-                         console.error('Erreur génération SEO:', error);
-                         toast("❌ Erreur de génération", {
-                           description: "Impossible de générer le contenu SEO"
+                         toast.dismiss(loadingToastId);
+                         toast("❌ Erreur lors de la génération", {
+                           description: error?.message || "Une erreur est survenue"
                          });
-                       } finally {
-                         // Fermer le toast de chargement
-                         // Note: sonner toast doesn't have dismiss method, just let it auto-dismiss
                        }
-                    }}
-                    className="bg-slate-900 hover:bg-slate-800 text-white"
+                     }}
+                    variant="outline"
+                    size="sm"
                   >
-                    <Brain className="w-4 h-4 mr-2" />
-                    Générer le SEO
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Générer avec l'IA
                   </Button>
                 </div>
               </CardContent>
             </Card>
+
             <FormField
               control={form.control}
-              name="meta_title"
+              name="project_slug"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Titre SEO</FormLabel>
+                  <FormLabel className="flex items-center gap-2">
+                    <Link className="w-4 h-4" />
+                    URL du projet (slug)
+                  </FormLabel>
                   <FormControl>
-                    <Input placeholder="Titre optimisé pour les moteurs de recherche (60 caractères max)" {...field} />
+                    <Input placeholder="marina-towers-limassol" {...field} />
                   </FormControl>
+                  <FormDescription>
+                    URL: /projets/{field.value || 'votre-slug'}
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -2352,17 +2057,43 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
             <FormField
               control={form.control}
-              name="meta_description"
+              name="seo_title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description SEO</FormLabel>
+                  <FormLabel>Titre SEO (60 caractères max)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Marina Towers - Appartements luxe Limassol..." {...field} />
+                  </FormControl>
+                  <FormDescription className="flex justify-between">
+                    <span>Titre optimisé pour les moteurs de recherche</span>
+                    <span className={field.value?.length > 60 ? 'text-red-500' : ''}>
+                      {field.value?.length || 0}/60
+                    </span>
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="seo_description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description SEO (160 caractères)</FormLabel>
                   <FormControl>
                     <Textarea 
-                      placeholder="Description pour les moteurs de recherche (160 caractères max)"
+                      placeholder="Découvrez Marina Towers à Limassol, un projet exclusif..."
                       rows={3}
                       {...field} 
                     />
                   </FormControl>
+                  <FormDescription className="flex justify-between">
+                    <span>Description pour les résultats de recherche</span>
+                    <span className={field.value?.length > 160 ? 'text-red-500' : ''}>
+                      {field.value?.length || 0}/160
+                    </span>
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -2370,73 +2101,29 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
             <FormField
               control={form.control}
-              name="meta_keywords"
+              name="seo_keywords"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Mots-clés SEO</FormLabel>
                   <FormControl>
                     <Input 
-                      placeholder="Séparez par des virgules: immobilier, chypre, investissement..."
+                      placeholder="Séparez par virgules: appartement limassol, golden visa, investissement..."
                       {...field}
                       value={Array.isArray(field.value) ? field.value.join(', ') : field.value || ''}
                       onChange={(e) => field.onChange(e.target.value.split(',').map(k => k.trim()).filter(k => k))}
                     />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="marketing_highlights"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Points Marketing</FormLabel>
-                  <FormControl>
-                    <Input 
-                      placeholder="Séparez par des virgules: Vue mer, Golden Visa, Près plage..."
-                      {...field}
-                      value={Array.isArray(field.value) ? field.value.join(', ') : field.value || ''}
-                      onChange={(e) => field.onChange(e.target.value.split(',').map(k => k.trim()).filter(k => k))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="target_audience"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Audience Cible</FormLabel>
-                  <FormControl>
-                    <Input 
-                      placeholder="Séparez par des virgules: Investisseurs, Retraités, Familles..."
-                      {...field}
-                      value={Array.isArray(field.value) ? field.value.join(', ') : field.value || ''}
-                      onChange={(e) => field.onChange(e.target.value.split(',').map(k => k.trim()).filter(k => k))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="url_slug"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>URL Slug</FormLabel>
-                  <FormControl>
-                    <Input 
-                      placeholder="marina-towers-limassol"
-                      {...field}
-                    />
-                  </FormControl>
+                  <FormDescription>
+                    {Array.isArray(field.value) && field.value.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {field.value.map((keyword, index) => (
+                          <Badge key={index} variant="secondary">
+                            {keyword}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -2445,44 +2132,27 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="featured_project"
+                name="og_title"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-base">Projet en vedette</FormLabel>
-                      <div className="text-sm text-muted-foreground">
-                        Afficher en priorité
-                      </div>
-                    </div>
+                  <FormItem>
+                    <FormLabel>Open Graph Title</FormLabel>
                     <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
+                      <Input placeholder="Titre pour les réseaux sociaux" {...field} />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
-                name="construction_phase"
+                name="og_description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Phase de construction</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Phase" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="planned">Planifiée</SelectItem>
-                        <SelectItem value="in_progress">En cours</SelectItem>
-                        <SelectItem value="completion">Finition</SelectItem>
-                        <SelectItem value="finished">Terminée</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <FormLabel>Open Graph Description</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Description pour les réseaux sociaux" {...field} />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -2494,24 +2164,78 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     );
   };
 
-  // Main switch based on current step
+  const renderSummaryStep = () => {
+    return (
+      <div className="space-y-8">
+        <Card className="border-2 border-slate-300 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+            <CardTitle>Résumé du projet</CardTitle>
+          </CardHeader>
+          <CardContent className="p-6 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h3 className="font-semibold mb-2">Informations générales</h3>
+                <div className="space-y-1 text-sm">
+                  <div><span className="font-medium">Nom:</span> {form.watch('title')}</div>
+                  <div><span className="font-medium">Code:</span> {form.watch('project_code')}</div>
+                  <div><span className="font-medium">Développeur:</span> {developers?.find(d => d.id === form.watch('developer_id'))?.name}</div>
+                  <div><span className="font-medium">Phase:</span> {form.watch('project_phase')}</div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-semibold mb-2">Localisation</h3>
+                <div className="space-y-1 text-sm">
+                  <div><span className="font-medium">Zone:</span> {form.watch('cyprus_zone')}</div>
+                  <div><span className="font-medium">Ville:</span> {form.watch('city')}</div>
+                  <div><span className="font-medium">Adresse:</span> {form.watch('full_address')}</div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-semibold mb-2">Prix</h3>
+                <div className="space-y-1 text-sm">
+                  <div><span className="font-medium">À partir de:</span> €{form.watch('price_from')?.toLocaleString()}</div>
+                  <div><span className="font-medium">Jusqu'à:</span> €{form.watch('price_to')?.toLocaleString()}</div>
+                  <div><span className="font-medium">Golden Visa:</span> {form.watch('golden_visa_eligible') ? 'Oui' : 'Non'}</div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-semibold mb-2">Commodités</h3>
+                <div className="space-y-1 text-sm">
+                  <div><span className="font-medium">Mer/Plage:</span> {form.watch('proximity_sea_km')} km</div>
+                  <div><span className="font-medium">Aéroport:</span> {form.watch('proximity_airport_km')} km</div>
+                  <div><span className="font-medium">Commodités détectées:</span> {form.watch('surrounding_amenities')?.length || 0}</div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
+  // Render step based on currentStep
   switch (currentStep) {
     case 'basics':
       return renderBasicsStep();
+    case 'buildings':
+      return renderBuildingsStep();
     case 'location':
       return renderLocationStep();
+    case 'amenities':
+      return renderAmenitiesStep();
     case 'specifications':
       return renderSpecificationsStep();
     case 'pricing':
       return renderPricingStep();
     case 'media':
       return renderMediaStep();
-    case 'buildings':
-      return renderBuildingsStep();
-    case 'amenities':
-      return renderAmenitiesStep();
     case 'marketing':
       return renderMarketingStep();
+    case 'summary':
+      return renderSummaryStep();
     default:
       return renderBasicsStep();
   }
