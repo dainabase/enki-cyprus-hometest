@@ -18,7 +18,7 @@ import { BuildingCards } from './BuildingCards';
 import { AmenitiesSelector } from './AmenitiesSelector';
 import { CommoditiesCheckboxes } from './CommoditiesCheckboxes';
 import PropertySubTypeSelector from './PropertySubTypeSelector';
-import { GoogleMapsAgent } from '@/services/googleMapsAgent';
+import { googleMapsAgent } from '@/services/googleMapsAgent';
 import { BuildingSection } from './BuildingSection';
 import { ProjectFormData } from '@/schemas/projectSchema';
 import { ProjectBuilding } from '@/types/building.project';
@@ -638,11 +638,14 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           value={form.watch('surrounding_amenities') || []}
           onChange={(amenities) => form.setValue('surrounding_amenities', amenities)}
           onDetectWithMaps={async () => {
+            console.log('🔍 Bouton Détecter via Maps cliqué');
             const address = form.watch('full_address');
+            console.log('📍 Adresse:', address);
+            
             if (!address) {
               toast({
                 title: "Adresse requise",
-                description: "Veuillez entrer l'adresse du projet dans la section Localisation",
+                description: "Veuillez entrer l'adresse du projet dans la section Localisation ci-dessus",
                 variant: "destructive"
               });
               return;
@@ -655,55 +658,38 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             });
             
             try {
-              // Utiliser le service GoogleMapsAgent
-              const googleMapsAgent = new GoogleMapsAgent();
+              console.log('📡 Appel de googleMapsAgent.findNearbyPlaces...');
               const places = await googleMapsAgent.findNearbyPlaces(address, 2);
+              console.log('📦 Résultat:', places);
               
               if (!places || places.length === 0) {
                 toast({
                   title: "Aucune commodité trouvée",
-                  description: "Vérifiez l'adresse ou réessayez plus tard",
+                  description: "Vérifiez l'adresse ou la configuration Google Maps API",
                   variant: "destructive"
                 });
                 return;
               }
               
-              // Mapper correctement les données
-              const commodities = places.map((place: any) => ({
-                nearby_amenity_id: place.type || 'other',
-                distance_km: place.distance_km || 0,
+              const commodities = places.map(place => ({
+                nearby_amenity_id: place.type,
+                distance_km: place.distance_km,
                 details: `${place.name}${place.rating ? ` (${place.rating}⭐)` : ''}`
               }));
               
-              // Fusionner avec les commodités existantes
-              const existing = form.watch('surrounding_amenities') || [];
-              const merged = [...existing];
-              
-              commodities.forEach((newItem: any) => {
-                const exists = merged.find(m => m.nearby_amenity_id === newItem.nearby_amenity_id);
-                if (!exists) {
-                  merged.push(newItem);
-                }
-              });
-              
-              form.setValue('surrounding_amenities', merged);
+              form.setValue('surrounding_amenities', commodities);
               
               toast({
                 title: "✅ Détection terminée",
-                description: `${places.length} commodités trouvées et ajoutées`,
+                description: `${places.length} commodités trouvées`,
+                duration: 5000,
               });
               
-              // Scroll vers les commodités
-              const section = document.querySelector('[data-commodities-section]');
-              if (section) {
-                section.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              }
-              
             } catch (error) {
-              console.error('Erreur détection commodités:', error);
+              console.error('❌ Erreur complète:', error);
               toast({
                 title: "Erreur de détection",
-                description: "Impossible de détecter les commodités. Vérifiez la clé API Google Maps.",
+                description: error?.message || "Vérifiez la console pour plus de détails",
                 variant: "destructive"
               });
             } finally {
