@@ -56,13 +56,13 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
   const [autoRedetect, setAutoRedetect] = useState(false);
   const [detectedCount, setDetectedCount] = useState(0);
 
-  // Préparer les données pour la carte - Version simplifiée
-  const mapCommodities = form.watch('surrounding_amenities')?.slice(0, 5).map((amenity, index) => ({
+  // Préparer les données pour la carte avec coordonnées réelles
+  const mapCommodities = form.watch('surrounding_amenities')?.map((amenity: any, index: number) => ({
     id: amenity.nearby_amenity_id || `amenity-${index}`,
     name: amenity.details || amenity.nearby_amenity_id || 'Commodité',
     type: amenity.nearby_amenity_id || 'default',
-    lat: form.watch('gps_latitude') + (Math.random() - 0.5) * 0.01, // Position relative au projet
-    lng: form.watch('gps_longitude') + (Math.random() - 0.5) * 0.01,
+    lat: amenity.lat || (form.watch('gps_latitude') + (Math.random() - 0.5) * 0.005), // Utiliser les vraies coordonnées si disponibles
+    lng: amenity.lng || (form.watch('gps_longitude') + (Math.random() - 0.5) * 0.005),
     distance: amenity.distance_km || 1
   })) || [];
   
@@ -713,7 +713,9 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               commoditiesMap.set(dbType, {
                 nearby_amenity_id: dbType,
                 distance_km: place.distance_km,
-                details: place.name
+                details: place.name,
+                lat: place.lat,
+                lng: place.lng
               });
             }
           }
@@ -839,8 +841,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
       }
     };
 
-    // Préparer les données pour la carte
-    const mapCommodities = [];
 
     return (
       <div className="space-y-8">
