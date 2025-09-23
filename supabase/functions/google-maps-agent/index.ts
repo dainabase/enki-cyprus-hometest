@@ -105,7 +105,9 @@ serve(async (req) => {
       type: place.types[0],
       distance_km: calculateDistance(lat, lng, place.geometry.location.lat, place.geometry.location.lng),
       address: place.vicinity,
-      rating: place.rating || null
+      rating: place.rating || null,
+      lat: place.geometry.location.lat,
+      lng: place.geometry.location.lng
     }));
 
     // Trier par distance

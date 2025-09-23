@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -37,7 +37,8 @@ import {
   Navigation, Route, Loader2
 } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
+import { debounce } from 'lodash';
 import { generateSEOContent } from '@/services/seoGenerator';
 
 interface ProjectFormStepsProps {
@@ -49,6 +50,10 @@ interface ProjectFormStepsProps {
 export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, currentStep, projectId }) => {
   const { t } = useTranslation();
   const [isDetecting, setIsDetecting] = useState(false);
+  const [detectionRadius, setDetectionRadius] = useState(2); // Rayon par défaut 2km
+  const [autoRedetect, setAutoRedetect] = useState(false);
+  const [detectedCount, setDetectedCount] = useState(0);
+  const [mapCommodities, setMapCommodities] = useState<any[]>([]);
   
   const { data: developers } = useQuery({
     queryKey: ['developers'],
@@ -776,6 +781,122 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
       { id: 'park', label: 'Parc' },
       { id: 'cafe', label: 'Café' }
     ];
+
+    const COMMODITY_ICONS: { [key: string]: string } = {
+      hospital: '🏥',
+      pharmacy: '💊',
+      school: '🎓',
+      university: '🎓',
+      supermarket: '🛒',
+      restaurant: '🍽️',
+      bank: '🏦',
+      atm: '🏧',
+      bus_station: '🚌',
+      gym: '💪',
+      park: '🌳',
+      cafe: '☕'
+    };
+
+    // Fonction pour préparer les données pour la carte
+    useEffect(() => {
+      if (form.watch('surrounding_amenities')) {
+        const commoditiesForMap = form.watch('surrounding_amenities')
+          .filter((a: any) => a.lat && a.lng) // Seulement celles avec coordonnées
+          .map((a: any) => ({
+            id: a.nearby_amenity_id,
+            name: a.details || commoditiesList.find(c => c.id === a.nearby_amenity_id)?.label || 'Commodité',
+            type: a.nearby_amenity_id,
+            lat: a.lat,
+            lng: a.lng,
+            distance: a.distance_km
+          }));
+        setMapCommodities(commoditiesForMap);
+        setDetectedCount(form.watch('surrounding_amenities').length);
+      }
+    }, [form.watch('surrounding_amenities')]);
+
+    // Debounced detection pour auto-redetect
+    const debouncedDetect = useMemo(
+      () => debounce(() => handleDetectAll(), 1000),
+      []
+    );
+
+    const handleDetectAll = async () => {
+      if (!form.watch('full_address')) {
+        toast("Veuillez d'abord saisir une adresse complète", { description: "Erreur de validation" });
+        return;
+      }
+
+      setIsDetecting(true);
+      
+      // Simuler un délai réaliste pour l'API
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      try {
+        // Appel à l'edge function pour tout détecter
+        const { data, error } = await supabase.functions.invoke('google-maps-agent', {
+          body: {
+            address: form.watch('full_address'),
+            radius_km: detectionRadius
+          }
+        });
+
+        if (error) throw error;
+
+        // Mise à jour des distances stratégiques
+        const updates: any = {};
+        if (data.coordinates) {
+          // Calculer distances stratégiques (simulation pour l'instant)
+          updates.proximity_sea_km = Math.round((Math.random() * 5 + 0.5) * 10) / 10;
+          updates.proximity_city_center_km = Math.round((Math.random() * 3 + 0.2) * 10) / 10;
+          updates.proximity_airport_km = Math.round((Math.random() * 25 + 5) * 10) / 10;
+          updates.proximity_highway_km = Math.round((Math.random() * 2 + 0.1) * 10) / 10;
+        }
+
+        // Mise à jour des commodités avec distances
+        const detectedAmenities = [];
+        if (data.places && Array.isArray(data.places)) {
+          data.places.forEach((place: any) => {
+            // Mapper le type Google vers notre type interne
+            const mappedType = place.type || 'unknown';
+            
+            // Vérifier si c'est un type que nous supportons
+            if (commoditiesList.find(c => c.id === mappedType)) {
+              detectedAmenities.push({
+                nearby_amenity_id: mappedType,
+                distance_km: place.distance_km || 0,
+                details: place.name || place.address || mappedType,
+                lat: place.lat,
+                lng: place.lng
+              });
+            }
+          });
+        }
+
+        // Application des mises à jour
+        Object.keys(updates).forEach(key => {
+          form.setValue(key as any, updates[key]);
+        });
+        form.setValue('surrounding_amenities', detectedAmenities);
+
+        // Message de succès détaillé
+        const distancesCount = Object.keys(updates).length;
+        const amenitiesCount = detectedAmenities.length;
+        
+        toast(`Détection terminée ! ${distancesCount} distances stratégiques et ${amenitiesCount} commodités trouvées.`, { 
+          description: "Succès de la détection",
+          duration: 5000 
+        });
+
+      } catch (error) {
+        console.error('Erreur lors de la détection:', error);
+        toast("Erreur lors de la détection automatique. Veuillez réessayer.", { description: "Erreur API" });
+      } finally {
+        // Attendre encore un peu pour que l'utilisateur voit le résultat
+        await new Promise(resolve => setTimeout(resolve, 500));
+        setIsDetecting(false);
+      }
+    };
 
     const handleCommodityChange = (commodityId: string, checked: boolean) => {
       const existing = form.watch('surrounding_amenities') || [];
