@@ -2260,26 +2260,24 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
   };
 
   // Main switch based on current step
-  return (() => {
-    switch (currentStep) {
-      case 'basics':
-        return renderBasicsStep();
-      case 'location':
-        return renderLocationStep();
-      case 'specifications':
-        return renderSpecificationsStep();
-      case 'pricing':
-        return renderPricingStep();
-      case 'media':
-        return renderMediaStep();
-      case 'buildings':
-        return renderBuildingsStep();
-      case 'amenities':
-        return renderAmenitiesStep();
-      case 'marketing':
-        return renderMarketingStep();
-      default:
-        return renderBasicsStep();
-    }
-  })();
+  switch (currentStep) {
+    case 'basics':
+      return renderBasicsStep();
+    case 'location':
+      return renderLocationStep();
+    case 'specifications':
+      return renderSpecificationsStep();
+    case 'pricing':
+      return renderPricingStep();
+    case 'media':
+      return renderMediaStep();
+    case 'buildings':
+      return renderBuildingsStep();
+    case 'amenities':
+      return renderAmenitiesStep();
+    case 'marketing':
+      return renderMarketingStep();
+    default:
+      return renderBasicsStep();
+  }
 };
