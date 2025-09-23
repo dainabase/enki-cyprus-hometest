@@ -618,82 +618,152 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
   };
 
   const handleDetectAll = async () => {
-    const address = form.watch('full_address');
+    const address = form.watch('full_address') || '';
     
     if (!address) {
-      toast("Veuillez d'abord saisir une adresse complète", { description: "Erreur de validation" });
+      toast.error('Veuillez entrer une adresse');
       return;
     }
 
     setIsDetecting(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
     
     try {
-      const { data, error } = await supabase.functions.invoke('google-maps-agent', {
+      console.log('🚀 Début de la détection automatique');
+      console.log('📍 Adresse:', address);
+      console.log('📏 Rayon de recherche:', detectionRadius, 'km');
+      
+      const { data: result, error } = await supabase.functions.invoke('google-maps-agent', {
         body: {
-          address: address,
-          radius_km: detectionRadius,
-          action: 'search'
+          action: 'findNearbyPlaces',
+          params: {
+            address: address,
+            radius: detectionRadius
+          }
         }
       });
 
       if (error) throw error;
-
-      if (data && data.success) {
-        // Traiter les commodités
-        if (data.places && data.places.length > 0) {
-          const commoditiesMap = new Map();
+      
+      if (result && result.places) {
+        console.log(`✅ ${result.places.length} lieux trouvés par Google Maps`);
+        
+        if (result.location) {
+          form.setValue('gps_latitude', result.location.lat);
+          form.setValue('gps_longitude', result.location.lng);
+          console.log('🌍 Coordonnées GPS:', result.location);
+        }
+        
+        const GOOGLE_TO_DB_TYPE_MAPPING: Record<string, string> = {
+          'transit_station': 'transport_public',
+          'bus_station': 'transport_public',
+          'train_station': 'transport_public',
+          'subway_station': 'transport_public',
+          'airport': 'airport',
+          'hospital': 'hospital',
+          'pharmacy': 'pharmacy',
+          'doctor': 'pharmacy',
+          'dentist': 'dentist',
+          'veterinary_care': 'veterinary_care',
+          'physiotherapist': 'physiotherapist',
+          'school': 'school',
+          'primary_school': 'school',
+          'secondary_school': 'school',
+          'university': 'university',
+          'supermarket': 'supermarket',
+          'shopping_mall': 'shopping_center',
+          'grocery_or_supermarket': 'supermarket',
+          'convenience_store': 'supermarket',
+          'bakery': 'bakery',
+          'bank': 'bank',
+          'atm': 'atm',
+          'post_office': 'post_office',
+          'restaurant': 'restaurant',
+          'cafe': 'cafe',
+          'bar': 'bar',
+          'night_club': 'night_club',
+          'gym': 'gym',
+          'spa': 'spa',
+          'beauty_salon': 'spa',
+          'movie_theater': 'cinema',
+          'park': 'park',
+          'church': 'church',
+          'mosque': 'mosque',
+          'synagogue': 'synagogue',
+          'parking': 'parking',
+          'gas_station': 'gas_station',
+          'police': 'police',
+          'fire_station': 'fire_station',
+          'city_hall': 'city_hall',
+          'courthouse': 'city_hall',
+          'embassy': 'city_hall',
+          'museum': 'museum',
+          'art_gallery': 'art_gallery',
+          'library': 'library',
+          'tourist_attraction': 'tourist_attraction',
+          'lodging': 'hotel',
+          'hotel': 'hotel',
+          'laundry': 'laundry',
+          'hair_care': 'hair_salon'
+        };
+        
+        const commoditiesMap = new Map<string, any>();
+        
+        result.places.forEach((place: any) => {
+          const dbType = GOOGLE_TO_DB_TYPE_MAPPING[place.type];
           
-          data.places.forEach((place: any) => {
-            const dbType = GOOGLE_TO_DB_TYPE_MAPPING[place.type];
-            if (dbType && !commoditiesMap.has(dbType)) {
+          if (dbType) {
+            const existing = commoditiesMap.get(dbType);
+            if (!existing || place.distance_km < existing.distance) {
               commoditiesMap.set(dbType, {
                 nearby_amenity_id: dbType,
-                distance_km: place.distance_km || 0,
-                details: place.name || place.address || dbType,
-                lat: place.lat,
-                lng: place.lng
+                distance_km: place.distance_km,
+                details: place.name
               });
             }
-          });
-          
-          const amenitiesArray = Array.from(commoditiesMap.values());
-          form.setValue('surrounding_amenities', amenitiesArray);
-          
-          console.log(`✅ ${amenitiesArray.length} types de commodités détectés`);
-        }
-
-        // Mettre à jour les distances stratégiques
-        if (data.strategicDistances) {
-          if (data.strategicDistances.nearest_beach) {
-            form.setValue('proximity_sea_km', data.strategicDistances.nearest_beach);
           }
-          if (data.strategicDistances.airport_distance) {
-            form.setValue('proximity_airport_km', data.strategicDistances.airport_distance);
-          }
-          if (data.strategicDistances.city_center_distance) {
-            form.setValue('proximity_city_center_km', data.strategicDistances.city_center_distance);
-          }
-          if (data.strategicDistances.highway_distance) {
-            form.setValue('proximity_highway_km', data.strategicDistances.highway_distance);
-          }
-          
-          console.log('📏 Distances stratégiques mises à jour:', data.strategicDistances);
-        }
-
-        const amenitiesCount = data.places?.length || 0;
-        toast(`Détection terminée ! ${amenitiesCount} commodités trouvées avec distances stratégiques.`, { 
-          description: "Succès",
-          duration: 5000 
         });
+        
+        const nearbyAmenities = Array.from(commoditiesMap.values());
+        
+        form.setValue('surrounding_amenities', nearbyAmenities);
+        console.log(`📍 ${nearbyAmenities.length} types de commodités uniques détectés`);
+        console.log('Commodités:', nearbyAmenities);
+        
+        if (result.strategicDistances) {
+          if (result.strategicDistances.nearest_beach) {
+            form.setValue('proximity_sea_km', result.strategicDistances.nearest_beach);
+          }
+          if (result.strategicDistances.airport_distance) {
+            form.setValue('proximity_airport_km', result.strategicDistances.airport_distance);
+          }
+          if (result.strategicDistances.city_center_distance) {
+            form.setValue('proximity_city_center_km', result.strategicDistances.city_center_distance);
+          }
+          if (result.strategicDistances.highway_distance) {
+            form.setValue('proximity_highway_km', result.strategicDistances.highway_distance);
+          }
+          
+          console.log('📏 Distances stratégiques mises à jour:', result.strategicDistances);
+          
+          toast.success(
+            `✅ Détection complète! ${nearbyAmenities.length} types de commodités trouvés`
+          );
+        } else {
+          console.warn('⚠️ Distances stratégiques non disponibles');
+          toast.warning('Détection partielle - Distances stratégiques non disponibles');
+        }
+        
+      } else {
+        console.error('❌ Aucun résultat de l\'API');
+        toast.error('Aucun lieu trouvé à proximité');
       }
-
+      
     } catch (error) {
-      console.error('Erreur lors de la détection:', error);
-      toast("Erreur lors de la détection automatique", { description: "Erreur API" });
+      console.error('❌ Erreur lors de la détection:', error);
+      toast.error('Erreur lors de la détection automatique');
     } finally {
-      await new Promise(resolve => setTimeout(resolve, 500));
       setIsDetecting(false);
+      console.log('🏁 Détection terminée');
     }
   };
 
