@@ -54,7 +54,7 @@ export const BuildingCards: React.FC<BuildingCardsProps> = ({
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div>
                   <span className="text-muted-foreground">Étages :</span>
-                  <span className="ml-1 font-medium">{building.floors_count || 0}</span>
+                  <span className="ml-1 font-medium">{building.total_floors || 0}</span>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Unités :</span>
@@ -63,29 +63,30 @@ export const BuildingCards: React.FC<BuildingCardsProps> = ({
                 <div>
                   <span className="text-muted-foreground">Type :</span>
                   <span className="ml-1 font-medium">
-                    {building.building_type === 'apartment' ? 'Appartements' :
-                     building.building_type === 'villa' ? 'Villas' :
+                    {building.building_type === 'apartment_building' ? 'Immeuble d\'appartements' :
+                     building.building_type === 'villa_complex' ? 'Complexe de villas' :
+                     building.building_type === 'mixed_residence' ? 'Résidence mixte' :
+                     building.building_type === 'residential' ? 'Résidentiel' :
                      building.building_type || 'Non défini'}
                   </span>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Classe :</span>
                   <Badge variant="outline" className="ml-1">
-                    {building.energy_class || 'N/A'}
+                    {building.building_class || 'N/A'}
                   </Badge>
                 </div>
               </div>
               
-              {building.building_amenities && building.building_amenities.length > 0 && (
-                <div className="pt-2 border-t">
-                  <div className="flex items-center gap-1">
-                    <Home className="w-3 h-3 text-muted-foreground" />
-                    <span className="text-xs text-muted-foreground">
-                      {building.building_amenities.length} équipements
-                    </span>
-                  </div>
+              {/* Compteur d'équipements */}
+              <div className="pt-2 border-t">
+                <div className="flex items-center gap-1">
+                  <Home className="w-3 h-3 text-muted-foreground" />
+                  <span className="text-xs text-muted-foreground">
+                    {countBuildingAmenities(building)} équipements
+                  </span>
                 </div>
-              )}
+              </div>
             </CardContent>
           </Card>
         ))}
@@ -103,3 +104,32 @@ export const BuildingCards: React.FC<BuildingCardsProps> = ({
     </div>
   );
 };
+
+/**
+ * Compte le nombre d'équipements actifs dans un bâtiment
+ */
+function countBuildingAmenities(building: any): number {
+  let count = 0;
+  
+  // Liste des propriétés booléennes à vérifier
+  const amenityProps = [
+    'has_generator',
+    'has_security_system',
+    'has_cctv',
+    'has_concierge',
+    'has_pool',
+    'has_gym',
+    'has_spa',
+    'has_playground',
+    'has_garden',
+    'has_parking'
+  ];
+  
+  amenityProps.forEach(prop => {
+    if (building[prop] === true) {
+      count++;
+    }
+  });
+  
+  return count;
+}
