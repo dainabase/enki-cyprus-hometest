@@ -1295,22 +1295,61 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             <div className="lg:col-span-2">
               <div className="sticky top-4">
                 <h4 className="font-semibold text-sm mb-3">Visualisation sur carte</h4>
-                {form.watch('gps_latitude') && form.watch('gps_longitude') ? (
-                  <LocationMap
-                    address={form.watch('full_address') || ''}
-                    latitude={form.watch('gps_latitude')}
-                    longitude={form.watch('gps_longitude')}
-                    radius={detectionRadius}
-                    commodities={mapCommodities}
-                  />
-                ) : (
-                  <div className="h-[500px] bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
-                    <div className="text-center text-gray-500">
-                      <MapPin className="h-12 w-12 mx-auto mb-3 opacity-30" />
-                      <p className="text-sm">Entrez une adresse pour afficher la carte</p>
-                    </div>
+                
+                {/* DEBUG: Afficher les valeurs pour diagnostic */}
+                {process.env.NODE_ENV === 'development' && (
+                  <div className="text-xs bg-yellow-100 p-2 rounded mb-2">
+                    <strong>🔍 DEBUG:</strong><br/>
+                    Lat: {form.watch('gps_latitude')} ({typeof form.watch('gps_latitude')})<br/>
+                    Lng: {form.watch('gps_longitude')} ({typeof form.watch('gps_longitude')})<br/>
+                    Address: {form.watch('full_address')}<br/>
+                    Google Maps: {typeof window !== 'undefined' && window.google ? '✅' : '❌'}
                   </div>
                 )}
+
+                {/* Vérifier que les coordonnées existent et sont valides */}
+                {(() => {
+                  const lat = form.watch('gps_latitude');
+                  const lng = form.watch('gps_longitude');
+                  
+                  // Convertir en nombres et vérifier la validité
+                  const latNum = typeof lat === 'number' ? lat : parseFloat(lat as string);
+                  const lngNum = typeof lng === 'number' ? lng : parseFloat(lng as string);
+                  const hasValidCoords = !isNaN(latNum) && !isNaN(lngNum) && 
+                                       latNum !== null && latNum !== undefined && 
+                                       lngNum !== null && lngNum !== undefined;
+                  
+                  console.log('🔍 ====== DIAGNOSTIC CARTE ======');
+                  console.log('📍 Latitude:', lat, '→', latNum, typeof latNum);
+                  console.log('📍 Longitude:', lng, '→', lngNum, typeof lngNum);
+                  console.log('📍 Valid coords?', hasValidCoords);
+                  console.log('📍 Address:', form.watch('full_address'));
+                  console.log('🗺️ Google Maps loaded?', typeof window !== 'undefined' && !!window.google);
+                  
+                  if (hasValidCoords) {
+                    return (
+                      <LocationMap
+                        address={form.watch('full_address') || ''}
+                        latitude={latNum}
+                        longitude={lngNum}
+                        radius={detectionRadius}
+                        commodities={mapCommodities}
+                      />
+                    );
+                  } else {
+                    return (
+                      <div className="h-[500px] bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+                        <div className="text-center text-gray-500">
+                          <MapPin className="h-12 w-12 mx-auto mb-3 opacity-30" />
+                          <p className="text-sm">Entrez une adresse pour afficher la carte</p>
+                          <p className="text-xs mt-2 text-red-500">
+                            Debug: Lat={lat} Lng={lng} → {latNum}, {lngNum}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  }
+                })()}
               </div>
             </div>
           </div>
