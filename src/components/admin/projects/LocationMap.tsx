@@ -1,5 +1,6 @@
-import { GoogleMap, LoadScript, Marker, Circle, InfoWindow } from '@react-google-maps/api';
+import { GoogleMap, Marker, Circle, InfoWindow } from '@react-google-maps/api';
 import { useState, useCallback, memo } from 'react';
+import { useGoogleMapsContext } from '@/contexts/GoogleMapsContext';
 
 interface LocationMapProps {
   address: string;
@@ -57,6 +58,7 @@ export const LocationMap = memo(({
   commodities,
   onRadiusChange 
 }: LocationMapProps) => {
+  const { isLoaded, loadError } = useGoogleMapsContext();
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [selectedCommodity, setSelectedCommodity] = useState<any>(null);
 
@@ -83,12 +85,30 @@ export const LocationMap = memo(({
     setMap(null);
   }, []);
 
+  if (loadError) {
+    return (
+      <div className="h-[500px] bg-red-50 dark:bg-red-950/20 rounded-lg flex items-center justify-center">
+        <div className="text-center text-red-600">
+          <p className="text-sm">Erreur de chargement Google Maps</p>
+          <p className="text-xs mt-1">{loadError.message}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isLoaded) {
+    return (
+      <div className="h-[500px] bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+        <div className="text-center text-gray-500">
+          <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-2"></div>
+          <p className="text-sm">Chargement de la carte...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <LoadScript
-      googleMapsApiKey="AIzaSyBmFbbR7bD_4PSJGBU-_12ZL1VjGKRXKBU"
-      libraries={['places']}
-    >
-      <GoogleMap
+    <GoogleMap
         mapContainerStyle={mapContainerStyle}
         center={center}
         zoom={14}
@@ -166,7 +186,6 @@ export const LocationMap = memo(({
           </InfoWindow>
         )}
       </GoogleMap>
-    </LoadScript>
   );
 });
 

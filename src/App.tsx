@@ -9,6 +9,7 @@ import { HelmetProvider } from "react-helmet-async";
 import Layout from "./components/layout/Layout";
 import { FilterProvider } from "./contexts/FilterContext";
 import { AuthProvider } from "./contexts/AuthContext";
+import { GoogleMapsProvider } from "./contexts/GoogleMapsContext";
 import { PrivateRoute } from "./components/auth/PrivateRoute";
 import LoadingSpinner from "./components/LoadingSpinner";
 import { CookieConsentBanner } from "./components/CookieConsent";
@@ -71,7 +72,8 @@ const AppContent = () => {
   return (
     <BrowserRouter>
       <TooltipProvider>
-        <FilterProvider>
+        <GoogleMapsProvider>
+          <FilterProvider>
           <Suspense fallback={<LoadingSpinner />}>
             <Routes>
               {/* Admin routes - without Layout */}
@@ -112,6 +114,7 @@ const AppContent = () => {
           <CookieConsentBanner />
           <Sonner />
         </FilterProvider>
+        </GoogleMapsProvider>
       </TooltipProvider>
     </BrowserRouter>
   );
