@@ -12,7 +12,7 @@ import { fetchProject } from '@/lib/supabase/projects';
 import { toast } from 'sonner';
 import { ArrowLeft, ArrowRight, Save, CheckCircle, ChevronLeft } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { convertLegacyAmenities, convertPhotosToCategorized } from '@/utils/amenitiesMapper';
+import { convertLegacyAmenities, convertPhotosToCategorized, CategorizedPhoto } from '@/utils/amenitiesMapper';
 
 const AdminProjectForm: React.FC = () => {
   const navigate = useNavigate();
@@ -86,8 +86,8 @@ const AdminProjectForm: React.FC = () => {
       rental_yield_percent: null,
       financing_available: false,
       
-      // Media
-      photos: [],
+      // Media - IMPORTANT: Initialized with empty array
+      photos: [] as CategorizedPhoto[],
       photo_gallery_urls: [],
       video_tour_urls: [],
       virtual_tour_url: '',
@@ -158,65 +158,20 @@ const AdminProjectForm: React.FC = () => {
           converted: convertedAmenities 
         });
         
-        // Ajouter un log pour débugger les photos
-        console.log('📸 Photos raw data:', {
+        // Conversion sécurisée des photos vers le nouveau format
+        console.log('📸 Converting photos from:', {
           photos: projectData.photos,
-          categorized_photos: projectData.categorized_photos
+          categorized_photos: projectData.categorized_photos,
+          type_photos: typeof projectData.photos,
+          type_categorized: typeof projectData.categorized_photos
         });
-
-        // Conversion sécurisée des photos
-        let photos = { exterior: [], interior: [], amenities: [], views: [], plans: [] };
-
-        try {
-          // Log pour debug
-          console.log('📸 Photos data:', {
-            photos: projectData.photos,
-            categorized: projectData.categorized_photos,
-            type_photos: typeof projectData.photos,
-            type_categorized: typeof projectData.categorized_photos
-          });
-          
-          // Vérifier d'abord categorized_photos
-          if (projectData.categorized_photos && 
-              typeof projectData.categorized_photos === 'object' &&
-              !Array.isArray(projectData.categorized_photos)) {
-            
-            // S'assurer que chaque catégorie existe
-            photos = {
-              exterior: projectData.categorized_photos.exterior || [],
-              interior: projectData.categorized_photos.interior || [],
-              amenities: projectData.categorized_photos.amenities || [],
-              views: projectData.categorized_photos.views || [],
-              plans: projectData.categorized_photos.plans || []
-            };
-            
-          } else if (projectData.photos && Array.isArray(projectData.photos)) {
-            // Convertir array simple en catégorisé
-            photos = {
-              exterior: projectData.photos
-                .filter(p => p && (typeof p === 'string' || (p && p.url)))
-                .map((photo, index) => {
-                  if (typeof photo === 'string') {
-                    return { url: photo, caption: `Photo ${index + 1}`, is_primary: index === 0 };
-                  }
-                  return photo;
-                }),
-              interior: [],
-              amenities: [],
-              views: [],
-              plans: []
-            };
-          }
-          
-          console.log('📸 Photos converties:', photos);
-          
-        } catch (photoError) {
-          console.error('❌ Erreur conversion photos:', photoError);
-          // Valeur par défaut en cas d'erreur
-          photos = { exterior: [], interior: [], amenities: [], views: [], plans: [] };
-        }
         
-        console.log('📸 Photos converted:', photos);
+        // Utiliser la fonction de conversion améliorée
+        const convertedPhotos = convertPhotosToCategorized(
+          projectData.categorized_photos || projectData.photos || []
+        );
+        
+        console.log('📸 Photos converted to:', convertedPhotos);
         
         // Préparer TOUTES les données du formulaire
         const formData = {
@@ -279,8 +234,8 @@ const AdminProjectForm: React.FC = () => {
           // BUILDINGS
           buildings: buildingsData || [],
           
-          // MEDIA
-          photos: photos,
+          // MEDIA - Using the converted photos
+          photos: convertedPhotos,
           photo_gallery_urls: projectData.photo_gallery_urls || [],
           video_tour_urls: projectData.video_tour_urls || [],
           virtual_tour_url: projectData.virtual_tour_url || '',
@@ -289,21 +244,32 @@ const AdminProjectForm: React.FC = () => {
           project_presentation_url: projectData.project_presentation_url || '',
           youtube_tour_url: projectData.youtube_tour_url || '',
           vimeo_tour_url: projectData.vimeo_tour_url || '',
+          vr_tour_url: projectData.vr_tour_url || '',
+          ar_experience_url: projectData.ar_experience_url || '',
+          metaverse_preview_url: projectData.metaverse_preview_url || '',
           drone_footage_urls: projectData.drone_footage_urls || [],
           model_3d_urls: projectData.model_3d_urls || [],
+          price_list_pdf: projectData.price_list_pdf || '',
+          technical_specs_pdf: projectData.technical_specs_pdf || '',
           
           // AMENITIES (convertis)
           amenities: convertedAmenities,
           surrounding_amenities: projectData.surrounding_amenities || [],
           
-          // MARKETING
+          // MARKETING & SEO
           project_narrative: projectData.project_narrative || '',
-          meta_title: projectData.meta_title || '',
-          meta_description: projectData.meta_description || '',
-          meta_keywords: projectData.meta_keywords || [],
+          meta_title: projectData.meta_title || projectData.seo_title || '',
+          meta_description: projectData.meta_description || projectData.seo_description || '',
+          meta_keywords: projectData.meta_keywords || projectData.seo_keywords || [],
+          project_slug: projectData.project_slug || '',
+          seo_title: projectData.seo_title || '',
+          seo_description: projectData.seo_description || '',
+          seo_keywords: projectData.seo_keywords || [],
           marketing_highlights: projectData.marketing_highlights || [],
           target_audience: projectData.target_audience || [],
-          url_slug: projectData.url_slug || '',
+          url_slug: projectData.url_slug || projectData.project_slug || '',
+          og_title: projectData.og_title || '',
+          og_description: projectData.og_description || '',
           featured_project: projectData.featured_project || false,
           construction_phase: projectData.construction_phase || 'planned',
           
@@ -354,6 +320,20 @@ const AdminProjectForm: React.FC = () => {
       if (dbData.amenities && Array.isArray(dbData.amenities)) {
         dbData.amenities = dbData.amenities.filter(Boolean);
       }
+      
+      // S'assurer que photos est un tableau valide
+      if (dbData.photos && Array.isArray(dbData.photos)) {
+        dbData.photos = dbData.photos.filter((photo: any) => photo && photo.url);
+        console.log('💾 Photos to save:', dbData.photos);
+      } else {
+        dbData.photos = [];
+      }
+      
+      // Ajouter les champs SEO s'ils existent
+      if (dbData.meta_title) dbData.seo_title = dbData.meta_title;
+      if (dbData.meta_description) dbData.seo_description = dbData.meta_description;
+      if (dbData.meta_keywords) dbData.seo_keywords = dbData.meta_keywords;
+      if (dbData.url_slug) dbData.project_slug = dbData.url_slug;
       
       console.log('💾 Data prepared for DB:', dbData);
       
@@ -413,6 +393,11 @@ const AdminProjectForm: React.FC = () => {
           // Convertir les amenities si nécessaire
           const convertedAmenities = convertLegacyAmenities((freshProject as any).amenities || []);
           
+          // Convertir les photos au bon format
+          const convertedPhotos = convertPhotosToCategorized(
+            (freshProject as any).categorized_photos || (freshProject as any).photos || []
+          );
+          
           // Remettre à jour le formulaire avec les données fraîches de la base
           form.reset({
             ...currentFormValues,
@@ -421,7 +406,7 @@ const AdminProjectForm: React.FC = () => {
             roi_estimate_percent: (freshProject as any).roi_estimate_percent ? Number((freshProject as any).roi_estimate_percent) : null,
             rental_yield_percent: (freshProject as any).rental_yield_percent ? Number((freshProject as any).rental_yield_percent) : null,
             amenities: convertedAmenities,
-            photos: convertPhotosToCategorized((freshProject as any).categorized_photos || (freshProject as any).photos || [])
+            photos: convertedPhotos
           });
           
           console.log('✅ Form refreshed with fresh data');
@@ -611,3 +596,4 @@ const AdminProjectForm: React.FC = () => {
 };
 
 export default AdminProjectForm;
+
