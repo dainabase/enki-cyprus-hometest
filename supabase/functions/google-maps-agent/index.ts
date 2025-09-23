@@ -1,291 +1,67 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { corsHeaders } from "../_shared/cors.ts";
 
-serve(async (req) => {
-  // Gestion CORS
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
-  }
+const GOOGLE_MAPS_API_KEY = Deno.env.get('GOOGLE_MAPS_API_KEY');
 
-  try {
-    const body = await req.json();
-    console.log('📥 Request body:', body);
-    
-    // Récupérer la clé API
-    const GOOGLE_MAPS_API_KEY = Deno.env.get('GOOGLE_MAPS_API_KEY');
-    
-    if (!GOOGLE_MAPS_API_KEY) {
-      throw new Error('Google Maps API key not configured in Supabase environment');
-    }
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
 
-    // Normalisation des paramètres (accepter les deux formats)
-    const address = body.address;
-    const radius_km = body.radius_km || body.radiusKm || 2; // Accepter les deux formats
-    const action = body.action || 'search'; // Par défaut : recherche de lieux
-    
-    console.log(`🗺️ Action: ${action}, Address: ${address}, Radius: ${radius_km}km`);
+const PLACE_TYPES = [
+  'transit_station',
+  'bus_station', 
+  'train_station',
+  'subway_station',
+  'airport',
+  'hospital',
+  'pharmacy',
+  'doctor',
+  'dentist',
+  'veterinary_care',
+  'physiotherapist',
+  'school',
+  'university',
+  'secondary_school',
+  'primary_school',
+  'supermarket',
+  'shopping_mall',
+  'grocery_or_supermarket',
+  'convenience_store',
+  'bakery',
+  'bank',
+  'atm',
+  'post_office',
+  'laundry',
+  'hair_care',
+  'restaurant',
+  'cafe',
+  'bar',
+  'night_club',
+  'movie_theater',
+  'gym',
+  'spa',
+  'beauty_salon',
+  'park',
+  'church',
+  'mosque',
+  'synagogue',
+  'parking',
+  'gas_station',
+  'police',
+  'fire_station',
+  'city_hall',
+  'courthouse',
+  'embassy',
+  'museum',
+  'art_gallery',
+  'library',
+  'tourist_attraction',
+  'lodging',
+  'hotel'
+];
 
-    // 1. GÉOCODAGE - Convertir adresse en coordonnées
-    const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${GOOGLE_MAPS_API_KEY}`;
-    const geocodeResponse = await fetch(geocodeUrl);
-    const geocodeData = await geocodeResponse.json();
-    
-    console.log('📍 Geocode status:', geocodeData.status);
-    
-    if (geocodeData.status !== 'OK' || !geocodeData.results?.length) {
-      return new Response(
-        JSON.stringify({ 
-          error: `Address not found: ${address}. Status: ${geocodeData.status}`,
-          details: geocodeData.error_message || 'No results found'
-        }),
-        { 
-          status: 400, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
-      );
-    }
-    
-    const location = geocodeData.results[0].geometry.location;
-    const lat = location.lat;
-    const lng = location.lng;
-    
-    console.log(`📌 Coordinates found: ${lat}, ${lng}`);
-
-    // Si l'action est juste géocoder
-    if (action === 'geocode') {
-      return new Response(
-        JSON.stringify({
-          success: true,
-          coordinates: { lat, lng },
-          formatted_address: geocodeData.results[0].formatted_address
-        }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    // 2. RECHERCHE DE LIEUX AUTOUR
-    const PLACE_TYPES = [
-      // Transport
-      'transit_station',
-      'bus_station', 
-      'train_station',
-      'subway_station',
-      'airport',
-      
-      // Services essentiels
-      'hospital',
-      'pharmacy',
-      'doctor',
-      'dentist',
-      'veterinary_care',
-      'physiotherapist',
-      
-      // Éducation
-      'school',
-      'university',
-      'secondary_school',
-      'primary_school',
-      
-      // Shopping & Services
-      'supermarket',
-      'shopping_mall',
-      'grocery_or_supermarket',
-      'convenience_store',
-      'bakery',
-      'bank',
-      'atm',
-      'post_office',
-      
-      // Restauration & Loisirs
-      'restaurant',
-      'cafe',
-      'bar',
-      'night_club',
-      'movie_theater',
-      'gym',
-      'spa',
-      
-      // Espaces publics
-      'park',
-      'beach',
-      'church',
-      'mosque',
-      'synagogue',
-      
-      // Parking & Essence
-      'parking',
-      'gas_station',
-      
-      // Services gouvernementaux
-      'police',
-      'fire_station',
-      'city_hall',
-      'courthouse',
-      'embassy',
-      
-      // Culture
-      'museum',
-      'art_gallery',
-      'library',
-      'tourist_attraction',
-      
-      // Hébergement
-      'lodging',
-      'hotel'
-    ];
-    
-    const allPlaces = [];
-    
-    for (const type of PLACE_TYPES) {
-      const placesUrl = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${radius_km * 1000}&type=${type}&key=${GOOGLE_MAPS_API_KEY}`;
-      
-      try {
-        const placesResponse = await fetch(placesUrl);
-        const placesData = await placesResponse.json();
-        
-        if (placesData.status === 'OK' && placesData.results) {
-          // Limiter à 2 résultats par type pour éviter trop de données
-          const topPlaces = placesData.results.slice(0, 2);
-          allPlaces.push(...topPlaces);
-          console.log(`✅ Found ${topPlaces.length} ${type}(s)`);
-        } else if (placesData.status === 'ZERO_RESULTS') {
-          console.log(`ℹ️ No ${type} found nearby`);
-        } else {
-          console.log(`⚠️ Error for ${type}: ${placesData.status}`);
-        }
-      } catch (error) {
-        console.error(`Error fetching ${type}:`, error);
-      }
-    }
-
-    console.log(`📍 Total places found: ${allPlaces.length}`);
-
-    // 3. RECHERCHE DES DISTANCES STRATÉGIQUES
-    async function findStrategicDistances(lat: number, lng: number) {
-      const strategicSearches = [
-        {
-          keyword: 'beach OR sea OR seafront OR waterfront',
-          type: 'natural_feature',
-          maxResults: 5,
-          radius: 10000 // 10km pour la mer
-        },
-        {
-          keyword: 'airport',
-          type: 'airport', 
-          maxResults: 3,
-          radius: 50000 // 50km pour aéroport
-        },
-        {
-          keyword: 'city center OR downtown OR centre ville',
-          type: 'point_of_interest',
-          maxResults: 3,
-          radius: 15000 // 15km pour centre-ville
-        },
-        {
-          keyword: 'highway OR motorway OR autoroute',
-          type: 'route',
-          maxResults: 3,
-          radius: 10000 // 10km pour autoroute
-        }
-      ];
-
-      const strategicDistances = {
-        nearest_beach: null,
-        airport_distance: null,
-        city_center_distance: null,
-        highway_distance: null
-      };
-
-      for (const search of strategicSearches) {
-        try {
-          const response = await fetch(
-            `https://maps.googleapis.com/maps/api/place/textsearch/json?` +
-            `query=${encodeURIComponent(search.keyword)}` +
-            `&location=${lat},${lng}` +
-            `&radius=${search.radius}` +
-            `&key=${GOOGLE_MAPS_API_KEY}`
-          );
-
-          if (response.ok) {
-            const data = await response.json();
-            if (data.results && data.results.length > 0) {
-              const nearest = data.results[0];
-              const distance = calculateDistance(
-                lat, lng,
-                nearest.geometry.location.lat,
-                nearest.geometry.location.lng
-              );
-
-              if (search.keyword.includes('beach')) {
-                strategicDistances.nearest_beach = distance;
-              } else if (search.keyword.includes('airport')) {
-                strategicDistances.airport_distance = distance;
-              } else if (search.keyword.includes('city center')) {
-                strategicDistances.city_center_distance = distance;
-              } else if (search.keyword.includes('highway')) {
-                strategicDistances.highway_distance = distance;
-              }
-            }
-          }
-        } catch (error) {
-          console.error(`Error searching for ${search.keyword}:`, error);
-        }
-      }
-
-      return strategicDistances;
-    }
-
-    const strategicDistances = await findStrategicDistances(lat, lng);
-
-    // 4. TRAITER ET FORMATER LES RÉSULTATS
-    const processedPlaces = allPlaces.map(place => ({
-      name: place.name,
-      type: place.types[0],
-      distance_km: calculateDistance(lat, lng, place.geometry.location.lat, place.geometry.location.lng),
-      address: place.vicinity,
-      rating: place.rating || null,
-      lat: place.geometry.location.lat,
-      lng: place.geometry.location.lng
-    }));
-
-    // Trier par distance
-    processedPlaces.sort((a, b) => a.distance_km - b.distance_km);
-
-    // RÉPONSE FINALE
-    const response = {
-      success: true,
-      coordinates: { lat, lng },
-      formatted_address: geocodeData.results[0].formatted_address,
-      places: processedPlaces,
-      strategicDistances: strategicDistances,
-      total_places_found: processedPlaces.length
-    };
-
-    console.log(`✅ Sending response with ${response.places.length} places`);
-
-    return new Response(
-      JSON.stringify(response),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
-
-  } catch (error) {
-    console.error('❌ Error in edge function:', error);
-    return new Response(
-      JSON.stringify({ 
-        error: error.message,
-        stack: error.stack 
-      }),
-      { 
-        status: 400, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-      }
-    );
-  }
-});
-
-// Fonction pour calculer la distance entre deux points GPS
 function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
-  const R = 6371; // Rayon de la Terre en km
+  const R = 6371;
   const dLat = (lat2 - lat1) * Math.PI / 180;
   const dLon = (lon2 - lon1) * Math.PI / 180;
   const a = 
@@ -294,7 +70,224 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
     Math.sin(dLon/2) * Math.sin(dLon/2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   const distance = R * c;
-  
-  // Arrondir à 1 décimale
   return Math.round(distance * 10) / 10;
 }
+
+async function findStrategicDistances(lat: number, lng: number) {
+  console.log('Recherche des distances stratégiques...');
+  
+  const strategicDistances = {
+    nearest_beach: null as number | null,
+    airport_distance: null as number | null,
+    city_center_distance: null as number | null,
+    highway_distance: null as number | null
+  };
+
+  const strategicSearches = [
+    {
+      query: 'beach OR sea OR seafront OR waterfront OR plage OR mer',
+      field: 'nearest_beach',
+      radius: 15000
+    },
+    {
+      query: 'airport OR aéroport Larnaca OR Paphos airport',
+      field: 'airport_distance',
+      radius: 60000
+    },
+    {
+      query: 'city center OR downtown OR centre ville Limassol OR Paphos center OR Larnaca center',
+      field: 'city_center_distance',
+      radius: 20000
+    },
+    {
+      query: 'highway OR motorway OR autoroute OR A1 OR A6',
+      field: 'highway_distance',
+      radius: 15000
+    }
+  ];
+
+  for (const search of strategicSearches) {
+    try {
+      const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?` +
+        `query=${encodeURIComponent(search.query)}` +
+        `&location=${lat},${lng}` +
+        `&radius=${search.radius}` +
+        `&key=${GOOGLE_MAPS_API_KEY}`;
+      
+      const response = await fetch(url);
+      
+      if (response.ok) {
+        const data = await response.json();
+        
+        if (data.results && data.results.length > 0) {
+          const nearest = data.results[0];
+          const distance = calculateDistance(
+            lat, lng,
+            nearest.geometry.location.lat,
+            nearest.geometry.location.lng
+          );
+          
+          strategicDistances[search.field as keyof typeof strategicDistances] = distance;
+          console.log(`${search.field}: ${distance} km`);
+        }
+      }
+    } catch (error) {
+      console.error(`Erreur ${search.field}:`, error);
+    }
+  }
+
+  if (!strategicDistances.nearest_beach) {
+    const cyprusBeaches = [
+      { name: "Limassol Beach", lat: 34.6786, lng: 33.0413 },
+      { name: "Ladies Mile Beach", lat: 34.6065, lng: 33.0102 },
+      { name: "Paphos Beach", lat: 34.7550, lng: 32.4051 },
+      { name: "Larnaca Beach", lat: 34.9178, lng: 33.6367 }
+    ];
+    
+    let minDistance = Infinity;
+    for (const beach of cyprusBeaches) {
+      const distance = calculateDistance(lat, lng, beach.lat, beach.lng);
+      if (distance < minDistance) {
+        minDistance = distance;
+      }
+    }
+    
+    if (minDistance < Infinity) {
+      strategicDistances.nearest_beach = Math.round(minDistance * 10) / 10;
+    }
+  }
+
+  return strategicDistances;
+}
+
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders });
+  }
+
+  try {
+    const { action, params } = await req.json();
+
+    if (!GOOGLE_MAPS_API_KEY) {
+      throw new Error('Google Maps API key not configured');
+    }
+
+    switch (action) {
+      case 'geocode':
+        const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(params.address)}&key=${GOOGLE_MAPS_API_KEY}`;
+        const geocodeResponse = await fetch(geocodeUrl);
+        const geocodeData = await geocodeResponse.json();
+        
+        if (geocodeData.results && geocodeData.results.length > 0) {
+          const result = geocodeData.results[0];
+          return new Response(
+            JSON.stringify({
+              lat: result.geometry.location.lat,
+              lng: result.geometry.location.lng,
+              formatted_address: result.formatted_address
+            }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+        break;
+
+      case 'findNearbyPlaces':
+        const { address, radius = 2 } = params;
+        
+        const geoUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${GOOGLE_MAPS_API_KEY}`;
+        const geoResponse = await fetch(geoUrl);
+        const geoData = await geoResponse.json();
+        
+        if (!geoData.results || geoData.results.length === 0) {
+          return new Response(
+            JSON.stringify({ error: 'Address not found' }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+
+        const location = geoData.results[0].geometry.location;
+        const radiusMeters = radius * 1000;
+        
+        const allPlaces: any[] = [];
+        const processedPlaceIds = new Set();
+        
+        for (const placeType of PLACE_TYPES) {
+          try {
+            const nearbyUrl = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?` +
+              `location=${location.lat},${location.lng}` +
+              `&radius=${radiusMeters}` +
+              `&type=${placeType}` +
+              `&key=${GOOGLE_MAPS_API_KEY}`;
+            
+            const nearbyResponse = await fetch(nearbyUrl);
+            
+            if (nearbyResponse.ok) {
+              const nearbyData = await nearbyResponse.json();
+              
+              if (nearbyData.results) {
+                for (const place of nearbyData.results) {
+                  if (!processedPlaceIds.has(place.place_id)) {
+                    processedPlaceIds.add(place.place_id);
+                    
+                    const distance = calculateDistance(
+                      location.lat,
+                      location.lng,
+                      place.geometry.location.lat,
+                      place.geometry.location.lng
+                    );
+                    
+                    if (distance <= radius) {
+                      allPlaces.push({
+                        name: place.name,
+                        type: placeType,
+                        distance_km: distance,
+                        address: place.vicinity || place.formatted_address || '',
+                        rating: place.rating || null,
+                        lat: place.geometry.location.lat,
+                        lng: place.geometry.location.lng,
+                        place_id: place.place_id
+                      });
+                    }
+                  }
+                }
+              }
+            }
+          } catch (error) {
+            console.error(`Erreur type ${placeType}:`, error);
+          }
+        }
+
+        allPlaces.sort((a, b) => a.distance_km - b.distance_km);
+        
+        const strategicDistances = await findStrategicDistances(location.lat, location.lng);
+        
+        return new Response(
+          JSON.stringify({
+            places: allPlaces,
+            strategicDistances: strategicDistances,
+            totalFound: allPlaces.length,
+            location: location
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+
+      default:
+        return new Response(
+          JSON.stringify({ error: 'Unknown action' }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+        );
+    }
+    
+    return new Response(
+      JSON.stringify({ error: 'No data found' }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 404 }
+    );
+
+  } catch (error) {
+    console.error('Error:', error);
+    return new Response(
+      JSON.stringify({ error: error.message }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
+    );
+  }
+});
