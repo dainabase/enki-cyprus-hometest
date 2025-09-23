@@ -64,18 +64,79 @@ serve(async (req) => {
     }
 
     // 2. RECHERCHE DE LIEUX AUTOUR
-    const placeTypes = [
-      'hospital', 'pharmacy', 'doctor', 'school', 'university',
-      'supermarket', 'shopping_mall', 'bank', 'atm',
-      'restaurant', 'cafe', 'bar', 'gym', 'park',
-      'bus_station', 'train_station', 'church', 'mosque',
-      'police', 'fire_station', 'post_office', 'library',
-      'dentist', 'veterinary_care'
+    const PLACE_TYPES = [
+      // Transport
+      'transit_station',
+      'bus_station', 
+      'train_station',
+      'subway_station',
+      'airport',
+      
+      // Services essentiels
+      'hospital',
+      'pharmacy',
+      'doctor',
+      'dentist',
+      'veterinary_care',
+      'physiotherapist',
+      
+      // Éducation
+      'school',
+      'university',
+      'secondary_school',
+      'primary_school',
+      
+      // Shopping & Services
+      'supermarket',
+      'shopping_mall',
+      'grocery_or_supermarket',
+      'convenience_store',
+      'bakery',
+      'bank',
+      'atm',
+      'post_office',
+      
+      // Restauration & Loisirs
+      'restaurant',
+      'cafe',
+      'bar',
+      'night_club',
+      'movie_theater',
+      'gym',
+      'spa',
+      
+      // Espaces publics
+      'park',
+      'beach',
+      'church',
+      'mosque',
+      'synagogue',
+      
+      // Parking & Essence
+      'parking',
+      'gas_station',
+      
+      // Services gouvernementaux
+      'police',
+      'fire_station',
+      'city_hall',
+      'courthouse',
+      'embassy',
+      
+      // Culture
+      'museum',
+      'art_gallery',
+      'library',
+      'tourist_attraction',
+      
+      // Hébergement
+      'lodging',
+      'hotel'
     ];
     
     const allPlaces = [];
     
-    for (const type of placeTypes) {
+    for (const type of PLACE_TYPES) {
       const placesUrl = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${radius_km * 1000}&type=${type}&key=${GOOGLE_MAPS_API_KEY}`;
       
       try {
@@ -99,7 +160,84 @@ serve(async (req) => {
 
     console.log(`📍 Total places found: ${allPlaces.length}`);
 
-    // 3. TRAITER ET FORMATER LES RÉSULTATS
+    // 3. RECHERCHE DES DISTANCES STRATÉGIQUES
+    async function findStrategicDistances(lat: number, lng: number) {
+      const strategicSearches = [
+        {
+          keyword: 'beach OR sea OR seafront OR waterfront',
+          type: 'natural_feature',
+          maxResults: 5,
+          radius: 10000 // 10km pour la mer
+        },
+        {
+          keyword: 'airport',
+          type: 'airport', 
+          maxResults: 3,
+          radius: 50000 // 50km pour aéroport
+        },
+        {
+          keyword: 'city center OR downtown OR centre ville',
+          type: 'point_of_interest',
+          maxResults: 3,
+          radius: 15000 // 15km pour centre-ville
+        },
+        {
+          keyword: 'highway OR motorway OR autoroute',
+          type: 'route',
+          maxResults: 3,
+          radius: 10000 // 10km pour autoroute
+        }
+      ];
+
+      const strategicDistances = {
+        nearest_beach: null,
+        airport_distance: null,
+        city_center_distance: null,
+        highway_distance: null
+      };
+
+      for (const search of strategicSearches) {
+        try {
+          const response = await fetch(
+            `https://maps.googleapis.com/maps/api/place/textsearch/json?` +
+            `query=${encodeURIComponent(search.keyword)}` +
+            `&location=${lat},${lng}` +
+            `&radius=${search.radius}` +
+            `&key=${GOOGLE_MAPS_API_KEY}`
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.results && data.results.length > 0) {
+              const nearest = data.results[0];
+              const distance = calculateDistance(
+                lat, lng,
+                nearest.geometry.location.lat,
+                nearest.geometry.location.lng
+              );
+
+              if (search.keyword.includes('beach')) {
+                strategicDistances.nearest_beach = distance;
+              } else if (search.keyword.includes('airport')) {
+                strategicDistances.airport_distance = distance;
+              } else if (search.keyword.includes('city center')) {
+                strategicDistances.city_center_distance = distance;
+              } else if (search.keyword.includes('highway')) {
+                strategicDistances.highway_distance = distance;
+              }
+            }
+          }
+        } catch (error) {
+          console.error(`Error searching for ${search.keyword}:`, error);
+        }
+      }
+
+      return strategicDistances;
+    }
+
+    const strategicDistances = await findStrategicDistances(lat, lng);
+
+    // 4. TRAITER ET FORMATER LES RÉSULTATS
     const processedPlaces = allPlaces.map(place => ({
       name: place.name,
       type: place.types[0],
@@ -119,6 +257,7 @@ serve(async (req) => {
       coordinates: { lat, lng },
       formatted_address: geocodeData.results[0].formatted_address,
       places: processedPlaces,
+      strategicDistances: strategicDistances,
       total_places_found: processedPlaces.length
     };
 

@@ -546,217 +546,152 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
   };
 
   // 🚨 AUDIT FUNCTION WITH COMPLETE FRAUD DETECTION
-  const handleDetectAll = async () => {
-    console.log('🔍 ====== DÉBUT AUDIT DÉTECTION API GOOGLE MAPS ======');
+  // Mapping complet des types Google Maps vers les types de la base de données
+  const GOOGLE_TO_DB_TYPE_MAPPING: Record<string, string> = {
+    // Transport
+    'transit_station': 'transport_public',
+    'bus_station': 'transport_public',
+    'train_station': 'transport_public',
+    'subway_station': 'transport_public',
+    'airport': 'airport',
     
+    // Santé
+    'hospital': 'hospital',
+    'pharmacy': 'pharmacy',
+    'doctor': 'pharmacy',
+    'dentist': 'dentist',
+    'veterinary_care': 'veterinary_care',
+    'physiotherapist': 'physiotherapist',
+    
+    // Éducation
+    'school': 'school',
+    'primary_school': 'school',
+    'secondary_school': 'school',
+    'university': 'university',
+    
+    // Shopping
+    'supermarket': 'supermarket',
+    'shopping_mall': 'shopping_center',
+    'grocery_or_supermarket': 'supermarket',
+    'convenience_store': 'supermarket',
+    'bakery': 'bakery',
+    
+    // Finance
+    'bank': 'bank',
+    'atm': 'atm',
+    'post_office': 'post_office',
+    
+    // Restauration
+    'restaurant': 'restaurant',
+    'cafe': 'cafe',
+    'bar': 'bar',
+    'night_club': 'night_club',
+    
+    // Loisirs
+    'gym': 'gym',
+    'spa': 'spa',
+    'movie_theater': 'cinema',
+    'park': 'park',
+    'beach': 'beach',
+    
+    // Religion
+    'church': 'church',
+    'mosque': 'mosque',
+    'synagogue': 'synagogue',
+    
+    // Services
+    'parking': 'parking',
+    'gas_station': 'gas_station',
+    'police': 'police',
+    'fire_station': 'fire_station',
+    'city_hall': 'city_hall',
+    
+    // Culture
+    'museum': 'museum',
+    'art_gallery': 'art_gallery',
+    'library': 'library',
+    'tourist_attraction': 'tourist_attraction',
+    
+    // Hébergement
+    'lodging': 'hotel',
+    'hotel': 'hotel'
+  };
+
+  const handleDetectAll = async () => {
     const address = form.watch('full_address');
-    console.log('📍 Adresse utilisée:', address);
     
     if (!address) {
-      console.log('❌ AUDIT: Pas d\'adresse fournie');
-      toast("Adresse requise", {
-        description: "Veuillez d'abord entrer une adresse complète"
-      });
+      toast("Veuillez d'abord saisir une adresse complète", { description: "Erreur de validation" });
       return;
     }
 
-    // AUDIT: Créer un hash unique de la requête pour détecter les doublons
-    const requestHash = safeBase64Encode(address + Date.now()).substring(0, 8);
-    console.log(`🆔 Hash de requête unique: ${requestHash}`);
-
     setIsDetecting(true);
-    
-    // AUDIT: Délai réaliste pour tester la patience utilisateur
-    console.log('⏳ Délai simulé de 2 secondes pour réalisme...');
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 1000));
     
     try {
-      console.log('🚀 ====== APPEL API RÉEL ======');
-      console.log('📡 Fonction appelée: googleMapsAgent.findNearbyPlaces');
-      console.log('📋 Paramètres:', { address, radius: 2 });
-      
-      // TIMESTAMP DÉBUT API
-      const startTime = Date.now();
-      console.log(`⏰ Début appel API: ${new Date(startTime).toISOString()}`);
-      
-      // APPEL RÉEL DE L'API
-      const places = await googleMapsAgent.findNearbyPlaces(address, 2);
-      
-      // TIMESTAMP FIN API
-      const endTime = Date.now();
-      const duration = endTime - startTime;
-      console.log(`⏰ Fin appel API: ${new Date(endTime).toISOString()}`);
-      console.log(`⚡ Durée totale API: ${duration}ms`);
-      
-      // AUDIT COMPLET DES DONNÉES REÇUES
-      console.log('🔍 ====== ANALYSE DÉTAILLÉE DES DONNÉES ======');
-      console.log('📦 Type de données reçues:', typeof places);
-      console.log('📊 Nombre de résultats:', places?.length || 0);
-      console.log('📄 Contenu complet brut:', JSON.stringify(places, null, 2));
-      
-      // DÉTECTION DE FRAUDE #1: Données identiques
-      const dataHash = JSON.stringify(places);
-      console.log('🔒 Hash des données:', safeBase64Encode(dataHash).substring(0, 12));
-      
-      if ((window as any).previousDataHashes) {
-        if ((window as any).previousDataHashes.includes(dataHash)) {
-          console.error('🚨 *** FRAUDE DÉTECTÉE *** : DONNÉES IDENTIQUES À UNE REQUÊTE PRÉCÉDENTE!');
-          alert('🚨 ALERTE FRAUDE: Les données reçues sont identiques à une requête précédente! Ceci suggère des valeurs hardcodées.');
+      const { data, error } = await supabase.functions.invoke('google-maps-agent', {
+        body: {
+          address: address,
+          radius_km: detectionRadius,
+          action: 'search'
         }
-        (window as any).previousDataHashes.push(dataHash);
-      } else {
-        (window as any).previousDataHashes = [dataHash];
-      }
+      });
 
-      // DÉTECTION DE FRAUDE #2: Patterns suspects
-      if (places && places.length > 0) {
-        const distances = places.map(p => p.distance_km);
-        const uniqueDistances = [...new Set(distances)];
-        
-        console.log('📏 Distances trouvées:', distances);
-        console.log('📏 Distances uniques:', uniqueDistances);
-        
-        // Vérifier des patterns de valeurs hardcodées
-        const suspiciousPatterns = [
-          [1.0, 1.5, 2.0, 2.5], // Pattern trop parfait
-          [0.5, 1.0, 1.5, 2.0], // Pattern trop régulier
-        ];
-        
-        for (const pattern of suspiciousPatterns) {
-          if (pattern.every(p => distances.includes(p))) {
-            console.error('🚨 *** PATTERN SUSPECT DÉTECTÉ ***:', pattern);
-            alert(`🚨 PATTERN SUSPECT: Les distances ${pattern.join(', ')} km sont trop parfaites pour être réelles!`);
-          }
-        }
-      }
+      if (error) throw error;
 
-      // DÉTECTION DE FRAUDE #3: Réponse trop rapide
-      if (duration < 500) {
-        console.warn('⚠️ SUSPECT: Réponse API très rapide (<500ms), possiblement hardcodée');
-      }
-
-      // DÉTECTION DE FRAUDE #4: Toujours les mêmes commodités
-      if (places && places.length > 0) {
-        const placeTypes = places.map(p => p.type).sort();
-        console.log('🏪 Types de commodités trouvés:', placeTypes);
-        
-        if ((window as any).previousPlaceTypes) {
-          if (JSON.stringify((window as any).previousPlaceTypes) === JSON.stringify(placeTypes)) {
-            console.error('🚨 *** FRAUDE DÉTECTÉE *** : MÊMES TYPES DE COMMODITÉS POUR DIFFÉRENTES ADRESSES!');
-            alert('🚨 FRAUDE: Les mêmes types de commodités sont toujours trouvés, indépendamment de l\'adresse!');
-          }
-        }
-        (window as any).previousPlaceTypes = placeTypes;
-      }
-
-      if (!places || places.length === 0) {
-        console.log('📭 Aucun résultat trouvé');
-        toast("Aucune commodité trouvée", {
-          description: "Vérifiez l'adresse ou la configuration Google Maps API"
-        });
-        return;
-      }
-
-      console.log('🔄 ====== TRAITEMENT DES RÉSULTATS ======');
-      
-      // Mapping des types Google vers nos commodités
-      const typeMapping: Record<string, string> = {
-        'hospital': 'hospital',
-        'pharmacy': 'pharmacy',
-        'doctor': 'pharmacy',
-        'school': 'school',
-        'university': 'university',
-        'supermarket': 'supermarket',
-        'grocery_or_supermarket': 'supermarket',
-        'restaurant': 'restaurant',
-        'bank': 'bank',
-        'atm': 'atm',
-        'bus_station': 'bus_station',
-        'subway_station': 'bus_station',
-        'gym': 'gym',
-        'park': 'park',
-        'church': 'church',
-        'mosque': 'church',
-        'gas_station': 'gas_station',
-        'shopping_mall': 'shopping_center',
-        'store': 'shops'
-      };
-
-      // Map results to our amenities format with proper type mapping
-      const detectedAmenities = places
-        .map(place => {
-          const mappedType = typeMapping[place.type] || place.type;
-          console.log(`🔗 Mapping: ${place.type} → ${mappedType}`);
+      if (data && data.success) {
+        // Traiter les commodités
+        if (data.places && data.places.length > 0) {
+          const commoditiesMap = new Map();
           
-          return {
-            nearby_amenity_id: mappedType,
-            distance_km: place.distance_km,
-            details: `${place.name}${place.rating ? ` (${place.rating}⭐)` : ''}`
-          };
-        })
-        .filter(amenity => {
-          // Filtrer uniquement les commodités que nous supportons
-          const supportedTypes = [
-            'hospital', 'pharmacy', 'school', 'university', 'supermarket',
-            'restaurant', 'bank', 'atm', 'bus_station', 'gym', 'park',
-            'church', 'gas_station', 'shopping_center', 'shops'
-          ];
-          return supportedTypes.includes(amenity.nearby_amenity_id);
-        });
-
-      console.log('✅ Commodités mappées:', detectedAmenities);
-
-      // Update amenities in form
-      const existing = form.watch('surrounding_amenities') || [];
-      const merged = [...existing];
-      
-      detectedAmenities.forEach(newItem => {
-        const existingIndex = merged.findIndex(m => m.nearby_amenity_id === newItem.nearby_amenity_id);
-        if (existingIndex >= 0) {
-          // Mettre à jour si distance plus proche
-          if (newItem.distance_km < merged[existingIndex].distance_km) {
-            merged[existingIndex] = newItem;
-            console.log(`🔄 Mis à jour: ${newItem.nearby_amenity_id} avec distance plus proche`);
-          }
-        } else {
-          merged.push(newItem);
-          console.log(`➕ Ajouté: ${newItem.nearby_amenity_id} à ${newItem.distance_km}km`);
+          data.places.forEach((place: any) => {
+            const dbType = GOOGLE_TO_DB_TYPE_MAPPING[place.type];
+            if (dbType && !commoditiesMap.has(dbType)) {
+              commoditiesMap.set(dbType, {
+                nearby_amenity_id: dbType,
+                distance_km: place.distance_km || 0,
+                details: place.name || place.address || dbType,
+                lat: place.lat,
+                lng: place.lng
+              });
+            }
+          });
+          
+          const amenitiesArray = Array.from(commoditiesMap.values());
+          form.setValue('surrounding_amenities', amenitiesArray);
+          
+          console.log(`✅ ${amenitiesArray.length} types de commodités détectés`);
         }
-      });
 
-      form.setValue('surrounding_amenities', merged);
+        // Mettre à jour les distances stratégiques
+        if (data.strategicDistances) {
+          if (data.strategicDistances.nearest_beach) {
+            form.setValue('proximity_sea_km', data.strategicDistances.nearest_beach);
+          }
+          if (data.strategicDistances.airport_distance) {
+            form.setValue('proximity_airport_km', data.strategicDistances.airport_distance);
+          }
+          if (data.strategicDistances.city_center_distance) {
+            form.setValue('proximity_city_center_km', data.strategicDistances.city_center_distance);
+          }
+          if (data.strategicDistances.highway_distance) {
+            form.setValue('proximity_highway_km', data.strategicDistances.highway_distance);
+          }
+          
+          console.log('📏 Distances stratégiques mises à jour:', data.strategicDistances);
+        }
 
-      // AVERTISSEMENT: Distances stratégiques ne sont PAS calculées automatiquement
-      console.log('⚠️ ====== AVERTISSEMENT DISTANCES STRATÉGIQUES ======');
-      console.log('⚠️ Les distances stratégiques (mer, centre-ville, aéroport, autoroute)');
-      console.log('⚠️ ne sont PAS calculées automatiquement par l\'API actuelle.');
-      console.log('⚠️ Elles doivent être saisies manuellement ou nécessitent');
-      console.log('⚠️ une implémentation spécifique pour chaque type de point d\'intérêt.');
+        const amenitiesCount = data.places?.length || 0;
+        toast(`Détection terminée ! ${amenitiesCount} commodités trouvées avec distances stratégiques.`, { 
+          description: "Succès",
+          duration: 5000 
+        });
+      }
 
-      const amenitiesCount = detectedAmenities.length;
-      const totalPlaces = places.length;
-      
-      toast("✅ Détection terminée", {
-        description: `${amenitiesCount} commodités mappées sur ${totalPlaces} lieux trouvés dans un rayon de 2km`,
-        duration: 5000,
-      });
-      
-      console.log(`✅ ====== FIN DÉTECTION - ${amenitiesCount} commodités ajoutées ======`);
-      
     } catch (error) {
-      console.error('💥 ====== ERREUR CRITIQUE ======');
-      console.error('❌ Type d\'erreur:', error?.constructor?.name);
-      console.error('❌ Message:', error?.message);
-      console.error('❌ Stack trace:', error?.stack);
-      
-      // EXPOSER L'ERREUR RÉELLE À L'UTILISATEUR
-      alert(`❌ ERREUR RÉELLE DÉTECTÉE:\n\nType: ${error?.constructor?.name}\nMessage: ${error?.message}\n\nVoir la console pour plus de détails.`);
-      
-      toast("Erreur de détection", {
-        description: `${error?.constructor?.name}: ${error?.message}`
-      });
+      console.error('Erreur lors de la détection:', error);
+      toast("Erreur lors de la détection automatique", { description: "Erreur API" });
     } finally {
-      console.log('🔚 ====== AUDIT TERMINÉ ======');
       await new Promise(resolve => setTimeout(resolve, 500));
       setIsDetecting(false);
     }
