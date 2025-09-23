@@ -1565,7 +1565,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               const option = amenityOptions.find(opt => opt.value === amenity.nearby_amenity_id);
               if (!option) return null;
               
-              const isSelected = selectedAmenities.has(amenity.nearby_amenity_id);
+              const isSelected = selectedAmenities.has(amenity.nearby_amenity_id || '');
               const getTimeLabel = (dist) => {
                 if (dist <= 0.5) return '⚡ 5 min à pied';
                 if (dist <= 1) return '👟 10 min à pied';
@@ -1585,21 +1585,16 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       type="checkbox"
                       checked={isSelected}
                       onChange={(e) => {
+                        console.log(`🔄 Checkbox cliqué pour ${amenity.nearby_amenity_id}: ${e.target.checked}`);
                         const newSelected = new Set(selectedAmenities);
                         if (e.target.checked) {
-                          newSelected.add(amenity.nearby_amenity_id);
+                          newSelected.add(amenity.nearby_amenity_id || '');
                         } else {
-                          newSelected.delete(amenity.nearby_amenity_id);
+                          newSelected.delete(amenity.nearby_amenity_id || '');
                         }
                         setSelectedAmenities(newSelected);
                         
-                        // Mettre à jour le formulaire
-                        const amenities = form.watch('surrounding_amenities') || [];
-                        form.setValue('surrounding_amenities', amenities.map(a => 
-                          a.nearby_amenity_id === amenity.nearby_amenity_id 
-                            ? { ...a, selected: e.target.checked } 
-                            : a
-                        ));
+                        console.log(`✅ Nouvelles sélections:`, Array.from(newSelected));
                       }}
                       className="mt-1 h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                     />
@@ -1642,7 +1637,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                     const option = amenityOptions.find(opt => opt.value === amenity.nearby_amenity_id);
                     if (!option) return null;
                     
-                    const isSelected = selectedAmenities.has(amenity.nearby_amenity_id);
+                    const isSelected = selectedAmenities.has(amenity.nearby_amenity_id || '');
                     
                     return (
                       <div 
@@ -1651,21 +1646,15 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                           isSelected ? 'ring-2 ring-gray-500 bg-gray-50' : ''
                         }`}
                         onClick={() => {
+                          console.log(`🎯 Card cliquée pour ${amenity.nearby_amenity_id}`);
                           const newSelected = new Set(selectedAmenities);
                           if (isSelected) {
-                            newSelected.delete(amenity.nearby_amenity_id);
+                            newSelected.delete(amenity.nearby_amenity_id || '');
                           } else {
-                            newSelected.add(amenity.nearby_amenity_id);
+                            newSelected.add(amenity.nearby_amenity_id || '');
                           }
                           setSelectedAmenities(newSelected);
-                          
-                          // Mettre à jour le formulaire
-                          const amenities = form.watch('surrounding_amenities') || [];
-                          form.setValue('surrounding_amenities', amenities.map(a => 
-                            a.nearby_amenity_id === amenity.nearby_amenity_id 
-                              ? { ...a, selected: !isSelected } 
-                              : a
-                          ));
+                          console.log(`✅ Nouvelles sélections:`, Array.from(newSelected));
                         }}
                       >
                         <div className="flex items-center gap-2">
@@ -1674,21 +1663,15 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                             checked={isSelected}
                             onChange={(e) => {
                               e.stopPropagation();
+                              console.log(`📝 Input checkbox pour ${amenity.nearby_amenity_id}: ${e.target.checked}`);
                               const newSelected = new Set(selectedAmenities);
                               if (e.target.checked) {
-                                newSelected.add(amenity.nearby_amenity_id);
+                                newSelected.add(amenity.nearby_amenity_id || '');
                               } else {
-                                newSelected.delete(amenity.nearby_amenity_id);
+                                newSelected.delete(amenity.nearby_amenity_id || '');
                               }
                               setSelectedAmenities(newSelected);
-                              
-                              // Mettre à jour le formulaire
-                              const amenities = form.watch('surrounding_amenities') || [];
-                              form.setValue('surrounding_amenities', amenities.map(a => 
-                                a.nearby_amenity_id === amenity.nearby_amenity_id 
-                                  ? { ...a, selected: e.target.checked } 
-                                  : a
-                              ));
+                              console.log(`✅ Input nouvelles sélections:`, Array.from(newSelected));
                             }}
                             className="h-4 w-4 text-gray-600 rounded border-gray-300"
                             onClick={(e) => e.stopPropagation()}
