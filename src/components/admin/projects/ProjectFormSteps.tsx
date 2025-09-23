@@ -109,20 +109,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
       }));
   }, [form.watch('surrounding_amenities')]);
 
-  // Fetcher developers
-  const { data: developers = [] } = useQuery({
-    queryKey: ['developers'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('developers')
-        .select('*')
-        .eq('is_active', true)
-        .order('name');
-      
-      if (error) throw error;
-      return data || [];
-    }
-  });
+  // Developers will be handled by parent component
 
   // Fonctions render (placeholders - remplacez par votre logique existante)
   const renderBasicsStep = () => {
@@ -290,12 +277,17 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField
                 control={form.control}
-                name="price_min_euros"
+                name="price_from"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Prix minimum (€)</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="Ex: 150000" {...field} />
+                      <Input 
+                        type="number" 
+                        placeholder="Ex: 150000" 
+                        value={field.value || ''} 
+                        onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -349,7 +341,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             </CardDescription>
           </CardHeader>
           <CardContent className="p-6">
-            <AmenitiesSelector />
+            <AmenitiesSelector 
+              selectedAmenities={form.watch('amenities') || []}
+              onChange={(amenities) => form.setValue('amenities', amenities)}
+            />
           </CardContent>
         </Card>
       </div>
