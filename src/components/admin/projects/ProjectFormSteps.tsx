@@ -1512,20 +1512,9 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 <div className="space-y-4">
   <div className="flex items-center justify-between">
     <Label className="text-base font-semibold">Commodités de proximité</Label>
-    <Button 
-      type="button" 
-      onClick={() => {
-        console.log('🧪 BOUTON TEST - État actuel:', Array.from(selectedAmenities));
-        const newSet = new Set(['school', 'hospital']);
-        setSelectedAmenities(newSet);
-        console.log('🧪 BOUTON TEST - Nouvel état:', Array.from(newSet));
-      }}
-      variant="outline" 
-      size="sm"
-    >
-      🧪 Test Checkboxes
-    </Button>
-    {form.watch('surrounding_amenities')?.length > 0 && (
+  </div>
+  
+  {form.watch('surrounding_amenities')?.length > 0 && (
       <div className="flex items-center gap-4">
         <span className="text-sm text-muted-foreground">
           {selectedAmenities.size} / {form.watch('surrounding_amenities')?.length} sélectionnées pour affichage
@@ -1560,7 +1549,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         </Button>
       </div>
     )}
-  </div>
   
   {form.watch('surrounding_amenities')?.length > 0 ? (
     <div className="space-y-4">
