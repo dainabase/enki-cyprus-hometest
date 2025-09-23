@@ -1041,21 +1041,19 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         console.log(`📍 ${nearbyAmenities.length} types de commodités uniques détectés`);
         console.log('Commodités:', nearbyAmenities);
         
-        if (result.strategicDistances) {
-          const distances = {
-            nearest_beach: result.strategicDistances.nearest_beach || 0,
-            larnaca_airport_distance: result.strategicDistances.larnaca_airport_distance || 0,
-            paphos_airport_distance: result.strategicDistances.paphos_airport_distance || 0,
-            city_center_distance: result.strategicDistances.city_center_distance || 0,
-            highway_distance: result.strategicDistances.highway_distance || 0,
-            // Legacy
-            airport_distance: result.strategicDistances.airport_distance || 0
-          };
-          
-          if (distances.nearest_beach) form.setValue('proximity_sea_km', distances.nearest_beach);
-          if (distances.airport_distance) form.setValue('proximity_airport_km', distances.airport_distance);
-          if (distances.city_center_distance) form.setValue('proximity_city_center_km', distances.city_center_distance);
-          if (distances.highway_distance) form.setValue('proximity_highway_km', distances.highway_distance);
+if (result.strategicDistances) {
+  const distances = {
+    nearest_beach: result.strategicDistances.nearest_beach || 0,
+    larnaca_airport_distance: result.strategicDistances.larnaca_airport_distance || 
+                               result.strategicDistances.airport_distance || 0,
+    paphos_airport_distance: result.strategicDistances.paphos_airport_distance || 0,
+    city_center_distance: result.strategicDistances.city_center_distance || 0,
+    highway_distance: result.strategicDistances.highway_distance || 0,
+    airport_distance: result.strategicDistances.airport_distance || 0
+  };
+  
+  form.setValue('distances_commodities', distances);
+}
           
           console.log('📏 Distances stratégiques:');
           console.log('- Plage:', distances.nearest_beach, 'km');
@@ -1090,6 +1088,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
   // Render the restructured location step
   const renderLocationStep = () => {
+    const ESSENTIAL_AMENITIES = ['school','supermarket','transport_public','hospital','pharmacy','park','beach','bank','restaurant','gym'];
     // Liste complète des commodités disponibles
     const commoditiesList = [
       { id: 'transport_public', label: 'Transport public' },
@@ -1386,253 +1385,230 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
               {/* COLONNE GAUCHE : Contrôles (3/5) */}
               <div className="lg:col-span-3 space-y-6">
-                {/* Section 1: Distances stratégiques */}
-                <div>
-                  <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-3">
-                    Distances stratégiques
-                  </h4>
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="proximity_sea_km"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Distance de la mer</FormLabel>
-                          <div className="flex items-center gap-2">
-                            <FormControl>
-                              <Input
-                                type="number"
-                                step="0.1"
-                                placeholder="0.0"
-                                {...field}
-                                value={field.value || ''}
-                                onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
-                              />
-                            </FormControl>
-                            <span className="text-sm text-gray-500">km</span>
-                          </div>
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="proximity_city_center_km"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Distance du centre-ville</FormLabel>
-                          <div className="flex items-center gap-2">
-                            <FormControl>
-                              <Input
-                                type="number"
-                                step="0.1"
-                                placeholder="0.0"
-                                {...field}
-                                value={field.value || ''}
-                                onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
-                              />
-                            </FormControl>
-                            <span className="text-sm text-gray-500">km</span>
-                          </div>
-                        </FormItem>
-                      )}
-                    />
+{/* Distances stratégiques avec 2 aéroports */}
+<div className="space-y-2">
+  <Label className="text-base font-semibold">Distances stratégiques</Label>
+  
+  <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+    <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200">
+      <div className="flex items-center gap-2 mb-2">
+        <Waves className="h-5 w-5 text-blue-600" />
+        <span className="text-sm font-semibold">Mer / Plage</span>
+      </div>
+      <p className="text-2xl font-bold text-blue-900">
+        {form.watch('proximity_sea_km') || '—'} km
+      </p>
+      {form.watch('proximity_sea_km') && form.watch('proximity_sea_km') > 1 && (
+        <p className="text-xs text-blue-700 mt-1">
+          🚗 ~{Math.round(form.watch('proximity_sea_km') * 2)} min voiture
+        </p>
+      )}
+    </div>
+    
+    <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border border-green-200">
+      <div className="flex items-center gap-2 mb-2">
+        <Building2 className="h-5 w-5 text-green-600" />
+        <span className="text-sm font-semibold">Centre-ville</span>
+      </div>
+      <p className="text-2xl font-bold text-green-900">
+        {form.watch('proximity_city_center_km') || '—'} km
+      </p>
+      {form.watch('proximity_city_center_km') > 0 && (
+        <p className="text-xs text-green-700 mt-1">
+          🚗 ~{Math.round(form.watch('proximity_city_center_km') * 2.5)} min voiture
+        </p>
+      )}
+    </div>
+    
+    <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg border border-purple-200">
+      <div className="flex items-center gap-2 mb-2">
+        <Car className="h-5 w-5 text-purple-600" />
+        <span className="text-sm font-semibold">Autoroute</span>
+      </div>
+      <p className="text-2xl font-bold text-purple-900">
+        {form.watch('proximity_highway_km') || '—'} km
+      </p>
+      {form.watch('proximity_highway_km') > 0 && (
+        <p className="text-xs text-purple-700 mt-1">
+          🚗 ~{Math.round(form.watch('proximity_highway_km') * 2)} min voiture
+        </p>
+      )}
+    </div>
+    
+    <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-lg border border-orange-200">
+      <div className="flex items-center gap-2 mb-2">
+        <Plane className="h-5 w-5 text-orange-600" />
+        <span className="text-sm font-semibold">Aéroport Larnaca</span>
+      </div>
+      <p className="text-2xl font-bold text-orange-900">
+        {(() => {
+          const dist = form.watch('proximity_airport_km');
+          if (dist) return dist;
+          const coords = form.watch('gps_coordinates');
+          if (coords?.latitude && coords?.longitude) {
+            const larnaca = { lat: 34.8751, lng: 33.6248 };
+            const R = 6371;
+            const dLat = (larnaca.lat - coords.latitude) * Math.PI / 180;
+            const dLon = (larnaca.lng - coords.longitude) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(coords.latitude * Math.PI / 180) * Math.cos(larnaca.lat * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return Math.round(R * c * 10) / 10;
+          }
+          return '—';
+        })()} km
+      </p>
+      <p className="text-xs text-orange-700 mt-1">
+        🚗 ~{Math.round((form.watch('proximity_airport_km') || 67) * 1.2)} min voiture
+      </p>
+    </div>
+    
+    <div className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 rounded-lg border border-pink-200">
+      <div className="flex items-center gap-2 mb-2">
+        <Plane className="h-5 w-5 text-pink-600" />
+        <span className="text-sm font-semibold">Aéroport Paphos</span>
+      </div>
+      <p className="text-2xl font-bold text-pink-900">
+        {(() => {
+          const coords = form.watch('gps_coordinates');
+          if (coords?.latitude && coords?.longitude) {
+            const paphos = { lat: 34.7180, lng: 32.4857 };
+            const R = 6371;
+            const dLat = (paphos.lat - coords.latitude) * Math.PI / 180;
+            const dLon = (paphos.lng - coords.longitude) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(coords.latitude * Math.PI / 180) * Math.cos(paphos.lat * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return Math.round(R * c * 10) / 10;
+          }
+          return '—';
+        })()} km
+      </p>
+      <p className="text-xs text-pink-700 mt-1">
+        🚗 ~{Math.round(55 * 1.2)} min voiture
+      </p>
+    </div>
+  </div>
+</div>
 
-                    <FormField
-                      control={form.control}
-                      name="proximity_airport_km"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Distance de l'aéroport</FormLabel>
-                          <div className="flex items-center gap-2">
-                            <FormControl>
-                              <Input
-                                type="number"
-                                step="0.1"
-                                placeholder="0.0"
-                                {...field}
-                                value={field.value || ''}
-                                onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
-                              />
-                            </FormControl>
-                            <span className="text-sm text-gray-500">km</span>
-                          </div>
-                        </FormItem>
-                      )}
+{/* Commodités de proximité - VERSION OPTIMISÉE */}
+<div className="space-y-4">
+  <div className="flex items-center justify-between">
+    <Label className="text-base font-semibold">Commodités de proximité</Label>
+    {form.watch('surrounding_amenities')?.length > 0 && (
+      <span className="text-sm text-muted-foreground">
+        {form.watch('surrounding_amenities')?.filter(a => a.selected !== false)?.length || form.watch('surrounding_amenities')?.length} / {form.watch('surrounding_amenities')?.length} sélectionnées
+      </span>
+    )}
+  </div>
+  
+  {form.watch('surrounding_amenities')?.length > 0 ? (
+    <div className="space-y-4">
+      <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+        <h4 className="text-sm font-semibold text-blue-900 mb-3 flex items-center gap-2">
+          <Star className="h-4 w-4" />
+          Commodités essentielles (critères d'achat)
+        </h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          {form.watch('surrounding_amenities')
+            ?.filter(a => ESSENTIAL_AMENITIES.includes(a.type))
+            ?.sort((a, b) => a.distance_km - b.distance_km)
+            ?.map((amenity, idx) => {
+              const option = amenityOptions.find(opt => opt.value === amenity.type);
+              if (!option) return null;
+              
+              const getTimeLabel = (dist) => {
+                if (dist <= 0.5) return '⚡ 5 min à pied';
+                if (dist <= 1) return '👟 10 min à pied';
+                if (dist <= 2) return '🚶 20 min à pied';
+                return `🚗 ${Math.round(dist * 2.5)} min voiture`;
+              };
+              
+              return (
+                <div key={`ess-${amenity.type}-${idx}`} className="bg-white rounded-lg p-3 border">
+                  <div className="flex items-start gap-3">
+                    <input
+                      type="checkbox"
+                      checked={amenity.selected !== false}
+                      onChange={(e) => {
+                        const amenities = form.watch('surrounding_amenities') || [];
+                        form.setValue('surrounding_amenities', amenities.map(a => 
+                          a.type === amenity.type ? { ...a, selected: e.target.checked } : a
+                        ));
+                      }}
+                      className="mt-1 h-4 w-4"
                     />
-
-                    <FormField
-                      control={form.control}
-                      name="proximity_highway_km"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Distance de l'autoroute</FormLabel>
-                          <div className="flex items-center gap-2">
-                            <FormControl>
-                              <Input
-                                type="number"
-                                step="0.1"
-                                placeholder="0.0"
-                                {...field}
-                                value={field.value || ''}
-                                onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
-                              />
-                            </FormControl>
-                            <span className="text-sm text-gray-500">km</span>
-                          </div>
-                        </FormItem>
-                      )}
-                    />
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-blue-600">{option.icon}</span>
+                        <span className="font-medium text-sm">{option.label}</span>
+                      </div>
+                      <div className="mt-1 flex items-center gap-2">
+                        <span className="text-xs font-bold">{amenity.distance_km} km</span>
+                        <span className="text-xs text-gray-600">{getTimeLabel(amenity.distance_km)}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-
-                {/* Commodités de proximité - NOUVEAU DESIGN TABLEAU */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-base font-semibold">Commodités de proximité</Label>
-                    {form.watch('surrounding_amenities')?.length > 0 && (
-                      <span className="text-sm text-muted-foreground">
-                        {form.watch('surrounding_amenities')?.length} commodités détectées
-                      </span>
-                    )}
-                  </div>
+              );
+            })}
+        </div>
+      </div>
+      
+      {form.watch('surrounding_amenities')?.filter(a => !ESSENTIAL_AMENITIES.includes(a.type)).length > 0 && (
+        <details className="bg-gray-50 rounded-lg border">
+          <summary className="p-4 cursor-pointer font-semibold text-sm text-gray-700">
+            <span className="inline-flex items-center gap-2">
+              <ChevronRight className="h-4 w-4" />
+              Autres commodités ({form.watch('surrounding_amenities')?.filter(a => !ESSENTIAL_AMENITIES.includes(a.type)).length})
+            </span>
+          </summary>
+          <div className="p-4 pt-0">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+              {form.watch('surrounding_amenities')
+                ?.filter(a => !ESSENTIAL_AMENITIES.includes(a.type))
+                ?.sort((a, b) => a.distance_km - b.distance_km)
+                ?.map((amenity, idx) => {
+                  const option = amenityOptions.find(opt => opt.value === amenity.type);
+                  if (!option) return null;
                   
-                  {form.watch('surrounding_amenities')?.length > 0 ? (
-                    <div className="bg-white rounded-lg border overflow-hidden">
-                      <table className="w-full">
-                        <thead className="bg-gray-50 border-b">
-                          <tr>
-                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Type
-                            </th>
-                            <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Distance
-                            </th>
-                            <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-20">
-                              Proximité
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                          {form.watch('surrounding_amenities')
-                            ?.sort((a, b) => a.distance_km - b.distance_km)
-                            ?.map((amenity, index) => {
-  // COMMODITÉS ESSENTIELLES (Top 10 pour décision d'achat)
-  const ESSENTIAL_AMENITIES = [
-    'school',           // 1. École (critère #1 pour familles)
-    'supermarket',      // 2. Supermarché (courses quotidiennes)
-    'transport_public', // 3. Transport public (mobilité)
-    'hospital',         // 4. Hôpital (santé/urgences)
-    'pharmacy',         // 5. Pharmacie (santé quotidienne)
-    'park',            // 6. Parc (qualité de vie)
-    'beach',           // 7. Plage (spécifique à Chypre)
-    'bank',            // 8. Banque (services financiers)
-    'restaurant',      // 9. Restaurant (vie sociale)
-    'gym'              // 10. Salle de sport (bien-être)
-  ];
-
-  const amenityOptions = [
-    { value: 'transport_public', label: 'Transport public', icon: <Bus className="h-4 w-4" /> },
-    { value: 'beach', label: 'Plage', icon: <Waves className="h-4 w-4" /> },
-    { value: 'hospital', label: 'Hôpital', icon: <Building2 className="h-4 w-4" /> },
-    { value: 'pharmacy', label: 'Pharmacie', icon: <Heart className="h-4 w-4" /> },
-    { value: 'school', label: 'École', icon: <GraduationCap className="h-4 w-4" /> },
-    { value: 'university', label: 'Université', icon: <School className="h-4 w-4" /> },
-    { value: 'supermarket', label: 'Supermarché', icon: <ShoppingCart className="h-4 w-4" /> },
-    { value: 'shopping_center', label: 'Centre commercial', icon: <Store className="h-4 w-4" /> },
-    { value: 'restaurant', label: 'Restaurant', icon: <UtensilsCrossed className="h-4 w-4" /> },
-    { value: 'cafe', label: 'Café', icon: <Coffee className="h-4 w-4" /> },
-    { value: 'bank', label: 'Banque', icon: <Landmark className="h-4 w-4" /> },
-    { value: 'atm', label: 'ATM', icon: <CreditCard className="h-4 w-4" /> },
-    { value: 'post_office', label: 'Bureau de poste', icon: <Mail className="h-4 w-4" /> },
-    { value: 'park', label: 'Parc', icon: <Trees className="h-4 w-4" /> },
-    { value: 'gym', label: 'Salle de sport', icon: <Dumbbell className="h-4 w-4" /> },
-    { value: 'spa', label: 'Spa', icon: <Sparkles className="h-4 w-4" /> },
-    { value: 'cinema', label: 'Cinéma', icon: <Film className="h-4 w-4" /> },
-    { value: 'parking', label: 'Parking', icon: <ParkingCircle className="h-4 w-4" /> },
-    { value: 'gas_station', label: 'Station essence', icon: <Fuel className="h-4 w-4" /> },
-    { value: 'church', label: 'Église', icon: <Church className="h-4 w-4" /> },
-    { value: 'airport', label: 'Aéroport', icon: <Plane className="h-4 w-4" /> },
-    { value: 'train_station', label: 'Gare', icon: <Train className="h-4 w-4" /> },
-    { value: 'bus_station', label: 'Arrêt de bus', icon: <Bus className="h-4 w-4" /> },
-    { value: 'dentist', label: 'Dentiste', icon: <Heart className="h-4 w-4" /> },
-    { value: 'veterinary_care', label: 'Vétérinaire', icon: <Heart className="h-4 w-4" /> },
-    { value: 'physiotherapist', label: 'Kinésithérapeute', icon: <Heart className="h-4 w-4" /> },
-    { value: 'bakery', label: 'Boulangerie', icon: <Croissant className="h-4 w-4" /> },
-    { value: 'bar', label: 'Bar', icon: <Wine className="h-4 w-4" /> },
-    { value: 'night_club', label: 'Discothèque', icon: <Music className="h-4 w-4" /> },
-    { value: 'police', label: 'Police', icon: <Shield className="h-4 w-4" /> },
-    { value: 'fire_station', label: 'Pompiers', icon: <Flame className="h-4 w-4" /> },
-    { value: 'city_hall', label: 'Mairie', icon: <Building className="h-4 w-4" /> },
-    { value: 'museum', label: 'Musée', icon: <Building2 className="h-4 w-4" /> },
-    { value: 'art_gallery', label: 'Galerie d\'art', icon: <Palette className="h-4 w-4" /> },
-    { value: 'library', label: 'Bibliothèque', icon: <BookOpen className="h-4 w-4" /> },
-    { value: 'tourist_attraction', label: 'Attraction touristique', icon: <Camera className="h-4 w-4" /> },
-    { value: 'hotel', label: 'Hôtel', icon: <Hotel className="h-4 w-4" /> },
-    { value: 'laundry', label: 'Laverie', icon: <Shirt className="h-4 w-4" /> },
-    { value: 'hair_salon', label: 'Salon de coiffure', icon: <Scissors className="h-4 w-4" /> }
-  ];
-                              
-                              const option = amenityOptions.find(opt => opt.value === amenity.nearby_amenity_id);
-                              if (!option) return null;
-                              
-                              // Déterminer la couleur selon la distance
-                              const getProximityColor = (distance: number) => {
-                                if (distance <= 0.5) return 'text-green-600 bg-green-50';
-                                if (distance <= 1) return 'text-blue-600 bg-blue-50';
-                                if (distance <= 2) return 'text-yellow-600 bg-yellow-50';
-                                return 'text-gray-600 bg-gray-50';
-                              };
-                              
-                              const getProximityLabel = (distance: number) => {
-                                if (distance <= 0.5) return '⭐ Immédiat';
-                                if (distance <= 1) return '👍 Proche';
-                                if (distance <= 2) return '✓ Accessible';
-                                return '📍 Éloigné';
-                              };
-                              
-                              return (
-                                <tr key={`${amenity.nearby_amenity_id}-${index}`} className="hover:bg-gray-50 transition-colors">
-                                  <td className="px-4 py-3">
-                                    <div className="flex items-center gap-2">
-                                      <div className="text-gray-400">
-                                        {option.icon}
-                                      </div>
-                                      <span className="font-medium text-sm text-gray-900">
-                                        {option.label}
-                                      </span>
-                                    </div>
-                                  </td>
-                                  <td className="px-4 py-3 text-right">
-                                    <span className="text-sm font-semibold text-gray-700">
-                                      {amenity.distance_km} km
-                                    </span>
-                                  </td>
-                                  <td className="px-4 py-3">
-                                    <div className="flex justify-center">
-                                      <span className={`text-xs font-medium px-2 py-1 rounded-full ${getProximityColor(amenity.distance_km)}`}>
-                                        {getProximityLabel(amenity.distance_km)}
-                                      </span>
-                                    </div>
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                        </tbody>
-                      </table>
+                  return (
+                    <div key={`other-${amenity.type}-${idx}`} className="bg-white rounded p-2 border">
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={amenity.selected !== false}
+                          onChange={(e) => {
+                            const amenities = form.watch('surrounding_amenities') || [];
+                            form.setValue('surrounding_amenities', amenities.map(a => 
+                              a.type === amenity.type ? { ...a, selected: e.target.checked } : a
+                            ));
+                          }}
+                          className="h-3 w-3"
+                        />
+                        <span className="text-gray-500 text-xs">{option.icon}</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-medium truncate">{option.label}</p>
+                          <p className="text-xs text-gray-500">{amenity.distance_km} km</p>
+                        </div>
+                      </div>
                     </div>
-                  ) : (
-                    <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-                      <MapPin className="mx-auto h-12 w-12 text-gray-400" />
-                      <p className="mt-2 text-sm text-gray-600">
-                        Aucune commodité détectée
-                      </p>
-                      <p className="text-xs text-gray-500 mt-1">
-                        Utilisez la détection automatique pour analyser la zone
-                      </p>
-                    </div>
-                  )}
-                </div>
+                  );
+                })}
+            </div>
+          </div>
+        </details>
+      )}
+    </div>
+  ) : (
+    <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+      <MapPin className="mx-auto h-12 w-12 text-gray-400" />
+      <p className="mt-2 text-sm text-gray-600">Aucune commodité détectée</p>
+    </div>
+  )}
+</div>
               </div>
 
               {/* COLONNE DROITE : Carte (2/5) */}
