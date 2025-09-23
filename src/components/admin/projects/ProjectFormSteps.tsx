@@ -1512,6 +1512,19 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 <div className="space-y-4">
   <div className="flex items-center justify-between">
     <Label className="text-base font-semibold">Commodités de proximité</Label>
+    <Button 
+      type="button" 
+      onClick={() => {
+        console.log('🧪 BOUTON TEST - État actuel:', Array.from(selectedAmenities));
+        const newSet = new Set(['school', 'hospital']);
+        setSelectedAmenities(newSet);
+        console.log('🧪 BOUTON TEST - Nouvel état:', Array.from(newSet));
+      }}
+      variant="outline" 
+      size="sm"
+    >
+      🧪 Test Checkboxes
+    </Button>
     {form.watch('surrounding_amenities')?.length > 0 && (
       <div className="flex items-center gap-4">
         <span className="text-sm text-muted-foreground">
@@ -1585,16 +1598,22 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       type="checkbox"
                       checked={isSelected}
                       onChange={(e) => {
-                        console.log(`🔄 Checkbox cliqué pour ${amenity.nearby_amenity_id}: ${e.target.checked}`);
-                        const newSelected = new Set(selectedAmenities);
+                        console.log(`🔄 CLICK! ${amenity.nearby_amenity_id}: ${e.target.checked}`);
+                        
+                        // MÉTHODE SIMPLE : Toggle direct dans le state
+                        const currentSelected = selectedAmenities;
+                        const newSelected = new Set(currentSelected);
+                        
                         if (e.target.checked) {
                           newSelected.add(amenity.nearby_amenity_id || '');
+                          console.log('✅ AJOUTÉ:', amenity.nearby_amenity_id);
                         } else {
                           newSelected.delete(amenity.nearby_amenity_id || '');
+                          console.log('❌ SUPPRIMÉ:', amenity.nearby_amenity_id);
                         }
-                        setSelectedAmenities(newSelected);
                         
-                        console.log(`✅ Nouvelles sélections:`, Array.from(newSelected));
+                        setSelectedAmenities(newSelected);
+                        console.log('📊 TOTAL SÉLECTIONS:', newSelected.size);
                       }}
                       className="mt-1 h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                     />
