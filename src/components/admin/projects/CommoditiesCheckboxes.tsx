@@ -64,19 +64,31 @@ export const CommoditiesCheckboxes: React.FC<Props> = ({
   onDetectWithMaps 
 }) => {
   const isChecked = (type: string) => {
-    return value.some(v => (typeof v === 'string' ? v === type : v.type === type));
+    return value.some(v => {
+      if (typeof v === 'string') return v === type;
+      // Vérifier les deux formats pour compatibilité
+      return v.nearby_amenity_id === type || v.type === type;
+    });
   };
 
   const toggleCommodity = (item: CommodityItem, checked: boolean) => {
     if (checked) {
-      onChange([...value, { name: item.name, type: item.type, distance_km: 0 }]);
+      // Utiliser nearby_amenity_id au lieu de type
+      onChange([...value, { 
+        nearby_amenity_id: item.type,
+        distance_km: 0,
+        details: item.name
+      }]);
     } else {
-      onChange(value.filter(v => (typeof v === 'string' ? v !== item.type : v.type !== item.type)));
+      onChange(value.filter(v => {
+        if (typeof v === 'string') return v !== item.type;
+        return v.nearby_amenity_id !== item.type && v.type !== item.type;
+      }));
     }
   };
 
   return (
-    <Card>
+    <Card data-commodities-section>
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
