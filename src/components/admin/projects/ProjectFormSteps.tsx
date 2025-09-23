@@ -35,7 +35,7 @@ import {
   Plane, Anchor, Fuel, Mail, Trees, Flag, Dumbbell, Circle, Dice1, 
   Film, Drama, UtensilsCrossed, Coffee, Wine, Pizza, Utensils, Music, Church,
   Navigation, Route, Loader2, ParkingSquare as ParkingCircle, Train, 
-  Croissant, Flame, Camera, Hotel, Shirt, Scissors, ChevronRight, Eye, EyeOff
+  Croissant, Flame, Camera, Hotel, Shirt, Scissors, ChevronRight, ChevronDown, Eye, EyeOff
 } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
@@ -57,6 +57,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
   const [autoRedetect, setAutoRedetect] = useState(false);
   const [detectedCount, setDetectedCount] = useState(0);
   const [showMap, setShowMap] = useState(false);
+  const [selectedAmenities, setSelectedAmenities] = useState<Set<string>>(new Set());
 
   // COMMODITÉS ESSENTIELLES (12 critères d'achat prioritaires)
   const ESSENTIAL_AMENITIES = [
@@ -1029,15 +1030,20 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           }
         });
         
-        const nearbyAmenities = Array.from(commoditiesMap.values()).map(amenity => ({
-          ...amenity,
-          selected: true, // Par défaut, toutes les commodités sont sélectionnées
-          type: amenity.nearby_amenity_id,
-          distance: amenity.distance_km
-        }));
+        const nearbyAmenities = Array.from(commoditiesMap.values());
         
         form.setValue('surrounding_amenities', nearbyAmenities);
+        
+        // Pré-sélectionner les commodités essentielles
+        const preSelected = new Set(
+          nearbyAmenities
+            .filter(a => ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id))
+            .map(a => a.nearby_amenity_id)
+        );
+        setSelectedAmenities(preSelected);
+
         console.log(`📍 ${nearbyAmenities.length} types de commodités uniques détectés`);
+        console.log(`✅ ${preSelected.size} commodités pré-sélectionnées pour affichage`);
         console.log('Commodités:', nearbyAmenities);
         
         if (result.strategicDistances) {
@@ -1087,9 +1093,19 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     }
   };
 
+  // Initialiser les commodités sélectionnées (essentielles par défaut)
+  useEffect(() => {
+    const amenities = form.watch('surrounding_amenities') || [];
+    const selected = new Set(
+      amenities
+        .filter(a => ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id || ''))
+        .map(a => a.nearby_amenity_id)
+    );
+    setSelectedAmenities(selected);
+  }, [form.watch('surrounding_amenities')]);
+
   // Render the restructured location step
   const renderLocationStep = () => {
-    const ESSENTIAL_AMENITIES = ['school','supermarket','transport_public','hospital','pharmacy','shopping_center','university','beach','bank','restaurant','gym','cafe'];
     // Liste complète des commodités disponibles
     const commoditiesList = [
       { id: 'transport_public', label: 'Transport public' },
@@ -1492,34 +1508,65 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
   </div>
 </div>
 
-{/* Commodités de proximité - VERSION COMPATIBLE */}
+{/* Commodités de proximité - VERSION AVEC CHECKBOXES FONCTIONNELS */}
 <div className="space-y-4">
   <div className="flex items-center justify-between">
     <Label className="text-base font-semibold">Commodités de proximité</Label>
     {form.watch('surrounding_amenities')?.length > 0 && (
-      <span className="text-sm text-muted-foreground">
-        {form.watch('surrounding_amenities')?.length} commodités détectées
-      </span>
+      <div className="flex items-center gap-4">
+        <span className="text-sm text-muted-foreground">
+          {selectedAmenities.size} / {form.watch('surrounding_amenities')?.length} sélectionnées pour affichage
+        </span>
+        <Button
+          type="button"
+          size="sm"
+          variant="outline"
+          onClick={() => {
+            const amenities = form.watch('surrounding_amenities') || [];
+            if (selectedAmenities.size === amenities.length) {
+              // Tout désélectionner
+              setSelectedAmenities(new Set());
+              form.setValue('surrounding_amenities', amenities.map(a => ({
+                ...a,
+                selected: false
+              })));
+            } else {
+              // Tout sélectionner
+              const allTypes = new Set(amenities.map(a => a.nearby_amenity_id));
+              setSelectedAmenities(allTypes);
+              form.setValue('surrounding_amenities', amenities.map(a => ({
+                ...a,
+                selected: true
+              })));
+            }
+          }}
+        >
+          {selectedAmenities.size === form.watch('surrounding_amenities')?.length 
+            ? 'Tout désélectionner' 
+            : 'Tout sélectionner'}
+        </Button>
+      </div>
     )}
   </div>
   
   {form.watch('surrounding_amenities')?.length > 0 ? (
     <div className="space-y-4">
+      {/* Section 1 : Commodités ESSENTIELLES */}
       <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
         <h4 className="text-sm font-semibold text-blue-900 mb-3 flex items-center gap-2">
           <Star className="h-4 w-4" />
-          Commodités essentielles (critères d'achat)
+          Commodités essentielles (critères d'achat principaux)
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {form.watch('surrounding_amenities')
-            ?.filter(a => ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id || ''))
-            ?.sort((a, b) => (a.distance_km || 0) - (b.distance_km || 0))
+            ?.filter(a => ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id))
+            ?.sort((a, b) => a.distance_km - b.distance_km)
             ?.map((amenity, idx) => {
-              const amenityId = amenity.nearby_amenity_id || '';
-              const amenityOption = amenityOptions.find(opt => opt.value === amenityId);
-              if (!amenityOption) return null;
+              const option = amenityOptions.find(opt => opt.value === amenity.nearby_amenity_id);
+              if (!option) return null;
               
-              const getTimeLabel = (dist: number) => {
+              const isSelected = selectedAmenities.has(amenity.nearby_amenity_id);
+              const getTimeLabel = (dist) => {
                 if (dist <= 0.5) return '⚡ 5 min à pied';
                 if (dist <= 1) return '👟 10 min à pied';
                 if (dist <= 2) return '🚶 20 min à pied';
@@ -1527,16 +1574,43 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               };
               
               return (
-                <div key={`ess-${amenityId}-${idx}`} className="bg-white rounded-lg p-3 border">
+                <div 
+                  key={`ess-${amenity.nearby_amenity_id}-${idx}`} 
+                  className={`bg-white rounded-lg p-3 border transition-all ${
+                    isSelected ? 'ring-2 ring-blue-500' : ''
+                  }`}
+                >
                   <div className="flex items-start gap-3">
+                    <input
+                      type="checkbox"
+                      checked={isSelected}
+                      onChange={(e) => {
+                        const newSelected = new Set(selectedAmenities);
+                        if (e.target.checked) {
+                          newSelected.add(amenity.nearby_amenity_id);
+                        } else {
+                          newSelected.delete(amenity.nearby_amenity_id);
+                        }
+                        setSelectedAmenities(newSelected);
+                        
+                        // Mettre à jour le formulaire
+                        const amenities = form.watch('surrounding_amenities') || [];
+                        form.setValue('surrounding_amenities', amenities.map(a => 
+                          a.nearby_amenity_id === amenity.nearby_amenity_id 
+                            ? { ...a, selected: e.target.checked } 
+                            : a
+                        ));
+                      }}
+                      className="mt-1 h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                    />
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <span className="text-blue-600">{amenityOption.icon}</span>
-                        <span className="font-medium text-sm">{amenityOption.label}</span>
+                        <span className="text-blue-600">{option.icon}</span>
+                        <span className="font-medium text-sm">{option.label}</span>
                       </div>
                       <div className="mt-1 flex items-center gap-2">
-                        <span className="text-xs font-bold">{amenity.distance_km || 0} km</span>
-                        <span className="text-xs text-gray-600">{getTimeLabel(amenity.distance_km || 0)}</span>
+                        <span className="text-xs font-bold">{amenity.distance_km} km</span>
+                        <span className="text-xs text-gray-600">{getTimeLabel(amenity.distance_km)}</span>
                       </div>
                     </div>
                   </div>
@@ -1546,40 +1620,101 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         </div>
       </div>
       
-      {form.watch('surrounding_amenities')?.filter(a => !ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id || '')).length > 0 && (
-        <details className="bg-gray-50 rounded-lg border">
-          <summary className="p-4 cursor-pointer font-semibold text-sm text-gray-700">
-            <span className="inline-flex items-center gap-2">
-              <ChevronRight className="h-4 w-4" />
-              Autres commodités ({form.watch('surrounding_amenities')?.filter(a => !ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id || '')).length})
-            </span>
-          </summary>
-          <div className="p-4 pt-0">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-              {form.watch('surrounding_amenities')
-                ?.filter(a => !ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id || ''))
-                ?.sort((a, b) => (a.distance_km || 0) - (b.distance_km || 0))
-                ?.map((amenity, idx) => {
-                  const amenityId = amenity.nearby_amenity_id || '';
-                  const amenityOption = amenityOptions.find(opt => opt.value === amenityId);
-                  if (!amenityOption) return null;
-                  
-                  return (
-                    <div key={`other-${amenityId}-${idx}`} className="bg-white rounded p-2 border">
-                      <div className="flex items-center gap-2">
-                        <span className="text-gray-500 text-xs">{amenityOption.icon}</span>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs font-medium truncate">{amenityOption.label}</p>
-                          <p className="text-xs text-gray-500">{amenity.distance_km || 0} km</p>
+      {/* Section 2 : Autres commodités AVEC CHECKBOXES FONCTIONNELS */}
+      {form.watch('surrounding_amenities')?.filter(a => !ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id)).length > 0 && (
+        <div className="bg-gray-50 rounded-lg border">
+          <details open>
+            <summary className="p-4 cursor-pointer font-semibold text-sm text-gray-700 hover:bg-gray-100">
+              <span className="inline-flex items-center gap-2">
+                <ChevronDown className="h-4 w-4" />
+                Autres commodités ({form.watch('surrounding_amenities')?.filter(a => !ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id)).length})
+                <span className="text-xs font-normal text-gray-500 ml-2">
+                  Cliquez les cases pour sélectionner celles à afficher
+                </span>
+              </span>
+            </summary>
+            <div className="p-4 pt-0">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                {form.watch('surrounding_amenities')
+                  ?.filter(a => !ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id))
+                  ?.sort((a, b) => a.distance_km - b.distance_km)
+                  ?.map((amenity, idx) => {
+                    const option = amenityOptions.find(opt => opt.value === amenity.nearby_amenity_id);
+                    if (!option) return null;
+                    
+                    const isSelected = selectedAmenities.has(amenity.nearby_amenity_id);
+                    
+                    return (
+                      <div 
+                        key={`other-${amenity.nearby_amenity_id}-${idx}`} 
+                        className={`bg-white rounded-lg p-3 border transition-all cursor-pointer hover:shadow-md ${
+                          isSelected ? 'ring-2 ring-gray-500 bg-gray-50' : ''
+                        }`}
+                        onClick={() => {
+                          const newSelected = new Set(selectedAmenities);
+                          if (isSelected) {
+                            newSelected.delete(amenity.nearby_amenity_id);
+                          } else {
+                            newSelected.add(amenity.nearby_amenity_id);
+                          }
+                          setSelectedAmenities(newSelected);
+                          
+                          // Mettre à jour le formulaire
+                          const amenities = form.watch('surrounding_amenities') || [];
+                          form.setValue('surrounding_amenities', amenities.map(a => 
+                            a.nearby_amenity_id === amenity.nearby_amenity_id 
+                              ? { ...a, selected: !isSelected } 
+                              : a
+                          ));
+                        }}
+                      >
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={(e) => {
+                              e.stopPropagation();
+                              const newSelected = new Set(selectedAmenities);
+                              if (e.target.checked) {
+                                newSelected.add(amenity.nearby_amenity_id);
+                              } else {
+                                newSelected.delete(amenity.nearby_amenity_id);
+                              }
+                              setSelectedAmenities(newSelected);
+                              
+                              // Mettre à jour le formulaire
+                              const amenities = form.watch('surrounding_amenities') || [];
+                              form.setValue('surrounding_amenities', amenities.map(a => 
+                                a.nearby_amenity_id === amenity.nearby_amenity_id 
+                                  ? { ...a, selected: e.target.checked } 
+                                  : a
+                              ));
+                            }}
+                            className="h-4 w-4 text-gray-600 rounded border-gray-300"
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                          <span className="text-gray-600">{option.icon}</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium">{option.label}</p>
+                            <p className="text-xs text-gray-500">{amenity.distance_km} km</p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+              </div>
             </div>
-          </div>
-        </details>
+          </details>
+        </div>
       )}
+      
+      {/* Note d'information */}
+      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+        <p className="text-xs text-amber-800">
+          <strong>💡 Info :</strong> Cliquez sur les cases ou les cartes pour sélectionner les commodités qui apparaîtront sur le site public. 
+          Les commodités essentielles sont pré-sélectionnées par défaut.
+        </p>
+      </div>
     </div>
   ) : (
     <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
