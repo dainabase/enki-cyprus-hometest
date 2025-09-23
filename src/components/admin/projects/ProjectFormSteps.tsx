@@ -455,30 +455,281 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
   const renderAmenitiesStep = () => {
     return (
       <div className="space-y-8">
+        {/* CARTE 1: Interface complète des commodités */}
+        <Card className="border-2 border-slate-300 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Navigation className="w-5 h-5" />
+                  Commodités & Services de proximité
+                </CardTitle>
+                <CardDescription>
+                  Analysez et configurez les commodités disponibles autour du projet
+                </CardDescription>
+              </div>
+              <Button
+                type="button"
+                onClick={handleDetectAll}
+                disabled={!form.watch('full_address') || isDetecting}
+                variant="outline"
+                size="sm"
+              >
+                {isDetecting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Détection...
+                  </>
+                ) : (
+                  <>
+                    <MapPin className="mr-2 h-4 w-4" />
+                    Détecter automatiquement
+                  </>
+                )}
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="p-6 relative">
+            {/* Overlay de chargement */}
+            {isDetecting && (
+              <div className="absolute inset-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm z-50 flex items-center justify-center rounded-lg">
+                <div className="text-center">
+                  <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
+                  <p className="text-sm font-medium">Analyse en cours...</p>
+                  <p className="text-xs text-gray-500 mt-1">10-15 secondes</p>
+                </div>
+              </div>
+            )}
+
+            {/* Curseur de rayon de recherche */}
+            <div className="space-y-2 mb-6">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="detection-radius" className="text-sm font-medium">
+                  Rayon de détection
+                </Label>
+                <span className="text-sm font-bold text-primary">
+                  {detectionRadius} km
+                </span>
+              </div>
+              <Slider
+                id="detection-radius"
+                min={0.5}
+                max={5}
+                step={0.5}
+                value={[detectionRadius]}
+                onValueChange={(value) => setDetectionRadius(value[0])}
+                className="w-full"
+              />
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>0.5 km</span>
+                <span>2.5 km</span>
+                <span>5 km</span>
+              </div>
+            </div>
+
+            {/* Interface principale en grille */}
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+              {/* COLONNE GAUCHE : Tableau des commodités (3/5) */}
+              <div className="lg:col-span-3 space-y-6">
+                {/* Tableau des commodités détectées */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-base font-semibold">Commodités de proximité</Label>
+                    {form.watch('surrounding_amenities')?.length > 0 && (
+                      <span className="text-sm text-muted-foreground">
+                        {form.watch('surrounding_amenities')?.length} commodités détectées
+                      </span>
+                    )}
+                  </div>
+                  
+                  {form.watch('surrounding_amenities')?.length > 0 ? (
+                    <div className="bg-white rounded-lg border overflow-hidden">
+                      <table className="w-full">
+                        <thead className="bg-gray-50 border-b">
+                          <tr>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Type
+                            </th>
+                            <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Distance
+                            </th>
+                            <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-20">
+                              Proximité
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {form.watch('surrounding_amenities')
+                            ?.sort((a, b) => a.distance_km - b.distance_km)
+                            ?.map((amenity, index) => {
+                              // Options des commodités avec icônes
+                              const amenityOptions = [
+                                { value: 'transport_public', label: 'Transport public', icon: <Bus className="h-4 w-4" /> },
+                                { value: 'beach', label: 'Plage', icon: <Waves className="h-4 w-4" /> },
+                                { value: 'hospital', label: 'Hôpital', icon: <Building2 className="h-4 w-4" /> },
+                                { value: 'pharmacy', label: 'Pharmacie', icon: <Heart className="h-4 w-4" /> },
+                                { value: 'school', label: 'École', icon: <GraduationCap className="h-4 w-4" /> },
+                                { value: 'university', label: 'Université', icon: <School className="h-4 w-4" /> },
+                                { value: 'supermarket', label: 'Supermarché', icon: <ShoppingCart className="h-4 w-4" /> },
+                                { value: 'shopping_center', label: 'Centre commercial', icon: <Store className="h-4 w-4" /> },
+                                { value: 'restaurant', label: 'Restaurant', icon: <UtensilsCrossed className="h-4 w-4" /> },
+                                { value: 'cafe', label: 'Café', icon: <Coffee className="h-4 w-4" /> },
+                                { value: 'bank', label: 'Banque', icon: <Landmark className="h-4 w-4" /> },
+                                { value: 'atm', label: 'ATM', icon: <CreditCard className="h-4 w-4" /> },
+                                { value: 'post_office', label: 'Bureau de poste', icon: <Mail className="h-4 w-4" /> },
+                                { value: 'park', label: 'Parc', icon: <Trees className="h-4 w-4" /> },
+                                { value: 'gym', label: 'Salle de sport', icon: <Dumbbell className="h-4 w-4" /> },
+                                { value: 'spa', label: 'Spa', icon: <Sparkles className="h-4 w-4" /> },
+                                { value: 'cinema', label: 'Cinéma', icon: <Film className="h-4 w-4" /> },
+                                { value: 'parking', label: 'Parking', icon: <ParkingCircle className="h-4 w-4" /> },
+                                { value: 'gas_station', label: 'Station essence', icon: <Fuel className="h-4 w-4" /> },
+                                { value: 'church', label: 'Église', icon: <Church className="h-4 w-4" /> },
+                                { value: 'airport', label: 'Aéroport', icon: <Plane className="h-4 w-4" /> },
+                                { value: 'train_station', label: 'Gare', icon: <Train className="h-4 w-4" /> },
+                                { value: 'bus_station', label: 'Arrêt de bus', icon: <Bus className="h-4 w-4" /> },
+                                { value: 'dentist', label: 'Dentiste', icon: <Heart className="h-4 w-4" /> },
+                                { value: 'veterinary_care', label: 'Vétérinaire', icon: <Heart className="h-4 w-4" /> },
+                                { value: 'physiotherapist', label: 'Kinésithérapeute', icon: <Heart className="h-4 w-4" /> },
+                                { value: 'bakery', label: 'Boulangerie', icon: <Croissant className="h-4 w-4" /> },
+                                { value: 'bar', label: 'Bar', icon: <Wine className="h-4 w-4" /> },
+                                { value: 'night_club', label: 'Discothèque', icon: <Music className="h-4 w-4" /> },
+                                { value: 'police', label: 'Police', icon: <Shield className="h-4 w-4" /> },
+                                { value: 'fire_station', label: 'Pompiers', icon: <Flame className="h-4 w-4" /> },
+                                { value: 'city_hall', label: 'Mairie', icon: <Building className="h-4 w-4" /> },
+                                { value: 'museum', label: 'Musée', icon: <Building2 className="h-4 w-4" /> },
+                                { value: 'art_gallery', label: 'Galerie d\'art', icon: <Palette className="h-4 w-4" /> },
+                                { value: 'library', label: 'Bibliothèque', icon: <BookOpen className="h-4 w-4" /> },
+                                { value: 'tourist_attraction', label: 'Attraction touristique', icon: <Camera className="h-4 w-4" /> },
+                                { value: 'hotel', label: 'Hôtel', icon: <Hotel className="h-4 w-4" /> },
+                                { value: 'laundry', label: 'Laverie', icon: <Shirt className="h-4 w-4" /> },
+                                { value: 'hair_salon', label: 'Salon de coiffure', icon: <Scissors className="h-4 w-4" /> }
+                              ];
+                              
+                              const option = amenityOptions.find(opt => opt.value === amenity.nearby_amenity_id);
+                              if (!option) return null;
+                              
+                              // Déterminer la couleur selon la distance
+                              const getProximityColor = (distance: number) => {
+                                if (distance <= 0.5) return 'text-green-600 bg-green-50';
+                                if (distance <= 1) return 'text-blue-600 bg-blue-50';
+                                if (distance <= 2) return 'text-yellow-600 bg-yellow-50';
+                                return 'text-gray-600 bg-gray-50';
+                              };
+                              
+                              const getProximityLabel = (distance: number) => {
+                                if (distance <= 0.5) return '⭐ Immédiat';
+                                if (distance <= 1) return '👍 Proche';
+                                if (distance <= 2) return '✓ Accessible';
+                                return '📍 Éloigné';
+                              };
+                              
+                              return (
+                                <tr key={`${amenity.nearby_amenity_id}-${index}`} className="hover:bg-gray-50 transition-colors">
+                                  <td className="px-4 py-3">
+                                    <div className="flex items-center gap-2">
+                                      <div className="text-gray-400">
+                                        {option.icon}
+                                      </div>
+                                      <span className="font-medium text-sm text-gray-900">
+                                        {option.label}
+                                      </span>
+                                    </div>
+                                  </td>
+                                  <td className="px-4 py-3 text-right">
+                                    <span className="text-sm font-semibold text-gray-700">
+                                      {amenity.distance_km} km
+                                    </span>
+                                  </td>
+                                  <td className="px-4 py-3">
+                                    <div className="flex justify-center">
+                                      <span className={`text-xs font-medium px-2 py-1 rounded-full ${getProximityColor(amenity.distance_km)}`}>
+                                        {getProximityLabel(amenity.distance_km)}
+                                      </span>
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                      <MapPin className="mx-auto h-12 w-12 text-gray-400" />
+                      <p className="mt-2 text-sm text-gray-600">
+                        Aucune commodité détectée
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Utilisez la détection automatique pour analyser la zone
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* COLONNE DROITE : Carte (2/5) */}
+              <div className="lg:col-span-2">
+                <div className="sticky top-4">
+                  <h4 className="font-medium text-sm mb-3">Visualisation sur carte</h4>
+                  {(() => {
+                    const lat = form.watch('gps_latitude');
+                    const lng = form.watch('gps_longitude');
+                    
+                    const latNum = typeof lat === 'number' ? lat : parseFloat(lat as string);
+                    const lngNum = typeof lng === 'number' ? lng : parseFloat(lng as string);
+                    const hasValidCoords = !isNaN(latNum) && !isNaN(lngNum) && latNum !== 0 && lngNum !== 0;
+                    
+                    if (hasValidCoords) {
+                      return (
+                        <LocationMap
+                          address={form.watch('full_address') || ''}
+                          latitude={latNum}
+                          longitude={lngNum}
+                          radius={detectionRadius}
+                          commodities={mapCommodities}
+                        />
+                      );
+                    } else {
+                      return (
+                        <div className="h-[500px] bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+                          <div className="text-center text-gray-500">
+                            <MapPin className="h-12 w-12 mx-auto mb-3 opacity-30" />
+                            <p className="text-sm">Entrez une adresse pour afficher la carte</p>
+                          </div>
+                        </div>
+                      );
+                    }
+                  })()}
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* CARTE 2: Prestations internes du projet */}
         <Card className="border-2 border-slate-300 shadow-lg">
           <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
             <CardTitle>Prestations du Projet</CardTitle>
             <CardDescription>
-              Commodités et services disponibles pour l'ensemble du projet (pas pour des propriétés individuelles)
+              Commodités et services disponibles à l'intérieur du projet (piscines, espaces verts, etc.)
             </CardDescription>
           </CardHeader>
           <CardContent className="p-6 space-y-6">
+            <FormField
+              control={form.control}
+              name="amenities"
+              render={({ field }) => (
+                <FormItem>
+                  <AmenitiesSelector
+                    selectedAmenities={field.value || []}
+                    onChange={field.onChange}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </CardContent>
         </Card>
-
-        <FormField
-          control={form.control}
-          name="amenities"
-          render={({ field }) => (
-            <FormItem>
-              <AmenitiesSelector
-                selectedAmenities={field.value || []}
-                onChange={field.onChange}
-              />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
       </div>
     );
   };
