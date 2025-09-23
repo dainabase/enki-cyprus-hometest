@@ -15,6 +15,8 @@ import { AdminOverview } from './AdminOverview';
 // Lazy load admin pages avec gestion d'erreur simplifiée
 const AdminDevelopers = lazy(() => import('./AdminDevelopers'));
 const AdminProjects = lazy(() => import('./AdminProjects'));
+const AdminProjectForm = lazy(() => import('./AdminProjectForm'));
+const AdminProjectDetail = lazy(() => import('./AdminProjectDetail'));
 const AdminUnits = lazy(() => import('./AdminUnits'));
 const AdminCommissions = lazy(() => 
   import('./AdminCommissions').then(module => ({
@@ -42,7 +44,7 @@ const AdminReports = lazy(() => import('./AdminReports'));
 const AdminTests = lazy(() => import('./AdminTests'));
 
 const AdminHeader = () => (
-  <div className="h-16 px-6 flex items-center justify-between bg-white border-b border-slate-200">
+  <div className="sticky top-0 z-50 h-32 px-6 flex items-center justify-between bg-white border-b border-slate-200">
     <div className="flex items-center gap-4">
       <a href="/" className="text-2xl font-bold text-slate-900 hover:text-slate-700 transition-colors uppercase">
         ENKI-REALTY
@@ -102,6 +104,9 @@ const AdminDashboard = () => {
             <Route path="/" element={<AdminOverview />} />
             <Route path="developers" element={<AdminDevelopers />} />
             <Route path="projects" element={<AdminProjects />} />
+            <Route path="projects/new" element={<AdminProjectForm />} />
+            <Route path="projects/:id" element={<AdminProjectDetail />} />
+            <Route path="projects/:id/edit" element={<AdminProjectForm />} />
             <Route path="units" element={<AdminUnits />} />
             <Route path="leads" element={<AdminLeads />} />
             <Route path="pipeline" element={<AdminPipeline />} />
