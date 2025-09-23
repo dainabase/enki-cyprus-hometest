@@ -35,7 +35,7 @@ import {
   Plane, Anchor, Fuel, Mail, Trees, Flag, Dumbbell, Circle, Dice1, 
   Film, Drama, UtensilsCrossed, Coffee, Wine, Pizza, Utensils, Music, Church,
   Navigation, Route, Loader2, ParkingSquare as ParkingCircle, Train, 
-  Croissant, Flame, Camera, Hotel, Shirt, Scissors
+  Croissant, Flame, Camera, Hotel, Shirt, Scissors, ChevronRight, Eye, EyeOff
 } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
@@ -56,6 +56,63 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
   const [detectionRadius, setDetectionRadius] = useState(2); // Rayon par défaut 2km
   const [autoRedetect, setAutoRedetect] = useState(false);
   const [detectedCount, setDetectedCount] = useState(0);
+  const [showMap, setShowMap] = useState(false);
+
+  // COMMODITÉS ESSENTIELLES (Top 10 pour décision d'achat)
+  const ESSENTIAL_AMENITIES = [
+    'school',           // 1. École (critère #1 pour familles)
+    'supermarket',      // 2. Supermarché (courses quotidiennes)
+    'transport_public', // 3. Transport public (mobilité)
+    'hospital',         // 4. Hôpital (santé/urgences)
+    'pharmacy',         // 5. Pharmacie (santé quotidienne)
+    'park',            // 6. Parc (qualité de vie)
+    'beach',           // 7. Plage (spécifique à Chypre)
+    'bank',            // 8. Banque (services financiers)
+    'restaurant',      // 9. Restaurant (vie sociale)
+    'gym'              // 10. Salle de sport (bien-être)
+  ];
+
+  const amenityOptions = [
+    { value: 'transport_public', label: 'Transport public', icon: <Bus className="h-4 w-4" /> },
+    { value: 'beach', label: 'Plage', icon: <Waves className="h-4 w-4" /> },
+    { value: 'hospital', label: 'Hôpital', icon: <Building2 className="h-4 w-4" /> },
+    { value: 'pharmacy', label: 'Pharmacie', icon: <Heart className="h-4 w-4" /> },
+    { value: 'school', label: 'École', icon: <GraduationCap className="h-4 w-4" /> },
+    { value: 'university', label: 'Université', icon: <School className="h-4 w-4" /> },
+    { value: 'supermarket', label: 'Supermarché', icon: <ShoppingCart className="h-4 w-4" /> },
+    { value: 'shopping_center', label: 'Centre commercial', icon: <Store className="h-4 w-4" /> },
+    { value: 'restaurant', label: 'Restaurant', icon: <UtensilsCrossed className="h-4 w-4" /> },
+    { value: 'cafe', label: 'Café', icon: <Coffee className="h-4 w-4" /> },
+    { value: 'bank', label: 'Banque', icon: <Landmark className="h-4 w-4" /> },
+    { value: 'atm', label: 'ATM', icon: <CreditCard className="h-4 w-4" /> },
+    { value: 'post_office', label: 'Bureau de poste', icon: <Mail className="h-4 w-4" /> },
+    { value: 'park', label: 'Parc', icon: <Trees className="h-4 w-4" /> },
+    { value: 'gym', label: 'Salle de sport', icon: <Dumbbell className="h-4 w-4" /> },
+    { value: 'spa', label: 'Spa', icon: <Sparkles className="h-4 w-4" /> },
+    { value: 'cinema', label: 'Cinéma', icon: <Film className="h-4 w-4" /> },
+    { value: 'parking', label: 'Parking', icon: <ParkingCircle className="h-4 w-4" /> },
+    { value: 'gas_station', label: 'Station essence', icon: <Fuel className="h-4 w-4" /> },
+    { value: 'church', label: 'Église', icon: <Church className="h-4 w-4" /> },
+    { value: 'airport', label: 'Aéroport', icon: <Plane className="h-4 w-4" /> },
+    { value: 'train_station', label: 'Gare', icon: <Train className="h-4 w-4" /> },
+    { value: 'bus_station', label: 'Arrêt de bus', icon: <Bus className="h-4 w-4" /> },
+    { value: 'dentist', label: 'Dentiste', icon: <Heart className="h-4 w-4" /> },
+    { value: 'veterinary_care', label: 'Vétérinaire', icon: <Heart className="h-4 w-4" /> },
+    { value: 'physiotherapist', label: 'Kinésithérapeute', icon: <Heart className="h-4 w-4" /> },
+    { value: 'bakery', label: 'Boulangerie', icon: <Croissant className="h-4 w-4" /> },
+    { value: 'bar', label: 'Bar', icon: <Wine className="h-4 w-4" /> },
+    { value: 'night_club', label: 'Discothèque', icon: <Music className="h-4 w-4" /> },
+    { value: 'police', label: 'Police', icon: <Shield className="h-4 w-4" /> },
+    { value: 'fire_station', label: 'Pompiers', icon: <Flame className="h-4 w-4" /> },
+    { value: 'city_hall', label: 'Mairie', icon: <Building className="h-4 w-4" /> },
+    { value: 'museum', label: 'Musée', icon: <Building2 className="h-4 w-4" /> },
+    { value: 'art_gallery', label: 'Galerie d\'art', icon: <Palette className="h-4 w-4" /> },
+    { value: 'library', label: 'Bibliothèque', icon: <BookOpen className="h-4 w-4" /> },
+    { value: 'tourist_attraction', label: 'Attraction touristique', icon: <Camera className="h-4 w-4" /> },
+    { value: 'hotel', label: 'Hôtel', icon: <Hotel className="h-4 w-4" /> },
+    { value: 'laundry', label: 'Laverie', icon: <Shirt className="h-4 w-4" /> },
+    { value: 'hair_salon', label: 'Salon de coiffure', icon: <Scissors className="h-4 w-4" /> }
+  ];
 
   // Préparer les données pour la carte avec coordonnées réelles
   const mapCommodities = form.watch('surrounding_amenities')?.map((amenity: any, index: number) => ({
@@ -722,25 +779,39 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           }
         });
         
-        const nearbyAmenities = Array.from(commoditiesMap.values());
+        const nearbyAmenities = Array.from(commoditiesMap.values()).map(amenity => ({
+          ...amenity,
+          selected: true, // Par défaut, toutes les commodités sont sélectionnées
+          type: amenity.nearby_amenity_id,
+          distance: amenity.distance_km
+        }));
         
         form.setValue('surrounding_amenities', nearbyAmenities);
         console.log(`📍 ${nearbyAmenities.length} types de commodités uniques détectés`);
         console.log('Commodités:', nearbyAmenities);
         
         if (result.strategicDistances) {
-          if (result.strategicDistances.nearest_beach) {
-            form.setValue('proximity_sea_km', result.strategicDistances.nearest_beach);
-          }
-          if (result.strategicDistances.airport_distance) {
-            form.setValue('proximity_airport_km', result.strategicDistances.airport_distance);
-          }
-          if (result.strategicDistances.city_center_distance) {
-            form.setValue('proximity_city_center_km', result.strategicDistances.city_center_distance);
-          }
-          if (result.strategicDistances.highway_distance) {
-            form.setValue('proximity_highway_km', result.strategicDistances.highway_distance);
-          }
+          const distances = {
+            nearest_beach: result.strategicDistances.nearest_beach || 0,
+            larnaca_airport_distance: result.strategicDistances.larnaca_airport_distance || 0,
+            paphos_airport_distance: result.strategicDistances.paphos_airport_distance || 0,
+            city_center_distance: result.strategicDistances.city_center_distance || 0,
+            highway_distance: result.strategicDistances.highway_distance || 0,
+            // Legacy
+            airport_distance: result.strategicDistances.airport_distance || 0
+          };
+          
+          if (distances.nearest_beach) form.setValue('proximity_sea_km', distances.nearest_beach);
+          if (distances.airport_distance) form.setValue('proximity_airport_km', distances.airport_distance);
+          if (distances.city_center_distance) form.setValue('proximity_city_center_km', distances.city_center_distance);
+          if (distances.highway_distance) form.setValue('proximity_highway_km', distances.highway_distance);
+          
+          console.log('📏 Distances stratégiques:');
+          console.log('- Plage:', distances.nearest_beach, 'km');
+          console.log('- Aéroport Larnaca:', distances.larnaca_airport_distance, 'km');
+          console.log('- Aéroport Paphos:', distances.paphos_airport_distance, 'km');
+          console.log('- Centre-ville:', distances.city_center_distance, 'km');
+          console.log('- Autoroute:', distances.highway_distance, 'km');
           
           console.log('📏 Distances stratégiques mises à jour:', result.strategicDistances);
           
@@ -1195,47 +1266,61 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                           {form.watch('surrounding_amenities')
                             ?.sort((a, b) => a.distance_km - b.distance_km)
                             ?.map((amenity, index) => {
-                              const amenityOptions = [
-                                { value: 'transport_public', label: 'Transport public', icon: <Bus className="h-4 w-4" /> },
-                                { value: 'beach', label: 'Plage', icon: <Waves className="h-4 w-4" /> },
-                                { value: 'hospital', label: 'Hôpital', icon: <Building2 className="h-4 w-4" /> },
-                                { value: 'pharmacy', label: 'Pharmacie', icon: <Heart className="h-4 w-4" /> },
-                                { value: 'school', label: 'École', icon: <GraduationCap className="h-4 w-4" /> },
-                                { value: 'university', label: 'Université', icon: <School className="h-4 w-4" /> },
-                                { value: 'supermarket', label: 'Supermarché', icon: <ShoppingCart className="h-4 w-4" /> },
-                                { value: 'shopping_center', label: 'Centre commercial', icon: <Store className="h-4 w-4" /> },
-                                { value: 'restaurant', label: 'Restaurant', icon: <UtensilsCrossed className="h-4 w-4" /> },
-                                { value: 'cafe', label: 'Café', icon: <Coffee className="h-4 w-4" /> },
-                                { value: 'bank', label: 'Banque', icon: <Landmark className="h-4 w-4" /> },
-                                { value: 'atm', label: 'ATM', icon: <CreditCard className="h-4 w-4" /> },
-                                { value: 'post_office', label: 'Bureau de poste', icon: <Mail className="h-4 w-4" /> },
-                                { value: 'park', label: 'Parc', icon: <Trees className="h-4 w-4" /> },
-                                { value: 'gym', label: 'Salle de sport', icon: <Dumbbell className="h-4 w-4" /> },
-                                { value: 'spa', label: 'Spa', icon: <Sparkles className="h-4 w-4" /> },
-                                { value: 'cinema', label: 'Cinéma', icon: <Film className="h-4 w-4" /> },
-                                { value: 'parking', label: 'Parking', icon: <ParkingCircle className="h-4 w-4" /> },
-                                { value: 'gas_station', label: 'Station essence', icon: <Fuel className="h-4 w-4" /> },
-                                { value: 'church', label: 'Église', icon: <Church className="h-4 w-4" /> },
-                                { value: 'airport', label: 'Aéroport', icon: <Plane className="h-4 w-4" /> },
-                                { value: 'train_station', label: 'Gare', icon: <Train className="h-4 w-4" /> },
-                                { value: 'bus_station', label: 'Arrêt de bus', icon: <Bus className="h-4 w-4" /> },
-                                { value: 'dentist', label: 'Dentiste', icon: <Heart className="h-4 w-4" /> },
-                                { value: 'veterinary_care', label: 'Vétérinaire', icon: <Heart className="h-4 w-4" /> },
-                                { value: 'physiotherapist', label: 'Kinésithérapeute', icon: <Heart className="h-4 w-4" /> },
-                                { value: 'bakery', label: 'Boulangerie', icon: <Croissant className="h-4 w-4" /> },
-                                { value: 'bar', label: 'Bar', icon: <Wine className="h-4 w-4" /> },
-                                { value: 'night_club', label: 'Discothèque', icon: <Music className="h-4 w-4" /> },
-                                { value: 'police', label: 'Police', icon: <Shield className="h-4 w-4" /> },
-                                { value: 'fire_station', label: 'Pompiers', icon: <Flame className="h-4 w-4" /> },
-                                { value: 'city_hall', label: 'Mairie', icon: <Building className="h-4 w-4" /> },
-                                { value: 'museum', label: 'Musée', icon: <Building2 className="h-4 w-4" /> },
-                                { value: 'art_gallery', label: 'Galerie d\'art', icon: <Palette className="h-4 w-4" /> },
-                                { value: 'library', label: 'Bibliothèque', icon: <BookOpen className="h-4 w-4" /> },
-                                { value: 'tourist_attraction', label: 'Attraction touristique', icon: <Camera className="h-4 w-4" /> },
-                                { value: 'hotel', label: 'Hôtel', icon: <Hotel className="h-4 w-4" /> },
-                                { value: 'laundry', label: 'Laverie', icon: <Shirt className="h-4 w-4" /> },
-                                { value: 'hair_salon', label: 'Salon de coiffure', icon: <Scissors className="h-4 w-4" /> }
-                              ];
+  // COMMODITÉS ESSENTIELLES (Top 10 pour décision d'achat)
+  const ESSENTIAL_AMENITIES = [
+    'school',           // 1. École (critère #1 pour familles)
+    'supermarket',      // 2. Supermarché (courses quotidiennes)
+    'transport_public', // 3. Transport public (mobilité)
+    'hospital',         // 4. Hôpital (santé/urgences)
+    'pharmacy',         // 5. Pharmacie (santé quotidienne)
+    'park',            // 6. Parc (qualité de vie)
+    'beach',           // 7. Plage (spécifique à Chypre)
+    'bank',            // 8. Banque (services financiers)
+    'restaurant',      // 9. Restaurant (vie sociale)
+    'gym'              // 10. Salle de sport (bien-être)
+  ];
+
+  const amenityOptions = [
+    { value: 'transport_public', label: 'Transport public', icon: <Bus className="h-4 w-4" /> },
+    { value: 'beach', label: 'Plage', icon: <Waves className="h-4 w-4" /> },
+    { value: 'hospital', label: 'Hôpital', icon: <Building2 className="h-4 w-4" /> },
+    { value: 'pharmacy', label: 'Pharmacie', icon: <Heart className="h-4 w-4" /> },
+    { value: 'school', label: 'École', icon: <GraduationCap className="h-4 w-4" /> },
+    { value: 'university', label: 'Université', icon: <School className="h-4 w-4" /> },
+    { value: 'supermarket', label: 'Supermarché', icon: <ShoppingCart className="h-4 w-4" /> },
+    { value: 'shopping_center', label: 'Centre commercial', icon: <Store className="h-4 w-4" /> },
+    { value: 'restaurant', label: 'Restaurant', icon: <UtensilsCrossed className="h-4 w-4" /> },
+    { value: 'cafe', label: 'Café', icon: <Coffee className="h-4 w-4" /> },
+    { value: 'bank', label: 'Banque', icon: <Landmark className="h-4 w-4" /> },
+    { value: 'atm', label: 'ATM', icon: <CreditCard className="h-4 w-4" /> },
+    { value: 'post_office', label: 'Bureau de poste', icon: <Mail className="h-4 w-4" /> },
+    { value: 'park', label: 'Parc', icon: <Trees className="h-4 w-4" /> },
+    { value: 'gym', label: 'Salle de sport', icon: <Dumbbell className="h-4 w-4" /> },
+    { value: 'spa', label: 'Spa', icon: <Sparkles className="h-4 w-4" /> },
+    { value: 'cinema', label: 'Cinéma', icon: <Film className="h-4 w-4" /> },
+    { value: 'parking', label: 'Parking', icon: <ParkingCircle className="h-4 w-4" /> },
+    { value: 'gas_station', label: 'Station essence', icon: <Fuel className="h-4 w-4" /> },
+    { value: 'church', label: 'Église', icon: <Church className="h-4 w-4" /> },
+    { value: 'airport', label: 'Aéroport', icon: <Plane className="h-4 w-4" /> },
+    { value: 'train_station', label: 'Gare', icon: <Train className="h-4 w-4" /> },
+    { value: 'bus_station', label: 'Arrêt de bus', icon: <Bus className="h-4 w-4" /> },
+    { value: 'dentist', label: 'Dentiste', icon: <Heart className="h-4 w-4" /> },
+    { value: 'veterinary_care', label: 'Vétérinaire', icon: <Heart className="h-4 w-4" /> },
+    { value: 'physiotherapist', label: 'Kinésithérapeute', icon: <Heart className="h-4 w-4" /> },
+    { value: 'bakery', label: 'Boulangerie', icon: <Croissant className="h-4 w-4" /> },
+    { value: 'bar', label: 'Bar', icon: <Wine className="h-4 w-4" /> },
+    { value: 'night_club', label: 'Discothèque', icon: <Music className="h-4 w-4" /> },
+    { value: 'police', label: 'Police', icon: <Shield className="h-4 w-4" /> },
+    { value: 'fire_station', label: 'Pompiers', icon: <Flame className="h-4 w-4" /> },
+    { value: 'city_hall', label: 'Mairie', icon: <Building className="h-4 w-4" /> },
+    { value: 'museum', label: 'Musée', icon: <Building2 className="h-4 w-4" /> },
+    { value: 'art_gallery', label: 'Galerie d\'art', icon: <Palette className="h-4 w-4" /> },
+    { value: 'library', label: 'Bibliothèque', icon: <BookOpen className="h-4 w-4" /> },
+    { value: 'tourist_attraction', label: 'Attraction touristique', icon: <Camera className="h-4 w-4" /> },
+    { value: 'hotel', label: 'Hôtel', icon: <Hotel className="h-4 w-4" /> },
+    { value: 'laundry', label: 'Laverie', icon: <Shirt className="h-4 w-4" /> },
+    { value: 'hair_salon', label: 'Salon de coiffure', icon: <Scissors className="h-4 w-4" /> }
+  ];
                               
                               const option = amenityOptions.find(opt => opt.value === amenity.nearby_amenity_id);
                               if (!option) return null;

@@ -157,7 +157,16 @@ async function findStrategicDistances(lat: number, lng: number) {
       minAirportDistance = distance;
     }
   }
+  // CALCUL DES 2 AÉROPORTS SÉPARÉMENT
+  const larnacaDistance = Math.round(calculateDistance(lat, lng, airports[0].lat, airports[0].lng) * 10) / 10;
+  const paphosDistance = Math.round(calculateDistance(lat, lng, airports[1].lat, airports[1].lng) * 10) / 10;
+  
   strategicDistances.proximity_airport_km = Math.round(minAirportDistance * 10) / 10;
+  strategicDistances.larnaca_airport_distance = larnacaDistance;
+  strategicDistances.paphos_airport_distance = paphosDistance;
+  
+  console.log(`✅ Aéroport Larnaca: ${larnacaDistance} km`);
+  console.log(`✅ Aéroport Paphos: ${paphosDistance} km`);
   console.log(`✅ Aéroport le plus proche: ${strategicDistances.proximity_airport_km} km`);
 
   // 3. CENTRES-VILLES DE CHYPRE
