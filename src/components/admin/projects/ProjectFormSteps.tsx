@@ -536,10 +536,15 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     }
   };
 
-  // Enhanced amenities detection function with realistic timing and overlay
+  // 🚨 AUDIT FUNCTION WITH COMPLETE FRAUD DETECTION
   const handleDetectAll = async () => {
+    console.log('🔍 ====== DÉBUT AUDIT DÉTECTION API GOOGLE MAPS ======');
+    
     const address = form.watch('full_address');
+    console.log('📍 Adresse utilisée:', address);
+    
     if (!address) {
+      console.log('❌ AUDIT: Pas d\'adresse fournie');
       toast({
         title: "Adresse requise",
         description: "Veuillez d'abord entrer une adresse complète",
@@ -548,17 +553,97 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
       return;
     }
 
+    // AUDIT: Créer un hash unique de la requête pour détecter les doublons
+    const requestHash = btoa(address + Date.now()).substring(0, 8);
+    console.log(`🆔 Hash de requête unique: ${requestHash}`);
+
     setIsDetecting(true);
     
-    // Simulate realistic API processing time
+    // AUDIT: Délai réaliste pour tester la patience utilisateur
+    console.log('⏳ Délai simulé de 2 secondes pour réalisme...');
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     try {
-      console.log('📡 Appel de googleMapsAgent.findNearbyPlaces...');
+      console.log('🚀 ====== APPEL API RÉEL ======');
+      console.log('📡 Fonction appelée: googleMapsAgent.findNearbyPlaces');
+      console.log('📋 Paramètres:', { address, radius: 2 });
+      
+      // TIMESTAMP DÉBUT API
+      const startTime = Date.now();
+      console.log(`⏰ Début appel API: ${new Date(startTime).toISOString()}`);
+      
+      // APPEL RÉEL DE L'API
       const places = await googleMapsAgent.findNearbyPlaces(address, 2);
-      console.log('📦 Résultat:', places);
+      
+      // TIMESTAMP FIN API
+      const endTime = Date.now();
+      const duration = endTime - startTime;
+      console.log(`⏰ Fin appel API: ${new Date(endTime).toISOString()}`);
+      console.log(`⚡ Durée totale API: ${duration}ms`);
+      
+      // AUDIT COMPLET DES DONNÉES REÇUES
+      console.log('🔍 ====== ANALYSE DÉTAILLÉE DES DONNÉES ======');
+      console.log('📦 Type de données reçues:', typeof places);
+      console.log('📊 Nombre de résultats:', places?.length || 0);
+      console.log('📄 Contenu complet brut:', JSON.stringify(places, null, 2));
+      
+      // DÉTECTION DE FRAUDE #1: Données identiques
+      const dataHash = JSON.stringify(places);
+      console.log('🔒 Hash des données:', btoa(dataHash).substring(0, 12));
+      
+      if ((window as any).previousDataHashes) {
+        if ((window as any).previousDataHashes.includes(dataHash)) {
+          console.error('🚨 *** FRAUDE DÉTECTÉE *** : DONNÉES IDENTIQUES À UNE REQUÊTE PRÉCÉDENTE!');
+          alert('🚨 ALERTE FRAUDE: Les données reçues sont identiques à une requête précédente! Ceci suggère des valeurs hardcodées.');
+        }
+        (window as any).previousDataHashes.push(dataHash);
+      } else {
+        (window as any).previousDataHashes = [dataHash];
+      }
+
+      // DÉTECTION DE FRAUDE #2: Patterns suspects
+      if (places && places.length > 0) {
+        const distances = places.map(p => p.distance_km);
+        const uniqueDistances = [...new Set(distances)];
+        
+        console.log('📏 Distances trouvées:', distances);
+        console.log('📏 Distances uniques:', uniqueDistances);
+        
+        // Vérifier des patterns de valeurs hardcodées
+        const suspiciousPatterns = [
+          [1.0, 1.5, 2.0, 2.5], // Pattern trop parfait
+          [0.5, 1.0, 1.5, 2.0], // Pattern trop régulier
+        ];
+        
+        for (const pattern of suspiciousPatterns) {
+          if (pattern.every(p => distances.includes(p))) {
+            console.error('🚨 *** PATTERN SUSPECT DÉTECTÉ ***:', pattern);
+            alert(`🚨 PATTERN SUSPECT: Les distances ${pattern.join(', ')} km sont trop parfaites pour être réelles!`);
+          }
+        }
+      }
+
+      // DÉTECTION DE FRAUDE #3: Réponse trop rapide
+      if (duration < 500) {
+        console.warn('⚠️ SUSPECT: Réponse API très rapide (<500ms), possiblement hardcodée');
+      }
+
+      // DÉTECTION DE FRAUDE #4: Toujours les mêmes commodités
+      if (places && places.length > 0) {
+        const placeTypes = places.map(p => p.type).sort();
+        console.log('🏪 Types de commodités trouvés:', placeTypes);
+        
+        if ((window as any).previousPlaceTypes) {
+          if (JSON.stringify((window as any).previousPlaceTypes) === JSON.stringify(placeTypes)) {
+            console.error('🚨 *** FRAUDE DÉTECTÉE *** : MÊMES TYPES DE COMMODITÉS POUR DIFFÉRENTES ADRESSES!');
+            alert('🚨 FRAUDE: Les mêmes types de commodités sont toujours trouvés, indépendamment de l\'adresse!');
+          }
+        }
+        (window as any).previousPlaceTypes = placeTypes;
+      }
 
       if (!places || places.length === 0) {
+        console.log('📭 Aucun résultat trouvé');
         toast({
           title: "Aucune commodité trouvée",
           description: "Vérifiez l'adresse ou la configuration Google Maps API",
@@ -567,70 +652,109 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         return;
       }
 
-      // Map results to amenities with distances
-      const detectedAmenities = places.map(place => ({
-        nearby_amenity_id: place.type,
-        distance_km: place.distance_km,
-        details: `${place.name}${place.rating ? ` (${place.rating}⭐)` : ''}`
-      }));
+      console.log('🔄 ====== TRAITEMENT DES RÉSULTATS ======');
+      
+      // Mapping des types Google vers nos commodités
+      const typeMapping: Record<string, string> = {
+        'hospital': 'hospital',
+        'pharmacy': 'pharmacy',
+        'doctor': 'pharmacy',
+        'school': 'school',
+        'university': 'university',
+        'supermarket': 'supermarket',
+        'grocery_or_supermarket': 'supermarket',
+        'restaurant': 'restaurant',
+        'bank': 'bank',
+        'atm': 'atm',
+        'bus_station': 'bus_station',
+        'subway_station': 'bus_station',
+        'gym': 'gym',
+        'park': 'park',
+        'church': 'church',
+        'mosque': 'church',
+        'gas_station': 'gas_station',
+        'shopping_mall': 'shopping_center',
+        'store': 'shops'
+      };
 
-      // Update amenities
+      // Map results to our amenities format with proper type mapping
+      const detectedAmenities = places
+        .map(place => {
+          const mappedType = typeMapping[place.type] || place.type;
+          console.log(`🔗 Mapping: ${place.type} → ${mappedType}`);
+          
+          return {
+            nearby_amenity_id: mappedType,
+            distance_km: place.distance_km,
+            details: `${place.name}${place.rating ? ` (${place.rating}⭐)` : ''}`
+          };
+        })
+        .filter(amenity => {
+          // Filtrer uniquement les commodités que nous supportons
+          const supportedTypes = [
+            'hospital', 'pharmacy', 'school', 'university', 'supermarket',
+            'restaurant', 'bank', 'atm', 'bus_station', 'gym', 'park',
+            'church', 'gas_station', 'shopping_center', 'shops'
+          ];
+          return supportedTypes.includes(amenity.nearby_amenity_id);
+        });
+
+      console.log('✅ Commodités mappées:', detectedAmenities);
+
+      // Update amenities in form
       const existing = form.watch('surrounding_amenities') || [];
       const merged = [...existing];
       
       detectedAmenities.forEach(newItem => {
-        if (!merged.find(m => m.nearby_amenity_id === newItem.nearby_amenity_id)) {
+        const existingIndex = merged.findIndex(m => m.nearby_amenity_id === newItem.nearby_amenity_id);
+        if (existingIndex >= 0) {
+          // Mettre à jour si distance plus proche
+          if (newItem.distance_km < merged[existingIndex].distance_km) {
+            merged[existingIndex] = newItem;
+            console.log(`🔄 Mis à jour: ${newItem.nearby_amenity_id} avec distance plus proche`);
+          }
+        } else {
           merged.push(newItem);
+          console.log(`➕ Ajouté: ${newItem.nearby_amenity_id} à ${newItem.distance_km}km`);
         }
       });
 
       form.setValue('surrounding_amenities', merged);
 
-      // Auto-fill strategic distances if available
-      const seaPlace = places.find(p => p.type === 'beach' || p.name.toLowerCase().includes('beach'));
-      if (seaPlace && !form.watch('proximity_sea_km')) {
-        form.setValue('proximity_sea_km', seaPlace.distance_km);
-      }
+      // AVERTISSEMENT: Distances stratégiques ne sont PAS calculées automatiquement
+      console.log('⚠️ ====== AVERTISSEMENT DISTANCES STRATÉGIQUES ======');
+      console.log('⚠️ Les distances stratégiques (mer, centre-ville, aéroport, autoroute)');
+      console.log('⚠️ ne sont PAS calculées automatiquement par l\'API actuelle.');
+      console.log('⚠️ Elles doivent être saisies manuellement ou nécessitent');
+      console.log('⚠️ une implémentation spécifique pour chaque type de point d\'intérêt.');
 
-      // Calculate additional strategic distances using coordinates
-      const lat = form.watch('gps_latitude');
-      const lng = form.watch('gps_longitude');
-      
-      if (lat && lng) {
-        try {
-          const distances = await googleMapsAgent.calculateDistances(lat, lng);
-          if (distances.proximity_city_center_km && !form.watch('proximity_city_center_km')) {
-            form.setValue('proximity_city_center_km', distances.proximity_city_center_km);
-          }
-          if (distances.proximity_airport_km && !form.watch('proximity_airport_km')) {
-            form.setValue('proximity_airport_km', distances.proximity_airport_km);
-          }
-          if (distances.proximity_highway_km && !form.watch('proximity_highway_km')) {
-            form.setValue('proximity_highway_km', distances.proximity_highway_km);
-          }
-        } catch (error) {
-          console.warn('⚠️ Erreur calcul distances stratégiques:', error);
-        }
-      }
-
-      const distancesCount = 4; // Always show 4 strategic distances
       const amenitiesCount = detectedAmenities.length;
+      const totalPlaces = places.length;
       
       toast({
         title: "✅ Détection terminée",
-        description: `${distancesCount} distances stratégiques et ${amenitiesCount} commodités trouvées dans un rayon de 2km`,
+        description: `${amenitiesCount} commodités mappées sur ${totalPlaces} lieux trouvés dans un rayon de 2km`,
         duration: 5000,
       });
       
+      console.log(`✅ ====== FIN DÉTECTION - ${amenitiesCount} commodités ajoutées ======`);
+      
     } catch (error) {
-      console.error('❌ Erreur détection:', error);
+      console.error('💥 ====== ERREUR CRITIQUE ======');
+      console.error('❌ Type d\'erreur:', error?.constructor?.name);
+      console.error('❌ Message:', error?.message);
+      console.error('❌ Stack trace:', error?.stack);
+      
+      // EXPOSER L'ERREUR RÉELLE À L'UTILISATEUR
+      alert(`❌ ERREUR RÉELLE DÉTECTÉE:\n\nType: ${error?.constructor?.name}\nMessage: ${error?.message}\n\nVoir la console pour plus de détails.`);
+      
       toast({
         title: "Erreur de détection",
-        description: error?.message || "Vérifiez la console pour plus de détails",
+        description: `${error?.constructor?.name}: ${error?.message}`,
         variant: "destructive"
       });
     } finally {
-      // Show results for a moment before hiding loading
+      console.log('🔚 ====== AUDIT TERMINÉ ======');
       await new Promise(resolve => setTimeout(resolve, 500));
       setIsDetecting(false);
     }
@@ -826,25 +950,87 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                   Distances stratégiques et commodités de proximité
                 </CardDescription>
               </div>
-              {/* UN SEUL BOUTON ICI */}
-              <Button
-                type="button"
-                onClick={handleDetectAll}
-                disabled={!form.watch('full_address') || isDetecting}
-                variant="outline"
-              >
-                {isDetecting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Détection en cours...
-                  </>
-                ) : (
-                  <>
-                    <MapPin className="mr-2 h-4 w-4" />
-                    Détecter automatiquement
-                  </>
-                )}
-              </Button>
+              {/* UN SEUL BOUTON DE DÉTECTION */}
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  onClick={handleDetectAll}
+                  disabled={!form.watch('full_address') || isDetecting}
+                  variant="outline"
+                >
+                  {isDetecting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Détection en cours...
+                    </>
+                  ) : (
+                    <>
+                      <MapPin className="mr-2 h-4 w-4" />
+                      Détecter automatiquement
+                    </>
+                  )}
+                </Button>
+                
+                {/* BOUTON DE TEST DÉDIÉ POUR L'AUDIT */}
+                <Button
+                  type="button"
+                  onClick={async () => {
+                    console.log('🧪 ====== TEST ANTI-FRAUDE MULTI-ADRESSES ======');
+                    
+                    const testAddresses = [
+                      'Limassol Marina, Cyprus',
+                      'Paphos Harbor, Cyprus', 
+                      'Larnaca Salt Lake, Cyprus',
+                      '123 Fake Street, Limassol' // Adresse fictive pour test
+                    ];
+                    
+                    const results = [];
+                    
+                    for (const address of testAddresses) {
+                      console.log(`🧪 Test: ${address}`);
+                      try {
+                        const places = await googleMapsAgent.findNearbyPlaces(address, 2);
+                        results.push({
+                          address,
+                          success: true,
+                          data: places,
+                          hash: btoa(JSON.stringify(places)).substring(0, 8)
+                        });
+                        console.log(`✅ ${address}: ${places?.length || 0} résultats`);
+                      } catch (error) {
+                        results.push({
+                          address,
+                          success: false,
+                          error: error.message
+                        });
+                        console.log(`❌ ${address}: ${error.message}`);
+                      }
+                      // Délai entre tests
+                      await new Promise(r => setTimeout(r, 1000));
+                    }
+                    
+                    console.log('🧪 ====== ANALYSE CROISÉE DES RÉSULTATS ======');
+                    
+                    // Vérifier si des hashs sont identiques
+                    const hashes = results.filter(r => r.success).map(r => r.hash);
+                    const uniqueHashes = [...new Set(hashes)];
+                    
+                    if (hashes.length !== uniqueHashes.length) {
+                      console.error('🚨 *** FRAUDE CONFIRMÉE *** : DONNÉES IDENTIQUES POUR DIFFÉRENTES ADRESSES!');
+                      alert('🚨 FRAUDE CONFIRMÉE!\n\nPlusieurs adresses différentes retournent exactement les mêmes données.\nCeci prouve que l\'API utilise des valeurs hardcodées!');
+                    } else {
+                      console.log('✅ Test réussi: Chaque adresse retourne des données uniques');
+                      alert('✅ Test réussi!\n\nChaque adresse retourne des données différentes.\nL\'API semble fonctionner correctement.');
+                    }
+                    
+                    console.table(results);
+                  }}
+                  variant="destructive"
+                  size="sm"
+                >
+                  🧪 Test Anti-Fraude
+                </Button>
+              </div>
             </div>
           </CardHeader>
           <CardContent className="p-6 space-y-6 relative">
