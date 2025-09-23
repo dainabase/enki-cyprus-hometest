@@ -763,6 +763,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
   // Render the restructured location step
   const renderLocationStep = () => {
+    // Liste des commodités disponibles
     const commoditiesList = [
       { id: 'hospital', label: 'Hôpital' },
       { id: 'pharmacy', label: 'Pharmacie' },
@@ -793,89 +794,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
       cafe: '☕'
     };
 
-    // Debounced detection pour auto-redetect
-    const debouncedDetect = useMemo(
-      () => debounce(() => handleDetectAll(), 1000),
-      []
-    );
-
-    const handleDetectAll = async () => {
-      if (!form.watch('full_address')) {
-        toast("Veuillez d'abord saisir une adresse complète", { description: "Erreur de validation" });
-        return;
-      }
-
-      setIsDetecting(true);
-      
-      // Simuler un délai réaliste pour l'API
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      try {
-        // Appel à l'edge function pour tout détecter
-        const { data, error } = await supabase.functions.invoke('google-maps-agent', {
-          body: {
-            address: form.watch('full_address'),
-            radius_km: detectionRadius
-          }
-        });
-
-        if (error) throw error;
-
-        // Mise à jour des distances stratégiques
-        const updates: any = {};
-        if (data.coordinates) {
-          // Calculer distances stratégiques (simulation pour l'instant)
-          updates.proximity_sea_km = Math.round((Math.random() * 5 + 0.5) * 10) / 10;
-          updates.proximity_city_center_km = Math.round((Math.random() * 3 + 0.2) * 10) / 10;
-          updates.proximity_airport_km = Math.round((Math.random() * 25 + 5) * 10) / 10;
-          updates.proximity_highway_km = Math.round((Math.random() * 2 + 0.1) * 10) / 10;
-        }
-
-        // Mise à jour des commodités avec distances
-        const detectedAmenities = [];
-        if (data.places && Array.isArray(data.places)) {
-          data.places.forEach((place: any) => {
-            // Mapper le type Google vers notre type interne
-            const mappedType = place.type || 'unknown';
-            
-            // Vérifier si c'est un type que nous supportons
-            if (commoditiesList.find(c => c.id === mappedType)) {
-              detectedAmenities.push({
-                nearby_amenity_id: mappedType,
-                distance_km: place.distance_km || 0,
-                details: place.name || place.address || mappedType,
-                lat: place.lat,
-                lng: place.lng
-              });
-            }
-          });
-        }
-
-        // Application des mises à jour
-        Object.keys(updates).forEach(key => {
-          form.setValue(key as any, updates[key]);
-        });
-        form.setValue('surrounding_amenities', detectedAmenities);
-
-        // Message de succès détaillé
-        const distancesCount = Object.keys(updates).length;
-        const amenitiesCount = detectedAmenities.length;
-        
-        toast(`Détection terminée ! ${distancesCount} distances stratégiques et ${amenitiesCount} commodités trouvées.`, { 
-          description: "Succès de la détection",
-          duration: 5000 
-        });
-
-      } catch (error) {
-        console.error('Erreur lors de la détection:', error);
-        toast("Erreur lors de la détection automatique. Veuillez réessayer.", { description: "Erreur API" });
-      } finally {
-        // Attendre encore un peu pour que l'utilisateur voit le résultat
-        await new Promise(resolve => setTimeout(resolve, 500));
-        setIsDetecting(false);
-      }
-    };
-
     const handleCommodityChange = (commodityId: string, checked: boolean) => {
       const existing = form.watch('surrounding_amenities') || [];
       if (checked) {
@@ -891,6 +809,9 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         );
       }
     };
+
+    // Préparer les données pour la carte
+    const mapCommodities = [];
 
     return (
       <div className="space-y-8">
@@ -929,7 +850,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Zone géographique auto-sélectionnée */}
+              {/* Zone géographique */}
               <FormField
                 control={form.control}
                 name="cyprus_zone"
@@ -959,6 +880,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 )}
               />
 
+              {/* Ville */}
               <FormField
                 control={form.control}
                 name="city"
@@ -982,7 +904,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               />
             </div>
 
-            {/* GPS auto-calculé */}
+            {/* Coordonnées GPS */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -1049,314 +971,220 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                   Distances stratégiques et commodités de proximité
                 </CardDescription>
               </div>
-              {/* UN SEUL BOUTON DE DÉTECTION */}
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  onClick={handleDetectAll}
-                  disabled={!form.watch('full_address') || isDetecting}
-                  variant="outline"
-                >
-                  {isDetecting ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Détection en cours...
-                    </>
-                  ) : (
-                    <>
-                      <MapPin className="mr-2 h-4 w-4" />
-                      Détecter automatiquement
-                    </>
-                  )}
-                </Button>
-                
-                {/* BOUTON DE TEST DÉDIÉ POUR L'AUDIT */}
-                <Button
-                  type="button"
-                  onClick={async () => {
-                    console.log('🧪 ====== TEST ANTI-FRAUDE MULTI-ADRESSES ======');
-                    
-                    const testAddresses = [
-                      'Limassol Marina, Cyprus',
-                      'Paphos Harbor, Cyprus', 
-                      'Larnaca Salt Lake, Cyprus',
-                      '123 Fake Street, Limassol' // Adresse fictive pour test
-                    ];
-                    
-                    const results = [];
-                    
-                    for (const address of testAddresses) {
-                      console.log(`🧪 Test: ${address}`);
-                      try {
-                        const places = await googleMapsAgent.findNearbyPlaces(address, 2);
-                        results.push({
-                          address,
-                          success: true,
-                          data: places,
-                          hash: btoa(JSON.stringify(places)).substring(0, 8)
-                        });
-                        console.log(`✅ ${address}: ${places?.length || 0} résultats`);
-                      } catch (error) {
-                        results.push({
-                          address,
-                          success: false,
-                          error: error.message
-                        });
-                        console.log(`❌ ${address}: ${error.message}`);
-                      }
-                      // Délai entre tests
-                      await new Promise(r => setTimeout(r, 1000));
-                    }
-                    
-                    console.log('🧪 ====== ANALYSE CROISÉE DES RÉSULTATS ======');
-                    
-                    // Vérifier si des hashs sont identiques
-                    const hashes = results.filter(r => r.success).map(r => r.hash);
-                    const uniqueHashes = [...new Set(hashes)];
-                    
-                    if (hashes.length !== uniqueHashes.length) {
-                      console.error('🚨 *** FRAUDE CONFIRMÉE *** : DONNÉES IDENTIQUES POUR DIFFÉRENTES ADRESSES!');
-                      alert('🚨 FRAUDE CONFIRMÉE!\n\nPlusieurs adresses différentes retournent exactement les mêmes données.\nCeci prouve que l\'API utilise des valeurs hardcodées!');
-                    } else {
-                      console.log('✅ Test réussi: Chaque adresse retourne des données uniques');
-                      alert('✅ Test réussi!\n\nChaque adresse retourne des données différentes.\nL\'API semble fonctionner correctement.');
-                    }
-                    
-                    console.table(results);
-                  }}
-                  variant="destructive"
-                  size="sm"
-                >
-                  🧪 Test Anti-Fraude
-                </Button>
-              </div>
+              <Button
+                type="button"
+                onClick={handleDetectAll}
+                disabled={!form.watch('full_address') || isDetecting}
+                variant="outline"
+                size="sm"
+              >
+                {isDetecting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Détection...
+                  </>
+                ) : (
+                  <>
+                    <MapPin className="mr-2 h-4 w-4" />
+                    Détecter
+                  </>
+                )}
+              </Button>
             </div>
           </CardHeader>
-          <CardContent className="p-6">
+          <CardContent className="p-6 relative">
+            {/* Overlay de chargement */}
+            {isDetecting && (
+              <div className="absolute inset-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm z-50 flex items-center justify-center rounded-lg">
+                <div className="text-center">
+                  <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
+                  <p className="text-sm font-medium">Analyse en cours...</p>
+                  <p className="text-xs text-gray-500 mt-1">10-15 secondes</p>
+                </div>
+              </div>
+            )}
+
+            {/* GRILLE PRINCIPALE CORRIGÉE */}
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
               {/* COLONNE GAUCHE : Contrôles (3/5) */}
               <div className="lg:col-span-3 space-y-6">
-                
-                {/* Overlay de chargement */}
-                {isDetecting && (
-                  <div className="absolute inset-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm z-50 flex items-center justify-center rounded-lg">
-                    <div className="text-center">
-                      <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
-                      <p className="text-sm font-medium">Analyse de la zone en cours...</p>
-                      <p className="text-xs text-gray-500 mt-1">Cela peut prendre 10-15 secondes</p>
-                    </div>
-                  </div>
-                )}
-
-                {/* SECTION 1: Distances stratégiques */}
+                {/* Section 1: Distances stratégiques */}
                 <div>
                   <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-3">
                     Distances stratégiques
                   </h4>
                   <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="proximity_sea_km"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel htmlFor="proximity_sea">Distance de la mer</FormLabel>
-                      <div className="flex items-center gap-2">
-                        <FormControl>
-                          <Input
-                            id="proximity_sea"
-                            type="number"
-                            step="0.1"
-                            placeholder=""
-                            {...field}
-                            value={field.value || ''}
-                            onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
-                          />
-                        </FormControl>
-                        <span className="text-sm text-gray-500">km</span>
-                      </div>
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="proximity_city_center_km"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel htmlFor="proximity_center">Distance du centre-ville</FormLabel>
-                      <div className="flex items-center gap-2">
-                        <FormControl>
-                          <Input
-                            id="proximity_center"
-                            type="number"
-                            step="0.1"
-                            placeholder=""
-                            {...field}
-                            value={field.value || ''}
-                            onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
-                          />
-                        </FormControl>
-                        <span className="text-sm text-gray-500">km</span>
-                      </div>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="proximity_airport_km"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel htmlFor="proximity_airport">Distance de l'aéroport</FormLabel>
-                      <div className="flex items-center gap-2">
-                        <FormControl>
-                          <Input
-                            id="proximity_airport"
-                            type="number"
-                            step="0.1"
-                            placeholder=""
-                            {...field}
-                            value={field.value || ''}
-                            onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
-                          />
-                        </FormControl>
-                        <span className="text-sm text-gray-500">km</span>
-                      </div>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="proximity_highway_km"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel htmlFor="proximity_highway">Distance de l'autoroute</FormLabel>
-                      <div className="flex items-center gap-2">
-                        <FormControl>
-                          <Input
-                            id="proximity_highway"
-                            type="number"
-                            step="0.1"
-                            placeholder=""
-                            {...field}
-                            value={field.value || ''}
-                            onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
-                          />
-                        </FormControl>
-                        <span className="text-sm text-gray-500">km</span>
-                      </div>
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-            </div>
-
-            {/* SECTION 2: Commodités de proximité - SANS CADRE */}
-            <div>
-              <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-3">
-                Commodités de proximité
-              </h4>
-              {/* PAS DE CARD ICI, JUSTE LA LISTE */}
-              <div className="grid grid-cols-2 gap-3">
-                {commoditiesList.map(commodity => {
-                  const amenity = form.watch('surrounding_amenities')?.find(
-                    a => a.nearby_amenity_id === commodity.id
-                  );
-                  return (
-                    <div key={commodity.id} className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Checkbox
-                          id={`commodity-${commodity.id}`}
-                          checked={!!amenity}
-                          onCheckedChange={(checked) => handleCommodityChange(commodity.id, !!checked)}
-                        />
-                        <Label 
-                          htmlFor={`commodity-${commodity.id}`}
-                          className="font-normal cursor-pointer"
-                        >
-                          {commodity.label}
-                        </Label>
-                      </div>
-                      {/* AFFICHAGE DE LA DISTANCE SI DÉTECTÉE */}
-                      {amenity?.distance_km && amenity.distance_km > 0 && (
-                        <span className="text-sm text-blue-600 font-medium">
-                          {amenity.distance_km.toFixed(1)} km
-                        </span>
+                    <FormField
+                      control={form.control}
+                      name="proximity_sea_km"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Distance de la mer</FormLabel>
+                          <div className="flex items-center gap-2">
+                            <FormControl>
+                              <Input
+                                type="number"
+                                step="0.1"
+                                placeholder="0.0"
+                                {...field}
+                                value={field.value || ''}
+                                onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
+                              />
+                            </FormControl>
+                            <span className="text-sm text-gray-500">km</span>
+                          </div>
+                        </FormItem>
                       )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-            
-            {/* COLONNE DROITE : Carte (2/5) */}
-            <div className="lg:col-span-2">
-              <div className="sticky top-4">
-                <h4 className="font-semibold text-sm mb-3">Visualisation sur carte</h4>
-                
-                {/* DEBUG: Afficher les valeurs pour diagnostic */}
-                {process.env.NODE_ENV === 'development' && (
-                  <div className="text-xs bg-yellow-100 p-2 rounded mb-2">
-                    <strong>🔍 DEBUG:</strong><br/>
-                    Lat: {form.watch('gps_latitude')} ({typeof form.watch('gps_latitude')})<br/>
-                    Lng: {form.watch('gps_longitude')} ({typeof form.watch('gps_longitude')})<br/>
-                    Address: {form.watch('full_address')}<br/>
-                    Google Maps: {typeof window !== 'undefined' && window.google ? '✅' : '❌'}
-                  </div>
-                )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="proximity_city_center_km"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Distance du centre-ville</FormLabel>
+                          <div className="flex items-center gap-2">
+                            <FormControl>
+                              <Input
+                                type="number"
+                                step="0.1"
+                                placeholder="0.0"
+                                {...field}
+                                value={field.value || ''}
+                                onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
+                              />
+                            </FormControl>
+                            <span className="text-sm text-gray-500">km</span>
+                          </div>
+                        </FormItem>
+                      )}
+                    />
 
-                {/* Vérifier que les coordonnées existent et sont valides */}
-                {(() => {
-                  const lat = form.watch('gps_latitude');
-                  const lng = form.watch('gps_longitude');
-                  
-                  // Convertir en nombres et vérifier la validité
-                  const latNum = typeof lat === 'number' ? lat : parseFloat(lat as string);
-                  const lngNum = typeof lng === 'number' ? lng : parseFloat(lng as string);
-                  const hasValidCoords = !isNaN(latNum) && !isNaN(lngNum) && 
-                                       latNum !== null && latNum !== undefined && 
-                                       lngNum !== null && lngNum !== undefined;
-                  
-                  console.log('🔍 ====== DIAGNOSTIC CARTE ======');
-                  console.log('📍 Latitude:', lat, '→', latNum, typeof latNum);
-                  console.log('📍 Longitude:', lng, '→', lngNum, typeof lngNum);
-                  console.log('📍 Valid coords?', hasValidCoords);
-                  console.log('📍 Address:', form.watch('full_address'));
-                  console.log('🗺️ Google Maps loaded?', typeof window !== 'undefined' && !!window.google);
-                  
-                  if (hasValidCoords) {
-                    return (
-                      <LocationMap
-                        address={form.watch('full_address') || ''}
-                        latitude={latNum}
-                        longitude={lngNum}
-                        radius={detectionRadius}
-                        commodities={mapCommodities}
-                      />
-                    );
-                  } else {
-                    return (
-                      <div className="h-[500px] bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
-                        <div className="text-center text-gray-500">
-                          <MapPin className="h-12 w-12 mx-auto mb-3 opacity-30" />
-                          <p className="text-sm">Entrez une adresse pour afficher la carte</p>
-                          <p className="text-xs mt-2 text-red-500">
-                            Debug: Lat={lat} Lng={lng} → {latNum}, {lngNum}
-                          </p>
+                    <FormField
+                      control={form.control}
+                      name="proximity_airport_km"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Distance de l'aéroport</FormLabel>
+                          <div className="flex items-center gap-2">
+                            <FormControl>
+                              <Input
+                                type="number"
+                                step="0.1"
+                                placeholder="0.0"
+                                {...field}
+                                value={field.value || ''}
+                                onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
+                              />
+                            </FormControl>
+                            <span className="text-sm text-gray-500">km</span>
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="proximity_highway_km"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Distance de l'autoroute</FormLabel>
+                          <div className="flex items-center gap-2">
+                            <FormControl>
+                              <Input
+                                type="number"
+                                step="0.1"
+                                placeholder="0.0"
+                                {...field}
+                                value={field.value || ''}
+                                onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
+                              />
+                            </FormControl>
+                            <span className="text-sm text-gray-500">km</span>
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+
+                {/* Section 2: Commodités de proximité */}
+                <div>
+                  <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-3">
+                    Commodités de proximité
+                  </h4>
+                  <div className="grid grid-cols-2 gap-3">
+                    {commoditiesList.map(commodity => {
+                      const amenity = form.watch('surrounding_amenities')?.find(
+                        a => a.nearby_amenity_id === commodity.id
+                      );
+                      return (
+                        <div key={commodity.id} className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Checkbox
+                              id={`commodity-${commodity.id}`}
+                              checked={!!amenity}
+                              onCheckedChange={(checked) => handleCommodityChange(commodity.id, !!checked)}
+                            />
+                            <Label 
+                              htmlFor={`commodity-${commodity.id}`}
+                              className="font-normal cursor-pointer"
+                            >
+                              {commodity.label}
+                            </Label>
+                          </div>
+                          {amenity?.distance_km && amenity.distance_km > 0 && (
+                            <span className="text-sm text-blue-600 font-medium">
+                              {amenity.distance_km.toFixed(1)} km
+                            </span>
+                          )}
                         </div>
-                      </div>
-                    );
-                  }
-                })()}
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* COLONNE DROITE : Carte (2/5) */}
+              <div className="lg:col-span-2">
+                <div className="sticky top-4">
+                  <h4 className="font-medium text-sm mb-3">Visualisation sur carte</h4>
+                  {(() => {
+                    const lat = form.watch('gps_latitude');
+                    const lng = form.watch('gps_longitude');
+                    
+                    const latNum = typeof lat === 'number' ? lat : parseFloat(lat as string);
+                    const lngNum = typeof lng === 'number' ? lng : parseFloat(lng as string);
+                    const hasValidCoords = !isNaN(latNum) && !isNaN(lngNum) && latNum !== 0 && lngNum !== 0;
+                    
+                    if (hasValidCoords) {
+                      return (
+                        <LocationMap
+                          address={form.watch('full_address') || ''}
+                          latitude={latNum}
+                          longitude={lngNum}
+                          radius={detectionRadius}
+                          commodities={mapCommodities}
+                        />
+                      );
+                    } else {
+                      return (
+                        <div className="h-[500px] bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+                          <div className="text-center text-gray-500">
+                            <MapPin className="h-12 w-12 mx-auto mb-3 opacity-30" />
+                            <p className="text-sm">Entrez une adresse pour afficher la carte</p>
+                          </div>
+                        </div>
+                      );
+                    }
+                  })()}
+                </div>
               </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
+          </CardContent>
+        </Card>
+      </div>
+    );
   };
 
   const renderSpecificationsStep = () => {
