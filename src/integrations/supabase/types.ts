@@ -2927,6 +2927,7 @@ export type Database = {
           available_units: number | null
           backup_power_generator: boolean | null
           bim_model_url: string | null
+          brochure_pdf: string | null
           brochure_url: string | null
           builder_name: string | null
           building_certification: Json | null
@@ -2939,6 +2940,7 @@ export type Database = {
           city: string
           community_features: Json | null
           completion_date: string | null
+          completion_month: string | null
           compliance_certifications: Json | null
           concierge_service: boolean | null
           construction_materials: Json | null
@@ -2987,6 +2989,7 @@ export type Database = {
           land_area_m2: number | null
           last_price_update: string | null
           launch_date: string | null
+          launch_month: string | null
           legal_status: string | null
           lifestyle_amenities: Json | null
           maintenance_fees_yearly: number | null
@@ -3091,6 +3094,7 @@ export type Database = {
           available_units?: number | null
           backup_power_generator?: boolean | null
           bim_model_url?: string | null
+          brochure_pdf?: string | null
           brochure_url?: string | null
           builder_name?: string | null
           building_certification?: Json | null
@@ -3103,6 +3107,7 @@ export type Database = {
           city: string
           community_features?: Json | null
           completion_date?: string | null
+          completion_month?: string | null
           compliance_certifications?: Json | null
           concierge_service?: boolean | null
           construction_materials?: Json | null
@@ -3151,6 +3156,7 @@ export type Database = {
           land_area_m2?: number | null
           last_price_update?: string | null
           launch_date?: string | null
+          launch_month?: string | null
           legal_status?: string | null
           lifestyle_amenities?: Json | null
           maintenance_fees_yearly?: number | null
@@ -3255,6 +3261,7 @@ export type Database = {
           available_units?: number | null
           backup_power_generator?: boolean | null
           bim_model_url?: string | null
+          brochure_pdf?: string | null
           brochure_url?: string | null
           builder_name?: string | null
           building_certification?: Json | null
@@ -3267,6 +3274,7 @@ export type Database = {
           city?: string
           community_features?: Json | null
           completion_date?: string | null
+          completion_month?: string | null
           compliance_certifications?: Json | null
           concierge_service?: boolean | null
           construction_materials?: Json | null
@@ -3315,6 +3323,7 @@ export type Database = {
           land_area_m2?: number | null
           last_price_update?: string | null
           launch_date?: string | null
+          launch_month?: string | null
           legal_status?: string | null
           lifestyle_amenities?: Json | null
           maintenance_fees_yearly?: number | null

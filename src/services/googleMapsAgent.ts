@@ -17,15 +17,15 @@ export class GoogleMapsAgent {
     address: string, 
     radiusKm: number = 2
   ): Promise<PlaceResult[]> {
-    console.log('🔍 Finding places near:', address, 'within', radiusKm, 'km');
+    console.log(`🔍 Recherche dans ${radiusKm} km autour de: ${address}`);
     
     try {
       // Appel via Edge Function avec les bons paramètres
       const { data, error } = await supabase.functions.invoke('google-maps-agent', {
         body: {
           address,
-          radius_km: radiusKm, // IMPORTANT: Utiliser underscore
-          action: 'search'
+          radius_km: radiusKm, // IMPORTANT: Le rayon doit être passé ici
+          action: 'findNearbyPlaces'
         }
       });
 
@@ -39,7 +39,7 @@ export class GoogleMapsAgent {
         return [];
       }
 
-      console.log(`✅ Found ${data?.places?.length || 0} places`);
+      console.log(`✅ Trouvé ${data?.places?.length || 0} lieux dans ${radiusKm} km`);
       return data?.places || [];
       
     } catch (error) {

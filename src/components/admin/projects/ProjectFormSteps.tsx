@@ -58,18 +58,20 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
   const [detectedCount, setDetectedCount] = useState(0);
   const [showMap, setShowMap] = useState(false);
 
-  // COMMODITÉS ESSENTIELLES (Top 10 pour décision d'achat)
+  // COMMODITÉS ESSENTIELLES (12 critères d'achat prioritaires)
   const ESSENTIAL_AMENITIES = [
-    'school',           // 1. École (critère #1 pour familles)
-    'supermarket',      // 2. Supermarché (courses quotidiennes)
-    'transport_public', // 3. Transport public (mobilité)
-    'hospital',         // 4. Hôpital (santé/urgences)
-    'pharmacy',         // 5. Pharmacie (santé quotidienne)
-    'park',            // 6. Parc (qualité de vie)
-    'beach',           // 7. Plage (spécifique à Chypre)
-    'bank',            // 8. Banque (services financiers)
-    'restaurant',      // 9. Restaurant (vie sociale)
-    'gym'              // 10. Salle de sport (bien-être)
+    'school',           // 1. École
+    'supermarket',      // 2. Supermarché  
+    'transport_public', // 3. Transport public
+    'hospital',         // 4. Hôpital
+    'pharmacy',         // 5. Pharmacie
+    'shopping_center',  // 6. Centre commercial (NOUVEAU)
+    'university',       // 7. Université (NOUVEAU)
+    'beach',           // 8. Plage
+    'bank',            // 9. Banque
+    'restaurant',      // 10. Restaurant
+    'gym',             // 11. Salle de sport
+    'cafe'             // 12. Café (NOUVEAU)
   ];
 
   const amenityOptions = [
@@ -501,30 +503,26 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               </div>
             )}
 
-            {/* Curseur de rayon de recherche */}
+            {/* Sélecteur de rayon de détection - VERSION BOUTONS */}
             <div className="space-y-2 mb-6">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="detection-radius" className="text-sm font-medium">
-                  Rayon de détection
-                </Label>
-                <span className="text-sm font-bold text-primary">
-                  {detectionRadius} km
-                </span>
+              <Label className="text-sm font-medium">Rayon de détection</Label>
+              <div className="flex gap-2">
+                {[0.5, 1, 2, 3, 5].map((radius) => (
+                  <Button
+                    key={radius}
+                    type="button"
+                    size="sm"
+                    variant={detectionRadius === radius ? "default" : "outline"}
+                    onClick={() => setDetectionRadius(radius)}
+                    className="flex-1"
+                  >
+                    {radius < 1 ? `${radius * 1000}m` : `${radius}km`}
+                  </Button>
+                ))}
               </div>
-              <Slider
-                id="detection-radius"
-                min={0.5}
-                max={5}
-                step={0.5}
-                value={[detectionRadius]}
-                onValueChange={(value) => setDetectionRadius(value[0])}
-                className="w-full"
-              />
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>0.5 km</span>
-                <span>2.5 km</span>
-                <span>5 km</span>
-              </div>
+              <p className="text-xs text-muted-foreground">
+                Recherche dans un rayon de {detectionRadius} km autour de l'adresse
+              </p>
             </div>
 
             {/* Interface principale en grille */}
@@ -682,11 +680,12 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                     if (hasValidCoords) {
                       return (
                         <LocationMap
-                          address={form.watch('full_address') || ''}
-                          latitude={latNum}
-                          longitude={lngNum}
+                          center={{ lat: latNum, lng: lngNum }}
+                          markers={mapCommodities.map(c => ({
+                            position: { lat: c.lat, lng: c.lng },
+                            title: c.name
+                          }))}
                           radius={detectionRadius}
-                          commodities={mapCommodities}
                         />
                       );
                     } else {
@@ -937,7 +936,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     try {
       console.log('🚀 Début de la détection automatique');
       console.log('📍 Adresse:', address);
-      console.log('📏 Rayon de recherche:', detectionRadius, 'km');
+      console.log('🚀 Détection avec rayon:', detectionRadius, 'km'); // IMPORTANT
       
       const { data: result, error } = await supabase.functions.invoke('google-maps-agent', {
         body: {
@@ -1090,7 +1089,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
   // Render the restructured location step
   const renderLocationStep = () => {
-    const ESSENTIAL_AMENITIES = ['school','supermarket','transport_public','hospital','pharmacy','park','beach','bank','restaurant','gym'];
+    const ESSENTIAL_AMENITIES = ['school','supermarket','transport_public','hospital','pharmacy','shopping_center','university','beach','bank','restaurant','gym','cafe'];
     // Liste complète des commodités disponibles
     const commoditiesList = [
       { id: 'transport_public', label: 'Transport public' },
@@ -1357,30 +1356,26 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               </div>
             )}
 
-            {/* Curseur de rayon de recherche */}
+            {/* Sélecteur de rayon de détection - VERSION BOUTONS */}
             <div className="space-y-2 mb-4">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="detection-radius" className="text-sm font-medium">
-                  Rayon de détection
-                </Label>
-                <span className="text-sm font-bold text-primary">
-                  {detectionRadius} km
-                </span>
+              <Label className="text-sm font-medium">Rayon de détection</Label>
+              <div className="flex gap-2">
+                {[0.5, 1, 2, 3, 5].map((radius) => (
+                  <Button
+                    key={radius}
+                    type="button"
+                    size="sm"
+                    variant={detectionRadius === radius ? "default" : "outline"}
+                    onClick={() => setDetectionRadius(radius)}
+                    className="flex-1"
+                  >
+                    {radius < 1 ? `${radius * 1000}m` : `${radius}km`}
+                  </Button>
+                ))}
               </div>
-              <Slider
-                id="detection-radius"
-                min={0.5}
-                max={5}
-                step={0.5}
-                value={[detectionRadius]}
-                onValueChange={(value) => setDetectionRadius(value[0])}
-                className="w-full"
-              />
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>0.5 km</span>
-                <span>2.5 km</span>
-                <span>5 km</span>
-              </div>
+              <p className="text-xs text-muted-foreground">
+                Recherche dans un rayon de {detectionRadius} km autour de l'adresse
+              </p>
             </div>
 
             {/* GRILLE PRINCIPALE CORRIGÉE */}
@@ -1610,11 +1605,12 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                     if (hasValidCoords) {
                       return (
                         <LocationMap
-                          address={form.watch('full_address') || ''}
-                          latitude={latNum}
-                          longitude={lngNum}
+                          center={{ lat: latNum, lng: lngNum }}
+                          markers={mapCommodities.map(c => ({
+                            position: { lat: c.lat, lng: c.lng },
+                            title: c.name
+                          }))}
                           radius={detectionRadius}
-                          commodities={mapCommodities}
                         />
                       );
                     } else {
