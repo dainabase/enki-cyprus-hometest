@@ -1041,19 +1041,21 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         console.log(`📍 ${nearbyAmenities.length} types de commodités uniques détectés`);
         console.log('Commodités:', nearbyAmenities);
         
-if (result.strategicDistances) {
-  const distances = {
-    nearest_beach: result.strategicDistances.nearest_beach || 0,
-    larnaca_airport_distance: result.strategicDistances.larnaca_airport_distance || 
-                               result.strategicDistances.airport_distance || 0,
-    paphos_airport_distance: result.strategicDistances.paphos_airport_distance || 0,
-    city_center_distance: result.strategicDistances.city_center_distance || 0,
-    highway_distance: result.strategicDistances.highway_distance || 0,
-    airport_distance: result.strategicDistances.airport_distance || 0
-  };
-  
-  form.setValue('distances_commodities', distances);
-}
+        if (result.strategicDistances) {
+          const distances = {
+            nearest_beach: result.strategicDistances.nearest_beach || 0,
+            larnaca_airport_distance: result.strategicDistances.larnaca_airport_distance || 
+                                       result.strategicDistances.airport_distance || 0,
+            paphos_airport_distance: result.strategicDistances.paphos_airport_distance || 0,
+            city_center_distance: result.strategicDistances.city_center_distance || 0,
+            highway_distance: result.strategicDistances.highway_distance || 0,
+            airport_distance: result.strategicDistances.airport_distance || 0
+          };
+          
+          if (distances.nearest_beach) form.setValue('proximity_sea_km', distances.nearest_beach);
+          if (distances.airport_distance) form.setValue('proximity_airport_km', distances.airport_distance);
+          if (distances.city_center_distance) form.setValue('proximity_city_center_km', distances.city_center_distance);
+          if (distances.highway_distance) form.setValue('proximity_highway_km', distances.highway_distance);
           
           console.log('📏 Distances stratégiques:');
           console.log('- Plage:', distances.nearest_beach, 'km');
@@ -1444,14 +1446,15 @@ if (result.strategicDistances) {
         {(() => {
           const dist = form.watch('proximity_airport_km');
           if (dist) return dist;
-          const coords = form.watch('gps_coordinates');
-          if (coords?.latitude && coords?.longitude) {
+          const lat = form.watch('gps_latitude');
+          const lng = form.watch('gps_longitude');
+          if (lat && lng) {
             const larnaca = { lat: 34.8751, lng: 33.6248 };
             const R = 6371;
-            const dLat = (larnaca.lat - coords.latitude) * Math.PI / 180;
-            const dLon = (larnaca.lng - coords.longitude) * Math.PI / 180;
+            const dLat = (larnaca.lat - lat) * Math.PI / 180;
+            const dLon = (larnaca.lng - lng) * Math.PI / 180;
             const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-              Math.cos(coords.latitude * Math.PI / 180) * Math.cos(larnaca.lat * Math.PI / 180) *
+              Math.cos(lat * Math.PI / 180) * Math.cos(larnaca.lat * Math.PI / 180) *
               Math.sin(dLon/2) * Math.sin(dLon/2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
             return Math.round(R * c * 10) / 10;
@@ -1471,14 +1474,15 @@ if (result.strategicDistances) {
       </div>
       <p className="text-2xl font-bold text-pink-900">
         {(() => {
-          const coords = form.watch('gps_coordinates');
-          if (coords?.latitude && coords?.longitude) {
+          const lat = form.watch('gps_latitude');
+          const lng = form.watch('gps_longitude');
+          if (lat && lng) {
             const paphos = { lat: 34.7180, lng: 32.4857 };
             const R = 6371;
-            const dLat = (paphos.lat - coords.latitude) * Math.PI / 180;
-            const dLon = (paphos.lng - coords.longitude) * Math.PI / 180;
+            const dLat = (paphos.lat - lat) * Math.PI / 180;
+            const dLon = (paphos.lng - lng) * Math.PI / 180;
             const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-              Math.cos(coords.latitude * Math.PI / 180) * Math.cos(paphos.lat * Math.PI / 180) *
+              Math.cos(lat * Math.PI / 180) * Math.cos(paphos.lat * Math.PI / 180) *
               Math.sin(dLon/2) * Math.sin(dLon/2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
             return Math.round(R * c * 10) / 10;
@@ -1493,13 +1497,13 @@ if (result.strategicDistances) {
   </div>
 </div>
 
-{/* Commodités de proximité - VERSION OPTIMISÉE */}
+{/* Commodités de proximité - VERSION COMPATIBLE */}
 <div className="space-y-4">
   <div className="flex items-center justify-between">
     <Label className="text-base font-semibold">Commodités de proximité</Label>
     {form.watch('surrounding_amenities')?.length > 0 && (
       <span className="text-sm text-muted-foreground">
-        {form.watch('surrounding_amenities')?.filter(a => a.selected !== false)?.length || form.watch('surrounding_amenities')?.length} / {form.watch('surrounding_amenities')?.length} sélectionnées
+        {form.watch('surrounding_amenities')?.length} commodités détectées
       </span>
     )}
   </div>
@@ -1513,13 +1517,14 @@ if (result.strategicDistances) {
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {form.watch('surrounding_amenities')
-            ?.filter(a => ESSENTIAL_AMENITIES.includes(a.type))
-            ?.sort((a, b) => a.distance_km - b.distance_km)
+            ?.filter(a => ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id || ''))
+            ?.sort((a, b) => (a.distance_km || 0) - (b.distance_km || 0))
             ?.map((amenity, idx) => {
-              const option = amenityOptions.find(opt => opt.value === amenity.type);
-              if (!option) return null;
+              const amenityId = amenity.nearby_amenity_id || '';
+              const amenityOption = amenityOptions.find(opt => opt.value === amenityId);
+              if (!amenityOption) return null;
               
-              const getTimeLabel = (dist) => {
+              const getTimeLabel = (dist: number) => {
                 if (dist <= 0.5) return '⚡ 5 min à pied';
                 if (dist <= 1) return '👟 10 min à pied';
                 if (dist <= 2) return '🚶 20 min à pied';
@@ -1527,27 +1532,16 @@ if (result.strategicDistances) {
               };
               
               return (
-                <div key={`ess-${amenity.type}-${idx}`} className="bg-white rounded-lg p-3 border">
+                <div key={`ess-${amenityId}-${idx}`} className="bg-white rounded-lg p-3 border">
                   <div className="flex items-start gap-3">
-                    <input
-                      type="checkbox"
-                      checked={amenity.selected !== false}
-                      onChange={(e) => {
-                        const amenities = form.watch('surrounding_amenities') || [];
-                        form.setValue('surrounding_amenities', amenities.map(a => 
-                          a.type === amenity.type ? { ...a, selected: e.target.checked } : a
-                        ));
-                      }}
-                      className="mt-1 h-4 w-4"
-                    />
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <span className="text-blue-600">{option.icon}</span>
-                        <span className="font-medium text-sm">{option.label}</span>
+                        <span className="text-blue-600">{amenityOption.icon}</span>
+                        <span className="font-medium text-sm">{amenityOption.label}</span>
                       </div>
                       <div className="mt-1 flex items-center gap-2">
-                        <span className="text-xs font-bold">{amenity.distance_km} km</span>
-                        <span className="text-xs text-gray-600">{getTimeLabel(amenity.distance_km)}</span>
+                        <span className="text-xs font-bold">{amenity.distance_km || 0} km</span>
+                        <span className="text-xs text-gray-600">{getTimeLabel(amenity.distance_km || 0)}</span>
                       </div>
                     </div>
                   </div>
@@ -1557,41 +1551,31 @@ if (result.strategicDistances) {
         </div>
       </div>
       
-      {form.watch('surrounding_amenities')?.filter(a => !ESSENTIAL_AMENITIES.includes(a.type)).length > 0 && (
+      {form.watch('surrounding_amenities')?.filter(a => !ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id || '')).length > 0 && (
         <details className="bg-gray-50 rounded-lg border">
           <summary className="p-4 cursor-pointer font-semibold text-sm text-gray-700">
             <span className="inline-flex items-center gap-2">
               <ChevronRight className="h-4 w-4" />
-              Autres commodités ({form.watch('surrounding_amenities')?.filter(a => !ESSENTIAL_AMENITIES.includes(a.type)).length})
+              Autres commodités ({form.watch('surrounding_amenities')?.filter(a => !ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id || '')).length})
             </span>
           </summary>
           <div className="p-4 pt-0">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
               {form.watch('surrounding_amenities')
-                ?.filter(a => !ESSENTIAL_AMENITIES.includes(a.type))
-                ?.sort((a, b) => a.distance_km - b.distance_km)
+                ?.filter(a => !ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id || ''))
+                ?.sort((a, b) => (a.distance_km || 0) - (b.distance_km || 0))
                 ?.map((amenity, idx) => {
-                  const option = amenityOptions.find(opt => opt.value === amenity.type);
-                  if (!option) return null;
+                  const amenityId = amenity.nearby_amenity_id || '';
+                  const amenityOption = amenityOptions.find(opt => opt.value === amenityId);
+                  if (!amenityOption) return null;
                   
                   return (
-                    <div key={`other-${amenity.type}-${idx}`} className="bg-white rounded p-2 border">
+                    <div key={`other-${amenityId}-${idx}`} className="bg-white rounded p-2 border">
                       <div className="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          checked={amenity.selected !== false}
-                          onChange={(e) => {
-                            const amenities = form.watch('surrounding_amenities') || [];
-                            form.setValue('surrounding_amenities', amenities.map(a => 
-                              a.type === amenity.type ? { ...a, selected: e.target.checked } : a
-                            ));
-                          }}
-                          className="h-3 w-3"
-                        />
-                        <span className="text-gray-500 text-xs">{option.icon}</span>
+                        <span className="text-gray-500 text-xs">{amenityOption.icon}</span>
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-medium truncate">{option.label}</p>
-                          <p className="text-xs text-gray-500">{amenity.distance_km} km</p>
+                          <p className="text-xs font-medium truncate">{amenityOption.label}</p>
+                          <p className="text-xs text-gray-500">{amenity.distance_km || 0} km</p>
                         </div>
                       </div>
                     </div>
