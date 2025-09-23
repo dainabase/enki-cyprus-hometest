@@ -41,6 +41,7 @@ import { toast } from 'sonner';
 import { debounce } from 'lodash';
 import { generateSEOContent } from '@/services/seoGenerator';
 import { LocationMap } from './LocationMap';
+import { safeBase64Encode, generateShortHash } from '@/utils/stringHelpers';
 
 interface ProjectFormStepsProps {
   form: UseFormReturn<ProjectFormData>;
@@ -560,7 +561,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     }
 
     // AUDIT: Créer un hash unique de la requête pour détecter les doublons
-    const requestHash = btoa(address + Date.now()).substring(0, 8);
+    const requestHash = safeBase64Encode(address + Date.now()).substring(0, 8);
     console.log(`🆔 Hash de requête unique: ${requestHash}`);
 
     setIsDetecting(true);
@@ -595,7 +596,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
       
       // DÉTECTION DE FRAUDE #1: Données identiques
       const dataHash = JSON.stringify(places);
-      console.log('🔒 Hash des données:', btoa(dataHash).substring(0, 12));
+      console.log('🔒 Hash des données:', safeBase64Encode(dataHash).substring(0, 12));
       
       if ((window as any).previousDataHashes) {
         if ((window as any).previousDataHashes.includes(dataHash)) {
