@@ -449,3 +449,6 @@ export const AdminCommissions = () => {
     </div>
   );
 };
+
+// Add default export for compatibility with lazy loading
+export default AdminCommissions;
