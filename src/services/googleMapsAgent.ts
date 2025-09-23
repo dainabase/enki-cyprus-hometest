@@ -190,7 +190,6 @@ export class GoogleMapsAgent {
 
     return result;
   }
-  }
 }
 
 // Export d'une instance singleton pour faciliter l'utilisation
