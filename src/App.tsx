@@ -25,7 +25,6 @@ const ProjectDetail = lazy(() => import("./pages/ProjectDetail"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Blog = lazy(() => import("./pages/Blog"));
-const PropertyForm = lazy(() => import("./pages/admin/PropertyForm"));
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
@@ -34,20 +33,8 @@ const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const LexaiaPage = lazy(() => import("./pages/LexaiaPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
-// Lazy load admin pages for better performance
-const AdminProjects = lazy(() => import("./pages/admin/AdminProjects"));
-const AdminProjectForm = lazy(() => import("./pages/admin/AdminProjectForm"));
-const AdminAIImport = lazy(() => import("./pages/admin/AdminAIImport"));
+// Admin pages that are NOT part of the main admin dashboard routing
 const AdminAIImportUnified = lazy(() => import("./pages/admin/AdminAIImportUnified"));
-const AdminProjectDetail = lazy(() => import("./pages/admin/AdminProjectDetail"));
-const AdminBuildings = lazy(() => import("./pages/admin/AdminBuildings"));
-const AdminLeads = lazy(() => import("./pages/admin/AdminLeads"));
-const AdminPerformance = lazy(() => import("./pages/admin/AdminPerformance"));
-const AdminSegmentation = lazy(() => import("./pages/admin/AdminSegmentation"));
-const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
-
-// Test integration page (dev mode only) - simplified import
-const AdminTestIntegration = lazy(() => import("./pages/admin/AdminTestIntegration"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -96,54 +83,19 @@ const AppContent = () => {
           <FilterProvider>
             <Suspense fallback={<LoadingSpinner />}>
               <Routes>
-                {/* Admin routes - without Layout */}
-                <Route path="/admin/*" element={
-                  <PrivateRoute adminOnly>
-                    <AdminDashboard />
-                  </PrivateRoute>
-                } />
-                <Route path="/admin-property-form" element={
-                  <PrivateRoute adminOnly>
-                    <PropertyForm />
-                  </PrivateRoute>
-                } />
-                <Route path="/admin-property-form/:id" element={
-                  <PrivateRoute adminOnly>
-                    <PropertyForm />
-                  </PrivateRoute>
-                } />
-                <Route path="/admin-projects/new" element={
-                  <PrivateRoute adminOnly>
-                    <AdminProjectForm />
-                  </PrivateRoute>
-                } />
-                <Route path="/admin-projects/ai-import" element={
-                  <PrivateRoute adminOnly>
-                    <AdminAIImport />
-                  </PrivateRoute>
-                } />
+                {/* Special admin route for AI import (outside main admin dashboard) */}
                 <Route path="/admin-ai-import-unified" element={
                   <PrivateRoute adminOnly>
                     <AdminAIImportUnified />
                   </PrivateRoute>
                 } />
-                <Route path="/admin-projects/:id" element={
+                
+                {/* Main admin dashboard - handles ALL /admin/* routes internally */}
+                <Route path="/admin/*" element={
                   <PrivateRoute adminOnly>
-                    <AdminProjectDetail />
+                    <AdminDashboard />
                   </PrivateRoute>
                 } />
-                <Route path="/admin-projects/:id/edit" element={
-                  <PrivateRoute adminOnly>
-                    <AdminProjectForm />
-                  </PrivateRoute>
-                } />
-                {process.env.NODE_ENV === 'development' && (
-                  <Route path="/admin-test" element={
-                    <PrivateRoute adminOnly>
-                      <AdminTestIntegration />
-                    </PrivateRoute>
-                  } />
-                )}
                 
                 {/* Public routes - with Layout */}
                 <Route path="/*" element={
