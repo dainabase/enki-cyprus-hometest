@@ -596,8 +596,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     
     // Religion
     'church': 'church',
-    'mosque': 'mosque',
-    'synagogue': 'synagogue',
     
     // Services
     'parking': 'parking',
@@ -687,8 +685,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           'movie_theater': 'cinema',
           'park': 'park',
           'church': 'church',
-          'mosque': 'mosque',
-          'synagogue': 'synagogue',
           'parking': 'parking',
           'gas_station': 'gas_station',
           'police': 'police',
@@ -769,20 +765,47 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
   // Render the restructured location step
   const renderLocationStep = () => {
-    // Liste des commodités disponibles
+    // Liste complète des commodités disponibles
     const commoditiesList = [
+      { id: 'transport_public', label: 'Transport public' },
+      { id: 'beach', label: 'Plage' },
       { id: 'hospital', label: 'Hôpital' },
       { id: 'pharmacy', label: 'Pharmacie' },
       { id: 'school', label: 'École' },
       { id: 'university', label: 'Université' },
       { id: 'supermarket', label: 'Supermarché' },
+      { id: 'shopping_center', label: 'Centre commercial' },
       { id: 'restaurant', label: 'Restaurant' },
+      { id: 'cafe', label: 'Café' },
       { id: 'bank', label: 'Banque' },
       { id: 'atm', label: 'ATM' },
-      { id: 'bus_station', label: 'Transport public' },
-      { id: 'gym', label: 'Salle de sport' },
+      { id: 'post_office', label: 'Bureau de poste' },
       { id: 'park', label: 'Parc' },
-      { id: 'cafe', label: 'Café' }
+      { id: 'gym', label: 'Salle de sport' },
+      { id: 'spa', label: 'Spa' },
+      { id: 'cinema', label: 'Cinéma' },
+      { id: 'parking', label: 'Parking' },
+      { id: 'gas_station', label: 'Station essence' },
+      { id: 'church', label: 'Église' },
+      { id: 'airport', label: 'Aéroport' },
+      { id: 'train_station', label: 'Gare' },
+      { id: 'bus_station', label: 'Arrêt de bus' },
+      { id: 'dentist', label: 'Dentiste' },
+      { id: 'veterinary_care', label: 'Vétérinaire' },
+      { id: 'physiotherapist', label: 'Kinésithérapeute' },
+      { id: 'bakery', label: 'Boulangerie' },
+      { id: 'bar', label: 'Bar' },
+      { id: 'night_club', label: 'Discothèque' },
+      { id: 'police', label: 'Police' },
+      { id: 'fire_station', label: 'Pompiers' },
+      { id: 'city_hall', label: 'Mairie' },
+      { id: 'museum', label: 'Musée' },
+      { id: 'art_gallery', label: 'Galerie d\'art' },
+      { id: 'library', label: 'Bibliothèque' },
+      { id: 'tourist_attraction', label: 'Attraction touristique' },
+      { id: 'hotel', label: 'Hôtel' },
+      { id: 'laundry', label: 'Laverie' },
+      { id: 'hair_salon', label: 'Salon de coiffure' }
     ];
 
     const COMMODITY_ICONS: { [key: string]: string } = {
@@ -1119,7 +1142,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                   <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-3">
                     Commodités de proximité
                   </h4>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                     {commoditiesList.map(commodity => {
                       const amenity = form.watch('surrounding_amenities')?.find(
                         a => a.nearby_amenity_id === commodity.id
