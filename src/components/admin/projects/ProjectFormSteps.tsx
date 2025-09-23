@@ -40,6 +40,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 import { debounce } from 'lodash';
 import { generateSEOContent } from '@/services/seoGenerator';
+import { LocationMap } from './LocationMap';
 
 interface ProjectFormStepsProps {
   form: UseFormReturn<ProjectFormData>;
@@ -1140,24 +1141,28 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               </div>
             </div>
           </CardHeader>
-          <CardContent className="p-6 space-y-6 relative">
-            {/* Overlay de chargement */}
-            {isDetecting && (
-              <div className="absolute inset-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm z-50 flex items-center justify-center rounded-lg">
-                <div className="text-center">
-                  <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
-                  <p className="text-sm font-medium">Analyse de la zone en cours...</p>
-                  <p className="text-xs text-gray-500 mt-1">Cela peut prendre 10-15 secondes</p>
-                </div>
-              </div>
-            )}
+          <CardContent className="p-6">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+              {/* COLONNE GAUCHE : Contrôles (3/5) */}
+              <div className="lg:col-span-3 space-y-6">
+                
+                {/* Overlay de chargement */}
+                {isDetecting && (
+                  <div className="absolute inset-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm z-50 flex items-center justify-center rounded-lg">
+                    <div className="text-center">
+                      <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
+                      <p className="text-sm font-medium">Analyse de la zone en cours...</p>
+                      <p className="text-xs text-gray-500 mt-1">Cela peut prendre 10-15 secondes</p>
+                    </div>
+                  </div>
+                )}
 
-            {/* SECTION 1: Distances stratégiques */}
-            <div>
-              <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-3">
-                Distances stratégiques
-              </h4>
-              <div className="grid grid-cols-2 gap-4">
+                {/* SECTION 1: Distances stratégiques */}
+                <div>
+                  <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-3">
+                    Distances stratégiques
+                  </h4>
+                  <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="proximity_sea_km"
@@ -1255,6 +1260,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 />
               </div>
             </div>
+            </div>
 
             {/* SECTION 2: Commodités de proximité - SANS CADRE */}
             <div>
@@ -1293,10 +1299,34 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 })}
               </div>
             </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
+            
+            {/* COLONNE DROITE : Carte (2/5) */}
+            <div className="lg:col-span-2">
+              <div className="sticky top-4">
+                <h4 className="font-semibold text-sm mb-3">Visualisation sur carte</h4>
+                {form.watch('gps_latitude') && form.watch('gps_longitude') ? (
+                  <LocationMap
+                    address={form.watch('full_address') || ''}
+                    latitude={form.watch('gps_latitude')}
+                    longitude={form.watch('gps_longitude')}
+                    radius={2}
+                    commodities={[]}
+                  />
+                ) : (
+                  <div className="h-[500px] bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+                    <div className="text-center text-gray-500">
+                      <MapPin className="h-12 w-12 mx-auto mb-3 opacity-30" />
+                      <p className="text-sm">Entrez une adresse pour afficher la carte</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
   };
 
   const renderSpecificationsStep = () => {
