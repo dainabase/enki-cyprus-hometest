@@ -54,7 +54,16 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
   const [detectionRadius, setDetectionRadius] = useState(2); // Rayon par défaut 2km
   const [autoRedetect, setAutoRedetect] = useState(false);
   const [detectedCount, setDetectedCount] = useState(0);
-  const [mapCommodities, setMapCommodities] = useState<any[]>([]);
+
+  // Préparer les données pour la carte - Version simplifiée
+  const mapCommodities = form.watch('surrounding_amenities')?.slice(0, 5).map((amenity, index) => ({
+    id: amenity.nearby_amenity_id || `amenity-${index}`,
+    name: amenity.details || amenity.nearby_amenity_id || 'Commodité',
+    type: amenity.nearby_amenity_id || 'default',
+    lat: form.watch('gps_latitude') + (Math.random() - 0.5) * 0.01, // Position relative au projet
+    lng: form.watch('gps_longitude') + (Math.random() - 0.5) * 0.01,
+    distance: amenity.distance_km || 1
+  })) || [];
   
   const { data: developers } = useQuery({
     queryKey: ['developers'],
@@ -784,24 +793,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
       cafe: '☕'
     };
 
-    // Fonction pour préparer les données pour la carte
-    useEffect(() => {
-      if (form.watch('surrounding_amenities')) {
-        const commoditiesForMap = form.watch('surrounding_amenities')
-          .filter((a: any) => a.lat && a.lng) // Seulement celles avec coordonnées
-          .map((a: any) => ({
-            id: a.nearby_amenity_id,
-            name: a.details || commoditiesList.find(c => c.id === a.nearby_amenity_id)?.label || 'Commodité',
-            type: a.nearby_amenity_id,
-            lat: a.lat,
-            lng: a.lng,
-            distance: a.distance_km
-          }));
-        setMapCommodities(commoditiesForMap);
-        setDetectedCount(form.watch('surrounding_amenities').length);
-      }
-    }, [form.watch('surrounding_amenities')]);
-
     // Debounced detection pour auto-redetect
     const debouncedDetect = useMemo(
       () => debounce(() => handleDetectAll(), 1000),
@@ -1309,8 +1300,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                     address={form.watch('full_address') || ''}
                     latitude={form.watch('gps_latitude')}
                     longitude={form.watch('gps_longitude')}
-                    radius={2}
-                    commodities={[]}
+                    radius={detectionRadius}
+                    commodities={mapCommodities}
                   />
                 ) : (
                   <div className="h-[500px] bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
