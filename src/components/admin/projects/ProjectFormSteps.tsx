@@ -64,6 +64,74 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
   const [detectedCount, setDetectedCount] = useState(0);
   const [showMap, setShowMap] = useState(false);
   const [selectedAmenities, setSelectedAmenities] = useState<Set<string>>(new Set());
+
+  // COMMODITÉS ESSENTIELLES (12 critères d'achat prioritaires)
+  const ESSENTIAL_AMENITIES = [
+    'school',           // 1. École
+    'supermarket',      // 2. Supermarché  
+    'transport_public', // 3. Transport public
+    'hospital',         // 4. Hôpital
+    'pharmacy',         // 5. Pharmacie
+    'shopping_center',  // 6. Centre commercial
+    'university',       // 7. Université
+    'beach',           // 8. Plage
+    'bank',            // 9. Banque
+    'restaurant',      // 10. Restaurant
+    'gym',             // 11. Salle de sport
+    'cafe'             // 12. Café
+  ];
+
+  const amenityOptions = [
+    { value: 'transport_public', label: 'Transport public', icon: <Bus className="h-4 w-4" /> },
+    { value: 'beach', label: 'Plage', icon: <Waves className="h-4 w-4" /> },
+    { value: 'hospital', label: 'Hôpital', icon: <Building2 className="h-4 w-4" /> },
+    { value: 'pharmacy', label: 'Pharmacie', icon: <Heart className="h-4 w-4" /> },
+    { value: 'school', label: 'École', icon: <GraduationCap className="h-4 w-4" /> },
+    { value: 'university', label: 'Université', icon: <School className="h-4 w-4" /> },
+    { value: 'supermarket', label: 'Supermarché', icon: <ShoppingCart className="h-4 w-4" /> },
+    { value: 'shopping_center', label: 'Centre commercial', icon: <Store className="h-4 w-4" /> },
+    { value: 'restaurant', label: 'Restaurant', icon: <UtensilsCrossed className="h-4 w-4" /> },
+    { value: 'cafe', label: 'Café', icon: <Coffee className="h-4 w-4" /> },
+    { value: 'bank', label: 'Banque', icon: <Landmark className="h-4 w-4" /> },
+    { value: 'atm', label: 'ATM', icon: <CreditCard className="h-4 w-4" /> },
+    { value: 'post_office', label: 'Bureau de poste', icon: <Mail className="h-4 w-4" /> },
+    { value: 'park', label: 'Parc', icon: <Trees className="h-4 w-4" /> },
+    { value: 'gym', label: 'Salle de sport', icon: <Dumbbell className="h-4 w-4" /> },
+    { value: 'spa', label: 'Spa', icon: <Sparkles className="h-4 w-4" /> },
+    { value: 'cinema', label: 'Cinéma', icon: <Film className="h-4 w-4" /> },
+    { value: 'parking', label: 'Parking', icon: <ParkingCircle className="h-4 w-4" /> },
+    { value: 'gas_station', label: 'Station essence', icon: <Fuel className="h-4 w-4" /> },
+    { value: 'church', label: 'Église', icon: <Church className="h-4 w-4" /> },
+    { value: 'airport', label: 'Aéroport', icon: <Plane className="h-4 w-4" /> },
+    { value: 'train_station', label: 'Gare', icon: <Train className="h-4 w-4" /> },
+    { value: 'bus_station', label: 'Arrêt de bus', icon: <Bus className="h-4 w-4" /> },
+    { value: 'dentist', label: 'Dentiste', icon: <Heart className="h-4 w-4" /> },
+    { value: 'veterinary_care', label: 'Vétérinaire', icon: <Heart className="h-4 w-4" /> },
+    { value: 'physiotherapist', label: 'Kinésithérapeute', icon: <Heart className="h-4 w-4" /> },
+    { value: 'bakery', label: 'Boulangerie', icon: <Croissant className="h-4 w-4" /> },
+    { value: 'bar', label: 'Bar', icon: <Wine className="h-4 w-4" /> },
+    { value: 'night_club', label: 'Discothèque', icon: <Music className="h-4 w-4" /> },
+    { value: 'police', label: 'Police', icon: <Shield className="h-4 w-4" /> },
+    { value: 'fire_station', label: 'Pompiers', icon: <Flame className="h-4 w-4" /> },
+    { value: 'city_hall', label: 'Mairie', icon: <Building className="h-4 w-4" /> },
+    { value: 'museum', label: 'Musée', icon: <Building2 className="h-4 w-4" /> },
+    { value: 'art_gallery', label: 'Galerie d\'art', icon: <Palette className="h-4 w-4" /> },
+    { value: 'library', label: 'Bibliothèque', icon: <BookOpen className="h-4 w-4" /> },
+    { value: 'tourist_attraction', label: 'Attraction touristique', icon: <Camera className="h-4 w-4" /> },
+    { value: 'hotel', label: 'Hôtel', icon: <Hotel className="h-4 w-4" /> },
+    { value: 'laundry', label: 'Laverie', icon: <Shirt className="h-4 w-4" /> },
+    { value: 'hair_salon', label: 'Salon de coiffure', icon: <Scissors className="h-4 w-4" /> }
+  ];
+
+  // Préparer les données pour la carte avec coordonnées réelles
+  const mapCommodities = form.watch('surrounding_amenities')?.map((amenity: any, index: number) => ({
+    id: amenity.nearby_amenity_id || `amenity-${index}`,
+    name: amenity.details || amenity.nearby_amenity_id || 'Commodité',
+    type: amenity.nearby_amenity_id || 'default',
+    lat: amenity.lat || (form.watch('gps_latitude') + (Math.random() - 0.5) * 0.005), // Utiliser les vraies coordonnées si disponibles
+    lng: amenity.lng || (form.watch('gps_longitude') + (Math.random() - 0.5) * 0.005),
+    distance: amenity.distance_km || 1
+  })) || [];
   
   const { data: developers } = useQuery({
     queryKey: ['developers'],
@@ -331,7 +399,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         total_floors: 0,
         total_units: 0,
         units_available: 0
-        // ⚠️ PAS de construction_year ici !
+        // ⚠️ PAS de construction_year ici - CORRECTION CRITIQUE !
       };
       form.setValue('buildings', [defaultBuilding]);
     }
@@ -344,7 +412,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         total_floors: 0,
         total_units: 0,
         units_available: 0
-        // ⚠️ PAS de construction_year ici !
+        // ⚠️ PAS de construction_year ici - CORRECTION CRITIQUE !
       };
       form.setValue('buildings', [...buildingsValue, newBuilding]);
     };
@@ -426,12 +494,413 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     );
   };
 
-  // UTILISATION DU NOUVEAU COMPOSANT LocationSection
+  // Google Places Autocomplete initialization - AMÉLIORATION DE LA DÉTECTION
+  useEffect(() => {
+    if (currentStep === 'location' && window.google) {
+      const input = document.getElementById('address-autocomplete');
+      if (input) {
+        const autocomplete = new window.google.maps.places.Autocomplete(input as HTMLInputElement, {
+          types: ['address'],
+          componentRestrictions: { country: 'cy' },
+          fields: ['address_components', 'geometry', 'formatted_address']
+        });
+
+        autocomplete.addListener('place_changed', () => {
+          const place = autocomplete.getPlace();
+          if (place.geometry) {
+            const lat = place.geometry.location.lat();
+            const lng = place.geometry.location.lng();
+            const addressComponents = place.address_components;
+            
+            let city = '';
+            let postalCode = '';
+            let detectedZone = '';
+            
+            // Extraire la ville et le code postal depuis les composants d'adresse
+            addressComponents.forEach(component => {
+              // Chercher la ville
+              if (component.types.includes('locality')) {
+                city = component.long_name;
+              }
+              // Alternative pour la ville
+              if (!city && component.types.includes('administrative_area_level_1')) {
+                city = component.long_name;
+              }
+              // Code postal
+              if (component.types.includes('postal_code')) {
+                postalCode = component.long_name;
+              }
+            });
+
+            // AMÉLIORATION: Mapping complet des villes/zones vers les districts
+            const zoneMapping: { [key: string]: string } = {
+              // Limassol et ses variations
+              'Limassol': 'limassol',
+              'Lemesos': 'limassol',
+              'Λεμεσός': 'limassol',
+              'Germasogeia': 'limassol',
+              'Yermasoyia': 'limassol',
+              'Agios Tychon': 'limassol',
+              'Agios Athanasios': 'limassol',
+              'Mouttagiaka': 'limassol',
+              'Parekklisia': 'limassol',
+              'Pyrgos': 'limassol',
+              'Erimi': 'limassol',
+              
+              // Paphos et ses variations
+              'Paphos': 'paphos',
+              'Pafos': 'paphos',
+              'Πάφος': 'paphos',
+              'Kato Paphos': 'paphos',
+              'Peyia': 'paphos',
+              'Coral Bay': 'paphos',
+              'Chloraka': 'paphos',
+              'Kissonerga': 'paphos',
+              'Tala': 'paphos',
+              'Kouklia': 'paphos',
+              
+              // Larnaca et ses variations
+              'Larnaca': 'larnaca',
+              'Larnaka': 'larnaca',
+              'Λάρνακα': 'larnaca',
+              'Oroklini': 'larnaca',
+              'Pyla': 'larnaca',
+              'Livadia': 'larnaca',
+              'Dromolaxia': 'larnaca',
+              'Tersefanou': 'larnaca',
+              
+              // Nicosia et ses variations
+              'Nicosia': 'nicosia',
+              'Lefkosia': 'nicosia',
+              'Λευκωσία': 'nicosia',
+              'Strovolos': 'nicosia',
+              'Lakatamia': 'nicosia',
+              'Latsia': 'nicosia',
+              'Engomi': 'nicosia',
+              'Agios Dometios': 'nicosia',
+              'Aglantzia': 'nicosia',
+              
+              // Famagusta et ses variations
+              'Famagusta': 'famagusta',
+              'Ammochostos': 'famagusta',
+              'Αμμόχωστος': 'famagusta',
+              'Paralimni': 'famagusta',
+              'Ayia Napa': 'famagusta',
+              'Protaras': 'famagusta',
+              'Deryneia': 'famagusta',
+              'Sotira': 'famagusta',
+              
+              // Kyrenia et ses variations
+              'Kyrenia': 'kyrenia',
+              'Girne': 'kyrenia',
+              'Κερύνεια': 'kyrenia'
+            };
+
+            // Chercher la zone en vérifiant toutes les clés
+            for (const [cityName, zone] of Object.entries(zoneMapping)) {
+              if (city.toLowerCase().includes(cityName.toLowerCase()) || 
+                  place.formatted_address.toLowerCase().includes(cityName.toLowerCase())) {
+                detectedZone = zone;
+                break;
+              }
+            }
+
+            // Si pas de zone détectée, utiliser l'adresse complète
+            if (!detectedZone) {
+              const fullAddress = place.formatted_address.toLowerCase();
+              for (const [cityName, zone] of Object.entries(zoneMapping)) {
+                if (fullAddress.includes(cityName.toLowerCase())) {
+                  detectedZone = zone;
+                  break;
+                }
+              }
+            }
+
+            // Mise à jour des champs du formulaire
+            form.setValue('full_address', place.formatted_address);
+            form.setValue('city', city);
+            form.setValue('gps_latitude', lat);
+            form.setValue('gps_longitude', lng);
+            
+            // Définir la zone géographique si détectée
+            if (detectedZone) {
+              form.setValue('cyprus_zone', detectedZone);
+              console.log('✅ Zone détectée automatiquement:', detectedZone);
+              toast.success(`Zone géographique détectée : ${detectedZone}`);
+            } else {
+              console.log('⚠️ Zone non détectée pour la ville:', city);
+              toast.warning('Zone géographique non détectée, veuillez la sélectionner manuellement');
+            }
+          }
+        });
+      }
+    }
+  }, [currentStep, form]);
+
+  // Enhanced amenities detection function
+  const detectAmenities = async () => {
+    const address = form.watch('full_address');
+    if (!address) {
+      toast("Adresse requise - Veuillez d'abord entrer une adresse", {
+        description: "Erreur de validation"
+      });
+      return;
+    }
+
+    setIsDetecting(true);
+    try {
+      console.log('📡 Appel de googleMapsAgent.findNearbyPlaces...');
+      const places = await googleMapsAgent.findNearbyPlaces(address, 2);
+      console.log('📦 Résultat:', places);
+
+      if (!places || places.length === 0) {
+        toast("Aucune commodité trouvée", {
+          description: "Vérifiez l'adresse ou la configuration Google Maps API"
+        });
+        return;
+      }
+
+      // Map results to amenities
+      const detectedAmenities = places.map(place => ({
+        nearby_amenity_id: place.type,
+        distance_km: place.distance_km,
+        details: `${place.name}${place.rating ? ` (${place.rating}⭐)` : ''}`
+      }));
+
+      // Merge with existing amenities
+      const existing = form.watch('surrounding_amenities') || [];
+      const merged = [...existing];
+      
+      detectedAmenities.forEach(newItem => {
+        if (!merged.find(m => m.nearby_amenity_id === newItem.nearby_amenity_id)) {
+          merged.push(newItem);
+        }
+      });
+
+      form.setValue('surrounding_amenities', merged);
+
+      // Auto-fill strategic distances if available
+      const seaPlace = places.find(p => p.type === 'beach' || p.name.toLowerCase().includes('beach'));
+      if (seaPlace && !form.watch('proximity_sea_km')) {
+        form.setValue('proximity_sea_km', seaPlace.distance_km);
+      }
+
+      toast("✅ Détection terminée", {
+        description: `${places.length} commodités trouvées et ajoutées`,
+        duration: 5000,
+      });
+      
+    } catch (error) {
+      console.error('❌ Erreur détection:', error);
+      toast("Erreur de détection", {
+        description: error?.message || "Vérifiez la console pour plus de détails"
+      });
+    } finally {
+      setIsDetecting(false);
+    }
+  };
+
+  // Mapping complet des types Google Maps vers les types de la base de données
+  const GOOGLE_TO_DB_TYPE_MAPPING: Record<string, string> = {
+    // Transport
+    'transit_station': 'transport_public',
+    'bus_station': 'transport_public',
+    'train_station': 'transport_public',
+    'subway_station': 'transport_public',
+    'airport': 'airport',
+    
+    // Santé
+    'hospital': 'hospital',
+    'pharmacy': 'pharmacy',
+    'doctor': 'pharmacy',
+    'dentist': 'dentist',
+    'veterinary_care': 'veterinary_care',
+    'physiotherapist': 'physiotherapist',
+    
+    // Éducation
+    'school': 'school',
+    'primary_school': 'school',
+    'secondary_school': 'school',
+    'university': 'university',
+    
+    // Shopping
+    'supermarket': 'supermarket',
+    'shopping_mall': 'shopping_center',
+    'grocery_or_supermarket': 'supermarket',
+    'convenience_store': 'supermarket',
+    'bakery': 'bakery',
+    
+    // Finance
+    'bank': 'bank',
+    'atm': 'atm',
+    'post_office': 'post_office',
+    
+    // Restauration
+    'restaurant': 'restaurant',
+    'cafe': 'cafe',
+    'bar': 'bar',
+    'night_club': 'night_club',
+    
+    // Loisirs
+    'gym': 'gym',
+    'spa': 'spa',
+    'movie_theater': 'cinema',
+    'park': 'park',
+    'beach': 'beach',
+    
+    // Religion
+    'church': 'church',
+    
+    // Services
+    'parking': 'parking',
+    'gas_station': 'gas_station',
+    'police': 'police',
+    'fire_station': 'fire_station',
+    'city_hall': 'city_hall',
+    
+    // Culture
+    'museum': 'museum',
+    'art_gallery': 'art_gallery',
+    'library': 'library',
+    'tourist_attraction': 'tourist_attraction',
+    
+    // Hébergement
+    'lodging': 'hotel',
+    'hotel': 'hotel'
+  };
+
+  const handleDetectAll = async () => {
+    const address = form.watch('full_address') || '';
+    
+    if (!address) {
+      toast.error('Veuillez entrer une adresse');
+      return;
+    }
+
+    setIsDetecting(true);
+    
+    try {
+      console.log('🚀 Début de la détection automatique');
+      console.log('📍 Adresse:', address);
+      console.log('🚀 Détection avec rayon:', detectionRadius, 'km');
+      
+      const { data: result, error } = await supabase.functions.invoke('google-maps-agent', {
+        body: {
+          action: 'findNearbyPlaces',
+          params: {
+            address: address,
+            radius: detectionRadius
+          }
+        }
+      });
+
+      if (error) throw error;
+      
+      if (result && result.places) {
+        console.log(`✅ ${result.places.length} lieux trouvés par Google Maps`);
+        
+        if (result.location) {
+          form.setValue('gps_latitude', result.location.lat);
+          form.setValue('gps_longitude', result.location.lng);
+          console.log('🌍 Coordonnées GPS:', result.location);
+        }
+        
+        const commoditiesMap = new Map<string, any>();
+        
+        result.places.forEach((place: any) => {
+          const dbType = GOOGLE_TO_DB_TYPE_MAPPING[place.type];
+          
+          if (dbType) {
+            const existing = commoditiesMap.get(dbType);
+            if (!existing || place.distance_km < existing.distance) {
+              commoditiesMap.set(dbType, {
+                nearby_amenity_id: dbType,
+                distance_km: place.distance_km,
+                details: place.name,
+                lat: place.lat,
+                lng: place.lng
+              });
+            }
+          }
+        });
+        
+        const nearbyAmenities = Array.from(commoditiesMap.values());
+        
+        form.setValue('surrounding_amenities', nearbyAmenities);
+        
+        // Pré-sélectionner les commodités essentielles
+        const preSelected = new Set(
+          nearbyAmenities
+            .filter(a => ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id))
+            .map(a => a.nearby_amenity_id)
+        );
+        setSelectedAmenities(preSelected);
+
+        console.log(`📍 ${nearbyAmenities.length} types de commodités uniques détectés`);
+        console.log(`✅ ${preSelected.size} commodités pré-sélectionnées pour affichage`);
+        
+        if (result.strategicDistances) {
+          const distances = {
+            nearest_beach: result.strategicDistances.nearest_beach || 0,
+            larnaca_airport_distance: result.strategicDistances.larnaca_airport_distance || 
+                                       result.strategicDistances.airport_distance || 0,
+            paphos_airport_distance: result.strategicDistances.paphos_airport_distance || 0,
+            city_center_distance: result.strategicDistances.city_center_distance || 0,
+            highway_distance: result.strategicDistances.highway_distance || 0,
+            airport_distance: result.strategicDistances.airport_distance || 0
+          };
+          
+          if (distances.nearest_beach) form.setValue('proximity_sea_km', distances.nearest_beach);
+          if (distances.airport_distance) form.setValue('proximity_airport_km', distances.airport_distance);
+          if (distances.city_center_distance) form.setValue('proximity_city_center_km', distances.city_center_distance);
+          if (distances.highway_distance) form.setValue('proximity_highway_km', distances.highway_distance);
+          
+          console.log('📏 Distances stratégiques:');
+          console.log('- Plage:', distances.nearest_beach, 'km');
+          console.log('- Aéroport Larnaca:', distances.larnaca_airport_distance, 'km');
+          console.log('- Aéroport Paphos:', distances.paphos_airport_distance, 'km');
+          console.log('- Centre-ville:', distances.city_center_distance, 'km');
+          console.log('- Autoroute:', distances.highway_distance, 'km');
+          
+          toast.success(
+            `✅ Détection complète! ${nearbyAmenities.length} types de commodités trouvés`
+          );
+        } else {
+          console.warn('⚠️ Distances stratégiques non disponibles');
+          toast.warning('Détection partielle - Distances stratégiques non disponibles');
+        }
+        
+      } else {
+        console.error('❌ Aucun résultat de l\'API');
+        toast.error('Aucun lieu trouvé à proximité');
+      }
+      
+    } catch (error) {
+      console.error('❌ Erreur lors de la détection:', error);
+      toast.error('Erreur lors de la détection automatique');
+    } finally {
+      setIsDetecting(false);
+      console.log('🏁 Détection terminée');
+    }
+  };
+
+  // Initialiser les commodités sélectionnées (essentielles par défaut)
+  useEffect(() => {
+    const amenities = form.watch('surrounding_amenities') || [];
+    const selected = new Set(
+      amenities
+        .filter(a => ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id || ''))
+        .map(a => a.nearby_amenity_id)
+    );
+    setSelectedAmenities(selected);
+  }, [form.watch('surrounding_amenities')]);
+
+  // UTILISATION DU NOUVEAU COMPOSANT LocationSection AU LIEU DU CODE COMPLET
   const renderLocationStep = () => {
     return <LocationSection form={form} />;
   };
 
-  // UTILISATION DU NOUVEAU COMPOSANT SpecificationsSection
+  // UTILISATION DU NOUVEAU COMPOSANT SpecificationsSection AU LIEU DU CODE COMPLET
   const renderSpecificationsStep = () => {
     return <SpecificationsSection form={form} />;
   };
@@ -800,7 +1269,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     );
   };
 
-  // UTILISATION DU NOUVEAU COMPOSANT MarketingSection
+  // UTILISATION DU NOUVEAU COMPOSANT MarketingSection AU LIEU DU CODE COMPLET
   const renderMarketingStep = () => {
     return <MarketingSection form={form} />;
   };
