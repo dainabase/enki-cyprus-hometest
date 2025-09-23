@@ -475,10 +475,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
   const detectAmenities = async () => {
     const address = form.watch('full_address');
     if (!address) {
-      toast({
-        title: "Adresse requise",
-        description: "Veuillez d'abord entrer une adresse",
-        variant: "destructive"
+      toast("Adresse requise - Veuillez d'abord entrer une adresse", {
+        description: "Erreur de validation"
       });
       return;
     }
@@ -490,10 +488,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
       console.log('📦 Résultat:', places);
 
       if (!places || places.length === 0) {
-        toast({
-          title: "Aucune commodité trouvée",
-          description: "Vérifiez l'adresse ou la configuration Google Maps API",
-          variant: "destructive"
+        toast("Aucune commodité trouvée", {
+          description: "Vérifiez l'adresse ou la configuration Google Maps API"
         });
         return;
       }
@@ -523,18 +519,15 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         form.setValue('proximity_sea_km', seaPlace.distance_km);
       }
 
-      toast({
-        title: "✅ Détection terminée",
+      toast("✅ Détection terminée", {
         description: `${places.length} commodités trouvées et ajoutées`,
         duration: 5000,
       });
       
     } catch (error) {
       console.error('❌ Erreur détection:', error);
-      toast({
-        title: "Erreur de détection",
-        description: error?.message || "Vérifiez la console pour plus de détails",
-        variant: "destructive"
+      toast("Erreur de détection", {
+        description: error?.message || "Vérifiez la console pour plus de détails"
       });
     } finally {
       setIsDetecting(false);
@@ -550,10 +543,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     
     if (!address) {
       console.log('❌ AUDIT: Pas d\'adresse fournie');
-      toast({
-        title: "Adresse requise",
-        description: "Veuillez d'abord entrer une adresse complète",
-        variant: "destructive"
+      toast("Adresse requise", {
+        description: "Veuillez d'abord entrer une adresse complète"
       });
       return;
     }
@@ -649,10 +640,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
       if (!places || places.length === 0) {
         console.log('📭 Aucun résultat trouvé');
-        toast({
-          title: "Aucune commodité trouvée",
-          description: "Vérifiez l'adresse ou la configuration Google Maps API",
-          variant: "destructive"
+        toast("Aucune commodité trouvée", {
+          description: "Vérifiez l'adresse ou la configuration Google Maps API"
         });
         return;
       }
@@ -736,8 +725,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
       const amenitiesCount = detectedAmenities.length;
       const totalPlaces = places.length;
       
-      toast({
-        title: "✅ Détection terminée",
+      toast("✅ Détection terminée", {
         description: `${amenitiesCount} commodités mappées sur ${totalPlaces} lieux trouvés dans un rayon de 2km`,
         duration: 5000,
       });
@@ -753,10 +741,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
       // EXPOSER L'ERREUR RÉELLE À L'UTILISATEUR
       alert(`❌ ERREUR RÉELLE DÉTECTÉE:\n\nType: ${error?.constructor?.name}\nMessage: ${error?.message}\n\nVoir la console pour plus de détails.`);
       
-      toast({
-        title: "Erreur de détection",
-        description: `${error?.constructor?.name}: ${error?.message}`,
-        variant: "destructive"
+      toast("Erreur de détection", {
+        description: `${error?.constructor?.name}: ${error?.message}`
       });
     } finally {
       console.log('🔚 ====== AUDIT TERMINÉ ======');
@@ -1416,8 +1402,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                           const price = parseFloat(e.target.value);
                           if (price >= 300000) {
                             form.setValue('golden_visa_eligible', true);
-                            toast({
-                              title: "✨ Éligible Golden Visa",
+                            toast("✨ Éligible Golden Visa", {
                               description: "Ce projet est automatiquement éligible au Golden Visa (≥300,000€)",
                               duration: 3000,
                             });
@@ -1801,8 +1786,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                     type="button"
                     onClick={async () => {
                        // État de chargement
-                       const loadingToast = toast({
-                         title: "⚙️ Génération en cours...",
+                       const loadingToastId = toast("⚙️ Génération en cours...", {
                          description: "L'IA analyse votre projet (15-30 secondes)",
                          duration: 30000,
                        });
@@ -1812,10 +1796,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                          
                          // Validation minimale
                          if (!projectData.title || !projectData.description) {
-                           toast({
-                             title: "❌ Données manquantes",
-                             description: "Veuillez remplir le titre et la description du projet",
-                             variant: "destructive",
+                           toast("❌ Données manquantes", {
+                             description: "Veuillez remplir le titre et la description du projet"
                            });
                            return;
                          }
@@ -1866,8 +1848,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                          form.setValue('url_slug', seoSlug);
                          
                          // Afficher le résultat
-                         toast({
-                           title: "✅ Contenu SEO généré avec succès !",
+                         toast("✅ Contenu SEO généré avec succès !", {
                            description: "Vérifiez et ajustez si nécessaire les textes générés",
                            duration: 5000,
                          });
@@ -1880,14 +1861,12 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                          
                        } catch (error) {
                          console.error('Erreur génération SEO:', error);
-                         toast({
-                           title: "❌ Erreur de génération",
-                           description: "Impossible de générer le contenu SEO",
-                           variant: "destructive",
+                         toast("❌ Erreur de génération", {
+                           description: "Impossible de générer le contenu SEO"
                          });
                        } finally {
                          // Fermer le toast de chargement
-                         loadingToast.dismiss();
+                         // Note: sonner toast doesn't have dismiss method, just let it auto-dismiss
                        }
                     }}
                     className="bg-slate-900 hover:bg-slate-800 text-white"
