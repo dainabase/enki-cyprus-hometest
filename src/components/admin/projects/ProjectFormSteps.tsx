@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -34,7 +34,7 @@ import {
   School, GraduationCap, Library, Globe2, Baby, BookOpen, Bus, Car, 
   Plane, Anchor, Fuel, Mail, Trees, Flag, Dumbbell, Circle, Dice1, 
   Film, Drama, UtensilsCrossed, Coffee, Wine, Pizza, Utensils, Music, Church,
-  Navigation, Route
+  Navigation, Route, Loader2
 } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from '@/hooks/use-toast';
@@ -48,6 +48,7 @@ interface ProjectFormStepsProps {
 
 export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, currentStep, projectId }) => {
   const { t } = useTranslation();
+  const [isDetecting, setIsDetecting] = useState(false);
   
   const { data: developers } = useQuery({
     queryKey: ['developers'],
@@ -408,39 +409,183 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     );
   };
 
-  // Render the rest of the steps from the original file
+  // Google Places Autocomplete initialization
+  useEffect(() => {
+    if (currentStep === 'location' && window.google) {
+      const input = document.getElementById('address-autocomplete');
+      if (input) {
+        const autocomplete = new window.google.maps.places.Autocomplete(input as HTMLInputElement, {
+          types: ['address'],
+          componentRestrictions: { country: 'cy' }, // Cyprus only
+          fields: ['address_components', 'geometry', 'formatted_address']
+        });
+
+        autocomplete.addListener('place_changed', () => {
+          const place = autocomplete.getPlace();
+          if (place.geometry) {
+            const lat = place.geometry.location.lat();
+            const lng = place.geometry.location.lng();
+            const addressComponents = place.address_components;
+            
+            let city = '';
+            let postalCode = '';
+            addressComponents.forEach(component => {
+              if (component.types.includes('locality')) {
+                city = component.long_name;
+              }
+              if (component.types.includes('postal_code')) {
+                postalCode = component.long_name;
+              }
+            });
+
+            // Map city to geographical zone
+            const zoneMap = {
+              'Limassol': 'limassol',
+              'Paphos': 'paphos',
+              'Larnaca': 'larnaca',
+              'Nicosia': 'nicosia',
+              'Famagusta': 'famagusta',
+              'Kyrenia': 'kyrenia'
+            };
+
+            const detectedZone = Object.keys(zoneMap).find(zone => 
+              city.toLowerCase().includes(zone.toLowerCase())
+            );
+
+            // Update form fields
+            form.setValue('full_address', place.formatted_address);
+            form.setValue('city', city);
+            form.setValue('gps_latitude', lat);
+            form.setValue('gps_longitude', lng);
+            if (detectedZone) {
+              form.setValue('cyprus_zone', zoneMap[detectedZone]);
+            }
+          }
+        });
+      }
+    }
+  }, [currentStep, form]);
+
+  // Enhanced amenities detection function
+  const detectAmenities = async () => {
+    const address = form.watch('full_address');
+    if (!address) {
+      toast({
+        title: "Adresse requise",
+        description: "Veuillez d'abord entrer une adresse",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsDetecting(true);
+    try {
+      console.log('📡 Appel de googleMapsAgent.findNearbyPlaces...');
+      const places = await googleMapsAgent.findNearbyPlaces(address, 2);
+      console.log('📦 Résultat:', places);
+
+      if (!places || places.length === 0) {
+        toast({
+          title: "Aucune commodité trouvée",
+          description: "Vérifiez l'adresse ou la configuration Google Maps API",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Map results to amenities
+      const detectedAmenities = places.map(place => ({
+        nearby_amenity_id: place.type,
+        distance_km: place.distance_km,
+        details: `${place.name}${place.rating ? ` (${place.rating}⭐)` : ''}`
+      }));
+
+      // Merge with existing amenities
+      const existing = form.watch('surrounding_amenities') || [];
+      const merged = [...existing];
+      
+      detectedAmenities.forEach(newItem => {
+        if (!merged.find(m => m.nearby_amenity_id === newItem.nearby_amenity_id)) {
+          merged.push(newItem);
+        }
+      });
+
+      form.setValue('surrounding_amenities', merged);
+
+      // Auto-fill strategic distances if available
+      const seaPlace = places.find(p => p.type === 'beach' || p.name.toLowerCase().includes('beach'));
+      if (seaPlace && !form.watch('proximity_sea_km')) {
+        form.setValue('proximity_sea_km', seaPlace.distance_km);
+      }
+
+      toast({
+        title: "✅ Détection terminée",
+        description: `${places.length} commodités trouvées et ajoutées`,
+        duration: 5000,
+      });
+      
+    } catch (error) {
+      console.error('❌ Erreur détection:', error);
+      toast({
+        title: "Erreur de détection",
+        description: error?.message || "Vérifiez la console pour plus de détails",
+        variant: "destructive"
+      });
+    } finally {
+      setIsDetecting(false);
+    }
+  };
+
+  // Render the restructured location step
   const renderLocationStep = () => {
     return (
       <div className="space-y-8">
+        {/* CARTE 1: Localisation */}
         <Card className="border-2 border-slate-300 shadow-lg">
           <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
-            <CardTitle>Localisation</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <MapPin className="w-5 h-5" />
+              Localisation
+            </CardTitle>
+            <CardDescription>
+              Adresse et coordonnées du projet
+            </CardDescription>
           </CardHeader>
           <CardContent className="p-6 space-y-6">
+            {/* Adresse avec autocomplétion */}
+            <FormField
+              control={form.control}
+              name="full_address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Adresse complète *</FormLabel>
+                  <FormControl>
+                    <Input 
+                      id="address-autocomplete"
+                      placeholder="Commencez à taper une adresse à Chypre..."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    L'autocomplétion Google Places vous aidera à sélectionner l'adresse exacte
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="city"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Ville *</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Ex: Limassol" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {/* Zone géographique auto-sélectionnée */}
               <FormField
                 control={form.control}
                 name="cyprus_zone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Zone de Chypre</FormLabel>
+                    <FormLabel>Zone géographique</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Sélectionner une zone" />
+                        <SelectTrigger className="bg-gray-50">
+                          <SelectValue placeholder="Auto-détectée depuis l'adresse" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -452,26 +597,38 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                         <SelectItem value="kyrenia">Kyrenia</SelectItem>
                       </SelectContent>
                     </Select>
+                    <FormDescription>
+                      Détectée automatiquement depuis l'adresse
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="city"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Ville</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="Auto-remplie"
+                        {...field}
+                        className="bg-gray-50"
+                        readOnly
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Extraite automatiquement de l'adresse
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
 
-            <FormField
-              control={form.control}
-              name="full_address"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Adresse complète</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Adresse du projet" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
+            {/* GPS auto-calculé */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -486,8 +643,13 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                         placeholder="34.6851" 
                         {...field}
                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                        className="bg-gray-50"
+                        readOnly
                       />
                     </FormControl>
+                    <FormDescription>
+                      Calculée automatiquement depuis l'adresse
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -505,198 +667,172 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                         placeholder="33.0280" 
                         {...field}
                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                        className="bg-gray-50"
+                        readOnly
                       />
                     </FormControl>
+                    <FormDescription>
+                      Calculée automatiquement depuis l'adresse
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-
-            {/* Distances stratégiques */}
-            <div className="col-span-full">
-              <Card className="bg-blue-50 border-blue-200">
-                <CardHeader>
-                  <CardTitle className="text-blue-900 flex items-center gap-2">
-                    <Navigation className="w-5 h-5" />
-                    Distances Stratégiques
-                  </CardTitle>
-                  <CardDescription className="text-blue-700">
-                    Distances depuis le projet vers les points d'intérêt majeurs
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="proximity_sea_km"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center gap-2">
-                            <Waves className="w-4 h-4" />
-                            Distance de la mer (km)
-                          </FormLabel>
-                          <FormControl>
-                            <Input 
-                              type="number" 
-                              step="0.1" 
-                              placeholder="0.5"
-                              {...field} 
-                              onChange={e => field.onChange(parseFloat(e.target.value))}
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            Distance jusqu'à la plage la plus proche
-                          </FormDescription>
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="proximity_city_center_km"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center gap-2">
-                            <Building2 className="w-4 h-4" />
-                            Distance du centre-ville (km)
-                          </FormLabel>
-                          <FormControl>
-                            <Input 
-                              type="number" 
-                              step="0.1" 
-                              placeholder="2.0"
-                              {...field}
-                              onChange={e => field.onChange(parseFloat(e.target.value))}
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            Distance jusqu'au centre-ville principal
-                          </FormDescription>
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="proximity_airport_km"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center gap-2">
-                            <Plane className="w-4 h-4" />
-                            Distance de l'aéroport (km)
-                          </FormLabel>
-                          <FormControl>
-                            <Input 
-                              type="number" 
-                              step="0.1" 
-                              placeholder="15"
-                              {...field}
-                              onChange={e => field.onChange(parseFloat(e.target.value))}
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            Distance jusqu'à l'aéroport le plus proche
-                          </FormDescription>
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="proximity_highway_km"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center gap-2">
-                            <Route className="w-4 h-4" />
-                            Distance de l'autoroute (km)
-                          </FormLabel>
-                          <FormControl>
-                            <Input 
-                              type="number" 
-                              step="0.1" 
-                              placeholder="1.0"
-                              {...field}
-                              onChange={e => field.onChange(parseFloat(e.target.value))}
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            Distance jusqu'à l'accès autoroutier
-                          </FormDescription>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                </CardContent>
-              </Card>
-            </div>
           </CardContent>
         </Card>
 
-        <CommoditiesCheckboxes
-          value={form.watch('surrounding_amenities') || []}
-          onChange={(amenities) => form.setValue('surrounding_amenities', amenities)}
-          onDetectWithMaps={async () => {
-            console.log('🔍 Bouton Détecter via Maps cliqué');
-            const address = form.watch('full_address');
-            console.log('📍 Adresse:', address);
-            
-            if (!address) {
-              toast({
-                title: "Adresse requise",
-                description: "Veuillez entrer l'adresse du projet dans la section Localisation ci-dessus",
-                variant: "destructive"
-              });
-              return;
-            }
-            
-            const loadingToast = toast({
-              title: "🗺️ Détection en cours...",
-              description: "Recherche des commodités via Google Maps (10-30s)",
-              duration: 30000,
-            });
-            
-            try {
-              console.log('📡 Appel de googleMapsAgent.findNearbyPlaces...');
-              const places = await googleMapsAgent.findNearbyPlaces(address, 2);
-              console.log('📦 Résultat:', places);
-              
-              if (!places || places.length === 0) {
-                toast({
-                  title: "Aucune commodité trouvée",
-                  description: "Vérifiez l'adresse ou la configuration Google Maps API",
-                  variant: "destructive"
-                });
-                return;
-              }
-              
-              const commodities = places.map(place => ({
-                nearby_amenity_id: place.type,
-                distance_km: place.distance_km,
-                details: `${place.name}${place.rating ? ` (${place.rating}⭐)` : ''}`
-              }));
-              
-              form.setValue('surrounding_amenities', commodities);
-              
-              toast({
-                title: "✅ Détection terminée",
-                description: `${places.length} commodités trouvées`,
-                duration: 5000,
-              });
-              
-            } catch (error) {
-              console.error('❌ Erreur complète:', error);
-              toast({
-                title: "Erreur de détection",
-                description: error?.message || "Vérifiez la console pour plus de détails",
-                variant: "destructive"
-              });
-            } finally {
-              loadingToast.dismiss();
-            }
-          }}
-        />
+        {/* CARTE 2: Distances & Commodités */}
+        <Card className="border-2 border-slate-300 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Navigation className="w-5 h-5" />
+                  Distances & Commodités
+                </CardTitle>
+                <CardDescription>
+                  Distances stratégiques et commodités de proximité
+                </CardDescription>
+              </div>
+              <Button
+                type="button"
+                onClick={detectAmenities}
+                disabled={!form.watch('full_address') || isDetecting}
+                className="ml-auto"
+              >
+                {isDetecting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Détection en cours...
+                  </>
+                ) : (
+                  <>
+                    <MapPin className="mr-2 h-4 w-4" />
+                    Détecter automatiquement
+                  </>
+                )}
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="p-6 space-y-6">
+            {/* Distances stratégiques */}
+            <div>
+              <h4 className="font-semibold mb-3 text-slate-700">Distances stratégiques</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="proximity_sea_km"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2">
+                        <Waves className="w-4 h-4" />
+                        Distance de la mer
+                      </FormLabel>
+                      <div className="flex items-center gap-2">
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            step="0.1" 
+                            placeholder="0.5"
+                            {...field} 
+                            onChange={e => field.onChange(parseFloat(e.target.value))}
+                          />
+                        </FormControl>
+                        <span className="text-sm text-gray-500">km</span>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="proximity_city_center_km"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2">
+                        <Building2 className="w-4 h-4" />
+                        Distance du centre-ville
+                      </FormLabel>
+                      <div className="flex items-center gap-2">
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            step="0.1" 
+                            placeholder="2.0"
+                            {...field}
+                            onChange={e => field.onChange(parseFloat(e.target.value))}
+                          />
+                        </FormControl>
+                        <span className="text-sm text-gray-500">km</span>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="proximity_airport_km"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2">
+                        <Plane className="w-4 h-4" />
+                        Distance de l'aéroport
+                      </FormLabel>
+                      <div className="flex items-center gap-2">
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            step="0.1" 
+                            placeholder="15"
+                            {...field}
+                            onChange={e => field.onChange(parseFloat(e.target.value))}
+                          />
+                        </FormControl>
+                        <span className="text-sm text-gray-500">km</span>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="proximity_highway_km"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2">
+                        <Route className="w-4 h-4" />
+                        Distance de l'autoroute
+                      </FormLabel>
+                      <div className="flex items-center gap-2">
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            step="0.1" 
+                            placeholder="1.0"
+                            {...field}
+                            onChange={e => field.onChange(parseFloat(e.target.value))}
+                          />
+                        </FormControl>
+                        <span className="text-sm text-gray-500">km</span>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            {/* Commodités de proximité */}
+            <div data-commodities-section>
+              <h4 className="font-semibold mb-3 text-slate-700">Commodités de proximité</h4>
+              <CommoditiesCheckboxes
+                value={form.watch('surrounding_amenities') || []}
+                onChange={(amenities) => form.setValue('surrounding_amenities', amenities)}
+                onDetectWithMaps={detectAmenities}
+              />
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   };
