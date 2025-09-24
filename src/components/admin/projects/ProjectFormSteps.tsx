@@ -20,12 +20,6 @@ import { CommoditiesCheckboxes } from './CommoditiesCheckboxes';
 import PropertySubTypeSelector from './PropertySubTypeSelector';
 import { googleMapsAgent } from '@/services/googleMapsAgent';
 import { BuildingSection } from './BuildingSection';
-
-// IMPORT DES NOUVEAUX COMPOSANTS
-import { LocationSection } from './LocationSection';
-import { SpecificationsSection } from './SpecificationsSection';
-import { MarketingSection } from './MarketingSection';
-
 import { ProjectFormData } from '@/schemas/projectSchema';
 import { ProjectBuilding } from '@/types/building.project';
 import { useQuery } from '@tanstack/react-query';
@@ -399,7 +393,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         total_floors: 0,
         total_units: 0,
         units_available: 0
-        // ⚠️ PAS de construction_year ici - CORRECTION CRITIQUE !
       };
       form.setValue('buildings', [defaultBuilding]);
     }
@@ -412,7 +405,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         total_floors: 0,
         total_units: 0,
         units_available: 0
-        // ⚠️ PAS de construction_year ici - CORRECTION CRITIQUE !
       };
       form.setValue('buildings', [...buildingsValue, newBuilding]);
     };
@@ -895,14 +887,656 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     setSelectedAmenities(selected);
   }, [form.watch('surrounding_amenities')]);
 
-  // UTILISATION DU NOUVEAU COMPOSANT LocationSection AU LIEU DU CODE COMPLET
+  // Render the restructured location step
   const renderLocationStep = () => {
-    return <LocationSection form={form} />;
+    return (
+      <div className="space-y-8">
+        {/* CARTE 1: Localisation */}
+        <Card className="border-2 border-slate-300 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+            <CardTitle className="flex items-center gap-2">
+              <MapPin className="w-5 h-5" />
+              Localisation
+            </CardTitle>
+            <CardDescription>
+              Adresse et coordonnées du projet
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-6 space-y-6">
+            {/* Adresse avec autocomplétion */}
+            <FormField
+              control={form.control}
+              name="full_address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Adresse complète *</FormLabel>
+                  <FormControl>
+                    <Input 
+                      id="address-autocomplete"
+                      placeholder="Commencez à taper une adresse à Chypre..."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    L'autocomplétion Google Places vous aidera à sélectionner l'adresse exacte
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Zone géographique */}
+              <FormField
+                control={form.control}
+                name="cyprus_zone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Zone géographique</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="bg-gray-50">
+                          <SelectValue placeholder="Sélectionner la zone" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="limassol">Limassol</SelectItem>
+                        <SelectItem value="nicosia">Nicosie</SelectItem>
+                        <SelectItem value="paphos">Paphos</SelectItem>
+                        <SelectItem value="larnaca">Larnaca</SelectItem>
+                        <SelectItem value="famagusta">Famagouste</SelectItem>
+                        <SelectItem value="kyrenia">Kyrenia</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                      {field.value ? 'Zone détectée automatiquement' : 'Sera détectée depuis l\'adresse'}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Ville */}
+              <FormField
+                control={form.control}
+                name="city"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Ville</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="Auto-remplie depuis l'adresse"
+                        {...field}
+                        className="bg-gray-50"
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Extraite automatiquement de l'adresse
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* Coordonnées GPS */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="gps_latitude"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Latitude GPS</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        step="any"
+                        placeholder="34.6851" 
+                        {...field}
+                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                        className="bg-gray-50"
+                        readOnly
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Calculée automatiquement depuis l'adresse
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="gps_longitude"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Longitude GPS</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        step="any"
+                        placeholder="33.0280" 
+                        {...field}
+                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                        className="bg-gray-50"
+                        readOnly
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Calculée automatiquement depuis l'adresse
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* CARTE 2: Distances & Commodités - VERSION SIMPLIFIÉE SANS COULEURS */}
+        <Card className="border-2 border-slate-300 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Navigation className="w-5 h-5" />
+                  Distances & Commodités
+                </CardTitle>
+                <CardDescription>
+                  Distances stratégiques et commodités de proximité
+                </CardDescription>
+              </div>
+              <Button
+                type="button"
+                onClick={handleDetectAll}
+                disabled={!form.watch('full_address') || isDetecting}
+                variant="outline"
+                size="sm"
+              >
+                {isDetecting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Détection...
+                  </>
+                ) : (
+                  <>
+                    <MapPin className="mr-2 h-4 w-4" />
+                    Détecter
+                  </>
+                )}
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="p-6 relative">
+            {/* Overlay de chargement */}
+            {isDetecting && (
+              <div className="absolute inset-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm z-50 flex items-center justify-center rounded-lg">
+                <div className="text-center">
+                  <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
+                  <p className="text-sm font-medium">Analyse en cours...</p>
+                  <p className="text-xs text-gray-500 mt-1">10-15 secondes</p>
+                </div>
+              </div>
+            )}
+
+            {/* Sélecteur de rayon de détection - VERSION BOUTONS */}
+            <div className="space-y-2 mb-4">
+              <Label className="text-sm font-medium">Rayon de détection</Label>
+              <div className="flex gap-2">
+                {[0.5, 1, 2, 3, 5].map((radius) => (
+                  <Button
+                    key={radius}
+                    type="button"
+                    size="sm"
+                    variant={detectionRadius === radius ? "default" : "outline"}
+                    onClick={() => setDetectionRadius(radius)}
+                    className="flex-1"
+                  >
+                    {radius < 1 ? `${radius * 1000}m` : `${radius}km`}
+                  </Button>
+                ))}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Recherche dans un rayon de {detectionRadius} km autour de l'adresse
+              </p>
+            </div>
+
+            {/* GRILLE PRINCIPALE */}
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+              {/* COLONNE GAUCHE : Contrôles (3/5) */}
+              <div className="lg:col-span-3 space-y-6">
+                {/* Distances stratégiques SANS COULEURS et avec icônes Lucide */}
+                <div className="space-y-2">
+                  <Label className="text-base font-semibold">Distances stratégiques</Label>
+                  
+                  <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Waves className="h-5 w-5 text-gray-600" />
+                        <span className="text-sm font-semibold">Mer / Plage</span>
+                      </div>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {form.watch('proximity_sea_km') || '—'} km
+                      </p>
+                      {form.watch('proximity_sea_km') && form.watch('proximity_sea_km') > 1 && (
+                        <p className="text-xs text-gray-600 mt-1 flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          ~{Math.round(form.watch('proximity_sea_km') * 2)} min voiture
+                        </p>
+                      )}
+                    </div>
+                    
+                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Building2 className="h-5 w-5 text-gray-600" />
+                        <span className="text-sm font-semibold">Centre-ville</span>
+                      </div>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {form.watch('proximity_city_center_km') || '—'} km
+                      </p>
+                      {form.watch('proximity_city_center_km') > 0 && (
+                        <p className="text-xs text-gray-600 mt-1 flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          ~{Math.round(form.watch('proximity_city_center_km') * 2.5)} min voiture
+                        </p>
+                      )}
+                    </div>
+                    
+                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Car className="h-5 w-5 text-gray-600" />
+                        <span className="text-sm font-semibold">Autoroute</span>
+                      </div>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {form.watch('proximity_highway_km') || '—'} km
+                      </p>
+                      {form.watch('proximity_highway_km') > 0 && (
+                        <p className="text-xs text-gray-600 mt-1 flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          ~{Math.round(form.watch('proximity_highway_km') * 2)} min voiture
+                        </p>
+                      )}
+                    </div>
+                    
+                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Plane className="h-5 w-5 text-gray-600" />
+                        <span className="text-sm font-semibold">Aéroport Larnaca</span>
+                      </div>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {(() => {
+                          const dist = form.watch('proximity_airport_km');
+                          if (dist) return dist;
+                          const lat = form.watch('gps_latitude');
+                          const lng = form.watch('gps_longitude');
+                          if (lat && lng) {
+                            const larnaca = { lat: 34.8751, lng: 33.6248 };
+                            const R = 6371;
+                            const dLat = (larnaca.lat - lat) * Math.PI / 180;
+                            const dLon = (larnaca.lng - lng) * Math.PI / 180;
+                            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                              Math.cos(lat * Math.PI / 180) * Math.cos(larnaca.lat * Math.PI / 180) *
+                              Math.sin(dLon/2) * Math.sin(dLon/2);
+                            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                            return Math.round(R * c * 10) / 10;
+                          }
+                          return '—';
+                        })()} km
+                      </p>
+                      <p className="text-xs text-gray-600 mt-1 flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        ~{Math.round((form.watch('proximity_airport_km') || 67) * 1.2)} min voiture
+                      </p>
+                    </div>
+                    
+                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Plane className="h-5 w-5 text-gray-600" />
+                        <span className="text-sm font-semibold">Aéroport Paphos</span>
+                      </div>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {(() => {
+                          const lat = form.watch('gps_latitude');
+                          const lng = form.watch('gps_longitude');
+                          if (lat && lng) {
+                            const paphos = { lat: 34.7180, lng: 32.4857 };
+                            const R = 6371;
+                            const dLat = (paphos.lat - lat) * Math.PI / 180;
+                            const dLon = (paphos.lng - lng) * Math.PI / 180;
+                            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                              Math.cos(lat * Math.PI / 180) * Math.cos(paphos.lat * Math.PI / 180) *
+                              Math.sin(dLon/2) * Math.sin(dLon/2);
+                            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                            return Math.round(R * c * 10) / 10;
+                          }
+                          return '—';
+                        })()} km
+                      </p>
+                      <p className="text-xs text-gray-600 mt-1 flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        ~{Math.round(55 * 1.2)} min voiture
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Commodités de proximité - VERSION AVEC CHECKBOXES FONCTIONNELS */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-base font-semibold">Commodités de proximité</Label>
+                  </div>
+                  
+                  {form.watch('surrounding_amenities')?.length > 0 && (
+                    <div className="flex items-center gap-4">
+                      <span className="text-sm text-muted-foreground">
+                        {selectedAmenities.size} / {form.watch('surrounding_amenities')?.length} sélectionnées pour affichage
+                      </span>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          const amenities = form.watch('surrounding_amenities') || [];
+                          if (selectedAmenities.size === amenities.length) {
+                            // Tout désélectionner
+                            setSelectedAmenities(new Set());
+                            form.setValue('surrounding_amenities', amenities.map(a => ({
+                              ...a,
+                              selected: false
+                            })));
+                          } else {
+                            // Tout sélectionner
+                            const allTypes = new Set(amenities.map(a => a.nearby_amenity_id));
+                            setSelectedAmenities(allTypes);
+                            form.setValue('surrounding_amenities', amenities.map(a => ({
+                              ...a,
+                              selected: true
+                            })));
+                          }
+                        }}
+                      >
+                        {selectedAmenities.size === form.watch('surrounding_amenities')?.length 
+                          ? 'Tout désélectionner' 
+                          : 'Tout sélectionner'}
+                      </Button>
+                    </div>
+                  )}
+                  
+                  {form.watch('surrounding_amenities')?.length > 0 ? (
+                    <div className="space-y-4">
+                      {/* Section 1 : Commodités ESSENTIELLES */}
+                      <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                        <h4 className="text-sm font-semibold text-blue-900 mb-3 flex items-center gap-2">
+                          <Star className="h-4 w-4" />
+                          Commodités essentielles (critères d'achat principaux)
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                          {form.watch('surrounding_amenities')
+                            ?.filter(a => ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id))
+                            ?.sort((a, b) => a.distance_km - b.distance_km)
+                            ?.map((amenity, idx) => {
+                              const option = amenityOptions.find(opt => opt.value === amenity.nearby_amenity_id);
+                              if (!option) return null;
+                              
+                              const isSelected = selectedAmenities.has(amenity.nearby_amenity_id || '');
+                              const getTimeLabel = (dist) => {
+                                if (dist <= 0.5) return '⚡ 5 min à pied';
+                                if (dist <= 1) return '👟 10 min à pied';
+                                if (dist <= 2) return '🚶 20 min à pied';
+                                return `${Math.round(dist * 2.5)} min voiture`;
+                              };
+                              
+                              return (
+                                <div 
+                                  key={`ess-${amenity.nearby_amenity_id}-${idx}`} 
+                                  className={`bg-white rounded-lg p-3 border transition-all ${
+                                    isSelected ? 'ring-2 ring-blue-500' : ''
+                                  }`}
+                                >
+                                  <div className="flex items-start gap-3">
+                                    <input
+                                      type="checkbox"
+                                      checked={isSelected}
+                                      onChange={(e) => {
+                                        const currentSelected = selectedAmenities;
+                                        const newSelected = new Set(currentSelected);
+                                        
+                                        if (e.target.checked) {
+                                          newSelected.add(amenity.nearby_amenity_id || '');
+                                        } else {
+                                          newSelected.delete(amenity.nearby_amenity_id || '');
+                                        }
+                                        
+                                        setSelectedAmenities(newSelected);
+                                      }}
+                                      className="mt-1 h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                                    />
+                                    <div className="flex-1">
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-blue-600">{option.icon}</span>
+                                        <span className="font-medium text-sm">{option.label}</span>
+                                      </div>
+                                      <div className="mt-1 flex items-center gap-2">
+                                        <span className="text-xs font-bold">{amenity.distance_km} km</span>
+                                        <span className="text-xs text-gray-600 flex items-center gap-1">
+                                          <Clock className="h-3 w-3" />
+                                          {getTimeLabel(amenity.distance_km)}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                        </div>
+                      </div>
+                      
+                      {/* Section 2 : Autres commodités */}
+                      {form.watch('surrounding_amenities')?.filter(a => !ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id)).length > 0 && (
+                        <div className="bg-gray-50 rounded-lg border">
+                          <details open>
+                            <summary className="p-4 cursor-pointer font-semibold text-sm text-gray-700 hover:bg-gray-100">
+                              <span className="inline-flex items-center gap-2">
+                                <ChevronDown className="h-4 w-4" />
+                                Autres commodités ({form.watch('surrounding_amenities')?.filter(a => !ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id)).length})
+                                <span className="text-xs font-normal text-gray-500 ml-2">
+                                  Cliquez les cases pour sélectionner celles à afficher
+                                </span>
+                              </span>
+                            </summary>
+                            <div className="p-4 pt-0">
+                              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                                {form.watch('surrounding_amenities')
+                                  ?.filter(a => !ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id))
+                                  ?.sort((a, b) => a.distance_km - b.distance_km)
+                                  ?.map((amenity, idx) => {
+                                    const option = amenityOptions.find(opt => opt.value === amenity.nearby_amenity_id);
+                                    if (!option) return null;
+                                    
+                                    const isSelected = selectedAmenities.has(amenity.nearby_amenity_id || '');
+                                    
+                                    return (
+                                      <div 
+                                        key={`other-${amenity.nearby_amenity_id}-${idx}`} 
+                                        className={`bg-white rounded-lg p-3 border transition-all cursor-pointer hover:shadow-md ${
+                                          isSelected ? 'ring-2 ring-gray-500 bg-gray-50' : ''
+                                        }`}
+                                        onClick={() => {
+                                          const newSelected = new Set(selectedAmenities);
+                                          if (isSelected) {
+                                            newSelected.delete(amenity.nearby_amenity_id || '');
+                                          } else {
+                                            newSelected.add(amenity.nearby_amenity_id || '');
+                                          }
+                                          setSelectedAmenities(newSelected);
+                                        }}
+                                      >
+                                        <div className="flex items-center gap-2">
+                                          <input
+                                            type="checkbox"
+                                            checked={isSelected}
+                                            onChange={(e) => {
+                                              e.stopPropagation();
+                                              const newSelected = new Set(selectedAmenities);
+                                              if (e.target.checked) {
+                                                newSelected.add(amenity.nearby_amenity_id || '');
+                                              } else {
+                                                newSelected.delete(amenity.nearby_amenity_id || '');
+                                              }
+                                              setSelectedAmenities(newSelected);
+                                            }}
+                                            className="h-4 w-4 text-gray-600 rounded border-gray-300"
+                                            onClick={(e) => e.stopPropagation()}
+                                          />
+                                          <span className="text-gray-600">{option.icon}</span>
+                                          <div className="flex-1 min-w-0">
+                                            <p className="text-sm font-medium">{option.label}</p>
+                                            <p className="text-xs text-gray-500">{amenity.distance_km} km</p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                              </div>
+                            </div>
+                          </details>
+                        </div>
+                      )}
+                      
+                      {/* Note d'information */}
+                      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                        <p className="text-xs text-amber-800">
+                          <strong>💡 Info :</strong> Cliquez sur les cases ou les cartes pour sélectionner les commodités qui apparaîtront sur le site public. 
+                          Les commodités essentielles sont pré-sélectionnées par défaut.
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                      <MapPin className="mx-auto h-12 w-12 text-gray-400" />
+                      <p className="mt-2 text-sm text-gray-600">Aucune commodité détectée</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* COLONNE DROITE : Carte (2/5) */}
+              <div className="lg:col-span-2">
+                <div className="sticky top-4">
+                  <h4 className="font-medium text-sm mb-3">Visualisation sur carte</h4>
+                  {(() => {
+                    const lat = form.watch('gps_latitude');
+                    const lng = form.watch('gps_longitude');
+                    
+                    const latNum = typeof lat === 'number' ? lat : parseFloat(lat as string);
+                    const lngNum = typeof lng === 'number' ? lng : parseFloat(lng as string);
+                    const hasValidCoords = !isNaN(latNum) && !isNaN(lngNum) && latNum !== 0 && lngNum !== 0;
+                    
+                    if (hasValidCoords) {
+                      return (
+                        <LocationMap
+                          center={{ lat: latNum, lng: lngNum }}
+                          markers={mapCommodities.map(c => ({
+                            position: { lat: c.lat, lng: c.lng },
+                            title: c.name
+                          }))}
+                          radius={detectionRadius}
+                        />
+                      );
+                    } else {
+                      return (
+                        <div className="h-[500px] bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+                          <div className="text-center text-gray-500">
+                            <MapPin className="h-12 w-12 mx-auto mb-3 opacity-30" />
+                            <p className="text-sm">Entrez une adresse pour afficher la carte</p>
+                          </div>
+                        </div>
+                      );
+                    }
+                  })()}
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
   };
 
-  // UTILISATION DU NOUVEAU COMPOSANT SpecificationsSection AU LIEU DU CODE COMPLET
   const renderSpecificationsStep = () => {
-    return <SpecificationsSection form={form} />;
+    return (
+      <div className="space-y-8">
+        <Card className="border-2 border-slate-300 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+            <CardTitle>Spécifications générales</CardTitle>
+          </CardHeader>
+          <CardContent className="p-6 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <FormField
+                control={form.control}
+                name="land_area_m2"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Surface terrain (m²)</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        placeholder="2500"
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="built_area_m2"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Surface construite (m²)</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        placeholder="1800"
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="parking_spaces"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Places de parking</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        placeholder="50"
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
   };
 
   const renderPricingStep = () => {
@@ -1232,6 +1866,28 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
             <FormField
               control={form.control}
+              name="model_3d_urls"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    <MapIcon className="w-4 h-4" />
+                    Modèles 3D
+                  </FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Séparez par des virgules: https://..."
+                      {...field}
+                      value={Array.isArray(field.value) ? field.value.join(', ') : field.value || ''}
+                      onChange={(e) => field.onChange(e.target.value.split(',').map(k => k.trim()).filter(k => k))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="ar_experience_url"
               render={({ field }) => (
                 <FormItem>
@@ -1269,9 +1925,243 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     );
   };
 
-  // UTILISATION DU NOUVEAU COMPOSANT MarketingSection AU LIEU DU CODE COMPLET
   const renderMarketingStep = () => {
-    return <MarketingSection form={form} />;
+    return (
+      <div className="space-y-8">
+        <Card className="border-2 border-slate-300 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+            <CardTitle>Marketing & SEO</CardTitle>
+          </CardHeader>
+          <CardContent className="p-6 space-y-6">
+            {/* Bouton générateur SEO */}
+            <Card className="bg-slate-50 border-slate-200">
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-semibold text-slate-900 flex items-center gap-2">
+                      <Brain className="w-5 h-5 text-slate-700" />
+                      Générateur de contenu SEO
+                    </h3>
+                    <p className="text-sm text-slate-600 mt-1">
+                      Générez automatiquement les métadonnées optimisées par l'IA
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    onClick={async () => {
+                       // État de chargement
+                       const loadingToastId = toast("⚙️ Génération en cours...", {
+                         description: "L'IA analyse votre projet (15-30 secondes)",
+                         duration: 30000,
+                       });
+                       
+                       try {
+                         const projectData = form.getValues();
+                         
+                         // Validation minimale
+                         if (!projectData.title || !projectData.description) {
+                           toast("❌ Données manquantes", {
+                             description: "Veuillez remplir le titre et la description du projet"
+                           });
+                           return;
+                         }
+                         
+                         // Appel API simulé (remplacer par votre Edge Function)
+                         await new Promise(resolve => setTimeout(resolve, 3000));
+                         
+                         // Génération du contenu SEO avancé
+                         const seoTitle = `${projectData.title} | Immobilier ${projectData.city || 'Chypre'} - Investissement Golden Visa Cyprus ${new Date().getFullYear()}`;
+                         
+                         const seoDescription = `🏆 ${projectData.title} : Projet immobilier premium à ${projectData.city || 'Chypre'}, ${projectData.cyprus_zone || 'zone prime'}. ✅ ${projectData.total_units || 'Plusieurs'} unités disponibles à partir de ${projectData.price_from ? new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(projectData.price_from) : 'prix attractif'}. ${projectData.golden_visa_eligible ? '🌟 Éligible Golden Visa (Résidence permanente UE).' : ''} ROI estimé ${projectData.roi_estimate_percent || 8}%/an. Livraison ${projectData.completion_month || '2026'}. ${projectData.proximity_sea_km ? `🏖️ À seulement ${projectData.proximity_sea_km}km de la mer.` : ''} Contactez-nous pour une visite privée.`;
+                         
+                         const seoKeywords = [
+                           // Mots-clés principaux
+                           'immobilier chypre',
+                           'investissement chypre',
+                           'golden visa cyprus',
+                           'residence permit cyprus',
+                           'propriété chypre',
+                           // Mots-clés locaux
+                           projectData.city?.toLowerCase(),
+                           projectData.cyprus_zone,
+                           projectData.neighborhood?.toLowerCase(),
+                           // Mots-clés spécifiques
+                           `appartement ${projectData.city?.toLowerCase() || 'chypre'}`,
+                           'achat immobilier chypre',
+                           'programme neuf chypre',
+                           // Mots-clés développeur
+                           projectData.developer_id,
+                           // Année
+                           `immobilier chypre ${new Date().getFullYear()}`,
+                           // Type de propriété
+                           ...(projectData.property_sub_type || [])
+                         ].filter(Boolean);
+                         
+                         const seoSlug = projectData.title
+                           ?.toLowerCase()
+                           .replace(/[^a-z0-9]+/g, '-')
+                           .replace(/^-+|-+$/g, '');
+                         
+                         // Mise à jour des champs
+                         form.setValue('seo_title', seoTitle);
+                         form.setValue('seo_description', seoDescription);
+                         form.setValue('seo_keywords', seoKeywords);
+                         form.setValue('project_slug', seoSlug);
+                         
+                         // Génération des OG tags
+                         form.setValue('og_title', seoTitle);
+                         form.setValue('og_description', seoDescription.substring(0, 160));
+                         
+                         toast.dismiss(loadingToastId);
+                         toast("✅ Contenu SEO généré avec succès", {
+                           description: "Métadonnées optimisées pour les moteurs de recherche",
+                           duration: 5000,
+                         });
+                         
+                       } catch (error) {
+                         toast.dismiss(loadingToastId);
+                         toast("❌ Erreur lors de la génération", {
+                           description: error?.message || "Une erreur est survenue"
+                         });
+                       }
+                     }}
+                    variant="outline"
+                    size="sm"
+                  >
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Générer avec l'IA
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <FormField
+              control={form.control}
+              name="project_slug"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    <Link className="w-4 h-4" />
+                    URL du projet (slug)
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="marina-towers-limassol" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    URL: /projets/{field.value || 'votre-slug'}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="seo_title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Titre SEO (60 caractères max)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Marina Towers - Appartements luxe Limassol..." {...field} />
+                  </FormControl>
+                  <FormDescription className="flex justify-between">
+                    <span>Titre optimisé pour les moteurs de recherche</span>
+                    <span className={field.value?.length > 60 ? 'text-red-500' : ''}>
+                      {field.value?.length || 0}/60
+                    </span>
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="seo_description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description SEO (160 caractères)</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      placeholder="Découvrez Marina Towers à Limassol, un projet exclusif..."
+                      rows={3}
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormDescription className="flex justify-between">
+                    <span>Description pour les résultats de recherche</span>
+                    <span className={field.value?.length > 160 ? 'text-red-500' : ''}>
+                      {field.value?.length || 0}/160
+                    </span>
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="seo_keywords"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Mots-clés SEO</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Séparez par virgules: appartement limassol, golden visa, investissement..."
+                      {...field}
+                      value={Array.isArray(field.value) ? field.value.join(', ') : field.value || ''}
+                      onChange={(e) => field.onChange(e.target.value.split(',').map(k => k.trim()).filter(k => k))}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    {Array.isArray(field.value) && field.value.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {field.value.map((keyword, index) => (
+                          <Badge key={index} variant="secondary">
+                            {keyword}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="og_title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Open Graph Title</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Titre pour les réseaux sociaux" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="og_description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Open Graph Description</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Description pour les réseaux sociaux" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
   };
 
   const renderSummaryStep = () => {
