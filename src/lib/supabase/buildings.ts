@@ -24,12 +24,16 @@ export interface BuildingFormData {
 
 // Fetch buildings with optional filters
 export const fetchBuildings = async (filters: BuildingFilters = {}) => {
+  // Utilisation de la vue buildings_with_project_info pour avoir accès à construction_year
   let query = supabase
-    .from('buildings')
+    .from('buildings_with_project_info')
     .select(`
       *,
-      project:projects(id, title, cyprus_zone),
-      properties:projects(properties(id, status))
+      project_title,
+      project_construction_year,
+      project_zone,
+      project_city,
+      project_energy_rating
     `)
     .order('project_id', { ascending: true })
     .order('building_name', { ascending: true });
@@ -49,27 +53,78 @@ export const fetchBuildings = async (filters: BuildingFilters = {}) => {
   }
 
   const { data, error } = await query;
-  if (error) throw error;
+  
+  // Si erreur avec la vue, fallback sur la table buildings
+  if (error) {
+    console.warn('Erreur avec la vue, utilisation de la table buildings:', error);
+    let fallbackQuery = supabase
+      .from('buildings')
+      .select(`
+        *,
+        project:projects(id, title, cyprus_zone, construction_year)
+      `)
+      .order('project_id', { ascending: true })
+      .order('building_name', { ascending: true });
+
+    if (filters.projectId) {
+      fallbackQuery = fallbackQuery.eq('project_id', filters.projectId);
+    }
+    if (filters.constructionStatus) {
+      fallbackQuery = fallbackQuery.eq('construction_status', filters.constructionStatus);
+    }
+    if (filters.minFloors) {
+      fallbackQuery = fallbackQuery.gte('total_floors', parseInt(filters.minFloors));
+    }
+    if (filters.maxFloors) {
+      fallbackQuery = fallbackQuery.lte('total_floors', parseInt(filters.maxFloors));
+    }
+
+    const fallbackResult = await fallbackQuery;
+    if (fallbackResult.error) throw fallbackResult.error;
+    return fallbackResult.data;
+  }
+  
   return data;
 };
 
 // Fetch single building with full details
 export const fetchBuilding = async (id: string) => {
+  // Utilisation de la fonction optimisée créée dans la migration
+  const { data: functionData, error: functionError } = await supabase
+    .rpc('get_buildings_with_project_data', { p_project_id: id });
+  
+  if (!functionError && functionData && functionData.length > 0) {
+    return functionData[0];
+  }
+
+  // Fallback sur la vue
   const { data, error } = await supabase
-    .from('buildings')
-    .select(`
-      *,
-      project:projects(
-        id,
-        title,
-        cyprus_zone,
-        developer:developers(name)
-      )
-    `)
+    .from('buildings_with_project_info')
+    .select('*')
     .eq('id', id)
     .single();
   
-  if (error) throw error;
+  if (error) {
+    // Dernier fallback sur la table buildings avec join
+    const fallbackResult = await supabase
+      .from('buildings')
+      .select(`
+        *,
+        project:projects(
+          id,
+          title,
+          cyprus_zone,
+          construction_year,
+          developer:developers(name)
+        )
+      `)
+      .eq('id', id)
+      .single();
+    
+    if (fallbackResult.error) throw fallbackResult.error;
+    return fallbackResult.data;
+  }
+  
   return data;
 };
 
@@ -119,12 +174,14 @@ export const updateBuilding = async (id: string, buildingData: Partial<BuildingF
 // Delete building with cascade validation
 export const deleteBuilding = async (id: string) => {
   // Check for dependent properties/units first
-  // For now, simulate the check since properties table isn't fully implemented
-  const hasUnits = Math.random() > 0.7; // 30% chance of having units
+  const { data: properties, error: propError } = await supabase
+    .from('properties')
+    .select('id')
+    .eq('building_id', id)
+    .limit(1);
   
-  if (hasUnits) {
-    const unitCount = Math.floor(Math.random() * 5) + 1; // 1-5 units
-    throw new Error(`Impossible de supprimer : ${unitCount} unité(s) associée(s) à ce bâtiment`);
+  if (!propError && properties && properties.length > 0) {
+    throw new Error(`Impossible de supprimer : des propriétés sont associées à ce bâtiment`);
   }
 
   // Proceed with deletion if no dependencies
@@ -140,7 +197,7 @@ export const deleteBuilding = async (id: string) => {
 export const fetchProjectsForBuildings = async () => {
   const { data, error } = await supabase
     .from('projects')
-    .select('id, title, cyprus_zone')
+    .select('id, title, cyprus_zone, construction_year')
     .order('title');
   
   if (error) throw error;
@@ -162,19 +219,30 @@ export const calculateBuildingStats = (buildings: any[]) => {
   };
 };
 
-// Calculate available units for a building (simulated for now)
-export const calculateAvailableUnits = (building: any) => {
-  // In a real scenario, this would query the properties table
-  // For now, simulate 30% availability and add validation
-  const total = building.total_units || 0;
-  const available = Math.floor(total * 0.3);
-  const sold = total - available;
-  const occupancyRate = total > 0 ? Math.round((sold / total) * 100) : 0;
+// Calculate available units for a building
+export const calculateAvailableUnits = async (buildingId: string) => {
+  // Requête réelle sur la table properties
+  const { data: properties, error } = await supabase
+    .from('properties')
+    .select('id, status')
+    .eq('building_id', buildingId);
+  
+  if (error) {
+    console.error('Erreur lors du calcul des unités disponibles:', error);
+    return { available: 0, total: 0, sold: 0, occupancyRate: 0, isSoldOut: false };
+  }
+  
+  const total = properties?.length || 0;
+  const available = properties?.filter(p => p.status === 'available').length || 0;
+  const sold = properties?.filter(p => p.status === 'sold').length || 0;
+  const reserved = properties?.filter(p => p.status === 'reserved').length || 0;
+  const occupancyRate = total > 0 ? Math.round(((sold + reserved) / total) * 100) : 0;
   
   return { 
     available, 
     total, 
     sold,
+    reserved,
     occupancyRate,
     isSoldOut: available === 0 && total > 0
   };
@@ -184,15 +252,17 @@ export const calculateAvailableUnits = (building: any) => {
 export const groupBuildingsByProject = (buildings: any[]) => {
   return buildings.reduce((acc, building) => {
     const projectId = building.project_id || 'no-project';
-    const projectTitle = building.project?.title || 'Sans projet';
+    const projectTitle = building.project_title || building.project?.title || 'Sans projet';
+    const projectConstructionYear = building.project_construction_year || building.project?.construction_year || null;
     
     if (!acc[projectId]) {
       acc[projectId] = {
         projectTitle,
+        projectConstructionYear,
         buildings: []
       };
     }
     acc[projectId].buildings.push(building);
     return acc;
-  }, {} as Record<string, { projectTitle: string; buildings: any[] }>);
+  }, {} as Record<string, { projectTitle: string; projectConstructionYear: number | null; buildings: any[] }>);
 };
