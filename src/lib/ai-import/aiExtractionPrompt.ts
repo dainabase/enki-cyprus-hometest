@@ -103,12 +103,10 @@ Extrait et mappe vers ces champs EXACTS :
   "bedrooms_range": "string - Ex: 1-3",
   "bathrooms_range": "string - Ex: 1-2",
   
-  // SURFACES
+  // SURFACES - FIXED: Removed floors_total and storage_spaces as they don't exist in DB
   "built_area_m2": "number - Surface construite totale",
   "land_area_m2": "number - Surface terrain",
-  "floors_total": "number - Nombre d'étages",
   "parking_spaces": "number - Places de parking",
-  "storage_spaces": "number - Espaces stockage",
   
   // UNITÉS
   "total_units": "number - Total unités",
