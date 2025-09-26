@@ -58,14 +58,12 @@ const AdminProjectForm: React.FC = () => {
       proximity_city_center_km: null,
       proximity_highway_km: null,
       
-      // Specifications
+      // Specifications - FIXED: Removed floors_total and storage_spaces
       land_area_m2: null,
       built_area_m2: null,
       total_units: null,
       units_available: null,
-      floors_total: null,
       parking_spaces: null,
-      storage_spaces: null,
       energy_rating: '',
       construction_year: null,
       building_certification: '',
@@ -203,14 +201,12 @@ const AdminProjectForm: React.FC = () => {
           proximity_city_center_km: projectData.proximity_city_center_km || null,
           proximity_highway_km: projectData.proximity_highway_km || null,
           
-          // SPECIFICATIONS
+          // SPECIFICATIONS - FIXED: Removed floors_total and storage_spaces
           land_area_m2: projectData.land_area_m2 ? Number(projectData.land_area_m2) : null,
           built_area_m2: projectData.built_area_m2 ? Number(projectData.built_area_m2) : null,
           total_units: projectData.total_units ? Number(projectData.total_units) : null,
           units_available: projectData.units_available ? Number(projectData.units_available) : null,
-          floors_total: projectData.floors_total ? Number(projectData.floors_total) : null,
           parking_spaces: projectData.parking_spaces ? Number(projectData.parking_spaces) : null,
-          storage_spaces: projectData.storage_spaces ? Number(projectData.storage_spaces) : null,
           energy_rating: projectData.energy_rating || '',
           construction_year: projectData.construction_year ? Number(projectData.construction_year) : null,
           building_certification: projectData.building_certification || '',
@@ -234,13 +230,13 @@ const AdminProjectForm: React.FC = () => {
           // BUILDINGS
           buildings: buildingsData || [],
           
-          // MEDIA - Using the converted photos
+          // MEDIA - Using the converted photos - FIXED: Removed references to non-existent fields
           photos: convertedPhotos,
           photo_gallery_urls: projectData.photo_gallery_urls || [],
           video_tour_urls: projectData.video_tour_urls || [],
           virtual_tour_url: projectData.virtual_tour_url || '',
-          master_plan_pdf: projectData.master_plan_url || '',
-          brochure_pdf: projectData.brochure_url || '',
+          master_plan_url: projectData.master_plan_url || '',
+          brochure_url: projectData.brochure_url || '',
           project_presentation_url: projectData.project_presentation_url || '',
           youtube_tour_url: projectData.youtube_tour_url || '',
           vimeo_tour_url: projectData.vimeo_tour_url || '',
@@ -249,27 +245,20 @@ const AdminProjectForm: React.FC = () => {
           metaverse_preview_url: projectData.metaverse_preview_url || '',
           drone_footage_urls: projectData.drone_footage_urls || [],
           model_3d_urls: projectData.model_3d_urls || [],
-          price_list_pdf: projectData.price_list_pdf || '',
-          technical_specs_pdf: projectData.technical_specs_pdf || '',
           
           // AMENITIES (convertis)
           amenities: convertedAmenities,
           surrounding_amenities: projectData.surrounding_amenities || [],
           
-          // MARKETING & SEO
+          // MARKETING & SEO - FIXED: Removed non-existent fields
           project_narrative: projectData.project_narrative || '',
-          meta_title: projectData.meta_title || projectData.seo_title || '',
-          meta_description: projectData.meta_description || projectData.seo_description || '',
-          meta_keywords: projectData.meta_keywords || projectData.seo_keywords || [],
-          project_slug: projectData.project_slug || '',
-          seo_title: projectData.seo_title || '',
-          seo_description: projectData.seo_description || '',
-          seo_keywords: projectData.seo_keywords || [],
+          meta_title: projectData.meta_title || '',
+          meta_description: projectData.meta_description || '',
+          meta_keywords: projectData.meta_keywords || [],
           marketing_highlights: projectData.marketing_highlights || [],
           target_audience: projectData.target_audience || [],
-          url_slug: projectData.url_slug || projectData.project_slug || '',
-          og_title: projectData.og_title || '',
-          og_description: projectData.og_description || '',
+          url_slug: projectData.url_slug || '',
+          og_image_url: projectData.og_image_url || '',
           featured_project: projectData.featured_project || false,
           construction_phase: projectData.construction_phase || 'planned',
           
@@ -329,11 +318,31 @@ const AdminProjectForm: React.FC = () => {
         dbData.photos = [];
       }
       
-      // Ajouter les champs SEO s'ils existent
-      if (dbData.meta_title) dbData.seo_title = dbData.meta_title;
-      if (dbData.meta_description) dbData.seo_description = dbData.meta_description;
-      if (dbData.meta_keywords) dbData.seo_keywords = dbData.meta_keywords;
-      if (dbData.url_slug) dbData.project_slug = dbData.url_slug;
+      // Convertir correctement les champs JSONB qui étaient des arrays
+      if (dbData.meta_keywords && Array.isArray(dbData.meta_keywords)) {
+        dbData.meta_keywords = dbData.meta_keywords.join(',');
+      }
+      
+      if (dbData.target_audience && Array.isArray(dbData.target_audience)) {
+        dbData.target_audience = dbData.target_audience.join(',');
+      }
+      
+      // Supprimer les anciens champs SEO s'ils existent
+      delete dbData.seo_title;
+      delete dbData.seo_description;
+      delete dbData.seo_keywords;
+      delete dbData.project_slug;
+      
+      // Renommer les champs media si nécessaire
+      if (dbData.master_plan_pdf) {
+        dbData.master_plan_url = dbData.master_plan_pdf;
+        delete dbData.master_plan_pdf;
+      }
+      
+      if (dbData.brochure_pdf) {
+        dbData.brochure_url = dbData.brochure_pdf;
+        delete dbData.brochure_pdf;
+      }
       
       console.log('💾 Data prepared for DB:', dbData);
       
@@ -596,4 +605,3 @@ const AdminProjectForm: React.FC = () => {
 };
 
 export default AdminProjectForm;
-
