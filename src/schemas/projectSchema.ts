@@ -43,23 +43,23 @@ export const projectSchema = z.object({
   proximity_highway_km: z.number().min(0).optional(),
   cyprus_zone: z.string().default('limassol'),
 
-  // SPECIFICATIONS - CORRECTED: Using real DB field names without _new
+  // SPECIFICATIONS - CORRECTED: Removed non-existent fields
   land_area_m2: z.number().min(0).optional(),
   built_area_m2: z.number().min(0).optional(),
-  total_units: z.number().min(0).optional(), // CORRECTED: was total_units_new
-  units_available: z.number().min(0).optional(), // CORRECTED: was units_available_new
-  floors_total: z.number().min(0).optional(),
+  total_units: z.number().min(0).optional(),
+  units_available: z.number().min(0).optional(),
+  // REMOVED: floors_total - this belongs to buildings, not projects
+  // REMOVED: storage_spaces - doesn't exist in projects table
   parking_spaces: z.number().min(0).optional(),
-  storage_spaces: z.number().min(0).optional(),
-  smart_home_features: z.record(z.string(), z.boolean()).optional(),
+  smart_home_features: z.record(z.string(), z.any()).optional(), // Changed from boolean to any for JSONB compatibility
 
-  // PRICING - CORRECTED: Using real DB field names without _new
-  price_from: z.number().min(0).optional(), // CORRECTED: was price_from_new
+  // PRICING - CORRECTED: Using real DB field names
+  price_from: z.number().min(0).optional(),
   price_to: z.number().min(0).optional(),
   price_per_m2: z.number().min(0).optional(),
-  vat_rate: z.number().min(0).max(100).default(5), // CORRECTED: was vat_rate_new
+  vat_rate: z.number().min(0).max(100).default(5),
   vat_included: z.boolean().default(false),
-  golden_visa_eligible: z.boolean().default(false), // CORRECTED: was golden_visa_eligible_new
+  golden_visa_eligible: z.boolean().default(false),
   roi_estimate_percent: z.number().min(0).max(100).optional(),
   rental_yield_percent: z.number().min(0).max(100).optional(),
   financing_available: z.boolean().default(false),
@@ -80,7 +80,7 @@ export const projectSchema = z.object({
   incentives: z.array(z.string()).optional(),
   transfer_fee: z.number().min(0).optional(),
 
-  // MEDIA - Contenus multimédias - CORRECTED
+  // MEDIA - CORRECTED: Using actual DB field names
   photos: z.array(z.object({
     url: z.string(),
     category: z.enum(['hero', 'exterior_1', 'exterior_2', 'interior_1', 'interior_2', 'panoramic_view', 'sea_view', 'mountain_view', 'amenities', 'plans', 'kitchen', 'bedroom', 'bathroom', 'balcony', 'garden']),
@@ -89,7 +89,7 @@ export const projectSchema = z.object({
   })).default([]),
   photo_gallery_urls: z.array(z.string()).optional(),
   video_tour_urls: z.array(z.string()).optional(),
-  virtual_tour_url: z.string().optional(), // CORRECTED: was virtual_tour_url_new
+  virtual_tour_url: z.string().optional(),
   project_presentation_url: z.string().optional(),
   youtube_tour_url: z.string().optional(),
   vimeo_tour_url: z.string().optional(),
@@ -101,11 +101,11 @@ export const projectSchema = z.object({
   
   drone_footage_urls: z.array(z.string()).optional(),
   model_3d_urls: z.array(z.string()).optional(),
-  master_plan_pdf: z.string().optional(),
-  brochure_pdf: z.string().optional(),
-  price_list_pdf: z.string().optional(),
-  technical_specs_pdf: z.string().optional(),
-  legal_documents_urls: z.array(z.string()).optional(),
+  master_plan_url: z.string().optional(), // CORRECTED: was master_plan_pdf
+  brochure_url: z.string().optional(), // CORRECTED: was brochure_pdf
+  // REMOVED: price_list_pdf - doesn't exist in DB
+  // REMOVED: technical_specs_pdf - doesn't exist in DB
+  // REMOVED: legal_documents_urls - doesn't exist in DB
 
   // CONSTRUCTION - Détails techniques
   construction_materials: z.array(z.string()).optional(),
@@ -132,16 +132,16 @@ export const projectSchema = z.object({
 
   // MARKETING - SEO et promotion - CORRECTED
   project_narrative: z.string().optional(),
-  meta_title: z.string().optional(), // CORRECTED: was meta_title_new
-  meta_description: z.string().optional(), // CORRECTED: was meta_description_new
+  meta_title: z.string().optional(),
+  meta_description: z.string().optional(),
   meta_keywords: z.array(z.string()).optional(),
   marketing_highlights: z.array(z.string()).optional(),
   target_audience: z.array(z.string()).optional(),
   url_slug: z.string().optional(),
-  og_title: z.string().optional(),
-  og_description: z.string().optional(),
-  og_image: z.string().optional(),
-  seo_agent_content: z.string().optional(),
+  og_image_url: z.string().optional(), // CORRECTED: was og_image
+  // REMOVED: og_title - doesn't exist in DB
+  // REMOVED: og_description - doesn't exist in DB
+  // REMOVED: seo_agent_content - doesn't exist in DB
 
   // AMENITIES - Équipements communs
   amenities: z.array(z.string()).default([]),
@@ -182,9 +182,9 @@ export const projectSchema = z.object({
     details: z.string().optional()
   })).default([]),
 
-  // STATUS - État du projet - CORRECTED
+  // STATUS - État du projet
   construction_phase: z.enum(['planned', 'in_progress', 'completion', 'finished']).default('planned'),
-  featured_project: z.boolean().default(false), // CORRECTED: was featured_new
+  featured_project: z.boolean().default(false),
   after_sales_service: z.boolean().optional(),
   nft_ownership_available: z.boolean().optional()
 });
@@ -230,8 +230,8 @@ export const projectFormSteps = [
     title: 'Spécifications',
     icon: 'Ruler',
     fields: [
-      'land_area_m2', 'built_area_m2', 'total_units', 'units_available', // CORRECTED: removed _new suffix
-      'floors_total', 'parking_spaces', 'storage_spaces'
+      'land_area_m2', 'built_area_m2', 'total_units', 'units_available',
+      'parking_spaces' // REMOVED: floors_total, storage_spaces
     ]
   },
   {
@@ -239,8 +239,8 @@ export const projectFormSteps = [
     title: 'Prix & Investissement',
     icon: 'Euro',
     fields: [
-      'price_from', 'price_to', 'price_per_m2', 'vat_rate', // CORRECTED: removed _new suffix
-      'vat_included', 'golden_visa_eligible', 'roi_estimate_percent', // CORRECTED: removed _new suffix
+      'price_from', 'price_to', 'price_per_m2', 'vat_rate',
+      'vat_included', 'golden_visa_eligible', 'roi_estimate_percent',
       'rental_yield_percent', 'financing_available'
     ]
   },
@@ -249,10 +249,11 @@ export const projectFormSteps = [
     title: 'Photos & Vidéos',
     icon: 'Image',
     fields: [
-      'photos', 'youtube_tour_url', 'vr_tour_url', 'virtual_tour_url', // CORRECTED: removed _new suffix
-      'project_presentation_url', 'vimeo_tour_url', 'master_plan_pdf',
-      'brochure_pdf', 'price_list_pdf', 'technical_specs_pdf', 'model_3d_urls',
+      'photos', 'youtube_tour_url', 'vr_tour_url', 'virtual_tour_url',
+      'project_presentation_url', 'vimeo_tour_url', 'master_plan_url', // CORRECTED: was master_plan_pdf
+      'brochure_url', 'model_3d_urls', // CORRECTED: was brochure_pdf
       'ar_experience_url', 'metaverse_preview_url'
+      // REMOVED: price_list_pdf, technical_specs_pdf
     ]
   },
   {
@@ -260,9 +261,10 @@ export const projectFormSteps = [
     title: 'Marketing & SEO',
     icon: 'Megaphone',
     fields: [
-      'meta_title', 'meta_description', 'meta_keywords', // CORRECTED: removed _new suffix
-      'marketing_highlights', 'target_audience', 'url_slug', 'og_title',
-      'og_description', 'og_image', 'featured_project', 'construction_phase' // CORRECTED: removed _new suffix
+      'meta_title', 'meta_description', 'meta_keywords',
+      'marketing_highlights', 'target_audience', 'url_slug', 
+      'og_image_url', 'featured_project', 'construction_phase' // CORRECTED: was og_image
+      // REMOVED: og_title, og_description, seo_agent_content
     ]
   }
 ];
