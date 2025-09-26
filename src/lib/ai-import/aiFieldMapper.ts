@@ -76,12 +76,10 @@ export interface ExtractedProject {
   bedrooms_range?: string;
   bathrooms_range?: string;
   
-  // Areas
+  // Areas - FIXED: Removed floors_total and storage_spaces as they don't exist in DB
   built_area_m2?: number;
   land_area_m2?: number;
-  floors_total?: number;
   parking_spaces?: number;
-  storage_spaces?: number;
   
   // Units
   total_units?: number;
@@ -306,9 +304,8 @@ export function mapProjectToDatabase(extracted: ExtractedProject, developerId: s
     bathrooms_range: extracted.bathrooms_range || null,
     built_area_m2: extracted.built_area_m2 || null,
     land_area_m2: extracted.land_area_m2 || null,
-    floors_total: extracted.floors_total || null,
+    // FIXED: Removed floors_total and storage_spaces as they don't exist in projects table
     parking_spaces: extracted.parking_spaces || null,
-    storage_spaces: extracted.storage_spaces || null,
     total_units: extracted.total_units || null,
     total_units_new: extracted.total_units_new || null,
     units_available: extracted.units_available || null,
