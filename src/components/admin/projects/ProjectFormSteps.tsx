@@ -1769,7 +1769,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           <CardContent className="p-6 space-y-4">
             <FormField
               control={form.control}
-              name="master_plan_pdf"
+              name="master_plan_url"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
@@ -1786,7 +1786,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
             <FormField
               control={form.control}
-              name="brochure_pdf"
+              name="brochure_url"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
@@ -1803,7 +1803,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
             <FormField
               control={form.control}
-              name="price_list_pdf"
+              name="price_list_url"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
@@ -1820,7 +1820,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
             <FormField
               control={form.control}
-              name="technical_specs_pdf"
+              name="technical_specs_url"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
@@ -2037,7 +2037,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
             <FormField
               control={form.control}
-              name="project_slug"
+              name="slug"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
@@ -2057,7 +2057,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
             <FormField
               control={form.control}
-              name="seo_title"
+              name="title"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Titre SEO (60 caractères max)</FormLabel>
@@ -2077,7 +2077,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
             <FormField
               control={form.control}
-              name="seo_description"
+              name="description"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Description SEO (160 caractères)</FormLabel>
@@ -2101,7 +2101,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
             <FormField
               control={form.control}
-              name="seo_keywords"
+              name="keywords"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Mots-clés SEO</FormLabel>
@@ -2132,7 +2132,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="og_title"
+                name="title"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Open Graph Title</FormLabel>
@@ -2146,7 +2146,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
               <FormField
                 control={form.control}
-                name="og_description"
+                name="description"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Open Graph Description</FormLabel>
