@@ -71,6 +71,25 @@ export function LocationMap({ center, markers = [], radius = 2, onMapClick }: Lo
           <span className="text-sm font-medium">Rayon: {radius} km</span>
         </div>
       )}
+
+      {/* Légende */}
+      <div className="absolute bottom-2 left-2 z-10 bg-white/95 backdrop-blur-sm px-3 py-2 rounded-lg shadow-lg border border-gray-200">
+        <div className="text-xs font-medium mb-1 text-gray-700">Légende:</div>
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-green-500"></div>
+            <span className="text-xs text-gray-600">Commodité sélectionnée (visible sur le site)</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+            <span className="text-xs text-gray-600">Commodité détectée (non affichée)</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-red-500"></div>
+            <span className="text-xs text-gray-600">Position du projet</span>
+          </div>
+        </div>
+      </div>
       
       <GoogleMap
         mapContainerStyle={{ width: '100%', height: '100%' }}
@@ -117,7 +136,7 @@ export function LocationMap({ center, markers = [], radius = 2, onMapClick }: Lo
               url: marker.isSelected 
                 ? 'https://maps.google.com/mapfiles/ms/icons/green-dot.png'
                 : 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
-              scaledSize: new google.maps.Size(30, 30),
+              scaledSize: new google.maps.Size(32, 32),
             }}
           />
         ))}

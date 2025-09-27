@@ -1572,30 +1572,35 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                   </div>
                   
                   {form.watch('surrounding_amenities')?.length > 0 && (
-                    <div className="flex items-center gap-4">
-                      <span className="text-sm text-muted-foreground">
-                        {selectedAmenities.size} / {form.watch('surrounding_amenities')?.length} sélectionnées pour affichage
-                      </span>
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
-                      onClick={() => {
-                        const amenities = form.watch('surrounding_amenities') || [];
-                        if (selectedAmenities.size === amenities.length) {
-                          // Tout désélectionner
-                          setSelectedAmenities(new Set());
-                        } else {
-                          // Tout sélectionner
-                          const allTypes = new Set<string>(amenities.map(a => a.nearby_amenity_id || ''));
-                          setSelectedAmenities(allTypes);
-                        }
-                      }}
-                      >
-                        {selectedAmenities.size === form.watch('surrounding_amenities')?.length 
-                          ? 'Tout désélectionner' 
-                          : 'Tout sélectionner'}
-                      </Button>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <span className="text-sm text-muted-foreground">
+                          {selectedAmenities.size} / {form.watch('surrounding_amenities')?.length} sélectionnées
+                        </span>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            const amenities = form.watch('surrounding_amenities') || [];
+                            if (selectedAmenities.size === amenities.length) {
+                              setSelectedAmenities(new Set());
+                            } else {
+                              const allTypes = new Set<string>(amenities.map(a => a.nearby_amenity_id || ''));
+                              setSelectedAmenities(allTypes);
+                            }
+                          }}
+                        >
+                          {selectedAmenities.size === form.watch('surrounding_amenities')?.length 
+                            ? '❌ Tout désélectionner' 
+                            : '✅ Tout sélectionner'}
+                        </Button>
+                      </div>
+                      {selectedAmenities.size > 0 && (
+                        <Badge variant="secondary" className="bg-green-100 text-green-800">
+                          {selectedAmenities.size} affichées sur le site public
+                        </Badge>
+                      )}
                     </div>
                   )}
                   
@@ -1631,23 +1636,23 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                                   }`}
                                 >
                                   <div className="flex items-start gap-3">
-                                    <input
-                                      type="checkbox"
-                                      checked={isSelected}
-                                      onChange={(e) => {
-                                        const currentSelected = selectedAmenities;
-                                        const newSelected = new Set(currentSelected);
-                                        
-                                        if (e.target.checked) {
-                                          newSelected.add(amenity.nearby_amenity_id || '');
-                                        } else {
-                                          newSelected.delete(amenity.nearby_amenity_id || '');
-                                        }
-                                        
-                                        setSelectedAmenities(newSelected);
-                                      }}
-                                      className="mt-1 h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                                    />
+                                  <input
+                                    type="checkbox"
+                                    id={`ess-checkbox-${amenity.nearby_amenity_id}-${idx}`}
+                                    checked={isSelected}
+                                    onChange={(e) => {
+                                      e.stopPropagation();
+                                      const newSelected = new Set(selectedAmenities);
+                                      if (e.target.checked) {
+                                        newSelected.add(amenity.nearby_amenity_id || '');
+                                      } else {
+                                        newSelected.delete(amenity.nearby_amenity_id || '');
+                                      }
+                                      setSelectedAmenities(newSelected);
+                                    }}
+                                    className="mt-1 h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 cursor-pointer"
+                                    style={{ pointerEvents: 'auto' }}
+                                  />
                                     <div className="flex-1">
                                       <div className="flex items-center gap-2">
                                         <span className="text-blue-600">{option.icon}</span>
@@ -1693,21 +1698,12 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                                     const isSelected = selectedAmenities.has(amenity.nearby_amenity_id || '');
                                     
                                     return (
-                                      <div 
-                                        key={`other-${amenity.nearby_amenity_id}-${idx}`} 
-                                        className={`bg-white rounded-lg p-3 border transition-all cursor-pointer hover:shadow-md ${
-                                          isSelected ? 'ring-2 ring-gray-500 bg-gray-50' : ''
-                                        }`}
-                                        onClick={() => {
-                                          const newSelected = new Set(selectedAmenities);
-                                          if (isSelected) {
-                                            newSelected.delete(amenity.nearby_amenity_id || '');
-                                          } else {
-                                            newSelected.add(amenity.nearby_amenity_id || '');
-                                          }
-                                          setSelectedAmenities(newSelected);
-                                        }}
-                                      >
+                              <div 
+                                key={`other-${amenity.nearby_amenity_id}-${idx}`} 
+                                className={`bg-white rounded-lg p-3 border transition-all hover:shadow-md ${
+                                  isSelected ? 'ring-2 ring-gray-500 bg-gray-50' : ''
+                                }`}
+                              >
                                         <div className="flex items-center gap-2">
                                           <input
                                             type="checkbox"
