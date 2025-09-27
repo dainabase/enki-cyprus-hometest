@@ -32,11 +32,11 @@ export const ProjectAmenitiesSection: React.FC<ProjectAmenitiesSectionProps> = (
   };
 
   return (
-    <Card className="mt-6">
+    <Card>
       <CardHeader>
         <CardTitle className="text-lg flex items-center gap-2">
           <Trees className="h-5 w-5" />
-          {t('projectForm.projectAmenities') || 'Project Amenities'}
+          {t('projectForm.commonEquipment') || 'Équipements en commun'}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -46,7 +46,7 @@ export const ProjectAmenitiesSection: React.FC<ProjectAmenitiesSectionProps> = (
           <div className="flex items-center gap-2 mb-3">
             <Heart className="h-4 w-4 text-muted-foreground" />
             <h4 className="text-sm font-medium text-muted-foreground">
-              {t('projectForm.wellnessRecreation') || 'Wellness & Recreation'}
+              {t('projectForm.wellnessRecreation') || 'Bien-être & Loisirs'}
             </h4>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -57,7 +57,7 @@ export const ProjectAmenitiesSection: React.FC<ProjectAmenitiesSectionProps> = (
                 onCheckedChange={handleBooleanChange('has_pool')}
               />
               <Label htmlFor="has_pool" className="cursor-pointer">
-                {t('amenities.pool') || 'Swimming Pool'}
+                {t('amenities.pool') || 'Piscine'}
               </Label>
             </div>
             <div className="flex items-center space-x-2">
@@ -67,7 +67,7 @@ export const ProjectAmenitiesSection: React.FC<ProjectAmenitiesSectionProps> = (
                 onCheckedChange={handleBooleanChange('has_gym')}
               />
               <Label htmlFor="has_gym" className="cursor-pointer">
-                {t('amenities.gym') || 'Gym / Fitness Center'}
+                {t('amenities.gym') || 'Salle de sport'}
               </Label>
             </div>
             <div className="flex items-center space-x-2">
@@ -77,7 +77,7 @@ export const ProjectAmenitiesSection: React.FC<ProjectAmenitiesSectionProps> = (
                 onCheckedChange={handleBooleanChange('has_spa')}
               />
               <Label htmlFor="has_spa" className="cursor-pointer">
-                {t('amenities.spa') || 'Spa & Wellness'}
+                {t('amenities.spa') || 'Spa & Bien-être'}
               </Label>
             </div>
             <div className="flex items-center space-x-2">
@@ -87,7 +87,7 @@ export const ProjectAmenitiesSection: React.FC<ProjectAmenitiesSectionProps> = (
                 onCheckedChange={handleBooleanChange('has_playground')}
               />
               <Label htmlFor="has_playground" className="cursor-pointer">
-                {t('amenities.playground') || "Children's Playground"}
+                {t('amenities.playground') || "Aire de jeux"}
               </Label>
             </div>
             <div className="flex items-center space-x-2">
@@ -97,7 +97,7 @@ export const ProjectAmenitiesSection: React.FC<ProjectAmenitiesSectionProps> = (
                 onCheckedChange={handleBooleanChange('has_garden')}
               />
               <Label htmlFor="has_garden" className="cursor-pointer">
-                {t('amenities.garden') || 'Garden / Green Spaces'}
+                {t('amenities.garden') || 'Jardin / Espaces verts'}
               </Label>
             </div>
           </div>
@@ -108,7 +108,7 @@ export const ProjectAmenitiesSection: React.FC<ProjectAmenitiesSectionProps> = (
           <div className="flex items-center gap-2 mb-3">
             <Shield className="h-4 w-4 text-muted-foreground" />
             <h4 className="text-sm font-medium text-muted-foreground">
-              {t('projectForm.security') || 'Security'}
+              {t('projectForm.security') || 'Sécurité'}
             </h4>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -119,7 +119,7 @@ export const ProjectAmenitiesSection: React.FC<ProjectAmenitiesSectionProps> = (
                 onCheckedChange={handleBooleanChange('has_security_system')}
               />
               <Label htmlFor="has_security_system" className="cursor-pointer">
-                {t('amenities.securitySystem') || 'Security System'}
+                {t('amenities.securitySystem') || 'Système de sécurité'}
               </Label>
             </div>
             <div className="flex items-center space-x-2">
@@ -129,7 +129,7 @@ export const ProjectAmenitiesSection: React.FC<ProjectAmenitiesSectionProps> = (
                 onCheckedChange={handleBooleanChange('has_cctv')}
               />
               <Label htmlFor="has_cctv" className="cursor-pointer">
-                {t('amenities.cctv') || 'CCTV Surveillance'}
+                {t('amenities.cctv') || 'Vidéosurveillance'}
               </Label>
             </div>
             <div className="flex items-center space-x-2">
@@ -139,7 +139,7 @@ export const ProjectAmenitiesSection: React.FC<ProjectAmenitiesSectionProps> = (
                 onCheckedChange={handleBooleanChange('has_concierge')}
               />
               <Label htmlFor="has_concierge" className="cursor-pointer">
-                {t('amenities.concierge') || 'Concierge Service'}
+                {t('amenities.concierge') || 'Conciergerie'}
               </Label>
             </div>
           </div>
@@ -161,7 +161,7 @@ export const ProjectAmenitiesSection: React.FC<ProjectAmenitiesSectionProps> = (
                 onCheckedChange={handleBooleanChange('has_generator')}
               />
               <Label htmlFor="has_generator" className="cursor-pointer">
-                {t('amenities.generator') || 'Backup Generator'}
+                {t('amenities.generator') || 'Générateur de secours'}
               </Label>
             </div>
             <div className="flex items-center space-x-2">
@@ -171,7 +171,7 @@ export const ProjectAmenitiesSection: React.FC<ProjectAmenitiesSectionProps> = (
                 onCheckedChange={handleBooleanChange('has_solar_panels')}
               />
               <Label htmlFor="has_solar_panels" className="cursor-pointer">
-                {t('amenities.solarPanels') || 'Solar Panels'}
+                {t('amenities.solarPanels') || 'Panneaux solaires'}
               </Label>
             </div>
             <div className="flex items-center space-x-2">
@@ -181,7 +181,7 @@ export const ProjectAmenitiesSection: React.FC<ProjectAmenitiesSectionProps> = (
                 onCheckedChange={handleBooleanChange('has_parking')}
               />
               <Label htmlFor="has_parking" className="cursor-pointer">
-                {t('amenities.parking') || 'Parking Available'}
+                {t('amenities.parking') || 'Parking disponible'}
               </Label>
             </div>
           </div>
@@ -189,20 +189,20 @@ export const ProjectAmenitiesSection: React.FC<ProjectAmenitiesSectionProps> = (
           {/* Parking Type - Only show if has_parking is true */}
           {amenities.has_parking && (
             <div className="mt-4 max-w-sm">
-              <Label htmlFor="parking_type">{t('amenities.parkingType') || 'Parking Type'}</Label>
+              <Label htmlFor="parking_type">{t('amenities.parkingType') || 'Type de parking'}</Label>
               <Select
                 value={amenities.parking_type || ''}
                 onValueChange={handleParkingTypeChange}
               >
                 <SelectTrigger id="parking_type" className="mt-2">
-                  <SelectValue placeholder={t('amenities.selectParkingType') || 'Select parking type'} />
+                  <SelectValue placeholder={t('amenities.selectParkingType') || 'Sélectionner le type de parking'} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="underground">{t('amenities.underground') || 'Underground'}</SelectItem>
-                  <SelectItem value="covered">{t('amenities.covered') || 'Covered'}</SelectItem>
-                  <SelectItem value="open">{t('amenities.open') || 'Open Air'}</SelectItem>
-                  <SelectItem value="garage">{t('amenities.garage') || 'Private Garage'}</SelectItem>
-                  <SelectItem value="street">{t('amenities.street') || 'Street Parking'}</SelectItem>
+                  <SelectItem value="underground">{t('amenities.underground') || 'Souterrain'}</SelectItem>
+                  <SelectItem value="covered">{t('amenities.covered') || 'Couvert'}</SelectItem>
+                  <SelectItem value="open">{t('amenities.open') || 'Extérieur'}</SelectItem>
+                  <SelectItem value="garage">{t('amenities.garage') || 'Garage privé'}</SelectItem>
+                  <SelectItem value="street">{t('amenities.street') || 'Stationnement rue'}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -212,7 +212,7 @@ export const ProjectAmenitiesSection: React.FC<ProjectAmenitiesSectionProps> = (
         {/* Summary */}
         <div className="pt-4 border-t">
           <p className="text-sm text-muted-foreground">
-            {countAmenities(amenities)} {t('projectForm.amenitiesSelected') || 'amenities selected'}
+            {countAmenities(amenities)} {t('projectForm.amenitiesSelected') || 'équipements sélectionnés'}
           </p>
         </div>
       </CardContent>
