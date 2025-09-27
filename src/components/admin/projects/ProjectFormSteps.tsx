@@ -711,9 +711,11 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             form.setValue('gps_longitude', lng);
             
             // Mise à jour des nouveaux champs
-            if (streetAddress) {
-              form.setValue('street_address', streetAddress);
-            }
+            // Concaténer pour la DB
+            const fullStreetAddress = streetNumber && streetName 
+              ? `${streetNumber} ${streetName}` 
+              : streetName || '';
+            if (fullStreetAddress) form.setValue('street_address', fullStreetAddress);
             if (postalCode) {
               form.setValue('postal_code', postalCode);
             }
@@ -1047,25 +1049,75 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             ? `${streetNumber} ${streetName}` 
             : streetName || '';
           
-          // Zone mapping pour Chypre
+          // Zone mapping pour Chypre - ENRICHIR avec plus de villes
           const zoneMapping: { [key: string]: string } = {
+            // Limassol et environs
             'Limassol': 'limassol',
             'Lemesos': 'limassol',
             'Λεμεσός': 'limassol',
+            'Germasogeia': 'limassol',
+            'Yermasoyia': 'limassol',
+            'Agios Tychon': 'limassol',
+            'Agios Athanasios': 'limassol',
+            'Mesa Geitonia': 'limassol',
+            'Katholiki': 'limassol',
+            'Zakaki': 'limassol',
+            'Ypsonas': 'limassol',
+            'Kato Polemidia': 'limassol',
+            
+            // Paphos et environs
             'Paphos': 'paphos',
             'Pafos': 'paphos',
             'Πάφος': 'paphos',
+            'Kato Paphos': 'paphos',
+            'Peyia': 'paphos',
+            'Coral Bay': 'paphos',
+            'Chloraka': 'paphos',
+            'Kissonerga': 'paphos',
+            'Tala': 'paphos',
+            'Emba': 'paphos',
+            'Konia': 'paphos',
+            
+            // Larnaca et environs
             'Larnaca': 'larnaca',
             'Larnaka': 'larnaca',
             'Λάρνακα': 'larnaca',
+            'Oroklini': 'larnaca',
+            'Pyla': 'larnaca',
+            'Livadia': 'larnaca',
+            'Dromolaxia': 'larnaca',
+            'Meneou': 'larnaca',
+            'Kiti': 'larnaca',
+            
+            // Nicosia et environs
             'Nicosia': 'nicosia',
             'Lefkosia': 'nicosia',
             'Λευκωσία': 'nicosia',
+            'Strovolos': 'nicosia',
+            'Lakatamia': 'nicosia',
+            'Latsia': 'nicosia',
+            'Engomi': 'nicosia',
+            'Agios Dometios': 'nicosia',
+            'Aglantzia': 'nicosia',
+            'Dasoupoli': 'nicosia',
+            
+            // Famagusta et environs
             'Famagusta': 'famagusta',
             'Ammochostos': 'famagusta',
             'Αμμόχωστος': 'famagusta',
+            'Paralimni': 'famagusta',
+            'Ayia Napa': 'famagusta',
+            'Protaras': 'famagusta',
+            'Deryneia': 'famagusta',
+            'Sotira': 'famagusta',
+            'Frenaros': 'famagusta',
+            
+            // Kyrenia et environs
             'Kyrenia': 'kyrenia',
-            'Girne': 'kyrenia'
+            'Girne': 'kyrenia',
+            'Κερύνεια': 'kyrenia',
+            'Karavas': 'kyrenia',
+            'Lapithos': 'kyrenia'
           };
           
           // Détecter la zone
@@ -1087,6 +1139,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           
           // Mettre à jour tous les champs
           if (city) form.setValue('city', city);
+          // Aussi stocker dans street_address pour la DB (concaténation)
           if (streetAddress) form.setValue('street_address', streetAddress);
           if (postalCode) form.setValue('postal_code', postalCode);
           if (neighborhood) form.setValue('neighborhood', neighborhood);
@@ -1168,7 +1221,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 name="cyprus_zone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Zone géographique</FormLabel>
+                    <FormLabel>District</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className="bg-gray-50">
@@ -1185,7 +1238,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       </SelectContent>
                     </Select>
                     <FormDescription>
-                      {field.value ? 'Zone détectée automatiquement' : 'Sera détectée depuis l\'adresse'}
+                      {field.value ? 'District détecté automatiquement' : 'Sera détecté depuis l\'adresse'}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -1215,29 +1268,28 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               />
             </div>
 
-            {/* Adresse détaillée - extraite automatiquement */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="street_address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Numéro et rue</FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="Auto-extrait ou éditable manuellement"
-                        {...field}
-                        className="bg-gray-50"
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Extrait automatiquement de l'adresse complète
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            {/* Numéro et rue - séparés en deux champs */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="md:col-span-1">
+                <FormLabel>Numéro</FormLabel>
+                <Input 
+                  placeholder="Ex: 15"
+                  className="bg-gray-50"
+                />
+                <p className="text-sm text-muted-foreground">N° de rue</p>
+              </div>
 
+              <div className="md:col-span-2">
+                <FormLabel>Rue</FormLabel>
+                <Input 
+                  placeholder="Ex: Amathountos Avenue"
+                  className="bg-gray-50"
+                />
+                <p className="text-sm text-muted-foreground">Nom de la rue</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="postal_code"
