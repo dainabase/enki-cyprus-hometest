@@ -1184,6 +1184,60 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             {/* Section extraction d'adresse améliorée */}
             <AddressExtraction form={form} />
 
+            {/* District et Ville */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="cyprus_zone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>District</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="bg-gray-50">
+                          <SelectValue placeholder="Sélectionner la zone" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="limassol">Limassol</SelectItem>
+                        <SelectItem value="nicosia">Nicosie</SelectItem>
+                        <SelectItem value="paphos">Paphos</SelectItem>
+                        <SelectItem value="larnaca">Larnaca</SelectItem>
+                        <SelectItem value="famagusta">Famagouste</SelectItem>
+                        <SelectItem value="kyrenia">Kyrenia</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                      {field.value ? 'District détecté automatiquement' : 'Sera détecté depuis l\'adresse'}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="city"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Ville</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="Auto-remplie depuis l'adresse"
+                        {...field}
+                        className="bg-gray-50"
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Extraite automatiquement de l'adresse
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* Code postal */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
