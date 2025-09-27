@@ -238,8 +238,9 @@ export const AdminAnalytics = () => {
         </CardContent>
       </Card>
     );
-  };
+};
 
+export default AdminAnalytics;
   if (loading) {
     return (
       <div className="p-6">

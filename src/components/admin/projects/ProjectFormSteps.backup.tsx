@@ -398,10 +398,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     }
     
     const addBuilding = () => {
-      const newBuilding: ProjectBuilding = {
+      const newBuilding = {
         building_name: `Bâtiment ${buildingsValue.length + 1}`,
-        building_type: 'apartment_building',
-        construction_status: 'planned',
+        building_type: 'apartment_building' as const,
+        construction_status: 'planning' as const,
         total_floors: 0,
         total_units: 0,
         units_available: 0
@@ -409,7 +409,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
       form.setValue('buildings', [...buildingsValue, newBuilding]);
     };
 
-    const updateBuilding = (index: number, building: ProjectBuilding) => {
+    const updateBuilding = (index: number, building: any) => {
       const newBuildings = [...buildingsValue];
       newBuildings[index] = building;
       form.setValue('buildings', newBuildings);
@@ -1769,7 +1769,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           <CardContent className="p-6 space-y-4">
             <FormField
               control={form.control}
-              name="master_plan_pdf"
+              name="master_plan_url"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
@@ -1786,7 +1786,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
             <FormField
               control={form.control}
-              name="brochure_pdf"
+              name="brochure_url"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
@@ -2003,14 +2003,14 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                            .replace(/^-+|-+$/g, '');
                          
                          // Mise à jour des champs
-                         form.setValue('seo_title', seoTitle);
-                         form.setValue('seo_description', seoDescription);
-                         form.setValue('seo_keywords', seoKeywords);
-                         form.setValue('project_slug', seoSlug);
-                         
-                         // Génération des OG tags
-                         form.setValue('og_title', seoTitle);
-                         form.setValue('og_description', seoDescription.substring(0, 160));
+                          form.setValue('meta_title', seoTitle);
+                          form.setValue('meta_description', seoDescription);
+                          form.setValue('meta_keywords', seoKeywords);
+                          form.setValue('url_slug', seoSlug);
+                          
+                          // Génération des OG tags
+                          form.setValue('og_title', seoTitle);
+                          form.setValue('og_description', seoDescription.substring(0, 160));
                          
                          toast.dismiss(loadingToastId);
                          toast("✅ Contenu SEO généré avec succès", {
@@ -2037,7 +2037,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
             <FormField
               control={form.control}
-              name="project_slug"
+              name="url_slug"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
@@ -2057,7 +2057,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
             <FormField
               control={form.control}
-              name="seo_title"
+              name="meta_title"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Titre SEO (60 caractères max)</FormLabel>
@@ -2077,7 +2077,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
             <FormField
               control={form.control}
-              name="seo_description"
+              name="meta_description"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Description SEO (160 caractères)</FormLabel>
@@ -2101,7 +2101,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
             <FormField
               control={form.control}
-              name="seo_keywords"
+              name="meta_keywords"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Mots-clés SEO</FormLabel>

@@ -191,8 +191,9 @@ export const AdminContent = () => {
         description: "Le témoignage a été supprimé avec succès"
       });
     }
-  };
+};
 
+export default AdminContent;
   return (
     <div className="p-8 space-y-8">
       {/* Header */}

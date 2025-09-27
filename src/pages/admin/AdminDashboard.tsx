@@ -24,20 +24,12 @@ const AdminCommissions = lazy(() =>
   }))
 );
 const AdminSettings = lazy(() => import('./AdminSettings'));
-const AdminAnalytics = lazy(() => 
-  import('./AdminAnalytics').then(module => ({
-    default: module.AdminAnalytics || module.default
-  }))
-);
+const AdminAnalytics = lazy(() => import('./AdminAnalytics'));
 const AdminPredictions = lazy(() => import('./AdminPredictions'));
 const AdminSegmentation = lazy(() => import('./AdminSegmentation'));
 const AdminPerformance = lazy(() => import('./AdminPerformance'));
 const AdminDocumentation = lazy(() => import('./AdminDocumentation'));
-const AdminContent = lazy(() => 
-  import('./AdminContent').then(module => ({
-    default: module.AdminContent || module.default
-  }))
-);
+const AdminContent = lazy(() => import('./AdminContent'));
 const AdminLeads = lazy(() => import('./AdminLeads'));
 const AdminPipeline = lazy(() => import('./AdminPipeline'));
 const AdminReports = lazy(() => import('./AdminReports'));
@@ -70,7 +62,7 @@ const AdminDashboard = () => {
   const { profile } = useAuth();
 
   // Vérification des droits d'accès
-  if (profile?.role !== 'admin' && profile?.role !== 'super_admin') {
+  if (profile?.role !== 'admin') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-100">
         <Card className="max-w-md mx-auto p-8">
