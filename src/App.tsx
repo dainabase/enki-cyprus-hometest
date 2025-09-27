@@ -79,9 +79,8 @@ const AppContent = () => {
   return (
     <BrowserRouter>
       <TooltipProvider>
-        <GoogleMapsProvider>
-          <FilterProvider>
-            <Suspense fallback={<LoadingSpinner />}>
+        <FilterProvider>
+          <Suspense fallback={<LoadingSpinner />}>
               <Routes>
                 {/* Special admin route for AI import (outside main admin dashboard) */}
                 <Route path="/admin-ai-import-unified" element={
@@ -128,9 +127,8 @@ const AppContent = () => {
             <CookieConsentBanner />
             <Sonner />
           </FilterProvider>
-        </GoogleMapsProvider>
-      </TooltipProvider>
-    </BrowserRouter>
+        </TooltipProvider>
+      </BrowserRouter>
   );
 };
 
@@ -140,11 +138,13 @@ const App = () => {
       <HelmetProvider>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <ToastProvider>
-              <NotificationProvider>
-                <AppContent />
-              </NotificationProvider>
-            </ToastProvider>
+            <GoogleMapsProvider>
+              <ToastProvider>
+                <NotificationProvider>
+                  <AppContent />
+                </NotificationProvider>
+              </ToastProvider>
+            </GoogleMapsProvider>
           </AuthProvider>
         </QueryClientProvider>
       </HelmetProvider>
