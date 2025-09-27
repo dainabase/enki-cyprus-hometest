@@ -295,6 +295,57 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               )}
             />
 
+            <FormField
+              control={form.control}
+              name="project_status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Statut du projet</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Sélectionner" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="active">Actif</SelectItem>
+                      <SelectItem value="on_hold">En pause</SelectItem>
+                      <SelectItem value="cancelled">Annulé</SelectItem>
+                      <SelectItem value="completed">Complété</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="construction_phase"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phase de construction</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Sélectionner" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="excavation">Excavation</SelectItem>
+                      <SelectItem value="foundation">Fondations</SelectItem>
+                      <SelectItem value="structure">Structure</SelectItem>
+                      <SelectItem value="envelope">Enveloppe</SelectItem>
+                      <SelectItem value="interior">Intérieur</SelectItem>
+                      <SelectItem value="finishing">Finitions</SelectItem>
+                      <SelectItem value="landscaping">Aménagement paysager</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -371,6 +422,27 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                     />
                   </FormControl>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="exclusive_commercialization"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                  <div className="space-y-0.5">
+                    <FormLabel className="text-base">Commercialisation exclusive</FormLabel>
+                    <div className="text-sm text-muted-foreground">
+                      Enki Reality est-il l'agent exclusif pour ce projet ?
+                    </div>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
                 </FormItem>
               )}
             />
