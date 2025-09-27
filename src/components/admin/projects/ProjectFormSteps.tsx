@@ -580,6 +580,11 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             let postalCode = '';
             let detectedZone = '';
             
+            // ENRICHISSEMENT : Extraction street_address et postal_code
+            let streetNumber = '';
+            let streetName = '';
+            let neighborhood = '';
+
             // Extraire la ville et le code postal depuis les composants d'adresse
             addressComponents.forEach(component => {
               // Chercher la ville
@@ -594,7 +599,26 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               if (component.types.includes('postal_code')) {
                 postalCode = component.long_name;
               }
+              // Numéro de rue
+              if (component.types.includes('street_number')) {
+                streetNumber = component.long_name;
+              }
+              // Nom de rue
+              if (component.types.includes('route')) {
+                streetName = component.long_name;
+              }
+              // Quartier/Secteur
+              if (component.types.includes('neighborhood') || 
+                  component.types.includes('sublocality_level_1') ||
+                  component.types.includes('sublocality')) {
+                neighborhood = component.long_name;
+              }
             });
+
+            // Construire l'adresse de rue complète
+            const streetAddress = streetNumber && streetName 
+              ? `${streetNumber} ${streetName}` 
+              : streetName || '';
 
             // AMÉLIORATION: Mapping complet des villes/zones vers les districts
             const zoneMapping: { [key: string]: string } = {
@@ -685,6 +709,17 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             form.setValue('city', city);
             form.setValue('gps_latitude', lat);
             form.setValue('gps_longitude', lng);
+            
+            // Mise à jour des nouveaux champs
+            if (streetAddress) {
+              form.setValue('street_address', streetAddress);
+            }
+            if (postalCode) {
+              form.setValue('postal_code', postalCode);
+            }
+            if (neighborhood) {
+              form.setValue('neighborhood', neighborhood);
+            }
             
             // Définir la zone géographique si détectée
             if (detectedZone) {
@@ -951,10 +986,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
   // Initialiser les commodités sélectionnées (essentielles par défaut)
   useEffect(() => {
     const amenities = form.watch('surrounding_amenities') || [];
-    const selected = new Set(
+    const selected = new Set<string>(
       amenities
         .filter(a => ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id || ''))
-        .map(a => a.nearby_amenity_id)
+        .map(a => a.nearby_amenity_id || '')
     );
     setSelectedAmenities(selected);
   }, [form.watch('surrounding_amenities')]);
@@ -1050,6 +1085,95 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 )}
               />
             </div>
+
+            {/* Adresse détaillée - extraite automatiquement */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="street_address"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Numéro et rue</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="Auto-extrait de l'adresse"
+                        {...field}
+                        className="bg-gray-50"
+                        readOnly
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Extrait automatiquement de l'adresse complète
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="postal_code"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Code postal</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="Auto-extrait de l'adresse"
+                        {...field}
+                        className="bg-gray-50"
+                        readOnly
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Extrait automatiquement de l'adresse
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* Informations de quartier */}
+            <FormField
+              control={form.control}
+              name="neighborhood"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Quartier</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Ex: Marina, Tourist Area..."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Nom du quartier ou de la zone locale
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="neighborhood_description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description du quartier</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      placeholder="Description du quartier, de son ambiance, ses avantages..."
+                      rows={3}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Informations complémentaires sur le quartier
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             {/* Coordonnées GPS */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1318,7 +1442,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                             })));
                           } else {
                             // Tout sélectionner
-                            const allTypes = new Set(amenities.map(a => a.nearby_amenity_id));
+                            const allTypes = new Set<string>(amenities.map(a => a.nearby_amenity_id || ''));
                             setSelectedAmenities(allTypes);
                             form.setValue('surrounding_amenities', amenities.map(a => ({
                               ...a,
@@ -1875,7 +1999,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
             <FormField
               control={form.control}
-              name="price_list_url"
+              name="brochure_pdf"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
@@ -1892,7 +2016,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
             <FormField
               control={form.control}
-              name="technical_specs_url"
+              name="site_plan_url"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
@@ -2109,7 +2233,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
             <FormField
               control={form.control}
-              name="slug"
+              name="url_slug"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
@@ -2173,7 +2297,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
             <FormField
               control={form.control}
-              name="keywords"
+              name="meta_keywords"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Mots-clés SEO</FormLabel>
