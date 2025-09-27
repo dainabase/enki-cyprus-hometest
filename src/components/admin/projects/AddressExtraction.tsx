@@ -1,333 +1,352 @@
-// Fonction améliorée pour l'extraction d'adresse
-// Ce fichier contient la logique corrigée pour extraire les détails d'adresse
+import React, { useEffect, useState } from 'react';
+import { UseFormReturn } from 'react-hook-form';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from '@/components/ui/form';
+import { MapPin, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+import { 
+  parseCompleteAddress, 
+  parseGooglePlaceComponents,
+  determineCityFromMunicipality,
+  CYPRUS_DISTRICTS
+} from '@/utils/cyprusAddressHelper';
 
-export const extractAddressDetails = (place: any, form: any) => {
-  const addressComponents = place.address_components || [];
-  
-  // Variables pour stocker les informations extraites
-  let city = '';
-  let district = ''; // District principal (ex: Limassol)
-  let postalCode = '';
-  let streetNumber = '';
-  let streetName = '';
-  let neighborhood = '';
-  let detectedZone = '';
-  
-  // Parcourir les composants d'adresse
-  addressComponents.forEach((component: any) => {
-    const types = component.types;
-    
-    if (types.includes('locality')) {
-      city = component.long_name;
-    }
-    // Pour Chypre, administrative_area_level_1 est le district principal
-    if (types.includes('administrative_area_level_1')) {
-      district = component.long_name;
-    }
-    // Alternative pour la ville (municipalité)
-    if (!city && types.includes('administrative_area_level_2')) {
-      city = component.long_name;
-    }
-    if (types.includes('postal_code')) {
-      postalCode = component.long_name;
-    }
-    if (types.includes('street_number')) {
-      streetNumber = component.long_name;
-    }
-    if (types.includes('route')) {
-      streetName = component.long_name;
-    }
-    if (types.includes('neighborhood') || 
-        types.includes('sublocality_level_1') ||
-        types.includes('sublocality')) {
-      neighborhood = component.long_name;
-    }
-  });
-  
-  // Zone mapping pour Chypre - ENRICHI avec quartiers et municipalités
-  const zoneMapping: { [key: string]: string } = {
-    // Limassol et tous ses quartiers/municipalités
-    'Limassol': 'limassol',
-    'Lemesos': 'limassol',
-    'Λεμεσός': 'limassol',
-    'Limassol District': 'limassol',
-    'Germasogeia': 'limassol',
-    'Germasogeia Municipality': 'limassol',
-    'Γερμασόγεια': 'limassol',
-    'Yermasoyia': 'limassol',
-    'Agios Tychon': 'limassol',
-    'Agios Athanasios': 'limassol',
-    'Mesa Geitonia': 'limassol',
-    'Katholiki': 'limassol',
-    'Zakaki': 'limassol',
-    'Ypsonas': 'limassol',
-    'Kato Polemidia': 'limassol',
-    'Mouttagiaka': 'limassol',
-    'Parekklisia': 'limassol',
-    'Pyrgos': 'limassol',
-    'Erimi': 'limassol',
-    'Kolossi': 'limassol',
-    'Trachoni': 'limassol',
-    
-    // Paphos et environs
-    'Paphos': 'paphos',
-    'Pafos': 'paphos',
-    'Πάφος': 'paphos',
-    'Paphos District': 'paphos',
-    'Kato Paphos': 'paphos',
-    'Peyia': 'paphos',
-    'Coral Bay': 'paphos',
-    'Chloraka': 'paphos',
-    'Kissonerga': 'paphos',
-    'Tala': 'paphos',
-    'Emba': 'paphos',
-    'Konia': 'paphos',
-    'Kouklia': 'paphos',
-    
-    // Larnaca et environs
-    'Larnaca': 'larnaca',
-    'Larnaka': 'larnaca',
-    'Λάρνακα': 'larnaca',
-    'Larnaca District': 'larnaca',
-    'Oroklini': 'larnaca',
-    'Pyla': 'larnaca',
-    'Livadia': 'larnaca',
-    'Dromolaxia': 'larnaca',
-    'Meneou': 'larnaca',
-    'Kiti': 'larnaca',
-    'Tersefanou': 'larnaca',
-    
-    // Nicosia et environs
-    'Nicosia': 'nicosia',
-    'Lefkosia': 'nicosia',
-    'Λευκωσία': 'nicosia',
-    'Nicosia District': 'nicosia',
-    'Strovolos': 'nicosia',
-    'Lakatamia': 'nicosia',
-    'Latsia': 'nicosia',
-    'Engomi': 'nicosia',
-    'Agios Dometios': 'nicosia',
-    'Aglantzia': 'nicosia',
-    'Dasoupoli': 'nicosia',
-    'Geri': 'nicosia',
-    
-    // Famagusta et environs
-    'Famagusta': 'famagusta',
-    'Ammochostos': 'famagusta',
-    'Αμμόχωστος': 'famagusta',
-    'Famagusta District': 'famagusta',
-    'Paralimni': 'famagusta',
-    'Ayia Napa': 'famagusta',
-    'Protaras': 'famagusta',
-    'Deryneia': 'famagusta',
-    'Sotira': 'famagusta',
-    'Frenaros': 'famagusta',
-    
-    // Kyrenia et environs (zone nord)
-    'Kyrenia': 'kyrenia',
-    'Girne': 'kyrenia',
-    'Κερύνεια': 'kyrenia',
-    'Kyrenia District': 'kyrenia',
-    'Karavas': 'kyrenia',
-    'Lapithos': 'kyrenia'
-  };
-  
-  // Détecter la zone - Stratégie améliorée en 4 étapes
-  
-  // 1. D'abord vérifier si le district administratif correspond
-  if (district) {
-    for (const [name, zone] of Object.entries(zoneMapping)) {
-      if (district.toLowerCase().includes(name.toLowerCase()) || 
-          name.toLowerCase().includes(district.toLowerCase())) {
-        detectedZone = zone;
-        break;
+interface AddressExtractionProps {
+  form: UseFormReturn<any>;
+  onExtractComplete?: () => void;
+}
+
+export const AddressExtraction: React.FC<AddressExtractionProps> = ({ form, onExtractComplete }) => {
+  const [isExtracting, setIsExtracting] = useState(false);
+
+  // Initialiser l'autocomplete Google Places
+  useEffect(() => {
+    if (window.google) {
+      const input = document.getElementById('address-autocomplete');
+      if (input) {
+        const autocomplete = new window.google.maps.places.Autocomplete(input as HTMLInputElement, {
+          types: ['address'],
+          componentRestrictions: { country: 'cy' },
+          fields: ['address_components', 'geometry', 'formatted_address']
+        });
+
+        autocomplete.addListener('place_changed', () => {
+          const place = autocomplete.getPlace();
+          if (place.geometry) {
+            const lat = place.geometry.location?.lat();
+            const lng = place.geometry.location?.lng();
+            
+            // Utiliser le helper pour parser les composants
+            const parsedAddress = parseGooglePlaceComponents(place.address_components || []);
+            
+            // Mise à jour de l'adresse complète
+            form.setValue('full_address', place.formatted_address);
+            
+            // Mise à jour des coordonnées GPS
+            if (lat && lng) {
+              form.setValue('gps_latitude', lat);
+              form.setValue('gps_longitude', lng);
+            }
+            
+            // Mise à jour de la ville (municipalité)
+            if (parsedAddress.city) {
+              form.setValue('city', parsedAddress.city);
+            }
+            
+            // Mise à jour du district (zone géographique)
+            if (parsedAddress.district) {
+              form.setValue('cyprus_zone', parsedAddress.district);
+              const districtName = CYPRUS_DISTRICTS[parsedAddress.district as keyof typeof CYPRUS_DISTRICTS];
+              toast.success(`✅ District détecté: ${districtName || parsedAddress.district}`, {
+                description: parsedAddress.municipality && parsedAddress.municipality !== parsedAddress.city
+                  ? `Municipalité: ${parsedAddress.municipality}` 
+                  : undefined
+              });
+            } else {
+              toast.warning('District non détecté', {
+                description: 'Veuillez sélectionner le district manuellement'
+              });
+            }
+            
+            // Mise à jour de l'adresse rue (concaténation pour la DB)
+            const fullStreetAddress = parsedAddress.streetNumber && parsedAddress.streetName 
+              ? `${parsedAddress.streetNumber} ${parsedAddress.streetName}` 
+              : parsedAddress.streetName || '';
+            
+            if (fullStreetAddress) {
+              form.setValue('street_address', fullStreetAddress);
+              // Séparer aussi dans les champs individuels
+              form.setValue('street_number', parsedAddress.streetNumber || '');
+              form.setValue('street_name', parsedAddress.streetName || '');
+            }
+            
+            // Mise à jour du code postal
+            if (parsedAddress.postalCode) {
+              form.setValue('postal_code', parsedAddress.postalCode);
+            }
+            
+            // Si on a une municipalité différente de la ville principale, 
+            // l'utiliser comme quartier
+            if (parsedAddress.municipality && 
+                parsedAddress.municipality !== parsedAddress.city) {
+              form.setValue('neighborhood', parsedAddress.municipality);
+            }
+          }
+        });
       }
     }
-  }
-  
-  // 2. Si pas trouvé, vérifier le quartier (neighborhood)
-  // C'est ici qu'on gère Germasogeia -> Limassol
-  if (!detectedZone && neighborhood) {
-    for (const [name, zone] of Object.entries(zoneMapping)) {
-      if (neighborhood.toLowerCase() === name.toLowerCase() || 
-          neighborhood.toLowerCase().includes(name.toLowerCase()) || 
-          name.toLowerCase().includes(neighborhood.toLowerCase())) {
-        detectedZone = zone;
-        // Si c'est un quartier de Limassol comme Germasogeia, on force Limassol comme ville
-        if (zone === 'limassol' && ['germasogeia', 'yermasoyia', 'agios tychon', 'agios athanasios'].includes(neighborhood.toLowerCase())) {
-          city = 'Limassol'; // Forcer la ville principale
+  }, [form]);
+
+  // Fonction d'extraction manuelle
+  const handleExtractAddressDetails = async () => {
+    const address = form.getValues('full_address');
+    if (!address) {
+      toast.error('Veuillez entrer une adresse');
+      return;
+    }
+
+    setIsExtracting(true);
+
+    try {
+      // D'abord essayer le parsing manuel de l'adresse
+      const manualParsed = parseCompleteAddress(address);
+      
+      // Variables pour stocker les valeurs finales
+      let finalCity = '';
+      let finalDistrict = '';
+      let finalStreetAddress = '';
+      let finalPostalCode = '';
+      let finalNeighborhood = '';
+      
+      // Si on a extrait des infos depuis le parsing manuel
+      if (manualParsed.streetNumber || manualParsed.municipality || manualParsed.postalCode) {
+        // Mise à jour de l'adresse rue
+        finalStreetAddress = manualParsed.streetNumber && manualParsed.streetName
+          ? `${manualParsed.streetNumber} ${manualParsed.streetName}`
+          : manualParsed.streetName;
+          
+        finalPostalCode = manualParsed.postalCode;
+        finalDistrict = manualParsed.district;
+        
+        // Déterminer la ville selon le contexte chypriote
+        if (manualParsed.municipality) {
+          const { city, zone } = determineCityFromMunicipality(
+            manualParsed.municipality, 
+            manualParsed.district
+          );
+          
+          finalCity = city;
+          finalDistrict = zone || finalDistrict;
+          
+          // Si la municipalité est différente de la ville principale, 
+          // la stocker comme quartier
+          if (manualParsed.municipality !== city) {
+            finalNeighborhood = manualParsed.municipality;
+          }
         }
-        break;
       }
-    }
-  }
-  
-  // 3. Si toujours pas trouvé, vérifier la ville (city)
-  if (!detectedZone && city) {
-    for (const [name, zone] of Object.entries(zoneMapping)) {
-      if (city.toLowerCase() === name.toLowerCase() || 
-          city.toLowerCase().includes(name.toLowerCase()) || 
-          name.toLowerCase().includes(city.toLowerCase())) {
-        detectedZone = zone;
-        break;
+      
+      // Ensuite, utiliser Google Geocoding pour compléter/valider
+      if (window.google && window.google.maps) {
+        const geocoder = new window.google.maps.Geocoder();
+        
+        await new Promise<void>((resolve) => {
+          geocoder.geocode({ address: address }, (results, status) => {
+            if (status === 'OK' && results && results[0]) {
+              const place = results[0];
+              
+              // Parser avec le helper
+              const googleParsed = parseGooglePlaceComponents(place.address_components || []);
+              
+              // Mise à jour GPS
+              if (place.geometry && place.geometry.location) {
+                const lat = place.geometry.location.lat();
+                const lng = place.geometry.location.lng();
+                form.setValue('gps_latitude', lat);
+                form.setValue('gps_longitude', lng);
+              }
+              
+              // Compléter les champs manquants avec les données Google
+              finalCity = finalCity || googleParsed.city;
+              
+              if (!finalStreetAddress) {
+                const googleStreetAddress = googleParsed.streetNumber && googleParsed.streetName
+                  ? `${googleParsed.streetNumber} ${googleParsed.streetName}`
+                  : googleParsed.streetName;
+                
+                finalStreetAddress = googleStreetAddress;
+                
+                if (googleParsed.streetNumber) {
+                  form.setValue('street_number', googleParsed.streetNumber);
+                }
+                if (googleParsed.streetName) {
+                  form.setValue('street_name', googleParsed.streetName);
+                }
+              } else {
+                // Séparer l'adresse existante
+                const match = finalStreetAddress.match(/^(\d+[A-Za-z]?)\s+(.+)$/);
+                if (match) {
+                  form.setValue('street_number', match[1]);
+                  form.setValue('street_name', match[2]);
+                } else {
+                  form.setValue('street_name', finalStreetAddress);
+                }
+              }
+              
+              finalPostalCode = finalPostalCode || googleParsed.postalCode;
+              finalDistrict = finalDistrict || googleParsed.district;
+              
+              if (!finalNeighborhood && googleParsed.municipality && 
+                  googleParsed.municipality !== googleParsed.city) {
+                finalNeighborhood = googleParsed.municipality;
+              }
+            }
+            resolve();
+          });
+        });
       }
-    }
-  }
-  
-  // 4. Dernier recours : chercher dans l'adresse complète
-  if (!detectedZone && place.formatted_address) {
-    const fullAddress = place.formatted_address.toLowerCase();
-    for (const [name, zone] of Object.entries(zoneMapping)) {
-      if (fullAddress.includes(name.toLowerCase())) {
-        detectedZone = zone;
-        break;
+      
+      // Mise à jour finale des champs
+      if (finalCity) form.setValue('city', finalCity);
+      if (finalStreetAddress) form.setValue('street_address', finalStreetAddress);
+      if (finalPostalCode) form.setValue('postal_code', finalPostalCode);
+      if (finalDistrict) form.setValue('cyprus_zone', finalDistrict);
+      if (finalNeighborhood) form.setValue('neighborhood', finalNeighborhood);
+      
+      // Notification de succès avec détails
+      const districtName = finalDistrict ? CYPRUS_DISTRICTS[finalDistrict as keyof typeof CYPRUS_DISTRICTS] : null;
+      toast.success('✅ Détails extraits avec succès', {
+        description: `Ville: ${finalCity || 'N/A'} | District: ${districtName || 'N/A'} | Code: ${finalPostalCode || 'N/A'}`
+      });
+      
+      if (onExtractComplete) {
+        onExtractComplete();
       }
+      
+    } catch (error) {
+      console.error('Erreur extraction:', error);
+      toast.error('Erreur lors de l\'extraction');
+    } finally {
+      setIsExtracting(false);
     }
-  }
-  
-  // Mettre à jour les coordonnées GPS
-  if (place.geometry && place.geometry.location) {
-    const lat = place.geometry.location.lat();
-    const lng = place.geometry.location.lng();
-    form.setValue('gps_latitude', lat);
-    form.setValue('gps_longitude', lng);
-  }
-  
-  // Mettre à jour tous les champs
-  
-  // Ville (avec correction pour Germasogeia)
-  if (city) {
-    form.setValue('city', city);
-  } else if (neighborhood && detectedZone === 'limassol' && 
-             ['germasogeia', 'yermasoyia', 'agios tychon', 'agios athanasios'].includes(neighborhood.toLowerCase())) {
-    // Cas spécial : quartiers de Limassol
-    form.setValue('city', 'Limassol');
-  }
-  
-  // Champs de rue SÉPARÉS
-  if (streetNumber) {
-    form.setValue('street_number', streetNumber);
-  }
-  if (streetName) {
-    form.setValue('street_name', streetName);
-  }
-  
-  // Concaténation pour la DB (street_address)
-  const streetAddress = streetNumber && streetName 
-    ? `${streetNumber} ${streetName}` 
-    : streetName || '';
-  if (streetAddress) {
-    form.setValue('street_address', streetAddress);
-  }
-  
-  // Autres champs
-  if (postalCode) {
-    form.setValue('postal_code', postalCode);
-  }
-  
-  if (neighborhood) {
-    form.setValue('neighborhood', neighborhood);
-  }
-  
-  if (detectedZone) {
-    form.setValue('cyprus_zone', detectedZone);
-  }
-  
-  // Retourner les informations extraites pour le toast de notification
-  return {
-    city: city || (neighborhood && detectedZone === 'limassol' ? 'Limassol' : ''),
-    district: detectedZone,
-    streetNumber,
-    streetName,
-    postalCode,
-    neighborhood
   };
+
+  // Fonction pour synchroniser street_number et street_name avec street_address
+  const syncStreetAddress = (number?: string, name?: string) => {
+    const streetNumber = number ?? form.getValues('street_number') ?? '';
+    const streetName = name ?? form.getValues('street_name') ?? '';
+    
+    const fullAddress = streetNumber && streetName
+      ? `${streetNumber} ${streetName}`
+      : streetName;
+      
+    form.setValue('street_address', fullAddress);
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Adresse avec autocomplétion */}
+      <FormField
+        control={form.control}
+        name="full_address"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Adresse complète *</FormLabel>
+            <div className="flex gap-2">
+              <FormControl>
+                <Input 
+                  id="address-autocomplete"
+                  placeholder="Commencez à taper ou collez une adresse complète..."
+                  {...field}
+                  className="flex-1"
+                />
+              </FormControl>
+              <Button
+                type="button"
+                onClick={handleExtractAddressDetails}
+                disabled={!field.value || isExtracting}
+                variant="outline"
+                size="default"
+              >
+                {isExtracting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Extraction...
+                  </>
+                ) : (
+                  <>
+                    <MapPin className="mr-2 h-4 w-4" />
+                    Extraire
+                  </>
+                )}
+              </Button>
+            </div>
+            <FormDescription>
+              Exemple: "45 Poseidonos Avenue, Germasogeia, 4048 Limassol, Cyprus"
+            </FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      {/* Numéro et rue - champs séparés mais synchronisés */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <FormField
+          control={form.control}
+          name="street_number"
+          render={({ field }) => (
+            <FormItem className="md:col-span-1">
+              <FormLabel>Numéro</FormLabel>
+              <FormControl>
+                <Input 
+                  placeholder="Ex: 45"
+                  {...field}
+                  onChange={(e) => {
+                    field.onChange(e.target.value);
+                    syncStreetAddress(e.target.value, undefined);
+                  }}
+                  className="bg-gray-50"
+                />
+              </FormControl>
+              <FormDescription>N° de rue</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="street_name"
+          render={({ field }) => (
+            <FormItem className="md:col-span-2">
+              <FormLabel>Rue</FormLabel>
+              <FormControl>
+                <Input 
+                  placeholder="Ex: Poseidonos Avenue"
+                  {...field}
+                  onChange={(e) => {
+                    field.onChange(e.target.value);
+                    syncStreetAddress(undefined, e.target.value);
+                  }}
+                  className="bg-gray-50"
+                />
+              </FormControl>
+              <FormDescription>Nom de la rue</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+
+      {/* Champ caché pour stocker l'adresse complète pour la DB */}
+      <input 
+        type="hidden" 
+        {...form.register('street_address')}
+      />
+    </div>
+  );
 };
 
-// Export du mapping des zones pour réutilisation
-export const CYPRUS_ZONE_MAPPING = {
-  // Limassol et tous ses quartiers/municipalités
-  'Limassol': 'limassol',
-  'Lemesos': 'limassol',
-  'Λεμεσός': 'limassol',
-  'Limassol District': 'limassol',
-  'Germasogeia': 'limassol',
-  'Germasogeia Municipality': 'limassol',
-  'Γερμασόγεια': 'limassol',
-  'Yermasoyia': 'limassol',
-  'Agios Tychon': 'limassol',
-  'Agios Athanasios': 'limassol',
-  'Mesa Geitonia': 'limassol',
-  'Katholiki': 'limassol',
-  'Zakaki': 'limassol',
-  'Ypsonas': 'limassol',
-  'Kato Polemidia': 'limassol',
-  'Mouttagiaka': 'limassol',
-  'Parekklisia': 'limassol',
-  'Pyrgos': 'limassol',
-  'Erimi': 'limassol',
-  'Kolossi': 'limassol',
-  'Trachoni': 'limassol',
-  
-  // Paphos et environs
-  'Paphos': 'paphos',
-  'Pafos': 'paphos',
-  'Πάφος': 'paphos',
-  'Paphos District': 'paphos',
-  'Kato Paphos': 'paphos',
-  'Peyia': 'paphos',
-  'Coral Bay': 'paphos',
-  'Chloraka': 'paphos',
-  'Kissonerga': 'paphos',
-  'Tala': 'paphos',
-  'Emba': 'paphos',
-  'Konia': 'paphos',
-  'Kouklia': 'paphos',
-  
-  // Larnaca et environs
-  'Larnaca': 'larnaca',
-  'Larnaka': 'larnaca',
-  'Λάρνακα': 'larnaca',
-  'Larnaca District': 'larnaca',
-  'Oroklini': 'larnaca',
-  'Pyla': 'larnaca',
-  'Livadia': 'larnaca',
-  'Dromolaxia': 'larnaca',
-  'Meneou': 'larnaca',
-  'Kiti': 'larnaca',
-  'Tersefanou': 'larnaca',
-  
-  // Nicosia et environs
-  'Nicosia': 'nicosia',
-  'Lefkosia': 'nicosia',
-  'Λευκωσία': 'nicosia',
-  'Nicosia District': 'nicosia',
-  'Strovolos': 'nicosia',
-  'Lakatamia': 'nicosia',
-  'Latsia': 'nicosia',
-  'Engomi': 'nicosia',
-  'Agios Dometios': 'nicosia',
-  'Aglantzia': 'nicosia',
-  'Dasoupoli': 'nicosia',
-  'Geri': 'nicosia',
-  
-  // Famagusta et environs
-  'Famagusta': 'famagusta',
-  'Ammochostos': 'famagusta',
-  'Αμμόχωστος': 'famagusta',
-  'Famagusta District': 'famagusta',
-  'Paralimni': 'famagusta',
-  'Ayia Napa': 'famagusta',
-  'Protaras': 'famagusta',
-  'Deryneia': 'famagusta',
-  'Sotira': 'famagusta',
-  'Frenaros': 'famagusta',
-  
-  // Kyrenia et environs (zone nord)
-  'Kyrenia': 'kyrenia',
-  'Girne': 'kyrenia',
-  'Κερύνεια': 'kyrenia',
-  'Kyrenia District': 'kyrenia',
-  'Karavas': 'kyrenia',
-  'Lapithos': 'kyrenia'
-};
+export default AddressExtraction;
