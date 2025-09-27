@@ -998,6 +998,27 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     setSelectedAmenities(selected);
   }, [form.watch('surrounding_amenities')]);
 
+  // Synchroniser les sélections vers le formulaire quand selectedAmenities change
+  useEffect(() => {
+    // Éviter la boucle infinie avec une vérification
+    const currentAmenities = form.watch('surrounding_amenities');
+    if (!currentAmenities || currentAmenities.length === 0) return;
+    
+    // Mettre à jour seulement si nécessaire
+    const needsUpdate = currentAmenities.some(a => {
+      const shouldBeSelected = selectedAmenities.has(a.nearby_amenity_id || '');
+      return a.selected !== shouldBeSelected;
+    });
+    
+    if (needsUpdate) {
+      const updatedAmenities = currentAmenities.map(a => ({
+        ...a,
+        selected: selectedAmenities.has(a.nearby_amenity_id || '')
+      }));
+      form.setValue('surrounding_amenities', updatedAmenities, { shouldValidate: false });
+    }
+  }, [selectedAmenities, form]);
+
   // Fonction pour extraire les détails depuis une adresse complète
   const handleExtractAddressDetails = async () => {
     const address = form.watch('full_address');
@@ -1559,25 +1580,17 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                         type="button"
                         size="sm"
                         variant="outline"
-                        onClick={() => {
-                          const amenities = form.watch('surrounding_amenities') || [];
-                          if (selectedAmenities.size === amenities.length) {
-                            // Tout désélectionner
-                            setSelectedAmenities(new Set());
-                            form.setValue('surrounding_amenities', amenities.map(a => ({
-                              ...a,
-                              selected: false
-                            })));
-                          } else {
-                            // Tout sélectionner
-                            const allTypes = new Set<string>(amenities.map(a => a.nearby_amenity_id || ''));
-                            setSelectedAmenities(allTypes);
-                            form.setValue('surrounding_amenities', amenities.map(a => ({
-                              ...a,
-                              selected: true
-                            })));
-                          }
-                        }}
+                      onClick={() => {
+                        const amenities = form.watch('surrounding_amenities') || [];
+                        if (selectedAmenities.size === amenities.length) {
+                          // Tout désélectionner
+                          setSelectedAmenities(new Set());
+                        } else {
+                          // Tout sélectionner
+                          const allTypes = new Set<string>(amenities.map(a => a.nearby_amenity_id || ''));
+                          setSelectedAmenities(allTypes);
+                        }
+                      }}
                       >
                         {selectedAmenities.size === form.watch('surrounding_amenities')?.length 
                           ? 'Tout désélectionner' 
@@ -1762,7 +1775,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                           center={{ lat: latNum, lng: lngNum }}
                           markers={mapCommodities.map(c => ({
                             position: { lat: c.lat, lng: c.lng },
-                            title: c.name
+                            title: c.name,
+                            isSelected: selectedAmenities.has(c.type)
                           }))}
                           radius={detectionRadius}
                         />

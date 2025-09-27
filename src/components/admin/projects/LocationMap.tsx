@@ -6,7 +6,7 @@ import { useGoogleMapsContext } from '@/contexts/GoogleMapsContext';
 
 interface LocationMapProps {
   center: { lat: number; lng: number };
-  markers?: Array<{ position: { lat: number; lng: number }; title: string }>;
+  markers?: Array<{ position: { lat: number; lng: number }; title: string; isSelected?: boolean }>;
   radius?: number;
   onMapClick?: (lat: number, lng: number) => void;
 }
@@ -114,7 +114,9 @@ export function LocationMap({ center, markers = [], radius = 2, onMapClick }: Lo
             position={marker.position}
             title={marker.title}
             icon={{
-              url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+              url: marker.isSelected 
+                ? 'https://maps.google.com/mapfiles/ms/icons/green-dot.png'
+                : 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
               scaledSize: new google.maps.Size(30, 30),
             }}
           />
