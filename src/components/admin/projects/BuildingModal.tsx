@@ -43,22 +43,20 @@ import { cn } from '@/lib/utils';
 const buildingSchema = z.object({
   building_name: z.string().min(1, 'Le nom du bâtiment est requis'),
   building_type: z.enum(['apartment_building', 'villa_complex', 'mixed_residence', 'residential']),
-  building_code: z.string().min(1, 'Le code bâtiment est requis'), // Fixed: Now required to match DB
-  total_floors: z.number().min(1, 'Au moins 1 étage requis'), // Fixed: Now required to match DB
+  building_code: z.string().optional(),
+  total_floors: z.number().min(0).optional(),
   total_units: z.number().min(0).optional(),
   units_available: z.number().min(0).optional(),
-  construction_status: z.enum(['planning', 'construction', 'delivered']), // Fixed: 'planning' not 'planned'
+  construction_status: z.enum(['planned', 'construction', 'delivered']),
   expected_completion: z.string().optional(),
   actual_completion: z.string().optional(),
   building_class: z.enum(['A+', 'A', 'B', 'C']).optional(),
   energy_certificate: z.string().optional(),
-  energy_rating: z.string().optional(), // Added missing field
   elevator_count: z.number().min(0).optional(),
   has_generator: z.boolean().optional(),
   has_security_system: z.boolean().optional(),
   has_cctv: z.boolean().optional(),
   has_concierge: z.boolean().optional(),
-  has_solar_panels: z.boolean().optional(), // Added missing field
   has_pool: z.boolean().optional(),
   has_gym: z.boolean().optional(),
   has_spa: z.boolean().optional(),
@@ -91,8 +89,7 @@ export function BuildingModal({
     defaultValues: {
       building_name: '',
       building_type: 'apartment_building',
-      building_code: 'A', // Fixed: Now has default value
-      construction_status: 'planning', // Fixed: 'planning' not 'planned'
+      construction_status: 'planned',
       total_floors: 1,
       total_units: 1,
       units_available: 1,
@@ -101,7 +98,6 @@ export function BuildingModal({
       has_security_system: false,
       has_cctv: false,
       has_concierge: false,
-      has_solar_panels: false, // Added
       has_pool: false,
       has_gym: false,
       has_spa: false,
@@ -118,7 +114,7 @@ export function BuildingModal({
       form.reset({
         building_name: building.building_name,
         building_type: building.building_type,
-        building_code: building.building_code || 'A',
+        building_code: building.building_code || '',
         total_floors: building.total_floors || 1,
         total_units: building.total_units || 1,
         units_available: building.units_available || 1,
@@ -127,13 +123,11 @@ export function BuildingModal({
         actual_completion: building.actual_completion || '',
         building_class: building.building_class,
         energy_certificate: building.energy_certificate || '',
-        energy_rating: building.energy_rating || '',
         elevator_count: building.elevator_count || 0,
         has_generator: building.has_generator || false,
         has_security_system: building.has_security_system || false,
         has_cctv: building.has_cctv || false,
         has_concierge: building.has_concierge || false,
-        has_solar_panels: building.has_solar_panels || false,
         has_pool: building.has_pool || false,
         has_gym: building.has_gym || false,
         has_spa: building.has_spa || false,
@@ -205,7 +199,7 @@ export function BuildingModal({
                     name="building_code"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Code bâtiment *</FormLabel>
+                        <FormLabel>Code bâtiment</FormLabel>
                         <FormControl>
                           <Input placeholder="ex: A1, VIL-01..." {...field} />
                         </FormControl>
@@ -252,7 +246,7 @@ export function BuildingModal({
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="planning">Planifié</SelectItem>
+                              <SelectItem value="planned">Planifié</SelectItem>
                               <SelectItem value="construction">En construction</SelectItem>
                               <SelectItem value="delivered">Livré</SelectItem>
                             </SelectContent>
@@ -278,13 +272,13 @@ export function BuildingModal({
                     name="total_floors"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Nombre d'étages *</FormLabel>
+                        <FormLabel>Nombre d'étages</FormLabel>
                         <FormControl>
                           <Input 
                             type="number" 
-                            min="1"
+                            min="0"
                             {...field}
-                            onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : 1)}
+                            onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
                           />
                         </FormControl>
                         <FormMessage />
@@ -372,22 +366,6 @@ export function BuildingModal({
 
                   <FormField
                     control={form.control}
-                    name="energy_rating"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Classe énergétique</FormLabel>
-                        <FormControl>
-                          <Input placeholder="ex: A, B, C..." {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
                     name="elevator_count"
                     render={({ field }) => (
                       <FormItem>
@@ -401,19 +379,6 @@ export function BuildingModal({
                           />
                         </FormControl>
                         <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="has_solar_panels"
-                    render={({ field }) => (
-                      <FormItem className="flex items-center justify-between">
-                        <FormLabel>Panneaux solaires</FormLabel>
-                        <FormControl>
-                          <Switch checked={field.value} onCheckedChange={field.onChange} />
-                        </FormControl>
                       </FormItem>
                     )}
                   />

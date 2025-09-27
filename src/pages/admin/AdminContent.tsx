@@ -191,7 +191,7 @@ export const AdminContent = () => {
         description: "Le témoignage a été supprimé avec succès"
       });
     }
-};
+  };
 
   return (
     <div className="p-8 space-y-8">
@@ -602,5 +602,3 @@ export const AdminContent = () => {
     </div>
   );
 };
-
-export default AdminContent;

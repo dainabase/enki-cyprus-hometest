@@ -138,27 +138,25 @@ export const projectSchema = z.object({
   wellness_features: z.any().optional(), // Added - JSONB
   seasonal_features: z.any().optional(), // Added - JSONB
   
-  // BUILDINGS - FIXED construction_status values
+  // BUILDINGS
   buildings: z.array(z.object({
     id: z.string().optional(),
     building_name: z.string().min(1, "Nom requis"),
     building_type: z.enum(['apartment_building', 'villa_complex', 'mixed_residence', 'residential']).optional(),
-    building_code: z.string().min(1, "Code requis"), // Fixed: Now required to match DB
-    total_floors: z.number().min(1, "Au moins 1 étage requis"), // Fixed: Now required to match DB
+    building_code: z.string().optional(),
+    total_floors: z.number().min(0).optional(),
     total_units: z.number().min(0).optional(),
     units_available: z.number().min(0).optional(),
-    construction_status: z.enum(['planning', 'construction', 'delivered']).optional(), // Fixed: 'planning' not 'planned'
+    construction_status: z.enum(['planned', 'construction', 'delivered']).optional(),
     expected_completion: z.string().optional(),
     actual_completion: z.string().optional(),
     building_class: z.enum(['A+', 'A', 'B', 'C']).optional(),
     energy_certificate: z.string().optional(),
-    energy_rating: z.string().optional(), // Added missing field
     elevator_count: z.number().min(0).optional(),
     has_generator: z.boolean().optional(),
     has_security_system: z.boolean().optional(),
     has_cctv: z.boolean().optional(),
     has_concierge: z.boolean().optional(),
-    has_solar_panels: z.boolean().optional(), // Added missing field
     has_pool: z.boolean().optional(),
     has_gym: z.boolean().optional(),
     has_spa: z.boolean().optional(),
@@ -323,4 +321,3 @@ export const projectFormSteps = [
     ]
   }
 ];
-
