@@ -11,9 +11,12 @@ import SimpleImageUploader from '@/components/admin/common/SimpleImageUploader';
 import { createProjectImage, fetchProjectImages, ProjectImage } from '@/lib/supabase/images';
 import { useTranslation } from 'react-i18next';
 import { ProjectAmenitiesSection } from './ProjectAmenitiesSection';
+import { ProjectBuildingsSection } from './ProjectBuildingsSection';
+import { ProjectMarketingSeoSection } from './ProjectMarketingSeoSection';
 import type { ProjectAmenitiesExtension } from '@/types/project-amenities-extension';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { MapPin, Building, Settings, Euro, Image, Search } from 'lucide-react';
+import { MapPin, Building, Settings, Euro, Image } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface ProjectFormProps {
   project?: any;
@@ -44,14 +47,26 @@ interface ProjectFormData {
     lat: number;
     lng: number;
   };
-  // New amenities fields
+  // Amenities fields
   amenities: ProjectAmenitiesExtension;
+  // SEO fields
+  seo: {
+    meta_title?: string;
+    meta_description?: string;
+    url_slug?: string;
+    keywords?: string;
+    og_title?: string;
+    og_description?: string;
+    canonical_url?: string;
+  };
 }
 
 const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, onCancel }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [existingImages, setExistingImages] = useState<ProjectImage[]>([]);
+  const [projectBuildings, setProjectBuildings] = useState<any[]>([]);
   
   const [formData, setFormData] = useState<ProjectFormData>({
     title: '',
@@ -92,6 +107,16 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
       security_features: {},
       wellness_facilities: {},
       outdoor_facilities: {}
+    },
+    // Initialize SEO
+    seo: {
+      meta_title: '',
+      meta_description: '',
+      url_slug: '',
+      keywords: '',
+      og_title: '',
+      og_description: '',
+      canonical_url: ''
     }
   });
 
@@ -136,11 +161,23 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
           security_features: project.security_features || {},
           wellness_facilities: project.wellness_facilities || {},
           outdoor_facilities: project.outdoor_facilities || {}
+        },
+        // Load SEO fields
+        seo: {
+          meta_title: project.meta_title || '',
+          meta_description: project.meta_description || '',
+          url_slug: project.url_slug || '',
+          keywords: project.keywords || '',
+          og_title: project.og_title || '',
+          og_description: project.og_description || '',
+          canonical_url: project.canonical_url || ''
         }
       });
       
       // Load existing images
       loadExistingImages(project.id);
+      // Load buildings for this project
+      loadProjectBuildings(project.id);
     }
   }, [project]);
 
@@ -150,6 +187,21 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
       setExistingImages(images);
     } catch (error) {
       console.error('Error loading images:', error);
+    }
+  };
+
+  const loadProjectBuildings = async (projectId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('buildings')
+        .select('id, name, total_floors, units, status')
+        .eq('project_id', projectId)
+        .order('name');
+      
+      if (error) throw error;
+      setProjectBuildings(data || []);
+    } catch (error) {
+      console.error('Error loading buildings:', error);
     }
   };
 
@@ -163,6 +215,15 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
 
   const handleAmenitiesChange = (amenities: ProjectAmenitiesExtension) => {
     setFormData(prev => ({ ...prev, amenities }));
+  };
+
+  const handleSeoChange = (seo: ProjectFormData['seo']) => {
+    setFormData(prev => ({ ...prev, seo }));
+  };
+
+  const handleAddBuilding = () => {
+    // Navigate to buildings page with project filter
+    navigate(`/admin/buildings?project=${project?.id}`);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -201,7 +262,11 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
         parking_type: formData.amenities.parking_type || null,
         security_features: formData.amenities.security_features || {},
         wellness_facilities: formData.amenities.wellness_facilities || {},
-        outdoor_facilities: formData.amenities.outdoor_facilities || {}
+        outdoor_facilities: formData.amenities.outdoor_facilities || {},
+        // Include SEO fields
+        meta_title: formData.seo.meta_title || null,
+        meta_description: formData.seo.meta_description || null,
+        url_slug: formData.seo.url_slug || null
       };
 
       if (project) {
@@ -599,6 +664,22 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
           </CardContent>
         </Card>
       )}
+
+      {/* 7. BÂTIMENTS - NOUVELLE SECTION */}
+      <ProjectBuildingsSection
+        projectId={project?.id}
+        buildings={projectBuildings}
+        onAddBuilding={handleAddBuilding}
+        t={t}
+      />
+
+      {/* 8. MARKETING & SEO - NOUVELLE SECTION */}
+      <ProjectMarketingSeoSection
+        data={formData.seo}
+        onChange={handleSeoChange}
+        projectTitle={formData.title}
+        t={t}
+      />
 
       {/* Actions */}
       <div className="flex items-center justify-end space-x-2 pt-4">
