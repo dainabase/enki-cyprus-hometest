@@ -57,7 +57,7 @@ Réorganiser les champs d'amenities entre les tables `buildings` et `projects` p
 
 ### ✅ Étape 4/10 : Types TypeScript créés
 **Date** : 27/09/2025  
-**Fichier créé** : `src/types/project-amenities-extension.ts`
+**Fichier créé** : `src/types/project-amenities-extension.ts` (SHA: d5484f9)
 
 **Contenu** :
 - Interface `ProjectAmenitiesExtension`
@@ -78,16 +78,23 @@ Réorganiser les champs d'amenities entre les tables `buildings` et `projects` p
 
 ---
 
-## 📋 PROCHAINES ÉTAPES
+### ✅ Étape 6/10 : Formulaire projects enrichi
+**Date** : 27/09/2025  
+**Fichiers créés/modifiés** :
+- `src/components/admin/projects/ProjectAmenitiesSection.tsx` (SHA: fa409a2) - NOUVEAU
+- `src/components/admin/projects/ProjectForm.tsx` (SHA: 2a8ea97) - MODIFIÉ
 
-### ⏳ Étape 6/10 : Enrichir le formulaire projects
-**À faire** :
-- [ ] Modifier `src/components/admin/projects/ProjectModal.tsx`
-- [ ] Ajouter section "Amenities" dans le formulaire
-- [ ] Utiliser les types de `project-amenities-extension.ts`
-- [ ] NE PAS retirer les champs de buildings
+**Fonctionnalités ajoutées** :
+- Section complète d'amenities dans le formulaire projet
+- 11 switches pour les amenities boolean
+- Sélecteur conditionnel pour le type de parking
+- Regroupement par catégories : Wellness, Security, Infrastructure
+- Compteur d'amenities sélectionnées
+- **AUCUN AUTRE CHANGEMENT** au formulaire existant
 
 ---
+
+## 📋 PROCHAINES ÉTAPES
 
 ### ⏳ Étape 7/10 : Validation et tests
 **À faire** :
@@ -129,6 +136,7 @@ Réorganiser les champs d'amenities entre les tables `buildings` et `projects` p
 3. **Maintien de la compatibilité** ✅
 4. **Tests à chaque étape** ✅
 5. **Documentation complète** ✅
+6. **AUCUNE modification non demandée** ✅
 
 ---
 
@@ -139,9 +147,11 @@ Réorganiser les champs d'amenities entre les tables `buildings` et `projects` p
 | **Tables modifiées** | 2 (buildings, projects) |
 | **Colonnes ajoutées** | 15 |
 | **Colonnes à supprimer** | 15 (phase finale) |
-| **Fichiers TypeScript** | 4 modifiés |
+| **Fichiers TypeScript créés** | 2 nouveaux |
+| **Fichiers TypeScript modifiés** | 5 |
 | **Migrations SQL** | 2 appliquées |
 | **Données migrées** | 100% sans perte |
+| **Composants UI créés** | 1 (ProjectAmenitiesSection) |
 
 ---
 
@@ -151,6 +161,7 @@ Réorganiser les champs d'amenities entre les tables `buildings` et `projects` p
 2. **Le frontend continue de fonctionner** sans interruption
 3. **Les données sont synchronisées** entre buildings et projects
 4. **La suppression finale nécessite validation** manuelle
+5. **Le formulaire projects enrichi SANS autre modification**
 
 ---
 
@@ -171,6 +182,10 @@ SELECT
 FROM public.buildings b
 JOIN public.projects p ON b.project_id = p.id;
 
+# Tester la création d'un projet avec amenities
+INSERT INTO public.projects (title, has_pool, has_gym, has_parking, parking_type)
+VALUES ('Test Project', true, true, true, 'underground');
+
 # Backup rapide
 pg_dump --table=buildings --table=projects > backup_$(date +%Y%m%d).sql
 ```
@@ -179,10 +194,12 @@ pg_dump --table=buildings --table=projects > backup_$(date +%Y%m%d).sql
 
 ## 📝 NOTES DE DÉVELOPPEMENT
 
-- **Approche progressive** : Chaque étape est validée avant la suivante
-- **Pas de breaking changes** : Le frontend reste fonctionnel
-- **Traçabilité** : Toutes les modifications sont documentées
-- **Réversibilité** : Possibilité de rollback à chaque étape
+### Étape 6 - Points clés :
+- **Composant modulaire** : `ProjectAmenitiesSection` séparé pour réutilisabilité
+- **UI intuitive** : Regroupement logique par catégories avec icônes
+- **Logique conditionnelle** : Type de parking visible uniquement si parking activé
+- **Intégration douce** : Ajout UNIQUEMENT de la section amenities, rien d'autre
+- **Types stricts** : Utilisation de `ProjectAmenitiesExtension` pour typage fort
 
 ---
 
@@ -195,4 +212,4 @@ Pour toute question sur ce refactoring :
 ---
 
 **Dernière mise à jour par** : MCP Assistant  
-**Progression globale** : 5/10 étapes (50%) ✅
+**Progression globale** : 6/10 étapes (60%) ✅
