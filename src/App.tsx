@@ -11,7 +11,7 @@ import { FilterProvider } from "./contexts/FilterContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { GoogleMapsProvider } from "./contexts/GoogleMapsContext";
 import { PrivateRoute } from "./components/auth/PrivateRoute";
-import LoadingSpinner from "./components/LoadingSpinner";
+import LoadingSpinner from "./components/ui/LoadingSpinner";
 import { CookieConsentBanner } from "./components/CookieConsent";
 import { NotificationProvider } from "./components/NotificationProvider";
 import { initGA, trackPageView } from "./lib/analytics";
