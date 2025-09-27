@@ -72,7 +72,10 @@ const ErrorFallback = () => (
 
 // App component rendering
 const AppContent = () => {
+  console.log('🚀 AppContent rendering...');
+  
   useEffect(() => {
+    console.log('🚀 AppContent mounted, initializing GA...');
     initGA();
   }, []);
 
