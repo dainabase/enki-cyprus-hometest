@@ -49,16 +49,10 @@ interface ProjectFormData {
   };
   // Amenities fields
   amenities: ProjectAmenitiesExtension;
-  // SEO fields
-  seo: {
-    meta_title?: string;
-    meta_description?: string;
-    url_slug?: string;
-    keywords?: string;
-    og_title?: string;
-    og_description?: string;
-    canonical_url?: string;
-  };
+  // SEO fields (only supported ones)
+  meta_title?: string;
+  meta_description?: string;
+  url_slug?: string;
 }
 
 const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, onCancel }) => {
@@ -109,15 +103,9 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
       outdoor_facilities: {}
     },
     // Initialize SEO
-    seo: {
-      meta_title: '',
-      meta_description: '',
-      url_slug: '',
-      keywords: '',
-      og_title: '',
-      og_description: '',
-      canonical_url: ''
-    }
+    meta_title: '',
+    meta_description: '',
+    url_slug: ''
   });
 
   useEffect(() => {
@@ -163,15 +151,9 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
           outdoor_facilities: project.outdoor_facilities || {}
         },
         // Load SEO fields
-        seo: {
-          meta_title: project.meta_title || '',
-          meta_description: project.meta_description || '',
-          url_slug: project.url_slug || '',
-          keywords: project.keywords || '',
-          og_title: project.og_title || '',
-          og_description: project.og_description || '',
-          canonical_url: project.canonical_url || ''
-        }
+        meta_title: project.meta_title || '',
+        meta_description: project.meta_description || '',
+        url_slug: project.url_slug || ''
       });
       
       // Load existing images
@@ -194,12 +176,19 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
     try {
       const { data, error } = await supabase
         .from('buildings')
-        .select('id, name, total_floors, units, status')
+        .select('id, building_name, total_floors, total_units, construction_status')
         .eq('project_id', projectId)
-        .order('name');
+        .order('building_name');
       
       if (error) throw error;
-      setProjectBuildings(data || []);
+      const mappedData = data?.map(b => ({
+        id: b.id,
+        name: b.building_name || 'Unnamed Building',
+        total_floors: b.total_floors,
+        units: b.total_units,
+        status: b.construction_status
+      })) || [];
+      setProjectBuildings(mappedData);
     } catch (error) {
       console.error('Error loading buildings:', error);
     }
@@ -217,8 +206,8 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
     setFormData(prev => ({ ...prev, amenities }));
   };
 
-  const handleSeoChange = (seo: ProjectFormData['seo']) => {
-    setFormData(prev => ({ ...prev, seo }));
+  const handleSeoChange = (seo: { meta_title?: string; meta_description?: string; url_slug?: string }) => {
+    setFormData(prev => ({ ...prev, ...seo }));
   };
 
   const handleAddBuilding = () => {
@@ -264,9 +253,9 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
         wellness_facilities: formData.amenities.wellness_facilities || {},
         outdoor_facilities: formData.amenities.outdoor_facilities || {},
         // Include SEO fields
-        meta_title: formData.seo.meta_title || null,
-        meta_description: formData.seo.meta_description || null,
-        url_slug: formData.seo.url_slug || null
+        meta_title: formData.meta_title || null,
+        meta_description: formData.meta_description || null,
+        url_slug: formData.url_slug || null
       };
 
       if (project) {
@@ -675,7 +664,11 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
 
       {/* 8. MARKETING & SEO - NOUVELLE SECTION */}
       <ProjectMarketingSeoSection
-        data={formData.seo}
+        data={{
+          meta_title: formData.meta_title,
+          meta_description: formData.meta_description,
+          url_slug: formData.url_slug
+        }}
         onChange={handleSeoChange}
         projectTitle={formData.title}
         t={t}
