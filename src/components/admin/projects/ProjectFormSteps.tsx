@@ -1625,38 +1625,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                             ? '❌ Tout désélectionner' 
                             : '✅ Tout sélectionner'}
                         </Button>
-                        {/* Bouton de debug temporaire */}
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="destructive"
-                          onClick={() => {
-                            console.log('🔄 RESET des sélections');
-                            setSelectedAmenities(new Set());
-                            toast.info('Sélections réinitialisées');
-                          }}
-                        >
-                          🔄 Reset
-                        </Button>
-                        {/* Bouton de test manuel */}
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="secondary"
-                          onClick={() => {
-                            console.log('🧪 TEST: Forcer sélection manuelle');
-                            setSelectedAmenities(new Set(['school', 'hospital', 'supermarket']));
-                            console.log('🧪 TEST: Sélection forcée avec school, hospital, supermarket');
-                          }}
-                        >
-                          🧪 Test Force
-                        </Button>
                       </div>
-                      {selectedAmenities.size > 0 && (
-                        <Badge variant="secondary" className="bg-green-100 text-green-800">
-                          {selectedAmenities.size} affichées sur le site public
-                        </Badge>
-                      )}
                     </div>
                   )}
                   
