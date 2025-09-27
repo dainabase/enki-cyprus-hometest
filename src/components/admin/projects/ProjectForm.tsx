@@ -10,6 +10,8 @@ import { toast } from '@/components/ui/sonner';
 import SimpleImageUploader from '@/components/admin/common/SimpleImageUploader';
 import { createProjectImage, fetchProjectImages, ProjectImage } from '@/lib/supabase/images';
 import { useTranslation } from 'react-i18next';
+import { ProjectAmenitiesSection } from './ProjectAmenitiesSection';
+import type { ProjectAmenitiesExtension } from '@/types/project-amenities-extension';
 
 interface ProjectFormProps {
   project?: any;
@@ -40,6 +42,8 @@ interface ProjectFormData {
     lat: number;
     lng: number;
   };
+  // New amenities fields
+  amenities: ProjectAmenitiesExtension;
 }
 
 const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, onCancel }) => {
@@ -68,6 +72,24 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
       address: '',
       lat: 34.7768,
       lng: 32.4245
+    },
+    // Initialize amenities
+    amenities: {
+      has_pool: false,
+      has_gym: false,
+      has_spa: false,
+      has_playground: false,
+      has_garden: false,
+      has_security_system: false,
+      has_cctv: false,
+      has_concierge: false,
+      has_generator: false,
+      has_solar_panels: false,
+      has_parking: false,
+      parking_type: null,
+      security_features: {},
+      wellness_facilities: {},
+      outdoor_facilities: {}
     }
   });
 
@@ -94,6 +116,24 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
           address: project.location?.address || '',
           lat: project.location?.lat || 34.7768,
           lng: project.location?.lng || 32.4245
+        },
+        // Load existing amenities
+        amenities: {
+          has_pool: project.has_pool || false,
+          has_gym: project.has_gym || false,
+          has_spa: project.has_spa || false,
+          has_playground: project.has_playground || false,
+          has_garden: project.has_garden || false,
+          has_security_system: project.has_security_system || false,
+          has_cctv: project.has_cctv || false,
+          has_concierge: project.has_concierge || false,
+          has_generator: project.has_generator || false,
+          has_solar_panels: project.has_solar_panels || false,
+          has_parking: project.has_parking || false,
+          parking_type: project.parking_type || null,
+          security_features: project.security_features || {},
+          wellness_facilities: project.wellness_facilities || {},
+          outdoor_facilities: project.outdoor_facilities || {}
         }
       });
       
@@ -119,6 +159,10 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
     }
   }, [formData.price]);
 
+  const handleAmenitiesChange = (amenities: ProjectAmenitiesExtension) => {
+    setFormData(prev => ({ ...prev, amenities }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -138,7 +182,23 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
         completion_date: formData.completion_date || null,
         golden_visa_eligible: formData.golden_visa_eligible,
         units_available: formData.units_available,
-        total_units: formData.total_units
+        total_units: formData.total_units,
+        // Include amenities fields
+        has_pool: formData.amenities.has_pool,
+        has_gym: formData.amenities.has_gym,
+        has_spa: formData.amenities.has_spa,
+        has_playground: formData.amenities.has_playground,
+        has_garden: formData.amenities.has_garden,
+        has_security_system: formData.amenities.has_security_system,
+        has_cctv: formData.amenities.has_cctv,
+        has_concierge: formData.amenities.has_concierge,
+        has_generator: formData.amenities.has_generator,
+        has_solar_panels: formData.amenities.has_solar_panels,
+        has_parking: formData.amenities.has_parking,
+        parking_type: formData.amenities.parking_type || null,
+        security_features: formData.amenities.security_features || {},
+        wellness_facilities: formData.amenities.wellness_facilities || {},
+        outdoor_facilities: formData.amenities.outdoor_facilities || {}
       };
 
       if (project) {
@@ -434,6 +494,13 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, developers, onSave, 
         />
         <Label htmlFor="golden_visa">{t('projectForm.goldenVisaEligible')}</Label>
       </div>
+
+      {/* NEW: Amenities Section */}
+      <ProjectAmenitiesSection
+        amenities={formData.amenities}
+        onChange={handleAmenitiesChange}
+        t={t}
+      />
 
       {/* Images Upload Section */}
       {project && (
