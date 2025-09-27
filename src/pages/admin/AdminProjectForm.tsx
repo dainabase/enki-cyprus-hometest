@@ -517,7 +517,6 @@ const AdminProjectForm: React.FC = () => {
                 <ProjectFormSteps 
                   form={form} 
                   currentStep={currentStep.id}
-                  projectId={id}
                 />
               </div>
 

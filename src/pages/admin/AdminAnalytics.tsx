@@ -240,7 +240,6 @@ export const AdminAnalytics = () => {
     );
 };
 
-export default AdminAnalytics;
   if (loading) {
     return (
       <div className="p-6">
@@ -427,3 +426,5 @@ export default AdminAnalytics;
     </div>
   );
 };
+
+export default AdminAnalytics;

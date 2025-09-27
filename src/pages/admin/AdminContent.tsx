@@ -193,7 +193,6 @@ export const AdminContent = () => {
     }
 };
 
-export default AdminContent;
   return (
     <div className="p-8 space-y-8">
       {/* Header */}
@@ -603,3 +602,5 @@ export default AdminContent;
     </div>
   );
 };
+
+export default AdminContent;
