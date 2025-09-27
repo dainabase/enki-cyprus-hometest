@@ -991,8 +991,11 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
   // Initialiser les commodités sélectionnées UNE SEULE FOIS
   useEffect(() => {
+    console.log('🔍 USEEFFECT 1 - INITIALISATION');
     // Ne s'exécute qu'au premier chargement ou quand de nouvelles commodités sont détectées
     const amenities = form.watch('surrounding_amenities') || [];
+    console.log('- Amenities détectées:', amenities.length);
+    console.log('- selectedAmenities.size actuel:', selectedAmenities.size);
     
     // Si selectedAmenities est vide ET qu'on a des commodités, initialiser avec les essentielles
     if (selectedAmenities.size === 0 && amenities.length > 0) {
@@ -1001,15 +1004,25 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           .filter(a => ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id || ''))
           .map(a => a.nearby_amenity_id || '')
       );
+      console.log('- Initialisation avec:', Array.from(selected));
       setSelectedAmenities(selected);
+    } else {
+      console.log('- Pas d\'initialisation (déjà des sélections ou pas d\'amenities)');
     }
     // NE PAS réinitialiser si l'utilisateur a déjà fait des sélections
   }, [form.watch('surrounding_amenities')?.length]); // Surveiller seulement la longueur, pas le contenu
 
   // Synchroniser les sélections vers le formulaire - VERSION SIMPLIFIÉE
   useEffect(() => {
+    console.log('🔍 USEEFFECT 2 - SYNCHRONISATION');
     const currentAmenities = form.watch('surrounding_amenities');
-    if (!currentAmenities || currentAmenities.length === 0) return;
+    console.log('- selectedAmenities:', Array.from(selectedAmenities));
+    console.log('- currentAmenities length:', currentAmenities?.length || 0);
+    
+    if (!currentAmenities || currentAmenities.length === 0) {
+      console.log('- Pas d\'amenities, sortie');
+      return;
+    }
     
     // Sauvegarder les sélections dans le formulaire pour la persistance
     const updatedAmenities = currentAmenities.map(a => ({
@@ -1022,7 +1035,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     const newJSON = JSON.stringify(updatedAmenities.map(a => a.selected));
     
     if (currentJSON !== newJSON) {
+      console.log('- Mise à jour du formulaire nécessaire');
       form.setValue('surrounding_amenities', updatedAmenities, { shouldValidate: false });
+    } else {
+      console.log('- Pas de mise à jour nécessaire');
     }
   }, [selectedAmenities]); // Retirer 'form' de la dépendance
 
@@ -1588,16 +1604,23 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                           type="button"
                           size="sm"
                           variant="outline"
-                          onClick={() => {
-                            const amenities = form.watch('surrounding_amenities') || [];
-                            if (selectedAmenities.size === amenities.length) {
-                              setSelectedAmenities(new Set());
-                            } else {
-                              const allTypes = new Set<string>(amenities.map(a => a.nearby_amenity_id || ''));
-                              setSelectedAmenities(allTypes);
-                            }
-                          }}
-                        >
+                           onClick={() => {
+                             console.log('🔴 BOUTON TOUT SÉLECTIONNER CLIQUÉ !');
+                             const amenities = form.watch('surrounding_amenities') || [];
+                             console.log('- Amenities:', amenities.length);
+                             console.log('- selectedAmenities.size:', selectedAmenities.size);
+                             
+                             if (selectedAmenities.size === amenities.length) {
+                               console.log('- ACTION: Tout désélectionner');
+                               setSelectedAmenities(new Set());
+                             } else {
+                               console.log('- ACTION: Tout sélectionner');
+                               const allTypes = new Set<string>(amenities.map(a => a.nearby_amenity_id || ''));
+                               console.log('- Tous les IDs:', Array.from(allTypes));
+                               setSelectedAmenities(allTypes);
+                             }
+                           }}
+                         >
                            {selectedAmenities.size === form.watch('surrounding_amenities')?.length 
                             ? '❌ Tout désélectionner' 
                             : '✅ Tout sélectionner'}
@@ -1614,6 +1637,19 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                           }}
                         >
                           🔄 Reset
+                        </Button>
+                        {/* Bouton de test manuel */}
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => {
+                            console.log('🧪 TEST: Forcer sélection manuelle');
+                            setSelectedAmenities(new Set(['school', 'hospital', 'supermarket']));
+                            console.log('🧪 TEST: Sélection forcée avec school, hospital, supermarket');
+                          }}
+                        >
+                          🧪 Test Force
                         </Button>
                       </div>
                       {selectedAmenities.size > 0 && (
@@ -1640,7 +1676,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                               const option = amenityOptions.find(opt => opt.value === amenity.nearby_amenity_id);
                               if (!option) return null;
                               
-                              const isSelected = selectedAmenities.has(amenity.nearby_amenity_id || '');
+                               const isSelected = selectedAmenities.has(amenity.nearby_amenity_id || '');
+                               console.log(`🔍 CALCUL isSelected pour ${amenity.nearby_amenity_id}:`, isSelected, 'selectedAmenities:', Array.from(selectedAmenities));
                               const getTimeLabel = (dist) => {
                                 if (dist <= 0.5) return '⚡ 5 min à pied';
                                 if (dist <= 1) return '👟 10 min à pied';
@@ -1660,14 +1697,25 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                                      type="checkbox"
                                      checked={isSelected}
                                      onChange={() => {
+                                       console.log('🔴 CHECKBOX CLICK DÉTECTÉ - ESSENTIELLE !');
+                                       console.log('- Amenity ID:', amenity.nearby_amenity_id);
+                                       console.log('- Type:', typeof amenity.nearby_amenity_id);
+                                       console.log('- isSelected avant:', isSelected);
+                                       console.log('- selectedAmenities avant:', Array.from(selectedAmenities));
+                                       
                                        // VERSION ULTRA SIMPLE
                                        const newSelected = new Set(selectedAmenities);
                                        if (isSelected) {
+                                         console.log('- ACTION: Supprimer');
                                          newSelected.delete(amenity.nearby_amenity_id);
                                        } else {
+                                         console.log('- ACTION: Ajouter');
                                          newSelected.add(amenity.nearby_amenity_id);
                                        }
+                                       
+                                       console.log('- newSelected après:', Array.from(newSelected));
                                        setSelectedAmenities(newSelected);
+                                       console.log('- setSelectedAmenities appelé');
                                      }}
                                      className="mt-1 h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 cursor-pointer"
                                    />
@@ -1727,14 +1775,25 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                                              type="checkbox"
                                              checked={isSelected}
                                              onChange={() => {
+                                               console.log('🔴 CHECKBOX CLICK DÉTECTÉ - AUTRE !');
+                                               console.log('- Amenity ID:', amenity.nearby_amenity_id);
+                                               console.log('- Type:', typeof amenity.nearby_amenity_id);
+                                               console.log('- isSelected avant:', isSelected);
+                                               console.log('- selectedAmenities avant:', Array.from(selectedAmenities));
+                                               
                                                // VERSION ULTRA SIMPLE
                                                const newSelected = new Set(selectedAmenities);
                                                if (isSelected) {
+                                                 console.log('- ACTION: Supprimer');
                                                  newSelected.delete(amenity.nearby_amenity_id);
                                                } else {
+                                                 console.log('- ACTION: Ajouter');
                                                  newSelected.add(amenity.nearby_amenity_id);
                                                }
+                                               
+                                               console.log('- newSelected après:', Array.from(newSelected));
                                                setSelectedAmenities(newSelected);
+                                               console.log('- setSelectedAmenities appelé');
                                              }}
                                              className="h-4 w-4 text-gray-600 rounded border-gray-300 cursor-pointer"
                                            />
