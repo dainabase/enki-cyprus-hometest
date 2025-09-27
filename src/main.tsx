@@ -6,7 +6,6 @@ import App from './App.tsx';
 import './index.css';
 
 console.log('🏁 main.tsx: Starting application');
-console.log('🏁 Environment:', import.meta.env.MODE);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
