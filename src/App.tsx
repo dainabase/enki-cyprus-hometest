@@ -60,69 +60,69 @@ const App = () => {
                     <ToastProvider>
                       <BrowserRouter>
                         <ConsentManager onConsentChange={() => {}} />
-                      <Routes>
-                        {/* Public routes */}
-                        <Route path="/" element={<Layout><></></Layout>}>
-                          <Route index element={<Home />} />
-                          <Route path="projects" element={<Projects />} />
-                          <Route path="projects/:slug" element={<ProjectDetail />} />
-                          <Route path="search" element={<Search />} />
-                          <Route path="about" element={<About />} />
-                          <Route path="contact" element={<Contact />} />
-                          <Route path="blog" element={<Blog />} />
-                          <Route path="privacy" element={<PrivacyPolicy />} />
-                          <Route path="lexaia" element={<LexaiaPage />} />
-                        </Route>
+                        <Routes>
+                          {/* Public routes */}
+                          <Route path="/" element={<Layout><></></Layout>}>
+                            <Route index element={<Home />} />
+                            <Route path="projects" element={<Projects />} />
+                            <Route path="projects/:slug" element={<ProjectDetail />} />
+                            <Route path="search" element={<Search />} />
+                            <Route path="about" element={<About />} />
+                            <Route path="contact" element={<Contact />} />
+                            <Route path="blog" element={<Blog />} />
+                            <Route path="privacy" element={<PrivacyPolicy />} />
+                            <Route path="lexaia" element={<LexaiaPage />} />
+                          </Route>
 
-                        {/* Auth routes */}
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
+                          {/* Auth routes */}
+                          <Route path="/login" element={<Login />} />
+                          <Route path="/register" element={<Register />} />
 
-                        {/* Protected routes */}
-                        <Route
-                          path="/dashboard"
-                          element={
-                            <PrivateRoute>
-                              <Dashboard />
-                            </PrivateRoute>
-                          }
-                        />
+                          {/* Protected routes */}
+                          <Route
+                            path="/dashboard"
+                            element={
+                              <PrivateRoute>
+                                <Dashboard />
+                              </PrivateRoute>
+                            }
+                          />
 
-                        {/* Admin routes */}
-                        <Route
-                          path="/admin"
-                          element={
-                            <PrivateRoute adminOnly>
-                              <Admin />
-                            </PrivateRoute>
-                          }
-                        >
-                          <Route index element={<Navigate to="/admin/dashboard" replace />} />
-                          <Route path="dashboard" element={<AdminDashboard />} />
-                          <Route path="projects" element={<AdminProjects />} />
-                          <Route path="projects/new" element={<AdminProjectForm />} />
-                          <Route path="projects/:id" element={<AdminProjectDetail />} />
-                          <Route path="projects/:id/edit" element={<AdminProjectForm />} />
-                          <Route path="buildings" element={<AdminBuildings />} />
-                          <Route path="buildings/:id" element={<AdminBuildingDetail />} />
-                          <Route path="developers" element={<AdminDevelopers />} />
-                          <Route path="users" element={<AdminUsers />} />
-                          <Route path="analytics" element={<AdminAnalytics />} />
-                          <Route path="reports" element={<AdminReports />} />
-                          <Route path="settings" element={<AdminSettings />} />
-                          <Route path="tests" element={<AdminTests />} />
-                          <Route path="test-integration" element={<AdminTestIntegration />} />
-                          <Route path="ai-import" element={<AdminAIImport />} />
-                          <Route path="ai-import-unified" element={<AdminAIImportUnified />} />
-                          <Route path="units" element={<AdminUnits />} />
-                          <Route path="units/new" element={<PropertyForm />} />
-                          <Route path="units/:id/edit" element={<PropertyForm />} />
-                          <Route path="test" element={<TestPage />} />
-                        </Route>
+                          {/* Admin routes */}
+                          <Route
+                            path="/admin"
+                            element={
+                              <PrivateRoute adminOnly>
+                                <Admin />
+                              </PrivateRoute>
+                            }
+                          >
+                            <Route index element={<Navigate to="/admin/dashboard" replace />} />
+                            <Route path="dashboard" element={<AdminDashboard />} />
+                            <Route path="projects" element={<AdminProjects />} />
+                            <Route path="projects/new" element={<AdminProjectForm />} />
+                            <Route path="projects/:id" element={<AdminProjectDetail />} />
+                            <Route path="projects/:id/edit" element={<AdminProjectForm />} />
+                            <Route path="buildings" element={<AdminBuildings />} />
+                            <Route path="buildings/:id" element={<AdminBuildingDetail />} />
+                            <Route path="developers" element={<AdminDevelopers />} />
+                            <Route path="users" element={<AdminUsers />} />
+                            <Route path="analytics" element={<AdminAnalytics />} />
+                            <Route path="reports" element={<AdminReports />} />
+                            <Route path="settings" element={<AdminSettings />} />
+                            <Route path="tests" element={<AdminTests />} />
+                            <Route path="test-integration" element={<AdminTestIntegration />} />
+                            <Route path="ai-import" element={<AdminAIImport />} />
+                            <Route path="ai-import-unified" element={<AdminAIImportUnified />} />
+                            <Route path="units" element={<AdminUnits />} />
+                            <Route path="units/new" element={<PropertyForm />} />
+                            <Route path="units/:id/edit" element={<PropertyForm />} />
+                            <Route path="test" element={<TestPage />} />
+                          </Route>
 
-                        {/* 404 */}
-                        <Route path="*" element={<NotFound />} />
-                      </Routes>
+                          {/* 404 */}
+                          <Route path="*" element={<NotFound />} />
+                        </Routes>
                       <Toaster />
                     </BrowserRouter>
                   </ToastProvider>
