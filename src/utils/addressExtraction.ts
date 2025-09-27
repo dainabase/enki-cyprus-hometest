@@ -1,3 +1,5 @@
+import { toast } from '@/hooks/use-toast';
+
 // Fonction pour extraire les détails depuis une adresse complète - VERSION CORRIGÉE
 export const handleExtractAddressDetails = async (form: any) => {
   const address = form.watch('full_address');
@@ -233,19 +235,25 @@ export const handleExtractAddressDetails = async (form: any) => {
         if (postalCode) extractedInfo.push(`Code: ${postalCode}`);
         if (detectedZone) extractedInfo.push(`District: ${detectedZone.toUpperCase()}`);
         
-        toast.success('✅ Détails extraits avec succès', {
+        toast({
+          title: '✅ Détails extraits avec succès',
           description: extractedInfo.join(', ') || 'Certains détails n\'ont pas pu être extraits'
         });
         
       } else {
-        toast.error('Impossible d\'extraire les détails', {
-          description: 'Vérifiez que l\'adresse est complète et valide'
+        toast({
+          title: 'Impossible d\'extraire les détails',
+          description: 'Vérifiez que l\'adresse est complète et valide',
+          variant: 'destructive'
         });
       }
     });
     
   } catch (error) {
     console.error('Erreur extraction:', error);
-    toast.error('Erreur lors de l\'extraction');
+    toast({
+      title: 'Erreur lors de l\'extraction',
+      variant: 'destructive'
+    });
   }
 };

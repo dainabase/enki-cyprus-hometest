@@ -13,6 +13,8 @@ import { Badge } from '@/components/ui/badge';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from '@/components/ui/form';
 import { MediaUploader } from './MediaUploader';
 import { CategorizedMediaUploader } from './CategorizedMediaUploader';
+import { AddressExtraction } from './AddressExtraction';
+import { CYPRUS_DISTRICTS } from '@/utils/cyprusAddressHelper';
 
 import { BuildingCards } from './BuildingCards';
 import { AmenitiesSelector } from './AmenitiesSelector';
@@ -1179,115 +1181,8 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             </CardDescription>
           </CardHeader>
           <CardContent className="p-6 space-y-6">
-            {/* Adresse avec autocomplétion */}
-            <FormField
-              control={form.control}
-              name="full_address"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Adresse complète *</FormLabel>
-                  <div className="flex gap-2">
-                    <FormControl>
-                      <Input 
-                        id="address-autocomplete"
-                        placeholder="Commencez à taper ou collez une adresse complète..."
-                        {...field}
-                        className="flex-1"
-                      />
-                    </FormControl>
-                    <Button
-                      type="button"
-                      onClick={handleExtractAddressDetails}
-                      disabled={!field.value}
-                      variant="outline"
-                      size="default"
-                    >
-                      <MapPin className="mr-2 h-4 w-4" />
-                      Extraire
-                    </Button>
-                  </div>
-                  <FormDescription>
-                    Sélectionnez depuis l'autocomplétion ou cliquez "Extraire" après avoir collé une adresse
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Zone géographique */}
-              <FormField
-                control={form.control}
-                name="cyprus_zone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>District</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="bg-gray-50">
-                          <SelectValue placeholder="Sélectionner la zone" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="limassol">Limassol</SelectItem>
-                        <SelectItem value="nicosia">Nicosie</SelectItem>
-                        <SelectItem value="paphos">Paphos</SelectItem>
-                        <SelectItem value="larnaca">Larnaca</SelectItem>
-                        <SelectItem value="famagusta">Famagouste</SelectItem>
-                        <SelectItem value="kyrenia">Kyrenia</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>
-                      {field.value ? 'District détecté automatiquement' : 'Sera détecté depuis l\'adresse'}
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Ville */}
-              <FormField
-                control={form.control}
-                name="city"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Ville</FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="Auto-remplie depuis l'adresse"
-                        {...field}
-                        className="bg-gray-50"
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Extraite automatiquement de l'adresse
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            {/* Numéro et rue - séparés en deux champs */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="md:col-span-1">
-                <FormLabel>Numéro</FormLabel>
-                <Input 
-                  placeholder="Ex: 15"
-                  className="bg-gray-50"
-                />
-                <p className="text-sm text-muted-foreground">N° de rue</p>
-              </div>
-
-              <div className="md:col-span-2">
-                <FormLabel>Rue</FormLabel>
-                <Input 
-                  placeholder="Ex: Amathountos Avenue"
-                  className="bg-gray-50"
-                />
-                <p className="text-sm text-muted-foreground">Nom de la rue</p>
-              </div>
-            </div>
+            {/* Section extraction d'adresse améliorée */}
+            <AddressExtraction form={form} />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField

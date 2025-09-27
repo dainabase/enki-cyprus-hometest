@@ -29,6 +29,8 @@ export const projectSchema = z.object({
 
   // LOCATION - Added missing fields
   full_address: z.string().optional(),
+  street_number: z.string().optional(), // Added
+  street_name: z.string().optional(), // Added
   street_address: z.string().optional(), // Added
   postal_code: z.string().optional(), // Added
   city: z.string().min(1, "Ville requise"),
