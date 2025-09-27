@@ -994,6 +994,122 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     setSelectedAmenities(selected);
   }, [form.watch('surrounding_amenities')]);
 
+  // Fonction pour extraire les détails depuis une adresse complète
+  const handleExtractAddressDetails = async () => {
+    const address = form.watch('full_address');
+    if (!address) return;
+
+    try {
+      // Utiliser l'API Google Geocoding
+      const geocoder = new window.google.maps.Geocoder();
+      
+      geocoder.geocode({ address: address }, (results, status) => {
+        if (status === 'OK' && results && results[0]) {
+          const place = results[0];
+          const addressComponents = place.address_components || [];
+          
+          // Variables pour stocker les informations extraites
+          let city = '';
+          let postalCode = '';
+          let streetNumber = '';
+          let streetName = '';
+          let neighborhood = '';
+          let detectedZone = '';
+          
+          // Parcourir les composants d'adresse
+          addressComponents.forEach(component => {
+            const types = component.types;
+            
+            if (types.includes('locality')) {
+              city = component.long_name;
+            }
+            if (!city && types.includes('administrative_area_level_1')) {
+              city = component.long_name;
+            }
+            if (types.includes('postal_code')) {
+              postalCode = component.long_name;
+            }
+            if (types.includes('street_number')) {
+              streetNumber = component.long_name;
+            }
+            if (types.includes('route')) {
+              streetName = component.long_name;
+            }
+            if (types.includes('neighborhood') || 
+                types.includes('sublocality_level_1') ||
+                types.includes('sublocality')) {
+              neighborhood = component.long_name;
+            }
+          });
+          
+          // Construire l'adresse de rue
+          const streetAddress = streetNumber && streetName 
+            ? `${streetNumber} ${streetName}` 
+            : streetName || '';
+          
+          // Zone mapping pour Chypre
+          const zoneMapping: { [key: string]: string } = {
+            'Limassol': 'limassol',
+            'Lemesos': 'limassol',
+            'Λεμεσός': 'limassol',
+            'Paphos': 'paphos',
+            'Pafos': 'paphos',
+            'Πάφος': 'paphos',
+            'Larnaca': 'larnaca',
+            'Larnaka': 'larnaca',
+            'Λάρνακα': 'larnaca',
+            'Nicosia': 'nicosia',
+            'Lefkosia': 'nicosia',
+            'Λευκωσία': 'nicosia',
+            'Famagusta': 'famagusta',
+            'Ammochostos': 'famagusta',
+            'Αμμόχωστος': 'famagusta',
+            'Kyrenia': 'kyrenia',
+            'Girne': 'kyrenia'
+          };
+          
+          // Détecter la zone
+          for (const [cityName, zone] of Object.entries(zoneMapping)) {
+            if (city.toLowerCase().includes(cityName.toLowerCase()) || 
+                place.formatted_address.toLowerCase().includes(cityName.toLowerCase())) {
+              detectedZone = zone;
+              break;
+            }
+          }
+          
+          // Mettre à jour les coordonnées GPS
+          if (place.geometry && place.geometry.location) {
+            const lat = place.geometry.location.lat();
+            const lng = place.geometry.location.lng();
+            form.setValue('gps_latitude', lat);
+            form.setValue('gps_longitude', lng);
+          }
+          
+          // Mettre à jour tous les champs
+          if (city) form.setValue('city', city);
+          if (streetAddress) form.setValue('street_address', streetAddress);
+          if (postalCode) form.setValue('postal_code', postalCode);
+          if (neighborhood) form.setValue('neighborhood', neighborhood);
+          if (detectedZone) form.setValue('cyprus_zone', detectedZone);
+          
+          // Afficher une notification de succès
+          toast.success('✅ Détails extraits avec succès', {
+            description: `Ville: ${city || 'N/A'}, Code postal: ${postalCode || 'N/A'}, Zone: ${detectedZone || 'N/A'}`
+          });
+          
+        } else {
+          toast.error('Impossible d\'extraire les détails', {
+            description: 'Vérifiez que l\'adresse est complète et valide'
+          });
+        }
+      });
+      
+    } catch (error) {
+      console.error('Erreur extraction:', error);
+      toast.error('Erreur lors de l\'extraction');
+    }
+  };
+
   // Render the restructured location step
   const renderLocationStep = () => {
     return (
@@ -1017,15 +1133,28 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Adresse complète *</FormLabel>
-                  <FormControl>
-                    <Input 
-                      id="address-autocomplete"
-                      placeholder="Commencez à taper une adresse à Chypre..."
-                      {...field}
-                    />
-                  </FormControl>
+                  <div className="flex gap-2">
+                    <FormControl>
+                      <Input 
+                        id="address-autocomplete"
+                        placeholder="Commencez à taper ou collez une adresse complète..."
+                        {...field}
+                        className="flex-1"
+                      />
+                    </FormControl>
+                    <Button
+                      type="button"
+                      onClick={handleExtractAddressDetails}
+                      disabled={!field.value}
+                      variant="outline"
+                      size="default"
+                    >
+                      <MapPin className="mr-2 h-4 w-4" />
+                      Extraire
+                    </Button>
+                  </div>
                   <FormDescription>
-                    L'autocomplétion Google Places vous aidera à sélectionner l'adresse exacte
+                    Sélectionnez depuis l'autocomplétion ou cliquez "Extraire" après avoir collé une adresse
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -1096,10 +1225,9 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                     <FormLabel>Numéro et rue</FormLabel>
                     <FormControl>
                       <Input 
-                        placeholder="Auto-extrait de l'adresse"
+                        placeholder="Auto-extrait ou éditable manuellement"
                         {...field}
                         className="bg-gray-50"
-                        readOnly
                       />
                     </FormControl>
                     <FormDescription>
@@ -1118,10 +1246,9 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                     <FormLabel>Code postal</FormLabel>
                     <FormControl>
                       <Input 
-                        placeholder="Auto-extrait de l'adresse"
+                        placeholder="Auto-extrait ou éditable manuellement"
                         {...field}
                         className="bg-gray-50"
-                        readOnly
                       />
                     </FormControl>
                     <FormDescription>
@@ -1999,7 +2126,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
             <FormField
               control={form.control}
-              name="brochure_pdf"
+              name="brochure_url"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
@@ -2198,15 +2325,15 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                            .replace(/[^a-z0-9]+/g, '-')
                            .replace(/^-+|-+$/g, '');
                          
-                         // Mise à jour des champs
-                         form.setValue('seo_title', seoTitle);
-                         form.setValue('seo_description', seoDescription);
-                         form.setValue('seo_keywords', seoKeywords);
-                         form.setValue('project_slug', seoSlug);
-                         
-                         // Génération des OG tags
-                         form.setValue('og_title', seoTitle);
-                         form.setValue('og_description', seoDescription.substring(0, 160));
+                          // Mise à jour des champs
+                          form.setValue('title', seoTitle);
+                          form.setValue('description', seoDescription);
+                          form.setValue('title', seoTitle);
+                          form.setValue('title', seoSlug);
+                          
+                          // Génération des OG tags
+                          form.setValue('meta_title', seoTitle);
+                          form.setValue('meta_description', seoDescription.substring(0, 160));
                          
                          toast.dismiss(loadingToastId);
                          toast("✅ Contenu SEO généré avec succès", {

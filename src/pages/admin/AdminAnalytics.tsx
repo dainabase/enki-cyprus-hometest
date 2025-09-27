@@ -426,3 +426,5 @@ export const AdminAnalytics = () => {
     </div>
   );
 };
+
+export default AdminAnalytics;

@@ -602,3 +602,5 @@ export const AdminContent = () => {
     </div>
   );
 };
+
+export default AdminContent;
