@@ -3,6 +3,9 @@ import { UseFormReturn } from 'react-hook-form';
 import { BuildingFormData } from '@/types/building';
 import { GeneralStep } from './steps/GeneralStep';
 import { StructureStep } from './steps/StructureStep';
+import { DimensionsOrientationStep } from './steps/DimensionsOrientationStep';
+import { CommercializationStep } from './steps/CommercializationStep';
+import { TechnicalDetailsStep } from './steps/TechnicalDetailsStep';
 import { InfrastructureStep } from './steps/InfrastructureStep';
 import { SecurityStep } from './steps/SecurityStep';
 import { AmenitiesStep } from './steps/AmenitiesStep';
@@ -24,6 +27,12 @@ export const BuildingFormSteps: React.FC<BuildingFormStepsProps> = ({ form, curr
       return <GeneralStep form={form} projects={projects} />;
     case 'structure':
       return <StructureStep form={form} />;
+    case 'dimensions':
+      return <DimensionsOrientationStep form={form} />;
+    case 'commercialization':
+      return <CommercializationStep form={form} />;
+    case 'technical':
+      return <TechnicalDetailsStep form={form} />;
     case 'infrastructure':
       return <InfrastructureStep form={form} />;
     case 'security':
