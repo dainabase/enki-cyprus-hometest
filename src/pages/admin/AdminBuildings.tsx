@@ -28,8 +28,6 @@ const AdminBuildings = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState('');
-  const [showModal, setShowModal] = useState(false);
-  const [editingBuilding, setEditingBuilding] = useState(null);
 
   // Fetch tous les bâtiments avec leurs projets
   const { data: buildings = [], isLoading } = useQuery({
@@ -56,33 +54,6 @@ const AdminBuildings = () => {
     }
   });
 
-  // Create building mutation
-  const createMutation = useMutation({
-    mutationFn: createBuildingGlobal,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['all-buildings'] });
-      toast.success('Bâtiment créé avec succès');
-    },
-    onError: (error) => {
-      toast.error('Erreur lors de la création du bâtiment');
-      console.error(error);
-    }
-  });
-
-  // Update building mutation
-  const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<BuildingFormData> }) => 
-      updateBuilding(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['all-buildings'] });
-      toast.success('Bâtiment modifié avec succès');
-    },
-    onError: (error) => {
-      toast.error('Erreur lors de la modification du bâtiment');
-      console.error(error);
-    }
-  });
-
   // Delete building mutation
   const deleteMutation = useMutation({
     mutationFn: deleteBuilding,
@@ -96,18 +67,8 @@ const AdminBuildings = () => {
     }
   });
 
-  const handleSaveBuilding = async (data: BuildingFormData) => {
-    if (editingBuilding) {
-      await updateMutation.mutateAsync({ id: editingBuilding.id, data });
-    } else {
-      await createMutation.mutateAsync(data);
-    }
-    setEditingBuilding(null);
-  };
-
   const handleEditBuilding = (building) => {
-    setEditingBuilding(building);
-    setShowModal(true);
+    navigate(`/admin/buildings/${building.id}/edit`);
   };
 
   const handleDeleteBuilding = async (id: string) => {
@@ -141,7 +102,7 @@ const AdminBuildings = () => {
             Gérez tous les bâtiments de vos projets immobiliers
           </p>
         </div>
-        <Button onClick={() => setShowModal(true)} className="gap-2">
+        <Button onClick={() => navigate('/admin/buildings/new')} className="gap-2">
           <Plus className="h-4 w-4" />
           Nouveau bâtiment
         </Button>
