@@ -319,58 +319,133 @@ export default function BuildingFormWithSidebar() {
 
   const handleSave = async (data: BuildingFormData) => {
     try {
+      console.log('Saving data:', data);
+      
       if (!data.project_id) {
         toast.error("Veuillez sélectionner un projet");
         return;
       }
 
-      // Nettoyer les données avant l'envoi
+      // Nettoyer et formater les données avant l'envoi
       const cleanedData: any = {
-        ...data,
-        // Convertir les chaînes vides en null pour les dates
-        expected_completion: data.expected_completion && data.expected_completion !== '' ? data.expected_completion : null,
-        actual_completion: data.actual_completion && data.actual_completion !== '' ? data.actual_completion : null,
-        date_mise_en_vente: data.date_mise_en_vente && data.date_mise_en_vente !== '' ? data.date_mise_en_vente : null,
-        // Convertir les chaînes vides en null pour les URLs
-        typical_floor_plan_url: data.typical_floor_plan_url && data.typical_floor_plan_url !== '' ? data.typical_floor_plan_url : null,
-        model_3d_url: data.model_3d_url && data.model_3d_url !== '' ? data.model_3d_url : null,
-        building_brochure_url: data.building_brochure_url && data.building_brochure_url !== '' ? data.building_brochure_url : null,
-        // S'assurer que les champs string optionnels peuvent être null
+        // Champs requis
+        project_id: data.project_id,
+        total_floors: parseInt(String(data.total_floors)) || 1,
+        
+        // Champs texte
+        building_name: data.building_name || null,
         building_code: data.building_code || null,
+        building_type: data.building_type || 'residential',
+        building_class: data.building_class || null,
+        construction_status: data.construction_status || 'planning',
         energy_rating: data.energy_rating || null,
+        energy_certificate: data.energy_certificate || null,
+        parking_type: data.parking_type || null,
         position_dans_projet: data.position_dans_projet || null,
         orientation_principale: data.orientation_principale || null,
         type_chauffage: data.type_chauffage || null,
         type_climatisation: data.type_climatisation || null,
         norme_construction: data.norme_construction || null,
-        // S'assurer que les nombres sont corrects
-        total_floors: data.total_floors || 1,
-        total_units: data.total_units || 1,
-        units_available: data.units_available || 0,
-        elevator_count: data.elevator_count || 0,
-        disabled_parking_spaces: data.disabled_parking_spaces || 0,
-        accessible_bathrooms: data.accessible_bathrooms || 0,
-        display_order: data.display_order || 0,
-        // Nouveaux champs numériques
-        surface_totale_batiment: data.surface_totale_batiment || null,
-        hauteur_batiment: data.hauteur_batiment || null,
-        nombre_places_parking: data.nombre_places_parking || 0,
-        parking_visiteurs: data.parking_visiteurs || 0,
-        prix_moyen_m2: data.prix_moyen_m2 || null,
-        fourchette_prix_min: data.fourchette_prix_min || null,
-        fourchette_prix_max: data.fourchette_prix_max || null,
-        taux_occupation: data.taux_occupation || 0,
-        nombre_caves: data.nombre_caves || 0,
-        surface_caves: data.surface_caves || null,
-        nombre_box_fermes: data.nombre_box_fermes || 0,
-        nombre_lots: data.nombre_lots || null,
-        annee_construction: data.annee_construction || null,
-        annee_renovation: data.annee_renovation || null,
-        // Arrays et JSONB
-        vues_principales: data.vues_principales || [],
-        nombre_logements_type: data.nombre_logements_type || {},
-        configuration_etages: data.configuration_etages || {}
+        
+        // Champs entiers
+        total_units: parseInt(String(data.total_units)) || 0,
+        units_available: parseInt(String(data.units_available)) || 0,
+        elevator_count: parseInt(String(data.elevator_count)) || 0,
+        disabled_parking_spaces: parseInt(String(data.disabled_parking_spaces)) || 0,
+        accessible_bathrooms: parseInt(String(data.accessible_bathrooms)) || 0,
+        display_order: parseInt(String(data.display_order)) || 0,
+        nombre_places_parking: parseInt(String(data.nombre_places_parking)) || 0,
+        parking_visiteurs: parseInt(String(data.parking_visiteurs)) || 0,
+        nombre_caves: parseInt(String(data.nombre_caves)) || 0,
+        nombre_box_fermes: parseInt(String(data.nombre_box_fermes)) || 0,
+        nombre_lots: data.nombre_lots ? parseInt(String(data.nombre_lots)) : null,
+        annee_construction: data.annee_construction ? parseInt(String(data.annee_construction)) : null,
+        annee_renovation: data.annee_renovation ? parseInt(String(data.annee_renovation)) : null,
+        
+        // Champs décimaux
+        surface_totale_batiment: data.surface_totale_batiment ? parseFloat(String(data.surface_totale_batiment)) : null,
+        hauteur_batiment: data.hauteur_batiment ? parseFloat(String(data.hauteur_batiment)) : null,
+        prix_moyen_m2: data.prix_moyen_m2 ? parseFloat(String(data.prix_moyen_m2)) : null,
+        fourchette_prix_min: data.fourchette_prix_min ? parseFloat(String(data.fourchette_prix_min)) : null,
+        fourchette_prix_max: data.fourchette_prix_max ? parseFloat(String(data.fourchette_prix_max)) : null,
+        taux_occupation: parseFloat(String(data.taux_occupation)) || 0,
+        surface_caves: data.surface_caves ? parseFloat(String(data.surface_caves)) : null,
+        
+        // Champs booléens
+        has_elevator: Boolean(data.has_elevator),
+        has_generator: Boolean(data.has_generator),
+        has_solar_panels: Boolean(data.has_solar_panels),
+        central_vacuum_system: Boolean(data.central_vacuum_system),
+        water_softener_system: Boolean(data.water_softener_system),
+        water_purification_system: Boolean(data.water_purification_system),
+        smart_building_system: Boolean(data.smart_building_system),
+        intercom_system: Boolean(data.intercom_system),
+        has_intercom: Boolean(data.has_intercom),
+        package_room: Boolean(data.package_room),
+        bike_storage: Boolean(data.bike_storage),
+        pet_washing_station: Boolean(data.pet_washing_station),
+        car_wash_area: Boolean(data.car_wash_area),
+        has_security_system: Boolean(data.has_security_system),
+        has_security_24_7: Boolean(data.has_security_24_7),
+        has_cctv: Boolean(data.has_cctv),
+        has_concierge: Boolean(data.has_concierge),
+        has_security_door: Boolean(data.has_security_door),
+        concierge_service: Boolean(data.concierge_service),
+        has_pool: Boolean(data.has_pool),
+        has_gym: Boolean(data.has_gym),
+        has_spa: Boolean(data.has_spa),
+        has_playground: Boolean(data.has_playground),
+        has_garden: Boolean(data.has_garden),
+        has_parking: Boolean(data.has_parking),
+        shuttle_service: Boolean(data.shuttle_service),
+        restaurant: Boolean(data.restaurant),
+        cafe: Boolean(data.cafe),
+        mini_market: Boolean(data.mini_market),
+        business_center: Boolean(data.business_center),
+        kids_club: Boolean(data.kids_club),
+        coworking_space: Boolean(data.coworking_space),
+        club_house: Boolean(data.club_house),
+        wheelchair_accessible: Boolean(data.wheelchair_accessible),
+        braille_signage: Boolean(data.braille_signage),
+        audio_assistance: Boolean(data.audio_assistance),
+        ramp_access: Boolean(data.ramp_access),
+        wide_doorways: Boolean(data.wide_doorways),
+        accessible_elevator: Boolean(data.accessible_elevator),
+        has_tennis_court: Boolean(data.has_tennis_court),
+        beach_access: Boolean(data.beach_access),
+        marina_access: Boolean(data.marina_access),
+        golf_course: Boolean(data.golf_course),
+        sports_facilities: Boolean(data.sports_facilities),
+        wellness_center: Boolean(data.wellness_center),
+        local_velos: Boolean(data.local_velos),
+        local_poussettes: Boolean(data.local_poussettes),
+        
+        // Dates
+        expected_completion: data.expected_completion && data.expected_completion !== '' ? data.expected_completion : null,
+        actual_completion: data.actual_completion && data.actual_completion !== '' ? data.actual_completion : null,
+        date_mise_en_vente: data.date_mise_en_vente && data.date_mise_en_vente !== '' ? data.date_mise_en_vente : null,
+        
+        // URLs
+        typical_floor_plan_url: data.typical_floor_plan_url || null,
+        model_3d_url: data.model_3d_url || null,
+        building_brochure_url: data.building_brochure_url || null,
+        
+        // Arrays
+        vues_principales: Array.isArray(data.vues_principales) ? data.vues_principales : [],
+        
+        // JSONB - S'assurer que ce sont des objets valides
+        nombre_logements_type: data.nombre_logements_type && typeof data.nombre_logements_type === 'object' ? data.nombre_logements_type : {},
+        configuration_etages: data.configuration_etages && typeof data.configuration_etages === 'object' ? data.configuration_etages : {},
+        building_amenities: data.building_amenities && typeof data.building_amenities === 'object' ? data.building_amenities : {},
+        common_areas: data.common_areas && typeof data.common_areas === 'object' ? data.common_areas : {},
+        security_features: data.security_features && typeof data.security_features === 'object' ? data.security_features : {},
+        wellness_facilities: data.wellness_facilities && typeof data.wellness_facilities === 'object' ? data.wellness_facilities : {},
+        infrastructure: data.infrastructure && typeof data.infrastructure === 'object' ? data.infrastructure : {},
+        outdoor_facilities: data.outdoor_facilities && typeof data.outdoor_facilities === 'object' ? data.outdoor_facilities : {},
+        floor_plans: data.floor_plans && typeof data.floor_plans === 'object' ? data.floor_plans : {}
       };
+
+      console.log('Cleaned data to save:', cleanedData);
 
       if (isEdit) {
         const { error } = await supabase
@@ -380,7 +455,8 @@ export default function BuildingFormWithSidebar() {
         
         if (error) {
           console.error('Error updating building:', error);
-          throw error;
+          toast.error(`Erreur lors de la mise à jour : ${error.message}`);
+          return;
         }
         toast.success("Bâtiment mis à jour avec succès");
       } else {
@@ -396,7 +472,8 @@ export default function BuildingFormWithSidebar() {
         
         if (error) {
           console.error('Error creating building:', error);
-          throw error;
+          toast.error(`Erreur lors de la création : ${error.message}`);
+          return;
         }
         
         console.log('Building created successfully:', newBuilding);
@@ -411,9 +488,9 @@ export default function BuildingFormWithSidebar() {
       await queryClient.refetchQueries({ queryKey: ['all-buildings'] });
       
       navigate('/admin/buildings');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving building:', error);
-      toast.error("Erreur lors de l'enregistrement");
+      toast.error(`Erreur lors de l'enregistrement : ${error.message || 'Erreur inconnue'}`);
     }
   };
 
