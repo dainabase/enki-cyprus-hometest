@@ -288,22 +288,38 @@ export default function BuildingFormWithSidebar() {
           .update(cleanedData)
           .eq('id', id);
         
-        if (error) throw error;
+        if (error) {
+          console.error('Error updating building:', error);
+          throw error;
+        }
         toast.success("Bâtiment mis à jour avec succès");
       } else {
         const { data: userData } = await supabase.auth.getUser();
-        const { error } = await supabase
+        const { data: newBuilding, error } = await supabase
           .from('buildings')
           .insert([{
             ...cleanedData,
             created_by: userData?.user?.id
-          }]);
+          }])
+          .select()
+          .single();
         
-        if (error) throw error;
+        if (error) {
+          console.error('Error creating building:', error);
+          throw error;
+        }
+        
+        console.log('Building created successfully:', newBuilding);
         toast.success("Bâtiment créé avec succès");
       }
       
-      queryClient.invalidateQueries({ queryKey: ['buildings'] });
+      // Invalider TOUTES les clés de cache liées aux bâtiments
+      await queryClient.invalidateQueries({ queryKey: ['buildings'] });
+      await queryClient.invalidateQueries({ queryKey: ['all-buildings'] });
+      
+      // Forcer un refetch immédiat
+      await queryClient.refetchQueries({ queryKey: ['all-buildings'] });
+      
       navigate('/admin/buildings');
     } catch (error) {
       console.error('Error saving building:', error);
