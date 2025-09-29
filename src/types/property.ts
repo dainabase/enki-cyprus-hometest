@@ -2,6 +2,14 @@ export interface Property {
   id: string;
   project_id: string;
   building_id: string;
+  building?: {
+    id: string;
+    building_name: string;
+    project?: {
+      id: string;
+      title: string;
+    };
+  };
   
   // Champs obligatoires
   property_code: string;

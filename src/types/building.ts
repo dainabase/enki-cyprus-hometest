@@ -31,6 +31,7 @@ export interface Building {
 }
 
 export interface BuildingFormData {
+  project_id: string;
   building_name: string;
   building_type: 'apartment_building' | 'villa_complex' | 'mixed_residence' | 'residential';
   building_code?: string;

@@ -62,7 +62,7 @@ export function BuildingModal({
         expected_completion: building.expected_completion ? new Date(building.expected_completion).toISOString().split('T')[0] : '',
         elevator_count: building.elevator_count || 0,
         has_generator: building.has_generator,
-        has_solar_panels: building.has_solar_panels,
+        has_generator: building.has_generator,
         has_security_system: building.has_security_system,
         has_cctv: building.has_cctv,
         has_concierge: building.has_concierge,
@@ -78,7 +78,7 @@ export function BuildingModal({
       reset({
         building_type: 'residential',
         total_floors: 1,
-        construction_status: 'planning',
+        construction_status: 'planned',
         elevator_count: 0,
         has_generator: false,
         has_solar_panels: false,
