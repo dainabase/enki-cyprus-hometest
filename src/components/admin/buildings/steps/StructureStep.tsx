@@ -4,7 +4,6 @@ import { BuildingFormData } from '@/types/building';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
 import { Card, CardContent } from '@/components/ui/card';
 import { Layers, Calendar, Zap, ArrowUp } from 'lucide-react';
 
@@ -43,14 +42,40 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
                     Total des étages du bâtiment
                   </FormDescription>
                   <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      min="1"
-                      className="h-12"
-                      placeholder="5"
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                    />
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const current = parseInt(field.value as any) || 0;
+                          field.onChange(Math.max(1, current - 1));
+                        }}
+                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-lg font-semibold transition-colors"
+                      >
+                        −
+                      </button>
+                      <Input
+                        {...field}
+                        type="number"
+                        min="1"
+                        className="h-12 text-center"
+                        placeholder="5"
+                        value={field.value || ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          field.onChange(val === '' ? '' : parseInt(val) || 0);
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const current = parseInt(field.value as any) || 0;
+                          field.onChange(current + 1);
+                        }}
+                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-lg font-semibold transition-colors"
+                      >
+                        +
+                      </button>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -74,14 +99,40 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
                     Nombre total d'unités dans le bâtiment
                   </FormDescription>
                   <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      min="0"
-                      className="h-12"
-                      placeholder="20"
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                    />
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const current = parseInt(field.value as any) || 0;
+                          field.onChange(Math.max(0, current - 1));
+                        }}
+                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-lg font-semibold transition-colors"
+                      >
+                        −
+                      </button>
+                      <Input
+                        {...field}
+                        type="number"
+                        min="0"
+                        className="h-12 text-center"
+                        placeholder="20"
+                        value={field.value || ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          field.onChange(val === '' ? '' : parseInt(val) || 0);
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const current = parseInt(field.value as any) || 0;
+                          field.onChange(current + 1);
+                        }}
+                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-lg font-semibold transition-colors"
+                      >
+                        +
+                      </button>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -105,14 +156,40 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
                     Nombre d'unités actuellement disponibles
                   </FormDescription>
                   <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      min="0"
-                      className="h-12"
-                      placeholder="15"
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                    />
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const current = parseInt(field.value as any) || 0;
+                          field.onChange(Math.max(0, current - 1));
+                        }}
+                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-lg font-semibold transition-colors"
+                      >
+                        −
+                      </button>
+                      <Input
+                        {...field}
+                        type="number"
+                        min="0"
+                        className="h-12 text-center"
+                        placeholder="15"
+                        value={field.value || ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          field.onChange(val === '' ? '' : parseInt(val) || 0);
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const current = parseInt(field.value as any) || 0;
+                          field.onChange(current + 1);
+                        }}
+                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-lg font-semibold transition-colors"
+                      >
+                        +
+                      </button>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -317,7 +394,7 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
           </CardContent>
         </Card>
 
-        {/* Nombre d'ascenseurs */}
+        {/* Nombre d'ascenseurs - REMPLACÉ PAR UN SELECT */}
         <Card>
           <CardContent className="p-6">
             <FormField
@@ -330,47 +407,32 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
                     Nombre d'ascenseurs
                   </FormLabel>
                   <FormDescription>
-                    Nombre total d'ascenseurs dans le bâtiment
+                    Sélectionnez le nombre d'ascenseurs dans le bâtiment
                   </FormDescription>
                   <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      min="0"
-                      className="h-12"
-                      placeholder="2"
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                    />
+                    <Select 
+                      value={String(field.value || '0')} 
+                      onValueChange={(value) => field.onChange(parseInt(value))}
+                    >
+                      <SelectTrigger className="h-12">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="0">Aucun ascenseur</SelectItem>
+                        <SelectItem value="1">1 ascenseur</SelectItem>
+                        <SelectItem value="2">2 ascenseurs</SelectItem>
+                        <SelectItem value="3">3 ascenseurs</SelectItem>
+                        <SelectItem value="4">4 ascenseurs</SelectItem>
+                        <SelectItem value="5">5 ascenseurs</SelectItem>
+                        <SelectItem value="6">6 ascenseurs</SelectItem>
+                        <SelectItem value="7">7 ascenseurs</SelectItem>
+                        <SelectItem value="8">8 ascenseurs</SelectItem>
+                        <SelectItem value="9">9 ascenseurs</SelectItem>
+                        <SelectItem value="10">10 ascenseurs ou plus</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                   <FormMessage />
-                </FormItem>
-              )}
-            />
-          </CardContent>
-        </Card>
-
-        {/* Ascenseur */}
-        <Card>
-          <CardContent className="p-6">
-            <FormField
-              control={form.control}
-              name="has_elevator"
-              render={({ field }) => (
-                <FormItem className="flex items-center justify-between rounded-lg border p-4 bg-slate-50">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base font-semibold">
-                      Ascenseur disponible
-                    </FormLabel>
-                    <FormDescription>
-                      Le bâtiment dispose-t-il d'un ascenseur ?
-                    </FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
                 </FormItem>
               )}
             />
