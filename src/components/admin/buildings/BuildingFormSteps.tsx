@@ -13,7 +13,6 @@ import { ServicesStep } from './steps/ServicesStep';
 import { AccessibilityStep } from './steps/AccessibilityStep';
 import { LeisureStep } from './steps/LeisureStep';
 import { DocumentsStep } from './steps/DocumentsStep';
-import { AdvancedStep } from './steps/AdvancedStep';
 
 interface BuildingFormStepsProps {
   form: UseFormReturn<BuildingFormData>;
@@ -47,8 +46,6 @@ export const BuildingFormSteps: React.FC<BuildingFormStepsProps> = ({ form, curr
       return <LeisureStep form={form} />;
     case 'documents':
       return <DocumentsStep form={form} />;
-    case 'advanced':
-      return <AdvancedStep form={form} />;
     default:
       return <div>Étape non trouvée</div>;
   }
