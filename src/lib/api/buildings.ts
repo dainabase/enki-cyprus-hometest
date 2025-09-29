@@ -52,7 +52,6 @@ export const createBuildingGlobal = async (buildingData: BuildingFormData): Prom
       expected_completion: buildingData.expected_completion,
       elevator_count: buildingData.elevator_count || 0,
       has_generator: buildingData.has_generator,
-      has_generator: buildingData.has_generator,
       has_security_system: buildingData.has_security_system,
       has_cctv: buildingData.has_cctv,
       has_concierge: buildingData.has_concierge,

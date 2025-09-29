@@ -16,6 +16,8 @@ import { AdminOverview } from './AdminOverview';
 const AdminDevelopers = lazy(() => import('./AdminDevelopers'));
 const AdminProjects = lazy(() => import('./AdminProjects'));
 const AdminBuildings = lazy(() => import('./AdminBuildings'));
+const NewBuilding = lazy(() => import('./buildings/new'));
+const EditBuilding = lazy(() => import('./buildings/[id]/edit'));
 const AdminProperties = lazy(() => import('./AdminProperties'));
 const AdminProjectForm = lazy(() => import('./AdminProjectForm'));
 const AdminProjectDetail = lazy(() => import('./AdminProjectDetail'));
@@ -99,8 +101,10 @@ const AdminDashboard = () => {
             <Route path="/" element={<AdminOverview />} />
             <Route path="developers" element={<AdminDevelopers />} />
             <Route path="projects" element={<AdminProjects />} />
-            <Route path="buildings" element={<AdminBuildings />} />
-            <Route path="properties" element={<AdminProperties />} />
+        <Route path="buildings" element={<AdminBuildings />} />
+        <Route path="buildings/new" element={<NewBuilding />} />
+        <Route path="buildings/:id/edit" element={<EditBuilding />} />
+        <Route path="properties" element={<AdminProperties />} />
             <Route path="projects/new" element={<AdminProjectForm />} />
             <Route path="projects/:id" element={<AdminProjectDetail />} />
             <Route path="projects/:id/edit" element={<AdminProjectForm />} />
