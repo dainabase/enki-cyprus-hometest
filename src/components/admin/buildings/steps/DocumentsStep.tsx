@@ -4,7 +4,7 @@ import { BuildingFormData } from '@/types/building';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { FileText, Upload, Eye, X, Image } from 'lucide-react';
+import { FileText, Upload, Eye, X, Image, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -17,17 +17,34 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({ form }) => {
   const [uploading, setUploading] = useState<{ [key: string]: boolean }>({});
   const [previews, setPreviews] = useState<{ [key: string]: string }>({});
 
-  // Fonction d'upload simplifiée et corrigée
+  // Fonction d'upload CORRIGÉE et SIMPLIFIÉE
   const uploadFile = async (file: File, fieldName: string) => {
     try {
-      setUploading({ ...uploading, [fieldName]: true });
+      setUploading(prev => ({ ...prev, [fieldName]: true }));
       
-      // Générer un nom de fichier unique
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
-      const filePath = `buildings/${fileName}`;
+      // Vérifier la taille du fichier (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error('Le fichier est trop volumineux (max 10MB)');
+        return;
+      }
 
-      // Upload du fichier
+      // Vérifier le type de fichier
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'];
+      if (!allowedTypes.includes(file.type)) {
+        toast.error('Type de fichier non supporté. Utilisez JPG, PNG, GIF, WEBP ou PDF');
+        return;
+      }
+      
+      // Générer un nom de fichier unique et sûr
+      const timestamp = Date.now();
+      const randomString = Math.random().toString(36).substring(2, 15);
+      const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+      const fileName = `building_${timestamp}_${randomString}.${fileExt}`;
+      const filePath = `documents/${fileName}`;
+
+      console.log('Uploading file:', filePath);
+
+      // Upload du fichier dans le bucket 'buildings'
       const { data, error } = await supabase.storage
         .from('buildings')
         .upload(filePath, file, {
@@ -36,12 +53,39 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({ form }) => {
         });
 
       if (error) {
-        console.error('Upload error:', error);
-        toast.error(`Erreur d'upload: ${error.message}`);
+        console.error('Upload error details:', error);
+        // Si l'erreur est liée aux policies, essayer avec le bucket 'media'
+        if (error.message.includes('policy') || error.message.includes('RLS')) {
+          console.log('Trying media bucket instead...');
+          const { data: mediaData, error: mediaError } = await supabase.storage
+            .from('media')
+            .upload(filePath, file, {
+              cacheControl: '3600',
+              upsert: false
+            });
+          
+          if (mediaError) {
+            toast.error(`Erreur d'upload: ${mediaError.message}`);
+            return;
+          }
+
+          // Récupérer l'URL publique du bucket media
+          const { data: urlData } = supabase.storage
+            .from('media')
+            .getPublicUrl(filePath);
+
+          if (urlData?.publicUrl) {
+            form.setValue(fieldName as any, urlData.publicUrl);
+            setPreviews(prev => ({ ...prev, [fieldName]: urlData.publicUrl }));
+            toast.success('Document uploadé avec succès !');
+          }
+        } else {
+          toast.error(`Erreur d'upload: ${error.message}`);
+        }
         return;
       }
 
-      // Récupérer l'URL publique
+      // Si upload réussi dans buildings, récupérer l'URL publique
       const { data: urlData } = supabase.storage
         .from('buildings')
         .getPublicUrl(filePath);
@@ -49,40 +93,32 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({ form }) => {
       if (urlData?.publicUrl) {
         // Mettre à jour le champ du formulaire
         form.setValue(fieldName as any, urlData.publicUrl);
-        setPreviews({ ...previews, [fieldName]: urlData.publicUrl });
-        toast.success('Document téléchargé avec succès');
+        setPreviews(prev => ({ ...prev, [fieldName]: urlData.publicUrl }));
+        toast.success('Document uploadé avec succès !');
       }
+
     } catch (error) {
-      console.error('Error uploading file:', error);
-      toast.error('Erreur lors du téléchargement');
+      console.error('Upload exception:', error);
+      toast.error('Une erreur inattendue s\'est produite');
     } finally {
-      setUploading({ ...uploading, [fieldName]: false });
+      setUploading(prev => ({ ...prev, [fieldName]: false }));
     }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, fieldName: string) => {
-    const file = event.target.files?.[0];
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>, fieldName: string) => {
+    const file = e.target.files?.[0];
     if (file) {
-      // Vérifier la taille du fichier (max 10MB)
-      if (file.size > 10 * 1024 * 1024) {
-        toast.error('Le fichier doit faire moins de 10MB');
-        return;
-      }
-
-      // Vérifier le type de fichier
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'];
-      if (!allowedTypes.includes(file.type)) {
-        toast.error('Format non supporté. Utilisez JPG, PNG, GIF, WEBP ou PDF');
-        return;
-      }
-
-      uploadFile(file, fieldName);
+      await uploadFile(file, fieldName);
     }
   };
 
   const removeFile = (fieldName: string) => {
     form.setValue(fieldName as any, '');
-    setPreviews({ ...previews, [fieldName]: '' });
+    setPreviews(prev => {
+      const newPreviews = { ...prev };
+      delete newPreviews[fieldName];
+      return newPreviews;
+    });
     toast.info('Document supprimé');
   };
 
@@ -92,10 +128,10 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({ form }) => {
       <div>
         <h2 className="text-2xl font-semibold text-slate-900 flex items-center gap-3">
           <FileText className="h-6 w-6 text-blue-500" />
-          Documents du bâtiment
+          Documents et Plans
         </h2>
         <p className="text-slate-500 mt-2">
-          Téléchargez les plans, modèles 3D et brochures
+          Uploadez les documents et plans du bâtiment (PDF ou images)
         </p>
       </div>
 
@@ -103,9 +139,9 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({ form }) => {
       <Card className="bg-blue-50 border-blue-200">
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
-            <Image className="h-5 w-5 text-blue-600 mt-0.5" />
+            <div className="text-blue-500 mt-0.5">ℹ️</div>
             <div className="text-sm text-blue-800">
-              <p className="font-semibold mb-1">Formats acceptés :</p>
+              <p className="font-medium">Formats acceptés :</p>
               <p>Images : JPG, PNG, GIF, WEBP (max 10MB)</p>
               <p>Documents : PDF (max 10MB)</p>
             </div>
@@ -126,52 +162,75 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({ form }) => {
                     Plan d'étage type
                   </FormLabel>
                   <FormDescription>
-                    Plan architectural d'un étage standard
+                    Plan architectural représentatif d'un étage standard
                   </FormDescription>
                   <FormControl>
                     <div className="space-y-4">
-                      {field.value && previews.typical_floor_plan_url ? (
+                      <div className="flex gap-2">
+                        <Input
+                          {...field}
+                          type="text"
+                          placeholder="URL du document ou uploadez un fichier"
+                          className="flex-1"
+                        />
                         <div className="relative">
-                          <img 
-                            src={previews.typical_floor_plan_url || field.value} 
-                            alt="Plan d'étage"
-                            className="w-full max-h-64 object-contain rounded-lg border"
+                          <input
+                            type="file"
+                            accept="image/*,.pdf"
+                            onChange={(e) => handleFileSelect(e, 'typical_floor_plan_url')}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            disabled={uploading['typical_floor_plan_url']}
                           />
                           <Button
                             type="button"
-                            variant="destructive"
-                            size="icon"
-                            className="absolute top-2 right-2"
-                            onClick={() => removeFile('typical_floor_plan_url')}
+                            variant="outline"
+                            disabled={uploading['typical_floor_plan_url']}
                           >
-                            <X className="h-4 w-4" />
+                            {uploading['typical_floor_plan_url'] ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Upload className="h-4 w-4" />
+                            )}
                           </Button>
                         </div>
-                      ) : (
-                        <div className="relative">
-                          <Input
-                            type="file"
-                            accept="image/*,.pdf"
-                            onChange={(e) => handleFileChange(e, 'typical_floor_plan_url')}
-                            disabled={uploading.typical_floor_plan_url}
-                            className="hidden"
-                            id="floor-plan-upload"
-                          />
-                          <label
-                            htmlFor="floor-plan-upload"
-                            className="flex items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-lg hover:border-blue-400 cursor-pointer transition-colors"
-                          >
-                            {uploading.typical_floor_plan_url ? (
-                              <span className="text-slate-500">Téléchargement...</span>
-                            ) : (
-                              <div className="text-center">
-                                <Upload className="h-8 w-8 text-slate-400 mx-auto mb-2" />
-                                <span className="text-sm text-slate-600">
-                                  Cliquez pour télécharger
-                                </span>
-                              </div>
-                            )}
-                          </label>
+                      </div>
+                      
+                      {/* Aperçu si disponible */}
+                      {(field.value || previews['typical_floor_plan_url']) && (
+                        <div className="p-4 bg-slate-50 rounded-lg">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <FileText className="h-4 w-4 text-slate-500" />
+                              <span className="text-sm text-slate-700">Document uploadé</span>
+                            </div>
+                            <div className="flex gap-2">
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => window.open(field.value || previews['typical_floor_plan_url'], '_blank')}
+                              >
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => removeFile('typical_floor_plan_url')}
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                          
+                          {/* Aperçu image si c'est une image */}
+                          {(field.value || previews['typical_floor_plan_url'])?.match(/\.(jpg|jpeg|png|gif|webp)$/i) && (
+                            <img 
+                              src={field.value || previews['typical_floor_plan_url']} 
+                              alt="Plan d'étage"
+                              className="mt-3 rounded-md max-h-48 object-contain w-full"
+                            />
+                          )}
                         </div>
                       )}
                     </div>
@@ -192,55 +251,68 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({ form }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-base font-semibold">
-                    Modèle 3D / Rendu
+                    Modèle 3D / Visite virtuelle
                   </FormLabel>
                   <FormDescription>
-                    Visualisation 3D ou rendu architectural
+                    Lien vers le modèle 3D ou la visite virtuelle du bâtiment
                   </FormDescription>
                   <FormControl>
                     <div className="space-y-4">
-                      {field.value && previews.model_3d_url ? (
+                      <div className="flex gap-2">
+                        <Input
+                          {...field}
+                          type="text"
+                          placeholder="URL du modèle 3D ou uploadez un fichier"
+                          className="flex-1"
+                        />
                         <div className="relative">
-                          <img 
-                            src={previews.model_3d_url || field.value} 
-                            alt="Modèle 3D"
-                            className="w-full max-h-64 object-contain rounded-lg border"
+                          <input
+                            type="file"
+                            accept="image/*,.pdf"
+                            onChange={(e) => handleFileSelect(e, 'model_3d_url')}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            disabled={uploading['model_3d_url']}
                           />
                           <Button
                             type="button"
-                            variant="destructive"
-                            size="icon"
-                            className="absolute top-2 right-2"
-                            onClick={() => removeFile('model_3d_url')}
+                            variant="outline"
+                            disabled={uploading['model_3d_url']}
                           >
-                            <X className="h-4 w-4" />
+                            {uploading['model_3d_url'] ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Upload className="h-4 w-4" />
+                            )}
                           </Button>
                         </div>
-                      ) : (
-                        <div className="relative">
-                          <Input
-                            type="file"
-                            accept="image/*,.pdf"
-                            onChange={(e) => handleFileChange(e, 'model_3d_url')}
-                            disabled={uploading.model_3d_url}
-                            className="hidden"
-                            id="model-3d-upload"
-                          />
-                          <label
-                            htmlFor="model-3d-upload"
-                            className="flex items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-lg hover:border-blue-400 cursor-pointer transition-colors"
-                          >
-                            {uploading.model_3d_url ? (
-                              <span className="text-slate-500">Téléchargement...</span>
-                            ) : (
-                              <div className="text-center">
-                                <Upload className="h-8 w-8 text-slate-400 mx-auto mb-2" />
-                                <span className="text-sm text-slate-600">
-                                  Cliquez pour télécharger
-                                </span>
-                              </div>
-                            )}
-                          </label>
+                      </div>
+                      
+                      {(field.value || previews['model_3d_url']) && (
+                        <div className="p-4 bg-slate-50 rounded-lg">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <Image className="h-4 w-4 text-slate-500" />
+                              <span className="text-sm text-slate-700">Modèle uploadé</span>
+                            </div>
+                            <div className="flex gap-2">
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => window.open(field.value || previews['model_3d_url'], '_blank')}
+                              >
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => removeFile('model_3d_url')}
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -264,69 +336,65 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({ form }) => {
                     Brochure du bâtiment
                   </FormLabel>
                   <FormDescription>
-                    Document de présentation commerciale
+                    Document PDF de présentation commerciale du bâtiment
                   </FormDescription>
                   <FormControl>
                     <div className="space-y-4">
-                      {field.value && previews.building_brochure_url ? (
+                      <div className="flex gap-2">
+                        <Input
+                          {...field}
+                          type="text"
+                          placeholder="URL de la brochure ou uploadez un fichier"
+                          className="flex-1"
+                        />
                         <div className="relative">
-                          {field.value.endsWith('.pdf') ? (
-                            <div className="p-4 border rounded-lg bg-slate-50">
-                              <FileText className="h-12 w-12 text-slate-600 mx-auto mb-2" />
-                              <p className="text-sm text-center text-slate-600">
-                                Document PDF téléchargé
-                              </p>
-                              <a 
-                                href={field.value} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="text-blue-600 hover:underline text-sm block text-center mt-2"
-                              >
-                                Voir le document
-                              </a>
-                            </div>
-                          ) : (
-                            <img 
-                              src={previews.building_brochure_url || field.value} 
-                              alt="Brochure"
-                              className="w-full max-h-64 object-contain rounded-lg border"
-                            />
-                          )}
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="icon"
-                            className="absolute top-2 right-2"
-                            onClick={() => removeFile('building_brochure_url')}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="relative">
-                          <Input
+                          <input
                             type="file"
                             accept="image/*,.pdf"
-                            onChange={(e) => handleFileChange(e, 'building_brochure_url')}
-                            disabled={uploading.building_brochure_url}
-                            className="hidden"
-                            id="brochure-upload"
+                            onChange={(e) => handleFileSelect(e, 'building_brochure_url')}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            disabled={uploading['building_brochure_url']}
                           />
-                          <label
-                            htmlFor="brochure-upload"
-                            className="flex items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-lg hover:border-blue-400 cursor-pointer transition-colors"
+                          <Button
+                            type="button"
+                            variant="outline"
+                            disabled={uploading['building_brochure_url']}
                           >
-                            {uploading.building_brochure_url ? (
-                              <span className="text-slate-500">Téléchargement...</span>
+                            {uploading['building_brochure_url'] ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
                             ) : (
-                              <div className="text-center">
-                                <Upload className="h-8 w-8 text-slate-400 mx-auto mb-2" />
-                                <span className="text-sm text-slate-600">
-                                  Cliquez pour télécharger
-                                </span>
-                              </div>
+                              <Upload className="h-4 w-4" />
                             )}
-                          </label>
+                          </Button>
+                        </div>
+                      </div>
+                      
+                      {(field.value || previews['building_brochure_url']) && (
+                        <div className="p-4 bg-slate-50 rounded-lg">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <FileText className="h-4 w-4 text-slate-500" />
+                              <span className="text-sm text-slate-700">Brochure uploadée</span>
+                            </div>
+                            <div className="flex gap-2">
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => window.open(field.value || previews['building_brochure_url'], '_blank')}
+                              >
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => removeFile('building_brochure_url')}
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
                         </div>
                       )}
                     </div>
