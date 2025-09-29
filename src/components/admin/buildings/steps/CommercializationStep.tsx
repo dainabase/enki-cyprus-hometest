@@ -1,19 +1,115 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { BuildingFormData } from '@/types/building';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent } from '@/components/ui/card';
-import { Calendar, TrendingUp, Euro, Percent } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Calendar, TrendingUp, Euro, Percent, Plus, Trash2, Home } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface CommercializationStepProps {
   form: UseFormReturn<BuildingFormData>;
 }
 
+interface FloorConfig {
+  name: string;
+  units: { type: string; count: number }[];
+}
+
 export const CommercializationStep: React.FC<CommercializationStepProps> = ({ form }) => {
-  const tauxOccupation = form.watch('taux_occupation') || 0;
+  const totalUnits = form.watch('total_units') || 0;
+  const unitsAvailable = form.watch('units_available') || 0;
+  
+  // Calculer automatiquement le taux d'occupation
+  const tauxOccupation = totalUnits > 0 
+    ? Math.round(((totalUnits - unitsAvailable) / totalUnits) * 100)
+    : 0;
+
+  // Mettre à jour le taux d'occupation automatiquement
+  useEffect(() => {
+    form.setValue('taux_occupation', tauxOccupation);
+  }, [totalUnits, unitsAvailable, tauxOccupation, form]);
+
+  // État local pour la configuration par étage
+  const [floors, setFloors] = useState<FloorConfig[]>([
+    { name: 'Rez-de-chaussée', units: [] }
+  ]);
+
+  // Charger la configuration existante
+  useEffect(() => {
+    const existingConfig = form.getValues('configuration_etages');
+    if (existingConfig && typeof existingConfig === 'object' && Object.keys(existingConfig).length > 0) {
+      const loadedFloors: FloorConfig[] = [];
+      Object.entries(existingConfig).forEach(([floorName, config]: [string, any]) => {
+        const units: { type: string; count: number }[] = [];
+        if (config && typeof config === 'object') {
+          Object.entries(config).forEach(([type, count]: [string, any]) => {
+            units.push({ type, count: Number(count) || 0 });
+          });
+        }
+        loadedFloors.push({ name: floorName, units });
+      });
+      if (loadedFloors.length > 0) {
+        setFloors(loadedFloors);
+      }
+    }
+  }, [form]);
+
+  // Sauvegarder la configuration dans le formulaire
+  const saveConfiguration = () => {
+    const config: any = {};
+    floors.forEach(floor => {
+      config[floor.name] = {};
+      floor.units.forEach(unit => {
+        config[floor.name][unit.type] = unit.count;
+      });
+    });
+    form.setValue('configuration_etages', config);
+  };
+
+  // Ajouter un étage
+  const addFloor = () => {
+    const totalFloors = form.getValues('total_floors') || 1;
+    const newFloorNumber = floors.length;
+    if (newFloorNumber < totalFloors) {
+      setFloors([...floors, { name: `Étage ${newFloorNumber}`, units: [] }]);
+    }
+  };
+
+  // Supprimer un étage
+  const removeFloor = (index: number) => {
+    setFloors(floors.filter((_, i) => i !== index));
+  };
+
+  // Ajouter une unité à un étage
+  const addUnitToFloor = (floorIndex: number) => {
+    const newFloors = [...floors];
+    newFloors[floorIndex].units.push({ type: 'Studio', count: 1 });
+    setFloors(newFloors);
+    saveConfiguration();
+  };
+
+  // Supprimer une unité d'un étage
+  const removeUnitFromFloor = (floorIndex: number, unitIndex: number) => {
+    const newFloors = [...floors];
+    newFloors[floorIndex].units.splice(unitIndex, 1);
+    setFloors(newFloors);
+    saveConfiguration();
+  };
+
+  // Mettre à jour une unité
+  const updateUnit = (floorIndex: number, unitIndex: number, field: 'type' | 'count', value: string | number) => {
+    const newFloors = [...floors];
+    if (field === 'type') {
+      newFloors[floorIndex].units[unitIndex].type = value as string;
+    } else {
+      newFloors[floorIndex].units[unitIndex].count = value as number;
+    }
+    setFloors(newFloors);
+    saveConfiguration();
+  };
   
   return (
     <div className="space-y-6">
@@ -28,13 +124,16 @@ export const CommercializationStep: React.FC<CommercializationStepProps> = ({ fo
         </p>
       </div>
 
-      {/* Indicateur de taux d'occupation */}
+      {/* Indicateur de taux d'occupation AUTOMATIQUE */}
       <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-blue-600 font-medium">Taux d'occupation actuel</p>
+              <p className="text-sm text-blue-600 font-medium">Taux d'occupation calculé automatiquement</p>
               <p className="text-3xl font-bold text-blue-900 mt-2">{tauxOccupation}%</p>
+              <p className="text-xs text-blue-600 mt-1">
+                Basé sur {totalUnits - unitsAvailable} unités occupées sur {totalUnits} au total
+              </p>
             </div>
             <div className="flex gap-2">
               {tauxOccupation < 30 && <Badge className="bg-green-100 text-green-800">Forte disponibilité</Badge>}
@@ -75,7 +174,11 @@ export const CommercializationStep: React.FC<CommercializationStepProps> = ({ fo
                       step="100"
                       className="h-12"
                       placeholder="3500"
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                      value={field.value || ''}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        field.onChange(val === '' ? '' : parseFloat(val) || 0);
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -107,7 +210,11 @@ export const CommercializationStep: React.FC<CommercializationStepProps> = ({ fo
                       step="1000"
                       className="h-12"
                       placeholder="150000"
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                      value={field.value || ''}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        field.onChange(val === '' ? '' : parseFloat(val) || 0);
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -139,40 +246,11 @@ export const CommercializationStep: React.FC<CommercializationStepProps> = ({ fo
                       step="1000"
                       className="h-12"
                       placeholder="750000"
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </CardContent>
-        </Card>
-
-        {/* Taux d'occupation */}
-        <Card>
-          <CardContent className="p-6">
-            <FormField
-              control={form.control}
-              name="taux_occupation"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2 text-base font-semibold">
-                    <Percent className="h-4 w-4 text-blue-500" />
-                    Taux d'occupation (%)
-                  </FormLabel>
-                  <FormDescription>
-                    Pourcentage vendu ou loué
-                  </FormDescription>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      min="0"
-                      max="100"
-                      className="h-12"
-                      placeholder="25"
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                      value={field.value || ''}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        field.onChange(val === '' ? '' : parseFloat(val) || 0);
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -217,72 +295,142 @@ export const CommercializationStep: React.FC<CommercializationStepProps> = ({ fo
         <CardContent className="p-6">
           <h3 className="text-lg font-semibold mb-4">Nombre de logements par type</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {['studios', 't2', 't3', 't4', 't5', 'penthouse', 'duplex'].map((type) => (
-              <FormField
-                key={type}
-                control={form.control}
-                name={`nombre_logements_type.${type}` as any}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-sm capitalize">{type}</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        type="number"
-                        min="0"
-                        placeholder="0"
-                        className="h-10"
-                        onChange={(e) => {
-                          const value = parseInt(e.target.value) || 0;
-                          const currentTypes = form.getValues('nombre_logements_type') || {};
-                          form.setValue('nombre_logements_type', {
-                            ...currentTypes,
-                            [type]: value
-                          });
-                        }}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            ))}
+            {['Studio', 'T1', 'T2', 'T3', 'T4', 'T5+', 'Penthouse', 'Duplex'].map((type) => {
+              const fieldKey = type.toLowerCase().replace('+', 'plus');
+              return (
+                <FormField
+                  key={fieldKey}
+                  control={form.control}
+                  name={`nombre_logements_type.${fieldKey}` as any}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm">{type}</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="number"
+                          min="0"
+                          placeholder="0"
+                          className="h-10"
+                          value={field.value || ''}
+                          onChange={(e) => {
+                            const value = e.target.value === '' ? '' : parseInt(e.target.value) || 0;
+                            const currentTypes = form.getValues('nombre_logements_type') || {};
+                            form.setValue('nombre_logements_type', {
+                              ...currentTypes,
+                              [fieldKey]: value
+                            });
+                          }}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              );
+            })}
           </div>
         </CardContent>
       </Card>
 
-      {/* Configuration par étage */}
+      {/* Configuration par étage - NOUVELLE INTERFACE */}
       <Card>
-        <CardContent className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Configuration par étage (JSON)</h3>
-          <FormField
-            control={form.control}
-            name="configuration_etages"
-            render={({ field }) => (
-              <FormItem>
-                <FormDescription>
-                  Exemple : {"{"}"rdc": {"{"}"studios": 3, "commerces": 2{"}"}, "etage_1": {"{"}"t2": 4{"}"}
-                  {"}"}
-                </FormDescription>
-                <FormControl>
-                  <textarea
-                    value={JSON.stringify(field.value || {}, null, 2)}
-                    onChange={(e) => {
-                      try {
-                        const parsed = JSON.parse(e.target.value);
-                        field.onChange(parsed);
-                      } catch (error) {
-                        // Keep the text as is if not valid JSON
-                      }
-                    }}
-                    className="w-full p-3 border rounded-lg font-mono text-sm"
-                    rows={6}
-                    placeholder={'{\n  "rdc": {\n    "studios": 0,\n    "commerces": 0\n  }\n}'}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between">
+            <span className="flex items-center gap-2">
+              <Home className="h-5 w-5 text-blue-500" />
+              Configuration par étage
+            </span>
+            <Button
+              type="button"
+              onClick={addFloor}
+              size="sm"
+              className="bg-blue-500 hover:bg-blue-600"
+              disabled={floors.length >= (form.getValues('total_floors') || 1)}
+            >
+              <Plus className="h-4 w-4 mr-1" />
+              Ajouter un étage
+            </Button>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {floors.map((floor, floorIndex) => (
+            <Card key={floorIndex} className="bg-slate-50">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-semibold text-slate-700">{floor.name}</h4>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      onClick={() => addUnitToFloor(floorIndex)}
+                      size="sm"
+                      variant="outline"
+                    >
+                      <Plus className="h-4 w-4 mr-1" />
+                      Ajouter unité
+                    </Button>
+                    {floors.length > 1 && (
+                      <Button
+                        type="button"
+                        onClick={() => removeFloor(floorIndex)}
+                        size="sm"
+                        variant="destructive"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                </div>
+                
+                {floor.units.length === 0 ? (
+                  <p className="text-sm text-slate-500 italic">Aucune unité configurée</p>
+                ) : (
+                  <div className="space-y-2">
+                    {floor.units.map((unit, unitIndex) => (
+                      <div key={unitIndex} className="flex items-center gap-2">
+                        <Select
+                          value={unit.type}
+                          onValueChange={(value) => updateUnit(floorIndex, unitIndex, 'type', value)}
+                        >
+                          <SelectTrigger className="w-32">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Studio">Studio</SelectItem>
+                            <SelectItem value="T1">T1</SelectItem>
+                            <SelectItem value="T2">T2</SelectItem>
+                            <SelectItem value="T3">T3</SelectItem>
+                            <SelectItem value="T4">T4</SelectItem>
+                            <SelectItem value="T5+">T5+</SelectItem>
+                            <SelectItem value="Penthouse">Penthouse</SelectItem>
+                            <SelectItem value="Duplex">Duplex</SelectItem>
+                            <SelectItem value="Commerce">Commerce</SelectItem>
+                            <SelectItem value="Bureau">Bureau</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Input
+                          type="number"
+                          min="0"
+                          value={unit.count}
+                          onChange={(e) => updateUnit(floorIndex, unitIndex, 'count', parseInt(e.target.value) || 0)}
+                          className="w-20"
+                          placeholder="0"
+                        />
+                        <span className="text-sm text-slate-600">unité(s)</span>
+                        <Button
+                          type="button"
+                          onClick={() => removeUnitFromFloor(floorIndex, unitIndex)}
+                          size="sm"
+                          variant="ghost"
+                        >
+                          <Trash2 className="h-4 w-4 text-red-500" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ))}
         </CardContent>
       </Card>
     </div>
