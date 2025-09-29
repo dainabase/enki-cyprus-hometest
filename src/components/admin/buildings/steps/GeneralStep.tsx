@@ -43,7 +43,10 @@ export const GeneralStep: React.FC<GeneralStepProps> = ({ form, projects }) => {
                     Sélectionnez le projet auquel appartient ce bâtiment
                   </FormDescription>
                   <FormControl>
-                    <Select value={field.value} onValueChange={field.onChange}>
+                    <Select 
+                      value={field.value || ''} 
+                      onValueChange={field.onChange}
+                    >
                       <SelectTrigger className="w-full h-12">
                         <SelectValue placeholder="Choisissez un projet" />
                       </SelectTrigger>
@@ -139,13 +142,39 @@ export const GeneralStep: React.FC<GeneralStepProps> = ({ form, projects }) => {
                     Définit l'ordre d'apparition dans les listes
                   </FormDescription>
                   <FormControl>
-                    <Input 
-                      {...field} 
-                      type="number"
-                      className="h-12"
-                      placeholder="0" 
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                    />
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const current = parseInt(field.value as any) || 0;
+                          field.onChange(Math.max(0, current - 1));
+                        }}
+                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-lg font-semibold transition-colors"
+                      >
+                        −
+                      </button>
+                      <Input 
+                        {...field} 
+                        type="number"
+                        className="h-12 text-center"
+                        placeholder="0"
+                        value={field.value || ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          field.onChange(val === '' ? '' : parseInt(val) || 0);
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const current = parseInt(field.value as any) || 0;
+                          field.onChange(current + 1);
+                        }}
+                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-lg font-semibold transition-colors"
+                      >
+                        +
+                      </button>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
