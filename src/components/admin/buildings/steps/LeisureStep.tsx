@@ -4,7 +4,7 @@ import { BuildingFormData } from '@/types/building';
 import { FormField, FormItem, FormLabel, FormControl } from '@/components/ui/form';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent } from '@/components/ui/card';
-import { Waves } from 'lucide-react';
+import { Waves, Zap, Sailboat, TreePine, Dumbbell, Sparkles, Sun } from 'lucide-react';
 
 interface LeisureStepProps {
   form: UseFormReturn<BuildingFormData>;
@@ -25,12 +25,12 @@ export const LeisureStep: React.FC<LeisureStepProps> = ({ form }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {[
-          { name: 'has_tennis_court', label: 'Court de tennis', icon: '🎾' },
-          { name: 'beach_access', label: 'Accès plage', icon: '🏖️' },
-          { name: 'marina_access', label: 'Accès marina', icon: '⛵' },
-          { name: 'golf_course', label: 'Golf', icon: '⛳' },
-          { name: 'sports_facilities', label: 'Installations sportives', icon: '🏃' },
-          { name: 'wellness_center', label: 'Centre de bien-être', icon: '🧘' }
+          { name: 'has_tennis_court', label: 'Court de tennis', icon: Zap },
+          { name: 'beach_access', label: 'Accès plage', icon: Sun },
+          { name: 'marina_access', label: 'Accès marina', icon: Sailboat },
+          { name: 'golf_course', label: 'Golf', icon: TreePine },
+          { name: 'sports_facilities', label: 'Installations sportives', icon: Dumbbell },
+          { name: 'wellness_center', label: 'Centre de bien-être', icon: Sparkles }
         ].map((field) => (
           <Card key={field.name} className="hover:shadow-md transition-shadow">
             <CardContent className="p-6">
@@ -39,7 +39,7 @@ export const LeisureStep: React.FC<LeisureStepProps> = ({ form }) => {
                 name={field.name as keyof BuildingFormData}
                 render={({ field: formField }) => (
                   <FormItem className="flex items-center space-x-3">
-                    <span className="text-2xl">{field.icon}</span>
+                    <field.icon className="h-5 w-5 text-blue-500" />
                     <FormLabel className="flex-1 cursor-pointer text-base">
                       {field.label}
                     </FormLabel>

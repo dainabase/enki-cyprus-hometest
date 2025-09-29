@@ -4,7 +4,7 @@ import { BuildingFormData } from '@/types/building';
 import { FormField, FormItem, FormLabel, FormControl } from '@/components/ui/form';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent } from '@/components/ui/card';
-import { Coffee } from 'lucide-react';
+import { Coffee, Utensils, ShoppingCart, Briefcase, Baby, Laptop, Building } from 'lucide-react';
 
 interface ServicesStepProps {
   form: UseFormReturn<BuildingFormData>;
@@ -25,13 +25,13 @@ export const ServicesStep: React.FC<ServicesStepProps> = ({ form }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {[
-          { name: 'restaurant', label: 'Restaurant', icon: '🍽️' },
-          { name: 'cafe', label: 'Café', icon: '☕' },
-          { name: 'mini_market', label: 'Supérette', icon: '🛒' },
-          { name: 'business_center', label: 'Business center', icon: '💼' },
-          { name: 'kids_club', label: 'Club enfants', icon: '🎈' },
-          { name: 'coworking_space', label: 'Espace coworking', icon: '💻' },
-          { name: 'club_house', label: 'Club house', icon: '🏛️' }
+          { name: 'restaurant', label: 'Restaurant', icon: Utensils },
+          { name: 'cafe', label: 'Café', icon: Coffee },
+          { name: 'mini_market', label: 'Supérette', icon: ShoppingCart },
+          { name: 'business_center', label: 'Business center', icon: Briefcase },
+          { name: 'kids_club', label: 'Club enfants', icon: Baby },
+          { name: 'coworking_space', label: 'Espace coworking', icon: Laptop },
+          { name: 'club_house', label: 'Club house', icon: Building }
         ].map((field) => (
           <Card key={field.name} className="hover:shadow-md transition-shadow">
             <CardContent className="p-6">
@@ -40,7 +40,7 @@ export const ServicesStep: React.FC<ServicesStepProps> = ({ form }) => {
                 name={field.name as keyof BuildingFormData}
                 render={({ field: formField }) => (
                   <FormItem className="flex items-center space-x-3">
-                    <span className="text-2xl">{field.icon}</span>
+                    <field.icon className="h-5 w-5 text-blue-500" />
                     <FormLabel className="flex-1 cursor-pointer text-base">
                       {field.label}
                     </FormLabel>

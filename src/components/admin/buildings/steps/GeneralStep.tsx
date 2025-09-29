@@ -5,7 +5,7 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescripti
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
-import { Building2, Hash, Layers, Home } from 'lucide-react';
+import { Building2, Hash, Layers, Home, Briefcase } from 'lucide-react';
 
 interface GeneralStepProps {
   form: UseFormReturn<BuildingFormData>;
@@ -177,31 +177,31 @@ export const GeneralStep: React.FC<GeneralStepProps> = ({ form, projects }) => {
                       <SelectContent>
                         <SelectItem value="residential">
                           <div className="flex items-center gap-2">
-                            <span className="text-lg">🏠</span>
+                            <Home className="h-4 w-4 text-green-500" />
                             <span>Résidentiel</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="commercial">
                           <div className="flex items-center gap-2">
-                            <span className="text-lg">🏢</span>
+                            <Building2 className="h-4 w-4 text-blue-500" />
                             <span>Commercial</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="mixed">
                           <div className="flex items-center gap-2">
-                            <span className="text-lg">🏗️</span>
+                            <Layers className="h-4 w-4 text-purple-500" />
                             <span>Mixte</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="office">
                           <div className="flex items-center gap-2">
-                            <span className="text-lg">💼</span>
+                            <Briefcase className="h-4 w-4 text-gray-500" />
                             <span>Bureau</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="hotel">
                           <div className="flex items-center gap-2">
-                            <span className="text-lg">🏨</span>
+                            <Building2 className="h-4 w-4 text-orange-500" />
                             <span>Hôtel</span>
                           </div>
                         </SelectItem>
@@ -237,25 +237,41 @@ export const GeneralStep: React.FC<GeneralStepProps> = ({ form, projects }) => {
                       <SelectContent>
                         <SelectItem value="A+">
                           <div className="flex items-center gap-2">
-                            <span className="text-yellow-500">⭐⭐⭐</span>
+                            <div className="flex gap-1">
+                              <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                              <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                              <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                            </div>
                             <span>Classe A+ (Premium)</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="A">
                           <div className="flex items-center gap-2">
-                            <span className="text-yellow-500">⭐⭐</span>
+                            <div className="flex gap-1">
+                              <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                              <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                              <div className="w-2 h-2 bg-slate-300 rounded-full"></div>
+                            </div>
                             <span>Classe A (Haut de gamme)</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="B">
                           <div className="flex items-center gap-2">
-                            <span className="text-yellow-500">⭐</span>
+                            <div className="flex gap-1">
+                              <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                              <div className="w-2 h-2 bg-slate-300 rounded-full"></div>
+                              <div className="w-2 h-2 bg-slate-300 rounded-full"></div>
+                            </div>
                             <span>Classe B (Standard)</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="C">
                           <div className="flex items-center gap-2">
-                            <span className="text-slate-400">☆</span>
+                            <div className="flex gap-1">
+                              <div className="w-2 h-2 bg-slate-400 rounded-full"></div>
+                              <div className="w-2 h-2 bg-slate-300 rounded-full"></div>
+                              <div className="w-2 h-2 bg-slate-300 rounded-full"></div>
+                            </div>
                             <span>Classe C (Économique)</span>
                           </div>
                         </SelectItem>
