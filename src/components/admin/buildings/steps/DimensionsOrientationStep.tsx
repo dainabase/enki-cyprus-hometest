@@ -5,7 +5,7 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescripti
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
-import { Ruler, Compass, Eye, MapPin } from 'lucide-react';
+import { Ruler, Compass, Eye, MapPin, Waves, Mountain, Trees, Building2, Flower, Building } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 
@@ -14,14 +14,14 @@ interface DimensionsOrientationStepProps {
 }
 
 const vuesOptions = [
-  { id: 'mer', label: 'Vue mer', icon: '🌊' },
-  { id: 'montagne', label: 'Vue montagne', icon: '🏔️' },
-  { id: 'parc', label: 'Vue parc', icon: '🌳' },
-  { id: 'ville', label: 'Vue ville', icon: '🏙️' },
-  { id: 'piscine', label: 'Vue piscine', icon: '🏊' },
-  { id: 'jardin', label: 'Vue jardin', icon: '🌿' },
-  { id: 'golf', label: 'Vue golf', icon: '⛳' },
-  { id: 'marina', label: 'Vue marina', icon: '⛵' }
+  { id: 'mer', label: 'Vue mer', icon: Waves },
+  { id: 'montagne', label: 'Vue montagne', icon: Mountain },
+  { id: 'parc', label: 'Vue parc', icon: Trees },
+  { id: 'ville', label: 'Vue ville', icon: Building },
+  { id: 'piscine', label: 'Vue piscine', icon: Waves },
+  { id: 'jardin', label: 'Vue jardin', icon: Flower },
+  { id: 'golf', label: 'Vue golf', icon: Trees },
+  { id: 'marina', label: 'Vue marina', icon: Waves }
 ];
 
 export const DimensionsOrientationStep: React.FC<DimensionsOrientationStepProps> = ({ form }) => {
@@ -62,7 +62,7 @@ export const DimensionsOrientationStep: React.FC<DimensionsOrientationStepProps>
                 <p className="text-sm text-green-600">Hauteur</p>
                 <p className="text-2xl font-bold text-green-900">{hauteur} m</p>
               </div>
-              <div className="text-3xl">📏</div>
+              <Ruler className="h-8 w-8 text-green-500 rotate-90" />
             </div>
           </CardContent>
         </Card>
@@ -74,7 +74,7 @@ export const DimensionsOrientationStep: React.FC<DimensionsOrientationStepProps>
                 <p className="text-sm text-purple-600">Étages</p>
                 <p className="text-2xl font-bold text-purple-900">{form.watch('total_floors') || 0}</p>
               </div>
-              <div className="text-3xl">🏢</div>
+              <Building2 className="h-8 w-8 text-purple-500" />
             </div>
           </CardContent>
         </Card>
@@ -104,7 +104,11 @@ export const DimensionsOrientationStep: React.FC<DimensionsOrientationStepProps>
                       step="10"
                       className="h-12"
                       placeholder="2500"
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                      value={field.value || ''}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        field.onChange(val === '' ? '' : parseFloat(val) || 0);
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -136,7 +140,11 @@ export const DimensionsOrientationStep: React.FC<DimensionsOrientationStepProps>
                       step="0.5"
                       className="h-12"
                       placeholder="18.5"
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                      value={field.value || ''}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        field.onChange(val === '' ? '' : parseFloat(val) || 0);
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -239,14 +247,40 @@ export const DimensionsOrientationStep: React.FC<DimensionsOrientationStepProps>
                     Toutes les places du bâtiment
                   </FormDescription>
                   <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      min="0"
-                      className="h-12"
-                      placeholder="30"
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                    />
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const current = parseInt(field.value as any) || 0;
+                          field.onChange(Math.max(0, current - 1));
+                        }}
+                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-lg font-semibold transition-colors"
+                      >
+                        −
+                      </button>
+                      <Input
+                        {...field}
+                        type="number"
+                        min="0"
+                        className="h-12 text-center"
+                        placeholder="30"
+                        value={field.value || ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          field.onChange(val === '' ? '' : parseInt(val) || 0);
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const current = parseInt(field.value as any) || 0;
+                          field.onChange(current + 1);
+                        }}
+                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-lg font-semibold transition-colors"
+                      >
+                        +
+                      </button>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -270,14 +304,40 @@ export const DimensionsOrientationStep: React.FC<DimensionsOrientationStepProps>
                     Places réservées aux visiteurs
                   </FormDescription>
                   <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      min="0"
-                      className="h-12"
-                      placeholder="5"
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                    />
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const current = parseInt(field.value as any) || 0;
+                          field.onChange(Math.max(0, current - 1));
+                        }}
+                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-lg font-semibold transition-colors"
+                      >
+                        −
+                      </button>
+                      <Input
+                        {...field}
+                        type="number"
+                        min="0"
+                        className="h-12 text-center"
+                        placeholder="5"
+                        value={field.value || ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          field.onChange(val === '' ? '' : parseInt(val) || 0);
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const current = parseInt(field.value as any) || 0;
+                          field.onChange(current + 1);
+                        }}
+                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-lg font-semibold transition-colors"
+                      >
+                        +
+                      </button>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -303,29 +363,32 @@ export const DimensionsOrientationStep: React.FC<DimensionsOrientationStepProps>
                   Sélectionnez toutes les vues disponibles depuis le bâtiment
                 </FormDescription>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {vuesOptions.map((vue) => (
-                    <div key={vue.id} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={vue.id}
-                        checked={field.value?.includes(vue.id)}
-                        onCheckedChange={(checked) => {
-                          const currentVues = field.value || [];
-                          if (checked) {
-                            field.onChange([...currentVues, vue.id]);
-                          } else {
-                            field.onChange(currentVues.filter((v: string) => v !== vue.id));
-                          }
-                        }}
-                      />
-                      <label
-                        htmlFor={vue.id}
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center gap-2 cursor-pointer"
-                      >
-                        <span className="text-lg">{vue.icon}</span>
-                        {vue.label}
-                      </label>
-                    </div>
-                  ))}
+                  {vuesOptions.map((vue) => {
+                    const Icon = vue.icon;
+                    return (
+                      <div key={vue.id} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={vue.id}
+                          checked={field.value?.includes(vue.id)}
+                          onCheckedChange={(checked) => {
+                            const currentVues = field.value || [];
+                            if (checked) {
+                              field.onChange([...currentVues, vue.id]);
+                            } else {
+                              field.onChange(currentVues.filter((v: string) => v !== vue.id));
+                            }
+                          }}
+                        />
+                        <label
+                          htmlFor={vue.id}
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center gap-2 cursor-pointer"
+                        >
+                          <Icon className="h-4 w-4 text-slate-500" />
+                          {vue.label}
+                        </label>
+                      </div>
+                    );
+                  })}
                 </div>
               </FormItem>
             )}
