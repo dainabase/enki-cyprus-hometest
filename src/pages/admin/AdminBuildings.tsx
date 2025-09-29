@@ -1,249 +1,232 @@
 import React, { useState } from 'react';
-import { Plus, Filter } from 'lucide-react';
-import { useSupabaseQuery, getPaginationRange } from '@/hooks/useSupabaseQuery';
-import { Pagination } from '@/components/Pagination';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-import BuildingsTable from '@/components/admin/buildings/BuildingsTable';
-import BuildingForm from '@/components/admin/buildings/BuildingForm';
-import BuildingFilters from '@/components/admin/buildings/BuildingFilters';
-
-interface FilterState {
-  projectId: string;
-  constructionStatus: string;
-  minFloors: string;
-  maxFloors: string;
-}
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { 
+  Building2, 
+  Search, 
+  MapPin, 
+  Home,
+  Car,
+  Layers,
+  Calendar,
+  ArrowRight
+} from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const AdminBuildings = () => {
-  const { toast } = useToast();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingBuilding, setEditingBuilding] = useState<any>(null);
-  const [showFilters, setShowFilters] = useState(false);
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 25,
-  });
-  const [filters, setFilters] = useState<FilterState>({
-    projectId: '',
-    constructionStatus: '',
-    minFloors: '',
-    maxFloors: ''
-  });
+  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState('');
 
-  // Fetch buildings with project data with pagination
-  const { data: buildingsResponse, isLoading, refetch } = useSupabaseQuery(
-    ['admin-buildings', filters, pagination],
-    async () => {
-      const { from, to } = getPaginationRange(pagination);
-      
-      let query = supabase
+  // Fetch tous les bâtiments avec leurs projets
+  const { data: buildings = [], isLoading } = useQuery({
+    queryKey: ['all-buildings'],
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from('buildings')
         .select(`
-          id, building_name, building_type, construction_status, total_floors, total_units,
-          project:projects(id, title, cyprus_zone)
-        `, { count: 'exact' })
-        .order('project_id', { ascending: true })
-        .order('building_name', { ascending: true })
-        .range(from, to);
+          *,
+          project:projects(id, title, cyprus_zone),
+          properties(count)
+        `)
+        .order('created_at', { ascending: false });
 
-      // Apply filters
-      if (filters.projectId) {
-        query = query.eq('project_id', filters.projectId);
-      }
-      if (filters.constructionStatus) {
-        query = query.eq('construction_status', filters.constructionStatus);
-      }
-      if (filters.minFloors) {
-        query = query.gte('total_floors', parseInt(filters.minFloors));
-      }
-      if (filters.maxFloors) {
-        query = query.lte('total_floors', parseInt(filters.maxFloors));
-      }
-
-      const { data, error, count } = await query;
       if (error) throw error;
-      return { data, count };
+      
+      // Calculer le nombre de propriétés pour chaque bâtiment
+      const buildingsWithCount = await Promise.all(
+        (data || []).map(async (building) => {
+          const { count } = await supabase
+            .from('properties')
+            .select('*', { count: 'exact', head: true })
+            .eq('building_id', building.id);
+          
+          return {
+            ...building,
+            properties_count: count || 0
+          };
+        })
+      );
+      
+      return buildingsWithCount;
     }
+  });
+
+  // Filtrer les bâtiments
+  const filteredBuildings = buildings.filter(building =>
+    building.building_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    building.project?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    building.building_type?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const buildingsData = buildingsResponse?.data || [];
-  const totalCount = buildingsResponse?.count || 0;
-
-  // Fetch projects for filter dropdown
-  const { data: projects } = useSupabaseQuery(
-    ['projects-for-buildings'],
-    async () => {
-      const { data, error } = await supabase
-        .from('projects')
-        .select('id, title, cyprus_zone')
-        .order('title');
-      if (error) throw error;
-      return data;
-    }
-  );
-
-  const openCreateModal = () => {
-    setEditingBuilding(null);
-    setIsModalOpen(true);
+  // Statistiques
+  const stats = {
+    total: buildings.length,
+    withProperties: buildings.filter(b => b.properties_count > 0).length,
+    totalUnits: buildings.reduce((sum, b) => sum + (b.total_units || 0), 0),
+    availableUnits: buildings.reduce((sum, b) => sum + (b.units_available || 0), 0)
   };
-
-  const openEditModal = (building: any) => {
-    setEditingBuilding(building);
-    setIsModalOpen(true);
-  };
-
-  const handleBuildingSaved = () => {
-    setIsModalOpen(false);
-    setEditingBuilding(null);
-    refetch();
-    toast({
-      title: editingBuilding ? 'Bâtiment mis à jour' : 'Bâtiment créé',
-      description: editingBuilding 
-        ? 'Le bâtiment a été mis à jour avec succès'
-        : 'Le nouveau bâtiment a été créé avec succès'
-    });
-  };
-
-  const stats = React.useMemo(() => {
-    if (!buildingsData || !Array.isArray(buildingsData)) return { total: 0, planning: 0, inProgress: 0, completed: 0 };
-    
-    return {
-      total: buildingsData.length,
-      planning: buildingsData.filter(b => b?.construction_status === 'planning').length,
-      inProgress: buildingsData.filter(b => b?.construction_status && ['foundation', 'structure', 'finishing'].includes(b.construction_status)).length,
-      completed: buildingsData.filter(b => b?.construction_status === 'completed').length
-    };
-  }, [buildingsData]);
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Gestion des Bâtiments</h1>
-            <p className="text-muted-foreground mt-2">Gérer les bâtiments par projet</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setShowFilters(!showFilters)}
-              className="gap-2"
-            >
-              <Filter className="w-4 h-4" />
-              Filtres
-            </Button>
-            <Button onClick={openCreateModal} className="gap-2">
-              <Plus className="w-4 h-4" />
-              Nouveau Bâtiment
-            </Button>
-          </div>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Bâtiments</h1>
+          <p className="text-gray-500 mt-1">
+            Gérez tous les bâtiments de vos projets immobiliers
+          </p>
         </div>
+      </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Bâtiments</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.total}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Planification</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-blue-600">{stats.planning}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">En Construction</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-orange-600">{stats.inProgress}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Terminés</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">{stats.completed}</div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Filters */}
-        {showFilters && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Filtres</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <BuildingFilters
-                filters={filters}
-                onFiltersChange={setFilters}
-                projects={projects || []}
-              />
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Buildings Table */}
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
-          <CardHeader>
-            <CardTitle>Liste des Bâtiments</CardTitle>
-            <CardDescription>Gérer tous les bâtiments du portfolio</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <BuildingsTable
-              buildings={buildingsData || []}
-              onEdit={openEditModal}
-              onRefetch={refetch}
-              isLoading={isLoading}
-            />
-            {buildingsData.length > 0 && (
-              <Pagination
-                pageIndex={pagination.pageIndex}
-                pageSize={pagination.pageSize}
-                totalCount={totalCount}
-                onPageChange={(pageIndex) => setPagination(prev => ({ ...prev, pageIndex }))}
-                onPageSizeChange={(pageSize) => setPagination({ pageIndex: 0, pageSize })}
-              />
-            )}
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">Total Bâtiments</p>
+                <p className="text-2xl font-bold">{stats.total}</p>
+              </div>
+              <Building2 className="h-8 w-8 text-gray-400" />
+            </div>
           </CardContent>
         </Card>
 
-        {/* Building Form Modal */}
-        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>
-                {editingBuilding ? 'Modifier le Bâtiment' : 'Nouveau Bâtiment'}
-              </DialogTitle>
-              <DialogDescription>
-                {editingBuilding 
-                  ? 'Modifiez les informations du bâtiment'
-                  : 'Créez un nouveau bâtiment'
-                }
-              </DialogDescription>
-            </DialogHeader>
-            <BuildingForm
-              building={editingBuilding}
-              projects={projects || []}
-              onSave={handleBuildingSaved}
-              onCancel={() => setIsModalOpen(false)}
-            />
-          </DialogContent>
-        </Dialog>
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">Avec Propriétés</p>
+                <p className="text-2xl font-bold">{stats.withProperties}</p>
+              </div>
+              <Home className="h-8 w-8 text-green-400" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">Total Unités</p>
+                <p className="text-2xl font-bold">{stats.totalUnits}</p>
+              </div>
+              <Layers className="h-8 w-8 text-blue-400" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">Disponibles</p>
+                <p className="text-2xl font-bold">{stats.availableUnits}</p>
+              </div>
+              <Home className="h-8 w-8 text-orange-400" />
+            </div>
+          </CardContent>
+        </Card>
       </div>
+
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+        <Input
+          type="text"
+          placeholder="Rechercher par nom, projet ou type..."
+          className="pl-10"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
+      {/* Buildings Grid */}
+      {isLoading ? (
+        <div className="text-center py-12">Chargement...</div>
+      ) : filteredBuildings.length === 0 ? (
+        <Card>
+          <CardContent className="text-center py-12">
+            <Building2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              Aucun bâtiment trouvé
+            </h3>
+            <p className="text-gray-500">
+              {searchTerm 
+                ? "Aucun résultat pour votre recherche"
+                : "Commencez par créer un projet et y ajouter des bâtiments"}
+            </p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredBuildings.map((building) => (
+            <Card key={building.id} className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <CardTitle className="text-lg">
+                      {building.building_name}
+                    </CardTitle>
+                    <p className="text-sm text-gray-500 mt-1">
+                      {building.project?.title}
+                    </p>
+                  </div>
+                  <Badge variant="outline">
+                    {building.building_type || 'Résidentiel'}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="flex items-center gap-2">
+                    <Layers className="h-4 w-4 text-gray-400" />
+                    <span>{building.total_floors || 0} étages</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Home className="h-4 w-4 text-gray-400" />
+                    <span>{building.properties_count} propriétés</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Car className="h-4 w-4 text-gray-400" />
+                    <span>Parking</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4 text-gray-400" />
+                    <span>{building.project?.cyprus_zone}</span>
+                  </div>
+                </div>
+
+                {building.construction_status && (
+                  <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <Calendar className="h-4 w-4" />
+                    <span>Statut: {building.construction_status}</span>
+                  </div>
+                )}
+
+                <div className="flex justify-between items-center pt-4 border-t">
+                  <div className="text-sm">
+                    <span className="font-medium">{building.units_available || 0}</span>
+                    <span className="text-gray-500"> / {building.total_units || 0} disponibles</span>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => navigate(`/admin/projects/${building.project_id}/dashboard?tab=buildings`)}
+                  >
+                    Gérer
+                    <ArrowRight className="h-4 w-4 ml-1" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

@@ -38,6 +38,7 @@ const getNavigationStructure = () => ({
     items: [
       { title: 'Développeurs', url: '/admin/developers', icon: Users },
       { title: 'Projets', url: '/admin/projects', icon: FolderOpen },
+      { title: 'Bâtiments', url: '/admin/buildings', icon: Building2 },
       { title: 'Propriétés', url: '/admin/units', icon: Home }
     ]
   },
