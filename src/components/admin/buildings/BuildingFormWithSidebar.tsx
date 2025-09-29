@@ -11,10 +11,13 @@ import { toast } from 'sonner';
 import { BuildingFormData } from '@/types/building';
 import { BuildingFormSteps } from './BuildingFormSteps';
 
-// Définition des étapes du formulaire - exactement comme le projet
+// Définition des étapes du formulaire - AVEC LES NOUVELLES ÉTAPES
 export const buildingFormSteps = [
   { id: 'general', title: 'Informations générales' },
   { id: 'structure', title: 'Structure' },
+  { id: 'dimensions', title: 'Dimensions & Orientation' },
+  { id: 'commercialization', title: 'Commercialisation' },
+  { id: 'technical', title: 'Détails techniques' },
   { id: 'infrastructure', title: 'Infrastructure' },
   { id: 'security', title: 'Sécurité' },
   { id: 'amenities', title: 'Équipements' },
@@ -62,7 +65,39 @@ export default function BuildingFormWithSidebar() {
       elevator_count: 0,
       has_elevator: false,
       
-      // Section 3 : Infrastructure technique
+      // === NOUVEAUX CHAMPS CRITIQUES ===
+      // Dimensions & Orientation
+      surface_totale_batiment: 0,
+      hauteur_batiment: 0,
+      position_dans_projet: '',
+      orientation_principale: '',
+      vues_principales: [],
+      nombre_places_parking: 0,
+      parking_visiteurs: 0,
+      
+      // Commercialisation
+      prix_moyen_m2: 0,
+      fourchette_prix_min: 0,
+      fourchette_prix_max: 0,
+      taux_occupation: 0,
+      date_mise_en_vente: '',
+      nombre_logements_type: {},
+      configuration_etages: {},
+      
+      // Détails techniques
+      type_chauffage: '',
+      type_climatisation: '',
+      annee_construction: undefined,
+      annee_renovation: undefined,
+      norme_construction: '',
+      nombre_caves: 0,
+      surface_caves: 0,
+      local_velos: false,
+      local_poussettes: false,
+      nombre_box_fermes: 0,
+      nombre_lots: 0,
+      
+      // Section 3 : Infrastructure technique (existant)
       has_generator: false,
       has_solar_panels: false,
       central_vacuum_system: false,
@@ -76,7 +111,7 @@ export default function BuildingFormWithSidebar() {
       pet_washing_station: false,
       car_wash_area: false,
       
-      // Section 4 : Sécurité
+      // Section 4 : Sécurité (existant)
       has_security_system: false,
       has_security_24_7: false,
       has_cctv: false,
@@ -84,7 +119,7 @@ export default function BuildingFormWithSidebar() {
       has_security_door: false,
       concierge_service: false,
       
-      // Section 5 : Équipements
+      // Section 5 : Équipements (existant)
       has_pool: false,
       has_gym: false,
       has_spa: false,
@@ -95,7 +130,7 @@ export default function BuildingFormWithSidebar() {
       disabled_parking_spaces: 0,
       shuttle_service: false,
       
-      // Section 6 : Services
+      // Section 6 : Services (existant)
       restaurant: false,
       cafe: false,
       mini_market: false,
@@ -104,7 +139,7 @@ export default function BuildingFormWithSidebar() {
       coworking_space: false,
       club_house: false,
       
-      // Section 7 : Accessibilité
+      // Section 7 : Accessibilité (existant)
       wheelchair_accessible: false,
       braille_signage: false,
       audio_assistance: false,
@@ -113,7 +148,7 @@ export default function BuildingFormWithSidebar() {
       wide_doorways: false,
       accessible_elevator: false,
       
-      // Section 8 : Loisirs
+      // Section 8 : Loisirs (existant)
       has_tennis_court: false,
       beach_access: false,
       marina_access: false,
@@ -174,6 +209,7 @@ export default function BuildingFormWithSidebar() {
   useEffect(() => {
     if (building && isEdit) {
       const formData: BuildingFormData = {
+        // Champs existants
         project_id: building.project_id || '',
         building_name: building.building_name || '',
         building_type: building.building_type as any || 'residential',
@@ -188,6 +224,35 @@ export default function BuildingFormWithSidebar() {
         building_class: building.building_class as any || 'A',
         elevator_count: building.elevator_count || 0,
         has_elevator: building.has_elevator || false,
+        
+        // Nouveaux champs critiques
+        surface_totale_batiment: building.surface_totale_batiment || 0,
+        hauteur_batiment: building.hauteur_batiment || 0,
+        position_dans_projet: building.position_dans_projet || '',
+        orientation_principale: building.orientation_principale || '',
+        vues_principales: building.vues_principales || [],
+        nombre_places_parking: building.nombre_places_parking || 0,
+        parking_visiteurs: building.parking_visiteurs || 0,
+        prix_moyen_m2: building.prix_moyen_m2 || 0,
+        fourchette_prix_min: building.fourchette_prix_min || 0,
+        fourchette_prix_max: building.fourchette_prix_max || 0,
+        taux_occupation: building.taux_occupation || 0,
+        date_mise_en_vente: building.date_mise_en_vente || '',
+        nombre_logements_type: building.nombre_logements_type || {},
+        configuration_etages: building.configuration_etages || {},
+        type_chauffage: building.type_chauffage || '',
+        type_climatisation: building.type_climatisation || '',
+        annee_construction: building.annee_construction || undefined,
+        annee_renovation: building.annee_renovation || undefined,
+        norme_construction: building.norme_construction || '',
+        nombre_caves: building.nombre_caves || 0,
+        surface_caves: building.surface_caves || 0,
+        local_velos: building.local_velos || false,
+        local_poussettes: building.local_poussettes || false,
+        nombre_box_fermes: building.nombre_box_fermes || 0,
+        nombre_lots: building.nombre_lots || 0,
+        
+        // Reste des champs existants
         has_generator: building.has_generator || false,
         has_solar_panels: building.has_solar_panels || false,
         energy_rating: building.energy_rating || '',
@@ -260,18 +325,24 @@ export default function BuildingFormWithSidebar() {
       }
 
       // Nettoyer les données avant l'envoi
-      const cleanedData = {
+      const cleanedData: any = {
         ...data,
         // Convertir les chaînes vides en null pour les dates
         expected_completion: data.expected_completion && data.expected_completion !== '' ? data.expected_completion : null,
         actual_completion: data.actual_completion && data.actual_completion !== '' ? data.actual_completion : null,
+        date_mise_en_vente: data.date_mise_en_vente && data.date_mise_en_vente !== '' ? data.date_mise_en_vente : null,
         // Convertir les chaînes vides en null pour les URLs
         typical_floor_plan_url: data.typical_floor_plan_url && data.typical_floor_plan_url !== '' ? data.typical_floor_plan_url : null,
         model_3d_url: data.model_3d_url && data.model_3d_url !== '' ? data.model_3d_url : null,
         building_brochure_url: data.building_brochure_url && data.building_brochure_url !== '' ? data.building_brochure_url : null,
-        // S'assurer que les champs string ne sont pas null
+        // S'assurer que les champs string optionnels peuvent être null
         building_code: data.building_code || null,
         energy_rating: data.energy_rating || null,
+        position_dans_projet: data.position_dans_projet || null,
+        orientation_principale: data.orientation_principale || null,
+        type_chauffage: data.type_chauffage || null,
+        type_climatisation: data.type_climatisation || null,
+        norme_construction: data.norme_construction || null,
         // S'assurer que les nombres sont corrects
         total_floors: data.total_floors || 1,
         total_units: data.total_units || 1,
@@ -279,7 +350,26 @@ export default function BuildingFormWithSidebar() {
         elevator_count: data.elevator_count || 0,
         disabled_parking_spaces: data.disabled_parking_spaces || 0,
         accessible_bathrooms: data.accessible_bathrooms || 0,
-        display_order: data.display_order || 0
+        display_order: data.display_order || 0,
+        // Nouveaux champs numériques
+        surface_totale_batiment: data.surface_totale_batiment || null,
+        hauteur_batiment: data.hauteur_batiment || null,
+        nombre_places_parking: data.nombre_places_parking || 0,
+        parking_visiteurs: data.parking_visiteurs || 0,
+        prix_moyen_m2: data.prix_moyen_m2 || null,
+        fourchette_prix_min: data.fourchette_prix_min || null,
+        fourchette_prix_max: data.fourchette_prix_max || null,
+        taux_occupation: data.taux_occupation || 0,
+        nombre_caves: data.nombre_caves || 0,
+        surface_caves: data.surface_caves || null,
+        nombre_box_fermes: data.nombre_box_fermes || 0,
+        nombre_lots: data.nombre_lots || null,
+        annee_construction: data.annee_construction || null,
+        annee_renovation: data.annee_renovation || null,
+        // Arrays et JSONB
+        vues_principales: data.vues_principales || [],
+        nombre_logements_type: data.nombre_logements_type || {},
+        configuration_etages: data.configuration_etages || {}
       };
 
       if (isEdit) {
@@ -352,6 +442,12 @@ export default function BuildingFormWithSidebar() {
         return ['project_id', 'building_name', 'building_code', 'building_type', 'building_class'];
       case 'structure':
         return ['total_floors', 'total_units', 'construction_status'];
+      case 'dimensions':
+        return ['surface_totale_batiment', 'hauteur_batiment', 'position_dans_projet', 'orientation_principale'];
+      case 'commercialization':
+        return ['prix_moyen_m2', 'fourchette_prix_min', 'fourchette_prix_max'];
+      case 'technical':
+        return ['type_chauffage', 'type_climatisation'];
       default:
         return [];
     }
