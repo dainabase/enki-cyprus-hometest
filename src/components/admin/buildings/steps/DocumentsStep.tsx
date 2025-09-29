@@ -4,7 +4,8 @@ import { BuildingFormData } from '@/types/building';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { FileText, Link } from 'lucide-react';
+import SimpleImageUploader from '@/components/admin/common/SimpleImageUploader';
+import { FileText, Image, Building2, Link } from 'lucide-react';
 
 interface DocumentsStepProps {
   form: UseFormReturn<BuildingFormData>;
@@ -16,14 +17,15 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({ form }) => {
       <div>
         <h2 className="text-2xl font-semibold text-slate-900 flex items-center gap-3">
           <FileText className="h-6 w-6 text-blue-500" />
-          Documents
+          Documents & Photos
         </h2>
         <p className="text-slate-500 mt-2">
-          URLs des documents et modèles liés au bâtiment
+          Plans, documents et photos du bâtiment
         </p>
       </div>
 
-      <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Plan d'étage type */}
         <Card>
           <CardContent className="p-6">
             <FormField
@@ -32,18 +34,18 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({ form }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2 text-base font-semibold">
-                    <Link className="h-4 w-4 text-blue-500" />
-                    URL Plan d'étage type
+                    <Building2 className="h-4 w-4 text-blue-500" />
+                    Plan d'étage type
                   </FormLabel>
                   <FormDescription>
-                    Lien vers le plan d'étage type du bâtiment (PDF, image, etc.)
+                    Plan architectural type d'un étage (URL)
                   </FormDescription>
                   <FormControl>
                     <Input
                       {...field}
                       type="url"
-                      placeholder="https://example.com/floor-plan.pdf"
                       className="h-12"
+                      placeholder="https://exemple.com/plan-etage.pdf"
                     />
                   </FormControl>
                   <FormMessage />
@@ -53,6 +55,7 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({ form }) => {
           </CardContent>
         </Card>
 
+        {/* Modèle 3D / Visite virtuelle */}
         <Card>
           <CardContent className="p-6">
             <FormField
@@ -62,17 +65,17 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({ form }) => {
                 <FormItem>
                   <FormLabel className="flex items-center gap-2 text-base font-semibold">
                     <Link className="h-4 w-4 text-blue-500" />
-                    URL Modèle 3D
+                    Modèle 3D / Visite virtuelle
                   </FormLabel>
                   <FormDescription>
-                    Lien vers le modèle 3D ou visite virtuelle du bâtiment
+                    Lien vers un modèle 3D ou une visite virtuelle
                   </FormDescription>
                   <FormControl>
                     <Input
                       {...field}
                       type="url"
-                      placeholder="https://example.com/model-3d.obj"
                       className="h-12"
+                      placeholder="https://exemple.com/visite-3d"
                     />
                   </FormControl>
                   <FormMessage />
@@ -82,6 +85,7 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({ form }) => {
           </CardContent>
         </Card>
 
+        {/* Brochure du bâtiment */}
         <Card>
           <CardContent className="p-6">
             <FormField
@@ -90,24 +94,56 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({ form }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2 text-base font-semibold">
-                    <Link className="h-4 w-4 text-blue-500" />
-                    URL Brochure du bâtiment
+                    <FileText className="h-4 w-4 text-blue-500" />
+                    Brochure du bâtiment
                   </FormLabel>
                   <FormDescription>
-                    Lien vers la brochure commerciale ou technique du bâtiment
+                    Lien vers la brochure commerciale du bâtiment (URL)
                   </FormDescription>
                   <FormControl>
                     <Input
                       {...field}
                       type="url"
-                      placeholder="https://example.com/brochure.pdf"
                       className="h-12"
+                      placeholder="https://exemple.com/brochure.pdf"
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+          </CardContent>
+        </Card>
+
+        {/* Photos du bâtiment */}
+        <Card>
+          <CardContent className="p-6">
+            <div className="space-y-4">
+              <div>
+                <FormLabel className="flex items-center gap-2 text-base font-semibold">
+                  <Image className="h-4 w-4 text-green-500" />
+                  Photos du bâtiment
+                </FormLabel>
+                <FormDescription className="mt-2">
+                  Téléchargez des photos du bâtiment (extérieur, hall, espaces communs...)
+                </FormDescription>
+              </div>
+              
+              <SimpleImageUploader
+                bucket="building-photos"
+                entityId="building-new"
+                onUploadComplete={(urls) => {
+                  console.log('Photos du bâtiment uploadées:', urls);
+                  // Les URLs peuvent être stockées dans un champ dédié si nécessaire
+                }}
+                maxFiles={10}
+                existingImages={[]}
+              />
+              
+              <p className="text-xs text-slate-500">
+                Formats acceptés: JPG, PNG, WEBP • Taille max: 5MB par fichier • Maximum 10 fichiers
+              </p>
+            </div>
           </CardContent>
         </Card>
       </div>

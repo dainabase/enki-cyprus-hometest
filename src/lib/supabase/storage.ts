@@ -1,6 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 
-export type BucketType = 'projects' | 'buildings' | 'properties';
+export type BucketType = 'projects' | 'buildings' | 'properties' | 'building-photos';
 
 export async function uploadImage(
   bucket: BucketType,
