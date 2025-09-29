@@ -17,6 +17,7 @@ const AdminDevelopers = lazy(() => import('./AdminDevelopers'));
 const AdminProjects = lazy(() => import('./AdminProjects'));
 const AdminProjectForm = lazy(() => import('./AdminProjectForm'));
 const AdminProjectDetail = lazy(() => import('./AdminProjectDetail'));
+const ProjectDashboard = lazy(() => import('./projects/[id]/dashboard'));
 const AdminUnits = lazy(() => import('./AdminUnits'));
 const AdminCommissions = lazy(() => 
   import('./AdminCommissions').then(module => ({
@@ -99,6 +100,7 @@ const AdminDashboard = () => {
             <Route path="projects/new" element={<AdminProjectForm />} />
             <Route path="projects/:id" element={<AdminProjectDetail />} />
             <Route path="projects/:id/edit" element={<AdminProjectForm />} />
+            <Route path="projects/:id/dashboard" element={<ProjectDashboard />} />
             <Route path="units" element={<AdminUnits />} />
             <Route path="leads" element={<AdminLeads />} />
             <Route path="pipeline" element={<AdminPipeline />} />

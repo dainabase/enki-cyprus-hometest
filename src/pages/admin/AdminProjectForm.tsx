@@ -10,7 +10,7 @@ import { projectFormSteps } from '@/schemas/projectSchema';
 import { supabase } from '@/integrations/supabase/client';
 import { fetchProject } from '@/lib/supabase/projects';
 import { toast } from 'sonner';
-import { ArrowLeft, ArrowRight, Save, CheckCircle, ChevronLeft } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Save, CheckCircle, ChevronLeft, Building } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { convertLegacyAmenities, convertPhotosToCategorized, CategorizedPhoto } from '@/utils/amenitiesMapper';
 
@@ -380,7 +380,13 @@ const AdminProjectForm: React.FC = () => {
         console.log('✅ Insert successful:', insertData);
         toast.success('Projet créé avec succès');
         
-        navigate('/admin/projects');
+        // Rediriger vers le dashboard du projet nouvellement créé
+        const projectId = insertData[0]?.id;
+        if (projectId) {
+          navigate(`/admin/projects/${projectId}/dashboard`);
+        } else {
+          navigate('/admin/projects');
+        }
       }
     } catch (error: any) {
       console.error('❌ Save error:', error);
@@ -467,6 +473,15 @@ const AdminProjectForm: React.FC = () => {
             </h1>
           </div>
           <div className="flex items-center gap-4">
+            {isEdit && id && (
+              <Button 
+                variant="outline"
+                onClick={() => navigate(`/admin/projects/${id}/dashboard`)}
+              >
+                <Building className="w-4 h-4 mr-2" />
+                Tableau de bord
+              </Button>
+            )}
             <a href="/admin" className="text-base text-slate-600 hover:text-slate-900 transition-colors">
               Retour au dashboard
             </a>
