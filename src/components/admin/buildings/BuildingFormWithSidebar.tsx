@@ -259,14 +259,33 @@ export default function BuildingFormWithSidebar() {
         return;
       }
 
+      // Nettoyer les données avant l'envoi
+      const cleanedData = {
+        ...data,
+        // Convertir les chaînes vides en null pour les dates
+        expected_completion: data.expected_completion && data.expected_completion !== '' ? data.expected_completion : null,
+        actual_completion: data.actual_completion && data.actual_completion !== '' ? data.actual_completion : null,
+        // Convertir les chaînes vides en null pour les URLs
+        typical_floor_plan_url: data.typical_floor_plan_url && data.typical_floor_plan_url !== '' ? data.typical_floor_plan_url : null,
+        model_3d_url: data.model_3d_url && data.model_3d_url !== '' ? data.model_3d_url : null,
+        building_brochure_url: data.building_brochure_url && data.building_brochure_url !== '' ? data.building_brochure_url : null,
+        // S'assurer que les champs string ne sont pas null
+        building_code: data.building_code || null,
+        energy_rating: data.energy_rating || null,
+        // S'assurer que les nombres sont corrects
+        total_floors: data.total_floors || 1,
+        total_units: data.total_units || 1,
+        units_available: data.units_available || 0,
+        elevator_count: data.elevator_count || 0,
+        disabled_parking_spaces: data.disabled_parking_spaces || 0,
+        accessible_bathrooms: data.accessible_bathrooms || 0,
+        display_order: data.display_order || 0
+      };
+
       if (isEdit) {
         const { error } = await supabase
           .from('buildings')
-          .update({
-            ...data,
-            total_floors: data.total_floors || 1,
-            total_units: data.total_units || 1
-          })
+          .update(cleanedData)
           .eq('id', id);
         
         if (error) throw error;
@@ -276,9 +295,7 @@ export default function BuildingFormWithSidebar() {
         const { error } = await supabase
           .from('buildings')
           .insert([{
-            ...data,
-            total_floors: data.total_floors || 1,
-            total_units: data.total_units || 1,
+            ...cleanedData,
             created_by: userData?.user?.id
           }]);
         
