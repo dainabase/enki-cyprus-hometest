@@ -37,7 +37,11 @@ const AdminProperties = () => {
         .from('properties')
         .select(`
           *,
-          building:buildings(id, building_name, project:projects(id, title, city))
+          building:buildings(
+            id, 
+            building_name, 
+            project:projects(id, title, city)
+          )
         `)
         .order('created_at', { ascending: false });
 

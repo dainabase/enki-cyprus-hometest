@@ -19,7 +19,7 @@ import {
   Trash2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { BuildingModal } from '@/components/admin/buildings/BuildingModal';
+
 import { fetchAllBuildings, createBuildingGlobal, updateBuilding, deleteBuilding } from '@/lib/api/buildings';
 import { BuildingFormData } from '@/types/building';
 import { toast } from 'sonner';
@@ -309,15 +309,6 @@ const AdminBuildings = () => {
           ))}
         </div>
       )}
-
-      {/* Building Modal */}
-      <BuildingModal
-        open={showModal}
-        onOpenChange={setShowModal}
-        building={editingBuilding}
-        onSave={handleSaveBuilding}
-        isLoading={createMutation.isPending || updateMutation.isPending}
-      />
     </div>
   );
 };

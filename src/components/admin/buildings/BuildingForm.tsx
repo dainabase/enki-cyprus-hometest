@@ -13,39 +13,26 @@ import { toast } from 'sonner';
 
 interface BuildingFormProps {
   building?: any;
-  projects: any[];
-  onSave: () => void;
+  onSave: (data: BuildingFormData) => Promise<void>;
   onCancel: () => void;
 }
 
-interface BuildingFormData {
-  name: string;
-  building_code: string; // Added missing field
-  project_id: string;
-  total_floors: number;
-  total_units: number;
-  building_type: string;
-  construction_status: string;
-  energy_rating: string;
-  construction_start_date: string;
-  expected_completion: string;
-  address: string;
-  description: string;
-}
+import { BuildingFormData } from '@/types/building';
 
-const BuildingForm: React.FC<BuildingFormProps> = ({ building, projects, onSave, onCancel }) => {
+const BuildingForm: React.FC<BuildingFormProps> = ({ building, onSave, onCancel }) => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [existingImages, setExistingImages] = useState<BuildingImage[]>([]);
+  const [projects, setProjects] = useState<any[]>([]);
   
   const [formData, setFormData] = useState<BuildingFormData>({
-    name: '',
-    building_code: 'A', // Add missing field
+    building_name: '',
+    building_code: 'A',
     project_id: '',
     total_floors: 1,
     total_units: 1,
     building_type: 'residential',
-    construction_status: 'planning',
+    construction_status: 'planned',
     energy_rating: '',
     construction_start_date: '',
     expected_completion: '',
@@ -54,15 +41,28 @@ const BuildingForm: React.FC<BuildingFormProps> = ({ building, projects, onSave,
   });
 
   useEffect(() => {
+    // Fetch projects
+    const fetchProjects = async () => {
+      const { data } = await supabase
+        .from('projects')
+        .select('id, title')
+        .order('title');
+      setProjects(data || []);
+    };
+    
+    fetchProjects();
+  }, []);
+
+  useEffect(() => {
     if (building) {
       setFormData({
-        name: building.name || '',
-        building_code: building.building_code || 'A', // Add missing field
+        building_name: building.building_name || '',
+        building_code: building.building_code || 'A',
         project_id: building.project_id || '',
         total_floors: building.total_floors || 1,
         total_units: building.total_units || 1,
         building_type: building.building_type || 'residential',
-        construction_status: building.construction_status || 'planning',
+        construction_status: building.construction_status || 'planned',
         energy_rating: building.energy_rating || '',
         construction_start_date: building.construction_start_date || '',
         expected_completion: building.expected_completion || '',
@@ -90,8 +90,8 @@ const BuildingForm: React.FC<BuildingFormProps> = ({ building, projects, onSave,
 
     try {
       const buildingData = {
-        name: formData.name,
-        building_code: formData.building_code || 'A', // Required field
+        building_name: formData.building_name,
+        building_code: formData.building_code || 'A',
         project_id: formData.project_id || null,
         total_floors: formData.total_floors,
         total_units: formData.total_units,
@@ -117,7 +117,7 @@ const BuildingForm: React.FC<BuildingFormProps> = ({ building, projects, onSave,
         if (error) throw error;
       }
 
-      onSave();
+      await onSave(formData);
     } catch (error) {
       console.error('Error saving building:', error);
       toast({
