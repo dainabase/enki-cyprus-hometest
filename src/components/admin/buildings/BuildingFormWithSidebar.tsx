@@ -5,29 +5,24 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Form } from '@/components/ui/form';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { 
-  ArrowLeft, ArrowRight, Check, Save, ChevronLeft, Building2, 
-  HardHat, Zap, Shield, Waves, Coffee, Accessibility, 
-  Gamepad2, FileText, Settings 
-} from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Save, ChevronLeft, Building } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { BuildingFormData } from '@/types/building';
 import { BuildingFormSteps } from './BuildingFormSteps';
 
-// Définition des étapes du formulaire avec icônes shadcn
+// Définition des étapes du formulaire - exactement comme le projet
 export const buildingFormSteps = [
-  { id: 'general', title: 'Informations générales', icon: Building2 },
-  { id: 'structure', title: 'Structure', icon: HardHat },
-  { id: 'infrastructure', title: 'Infrastructure', icon: Zap },
-  { id: 'security', title: 'Sécurité', icon: Shield },
-  { id: 'amenities', title: 'Équipements', icon: Waves },
-  { id: 'services', title: 'Services', icon: Coffee },
-  { id: 'accessibility', title: 'Accessibilité', icon: Accessibility },
-  { id: 'leisure', title: 'Loisirs', icon: Gamepad2 },
-  { id: 'documents', title: 'Documents', icon: FileText },
-  { id: 'advanced', title: 'Avancé', icon: Settings }
+  { id: 'general', title: 'Informations générales' },
+  { id: 'structure', title: 'Structure' },
+  { id: 'infrastructure', title: 'Infrastructure' },
+  { id: 'security', title: 'Sécurité' },
+  { id: 'amenities', title: 'Équipements' },
+  { id: 'services', title: 'Services' },
+  { id: 'accessibility', title: 'Accessibilité' },
+  { id: 'leisure', title: 'Loisirs' },
+  { id: 'documents', title: 'Documents' },
+  { id: 'advanced', title: 'Avancé' }
 ];
 
 export default function BuildingFormWithSidebar() {
@@ -338,197 +333,119 @@ export default function BuildingFormWithSidebar() {
   const isGoldenVisa = estimatedValue >= 300000;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
-      {/* Header avec design cohérent */}
-      <div className="h-20 bg-white border-b border-slate-200/60 sticky top-0 z-10 shadow-sm backdrop-blur-sm">
-        <div className="h-full px-8 flex items-center justify-between max-w-7xl mx-auto">
+    <div className="min-h-screen bg-slate-50">
+      {/* Header fixe - exactement comme le projet */}
+      <div className="h-32 bg-white border-b-2 border-slate-200 sticky top-0 z-10 shadow-sm">
+        <div className="h-full px-8 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button 
               variant="ghost" 
               onClick={() => navigate('/admin/buildings')}
-              className="flex items-center gap-2 hover:bg-slate-100 rounded-lg px-4 py-2 transition-all duration-200"
+              className="flex items-center gap-2 hover:bg-slate-100 rounded-lg px-3 py-2 transition-colors"
             >
               <ChevronLeft className="h-5 w-5" />
-              <span className="font-medium">Retour</span>
+              <span className="font-medium">Retour bâtiments</span>
             </Button>
-            <div className="h-8 w-px bg-slate-200"></div>
+            <span className="text-slate-300">|</span>
             <div>
-              <h1 className="text-xl font-bold text-slate-900">
+              <h1 className="text-2xl font-bold text-slate-900">
                 {isEdit ? 'Modifier le bâtiment' : 'Nouveau bâtiment'}
               </h1>
-              <p className="text-sm text-slate-500">
-                Étape {currentStepIndex + 1} sur {buildingFormSteps.length}
+              <p className="text-sm text-slate-500 mt-1">
+                Complétez les informations du bâtiment en suivant les étapes
               </p>
             </div>
           </div>
           <div className="flex items-center gap-4">
             {isGoldenVisa && (
-              <Badge className="bg-gradient-to-r from-yellow-100 to-yellow-50 text-yellow-800 border-yellow-300 px-3 py-1 text-xs">
-                ✨ Golden Visa
+              <Badge className="bg-gradient-to-r from-yellow-100 to-yellow-50 text-yellow-800 border-yellow-300 px-4 py-2">
+                ✨ Golden Visa Potentiel
               </Badge>
             )}
-            <Badge variant="outline" className="px-3 py-1 text-xs">
-              {Math.round(((currentStepIndex + 1) / buildingFormSteps.length) * 100)}% complété
-            </Badge>
+            <Button
+              variant="outline"
+              onClick={() => navigate('/admin')}
+              className="text-slate-600 hover:text-slate-900"
+            >
+              Dashboard
+            </Button>
           </div>
         </div>
       </div>
 
-      <div className="flex max-w-7xl mx-auto">
-        {/* Sidebar avec design aligné sur le formulaire projet */}
-        <div className="w-80 bg-white/80 backdrop-blur-sm border-r border-slate-200/60 sticky top-20 h-[calc(100vh-80px)] overflow-y-auto">
+      <div className="flex">
+        {/* Sidebar fixe - exactement comme le projet */}
+        <div className="w-80 bg-white border-r-2 border-slate-200 sticky top-[128px] h-[calc(100vh-128px)] overflow-y-auto">
           <div className="p-6">
-            <div className="mb-8">
-              <h2 className="text-lg font-semibold text-slate-900 mb-2">Configuration</h2>
-              <p className="text-sm text-slate-500">
-                Complétez toutes les sections pour finaliser votre bâtiment
-              </p>
-            </div>
-            
+            <h2 className="text-lg font-semibold text-slate-900 mb-6">Étapes du bâtiment</h2>
             <nav className="space-y-2">
-              {buildingFormSteps.map((step, index) => {
-                const isActive = currentStepIndex === index;
-                const isCompleted = index < currentStepIndex;
-                const IconComponent = step.icon;
-                
-                return (
-                  <button
-                    key={step.id}
-                    onClick={() => handleStepClick(index)}
-                    className={`w-full text-left p-4 rounded-xl transition-all duration-200 group ${
-                      isActive
-                        ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/25'
-                        : isCompleted
-                        ? 'bg-green-50 text-green-700 hover:bg-green-100 border border-green-200/50'
-                        : 'text-slate-600 hover:bg-slate-50 border border-transparent hover:border-slate-200'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`flex items-center justify-center w-8 h-8 rounded-lg transition-all ${
-                        isActive 
-                          ? 'bg-white/20' 
-                          : isCompleted 
-                            ? 'bg-green-100' 
-                            : 'bg-slate-100 group-hover:bg-slate-200'
-                      }`}>
-                        <IconComponent className={`h-4 w-4 ${
-                          isActive ? 'text-white' : isCompleted ? 'text-green-600' : 'text-slate-500'
-                        }`} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium text-sm truncate">{step.title}</div>
-                        <div className={`text-xs mt-1 ${
-                          isActive ? 'text-blue-100' : isCompleted ? 'text-green-600' : 'text-slate-400'
-                        }`}>
-                          {index + 1}. {isCompleted ? 'Terminé' : isActive ? 'En cours' : 'À compléter'}
-                        </div>
-                      </div>
-                      {isCompleted && (
-                        <Check className="h-4 w-4 text-green-600" />
-                      )}
-                    </div>
-                  </button>
-                );
-              })}
+              {buildingFormSteps.map((step, index) => (
+                <button
+                  key={step.id}
+                  onClick={() => handleStepClick(index)}
+                  className={`w-full text-left px-4 py-3 rounded-lg transition-colors ${
+                    currentStepIndex === index
+                      ? 'bg-primary text-white'
+                      : 'text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
+                      currentStepIndex === index
+                        ? 'bg-white text-primary'
+                        : 'bg-slate-200 text-slate-600'
+                    }`}>
+                      {index + 1}
+                    </span>
+                    <span className="font-medium">{step.title}</span>
+                  </div>
+                </button>
+              ))}
             </nav>
-
-            {/* Barre de progression */}
-            <div className="mt-8 p-4 bg-slate-50 rounded-xl">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium text-slate-700">Progression</span>
-                <span className="text-sm text-slate-500">
-                  {Math.round(((currentStepIndex + 1) / buildingFormSteps.length) * 100)}%
-                </span>
-              </div>
-              <div className="w-full bg-slate-200 rounded-full h-2">
-                <div 
-                  className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-500"
-                  style={{ width: `${((currentStepIndex + 1) / buildingFormSteps.length) * 100}%` }}
-                />
-              </div>
-            </div>
           </div>
         </div>
 
-        {/* Contenu principal */}
+        {/* Contenu principal - exactement comme le projet */}
         <div className="flex-1 p-8">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSave)} className="space-y-8">
-              {/* Card principale avec design cohérent */}
-              <Card className="border-2 border-slate-200/60 shadow-sm hover:shadow-md transition-all duration-200">
-                <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b border-slate-200/60">
-                  <CardTitle className="text-xl font-semibold text-foreground flex items-center gap-3">
-                    {React.createElement(buildingFormSteps[currentStepIndex].icon, { 
-                      className: "h-6 w-6 text-primary" 
-                    })}
-                    {buildingFormSteps[currentStepIndex].title}
-                  </CardTitle>
-                  <CardDescription className="text-muted-foreground">
-                    Étape {currentStepIndex + 1} sur {buildingFormSteps.length} - Complétez les informations requises
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="p-8">
-                  <BuildingFormSteps
-                    form={form}
-                    currentStep={currentStep.id}
-                    projects={projects}
-                  />
-                </CardContent>
-              </Card>
+              <BuildingFormSteps
+                form={form}
+                currentStep={currentStep.id}
+                projects={projects}
+              />
 
-              {/* Navigation avec design moderne */}
-              <Card className="border border-slate-200/60 shadow-sm">
-                <CardContent className="p-6">
-                  <div className="flex justify-between items-center">
+              {/* Navigation controls - exactement comme le projet */}
+              <div className="flex justify-between items-center pt-8 border-t">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handlePrevious}
+                  disabled={currentStepIndex === 0}
+                  className="flex items-center gap-2"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Précédent
+                </Button>
+
+                <div className="flex items-center gap-4">
+                  {currentStepIndex === buildingFormSteps.length - 1 ? (
+                    <Button type="submit" className="flex items-center gap-2">
+                      <Save className="h-4 w-4" />
+                      {isEdit ? 'Mettre à jour' : 'Créer le bâtiment'}
+                    </Button>
+                  ) : (
                     <Button
                       type="button"
-                      variant="outline"
-                      onClick={handlePrevious}
-                      disabled={currentStepIndex === 0}
+                      onClick={handleNext}
                       className="flex items-center gap-2"
                     >
-                      <ArrowLeft className="h-4 w-4" />
-                      Précédent
+                      Suivant
+                      <ArrowRight className="h-4 w-4" />
                     </Button>
-
-                    <div className="flex items-center gap-2">
-                      {buildingFormSteps.map((_, index) => (
-                        <div
-                          key={index}
-                          className={`w-2 h-2 rounded-full transition-all ${
-                            index === currentStepIndex
-                              ? 'w-8 bg-blue-500'
-                              : index < currentStepIndex
-                              ? 'bg-green-500'
-                              : 'bg-slate-300'
-                          }`}
-                        />
-                      ))}
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      {currentStepIndex === buildingFormSteps.length - 1 ? (
-                        <Button 
-                          type="submit" 
-                          className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
-                        >
-                          <Check className="h-4 w-4" />
-                          {isEdit ? 'Mettre à jour' : 'Créer le bâtiment'}
-                        </Button>
-                      ) : (
-                        <Button
-                          type="button"
-                          onClick={handleNext}
-                          className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
-                        >
-                          Suivant
-                          <ArrowRight className="h-4 w-4" />
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  )}
+                </div>
+              </div>
             </form>
           </Form>
         </div>
