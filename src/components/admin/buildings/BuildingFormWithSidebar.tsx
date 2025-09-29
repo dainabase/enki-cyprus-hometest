@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 import { BuildingFormData } from '@/types/building';
 import { BuildingFormSteps } from './BuildingFormSteps';
 
-// Définition des étapes du formulaire - AVEC LES NOUVELLES ÉTAPES
+// Définition des étapes du formulaire - SANS L'ÉTAPE AVANCÉ
 export const buildingFormSteps = [
   { id: 'general', title: 'Informations générales' },
   { id: 'structure', title: 'Structure' },
@@ -24,8 +24,7 @@ export const buildingFormSteps = [
   { id: 'services', title: 'Services' },
   { id: 'accessibility', title: 'Accessibilité' },
   { id: 'leisure', title: 'Loisirs' },
-  { id: 'documents', title: 'Documents' },
-  { id: 'advanced', title: 'Avancé' }
+  { id: 'documents', title: 'Documents' }
 ];
 
 export default function BuildingFormWithSidebar() {
