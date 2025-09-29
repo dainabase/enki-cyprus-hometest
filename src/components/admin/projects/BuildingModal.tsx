@@ -122,7 +122,7 @@ export function BuildingModal({
         expected_completion: building.expected_completion || '',
         actual_completion: building.actual_completion || '',
         building_class: building.building_class,
-        energy_certificate: building.energy_certificate || '',
+        energy_certificate: (building.energy_certificate as any) || 'B',
         elevator_count: building.elevator_count || 0,
         has_generator: building.has_generator || false,
         has_security_system: building.has_security_system || false,
