@@ -8,6 +8,7 @@ export interface Property {
     project?: {
       id: string;
       title: string;
+      city?: string;
     };
   };
   
