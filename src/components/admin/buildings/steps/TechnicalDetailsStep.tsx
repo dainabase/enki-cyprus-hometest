@@ -6,13 +6,15 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent } from '@/components/ui/card';
-import { Thermometer, Wind, Calendar, Home, Package } from 'lucide-react';
+import { Thermometer, Wind, Calendar, Home, Package, Wrench } from 'lucide-react';
 
 interface TechnicalDetailsStepProps {
   form: UseFormReturn<BuildingFormData>;
 }
 
 export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form }) => {
+  const currentYear = new Date().getFullYear();
+  
   return (
     <div className="space-y-6">
       {/* Titre de l'étape */}
@@ -29,7 +31,7 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
       {/* Section Systèmes techniques */}
       <div>
         <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-          <span className="text-xl">🔧</span>
+          <Wrench className="h-5 w-5 text-slate-600" />
           Systèmes techniques
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -132,10 +134,14 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
                         {...field}
                         type="number"
                         min="1900"
-                        max={new Date().getFullYear()}
+                        max={currentYear}
                         className="h-12"
-                        placeholder="2020"
-                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                        placeholder={String(currentYear)}
+                        value={field.value || ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          field.onChange(val === '' ? undefined : parseInt(val) || undefined);
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -164,10 +170,14 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
                         {...field}
                         type="number"
                         min="1900"
-                        max={new Date().getFullYear()}
+                        max={currentYear}
                         className="h-12"
-                        placeholder="2023"
-                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                        placeholder={String(currentYear - 1)}
+                        value={field.value || ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          field.onChange(val === '' ? undefined : parseInt(val) || undefined);
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -241,14 +251,40 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
                       Total des caves dans le bâtiment
                     </FormDescription>
                     <FormControl>
-                      <Input
-                        {...field}
-                        type="number"
-                        min="0"
-                        className="h-12"
-                        placeholder="15"
-                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                      />
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const current = parseInt(field.value as any) || 0;
+                            field.onChange(Math.max(0, current - 1));
+                          }}
+                          className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-lg font-semibold transition-colors"
+                        >
+                          −
+                        </button>
+                        <Input
+                          {...field}
+                          type="number"
+                          min="0"
+                          className="h-12 text-center"
+                          placeholder="15"
+                          value={field.value || ''}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            field.onChange(val === '' ? '' : parseInt(val) || 0);
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const current = parseInt(field.value as any) || 0;
+                            field.onChange(current + 1);
+                          }}
+                          className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-lg font-semibold transition-colors"
+                        >
+                          +
+                        </button>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -279,7 +315,11 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
                         step="0.5"
                         className="h-12"
                         placeholder="5"
-                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                        value={field.value || ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          field.onChange(val === '' ? '' : parseFloat(val) || 0);
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -304,14 +344,40 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
                       Garages ou boxes individuels
                     </FormDescription>
                     <FormControl>
-                      <Input
-                        {...field}
-                        type="number"
-                        min="0"
-                        className="h-12"
-                        placeholder="10"
-                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                      />
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const current = parseInt(field.value as any) || 0;
+                            field.onChange(Math.max(0, current - 1));
+                          }}
+                          className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-lg font-semibold transition-colors"
+                        >
+                          −
+                        </button>
+                        <Input
+                          {...field}
+                          type="number"
+                          min="0"
+                          className="h-12 text-center"
+                          placeholder="10"
+                          value={field.value || ''}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            field.onChange(val === '' ? '' : parseInt(val) || 0);
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const current = parseInt(field.value as any) || 0;
+                            field.onChange(current + 1);
+                          }}
+                          className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-lg font-semibold transition-colors"
+                        >
+                          +
+                        </button>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -335,14 +401,40 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
                       Pour la copropriété
                     </FormDescription>
                     <FormControl>
-                      <Input
-                        {...field}
-                        type="number"
-                        min="0"
-                        className="h-12"
-                        placeholder="50"
-                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                      />
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const current = parseInt(field.value as any) || 0;
+                            field.onChange(Math.max(0, current - 1));
+                          }}
+                          className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-lg font-semibold transition-colors"
+                        >
+                          −
+                        </button>
+                        <Input
+                          {...field}
+                          type="number"
+                          min="0"
+                          className="h-12 text-center"
+                          placeholder="50"
+                          value={field.value || ''}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            field.onChange(val === '' ? '' : parseInt(val) || 0);
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const current = parseInt(field.value as any) || 0;
+                            field.onChange(current + 1);
+                          }}
+                          className="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-lg font-semibold transition-colors"
+                        >
+                          +
+                        </button>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
