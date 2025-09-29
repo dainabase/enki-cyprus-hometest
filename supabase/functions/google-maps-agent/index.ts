@@ -158,6 +158,7 @@ async function findStrategicDistances(lat: number, lng: number) {
     }
   }
   // CALCUL DES 2 AÉROPORTS SÉPARÉMENT
+  // CALCUL DES 2 AÉROPORTS SÉPARÉMENT
   const larnacaDistance = Math.round(calculateDistance(lat, lng, airports[0].lat, airports[0].lng) * 10) / 10;
   const paphosDistance = Math.round(calculateDistance(lat, lng, airports[1].lat, airports[1].lng) * 10) / 10;
   
@@ -352,7 +353,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
     );
   }

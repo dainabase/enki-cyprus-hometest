@@ -144,7 +144,7 @@ PROXIMITÉ:
           };
         } catch (error) {
           console.error(`❌ Failed to process ${url}:`, error);
-          return { url, content: '', type: 'unknown', error: error.message };
+          return { url, content: '', type: 'unknown', error: error instanceof Error ? error.message : 'Unknown error' };
         }
       })
     );
@@ -370,7 +370,7 @@ INSTRUCTIONS SPÉCIFIQUES:
     }
 
     // Si c'est Les Jardins de Maria, forcer l'extraction correcte
-    if (fileUrls.some(url => url.includes('jardins') || url.includes('maria'))) {
+    if (fileUrls.some((url: string) => url.includes('jardins') || url.includes('maria'))) {
       console.log('🎯 Forcing correct Jardins de Maria extraction');
       extractedData = {
         developer: {
@@ -436,7 +436,7 @@ INSTRUCTIONS SPÉCIFIQUES:
     console.error('Error in extract-full-hierarchy:', error);
     
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error',
       details: 'Failed to extract hierarchy data'
     }), {
       status: 500,

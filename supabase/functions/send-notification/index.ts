@@ -112,7 +112,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: false,
-        error: error.message,
+        error: error instanceof Error ? error.message : 'Unknown error',
         generated_at: new Date().toISOString()
       }),
       {
@@ -199,12 +199,11 @@ function generateEmailContent(template: string, data: any) {
       return {
         subject: 'Bienvenue chez ENKI Realty!',
         html: `
-          ${baseStyles}
-          <div class="container">
-            <div class="header">
-              <h1>🏠 Bienvenue chez ENKI Realty</h1>
+          <div style="${styles.container}">
+            <div style="${styles.header}">
+              <h1 style="${styles.headerTitle}">🏠 Bienvenue chez ENKI Realty</h1>
             </div>
-            <div class="content">
+            <div style="${styles.content}">
               <h2>Bonjour ${data.name}!</h2>
               <p>Bienvenue dans la famille ENKI Realty! Nous sommes ravis de vous accompagner dans votre projet immobilier à Chypre.</p>
               

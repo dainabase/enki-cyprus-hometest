@@ -47,7 +47,7 @@ serve(async (req) => {
     
     return new Response(JSON.stringify({
       success: false,
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error',
       step: 'Système Lovable PDF'
     }), {
       status: 500,
@@ -86,7 +86,7 @@ async function extractDeveloperWithLovableSystem(fileUrl: string, apiKey: string
     console.error('💥 Erreur système Lovable:', error);
     return new Response(JSON.stringify({
       success: false,
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error',
       extractionType: 'developer'
     }), {
       status: 500,

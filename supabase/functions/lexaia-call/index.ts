@@ -114,7 +114,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: false,
-        error: error.message,
+        error: error instanceof Error ? error.message : 'Unknown error',
         generated_at: new Date().toISOString()
       }),
       {
@@ -240,5 +240,5 @@ function getMockResponse(country: string, budget: number): LexaiaResponse {
     scenarios: ['Structure d\'optimisation sur mesure']
   });
 
-  return mockScenarios[country] || defaultScenario(budget);
+  return mockScenarios[country]?.(budget) || defaultScenario(budget);
 }

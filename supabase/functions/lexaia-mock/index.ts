@@ -157,12 +157,12 @@ serve(async (req) => {
   } catch (error) {
     console.error('❌ Error in Lexaia function:', error);
     
-    return new Response(
-      JSON.stringify({
-        success: false,
-        error: error.message,
-        generated_at: new Date().toISOString()
-      }),
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: error instanceof Error ? error.message : 'Unknown error',
+          generated_at: new Date().toISOString()
+        }),
       {
         status: 400,
         headers: { 

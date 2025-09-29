@@ -47,7 +47,7 @@ serve(async (req) => {
     console.error('❌ Error in DB trigger function:', error);
     
     return new Response(
-      JSON.stringify({ success: false, error: error.message }),
+      JSON.stringify({ success: false, error: error instanceof Error ? error.message : 'Unknown error' }),
       {
         headers: { 'Content-Type': 'application/json' },
         status: 500,

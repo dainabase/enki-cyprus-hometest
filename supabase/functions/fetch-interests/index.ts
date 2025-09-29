@@ -104,7 +104,7 @@ serve(async (req) => {
     
     return new Response(JSON.stringify({ 
       interests: fallbackInterests,
-      error: error.message 
+      error: error instanceof Error ? error.message : 'Unknown error' 
     }), {
       status: 200, // Return 200 with fallback data
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
