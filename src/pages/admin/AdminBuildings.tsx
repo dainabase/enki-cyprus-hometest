@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -13,32 +13,33 @@ import {
   Car,
   Layers,
   Calendar,
-  ArrowRight
+  ArrowRight,
+  Plus,
+  Edit,
+  Trash2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { BuildingModal } from '@/components/admin/buildings/BuildingModal';
+import { fetchAllBuildings, createBuildingGlobal, updateBuilding, deleteBuilding } from '@/lib/api/buildings';
+import { BuildingFormData } from '@/types/building';
+import { toast } from 'sonner';
 
 const AdminBuildings = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [editingBuilding, setEditingBuilding] = useState(null);
 
   // Fetch tous les bâtiments avec leurs projets
   const { data: buildings = [], isLoading } = useQuery({
     queryKey: ['all-buildings'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('buildings')
-        .select(`
-          *,
-          project:projects(id, title, cyprus_zone),
-          properties(count)
-        `)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
+      const buildingsData = await fetchAllBuildings();
       
       // Calculer le nombre de propriétés pour chaque bâtiment
       const buildingsWithCount = await Promise.all(
-        (data || []).map(async (building) => {
+        buildingsData.map(async (building) => {
           const { count } = await supabase
             .from('properties')
             .select('*', { count: 'exact', head: true })
@@ -54,6 +55,66 @@ const AdminBuildings = () => {
       return buildingsWithCount;
     }
   });
+
+  // Create building mutation
+  const createMutation = useMutation({
+    mutationFn: createBuildingGlobal,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['all-buildings'] });
+      toast.success('Bâtiment créé avec succès');
+    },
+    onError: (error) => {
+      toast.error('Erreur lors de la création du bâtiment');
+      console.error(error);
+    }
+  });
+
+  // Update building mutation
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<BuildingFormData> }) => 
+      updateBuilding(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['all-buildings'] });
+      toast.success('Bâtiment modifié avec succès');
+    },
+    onError: (error) => {
+      toast.error('Erreur lors de la modification du bâtiment');
+      console.error(error);
+    }
+  });
+
+  // Delete building mutation
+  const deleteMutation = useMutation({
+    mutationFn: deleteBuilding,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['all-buildings'] });
+      toast.success('Bâtiment supprimé avec succès');
+    },
+    onError: (error) => {
+      toast.error('Erreur lors de la suppression du bâtiment');
+      console.error(error);
+    }
+  });
+
+  const handleSaveBuilding = async (data: BuildingFormData) => {
+    if (editingBuilding) {
+      await updateMutation.mutateAsync({ id: editingBuilding.id, data });
+    } else {
+      await createMutation.mutateAsync(data);
+    }
+    setEditingBuilding(null);
+  };
+
+  const handleEditBuilding = (building) => {
+    setEditingBuilding(building);
+    setShowModal(true);
+  };
+
+  const handleDeleteBuilding = async (id: string) => {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce bâtiment ?')) {
+      await deleteMutation.mutateAsync(id);
+    }
+  };
 
   // Filtrer les bâtiments
   const filteredBuildings = buildings.filter(building =>
@@ -80,6 +141,10 @@ const AdminBuildings = () => {
             Gérez tous les bâtiments de vos projets immobiliers
           </p>
         </div>
+        <Button onClick={() => setShowModal(true)} className="gap-2">
+          <Plus className="h-4 w-4" />
+          Nouveau bâtiment
+        </Button>
       </div>
 
       {/* Stats Cards */}
@@ -213,20 +278,46 @@ const AdminBuildings = () => {
                     <span className="font-medium">{building.units_available || 0}</span>
                     <span className="text-gray-500"> / {building.total_units || 0} disponibles</span>
                   </div>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => navigate(`/admin/projects/${building.project_id}/dashboard?tab=buildings`)}
-                  >
-                    Gérer
-                    <ArrowRight className="h-4 w-4 ml-1" />
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleEditBuilding(building)}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleDeleteBuilding(building.id)}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => navigate(`/admin/projects/${building.project_id}/dashboard?tab=buildings`)}
+                    >
+                      Gérer
+                      <ArrowRight className="h-4 w-4 ml-1" />
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
       )}
+
+      {/* Building Modal */}
+      <BuildingModal
+        open={showModal}
+        onOpenChange={setShowModal}
+        building={editingBuilding}
+        onSave={handleSaveBuilding}
+        isLoading={createMutation.isPending || updateMutation.isPending}
+      />
     </div>
   );
 };

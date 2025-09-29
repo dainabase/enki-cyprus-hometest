@@ -2599,8 +2599,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
   switch (currentStep) {
     case 'basics':
       return renderBasicsStep();
-    case 'buildings':
-      return renderBuildingsStep();
     case 'location':
       return renderLocationStep();
     case 'amenities':

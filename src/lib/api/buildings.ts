@@ -1,6 +1,84 @@
 import { supabase } from '@/integrations/supabase/client';
 import { Building, BuildingFormData } from '@/types/building';
 
+// Fetch all buildings (for admin buildings page)
+export const fetchAllBuildings = async (): Promise<Building[]> => {
+  const { data, error } = await supabase
+    .from('buildings')
+    .select(`
+      *,
+      project:projects(id, title, cyprus_zone)
+    `)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching all buildings:', error);
+    throw error;
+  }
+
+  return (data || []) as Building[];
+};
+
+// Fetch all projects (for building modal dropdown)
+export const fetchAllProjects = async () => {
+  const { data, error } = await supabase
+    .from('projects')
+    .select('id, title, city')
+    .order('title');
+  
+  if (error) {
+    console.error('Error fetching projects:', error);
+    throw error;
+  }
+  
+  return data || [];
+};
+
+// Create a new building (global version)
+export const createBuildingGlobal = async (buildingData: BuildingFormData): Promise<Building> => {
+  if (!buildingData.project_id) {
+    throw new Error('Project ID is required');
+  }
+
+  const { data, error } = await supabase
+    .from('buildings')
+    .insert([{
+      project_id: buildingData.project_id,
+      building_code: buildingData.building_code || 'A',
+      building_name: buildingData.building_name,
+      building_type: buildingData.building_type,
+      total_floors: buildingData.total_floors || 1,
+      construction_status: buildingData.construction_status,
+      expected_completion: buildingData.expected_completion,
+      elevator_count: buildingData.elevator_count || 0,
+      has_generator: buildingData.has_generator,
+      has_solar_panels: buildingData.has_solar_panels,
+      has_security_system: buildingData.has_security_system,
+      has_cctv: buildingData.has_cctv,
+      has_concierge: buildingData.has_concierge,
+      has_pool: buildingData.has_pool,
+      has_gym: buildingData.has_gym,
+      has_spa: buildingData.has_spa,
+      has_playground: buildingData.has_playground,
+      has_garden: buildingData.has_garden,
+      has_parking: buildingData.has_parking,
+      parking_type: buildingData.parking_type,
+      created_by: (await supabase.auth.getUser()).data.user?.id
+    }])
+    .select(`
+      *,
+      project:projects(id, title, cyprus_zone)
+    `)
+    .single();
+
+  if (error) {
+    console.error('Error creating building:', error);
+    throw error;
+  }
+
+  return data as Building;
+};
+
 // Fetch all buildings for a project
 export const fetchBuildingsByProject = async (projectId: string): Promise<Building[]> => {
   const { data, error } = await supabase

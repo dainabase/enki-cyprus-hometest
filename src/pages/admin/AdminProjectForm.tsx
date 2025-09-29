@@ -385,7 +385,8 @@ const AdminProjectForm: React.FC = () => {
         if (projectId) {
           navigate(`/admin/projects/${projectId}/dashboard`);
         } else {
-          navigate('/admin/projects');
+      navigate('/admin/projects');
+      toast.success('Projet créé ! Vous pouvez maintenant ajouter des bâtiments depuis la section Bâtiments.');
         }
       }
     } catch (error: any) {
