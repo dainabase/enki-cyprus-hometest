@@ -207,7 +207,7 @@ function generateEmailContent(template: string, data: any) {
               <h2>Bonjour ${data.name}!</h2>
               <p>Bienvenue dans la famille ENKI Realty! Nous sommes ravis de vous accompagner dans votre projet immobilier à Chypre.</p>
               
-              <div class="highlight">
+              <div style="${styles.highlight}">
                 <h3>Prochaines étapes :</h3>
                 <ul>
                   <li>Explorez nos projets premium</li>
@@ -217,9 +217,9 @@ function generateEmailContent(template: string, data: any) {
                 </ul>
               </div>
               
-              <a href="${Deno.env.get('SITE_URL') || 'https://enki-realty.com'}/projects" class="button">Découvrir nos Projets</a>
+              <a href="${Deno.env.get('SITE_URL') || 'https://enki-realty.com'}/projects" style="${styles.button}">Découvrir nos Projets</a>
             </div>
-            <div class="footer">
+            <div style="${styles.footer}">
               <p>ENKI Realty - Excellence Immobilière à Chypre</p>
             </div>
           </div>
@@ -230,22 +230,21 @@ function generateEmailContent(template: string, data: any) {
       return {
         subject: `Mise à jour projet - ${data.project}`,
         html: `
-          ${baseStyles}
-          <div class="container">
-            <div class="header">
-              <h1>🏗️ Mise à Jour Projet</h1>
+          <div style="${styles.container}">
+            <div style="${styles.header}">
+              <h1 style="${styles.headerTitle}">🏗️ Mise à Jour Projet</h1>
             </div>
-            <div class="content">
+            <div style="${styles.content}">
               <h2>Nouveautés sur ${data.project}</h2>
               <p>Le projet que vous suivez a été mis à jour avec de nouvelles informations.</p>
               
-              <div class="highlight">
+              <div style="${styles.highlight}">
                 <p>Consultez les dernières photos, plans et détails mis à jour.</p>
               </div>
               
-              <a href="${Deno.env.get('SITE_URL') || 'https://enki-realty.com'}/projects" class="button">Voir le Projet</a>
+              <a href="${Deno.env.get('SITE_URL') || 'https://enki-realty.com'}/projects" style="${styles.button}">Voir le Projet</a>
             </div>
-            <div class="footer">
+            <div style="${styles.footer}">
               <p>ENKI Realty</p>
             </div>
           </div>
@@ -256,9 +255,8 @@ function generateEmailContent(template: string, data: any) {
       return {
         subject: 'Notification ENKI Realty',
         html: `
-          ${baseStyles}
-          <div class="container">
-            <div class="content">
+          <div style="${styles.container}">
+            <div style="${styles.content}">
               <h2>Notification</h2>
               <p>Vous avez reçu une nouvelle notification.</p>
             </div>

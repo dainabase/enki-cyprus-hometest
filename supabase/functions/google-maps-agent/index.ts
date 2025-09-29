@@ -80,7 +80,9 @@ async function findStrategicDistances(lat: number, lng: number) {
     proximity_sea_km: null as number | null,
     proximity_airport_km: null as number | null,
     proximity_city_center_km: null as number | null,
-    proximity_highway_km: null as number | null
+    proximity_highway_km: null as number | null,
+    larnaca_airport_distance: null as number | null,
+    paphos_airport_distance: null as number | null
   };
 
   // RECHERCHE SPÉCIFIQUE POUR CHYPRE
