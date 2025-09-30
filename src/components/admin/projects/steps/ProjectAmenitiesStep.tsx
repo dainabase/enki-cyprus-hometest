@@ -1,3 +1,4 @@
+import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { ProjectFormData } from '@/schemas/projectSchema';
 import { Card, CardContent } from '@/components/ui/card';
@@ -9,7 +10,7 @@ interface ProjectAmenitiesStepProps {
   form: UseFormReturn<ProjectFormData>;
 }
 
-export function ProjectAmenitiesStep({ form }: ProjectAmenitiesStepProps) {
+export const ProjectAmenitiesStep: React.FC<ProjectAmenitiesStepProps> = ({ form }) => {
   return (
     <div className="space-y-4">
       <Card>
@@ -488,4 +489,6 @@ export function ProjectAmenitiesStep({ form }: ProjectAmenitiesStepProps) {
       </Card>
     </div>
   );
-}
+};
+
+export default ProjectAmenitiesStep;
