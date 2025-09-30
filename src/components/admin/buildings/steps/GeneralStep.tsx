@@ -28,15 +28,14 @@ export const GeneralStep: React.FC<GeneralStepProps> = ({ form, projects }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Projet (OBLIGATOIRE) */}
-        <Card className="border-2 border-blue-100">
-          <CardContent className="p-6">
+        <Card>
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="project_id"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex items-center gap-2 text-base font-semibold">
-                    <Home className="h-4 w-4 text-blue-500" />
+                  <FormLabel className="text-sm">
                     Projet *
                   </FormLabel>
                   <FormDescription>
@@ -47,7 +46,7 @@ export const GeneralStep: React.FC<GeneralStepProps> = ({ form, projects }) => {
                       value={field.value || ''} 
                       onValueChange={field.onChange}
                     >
-                      <SelectTrigger className="w-full h-12">
+                      <SelectTrigger>
                         <SelectValue placeholder="Choisissez un projet" />
                       </SelectTrigger>
                       <SelectContent>
@@ -71,14 +70,13 @@ export const GeneralStep: React.FC<GeneralStepProps> = ({ form, projects }) => {
 
         {/* Nom du bâtiment */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="building_name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex items-center gap-2 text-base font-semibold">
-                    <Building2 className="h-4 w-4 text-slate-500" />
+                  <FormLabel className="text-sm">
                     Nom du bâtiment *
                   </FormLabel>
                   <FormDescription>
@@ -87,7 +85,6 @@ export const GeneralStep: React.FC<GeneralStepProps> = ({ form, projects }) => {
                   <FormControl>
                     <Input 
                       {...field} 
-                      className="h-12"
                       placeholder="Ex: Bâtiment A, Tour Nord, etc." 
                     />
                   </FormControl>
@@ -100,14 +97,13 @@ export const GeneralStep: React.FC<GeneralStepProps> = ({ form, projects }) => {
 
         {/* Code du bâtiment */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="building_code"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex items-center gap-2 text-base font-semibold">
-                    <Hash className="h-4 w-4 text-slate-500" />
+                  <FormLabel className="text-sm">
                     Code du bâtiment
                   </FormLabel>
                   <FormDescription>
@@ -116,7 +112,6 @@ export const GeneralStep: React.FC<GeneralStepProps> = ({ form, projects }) => {
                   <FormControl>
                     <Input 
                       {...field} 
-                      className="h-12"
                       placeholder="Ex: B-01, TN, etc." 
                     />
                   </FormControl>
@@ -129,13 +124,13 @@ export const GeneralStep: React.FC<GeneralStepProps> = ({ form, projects }) => {
 
         {/* Ordre d'affichage */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="display_order"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base font-semibold">
+                  <FormLabel className="text-sm">
                     Ordre d'affichage
                   </FormLabel>
                   <FormDescription>
@@ -156,7 +151,7 @@ export const GeneralStep: React.FC<GeneralStepProps> = ({ form, projects }) => {
                       <Input 
                         {...field} 
                         type="number"
-                        className="h-12 text-center"
+                        className="text-center"
                         placeholder="0"
                         value={field.value || ''}
                         onChange={(e) => {
@@ -185,14 +180,13 @@ export const GeneralStep: React.FC<GeneralStepProps> = ({ form, projects }) => {
 
         {/* Type de bâtiment */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="building_type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex items-center gap-2 text-base font-semibold">
-                    <Layers className="h-4 w-4 text-slate-500" />
+                  <FormLabel className="text-sm">
                     Type de bâtiment
                   </FormLabel>
                   <FormDescription>
@@ -200,7 +194,7 @@ export const GeneralStep: React.FC<GeneralStepProps> = ({ form, projects }) => {
                   </FormDescription>
                   <FormControl>
                     <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="h-12">
+                      <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -246,13 +240,13 @@ export const GeneralStep: React.FC<GeneralStepProps> = ({ form, projects }) => {
 
         {/* Classe du bâtiment */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="building_class"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base font-semibold">
+                  <FormLabel className="text-sm">
                     Classe du bâtiment
                   </FormLabel>
                   <FormDescription>
@@ -260,7 +254,7 @@ export const GeneralStep: React.FC<GeneralStepProps> = ({ form, projects }) => {
                   </FormDescription>
                   <FormControl>
                     <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="h-12">
+                      <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
