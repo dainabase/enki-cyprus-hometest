@@ -1,3 +1,4 @@
+import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { ProjectFormData } from '@/schemas/projectSchema';
 import { Card, CardContent } from '@/components/ui/card';
@@ -10,7 +11,7 @@ interface LegalComplianceStepProps {
   form: UseFormReturn<ProjectFormData>;
 }
 
-export function LegalComplianceStep({ form }: LegalComplianceStepProps) {
+export const LegalComplianceStep: React.FC<LegalComplianceStepProps> = ({ form }) => {
   return (
     <div className="space-y-4">
       <Card>
@@ -173,4 +174,6 @@ export function LegalComplianceStep({ form }: LegalComplianceStepProps) {
       </Card>
     </div>
   );
-}
+};
+
+export default LegalComplianceStep;
