@@ -11,19 +11,16 @@ import { toast } from 'sonner';
 import { BuildingFormData } from '@/types/building';
 import { BuildingFormSteps } from './BuildingFormSteps';
 
-// Définition des étapes du formulaire - SANS L'ÉTAPE AVANCÉ
+// 🎯 DÉFINITION DES ÉTAPES OPTIMISÉES (8 étapes au lieu de 12)
 export const buildingFormSteps = [
   { id: 'general', title: 'Informations générales' },
   { id: 'structure', title: 'Structure' },
   { id: 'dimensions', title: 'Dimensions & Orientation' },
   { id: 'commercialization', title: 'Commercialisation' },
   { id: 'technical', title: 'Détails techniques' },
-  { id: 'infrastructure', title: 'Infrastructure' },
-  { id: 'security', title: 'Sécurité' },
-  { id: 'amenities', title: 'Équipements' },
-  { id: 'services', title: 'Services' },
+  { id: 'infrastructure-security', title: 'Infrastructure & Sécurité' }, // ✅ FUSIONNÉ
+  { id: 'amenities-services', title: 'Équipements & Services' }, // ✅ FUSIONNÉ
   { id: 'accessibility', title: 'Accessibilité' },
-  { id: 'leisure', title: 'Loisirs' },
   { id: 'documents', title: 'Documents' }
 ];
 
@@ -64,17 +61,14 @@ export default function BuildingFormWithSidebar() {
       elevator_count: 0,
       has_elevator: false,
       
-      // === NOUVEAUX CHAMPS CRITIQUES ===
-      // Dimensions & Orientation
+      // Section 3 : Dimensions & Orientation
       surface_totale_batiment: 0,
       hauteur_batiment: 0,
       position_dans_projet: '',
       orientation_principale: '',
       vues_principales: [],
-      nombre_places_parking: 0,
-      parking_visiteurs: 0,
       
-      // Commercialisation
+      // Section 4 : Commercialisation
       prix_moyen_m2: 0,
       fourchette_prix_min: 0,
       fourchette_prix_max: 0,
@@ -83,7 +77,7 @@ export default function BuildingFormWithSidebar() {
       nombre_logements_type: {},
       configuration_etages: {},
       
-      // Détails techniques
+      // Section 5 : Détails techniques
       type_chauffage: '',
       type_climatisation: '',
       annee_construction: undefined,
@@ -91,45 +85,43 @@ export default function BuildingFormWithSidebar() {
       norme_construction: '',
       nombre_caves: 0,
       surface_caves: 0,
-      local_velos: false,
-      local_poussettes: false,
-      nombre_box_fermes: 0,
       nombre_lots: 0,
       
-      // Section 3 : Infrastructure technique (existant)
+      // Section 6 : Infrastructure & Sécurité (FUSIONNÉ)
       has_generator: false,
       has_solar_panels: false,
       central_vacuum_system: false,
       water_softener_system: false,
       water_purification_system: false,
       smart_building_system: false,
-      intercom_system: false,
-      has_intercom: false,
+      has_intercom: false, // ✅ GARDÉ (supprimé intercom_system)
       package_room: false,
-      bike_storage: false,
+      local_velos: false, // ✅ GARDÉ (supprimé bike_storage)
+      local_poussettes: false,
       pet_washing_station: false,
       car_wash_area: false,
-      
-      // Section 4 : Sécurité (existant)
       has_security_system: false,
       has_security_24_7: false,
       has_cctv: false,
-      has_concierge: false,
       has_security_door: false,
-      concierge_service: false,
+      concierge_service: false, // ✅ GARDÉ (supprimé has_concierge)
       
-      // Section 5 : Équipements (existant)
+      // Section 7 : Équipements & Services (FUSIONNÉ: Parking + Amenities + Services + Leisure)
+      // Parking
+      has_parking: false,
+      parking_type: 'outdoor',
+      nombre_places_parking: 0,
+      parking_visiteurs: 0,
+      disabled_parking_spaces: 0,
+      nombre_box_fermes: 0,
+      // Équipements
       has_pool: false,
       has_gym: false,
       has_spa: false,
       has_playground: false,
       has_garden: false,
-      has_parking: false,
-      parking_type: 'outdoor',
-      disabled_parking_spaces: 0,
       shuttle_service: false,
-      
-      // Section 6 : Services (existant)
+      // Services
       restaurant: false,
       cafe: false,
       mini_market: false,
@@ -137,8 +129,15 @@ export default function BuildingFormWithSidebar() {
       kids_club: false,
       coworking_space: false,
       club_house: false,
+      // Loisirs
+      has_tennis_court: false,
+      beach_access: false,
+      marina_access: false,
+      golf_course: false,
+      sports_facilities: false,
+      wellness_center: false,
       
-      // Section 7 : Accessibilité (existant)
+      // Section 8 : Accessibilité
       wheelchair_accessible: false,
       braille_signage: false,
       audio_assistance: false,
@@ -147,20 +146,12 @@ export default function BuildingFormWithSidebar() {
       wide_doorways: false,
       accessible_elevator: false,
       
-      // Section 8 : Loisirs (existant)
-      has_tennis_court: false,
-      beach_access: false,
-      marina_access: false,
-      golf_course: false,
-      sports_facilities: false,
-      wellness_center: false,
-      
       // Section 9 : Documents
       typical_floor_plan_url: '',
       model_3d_url: '',
       building_brochure_url: '',
       
-      // Section 10 : JSONB
+      // JSONB
       building_amenities: {},
       common_areas: {},
       security_features: {},
@@ -260,16 +251,13 @@ export default function BuildingFormWithSidebar() {
         water_softener_system: building.water_softener_system || false,
         water_purification_system: building.water_purification_system || false,
         smart_building_system: building.smart_building_system || false,
-        intercom_system: building.intercom_system || false,
         has_intercom: building.has_intercom || false,
         has_security_system: building.has_security_system || false,
         has_security_24_7: building.has_security_24_7 || false,
         has_cctv: building.has_cctv || false,
-        has_concierge: building.has_concierge || false,
         has_security_door: building.has_security_door || false,
         concierge_service: building.concierge_service || false,
         package_room: building.package_room || false,
-        bike_storage: building.bike_storage || false,
         pet_washing_station: building.pet_washing_station || false,
         car_wash_area: building.car_wash_area || false,
         has_pool: building.has_pool || false,
@@ -336,7 +324,7 @@ export default function BuildingFormWithSidebar() {
         building_code: data.building_code || null,
         building_type: data.building_type || 'residential',
         building_class: data.building_class || null,
-        construction_status: data.construction_status || 'planning',
+        construction_status: data.construction_status || 'planned',
         energy_rating: data.energy_rating || null,
         energy_certificate: data.energy_certificate || null,
         parking_type: data.parking_type || null,
@@ -378,16 +366,13 @@ export default function BuildingFormWithSidebar() {
         water_softener_system: Boolean(data.water_softener_system),
         water_purification_system: Boolean(data.water_purification_system),
         smart_building_system: Boolean(data.smart_building_system),
-        intercom_system: Boolean(data.intercom_system),
         has_intercom: Boolean(data.has_intercom),
         package_room: Boolean(data.package_room),
-        bike_storage: Boolean(data.bike_storage),
         pet_washing_station: Boolean(data.pet_washing_station),
         car_wash_area: Boolean(data.car_wash_area),
         has_security_system: Boolean(data.has_security_system),
         has_security_24_7: Boolean(data.has_security_24_7),
         has_cctv: Boolean(data.has_cctv),
-        has_concierge: Boolean(data.has_concierge),
         has_security_door: Boolean(data.has_security_door),
         concierge_service: Boolean(data.concierge_service),
         has_pool: Boolean(data.has_pool),
@@ -432,7 +417,7 @@ export default function BuildingFormWithSidebar() {
         // Arrays
         vues_principales: Array.isArray(data.vues_principales) ? data.vues_principales : [],
         
-        // JSONB - S'assurer que ce sont des objets valides
+        // JSONB
         nombre_logements_type: data.nombre_logements_type && typeof data.nombre_logements_type === 'object' ? data.nombre_logements_type : {},
         configuration_etages: data.configuration_etages && typeof data.configuration_etages === 'object' ? data.configuration_etages : {},
         building_amenities: data.building_amenities && typeof data.building_amenities === 'object' ? data.building_amenities : {},
@@ -539,7 +524,7 @@ export default function BuildingFormWithSidebar() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Header fixe - exactement comme le projet */}
+      {/* Header fixe */}
       <div className="h-32 bg-white border-b-2 border-slate-200 sticky top-0 z-10 shadow-sm">
         <div className="h-full px-8 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -579,10 +564,15 @@ export default function BuildingFormWithSidebar() {
       </div>
 
       <div className="flex">
-        {/* Sidebar fixe - exactement comme le projet */}
+        {/* Sidebar fixe */}
         <div className="w-80 bg-white border-r-2 border-slate-200 sticky top-[128px] h-[calc(100vh-128px)] overflow-y-auto">
           <div className="p-6">
-            <h2 className="text-lg font-semibold text-slate-900 mb-6">Étapes du bâtiment</h2>
+            <h2 className="text-lg font-semibold text-slate-900 mb-6">
+              Étapes du bâtiment
+              <span className="text-sm font-normal text-slate-500 ml-2">
+                ({currentStepIndex + 1}/{buildingFormSteps.length})
+              </span>
+            </h2>
             <nav className="space-y-2">
               {buildingFormSteps.map((step, index) => (
                 <button
@@ -610,7 +600,7 @@ export default function BuildingFormWithSidebar() {
           </div>
         </div>
 
-        {/* Contenu principal - exactement comme le projet */}
+        {/* Contenu principal */}
         <div className="flex-1 p-8">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSave)} className="space-y-8">
@@ -620,7 +610,7 @@ export default function BuildingFormWithSidebar() {
                 projects={projects}
               />
 
-              {/* Navigation controls - exactement comme le projet */}
+              {/* Navigation controls */}
               <div className="flex justify-between items-center pt-8 border-t">
                 <Button
                   type="button"
