@@ -3,8 +3,8 @@ import { UseFormReturn } from 'react-hook-form';
 import { BuildingFormData } from '@/types/building';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, TrendingUp, Euro, Percent, Plus, Trash2, Home } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Calendar, TrendingUp, Euro, Plus, Trash2, Home } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -125,13 +125,13 @@ export const CommercializationStep: React.FC<CommercializationStepProps> = ({ fo
       </div>
 
       {/* Indicateur de taux d'occupation AUTOMATIQUE */}
-      <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
-        <CardContent className="p-6">
+      <Card>
+        <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-blue-600 font-medium">Taux d'occupation calculé automatiquement</p>
-              <p className="text-3xl font-bold text-blue-900 mt-2">{tauxOccupation}%</p>
-              <p className="text-xs text-blue-600 mt-1">
+              <p className="text-sm text-slate-600">Taux d'occupation calculé automatiquement</p>
+              <p className="text-3xl font-bold text-slate-900 mt-2">{tauxOccupation}%</p>
+              <p className="text-xs text-slate-600 mt-1">
                 Basé sur {totalUnits - unitsAvailable} unités occupées sur {totalUnits} au total
               </p>
             </div>
@@ -141,9 +141,9 @@ export const CommercializationStep: React.FC<CommercializationStepProps> = ({ fo
               {tauxOccupation >= 70 && <Badge className="bg-red-100 text-red-800">Peu de disponibilité</Badge>}
             </div>
           </div>
-          <div className="w-full bg-blue-100 rounded-full h-3 mt-4">
+          <div className="w-full bg-slate-100 rounded-full h-3 mt-4">
             <div 
-              className="bg-gradient-to-r from-blue-500 to-indigo-500 h-3 rounded-full transition-all duration-500"
+              className="bg-slate-500 h-3 rounded-full transition-all duration-500"
               style={{ width: `${tauxOccupation}%` }}
             />
           </div>
@@ -153,14 +153,13 @@ export const CommercializationStep: React.FC<CommercializationStepProps> = ({ fo
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Prix moyen au m² */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="prix_moyen_m2"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex items-center gap-2 text-base font-semibold">
-                    <Euro className="h-4 w-4 text-blue-500" />
+                  <FormLabel className="text-sm">
                     Prix moyen au m²
                   </FormLabel>
                   <FormDescription>
@@ -172,7 +171,6 @@ export const CommercializationStep: React.FC<CommercializationStepProps> = ({ fo
                       type="number"
                       min="0"
                       step="100"
-                      className="h-12"
                       placeholder="3500"
                       value={field.value || ''}
                       onChange={(e) => {
@@ -190,13 +188,13 @@ export const CommercializationStep: React.FC<CommercializationStepProps> = ({ fo
 
         {/* Fourchette de prix minimum */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="fourchette_prix_min"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base font-semibold">
+                  <FormLabel className="text-sm">
                     Prix minimum
                   </FormLabel>
                   <FormDescription>
@@ -208,7 +206,6 @@ export const CommercializationStep: React.FC<CommercializationStepProps> = ({ fo
                       type="number"
                       min="0"
                       step="1000"
-                      className="h-12"
                       placeholder="150000"
                       value={field.value || ''}
                       onChange={(e) => {
@@ -226,13 +223,13 @@ export const CommercializationStep: React.FC<CommercializationStepProps> = ({ fo
 
         {/* Fourchette de prix maximum */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="fourchette_prix_max"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base font-semibold">
+                  <FormLabel className="text-sm">
                     Prix maximum
                   </FormLabel>
                   <FormDescription>
@@ -244,7 +241,6 @@ export const CommercializationStep: React.FC<CommercializationStepProps> = ({ fo
                       type="number"
                       min="0"
                       step="1000"
-                      className="h-12"
                       placeholder="750000"
                       value={field.value || ''}
                       onChange={(e) => {
@@ -262,14 +258,13 @@ export const CommercializationStep: React.FC<CommercializationStepProps> = ({ fo
 
         {/* Date de mise en vente */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="date_mise_en_vente"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex items-center gap-2 text-base font-semibold">
-                    <Calendar className="h-4 w-4 text-blue-500" />
+                  <FormLabel className="text-sm">
                     Date de mise en vente
                   </FormLabel>
                   <FormDescription>
@@ -279,7 +274,6 @@ export const CommercializationStep: React.FC<CommercializationStepProps> = ({ fo
                     <Input
                       {...field}
                       type="date"
-                      className="h-12"
                     />
                   </FormControl>
                   <FormMessage />
@@ -292,8 +286,8 @@ export const CommercializationStep: React.FC<CommercializationStepProps> = ({ fo
 
       {/* Répartition par type de logement */}
       <Card>
-        <CardContent className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Nombre de logements par type</h3>
+        <CardContent className="p-4">
+          <h3 className="text-base font-semibold mb-4">Nombre de logements par type</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {['Studio', 'T1', 'T2', 'T3', 'T4', 'T5+', 'Penthouse', 'Duplex'].map((type) => {
               const fieldKey = type.toLowerCase().replace('+', 'plus');
@@ -311,7 +305,6 @@ export const CommercializationStep: React.FC<CommercializationStepProps> = ({ fo
                           type="number"
                           min="0"
                           placeholder="0"
-                          className="h-10"
                           value={field.value || ''}
                           onChange={(e) => {
                             const value = e.target.value === '' ? '' : parseInt(e.target.value) || 0;
@@ -332,105 +325,105 @@ export const CommercializationStep: React.FC<CommercializationStepProps> = ({ fo
         </CardContent>
       </Card>
 
-      {/* Configuration par étage - NOUVELLE INTERFACE */}
+      {/* Configuration par étage */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span className="flex items-center gap-2">
+        <CardContent className="p-4 space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-base font-semibold flex items-center gap-2">
               <Home className="h-5 w-5 text-blue-500" />
               Configuration par étage
-            </span>
+            </h3>
             <Button
               type="button"
               onClick={addFloor}
               size="sm"
-              className="bg-blue-500 hover:bg-blue-600"
               disabled={floors.length >= (form.getValues('total_floors') || 1)}
             >
               <Plus className="h-4 w-4 mr-1" />
               Ajouter un étage
             </Button>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {floors.map((floor, floorIndex) => (
-            <Card key={floorIndex} className="bg-slate-50">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-semibold text-slate-700">{floor.name}</h4>
-                  <div className="flex gap-2">
-                    <Button
-                      type="button"
-                      onClick={() => addUnitToFloor(floorIndex)}
-                      size="sm"
-                      variant="outline"
-                    >
-                      <Plus className="h-4 w-4 mr-1" />
-                      Ajouter unité
-                    </Button>
-                    {floors.length > 1 && (
+          </div>
+          
+          <div className="space-y-4">
+            {floors.map((floor, floorIndex) => (
+              <Card key={floorIndex} className="bg-slate-50">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-semibold text-slate-700">{floor.name}</h4>
+                    <div className="flex gap-2">
                       <Button
                         type="button"
-                        onClick={() => removeFloor(floorIndex)}
+                        onClick={() => addUnitToFloor(floorIndex)}
                         size="sm"
-                        variant="destructive"
+                        variant="outline"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Plus className="h-4 w-4 mr-1" />
+                        Ajouter unité
                       </Button>
-                    )}
-                  </div>
-                </div>
-                
-                {floor.units.length === 0 ? (
-                  <p className="text-sm text-slate-500 italic">Aucune unité configurée</p>
-                ) : (
-                  <div className="space-y-2">
-                    {floor.units.map((unit, unitIndex) => (
-                      <div key={unitIndex} className="flex items-center gap-2">
-                        <Select
-                          value={unit.type}
-                          onValueChange={(value) => updateUnit(floorIndex, unitIndex, 'type', value)}
-                        >
-                          <SelectTrigger className="w-32">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="Studio">Studio</SelectItem>
-                            <SelectItem value="T1">T1</SelectItem>
-                            <SelectItem value="T2">T2</SelectItem>
-                            <SelectItem value="T3">T3</SelectItem>
-                            <SelectItem value="T4">T4</SelectItem>
-                            <SelectItem value="T5+">T5+</SelectItem>
-                            <SelectItem value="Penthouse">Penthouse</SelectItem>
-                            <SelectItem value="Duplex">Duplex</SelectItem>
-                            <SelectItem value="Commerce">Commerce</SelectItem>
-                            <SelectItem value="Bureau">Bureau</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <Input
-                          type="number"
-                          min="0"
-                          value={unit.count}
-                          onChange={(e) => updateUnit(floorIndex, unitIndex, 'count', parseInt(e.target.value) || 0)}
-                          className="w-20"
-                          placeholder="0"
-                        />
-                        <span className="text-sm text-slate-600">unité(s)</span>
+                      {floors.length > 1 && (
                         <Button
                           type="button"
-                          onClick={() => removeUnitFromFloor(floorIndex, unitIndex)}
+                          onClick={() => removeFloor(floorIndex)}
                           size="sm"
-                          variant="ghost"
+                          variant="destructive"
                         >
-                          <Trash2 className="h-4 w-4 text-red-500" />
+                          <Trash2 className="h-4 w-4" />
                         </Button>
-                      </div>
-                    ))}
+                      )}
+                    </div>
                   </div>
-                )}
-              </CardContent>
-            </Card>
-          ))}
+                  
+                  {floor.units.length === 0 ? (
+                    <p className="text-sm text-slate-500 italic">Aucune unité configurée</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {floor.units.map((unit, unitIndex) => (
+                        <div key={unitIndex} className="flex items-center gap-2">
+                          <Select
+                            value={unit.type}
+                            onValueChange={(value) => updateUnit(floorIndex, unitIndex, 'type', value)}
+                          >
+                            <SelectTrigger className="w-32">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Studio">Studio</SelectItem>
+                              <SelectItem value="T1">T1</SelectItem>
+                              <SelectItem value="T2">T2</SelectItem>
+                              <SelectItem value="T3">T3</SelectItem>
+                              <SelectItem value="T4">T4</SelectItem>
+                              <SelectItem value="T5+">T5+</SelectItem>
+                              <SelectItem value="Penthouse">Penthouse</SelectItem>
+                              <SelectItem value="Duplex">Duplex</SelectItem>
+                              <SelectItem value="Commerce">Commerce</SelectItem>
+                              <SelectItem value="Bureau">Bureau</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <Input
+                            type="number"
+                            min="0"
+                            value={unit.count}
+                            onChange={(e) => updateUnit(floorIndex, unitIndex, 'count', parseInt(e.target.value) || 0)}
+                            className="w-20"
+                            placeholder="0"
+                          />
+                          <span className="text-sm text-slate-600">unité(s)</span>
+                          <Button
+                            type="button"
+                            onClick={() => removeUnitFromFloor(floorIndex, unitIndex)}
+                            size="sm"
+                            variant="ghost"
+                          >
+                            <Trash2 className="h-4 w-4 text-red-500" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </CardContent>
       </Card>
     </div>
