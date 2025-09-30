@@ -28,14 +28,13 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Nombre d'étages */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="total_floors"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex items-center gap-2 text-base font-semibold">
-                    <Layers className="h-4 w-4 text-blue-500" />
+                  <FormLabel className="text-sm">
                     Nombre d'étages
                   </FormLabel>
                   <FormDescription>
@@ -57,7 +56,7 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
                         {...field}
                         type="number"
                         min="1"
-                        className="h-12 text-center"
+                        className="text-center"
                         placeholder="5"
                         value={field.value || ''}
                         onChange={(e) => {
@@ -86,13 +85,13 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
 
         {/* Total d'unités */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="total_units"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base font-semibold">
+                  <FormLabel className="text-sm">
                     Total d'unités
                   </FormLabel>
                   <FormDescription>
@@ -114,7 +113,7 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
                         {...field}
                         type="number"
                         min="0"
-                        className="h-12 text-center"
+                        className="text-center"
                         placeholder="20"
                         value={field.value || ''}
                         onChange={(e) => {
@@ -143,13 +142,13 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
 
         {/* Unités disponibles */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="units_available"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base font-semibold">
+                  <FormLabel className="text-sm">
                     Unités disponibles
                   </FormLabel>
                   <FormDescription>
@@ -171,7 +170,7 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
                         {...field}
                         type="number"
                         min="0"
-                        className="h-12 text-center"
+                        className="text-center"
                         placeholder="15"
                         value={field.value || ''}
                         onChange={(e) => {
@@ -198,16 +197,15 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
           </CardContent>
         </Card>
 
-        {/* Statut de construction - ✅ CORRIGÉ AVEC LES BONNES VALEURS */}
-        <Card className="border-2 border-orange-100">
-          <CardContent className="p-6">
+        {/* Statut de construction */}
+        <Card>
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="construction_status"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex items-center gap-2 text-base font-semibold">
-                    <Calendar className="h-4 w-4 text-orange-500" />
+                  <FormLabel className="text-sm">
                     Statut de construction
                   </FormLabel>
                   <FormDescription>
@@ -215,7 +213,7 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
                   </FormDescription>
                   <FormControl>
                     <Select value={field.value || ''} onValueChange={field.onChange}>
-                      <SelectTrigger className="h-12">
+                      <SelectTrigger>
                         <SelectValue placeholder="Sélectionner un statut" />
                       </SelectTrigger>
                       <SelectContent>
@@ -255,13 +253,13 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
 
         {/* Date de livraison prévue */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="expected_completion"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base font-semibold">
+                  <FormLabel className="text-sm">
                     Date de livraison prévue
                   </FormLabel>
                   <FormDescription>
@@ -271,7 +269,6 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
                     <Input
                       {...field}
                       type="date"
-                      className="h-12"
                       value={field.value || ''}
                     />
                   </FormControl>
@@ -284,13 +281,13 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
 
         {/* Date de livraison réelle */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="actual_completion"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base font-semibold">
+                  <FormLabel className="text-sm">
                     Date de livraison réelle
                   </FormLabel>
                   <FormDescription>
@@ -300,7 +297,6 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
                     <Input
                       {...field}
                       type="date"
-                      className="h-12"
                       value={field.value || ''}
                     />
                   </FormControl>
@@ -312,15 +308,14 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
         </Card>
 
         {/* Certificat énergétique */}
-        <Card className="border-2 border-green-100">
-          <CardContent className="p-6">
+        <Card>
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="energy_certificate"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex items-center gap-2 text-base font-semibold">
-                    <Zap className="h-4 w-4 text-green-500" />
+                  <FormLabel className="text-sm">
                     Certificat énergétique
                   </FormLabel>
                   <FormDescription>
@@ -328,7 +323,7 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
                   </FormDescription>
                   <FormControl>
                     <Select value={field.value || ''} onValueChange={field.onChange}>
-                      <SelectTrigger className="h-12">
+                      <SelectTrigger>
                         <SelectValue placeholder="Sélectionner une classe" />
                       </SelectTrigger>
                       <SelectContent>
@@ -392,14 +387,13 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
 
         {/* Nombre d'ascenseurs */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="elevator_count"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex items-center gap-2 text-base font-semibold">
-                    <ArrowUp className="h-4 w-4 text-slate-500" />
+                  <FormLabel className="text-sm">
                     Nombre d'ascenseurs
                   </FormLabel>
                   <FormDescription>
@@ -410,7 +404,7 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
                       value={String(field.value || '0')} 
                       onValueChange={(value) => field.onChange(parseInt(value))}
                     >
-                      <SelectTrigger className="h-12">
+                      <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
