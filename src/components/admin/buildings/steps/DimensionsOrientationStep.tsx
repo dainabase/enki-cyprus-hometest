@@ -43,38 +43,38 @@ export const DimensionsOrientationStep: React.FC<DimensionsOrientationStepProps>
 
       {/* Indicateurs visuels */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
-          <CardContent className="p-6">
+        <Card>
+          <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-blue-600">Surface totale</p>
-                <p className="text-2xl font-bold text-blue-900">{surfaceTotale} m²</p>
+                <p className="text-sm text-slate-600">Surface totale</p>
+                <p className="text-2xl font-bold text-slate-900">{surfaceTotale} m²</p>
               </div>
-              <Ruler className="h-8 w-8 text-blue-500" />
+              <Ruler className="h-8 w-8 text-slate-500" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
-          <CardContent className="p-6">
+        <Card>
+          <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-green-600">Hauteur</p>
-                <p className="text-2xl font-bold text-green-900">{hauteur} m</p>
+                <p className="text-sm text-slate-600">Hauteur</p>
+                <p className="text-2xl font-bold text-slate-900">{hauteur} m</p>
               </div>
-              <Ruler className="h-8 w-8 text-green-500 rotate-90" />
+              <Ruler className="h-8 w-8 text-slate-500 rotate-90" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
-          <CardContent className="p-6">
+        <Card>
+          <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-purple-600">Étages</p>
-                <p className="text-2xl font-bold text-purple-900">{form.watch('total_floors') || 0}</p>
+                <p className="text-sm text-slate-600">Étages</p>
+                <p className="text-2xl font-bold text-slate-900">{form.watch('total_floors') || 0}</p>
               </div>
-              <Building2 className="h-8 w-8 text-purple-500" />
+              <Building2 className="h-8 w-8 text-slate-500" />
             </div>
           </CardContent>
         </Card>
@@ -83,14 +83,13 @@ export const DimensionsOrientationStep: React.FC<DimensionsOrientationStepProps>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Surface totale du bâtiment */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="surface_totale_batiment"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex items-center gap-2 text-base font-semibold">
-                    <Ruler className="h-4 w-4 text-blue-500" />
+                  <FormLabel className="text-sm">
                     Surface totale du bâtiment
                   </FormLabel>
                   <FormDescription>
@@ -102,7 +101,6 @@ export const DimensionsOrientationStep: React.FC<DimensionsOrientationStepProps>
                       type="number"
                       min="0"
                       step="10"
-                      className="h-12"
                       placeholder="2500"
                       value={field.value || ''}
                       onChange={(e) => {
@@ -120,13 +118,13 @@ export const DimensionsOrientationStep: React.FC<DimensionsOrientationStepProps>
 
         {/* Hauteur du bâtiment */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="hauteur_batiment"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base font-semibold">
+                  <FormLabel className="text-sm">
                     Hauteur du bâtiment
                   </FormLabel>
                   <FormDescription>
@@ -138,7 +136,6 @@ export const DimensionsOrientationStep: React.FC<DimensionsOrientationStepProps>
                       type="number"
                       min="0"
                       step="0.5"
-                      className="h-12"
                       placeholder="18.5"
                       value={field.value || ''}
                       onChange={(e) => {
@@ -156,14 +153,13 @@ export const DimensionsOrientationStep: React.FC<DimensionsOrientationStepProps>
 
         {/* Position dans le projet */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="position_dans_projet"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex items-center gap-2 text-base font-semibold">
-                    <MapPin className="h-4 w-4 text-blue-500" />
+                  <FormLabel className="text-sm">
                     Position dans le projet
                   </FormLabel>
                   <FormDescription>
@@ -171,7 +167,7 @@ export const DimensionsOrientationStep: React.FC<DimensionsOrientationStepProps>
                   </FormDescription>
                   <FormControl>
                     <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="h-12">
+                      <SelectTrigger>
                         <SelectValue placeholder="Sélectionnez la position" />
                       </SelectTrigger>
                       <SelectContent>
@@ -195,14 +191,13 @@ export const DimensionsOrientationStep: React.FC<DimensionsOrientationStepProps>
 
         {/* Orientation principale */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="orientation_principale"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex items-center gap-2 text-base font-semibold">
-                    <Compass className="h-4 w-4 text-blue-500" />
+                  <FormLabel className="text-sm">
                     Orientation principale
                   </FormLabel>
                   <FormDescription>
@@ -210,7 +205,7 @@ export const DimensionsOrientationStep: React.FC<DimensionsOrientationStepProps>
                   </FormDescription>
                   <FormControl>
                     <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="h-12">
+                      <SelectTrigger>
                         <SelectValue placeholder="Sélectionnez l'orientation" />
                       </SelectTrigger>
                       <SelectContent>
@@ -234,13 +229,13 @@ export const DimensionsOrientationStep: React.FC<DimensionsOrientationStepProps>
 
         {/* Nombre de places de parking */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="nombre_places_parking"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base font-semibold">
+                  <FormLabel className="text-sm">
                     Nombre total de places de parking
                   </FormLabel>
                   <FormDescription>
@@ -262,7 +257,7 @@ export const DimensionsOrientationStep: React.FC<DimensionsOrientationStepProps>
                         {...field}
                         type="number"
                         min="0"
-                        className="h-12 text-center"
+                        className="text-center"
                         placeholder="30"
                         value={field.value || ''}
                         onChange={(e) => {
@@ -291,13 +286,13 @@ export const DimensionsOrientationStep: React.FC<DimensionsOrientationStepProps>
 
         {/* Places visiteurs */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="parking_visiteurs"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base font-semibold">
+                  <FormLabel className="text-sm">
                     Places parking visiteurs
                   </FormLabel>
                   <FormDescription>
@@ -319,7 +314,7 @@ export const DimensionsOrientationStep: React.FC<DimensionsOrientationStepProps>
                         {...field}
                         type="number"
                         min="0"
-                        className="h-12 text-center"
+                        className="text-center"
                         placeholder="5"
                         value={field.value || ''}
                         onChange={(e) => {
@@ -349,14 +344,13 @@ export const DimensionsOrientationStep: React.FC<DimensionsOrientationStepProps>
 
       {/* Vues principales */}
       <Card>
-        <CardContent className="p-6">
+        <CardContent className="p-4">
           <FormField
             control={form.control}
             name="vues_principales"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="flex items-center gap-2 text-base font-semibold mb-4">
-                  <Eye className="h-4 w-4 text-blue-500" />
+                <FormLabel className="text-sm mb-4 block">
                   Vues principales
                 </FormLabel>
                 <FormDescription className="mb-4">
@@ -381,7 +375,7 @@ export const DimensionsOrientationStep: React.FC<DimensionsOrientationStepProps>
                         />
                         <label
                           htmlFor={vue.id}
-                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center gap-2 cursor-pointer"
+                          className="text-sm leading-none cursor-pointer flex items-center gap-2"
                         >
                           <Icon className="h-4 w-4 text-slate-500" />
                           {vue.label}
