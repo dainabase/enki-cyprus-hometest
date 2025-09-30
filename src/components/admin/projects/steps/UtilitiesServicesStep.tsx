@@ -1,3 +1,4 @@
+import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { ProjectFormData } from '@/schemas/projectSchema';
 import { Card, CardContent } from '@/components/ui/card';
@@ -9,7 +10,7 @@ interface UtilitiesServicesStepProps {
   form: UseFormReturn<ProjectFormData>;
 }
 
-export function UtilitiesServicesStep({ form }: UtilitiesServicesStepProps) {
+export const UtilitiesServicesStep: React.FC<UtilitiesServicesStepProps> = ({ form }) => {
   return (
     <div className="space-y-4">
       <Card>
@@ -163,4 +164,6 @@ export function UtilitiesServicesStep({ form }: UtilitiesServicesStepProps) {
       </Card>
     </div>
   );
-}
+};
+
+export default UtilitiesServicesStep;
