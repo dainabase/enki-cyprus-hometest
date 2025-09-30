@@ -45,6 +45,9 @@ import { debounce } from 'lodash';
 import { generateSEOContent } from '@/services/seoGenerator';
 import { LocationMap } from './LocationMap';
 import { safeBase64Encode, generateShortHash } from '@/utils/stringHelpers';
+import { ProjectAmenitiesStep } from './steps/ProjectAmenitiesStep';
+import { LegalComplianceStep } from './steps/LegalComplianceStep';
+import { UtilitiesServicesStep } from './steps/UtilitiesServicesStep';
 
 interface ProjectFormStepsProps {
   form: UseFormReturn<ProjectFormData>;
@@ -1915,7 +1918,190 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           </CardContent>
         </Card>
       </div>
-    );
+    
+            {/* Section Gamme Unités */}
+            <Card className="border-2 border-slate-300 shadow-lg mt-6">
+              <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+                <CardTitle>Gamme des unités</CardTitle>
+                <CardDescription>Fourchettes de chambres et surfaces</CardDescription>
+              </CardHeader>
+              <CardContent className="p-6 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="bedrooms_range_min"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Chambres minimum</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            min="0"
+                            max="10"
+                            placeholder="1"
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                          />
+                        </FormControl>
+                        <FormDescription>Nombre minimum de chambres</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="bedrooms_range_max"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Chambres maximum</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            min="0"
+                            max="10"
+                            placeholder="5"
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                          />
+                        </FormControl>
+                        <FormDescription>Nombre maximum de chambres</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="square_meters_min"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Surface minimum (m²)</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            min="0"
+                            placeholder="80"
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                          />
+                        </FormControl>
+                        <FormDescription>Surface minimale des unités</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="square_meters_max"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Surface maximum (m²)</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            min="0"
+                            placeholder="250"
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                          />
+                        </FormControl>
+                        <FormDescription>Surface maximale des unités</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Section Qualité & Prestige */}
+            <Card className="border-2 border-slate-300 shadow-lg mt-6">
+              <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+                <CardTitle>Qualité & Prestige</CardTitle>
+                <CardDescription>Niveau de finition et détails architecturaux</CardDescription>
+              </CardHeader>
+              <CardContent className="p-6 space-y-4">
+                <FormField
+                  control={form.control}
+                  name="finishing_level"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Niveau de finition</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionner le niveau" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="standard">Standard</SelectItem>
+                          <SelectItem value="premium">Premium</SelectItem>
+                          <SelectItem value="luxury">Luxe</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>Qualité globale des finitions</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="design_style"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Style architectural</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Ex: Contemporain, Méditerranéen, Moderne..." {...field} />
+                      </FormControl>
+                      <FormDescription>Style de design du projet</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="architect_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nom de l'architecte</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Cabinet d'architecture responsable" {...field} />
+                      </FormControl>
+                      <FormDescription>Architecte ou cabinet de renom</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="warranty_years"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Garantie constructeur (années)</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="number" 
+                          min="0"
+                          max="20"
+                          placeholder="10"
+                          {...field}
+                          onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                        />
+                      </FormControl>
+                      <FormDescription>Durée de la garantie constructeur (0-20 ans)</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+
+        );
   };
 
   const renderPricingStep = () => {
@@ -2038,7 +2224,320 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           </CardContent>
         </Card>
       </div>
-    );
+    
+            {/* Section Tarification Transparente */}
+            <Card className="border-2 border-slate-300 shadow-lg mt-6">
+              <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+                <CardTitle>Transparence tarifaire</CardTitle>
+                <CardDescription>Frais inclus et informations financières</CardDescription>
+              </CardHeader>
+              <CardContent className="p-6 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="price_per_m2"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Prix au m²</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            min="0"
+                            placeholder="2500"
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                          />
+                        </FormControl>
+                        <FormDescription>Prix moyen par mètre carré</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="transfer_fee"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Frais de transfert (%)</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            min="0"
+                            max="10"
+                            step="0.1"
+                            placeholder="3-8%"
+                            {...field}
+                            onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                          />
+                        </FormControl>
+                        <FormDescription>Frais de transfert de propriété (3-8% à Chypre)</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="vat_included"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                        <div className="space-y-0.5">
+                          <FormLabel className="text-base">TVA incluse</FormLabel>
+                          <FormDescription>La TVA est-elle incluse dans le prix affiché ?</FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="transfer_fees_included"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                        <div className="space-y-0.5">
+                          <FormLabel className="text-base">Frais de transfert inclus</FormLabel>
+                          <FormDescription>Frais inclus dans le prix ?</FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="stamp_duty_included"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                        <div className="space-y-0.5">
+                          <FormLabel className="text-base">Droits de timbre inclus</FormLabel>
+                          <FormDescription>Stamp duty inclus ?</FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="legal_fees_included"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                        <div className="space-y-0.5">
+                          <FormLabel className="text-base">Frais légaux inclus</FormLabel>
+                          <FormDescription>Frais d'avocat inclus ?</FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Section ROI Investisseurs */}
+            <Card className="border-2 border-slate-300 shadow-lg mt-6">
+              <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5" />
+                  Retour sur investissement
+                </CardTitle>
+                <CardDescription>Données pour investisseurs</CardDescription>
+              </CardHeader>
+              <CardContent className="p-6 space-y-6">
+                <FormField
+                  control={form.control}
+                  name="roi_estimate_percent"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="flex justify-between mb-2">
+                        <FormLabel>ROI estimé annuel</FormLabel>
+                        <span className="text-sm font-semibold">{field.value || 0}%</span>
+                      </div>
+                      <FormControl>
+                        <Slider
+                          min={0}
+                          max={20}
+                          step={0.5}
+                          value={[field.value || 0]}
+                          onValueChange={(vals) => field.onChange(vals[0])}
+                        />
+                      </FormControl>
+                      <FormDescription>Retour sur investissement estimé (0-20%)</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="rental_yield_percent"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="flex justify-between mb-2">
+                        <FormLabel>Rendement locatif annuel</FormLabel>
+                        <span className="text-sm font-semibold">{field.value || 0}%</span>
+                      </div>
+                      <FormControl>
+                        <Slider
+                          min={0}
+                          max={20}
+                          step={0.5}
+                          value={[field.value || 0]}
+                          onValueChange={(vals) => field.onChange(vals[0])}
+                        />
+                      </FormControl>
+                      <FormDescription>Rendement locatif estimé (6-16% typique à Chypre)</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+
+            {/* Section Financement */}
+            <Card className="border-2 border-slate-300 shadow-lg mt-6">
+              <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+                <CardTitle className="flex items-center gap-2">
+                  <CreditCard className="w-5 h-5" />
+                  Options de financement
+                </CardTitle>
+                <CardDescription>Modalités de paiement disponibles</CardDescription>
+              </CardHeader>
+              <CardContent className="p-6 space-y-4">
+                <FormField
+                  control={form.control}
+                  name="financing_options"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Options de financement</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Ex: Crédit bancaire jusqu'à 70% LTV, taux à partir de 3.5%..."
+                          rows={3}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>Détaillez les options de crédit disponibles</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="payment_plan"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Plan de paiement</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Ex: 30% à la réservation, 40% pendant construction, 30% à la livraison..."
+                          rows={3}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>Échelonnement des paiements proposé</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="incentives"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Incentives & Promotions</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Ex: Meubles offerts, frais de notaire inclus, garantie locative 2 ans..."
+                          rows={3}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>Avantages commerciaux proposés</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+
+            {/* Section Légal */}
+            <Card className="border-2 border-slate-300 shadow-lg mt-6">
+              <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="w-5 h-5" />
+                  Informations légales
+                </CardTitle>
+                <CardDescription>Titres de propriété et garanties</CardDescription>
+              </CardHeader>
+              <CardContent className="p-6 space-y-4">
+                <FormField
+                  control={form.control}
+                  name="title_deed_available"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-base">Titre de propriété disponible</FormLabel>
+                        <FormDescription>Le titre est-il déjà émis ?</FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="title_deed_timeline"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Délai d'obtention du titre</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Ex: 6 mois après la livraison" {...field} />
+                      </FormControl>
+                      <FormDescription>Temps estimé pour recevoir le titre de propriété</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="construction_warranty_details"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Détails garantie construction</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Ex: Garantie décennale structure, garantie 2 ans équipements..."
+                          rows={3}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>Garanties constructeur et assurances</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+
+          );
   };
 
   const renderMediaStep = () => {
@@ -2138,6 +2637,42 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="video_url"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    <Video className="w-4 h-4" />
+                    Vidéo générique
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="https://..." {...field} />
+                  </FormControl>
+                  <FormDescription>Vidéo de présentation générale du projet</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="drone_footage_url"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    <Camera className="w-4 h-4" />
+                    Vidéo drone
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="https://..." {...field} />
+                  </FormControl>
+                  <FormDescription>Vidéo aérienne par drone</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
           </CardContent>
         </Card>
 
@@ -2213,6 +2748,24 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="brochure_pdf"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    <FileText className="w-4 h-4" />
+                    Brochure PDF
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="https://..." {...field} />
+                  </FormControl>
+                  <FormDescription>URL de la brochure au format PDF</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
           </CardContent>
         </Card>
 
@@ -2611,6 +3164,13 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
       return renderMediaStep();
     case 'marketing':
       return renderMarketingStep();
+    case 'project-amenities':
+      return <ProjectAmenitiesStep form={form} />;
+    case 'legal-compliance':
+      return <LegalComplianceStep form={form} />;
+    case 'utilities-services':
+      return <UtilitiesServicesStep form={form} />;
+
     case 'summary':
       return renderSummaryStep();
     default:
