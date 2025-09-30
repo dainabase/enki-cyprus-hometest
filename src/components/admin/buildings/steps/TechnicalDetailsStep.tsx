@@ -37,14 +37,13 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Type de chauffage */}
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-4">
               <FormField
                 control={form.control}
                 name="type_chauffage"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="flex items-center gap-2 text-base font-semibold">
-                      <Thermometer className="h-4 w-4 text-orange-500" />
+                    <FormLabel className="text-sm">
                       Type de chauffage
                     </FormLabel>
                     <FormDescription>
@@ -52,7 +51,7 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
                     </FormDescription>
                     <FormControl>
                       <Select value={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger className="h-12">
+                        <SelectTrigger>
                           <SelectValue placeholder="Sélectionnez le type" />
                         </SelectTrigger>
                         <SelectContent>
@@ -77,14 +76,13 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
 
           {/* Type de climatisation */}
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-4">
               <FormField
                 control={form.control}
                 name="type_climatisation"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="flex items-center gap-2 text-base font-semibold">
-                      <Wind className="h-4 w-4 text-blue-500" />
+                    <FormLabel className="text-sm">
                       Type de climatisation
                     </FormLabel>
                     <FormDescription>
@@ -92,7 +90,7 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
                     </FormDescription>
                     <FormControl>
                       <Select value={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger className="h-12">
+                        <SelectTrigger>
                           <SelectValue placeholder="Sélectionnez le type" />
                         </SelectTrigger>
                         <SelectContent>
@@ -116,14 +114,13 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
 
           {/* Année de construction */}
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-4">
               <FormField
                 control={form.control}
                 name="annee_construction"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="flex items-center gap-2 text-base font-semibold">
-                      <Calendar className="h-4 w-4 text-blue-500" />
+                    <FormLabel className="text-sm">
                       Année de construction
                     </FormLabel>
                     <FormDescription>
@@ -135,7 +132,6 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
                         type="number"
                         min="1900"
                         max={currentYear}
-                        className="h-12"
                         placeholder={String(currentYear)}
                         value={field.value || ''}
                         onChange={(e) => {
@@ -153,13 +149,13 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
 
           {/* Année de rénovation */}
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-4">
               <FormField
                 control={form.control}
                 name="annee_renovation"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-base font-semibold">
+                    <FormLabel className="text-sm">
                       Année de rénovation
                     </FormLabel>
                     <FormDescription>
@@ -171,7 +167,6 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
                         type="number"
                         min="1900"
                         max={currentYear}
-                        className="h-12"
                         placeholder={String(currentYear - 1)}
                         value={field.value || ''}
                         onChange={(e) => {
@@ -189,14 +184,13 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
 
           {/* Norme de construction */}
           <Card className="md:col-span-2">
-            <CardContent className="p-6">
+            <CardContent className="p-4">
               <FormField
                 control={form.control}
                 name="norme_construction"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="flex items-center gap-2 text-base font-semibold">
-                      <Home className="h-4 w-4 text-green-500" />
+                    <FormLabel className="text-sm">
                       Norme de construction
                     </FormLabel>
                     <FormDescription>
@@ -204,7 +198,7 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
                     </FormDescription>
                     <FormControl>
                       <Select value={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger className="h-12">
+                        <SelectTrigger>
                           <SelectValue placeholder="Sélectionnez la norme" />
                         </SelectTrigger>
                         <SelectContent>
@@ -238,13 +232,13 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Nombre de caves */}
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-4">
               <FormField
                 control={form.control}
                 name="nombre_caves"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-base font-semibold">
+                    <FormLabel className="text-sm">
                       Nombre de caves
                     </FormLabel>
                     <FormDescription>
@@ -266,7 +260,7 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
                           {...field}
                           type="number"
                           min="0"
-                          className="h-12 text-center"
+                          className="text-center"
                           placeholder="15"
                           value={field.value || ''}
                           onChange={(e) => {
@@ -295,13 +289,13 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
 
           {/* Surface moyenne des caves */}
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-4">
               <FormField
                 control={form.control}
                 name="surface_caves"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-base font-semibold">
+                    <FormLabel className="text-sm">
                       Surface moyenne des caves
                     </FormLabel>
                     <FormDescription>
@@ -313,7 +307,6 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
                         type="number"
                         min="0"
                         step="0.5"
-                        className="h-12"
                         placeholder="5"
                         value={field.value || ''}
                         onChange={(e) => {
@@ -331,13 +324,13 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
 
           {/* Nombre de box fermés */}
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-4">
               <FormField
                 control={form.control}
                 name="nombre_box_fermes"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-base font-semibold">
+                    <FormLabel className="text-sm">
                       Nombre de box fermés
                     </FormLabel>
                     <FormDescription>
@@ -359,7 +352,7 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
                           {...field}
                           type="number"
                           min="0"
-                          className="h-12 text-center"
+                          className="text-center"
                           placeholder="10"
                           value={field.value || ''}
                           onChange={(e) => {
@@ -388,13 +381,13 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
 
           {/* Nombre de lots */}
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-4">
               <FormField
                 control={form.control}
                 name="nombre_lots"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-base font-semibold">
+                    <FormLabel className="text-sm">
                       Nombre total de lots
                     </FormLabel>
                     <FormDescription>
@@ -416,7 +409,7 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
                           {...field}
                           type="number"
                           min="0"
-                          className="h-12 text-center"
+                          className="text-center"
                           placeholder="50"
                           value={field.value || ''}
                           onChange={(e) => {
@@ -442,23 +435,20 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
               />
             </CardContent>
           </Card>
+        </div>
 
-          {/* Local vélos */}
+        {/* Switches pour locaux */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-4">
               <FormField
                 control={form.control}
                 name="local_velos"
                 render={({ field }) => (
-                  <FormItem className="flex items-center justify-between rounded-lg border p-4 bg-slate-50">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-base font-semibold cursor-pointer">
-                        Local vélos
-                      </FormLabel>
-                      <FormDescription>
-                        Espace dédié au stockage des vélos
-                      </FormDescription>
-                    </div>
+                  <FormItem className="flex items-center justify-between">
+                    <FormLabel className="flex-1 cursor-pointer text-sm">
+                      Local vélos
+                    </FormLabel>
                     <FormControl>
                       <Switch
                         checked={field.value}
@@ -471,22 +461,16 @@ export const TechnicalDetailsStep: React.FC<TechnicalDetailsStepProps> = ({ form
             </CardContent>
           </Card>
 
-          {/* Local poussettes */}
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-4">
               <FormField
                 control={form.control}
                 name="local_poussettes"
                 render={({ field }) => (
-                  <FormItem className="flex items-center justify-between rounded-lg border p-4 bg-slate-50">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-base font-semibold cursor-pointer">
-                        Local poussettes
-                      </FormLabel>
-                      <FormDescription>
-                        Espace pour les poussettes et équipements bébé
-                      </FormDescription>
-                    </div>
+                  <FormItem className="flex items-center justify-between">
+                    <FormLabel className="flex-1 cursor-pointer text-sm">
+                      Local poussettes
+                    </FormLabel>
                     <FormControl>
                       <Switch
                         checked={field.value}
