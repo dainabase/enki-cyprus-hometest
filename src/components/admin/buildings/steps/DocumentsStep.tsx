@@ -17,34 +17,28 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({ form }) => {
   const [uploading, setUploading] = useState<{ [key: string]: boolean }>({});
   const [previews, setPreviews] = useState<{ [key: string]: string }>({});
 
-  // Fonction d'upload CORRIGÉE et SIMPLIFIÉE
+  // Fonction d'upload
   const uploadFile = async (file: File, fieldName: string) => {
     try {
       setUploading(prev => ({ ...prev, [fieldName]: true }));
       
-      // Vérifier la taille du fichier (max 10MB)
       if (file.size > 10 * 1024 * 1024) {
         toast.error('Le fichier est trop volumineux (max 10MB)');
         return;
       }
 
-      // Vérifier le type de fichier
       const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'];
       if (!allowedTypes.includes(file.type)) {
         toast.error('Type de fichier non supporté. Utilisez JPG, PNG, GIF, WEBP ou PDF');
         return;
       }
       
-      // Générer un nom de fichier unique et sûr
       const timestamp = Date.now();
       const randomString = Math.random().toString(36).substring(2, 15);
       const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg';
       const fileName = `building_${timestamp}_${randomString}.${fileExt}`;
       const filePath = `documents/${fileName}`;
 
-      console.log('Uploading file:', filePath);
-
-      // Upload du fichier dans le bucket 'buildings'
       const { data, error } = await supabase.storage
         .from('buildings')
         .upload(filePath, file, {
@@ -53,10 +47,7 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({ form }) => {
         });
 
       if (error) {
-        console.error('Upload error details:', error);
-        // Si l'erreur est liée aux policies, essayer avec le bucket 'media'
         if (error.message.includes('policy') || error.message.includes('RLS')) {
-          console.log('Trying media bucket instead...');
           const { data: mediaData, error: mediaError } = await supabase.storage
             .from('media')
             .upload(filePath, file, {
@@ -69,7 +60,6 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({ form }) => {
             return;
           }
 
-          // Récupérer l'URL publique du bucket media
           const { data: urlData } = supabase.storage
             .from('media')
             .getPublicUrl(filePath);
@@ -85,13 +75,11 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({ form }) => {
         return;
       }
 
-      // Si upload réussi dans buildings, récupérer l'URL publique
       const { data: urlData } = supabase.storage
         .from('buildings')
         .getPublicUrl(filePath);
 
       if (urlData?.publicUrl) {
-        // Mettre à jour le champ du formulaire
         form.setValue(fieldName as any, urlData.publicUrl);
         setPreviews(prev => ({ ...prev, [fieldName]: urlData.publicUrl }));
         toast.success('Document uploadé avec succès !');
@@ -136,11 +124,11 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({ form }) => {
       </div>
 
       {/* Note importante */}
-      <Card className="bg-blue-50 border-blue-200">
+      <Card>
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
             <div className="text-blue-500 mt-0.5">ℹ️</div>
-            <div className="text-sm text-blue-800">
+            <div className="text-sm text-slate-700">
               <p className="font-medium">Formats acceptés :</p>
               <p>Images : JPG, PNG, GIF, WEBP (max 10MB)</p>
               <p>Documents : PDF (max 10MB)</p>
@@ -152,13 +140,13 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({ form }) => {
       <div className="grid grid-cols-1 gap-6">
         {/* Plan d'étage type */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="typical_floor_plan_url"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base font-semibold">
+                  <FormLabel className="text-sm">
                     Plan d'étage type
                   </FormLabel>
                   <FormDescription>
@@ -195,7 +183,6 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({ form }) => {
                         </div>
                       </div>
                       
-                      {/* Aperçu si disponible */}
                       {(field.value || previews['typical_floor_plan_url']) && (
                         <div className="p-4 bg-slate-50 rounded-lg">
                           <div className="flex items-center justify-between">
@@ -223,7 +210,6 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({ form }) => {
                             </div>
                           </div>
                           
-                          {/* Aperçu image si c'est une image */}
                           {(field.value || previews['typical_floor_plan_url'])?.match(/\.(jpg|jpeg|png|gif|webp)$/i) && (
                             <img 
                               src={field.value || previews['typical_floor_plan_url']} 
@@ -244,13 +230,13 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({ form }) => {
 
         {/* Modèle 3D */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="model_3d_url"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base font-semibold">
+                  <FormLabel className="text-sm">
                     Modèle 3D / Visite virtuelle
                   </FormLabel>
                   <FormDescription>
@@ -326,13 +312,13 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({ form }) => {
 
         {/* Brochure du bâtiment */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <FormField
               control={form.control}
               name="building_brochure_url"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base font-semibold">
+                  <FormLabel className="text-sm">
                     Brochure du bâtiment
                   </FormLabel>
                   <FormDescription>
