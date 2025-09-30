@@ -198,7 +198,7 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
           </CardContent>
         </Card>
 
-        {/* Statut de construction */}
+        {/* Statut de construction - ✅ CORRIGÉ AVEC LES BONNES VALEURS */}
         <Card className="border-2 border-orange-100">
           <CardContent className="p-6">
             <FormField
@@ -214,24 +214,18 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
                     État actuel de la construction
                   </FormDescription>
                   <FormControl>
-                    <Select value={field.value} onValueChange={field.onChange}>
+                    <Select value={field.value || ''} onValueChange={field.onChange}>
                       <SelectTrigger className="h-12">
-                        <SelectValue />
+                        <SelectValue placeholder="Sélectionner un statut" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="planning">
+                        <SelectItem value="planned">
                           <div className="flex items-center gap-2">
                             <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                            <span>Planification</span>
+                            <span>Planifié</span>
                           </div>
                         </SelectItem>
-                        <SelectItem value="approved">
-                          <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                            <span>Approuvé</span>
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="construction">
+                        <SelectItem value="under_construction">
                           <div className="flex items-center gap-2">
                             <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
                             <span>En construction</span>
@@ -243,10 +237,10 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
                             <span>Terminé</span>
                           </div>
                         </SelectItem>
-                        <SelectItem value="delivered">
+                        <SelectItem value="ready_to_move">
                           <div className="flex items-center gap-2">
                             <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                            <span>Livré</span>
+                            <span>Prêt à emménager</span>
                           </div>
                         </SelectItem>
                       </SelectContent>
@@ -278,6 +272,7 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
                       {...field}
                       type="date"
                       className="h-12"
+                      value={field.value || ''}
                     />
                   </FormControl>
                   <FormMessage />
@@ -306,6 +301,7 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
                       {...field}
                       type="date"
                       className="h-12"
+                      value={field.value || ''}
                     />
                   </FormControl>
                   <FormMessage />
@@ -331,9 +327,9 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
                     Classe énergétique du bâtiment
                   </FormDescription>
                   <FormControl>
-                    <Select value={field.value} onValueChange={field.onChange}>
+                    <Select value={field.value || ''} onValueChange={field.onChange}>
                       <SelectTrigger className="h-12">
-                        <SelectValue />
+                        <SelectValue placeholder="Sélectionner une classe" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="A+">
@@ -394,7 +390,7 @@ export const StructureStep: React.FC<StructureStepProps> = ({ form }) => {
           </CardContent>
         </Card>
 
-        {/* Nombre d'ascenseurs - REMPLACÉ PAR UN SELECT */}
+        {/* Nombre d'ascenseurs */}
         <Card>
           <CardContent className="p-6">
             <FormField
