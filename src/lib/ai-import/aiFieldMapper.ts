@@ -112,7 +112,7 @@ export interface ExtractedProject {
   wellness_features?: string[];
   
   // Quality
-  energy_rating?: string;
+  energy_efficiency_class?: string;
   building_certification?: string;
   sustainability_certifications?: string[];
   
@@ -137,7 +137,7 @@ export interface ExtractedBuilding {
   total_floors?: number;
   total_units?: number;
   construction_status?: string;
-  energy_rating?: string;
+  energy_efficiency_class?: string;
 }
 
 export interface ExtractedProperty {
@@ -328,7 +328,7 @@ export function mapProjectToDatabase(extracted: ExtractedProject, developerId: s
     lifestyle_amenities: extracted.lifestyle_amenities || null,
     community_features: extracted.community_features || null,
     wellness_features: extracted.wellness_features || null,
-    energy_rating: extracted.energy_rating || null,
+    energy_efficiency_class: extracted.energy_efficiency_class || null,
     building_certification: extracted.building_certification || null,
     sustainability_certifications: extracted.sustainability_certifications || null,
     photos: extracted.photos || [],
@@ -352,7 +352,7 @@ export function mapBuildingToDatabase(extracted: ExtractedBuilding, projectId: s
     total_floors: extracted.total_floors || 1,
     total_units: extracted.total_units || 1,
     construction_status: extracted.construction_status || 'planned',
-    energy_rating: extracted.energy_rating || null
+    energy_efficiency_class: extracted.energy_efficiency_class || null
   };
 }
 

@@ -64,7 +64,7 @@ const AdminProjectForm: React.FC = () => {
       total_units: null,
       units_available: null,
       parking_spaces: null,
-      energy_rating: null,
+      energy_efficiency_class: null,
       construction_year: null,
       building_certification: '',
       maintenance_fees_yearly: null,
@@ -207,7 +207,7 @@ const AdminProjectForm: React.FC = () => {
           total_units: projectData.total_units ? Number(projectData.total_units) : null,
           units_available: projectData.units_available ? Number(projectData.units_available) : null,
           parking_spaces: projectData.parking_spaces ? Number(projectData.parking_spaces) : null,
-          energy_rating: projectData.energy_rating || null,
+          energy_efficiency_class: projectData.energy_efficiency_class || null,
           construction_year: projectData.construction_year ? Number(projectData.construction_year) : null,
           building_certification: projectData.building_certification || '',
           maintenance_fees_yearly: projectData.maintenance_fees_yearly ? Number(projectData.maintenance_fees_yearly) : null,
@@ -299,7 +299,7 @@ const AdminProjectForm: React.FC = () => {
       delete dbData.metaverse_preview_url; // Champ supprimé de la DB
       
       // Convertir les chaînes vides en NULL pour les champs avec contraintes CHECK
-      if (dbData.energy_rating === '') dbData.energy_rating = null;
+      if (dbData.energy_efficiency_class === '') dbData.energy_efficiency_class = null;
       if (dbData.construction_phase === '') dbData.construction_phase = null;
       if (dbData.finishing_level === '') dbData.finishing_level = null;
       if (dbData.pet_policy === '') dbData.pet_policy = null;

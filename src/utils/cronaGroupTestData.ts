@@ -111,7 +111,7 @@ export const createCronaGroupTestData = async (): Promise<TestDataResult> => {
       construction_status: 'structure',
       total_floors: 5,
       total_units: 20,
-      energy_rating: 'A'
+      energy_efficiency_class: 'A'
     };
 
     // Bâtiment B: 4 Maisons
@@ -123,7 +123,7 @@ export const createCronaGroupTestData = async (): Promise<TestDataResult> => {
       construction_status: 'structure',
       total_floors: 2,
       total_units: 4,
-      energy_rating: 'A'
+      energy_efficiency_class: 'A'
     };
 
     const { data: buildings, error: buildingError } = await supabase

@@ -29,7 +29,7 @@ export interface Building {
   // Additional technical fields
   has_elevator?: boolean;
   has_solar_panels?: boolean;
-  energy_rating?: string;
+  energy_efficiency_class?: string;
   central_vacuum_system?: boolean;
   water_softener_system?: boolean;
   water_purification_system?: boolean;
@@ -164,7 +164,7 @@ export interface BuildingFormData {
   expected_completion?: string;
   actual_completion?: string;
   energy_certificate: 'A+' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G';
-  energy_rating?: string;
+  energy_efficiency_class?: string;
   elevator_count: number;
   has_elevator: boolean;
 

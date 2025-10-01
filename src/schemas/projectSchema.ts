@@ -137,7 +137,6 @@ export const projectSchema = z.object({
   builder_name: z.string().optional(),
   construction_company: z.string().optional(), // Added (PRIORITY 2)
   construction_warranty_details: z.string().optional(), // Added (PRIORITY 2)
-  energy_rating: z.string().optional(),
   building_certification: z.any().optional(),
   construction_year: z.number().min(1900).max(2050).optional(),
   renovation_year: z.number().min(1900).max(2050).optional(),
