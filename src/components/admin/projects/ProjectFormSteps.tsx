@@ -26,6 +26,9 @@ import { ProjectFormData } from '@/schemas/projectSchema';
 import { ProjectBuilding } from '@/types/building.project';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { ProjectEquipmentsStep } from './steps/ProjectEquipmentsStep';
+import { LegalComplianceStep } from './steps/LegalComplianceStep';
+import { UtilitiesServicesStep } from './steps/UtilitiesServicesStep';
 import { 
   Building, MapPin, Home, Zap, Landmark, Building2, Waves, Shield, 
   Sprout, Accessibility, Map as MapIcon, Palmtree, Users, Heart,
@@ -2611,6 +2614,12 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
       return renderMediaStep();
     case 'marketing':
       return renderMarketingStep();
+    case 'project-amenities':
+      return <ProjectEquipmentsStep form={form} />;
+    case 'legal-compliance':
+      return <LegalComplianceStep form={form} />;
+    case 'utilities-services':
+      return <UtilitiesServicesStep form={form} />;
     case 'summary':
       return renderSummaryStep();
     default:
