@@ -307,7 +307,7 @@ export const CommercializationStep: React.FC<CommercializationStepProps> = ({ fo
                           placeholder="0"
                           value={field.value || ''}
                           onChange={(e) => {
-                            const value = e.target.value === '' ? '' : parseInt(e.target.value) || 0;
+                            const value = e.target.value === '' ? 0 : parseInt(e.target.value) || 0;
                             const currentTypes = form.getValues('nombre_logements_type') || {};
                             form.setValue('nombre_logements_type', {
                               ...currentTypes,

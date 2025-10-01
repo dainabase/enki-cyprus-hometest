@@ -151,7 +151,7 @@ export interface BuildingFormData {
   // Section de base
   project_id: string;
   building_name: string;
-  building_type: 'residential' | 'commercial' | 'mixed' | 'office' | 'hotel';
+  building_type: 'apartment_building' | 'villa_complex' | 'mixed_residence' | 'residential' | 'commercial' | 'mixed' | 'office' | 'hotel';
   building_code?: string;
   display_order?: number;
   building_class: 'A+' | 'A' | 'B' | 'C';
@@ -175,10 +175,10 @@ export interface BuildingFormData {
   water_softener_system: boolean;
   water_purification_system: boolean;
   smart_building_system: boolean;
-  intercom_system: boolean;
+  intercom_system?: boolean;
   has_intercom: boolean;
   package_room: boolean;
-  bike_storage: boolean;
+  bike_storage?: boolean;
   pet_washing_station: boolean;
   car_wash_area: boolean;
 
@@ -186,7 +186,7 @@ export interface BuildingFormData {
   has_security_system: boolean;
   has_security_24_7: boolean;
   has_cctv: boolean;
-  has_concierge: boolean;
+  has_concierge?: boolean;
   has_security_door: boolean;
   concierge_service: boolean;
 

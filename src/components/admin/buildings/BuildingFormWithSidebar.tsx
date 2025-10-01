@@ -8,7 +8,7 @@ import { Form } from '@/components/ui/form';
 import { ArrowLeft, ArrowRight, Check, Save, ChevronLeft, Building } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { BuildingFormData } from '@/types/building';
+import { BuildingFormData, Building as BuildingType } from '@/types/building';
 import { BuildingFormSteps } from './BuildingFormSteps';
 
 // 🎯 DÉFINITION DES ÉTAPES OPTIMISÉES (8 étapes au lieu de 12)
@@ -190,7 +190,7 @@ export default function BuildingFormWithSidebar() {
         .single();
       
       if (error) throw error;
-      return data;
+      return data as BuildingType;
     },
     enabled: !!id
   });
@@ -251,10 +251,13 @@ export default function BuildingFormWithSidebar() {
         water_softener_system: building.water_softener_system || false,
         water_purification_system: building.water_purification_system || false,
         smart_building_system: building.smart_building_system || false,
+        intercom_system: building.intercom_system || false,
         has_intercom: building.has_intercom || false,
+        bike_storage: building.bike_storage || false,
         has_security_system: building.has_security_system || false,
         has_security_24_7: building.has_security_24_7 || false,
         has_cctv: building.has_cctv || false,
+        has_concierge: building.has_concierge || false,
         has_security_door: building.has_security_door || false,
         concierge_service: building.concierge_service || false,
         package_room: building.package_room || false,
