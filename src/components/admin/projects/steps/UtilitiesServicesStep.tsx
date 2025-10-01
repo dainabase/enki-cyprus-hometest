@@ -16,50 +16,6 @@ export function UtilitiesServicesStep({ form }: UtilitiesServicesStepProps) {
         <CardContent className="p-4 space-y-4">
           <div className="space-y-4">
             <h3 className="text-sm font-medium">Raccordements</h3>
-            <FormField
-              control={form.control}
-              name="utilities_connection_status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm">Statut global des raccordements</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="Ex: Tous raccordés, En cours, Prévus" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="water_connection_status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-sm">Eau</FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder="Ex: Raccordé, En cours" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="electricity_connection_status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-sm">Électricité</FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder="Ex: Raccordé, En cours" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}

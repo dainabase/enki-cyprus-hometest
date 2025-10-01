@@ -16,55 +16,6 @@ export function LegalComplianceStep({ form }: LegalComplianceStepProps) {
       <Card>
         <CardContent className="p-4 space-y-4">
           <div className="space-y-4">
-            <h3 className="text-sm font-medium">Titre de propriété</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="title_deed_available"
-                render={({ field }) => (
-                  <FormItem className="flex items-center space-x-2 space-y-0">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value || false}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormLabel className="text-sm">Titre disponible</FormLabel>
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <FormField
-              control={form.control}
-              name="title_deed_timeline"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm">Délai d'obtention du titre</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="Ex: 6 mois après la livraison" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="land_title_status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm">Statut du titre foncier</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="Ex: En cours, Obtenu, En attente" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="space-y-4">
             <h3 className="text-sm font-medium">Permis & Autorisations</h3>
             <div className="grid grid-cols-2 gap-4">
               <FormField
@@ -98,38 +49,7 @@ export function LegalComplianceStep({ form }: LegalComplianceStepProps) {
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-sm font-medium">Statut légal</h3>
-            <FormField
-              control={form.control}
-              name="legal_status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm">Statut légal du projet</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="Ex: Conforme, En cours de régularisation" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="space-y-4">
             <h3 className="text-sm font-medium">Construction & Garanties</h3>
-            <FormField
-              control={form.control}
-              name="construction_company"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm">Entreprise de construction</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="Nom de l'entreprise" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             <FormField
               control={form.control}
               name="construction_warranty_details"
@@ -147,27 +67,6 @@ export function LegalComplianceStep({ form }: LegalComplianceStepProps) {
                 </FormItem>
               )}
             />
-          </div>
-
-          <div className="space-y-4">
-            <h3 className="text-sm font-medium">Frais inclus</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="legal_fees_included"
-                render={({ field }) => (
-                  <FormItem className="flex items-center space-x-2 space-y-0">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value || false}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormLabel className="text-sm">Frais juridiques inclus</FormLabel>
-                  </FormItem>
-                )}
-              />
-            </div>
           </div>
         </CardContent>
       </Card>

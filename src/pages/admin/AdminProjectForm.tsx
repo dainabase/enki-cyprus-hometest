@@ -307,8 +307,7 @@ const AdminProjectForm: React.FC = () => {
       
       // Nettoyer les objets mal formés (cas où le formulaire crée des objets {_type, value})
       const cleanObjectFields = [
-        'project_status', 'utilities_connection_status', 'water_connection_status',
-        'electricity_connection_status', 'gas_connection_available', 'fiber_optic_available',
+        'project_status', 'gas_connection_available', 'fiber_optic_available',
         'pool_maintenance_fee', 'security_service_fee', 'garden_maintenance_fee'
       ];
       

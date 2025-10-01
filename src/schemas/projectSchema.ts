@@ -77,10 +77,7 @@ export const projectSchema = z.object({
   price_per_m2: z.number().min(0).optional(),
   vat_rate: z.number().min(0).max(100).default(5),
   vat_included: z.boolean().default(false),
-  transfer_fee: z.number().min(0).optional(),
-  transfer_fees_included: z.boolean().optional(), // Added (PRIORITY 2)
-  stamp_duty_included: z.boolean().optional(), // Added (PRIORITY 2)
-  legal_fees_included: z.boolean().optional(), // Added (PRIORITY 2)
+  transfer_fees_included: z.boolean().optional(),
   golden_visa_eligible: z.boolean().default(false),
   roi_estimate_percent: z.number().min(0).max(100).optional(),
   rental_yield_percent: z.number().min(0).max(100).optional(),
@@ -135,8 +132,7 @@ export const projectSchema = z.object({
   architect_name: z.string().optional(),
   architect_license_number: z.string().optional(),
   builder_name: z.string().optional(),
-  construction_company: z.string().optional(), // Added (PRIORITY 2)
-  construction_warranty_details: z.string().optional(), // Added (PRIORITY 2)
+  construction_warranty_details: z.string().optional(),
   building_certification: z.any().optional(),
   construction_year: z.number().min(1900).max(2050).optional(),
   renovation_year: z.number().min(1900).max(2050).optional(),
@@ -160,23 +156,16 @@ export const projectSchema = z.object({
   after_sales_service: z.string().optional(),
 
   // ========================================
-  // LEGAL & COMPLIANCE (PRIORITY 2 - 9 fields)
+  // LEGAL & COMPLIANCE
   // ========================================
-  title_deed_available: z.boolean().optional(),
-  title_deed_timeline: z.string().optional(),
-  legal_status: z.string().optional(),
-  land_title_status: z.string().optional(),
-  permits_obtained: z.any().optional(), // JSONB
-  compliance_certifications: z.any().optional(), // JSONB
+  permits_obtained: z.any().optional(),
+  compliance_certifications: z.any().optional(),
   planning_permit_number: z.string().optional(),
   building_permit_number: z.string().optional(),
 
   // ========================================
-  // UTILITIES & SERVICES (PRIORITY 2 - 5 fields)
+  // UTILITIES & SERVICES
   // ========================================
-  utilities_connection_status: z.string().optional(),
-  water_connection_status: z.string().optional(),
-  electricity_connection_status: z.string().optional(),
   gas_connection_available: z.boolean().optional(),
   fiber_optic_available: z.boolean().optional(),
 
@@ -312,19 +301,12 @@ export const projectSchema = z.object({
   solar_panels_installed: z.boolean().default(false),
   solar_capacity_kw: z.number().min(0).optional(),
   photovoltaic_system: z.boolean().default(false),
-  net_metering_available: z.boolean().optional(),
   geothermal_heating: z.boolean().default(false),
-  rainwater_harvesting: z.boolean().optional(),
-  grey_water_recycling: z.boolean().optional(),
   green_building_certification: z.string().optional(),
   energy_efficiency_class: z.string().optional(),
-  carbon_neutral: z.boolean().optional(),
   ev_charging_stations: z.number().min(0).default(0),
   ev_charging_type: z.enum(['type2', 'ccs', 'chademo', 'tesla', 'mixed']).optional(),
-  ev_charging_power_kw: z.number().optional(),
   smart_grid_ready: z.boolean().default(false),
-  backup_power_generator: z.boolean().optional(),
-  ups_system: z.boolean().optional(),
   
   // ========================================
   // SALES & AVAILABILITY
@@ -410,8 +392,7 @@ export const projectFormSteps = [
     icon: 'Euro',
     fields: [
       'price_from', 'price_to', 'price_per_m2', 'vat_rate', 'vat_included', 
-      'transfer_fee', 'transfer_fees_included', 'stamp_duty_included', 'legal_fees_included',
-      'golden_visa_eligible', 'roi_estimate_percent', 'rental_yield_percent', 
+      'transfer_fees_included', 'golden_visa_eligible', 'roi_estimate_percent', 'rental_yield_percent', 
       'financing_available', 'financing_options', 'payment_plan', 'incentives',
       'pricing_strategy_notes', 'deposit_terms', 'cancellation_policy', 
       'price_list', 'special_offers', 'bank_partners', 'investment_highlights'
@@ -466,9 +447,8 @@ export const projectFormSteps = [
     title: 'Légal & Conformité',
     icon: 'FileCheck',
     fields: [
-      'title_deed_available', 'title_deed_timeline', 'legal_status', 
-      'land_title_status', 'permits_obtained', 'compliance_certifications',
-      'planning_permit_number', 'building_permit_number', 'construction_company',
+      'permits_obtained', 'compliance_certifications',
+      'planning_permit_number', 'building_permit_number',
       'construction_warranty_details'
     ]
   },
@@ -477,10 +457,8 @@ export const projectFormSteps = [
     title: 'Utilitaires & Services',
     icon: 'Zap',
     fields: [
-      'utilities_connection_status', 'water_connection_status', 
-      'electricity_connection_status', 'gas_connection_available', 
-      'fiber_optic_available', 'pool_maintenance_fee', 
-      'security_service_fee', 'garden_maintenance_fee'
+      'gas_connection_available', 'fiber_optic_available', 
+      'pool_maintenance_fee', 'security_service_fee', 'garden_maintenance_fee'
     ]
   }
 ];
