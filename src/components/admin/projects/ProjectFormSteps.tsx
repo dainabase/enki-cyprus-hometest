@@ -2284,23 +2284,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 </FormItem>
               )}
             />
-
-            <FormField
-              control={form.control}
-              name="metaverse_preview_url"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <Globe className="w-4 h-4" />
-                    Aperçu Metaverse
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           </CardContent>
         </Card>
       </div>
