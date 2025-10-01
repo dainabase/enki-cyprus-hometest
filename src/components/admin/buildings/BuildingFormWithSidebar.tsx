@@ -56,7 +56,7 @@ export default function BuildingFormWithSidebar() {
       construction_status: 'planned',
       expected_completion: '',
       actual_completion: '',
-      energy_rating: '',
+      energy_rating: null,
       energy_certificate: 'B',
       elevator_count: 0,
       has_elevator: false,
@@ -245,7 +245,7 @@ export default function BuildingFormWithSidebar() {
         // Reste des champs existants
         has_generator: building.has_generator || false,
         has_solar_panels: building.has_solar_panels || false,
-        energy_rating: building.energy_rating || '',
+        energy_rating: building.energy_rating || null,
         energy_certificate: building.energy_certificate as any || 'B',
         central_vacuum_system: building.central_vacuum_system || false,
         water_softener_system: building.water_softener_system || false,

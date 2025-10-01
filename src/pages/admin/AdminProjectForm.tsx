@@ -64,7 +64,7 @@ const AdminProjectForm: React.FC = () => {
       total_units: null,
       units_available: null,
       parking_spaces: null,
-      energy_rating: '',
+      energy_rating: null,
       construction_year: null,
       building_certification: '',
       maintenance_fees_yearly: null,
@@ -207,7 +207,7 @@ const AdminProjectForm: React.FC = () => {
           total_units: projectData.total_units ? Number(projectData.total_units) : null,
           units_available: projectData.units_available ? Number(projectData.units_available) : null,
           parking_spaces: projectData.parking_spaces ? Number(projectData.parking_spaces) : null,
-          energy_rating: projectData.energy_rating || '',
+          energy_rating: projectData.energy_rating || null,
           construction_year: projectData.construction_year ? Number(projectData.construction_year) : null,
           building_certification: projectData.building_certification || '',
           maintenance_fees_yearly: projectData.maintenance_fees_yearly ? Number(projectData.maintenance_fees_yearly) : null,
@@ -297,6 +297,26 @@ const AdminProjectForm: React.FC = () => {
       // Supprimer les champs qui n'existent pas dans la DB
       delete dbData.buildings; // Géré séparément
       delete dbData.metaverse_preview_url; // Champ supprimé de la DB
+      
+      // Convertir les chaînes vides en NULL pour les champs avec contraintes CHECK
+      if (dbData.energy_rating === '') dbData.energy_rating = null;
+      if (dbData.construction_phase === '') dbData.construction_phase = null;
+      if (dbData.finishing_level === '') dbData.finishing_level = null;
+      
+      // Nettoyer les objets mal formés (cas où le formulaire crée des objets {_type, value})
+      const cleanObjectFields = [
+        'project_status', 'utilities_connection_status', 'water_connection_status',
+        'electricity_connection_status', 'gas_connection_available', 'fiber_optic_available',
+        'pool_maintenance_fee', 'security_service_fee', 'garden_maintenance_fee'
+      ];
+      
+      cleanObjectFields.forEach(field => {
+        if (dbData[field] && typeof dbData[field] === 'object' && '_type' in dbData[field]) {
+          // Si c'est un objet avec _type et value, on prend la value
+          const value = dbData[field].value;
+          dbData[field] = (value === '' || value === 'undefined') ? null : value;
+        }
+      });
       
       // Convertir les nombres
       if (dbData.total_units) dbData.total_units = Number(dbData.total_units);
