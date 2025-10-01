@@ -291,7 +291,6 @@ export const projectSchema = z.object({
   featured_project: z.boolean().default(false),
   featured_until: z.string().optional(),
   show_on_website: z.boolean().default(true),
-  hot_deal: z.boolean().default(false),
   
   // ========================================
   // ANALYTICS & TRACKING (PRIORITY 4)
@@ -299,7 +298,7 @@ export const projectSchema = z.object({
   view_count: z.number().optional(),
   inquiry_count: z.number().optional(),
   favorite_count: z.number().optional(),
-  search_ranking_weight: z.number().optional(),
+  search_ranking_weight: z.number().min(1).max(10).default(5),
   last_price_update: z.string().optional(),
   social_proof_stats: z.any().optional(),
   ai_chatbot_enabled: z.boolean().optional(),
@@ -311,53 +310,54 @@ export const projectSchema = z.object({
   // ========================================
   // ENERGY & SUSTAINABILITY
   // ========================================
-  solar_panels_installed: z.boolean().optional(),
-  solar_capacity_kw: z.number().optional(),
-  photovoltaic_system: z.boolean().optional(),
+  solar_panels_installed: z.boolean().default(false),
+  solar_capacity_kw: z.number().min(0).optional(),
+  photovoltaic_system: z.boolean().default(false),
   net_metering_available: z.boolean().optional(),
-  geothermal_heating: z.boolean().optional(),
+  geothermal_heating: z.boolean().default(false),
   rainwater_harvesting: z.boolean().optional(),
   grey_water_recycling: z.boolean().optional(),
   green_building_certification: z.string().optional(),
   energy_efficiency_class: z.string().optional(),
   carbon_neutral: z.boolean().optional(),
-  ev_charging_stations: z.number().optional(),
-  ev_charging_type: z.string().optional(),
+  ev_charging_stations: z.number().min(0).default(0),
+  ev_charging_type: z.enum(['type2', 'ccs', 'chademo', 'tesla', 'mixed']).optional(),
   ev_charging_power_kw: z.number().optional(),
-  smart_grid_ready: z.boolean().optional(),
+  smart_grid_ready: z.boolean().default(false),
   backup_power_generator: z.boolean().optional(),
   ups_system: z.boolean().optional(),
   
   // ========================================
   // SALES & AVAILABILITY
   // ========================================
-  sold_percentage: z.number().optional(),
-  reserved_percentage: z.number().optional(),
-  available_units: z.number().optional(),
-  phase_current: z.number().optional(),
-  total_phases: z.number().optional(),
+  sold_percentage: z.number().min(0).max(100).optional(),
+  reserved_percentage: z.number().min(0).max(100).optional(),
+  available_units: z.number().min(0).optional(),
+  phase_current: z.number().min(1).optional(),
+  total_phases: z.number().min(1).optional(),
   
   // ========================================
   // DISCOUNTS & OFFERS
   // ========================================
-  discount_percentage: z.number().optional(),
+  hot_deal: z.boolean().default(false),
+  discount_percentage: z.number().min(0).max(100).optional(),
   discount_valid_until: z.string().optional(),
-  early_bird_discount: z.number().optional(),
-  bulk_purchase_discount: z.number().optional(),
+  early_bird_discount: z.number().min(0).optional(),
+  bulk_purchase_discount: z.number().min(0).max(100).optional(),
   payment_plans: z.any().optional(),
   
   // ========================================
-  // PROPERTY MANAGEMENT
+  // PROPERTY MANAGEMENT & SERVICES
   // ========================================
-  furniture_package_available: z.boolean().optional(),
-  furniture_package_price: z.number().optional(),
+  furniture_package_available: z.boolean().default(false),
+  furniture_package_price: z.number().min(0).optional(),
   furniture_package_description: z.string().optional(),
   property_management_company: z.string().optional(),
-  property_management_fee: z.number().optional(),
+  property_management_fee: z.number().min(0).optional(),
   concierge_service: z.boolean().optional(),
-  rental_management_available: z.boolean().optional(),
-  guaranteed_rental_return: z.number().optional(),
-  rental_pool_option: z.boolean().optional()
+  rental_management_available: z.boolean().default(false),
+  guaranteed_rental_return: z.number().min(0).max(100).optional(),
+  rental_pool_option: z.boolean().default(false)
 });
 
 export type ProjectFormData = z.infer<typeof projectSchema>;

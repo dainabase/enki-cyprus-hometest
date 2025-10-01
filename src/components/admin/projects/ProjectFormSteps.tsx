@@ -559,6 +559,340 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             />
           </CardContent>
         </Card>
+
+        {/* NOUVEAU : Énergie et durabilité */}
+        <Card className="border-2 border-green-200 bg-green-50/30">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Sprout className="w-5 h-5 text-green-600" />
+              Énergie et durabilité
+            </CardTitle>
+            <CardDescription>
+              Équipements écologiques et certifications environnementales
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Panneaux solaires */}
+            <div className="space-y-4">
+              <FormField
+                control={form.control}
+                name="solar_panels_installed"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 bg-white">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base flex items-center gap-2">
+                        <span className="text-xl">☀️</span>
+                        Panneaux solaires installés
+                      </FormLabel>
+                      <div className="text-sm text-muted-foreground">
+                        Système photovoltaïque sur le projet
+                      </div>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              
+              {form.watch('solar_panels_installed') && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-4 border-l-2 border-green-500">
+                  <FormField
+                    control={form.control}
+                    name="solar_capacity_kw"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Capacité solaire (kW)</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            min="0"
+                            step="0.1"
+                            placeholder="50.5"
+                            {...field}
+                            onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                          />
+                        </FormControl>
+                        <FormDescription>Puissance totale installée</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="photovoltaic_system"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 bg-white">
+                        <div className="space-y-0.5">
+                          <FormLabel className="text-sm">Système photovoltaïque</FormLabel>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              )}
+            </div>
+            
+            {/* Autres systèmes verts */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="geothermal_heating"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 bg-white">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-sm">Chauffage géothermique</FormLabel>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="smart_grid_ready"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 bg-white">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-sm">Smart Grid Ready</FormLabel>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
+            
+            {/* Bornes de recharge EV */}
+            <div className="space-y-4 bg-blue-50 rounded-lg p-4 border border-blue-200">
+              <FormField
+                control={form.control}
+                name="ev_charging_stations"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-2">
+                      <Zap className="w-4 h-4" />
+                      Nombre de bornes de recharge EV
+                    </FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        placeholder="10"
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                      />
+                    </FormControl>
+                    <FormDescription>Bornes pour véhicules électriques</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              {(form.watch('ev_charging_stations') || 0) > 0 && (
+                <FormField
+                  control={form.control}
+                  name="ev_charging_type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Type de charge</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionner" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="type2">Type 2 (Standard EU)</SelectItem>
+                          <SelectItem value="ccs">CCS (Combo)</SelectItem>
+                          <SelectItem value="chademo">CHAdeMO</SelectItem>
+                          <SelectItem value="tesla">Tesla Supercharger</SelectItem>
+                          <SelectItem value="mixed">Mixte</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+            </div>
+            
+            {/* Certification verte */}
+            <FormField
+              control={form.control}
+              name="green_building_certification"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    <Star className="w-4 h-4" />
+                    Certification bâtiment vert
+                  </FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Sélectionner une certification" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="leed_platinum">LEED Platinum</SelectItem>
+                      <SelectItem value="leed_gold">LEED Gold</SelectItem>
+                      <SelectItem value="leed_silver">LEED Silver</SelectItem>
+                      <SelectItem value="breeam_outstanding">BREEAM Outstanding</SelectItem>
+                      <SelectItem value="breeam_excellent">BREEAM Excellent</SelectItem>
+                      <SelectItem value="breeam_very_good">BREEAM Very Good</SelectItem>
+                      <SelectItem value="edge">EDGE</SelectItem>
+                      <SelectItem value="well">WELL Building</SelectItem>
+                      <SelectItem value="passive_house">Passive House</SelectItem>
+                      <SelectItem value="other">Autre</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>Certification environnementale officielle</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </Card>
+
+        {/* NOUVEAU : Amenities Premium */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Star className="w-5 h-5" />
+              Amenities Premium
+            </CardTitle>
+            <CardDescription>
+              Services et équipements haut de gamme du projet
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <FormField control={form.control} name="has_security_24_7" render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-x-2 space-y-0 rounded-lg border p-3">
+                  <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                  <FormLabel className="text-sm font-normal cursor-pointer">Sécurité 24/7</FormLabel>
+                </FormItem>
+              )} />
+              
+              <FormField control={form.control} name="has_tennis_court" render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-x-2 space-y-0 rounded-lg border p-3">
+                  <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                  <FormLabel className="text-sm font-normal cursor-pointer">Court de tennis</FormLabel>
+                </FormItem>
+              )} />
+              
+              <FormField control={form.control} name="club_house" render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-x-2 space-y-0 rounded-lg border p-3">
+                  <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                  <FormLabel className="text-sm font-normal cursor-pointer">Club House</FormLabel>
+                </FormItem>
+              )} />
+              
+              <FormField control={form.control} name="restaurant" render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-x-2 space-y-0 rounded-lg border p-3">
+                  <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                  <FormLabel className="text-sm font-normal cursor-pointer">Restaurant</FormLabel>
+                </FormItem>
+              )} />
+              
+              <FormField control={form.control} name="cafe" render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-x-2 space-y-0 rounded-lg border p-3">
+                  <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                  <FormLabel className="text-sm font-normal cursor-pointer">Café</FormLabel>
+                </FormItem>
+              )} />
+              
+              <FormField control={form.control} name="mini_market" render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-x-2 space-y-0 rounded-lg border p-3">
+                  <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                  <FormLabel className="text-sm font-normal cursor-pointer">Mini-marché</FormLabel>
+                </FormItem>
+              )} />
+              
+              <FormField control={form.control} name="business_center" render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-x-2 space-y-0 rounded-lg border p-3">
+                  <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                  <FormLabel className="text-sm font-normal cursor-pointer">Business Center</FormLabel>
+                </FormItem>
+              )} />
+              
+              <FormField control={form.control} name="kids_club" render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-x-2 space-y-0 rounded-lg border p-3">
+                  <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                  <FormLabel className="text-sm font-normal cursor-pointer">Kids Club</FormLabel>
+                </FormItem>
+              )} />
+              
+              <FormField control={form.control} name="beach_access" render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-x-2 space-y-0 rounded-lg border p-3">
+                  <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                  <FormLabel className="text-sm font-normal cursor-pointer">Accès plage</FormLabel>
+                </FormItem>
+              )} />
+              
+              <FormField control={form.control} name="marina_access" render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-x-2 space-y-0 rounded-lg border p-3">
+                  <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                  <FormLabel className="text-sm font-normal cursor-pointer">Accès marina</FormLabel>
+                </FormItem>
+              )} />
+              
+              <FormField control={form.control} name="golf_course" render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-x-2 space-y-0 rounded-lg border p-3">
+                  <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                  <FormLabel className="text-sm font-normal cursor-pointer">Parcours de golf</FormLabel>
+                </FormItem>
+              )} />
+              
+              <FormField control={form.control} name="shuttle_service" render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-x-2 space-y-0 rounded-lg border p-3">
+                  <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                  <FormLabel className="text-sm font-normal cursor-pointer">Service navette</FormLabel>
+                </FormItem>
+              )} />
+              
+              <FormField control={form.control} name="sports_facilities" render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-x-2 space-y-0 rounded-lg border p-3">
+                  <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                  <FormLabel className="text-sm font-normal cursor-pointer">Installations sportives</FormLabel>
+                </FormItem>
+              )} />
+              
+              <FormField control={form.control} name="wellness_center" render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-x-2 space-y-0 rounded-lg border p-3">
+                  <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                  <FormLabel className="text-sm font-normal cursor-pointer">Centre bien-être</FormLabel>
+                </FormItem>
+              )} />
+              
+              <FormField control={form.control} name="coworking_space" render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-x-2 space-y-0 rounded-lg border p-3">
+                  <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                  <FormLabel className="text-sm font-normal cursor-pointer">Espace coworking</FormLabel>
+                </FormItem>
+              )} />
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   };
@@ -1913,6 +2247,251 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               />
             </div>
 
+            {/* NOUVEAU : Unités et disponibilité */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <FormField
+                control={form.control}
+                name="total_units"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Total unités</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        placeholder="100"
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                      />
+                    </FormControl>
+                    <FormDescription>Nombre total d'unités dans le projet</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="units_available"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Unités disponibles</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        placeholder="85"
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                      />
+                    </FormControl>
+                    <FormDescription>Unités encore en vente</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="available_units"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Unités restantes</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        placeholder="25"
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                      />
+                    </FormControl>
+                    <FormDescription>Stock actuel disponible</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* NOUVEAU : Statistiques de vente */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="sold_percentage"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Pourcentage vendu (%)</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        max="100"
+                        step="0.1"
+                        placeholder="45.5"
+                        {...field}
+                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                      />
+                    </FormControl>
+                    <FormDescription>Taux de commercialisation (0-100%)</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="reserved_percentage"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Pourcentage réservé (%)</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        max="100"
+                        step="0.1"
+                        placeholder="15.5"
+                        {...field}
+                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                      />
+                    </FormControl>
+                    <FormDescription>Unités sous réservation (0-100%)</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* NOUVEAU : Phases du projet */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="phase_current"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phase actuelle</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="1"
+                        placeholder="1"
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
+                      />
+                    </FormControl>
+                    <FormDescription>Numéro de la phase en cours</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="total_phases"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nombre total de phases</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="1"
+                        placeholder="3"
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
+                      />
+                    </FormControl>
+                    <FormDescription>Total de phases prévues</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* NOUVEAU : Année de construction et rénovation */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="construction_year"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Année de construction</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="1900"
+                        max="2100"
+                        placeholder="2024"
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || null)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="renovation_year"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Année de rénovation</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="1900"
+                        max="2100"
+                        placeholder="2023"
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || null)}
+                      />
+                    </FormControl>
+                    <FormDescription>Si applicable</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* NOUVEAU : Certification sismique et vitesse internet */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="seismic_rating"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Certification sismique</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ex: Zone 2, Classe B" {...field} />
+                    </FormControl>
+                    <FormDescription>Norme antisismique</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="internet_speed_mbps"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Vitesse Internet (Mbps)</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        placeholder="1000"
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                      />
+                    </FormControl>
+                    <FormDescription>Connexion haut débit disponible</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             </div>
           </CardContent>
@@ -2038,6 +2617,307 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 )}
               />
             </div>
+
+            {/* NOUVEAU : Promotions et réductions */}
+            <Card className="border-2 border-amber-200 bg-amber-50/30 mt-6">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Gift className="w-5 h-5" />
+                  Promotions et offres spéciales
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="hot_deal"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 bg-white">
+                        <div className="space-y-0.5">
+                          <FormLabel className="text-base">🔥 Hot Deal</FormLabel>
+                          <div className="text-sm text-muted-foreground">
+                            Marquer comme offre exceptionnelle
+                          </div>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="discount_percentage"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Réduction (%)</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            min="0"
+                            max="100"
+                            step="0.1"
+                            placeholder="15"
+                            {...field}
+                            onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                          />
+                        </FormControl>
+                        <FormDescription>Pourcentage de réduction (0-100%)</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="discount_valid_until"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Valable jusqu'au</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="date"
+                            {...field}
+                            value={field.value || ''}
+                          />
+                        </FormControl>
+                        <FormDescription>Date de fin de l'offre</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="early_bird_discount"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Réduction lève-tôt (€)</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            min="0"
+                            placeholder="5000"
+                            {...field}
+                            onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                          />
+                        </FormControl>
+                        <FormDescription>Montant pour acheteurs précoces</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="bulk_purchase_discount"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Réduction achat multiple (%)</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            min="0"
+                            max="100"
+                            placeholder="10"
+                            {...field}
+                            onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                          />
+                        </FormControl>
+                        <FormDescription>Pour achat de plusieurs unités</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* NOUVEAU : Services et forfaits */}
+            <Card className="mt-6">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Home className="w-5 h-5" />
+                  Services et forfaits
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="furniture_package_available"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-base">Forfait mobilier disponible</FormLabel>
+                        <div className="text-sm text-muted-foreground">
+                          Proposer un package d'ameublement clé en main
+                        </div>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                
+                {form.watch('furniture_package_available') && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-4 border-l-2 border-primary">
+                    <FormField
+                      control={form.control}
+                      name="furniture_package_price"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Prix forfait mobilier (€)</FormLabel>
+                          <FormControl>
+                            <Input 
+                              type="number" 
+                              min="0"
+                              placeholder="25000"
+                              {...field}
+                              onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="furniture_package_description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Description du forfait</FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="Meubles haut de gamme, décoration complète..."
+                              rows={3}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                )}
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="property_management_company"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Société de gestion immobilière</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Nom de la société..." {...field} />
+                        </FormControl>
+                        <FormDescription>Si applicable</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="property_management_fee"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Frais de gestion (€/mois)</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            min="0"
+                            placeholder="150"
+                            {...field}
+                            onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
+                <FormField
+                  control={form.control}
+                  name="rental_management_available"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-base">Gestion locative disponible</FormLabel>
+                        <div className="text-sm text-muted-foreground">
+                          Service de mise en location et gestion des locataires
+                        </div>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                
+                {form.watch('rental_management_available') && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-4 border-l-2 border-primary">
+                    <FormField
+                      control={form.control}
+                      name="guaranteed_rental_return"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Rendement locatif garanti (%)</FormLabel>
+                          <FormControl>
+                            <Input 
+                              type="number" 
+                              min="0"
+                              max="100"
+                              step="0.1"
+                              placeholder="5.5"
+                              {...field}
+                              onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                            />
+                          </FormControl>
+                          <FormDescription>Rendement annuel garanti</FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="rental_pool_option"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                          <div className="space-y-0.5">
+                            <FormLabel className="text-base">Option pool locatif</FormLabel>
+                            <div className="text-sm text-muted-foreground">
+                              Mutualisation des revenus locatifs
+                            </div>
+                          </div>
+                          <FormControl>
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </CardContent>
         </Card>
       </div>
@@ -2493,6 +3373,106 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 </FormItem>
               )}
             />
+
+            {/* NOUVEAU : Visibilité et mise en avant */}
+            <Card className="mt-6">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Star className="w-5 h-5" />
+                  Visibilité et mise en avant
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="show_on_website"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                        <div className="space-y-0.5">
+                          <FormLabel className="text-base">Afficher sur le site</FormLabel>
+                          <div className="text-sm text-muted-foreground">
+                            Rendre visible aux visiteurs
+                          </div>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="featured_project"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 bg-amber-50">
+                        <div className="space-y-0.5">
+                          <FormLabel className="text-base">⭐ Projet en vedette</FormLabel>
+                          <div className="text-sm text-muted-foreground">
+                            Mise en avant sur la homepage
+                          </div>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
+                {form.watch('featured_project') && (
+                  <FormField
+                    control={form.control}
+                    name="featured_until"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>En vedette jusqu'au</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="date"
+                            {...field}
+                            value={field.value || ''}
+                          />
+                        </FormControl>
+                        <FormDescription>Date de fin de la mise en avant</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+                
+                <FormField
+                  control={form.control}
+                  name="search_ranking_weight"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Poids dans les résultats de recherche (1-10)</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="number" 
+                          min="1"
+                          max="10"
+                          placeholder="5"
+                          {...field}
+                          onChange={(e) => field.onChange(parseInt(e.target.value) || 5)}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Plus le poids est élevé, plus le projet apparaîtra en haut des résultats
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
