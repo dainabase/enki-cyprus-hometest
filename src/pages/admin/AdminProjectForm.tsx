@@ -242,7 +242,6 @@ const AdminProjectForm: React.FC = () => {
           vimeo_tour_url: projectData.vimeo_tour_url || '',
           vr_tour_url: projectData.vr_tour_url || '',
           ar_experience_url: projectData.ar_experience_url || '',
-          metaverse_preview_url: projectData.metaverse_preview_url || '',
           drone_footage_urls: projectData.drone_footage_urls || [],
           model_3d_urls: projectData.model_3d_urls || [],
           
@@ -297,6 +296,7 @@ const AdminProjectForm: React.FC = () => {
       
       // Supprimer les champs qui n'existent pas dans la DB
       delete dbData.buildings; // Géré séparément
+      delete dbData.metaverse_preview_url; // Champ supprimé de la DB
       
       // Convertir les nombres
       if (dbData.total_units) dbData.total_units = Number(dbData.total_units);
