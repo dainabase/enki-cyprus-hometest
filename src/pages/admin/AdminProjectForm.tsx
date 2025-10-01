@@ -230,7 +230,7 @@ const AdminProjectForm: React.FC = () => {
           // BUILDINGS
           buildings: buildingsData || [],
           
-          // MEDIA - Using the converted photos - FIXED: Removed references to non-existent fields
+          // MEDIA - Using the converted photos - FIXED: Removed metaverse_preview_url
           photos: convertedPhotos,
           photo_gallery_urls: projectData.photo_gallery_urls || [],
           video_tour_urls: projectData.video_tour_urls || [],
@@ -242,7 +242,6 @@ const AdminProjectForm: React.FC = () => {
           vimeo_tour_url: projectData.vimeo_tour_url || '',
           vr_tour_url: projectData.vr_tour_url || '',
           ar_experience_url: projectData.ar_experience_url || '',
-          metaverse_preview_url: projectData.metaverse_preview_url || '',
           drone_footage_urls: projectData.drone_footage_urls || [],
           model_3d_urls: projectData.model_3d_urls || [],
           
