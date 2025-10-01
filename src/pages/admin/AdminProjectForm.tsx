@@ -175,6 +175,7 @@ const AdminProjectForm: React.FC = () => {
         const formData = {
           // BASICS
           title: projectData.title || '',
+          subtitle: projectData.subtitle || '',
           project_code: projectData.project_code || '',
           developer_id: projectData.developer_id || '',
           property_category: projectData.property_category || 'residential',
@@ -186,6 +187,7 @@ const AdminProjectForm: React.FC = () => {
           exclusive_commercialization: projectData.exclusive_commercialization || false,
           description: projectData.description || '',
           detailed_description: projectData.detailed_description || '',
+          unique_selling_points: projectData.unique_selling_points || [],
           
           // LOCATION
           full_address: projectData.full_address || '',
@@ -215,6 +217,15 @@ const AdminProjectForm: React.FC = () => {
           hoa_fees_monthly: projectData.hoa_fees_monthly ? Number(projectData.hoa_fees_monthly) : null,
           internet_speed_mbps: projectData.internet_speed_mbps ? Number(projectData.internet_speed_mbps) : null,
           pet_policy: projectData.pet_policy || null,
+          seismic_rating: projectData.seismic_rating || null,
+          renovation_year: projectData.renovation_year ? Number(projectData.renovation_year) : null,
+          architect_license_number: projectData.architect_license_number || '',
+          units_sold: projectData.units_sold ? Number(projectData.units_sold) : null,
+          bedrooms_range_min: projectData.bedrooms_range_min ? Number(projectData.bedrooms_range_min) : null,
+          bedrooms_range_max: projectData.bedrooms_range_max ? Number(projectData.bedrooms_range_max) : null,
+          square_meters_min: projectData.square_meters_min ? Number(projectData.square_meters_min) : null,
+          square_meters_max: projectData.square_meters_max ? Number(projectData.square_meters_max) : null,
+          smoking_policy: projectData.smoking_policy || null,
           
           // PRICING
           price_from: projectData.price_from ? Number(projectData.price_from) : null,
@@ -226,6 +237,60 @@ const AdminProjectForm: React.FC = () => {
           roi_estimate_percent: projectData.roi_estimate_percent ? Number(projectData.roi_estimate_percent) : null,
           rental_yield_percent: projectData.rental_yield_percent ? Number(projectData.rental_yield_percent) : null,
           financing_available: projectData.financing_available || false,
+          pricing_strategy_notes: projectData.pricing_strategy_notes || '',
+          deposit_terms: projectData.deposit_terms || '',
+          cancellation_policy: projectData.cancellation_policy || '',
+          price_list: projectData.price_list || [],
+          special_offers: projectData.special_offers || [],
+          bank_partners: projectData.bank_partners || [],
+          investment_highlights: projectData.investment_highlights || [],
+          construction_warranty_details: projectData.construction_warranty_details || '',
+          property_management_fee: projectData.property_management_fee ? Number(projectData.property_management_fee) : null,
+          furniture_package_description: projectData.furniture_package_description || '',
+          furniture_package_price: projectData.furniture_package_price ? Number(projectData.furniture_package_price) : null,
+          furniture_package_available: projectData.furniture_package_available || false,
+          payment_plans: projectData.payment_plans || [],
+          plot_sizes_m2: projectData.plot_sizes_m2 || [],
+          pool_maintenance_fee: projectData.pool_maintenance_fee ? Number(projectData.pool_maintenance_fee) : null,
+          security_service_fee: projectData.security_service_fee ? Number(projectData.security_service_fee) : null,
+          garden_maintenance_fee: projectData.garden_maintenance_fee ? Number(projectData.garden_maintenance_fee) : null,
+          building_insurance: projectData.building_insurance ? Number(projectData.building_insurance) : null,
+          financing_options: projectData.financing_options || {},
+          payment_plan: projectData.payment_plan || {},
+          incentives: projectData.incentives || [],
+          transfer_fees_included: projectData.transfer_fees_included || false,
+          rental_management_available: projectData.rental_management_available || false,
+          rental_pool_option: projectData.rental_pool_option || false,
+          guaranteed_rental_return: projectData.guaranteed_rental_return ? Number(projectData.guaranteed_rental_return) : null,
+          concierge_service: projectData.concierge_service || false,
+          property_management_company: projectData.property_management_company || '',
+          early_bird_discount: projectData.early_bird_discount ? Number(projectData.early_bird_discount) : null,
+          bulk_purchase_discount: projectData.bulk_purchase_discount ? Number(projectData.bulk_purchase_discount) : null,
+          discount_percentage: projectData.discount_percentage ? Number(projectData.discount_percentage) : null,
+          discount_valid_until: projectData.discount_valid_until || null,
+          
+          // CONSTRUCTION
+          finishing_level: projectData.finishing_level || null,
+          architect_name: projectData.architect_name || '',
+          builder_name: projectData.builder_name || '',
+          design_style: projectData.design_style || '',
+          construction_materials: projectData.construction_materials || [],
+          construction_start: projectData.construction_start || '',
+          completion_date: projectData.completion_date || '',
+          expected_completion: projectData.expected_completion || '',
+          launch_date: projectData.launch_date || '',
+          warranty_years: projectData.warranty_years ? Number(projectData.warranty_years) : null,
+          after_sales_service: projectData.after_sales_service || '',
+          
+          // LEGAL & COMPLIANCE
+          permits_obtained: projectData.permits_obtained || [],
+          compliance_certifications: projectData.compliance_certifications || [],
+          planning_permit_number: projectData.planning_permit_number || '',
+          building_permit_number: projectData.building_permit_number || '',
+          
+          // UTILITIES & SERVICES
+          gas_connection_available: projectData.gas_connection_available || false,
+          fiber_optic_available: projectData.fiber_optic_available || false,
           
           // BUILDINGS
           buildings: buildingsData || [],
@@ -244,10 +309,58 @@ const AdminProjectForm: React.FC = () => {
           ar_experience_url: projectData.ar_experience_url || '',
           drone_footage_urls: projectData.drone_footage_urls || [],
           model_3d_urls: projectData.model_3d_urls || [],
+          video_tour_url: projectData.video_tour_url || '',
+          virtual_tour_3d_url: projectData.virtual_tour_3d_url || '',
+          drone_footage_url: projectData.drone_footage_url || '',
+          bim_model_url: projectData.bim_model_url || '',
+          interactive_map_url: projectData.interactive_map_url || '',
+          site_plan_url: projectData.site_plan_url || '',
+          brochure_pdf: projectData.brochure_pdf || '',
+          photo_count: projectData.photo_count || 0,
+          categorized_photos: projectData.categorized_photos || {},
           
           // AMENITIES (convertis)
           amenities: convertedAmenities,
           surrounding_amenities: projectData.surrounding_amenities || [],
+          
+          // AMENITIES BOOLEAN
+          has_pool: projectData.has_pool || false,
+          has_gym: projectData.has_gym || false,
+          has_spa: projectData.has_spa || false,
+          has_playground: projectData.has_playground || false,
+          has_garden: projectData.has_garden || false,
+          has_security_system: projectData.has_security_system || false,
+          has_cctv: projectData.has_cctv || false,
+          has_concierge: projectData.has_concierge || false,
+          has_generator: projectData.has_generator || false,
+          has_solar_panels: projectData.has_solar_panels || false,
+          has_parking: projectData.has_parking || false,
+          parking_type: projectData.parking_type || null,
+          has_security_24_7: projectData.has_security_24_7 || false,
+          has_tennis_court: projectData.has_tennis_court || false,
+          club_house: projectData.club_house || false,
+          restaurant: projectData.restaurant || false,
+          cafe: projectData.cafe || false,
+          mini_market: projectData.mini_market || false,
+          business_center: projectData.business_center || false,
+          kids_club: projectData.kids_club || false,
+          beach_access: projectData.beach_access || false,
+          marina_access: projectData.marina_access || false,
+          golf_course: projectData.golf_course || false,
+          shuttle_service: projectData.shuttle_service || false,
+          sports_facilities: projectData.sports_facilities || false,
+          wellness_center: projectData.wellness_center || false,
+          coworking_space: projectData.coworking_space || false,
+          
+          // AMENITIES JSONB
+          security_features: projectData.security_features || {},
+          wellness_facilities: projectData.wellness_facilities || {},
+          outdoor_facilities: projectData.outdoor_facilities || {},
+          lifestyle_amenities: projectData.lifestyle_amenities || [],
+          community_features: projectData.community_features || [],
+          seasonal_features: projectData.seasonal_features || [],
+          smart_home_features: projectData.smart_home_features || [],
+          accessibility_features: projectData.accessibility_features || [],
           
           // MARKETING & SEO - FIXED: Removed non-existent fields
           project_narrative: projectData.project_narrative || '',
@@ -260,6 +373,44 @@ const AdminProjectForm: React.FC = () => {
           og_image_url: projectData.og_image_url || '',
           featured_project: projectData.featured_project || false,
           construction_phase: projectData.construction_phase || 'planned',
+          schema_markup: projectData.schema_markup || null,
+          last_price_update: projectData.last_price_update || null,
+          featured_until: projectData.featured_until || null,
+          show_on_website: projectData.show_on_website !== false,
+          hot_deal: projectData.hot_deal || false,
+          featured_property: projectData.featured_property || false,
+          
+          // ANALYTICS
+          view_count: projectData.view_count || 0,
+          inquiry_count: projectData.inquiry_count || 0,
+          favorite_count: projectData.favorite_count || 0,
+          social_proof_stats: projectData.social_proof_stats || {},
+          
+          // AI
+          ai_chatbot_enabled: projectData.ai_chatbot_enabled || false,
+          ai_description: projectData.ai_description || '',
+          ai_generated_content: projectData.ai_generated_content || {},
+          ai_content_disclosure: projectData.ai_content_disclosure || '',
+          ai_generated_at: projectData.ai_generated_at || null,
+          
+          // SUSTAINABILITY
+          solar_panels_installed: projectData.solar_panels_installed || false,
+          solar_capacity_kw: projectData.solar_capacity_kw ? Number(projectData.solar_capacity_kw) : null,
+          photovoltaic_system: projectData.photovoltaic_system || false,
+          geothermal_heating: projectData.geothermal_heating || false,
+          green_building_certification: projectData.green_building_certification || '',
+          ev_charging_stations: projectData.ev_charging_stations ? Number(projectData.ev_charging_stations) : 0,
+          ev_charging_type: projectData.ev_charging_type || null,
+          smart_grid_ready: projectData.smart_grid_ready || false,
+          sustainability_certifications: projectData.sustainability_certifications || [],
+          
+          // PROJECT STATUS
+          project_status: projectData.project_status || '',
+          sold_percentage: projectData.sold_percentage ? Number(projectData.sold_percentage) : null,
+          reserved_percentage: projectData.reserved_percentage ? Number(projectData.reserved_percentage) : null,
+          available_units: projectData.available_units ? Number(projectData.available_units) : null,
+          phase_current: projectData.phase_current ? Number(projectData.phase_current) : null,
+          total_phases: projectData.total_phases ? Number(projectData.total_phases) : null,
           
           // STATUS
           status: projectData.status || 'active'
