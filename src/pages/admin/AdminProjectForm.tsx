@@ -71,7 +71,7 @@ const AdminProjectForm: React.FC = () => {
       property_tax_yearly: null,
       hoa_fees_monthly: null,
       internet_speed_mbps: null,
-      pet_policy: '',
+      pet_policy: null,
       
       // Pricing
       price_from: null,
@@ -214,7 +214,7 @@ const AdminProjectForm: React.FC = () => {
           property_tax_yearly: projectData.property_tax_yearly ? Number(projectData.property_tax_yearly) : null,
           hoa_fees_monthly: projectData.hoa_fees_monthly ? Number(projectData.hoa_fees_monthly) : null,
           internet_speed_mbps: projectData.internet_speed_mbps ? Number(projectData.internet_speed_mbps) : null,
-          pet_policy: projectData.pet_policy || '',
+          pet_policy: projectData.pet_policy || null,
           
           // PRICING
           price_from: projectData.price_from ? Number(projectData.price_from) : null,
@@ -302,6 +302,8 @@ const AdminProjectForm: React.FC = () => {
       if (dbData.energy_rating === '') dbData.energy_rating = null;
       if (dbData.construction_phase === '') dbData.construction_phase = null;
       if (dbData.finishing_level === '') dbData.finishing_level = null;
+      if (dbData.pet_policy === '') dbData.pet_policy = null;
+      if (dbData.smoking_policy === '') dbData.smoking_policy = null;
       
       // Nettoyer les objets mal formés (cas où le formulaire crée des objets {_type, value})
       const cleanObjectFields = [
