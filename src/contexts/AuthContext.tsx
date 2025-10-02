@@ -69,10 +69,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         console.error('Roles fetch error:', rolesError);
       }
 
+      console.log('🔑 User roles fetched:', { userId, rolesData });
+
       // Determine role from user_roles table (more secure)
       const roles = rolesData?.map(r => r.role) || [];
       const isAdmin = roles.includes('admin');
       const role = isAdmin ? 'admin' : 'user';
+      
+      console.log('👤 User role determined:', { userId, roles, isAdmin, role });
 
       if (profileData) {
         setProfile({
@@ -250,6 +254,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const isAdmin = profile?.role === 'admin';
   const isAuthenticated = !!user && !!session;
+
+  console.log('🎭 Auth state:', { 
+    isAdmin, 
+    isAuthenticated, 
+    profileRole: profile?.role,
+    userEmail: user?.email 
+  });
 
   const contextValue: AuthContextType = {
     user,
