@@ -57,7 +57,7 @@ const PropertyResultCard = memo(({ property, onClick }: PropertyResultCardProps)
         </div>
         
         {/* Ce qui manque si < 100% */}
-        {property.matching < 100 && property.missingFeatures.length > 0 && (
+        {property.matching < 100 && Array.isArray(property.missingFeatures) && property.missingFeatures.length > 0 && (
           <div className="text-xs text-amber-600 bg-amber-50 p-2 rounded mb-3">
             ⚠️ Manque: {property.missingFeatures.join(', ')}
           </div>

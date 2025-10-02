@@ -160,7 +160,10 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children, allPro
       
       const validTypes = typeMapping[filters.propertyType];
       if (validTypes.length > 0) {
-        filtered = filtered.filter(property => validTypes.some(t => property.property_sub_type.includes(t)));
+        filtered = filtered.filter(property => {
+          const subTypes = (property as any).property_sub_type;
+          return Array.isArray(subTypes) && validTypes.some(t => subTypes.includes(t));
+        });
       }
     }
 
@@ -182,7 +185,9 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children, allPro
         property.title.toLowerCase().includes(searchTerm) ||
         ((property as any).city || property.location || '').toLowerCase().includes(searchTerm) ||
         property.description.toLowerCase().includes(searchTerm) ||
-        property.features.some(feature => feature.toLowerCase().includes(searchTerm))
+        (Array.isArray(property.features) && property.features.some(feature => 
+          typeof feature === 'string' && feature.toLowerCase().includes(searchTerm)
+        ))
       );
     }
 
