@@ -66,28 +66,8 @@ const LoadingFallback = () => (
 const AdminDashboard = () => {
   const { profile } = useAuth();
 
-  // Vérification des droits d'accès
-  if (profile?.role === 'user') {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-100">
-        <Card className="max-w-md mx-auto p-8">
-          <div className="text-center">
-            <AlertCircle className="w-16 h-16 text-red-600 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-slate-900 mb-2">Accès Restreint</h2>
-            <p className="text-slate-600">
-              Seuls les administrateurs peuvent accéder à cette section.
-            </p>
-            <a 
-              href="/login" 
-              className="mt-4 inline-block text-blue-600 hover:underline"
-            >
-              Se connecter
-            </a>
-          </div>
-        </Card>
-      </div>
-    );
-  }
+  // La vérification des droits d'accès est déjà faite par PrivateRoute
+  // Ce composant ne sera rendu que si l'utilisateur est admin
 
   return (
     <PrivateRoute adminOnly>

@@ -43,7 +43,7 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Block access to client space if profile flag is set
+  // Block access to client space if profile flag is set (optional feature)
   if (!adminOnly && profile?.profile?.blockedClient) {
     console.log('🔒 PrivateRoute: Client blocked, redirecting to home');
     return <Navigate to="/" replace />;
