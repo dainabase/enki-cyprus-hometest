@@ -40,23 +40,26 @@ const StaticBackground = () => (
 );
 // Advanced3DCarousel Component
 const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => {
+  // Ensure properties is always an array
+  const safeProperties = Array.isArray(properties) ? properties : [];
+  const safeInterests = interests || {};
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const carouselRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const background = useTransform(x, [-100, 0, 100], ['#F0F7FD', '#F4F6F8', '#0090E6']); // Aligned with palette
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    if (!isAutoPlaying || safeProperties.length === 0) return;
     const interval = setInterval(() => {
-      setCurrentIndex(prev => (prev + 1) % properties.length);
+      setCurrentIndex(prev => (prev + 1) % safeProperties.length);
     }, 4000);
     return () => clearInterval(interval);
-  }, [properties.length, isAutoPlaying]);
+  }, [safeProperties.length, isAutoPlaying]);
   const isClient = useIsClient();
   const handleSlideChange = (index: number) => {
     setCurrentIndex(index);
   };
-  if (!properties.length) return <div className="text-center text-muted-foreground">Aucune propriété disponible</div>;
+  if (!safeProperties.length) return <div className="text-center text-muted-foreground">Aucune propriété disponible</div>;
   return (
     <motion.div
       className="relative w-full h-[80vh] overflow-hidden perspective-2000"
@@ -71,10 +74,10 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
         ref={carouselRef}
         className="relative w-full h-full flex items-center justify-center transform-gpu preserve-3d"
       >
-        {properties.map((property: Property, index: number) => {
-          const offset = (index - currentIndex + properties.length) % properties.length;
+        {safeProperties.map((property: Property, index: number) => {
+          const offset = (index - currentIndex + safeProperties.length) % safeProperties.length;
           const isActive = index === currentIndex;
-          const isAdjacent = offset === 1 || offset === properties.length - 1;
+          const isAdjacent = offset === 1 || offset === safeProperties.length - 1;
          
           if (!isActive && !isAdjacent) return null;
           const translateZ = isActive ? 0 : -200;
@@ -84,7 +87,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
           const locationKey = typeof property.location === 'string'
             ? property.location.toLowerCase()
             : (property.location as any)?.city?.toLowerCase() || 'limassol';
-          const propertyInterests = interests[locationKey] || [];
+          const propertyInterests = Array.isArray(safeInterests[locationKey]) ? safeInterests[locationKey] : [];
           return (
             <motion.div
               key={property.id}
@@ -275,7 +278,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
       </div>
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-6">
         <motion.button
-          onClick={() => handleSlideChange((currentIndex - 1 + properties.length) % properties.length)}
+          onClick={() => handleSlideChange((currentIndex - 1 + safeProperties.length) % safeProperties.length)}
           className="p-4 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 text-white hover:bg-white/20 transition-all"
           whileHover={{ scale: 1.1, x: -5 }}
           whileTap={{ scale: 0.9 }}
@@ -284,7 +287,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
           <ChevronLeft className="w-6 h-6" />
         </motion.button>
         <div className="flex gap-3">
-          {properties.map((_: any, index: number) => (
+          {safeProperties.map((_: any, index: number) => (
             <motion.button
               key={index}
               onClick={() => handleSlideChange(index)}
@@ -300,7 +303,7 @@ const Advanced3DCarousel = ({ properties, interests, onInterestClick }: any) => 
           ))}
         </div>
         <motion.button
-          onClick={() => handleSlideChange((currentIndex + 1) % properties.length)}
+          onClick={() => handleSlideChange((currentIndex + 1) % safeProperties.length)}
           className="p-4 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 text-white hover:bg-white/20 transition-all"
           whileHover={{ scale: 1.1, x: 5 }}
           whileTap={{ scale: 0.9 }}
@@ -366,11 +369,15 @@ const Home = () => {
   
   const debouncedQuery = useDebounce(agenticQuery, 300);
   const { properties, loading, error } = useSupabaseProperties();
+  
+  // Ensure properties is always an array
+  const safeProperties = Array.isArray(properties) ? properties : [];
+  
   // Dynamic interests fetch
   const { data: interests } = useQuery({
-    queryKey: ['interests', properties],
+    queryKey: ['interests', safeProperties],
     queryFn: async () => {
-      const uniqueLocations = Array.from(new Set(properties.map((p: Property) =>
+      const uniqueLocations = Array.from(new Set(safeProperties.map((p: Property) =>
         typeof p.location === 'string' ? p.location.toLowerCase() : (p.location as any)?.city?.toLowerCase() || 'limassol'
       )));
       const interestsData: Record<string, ProjectInterest[]> = {};
@@ -378,15 +385,19 @@ const Home = () => {
         const { data } = await supabase.functions.invoke('fetch-interests', {
           body: { location }
         });
-        interestsData[location] = data || [];
+        interestsData[location] = Array.isArray(data) ? data : [];
       }
       return interestsData;
     },
-    enabled: !!properties.length,
+    enabled: safeProperties.length > 0,
   });
+  
+  // Ensure interests is always an object
+  const safeInterests = interests || {};
+  
   // Use dynamic properties instead of hardcoded
-  const featuredProperties = useMemo(() => properties.slice(0, 3), [properties]);
-  const latestProperties = useMemo(() => properties.slice(3, 8), [properties]);
+  const featuredProperties = useMemo(() => safeProperties.slice(0, 3), [safeProperties]);
+  const latestProperties = useMemo(() => safeProperties.slice(3, 8), [safeProperties]);
   // Gestion du transfert depuis le Hero
   useEffect(() => {
     const handleTransfer = () => {
