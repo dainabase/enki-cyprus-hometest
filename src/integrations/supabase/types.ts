@@ -267,42 +267,6 @@ export type Database = {
         }
         Relationships: []
       }
-      amenities_backup_20250927: {
-        Row: {
-          backup_date: string | null
-          has_garden: boolean | null
-          has_gym: boolean | null
-          has_parking: boolean | null
-          has_playground: boolean | null
-          has_pool: boolean | null
-          has_spa: boolean | null
-          id: string | null
-          table_name: string | null
-        }
-        Insert: {
-          backup_date?: string | null
-          has_garden?: boolean | null
-          has_gym?: boolean | null
-          has_parking?: boolean | null
-          has_playground?: boolean | null
-          has_pool?: boolean | null
-          has_spa?: boolean | null
-          id?: string | null
-          table_name?: string | null
-        }
-        Update: {
-          backup_date?: string | null
-          has_garden?: boolean | null
-          has_gym?: boolean | null
-          has_parking?: boolean | null
-          has_playground?: boolean | null
-          has_pool?: boolean | null
-          has_spa?: boolean | null
-          id?: string | null
-          table_name?: string | null
-        }
-        Relationships: []
-      }
       amenities_reference: {
         Row: {
           category: string | null
@@ -426,2862 +390,6 @@ export type Database = {
         }
         Relationships: []
       }
-      backup_20250927_buildings: {
-        Row: {
-          accessible_bathrooms: number | null
-          accessible_elevator: boolean | null
-          actual_completion: string | null
-          audio_assistance: boolean | null
-          bike_storage: boolean | null
-          braille_signage: boolean | null
-          building_amenities: Json | null
-          building_brochure_url: string | null
-          building_class: string | null
-          building_code: string | null
-          building_name: string | null
-          building_type: string | null
-          car_wash_area: boolean | null
-          central_vacuum_system: boolean | null
-          common_areas: Json | null
-          construction_status: string | null
-          created_at: string | null
-          created_by: string | null
-          disabled_parking_spaces: number | null
-          display_order: number | null
-          elevator_count: number | null
-          energy_certificate: string | null
-          energy_rating: string | null
-          expected_completion: string | null
-          floor_plans: Json | null
-          has_cctv: boolean | null
-          has_concierge: boolean | null
-          has_garden: boolean | null
-          has_generator: boolean | null
-          has_gym: boolean | null
-          has_parking: boolean | null
-          has_playground: boolean | null
-          has_pool: boolean | null
-          has_security_system: boolean | null
-          has_solar_panels: boolean | null
-          has_spa: boolean | null
-          id: string | null
-          infrastructure: Json | null
-          intercom_system: boolean | null
-          model_3d_url: string | null
-          outdoor_facilities: Json | null
-          package_room: boolean | null
-          parking_type: string | null
-          pet_washing_station: boolean | null
-          project_id: string | null
-          ramp_access: boolean | null
-          security_features: Json | null
-          smart_building_system: boolean | null
-          total_floors: number | null
-          total_units: number | null
-          typical_floor_plan_url: string | null
-          units_available: number | null
-          updated_at: string | null
-          water_purification_system: boolean | null
-          water_softener_system: boolean | null
-          wellness_facilities: Json | null
-          wheelchair_accessible: boolean | null
-          wide_doorways: boolean | null
-        }
-        Insert: {
-          accessible_bathrooms?: number | null
-          accessible_elevator?: boolean | null
-          actual_completion?: string | null
-          audio_assistance?: boolean | null
-          bike_storage?: boolean | null
-          braille_signage?: boolean | null
-          building_amenities?: Json | null
-          building_brochure_url?: string | null
-          building_class?: string | null
-          building_code?: string | null
-          building_name?: string | null
-          building_type?: string | null
-          car_wash_area?: boolean | null
-          central_vacuum_system?: boolean | null
-          common_areas?: Json | null
-          construction_status?: string | null
-          created_at?: string | null
-          created_by?: string | null
-          disabled_parking_spaces?: number | null
-          display_order?: number | null
-          elevator_count?: number | null
-          energy_certificate?: string | null
-          energy_rating?: string | null
-          expected_completion?: string | null
-          floor_plans?: Json | null
-          has_cctv?: boolean | null
-          has_concierge?: boolean | null
-          has_garden?: boolean | null
-          has_generator?: boolean | null
-          has_gym?: boolean | null
-          has_parking?: boolean | null
-          has_playground?: boolean | null
-          has_pool?: boolean | null
-          has_security_system?: boolean | null
-          has_solar_panels?: boolean | null
-          has_spa?: boolean | null
-          id?: string | null
-          infrastructure?: Json | null
-          intercom_system?: boolean | null
-          model_3d_url?: string | null
-          outdoor_facilities?: Json | null
-          package_room?: boolean | null
-          parking_type?: string | null
-          pet_washing_station?: boolean | null
-          project_id?: string | null
-          ramp_access?: boolean | null
-          security_features?: Json | null
-          smart_building_system?: boolean | null
-          total_floors?: number | null
-          total_units?: number | null
-          typical_floor_plan_url?: string | null
-          units_available?: number | null
-          updated_at?: string | null
-          water_purification_system?: boolean | null
-          water_softener_system?: boolean | null
-          wellness_facilities?: Json | null
-          wheelchair_accessible?: boolean | null
-          wide_doorways?: boolean | null
-        }
-        Update: {
-          accessible_bathrooms?: number | null
-          accessible_elevator?: boolean | null
-          actual_completion?: string | null
-          audio_assistance?: boolean | null
-          bike_storage?: boolean | null
-          braille_signage?: boolean | null
-          building_amenities?: Json | null
-          building_brochure_url?: string | null
-          building_class?: string | null
-          building_code?: string | null
-          building_name?: string | null
-          building_type?: string | null
-          car_wash_area?: boolean | null
-          central_vacuum_system?: boolean | null
-          common_areas?: Json | null
-          construction_status?: string | null
-          created_at?: string | null
-          created_by?: string | null
-          disabled_parking_spaces?: number | null
-          display_order?: number | null
-          elevator_count?: number | null
-          energy_certificate?: string | null
-          energy_rating?: string | null
-          expected_completion?: string | null
-          floor_plans?: Json | null
-          has_cctv?: boolean | null
-          has_concierge?: boolean | null
-          has_garden?: boolean | null
-          has_generator?: boolean | null
-          has_gym?: boolean | null
-          has_parking?: boolean | null
-          has_playground?: boolean | null
-          has_pool?: boolean | null
-          has_security_system?: boolean | null
-          has_solar_panels?: boolean | null
-          has_spa?: boolean | null
-          id?: string | null
-          infrastructure?: Json | null
-          intercom_system?: boolean | null
-          model_3d_url?: string | null
-          outdoor_facilities?: Json | null
-          package_room?: boolean | null
-          parking_type?: string | null
-          pet_washing_station?: boolean | null
-          project_id?: string | null
-          ramp_access?: boolean | null
-          security_features?: Json | null
-          smart_building_system?: boolean | null
-          total_floors?: number | null
-          total_units?: number | null
-          typical_floor_plan_url?: string | null
-          units_available?: number | null
-          updated_at?: string | null
-          water_purification_system?: boolean | null
-          water_softener_system?: boolean | null
-          wellness_facilities?: Json | null
-          wheelchair_accessible?: boolean | null
-          wide_doorways?: boolean | null
-        }
-        Relationships: []
-      }
-      backup_20250927_projects: {
-        Row: {
-          accessibility_features: Json | null
-          after_sales_service: string | null
-          ai_chatbot_enabled: boolean | null
-          ai_content_disclosure: string | null
-          ai_description: string | null
-          ai_generated_at: string | null
-          ai_generated_content: Json | null
-          amenities: Json | null
-          ar_experience_url: string | null
-          architect_license_number: string | null
-          architect_name: string | null
-          auto_detected_zone: boolean | null
-          available_units: number | null
-          backup_power_generator: boolean | null
-          bank_partners: Json | null
-          beach_access: boolean | null
-          bedrooms_range_max: number | null
-          bedrooms_range_min: number | null
-          bim_model_url: string | null
-          brochure_pdf: string | null
-          brochure_url: string | null
-          builder_name: string | null
-          building_certification: Json | null
-          building_insurance: number | null
-          building_permit_number: string | null
-          built_area_m2: number | null
-          bulk_purchase_discount: number | null
-          business_center: boolean | null
-          cafe: boolean | null
-          cancellation_policy: string | null
-          carbon_neutral: boolean | null
-          categorized_photos: Json | null
-          city: string | null
-          club_house: boolean | null
-          community_features: Json | null
-          completion_date: string | null
-          completion_month: string | null
-          compliance_certifications: Json | null
-          concierge_service: boolean | null
-          construction_company: string | null
-          construction_materials: Json | null
-          construction_phase: string | null
-          construction_start: string | null
-          construction_warranty_details: string | null
-          construction_year: number | null
-          coworking_space: boolean | null
-          created_at: string | null
-          cyprus_zone: string | null
-          deposit_terms: string | null
-          description: string | null
-          design_style: string | null
-          detailed_description: string | null
-          developer_id: string | null
-          discount_percentage: number | null
-          discount_valid_until: string | null
-          district: string | null
-          drone_footage_url: string | null
-          drone_footage_urls: Json | null
-          early_bird_discount: number | null
-          electricity_connection_status: string | null
-          energy_efficiency_class: string | null
-          energy_rating: string | null
-          ev_charging_power_kw: number | null
-          ev_charging_stations: number | null
-          ev_charging_type: string | null
-          exclusive_commercialization: boolean | null
-          expected_completion: string | null
-          favorite_count: number | null
-          featured_project: boolean | null
-          featured_property: boolean | null
-          featured_until: string | null
-          fiber_optic_available: boolean | null
-          financing_available: boolean | null
-          financing_options: Json | null
-          finishing_level: string | null
-          full_address: string | null
-          furniture_package_available: boolean | null
-          furniture_package_description: string | null
-          furniture_package_price: number | null
-          garden_maintenance_fee: number | null
-          gas_connection_available: boolean | null
-          geothermal_heating: boolean | null
-          golden_visa_eligible: boolean | null
-          golf_course: boolean | null
-          gps_latitude: number | null
-          gps_longitude: number | null
-          green_building_certification: string | null
-          grey_water_recycling: boolean | null
-          guaranteed_rental_return: number | null
-          has_cctv: boolean | null
-          has_concierge: boolean | null
-          has_garden: boolean | null
-          has_generator: boolean | null
-          has_gym: boolean | null
-          has_parking: boolean | null
-          has_playground: boolean | null
-          has_pool: boolean | null
-          has_security_24_7: boolean | null
-          has_security_system: boolean | null
-          has_solar_panels: boolean | null
-          has_spa: boolean | null
-          has_tennis_court: boolean | null
-          hoa_fees_monthly: number | null
-          hot_deal: boolean | null
-          id: string | null
-          incentives: Json | null
-          inquiry_count: number | null
-          interactive_map_url: string | null
-          internet_speed_mbps: number | null
-          investment_highlights: Json | null
-          kids_club: boolean | null
-          land_area_m2: number | null
-          land_title_status: string | null
-          last_price_update: string | null
-          launch_date: string | null
-          launch_month: string | null
-          legal_fees_included: boolean | null
-          legal_status: string | null
-          lifestyle_amenities: Json | null
-          maintenance_fees_yearly: number | null
-          map_image: string | null
-          marina_access: boolean | null
-          marketing_highlights: Json | null
-          master_plan_url: string | null
-          meta_description: string | null
-          meta_keywords: string | null
-          meta_title: string | null
-          mini_market: boolean | null
-          model_3d_urls: Json | null
-          municipality: string | null
-          neighborhood: string | null
-          neighborhood_description: string | null
-          net_metering_available: boolean | null
-          og_image_url: string | null
-          outdoor_facilities: Json | null
-          parking_type: string | null
-          payment_plan: Json | null
-          payment_plans: Json | null
-          permits_obtained: Json | null
-          pet_policy: string | null
-          phase_current: number | null
-          photo_count: number | null
-          photo_gallery_urls: Json | null
-          photos: Json | null
-          photovoltaic_system: boolean | null
-          planning_permit_number: string | null
-          plot_sizes_m2: Json | null
-          pool_maintenance_fee: number | null
-          postal_code: string | null
-          price_from: number | null
-          price_list: Json | null
-          price_per_m2: number | null
-          price_to: number | null
-          pricing_strategy_notes: string | null
-          project_code: string | null
-          project_narrative: string | null
-          project_phase: string | null
-          project_presentation_url: string | null
-          project_status: string | null
-          property_category: string | null
-          property_management_company: string | null
-          property_management_fee: number | null
-          property_sub_type: string[] | null
-          property_tax_yearly: number | null
-          proximity_airport_km: number | null
-          proximity_city_center_km: number | null
-          proximity_highway_km: number | null
-          proximity_sea_km: number | null
-          rainwater_harvesting: boolean | null
-          region: string | null
-          renovation_year: number | null
-          rental_management_available: boolean | null
-          rental_pool_option: boolean | null
-          rental_yield_percent: number | null
-          reserved_percentage: number | null
-          restaurant: boolean | null
-          roi_estimate_percent: number | null
-          schema_markup: Json | null
-          search_ranking_weight: number | null
-          seasonal_features: Json | null
-          security_features: Json | null
-          security_service_fee: number | null
-          seismic_rating: string | null
-          show_on_website: boolean | null
-          shuttle_service: boolean | null
-          site_plan_url: string | null
-          smart_grid_ready: boolean | null
-          smart_home_features: Json | null
-          smoking_policy: string | null
-          social_proof_stats: Json | null
-          solar_capacity_kw: number | null
-          solar_panels_installed: boolean | null
-          sold_percentage: number | null
-          special_offers: Json | null
-          sports_facilities: boolean | null
-          square_meters_max: number | null
-          square_meters_min: number | null
-          stamp_duty_included: boolean | null
-          status: string | null
-          statut_commercial: string | null
-          street_address: string | null
-          subtitle: string | null
-          surrounding_amenities: Json | null
-          sustainability_certifications: Json | null
-          target_audience: string | null
-          title: string | null
-          title_deed_available: boolean | null
-          title_deed_timeline: string | null
-          total_phases: number | null
-          total_units: number | null
-          transfer_fees_included: boolean | null
-          unique_selling_points: Json | null
-          units_available: number | null
-          units_sold: number | null
-          updated_at: string | null
-          ups_system: boolean | null
-          url_slug: string | null
-          utilities_connection_status: string | null
-          vat_included: boolean | null
-          vat_rate: number | null
-          video_tour_url: string | null
-          video_tour_urls: Json | null
-          video_url: string | null
-          view_count: number | null
-          vimeo_tour_url: string | null
-          virtual_tour_3d_url: string | null
-          virtual_tour_url: string | null
-          vr_tour_url: string | null
-          warranty_years: number | null
-          water_connection_status: string | null
-          wellness_center: boolean | null
-          wellness_facilities: Json | null
-          wellness_features: Json | null
-          youtube_tour_url: string | null
-        }
-        Insert: {
-          accessibility_features?: Json | null
-          after_sales_service?: string | null
-          ai_chatbot_enabled?: boolean | null
-          ai_content_disclosure?: string | null
-          ai_description?: string | null
-          ai_generated_at?: string | null
-          ai_generated_content?: Json | null
-          amenities?: Json | null
-          ar_experience_url?: string | null
-          architect_license_number?: string | null
-          architect_name?: string | null
-          auto_detected_zone?: boolean | null
-          available_units?: number | null
-          backup_power_generator?: boolean | null
-          bank_partners?: Json | null
-          beach_access?: boolean | null
-          bedrooms_range_max?: number | null
-          bedrooms_range_min?: number | null
-          bim_model_url?: string | null
-          brochure_pdf?: string | null
-          brochure_url?: string | null
-          builder_name?: string | null
-          building_certification?: Json | null
-          building_insurance?: number | null
-          building_permit_number?: string | null
-          built_area_m2?: number | null
-          bulk_purchase_discount?: number | null
-          business_center?: boolean | null
-          cafe?: boolean | null
-          cancellation_policy?: string | null
-          carbon_neutral?: boolean | null
-          categorized_photos?: Json | null
-          city?: string | null
-          club_house?: boolean | null
-          community_features?: Json | null
-          completion_date?: string | null
-          completion_month?: string | null
-          compliance_certifications?: Json | null
-          concierge_service?: boolean | null
-          construction_company?: string | null
-          construction_materials?: Json | null
-          construction_phase?: string | null
-          construction_start?: string | null
-          construction_warranty_details?: string | null
-          construction_year?: number | null
-          coworking_space?: boolean | null
-          created_at?: string | null
-          cyprus_zone?: string | null
-          deposit_terms?: string | null
-          description?: string | null
-          design_style?: string | null
-          detailed_description?: string | null
-          developer_id?: string | null
-          discount_percentage?: number | null
-          discount_valid_until?: string | null
-          district?: string | null
-          drone_footage_url?: string | null
-          drone_footage_urls?: Json | null
-          early_bird_discount?: number | null
-          electricity_connection_status?: string | null
-          energy_efficiency_class?: string | null
-          energy_rating?: string | null
-          ev_charging_power_kw?: number | null
-          ev_charging_stations?: number | null
-          ev_charging_type?: string | null
-          exclusive_commercialization?: boolean | null
-          expected_completion?: string | null
-          favorite_count?: number | null
-          featured_project?: boolean | null
-          featured_property?: boolean | null
-          featured_until?: string | null
-          fiber_optic_available?: boolean | null
-          financing_available?: boolean | null
-          financing_options?: Json | null
-          finishing_level?: string | null
-          full_address?: string | null
-          furniture_package_available?: boolean | null
-          furniture_package_description?: string | null
-          furniture_package_price?: number | null
-          garden_maintenance_fee?: number | null
-          gas_connection_available?: boolean | null
-          geothermal_heating?: boolean | null
-          golden_visa_eligible?: boolean | null
-          golf_course?: boolean | null
-          gps_latitude?: number | null
-          gps_longitude?: number | null
-          green_building_certification?: string | null
-          grey_water_recycling?: boolean | null
-          guaranteed_rental_return?: number | null
-          has_cctv?: boolean | null
-          has_concierge?: boolean | null
-          has_garden?: boolean | null
-          has_generator?: boolean | null
-          has_gym?: boolean | null
-          has_parking?: boolean | null
-          has_playground?: boolean | null
-          has_pool?: boolean | null
-          has_security_24_7?: boolean | null
-          has_security_system?: boolean | null
-          has_solar_panels?: boolean | null
-          has_spa?: boolean | null
-          has_tennis_court?: boolean | null
-          hoa_fees_monthly?: number | null
-          hot_deal?: boolean | null
-          id?: string | null
-          incentives?: Json | null
-          inquiry_count?: number | null
-          interactive_map_url?: string | null
-          internet_speed_mbps?: number | null
-          investment_highlights?: Json | null
-          kids_club?: boolean | null
-          land_area_m2?: number | null
-          land_title_status?: string | null
-          last_price_update?: string | null
-          launch_date?: string | null
-          launch_month?: string | null
-          legal_fees_included?: boolean | null
-          legal_status?: string | null
-          lifestyle_amenities?: Json | null
-          maintenance_fees_yearly?: number | null
-          map_image?: string | null
-          marina_access?: boolean | null
-          marketing_highlights?: Json | null
-          master_plan_url?: string | null
-          meta_description?: string | null
-          meta_keywords?: string | null
-          meta_title?: string | null
-          mini_market?: boolean | null
-          model_3d_urls?: Json | null
-          municipality?: string | null
-          neighborhood?: string | null
-          neighborhood_description?: string | null
-          net_metering_available?: boolean | null
-          og_image_url?: string | null
-          outdoor_facilities?: Json | null
-          parking_type?: string | null
-          payment_plan?: Json | null
-          payment_plans?: Json | null
-          permits_obtained?: Json | null
-          pet_policy?: string | null
-          phase_current?: number | null
-          photo_count?: number | null
-          photo_gallery_urls?: Json | null
-          photos?: Json | null
-          photovoltaic_system?: boolean | null
-          planning_permit_number?: string | null
-          plot_sizes_m2?: Json | null
-          pool_maintenance_fee?: number | null
-          postal_code?: string | null
-          price_from?: number | null
-          price_list?: Json | null
-          price_per_m2?: number | null
-          price_to?: number | null
-          pricing_strategy_notes?: string | null
-          project_code?: string | null
-          project_narrative?: string | null
-          project_phase?: string | null
-          project_presentation_url?: string | null
-          project_status?: string | null
-          property_category?: string | null
-          property_management_company?: string | null
-          property_management_fee?: number | null
-          property_sub_type?: string[] | null
-          property_tax_yearly?: number | null
-          proximity_airport_km?: number | null
-          proximity_city_center_km?: number | null
-          proximity_highway_km?: number | null
-          proximity_sea_km?: number | null
-          rainwater_harvesting?: boolean | null
-          region?: string | null
-          renovation_year?: number | null
-          rental_management_available?: boolean | null
-          rental_pool_option?: boolean | null
-          rental_yield_percent?: number | null
-          reserved_percentage?: number | null
-          restaurant?: boolean | null
-          roi_estimate_percent?: number | null
-          schema_markup?: Json | null
-          search_ranking_weight?: number | null
-          seasonal_features?: Json | null
-          security_features?: Json | null
-          security_service_fee?: number | null
-          seismic_rating?: string | null
-          show_on_website?: boolean | null
-          shuttle_service?: boolean | null
-          site_plan_url?: string | null
-          smart_grid_ready?: boolean | null
-          smart_home_features?: Json | null
-          smoking_policy?: string | null
-          social_proof_stats?: Json | null
-          solar_capacity_kw?: number | null
-          solar_panels_installed?: boolean | null
-          sold_percentage?: number | null
-          special_offers?: Json | null
-          sports_facilities?: boolean | null
-          square_meters_max?: number | null
-          square_meters_min?: number | null
-          stamp_duty_included?: boolean | null
-          status?: string | null
-          statut_commercial?: string | null
-          street_address?: string | null
-          subtitle?: string | null
-          surrounding_amenities?: Json | null
-          sustainability_certifications?: Json | null
-          target_audience?: string | null
-          title?: string | null
-          title_deed_available?: boolean | null
-          title_deed_timeline?: string | null
-          total_phases?: number | null
-          total_units?: number | null
-          transfer_fees_included?: boolean | null
-          unique_selling_points?: Json | null
-          units_available?: number | null
-          units_sold?: number | null
-          updated_at?: string | null
-          ups_system?: boolean | null
-          url_slug?: string | null
-          utilities_connection_status?: string | null
-          vat_included?: boolean | null
-          vat_rate?: number | null
-          video_tour_url?: string | null
-          video_tour_urls?: Json | null
-          video_url?: string | null
-          view_count?: number | null
-          vimeo_tour_url?: string | null
-          virtual_tour_3d_url?: string | null
-          virtual_tour_url?: string | null
-          vr_tour_url?: string | null
-          warranty_years?: number | null
-          water_connection_status?: string | null
-          wellness_center?: boolean | null
-          wellness_facilities?: Json | null
-          wellness_features?: Json | null
-          youtube_tour_url?: string | null
-        }
-        Update: {
-          accessibility_features?: Json | null
-          after_sales_service?: string | null
-          ai_chatbot_enabled?: boolean | null
-          ai_content_disclosure?: string | null
-          ai_description?: string | null
-          ai_generated_at?: string | null
-          ai_generated_content?: Json | null
-          amenities?: Json | null
-          ar_experience_url?: string | null
-          architect_license_number?: string | null
-          architect_name?: string | null
-          auto_detected_zone?: boolean | null
-          available_units?: number | null
-          backup_power_generator?: boolean | null
-          bank_partners?: Json | null
-          beach_access?: boolean | null
-          bedrooms_range_max?: number | null
-          bedrooms_range_min?: number | null
-          bim_model_url?: string | null
-          brochure_pdf?: string | null
-          brochure_url?: string | null
-          builder_name?: string | null
-          building_certification?: Json | null
-          building_insurance?: number | null
-          building_permit_number?: string | null
-          built_area_m2?: number | null
-          bulk_purchase_discount?: number | null
-          business_center?: boolean | null
-          cafe?: boolean | null
-          cancellation_policy?: string | null
-          carbon_neutral?: boolean | null
-          categorized_photos?: Json | null
-          city?: string | null
-          club_house?: boolean | null
-          community_features?: Json | null
-          completion_date?: string | null
-          completion_month?: string | null
-          compliance_certifications?: Json | null
-          concierge_service?: boolean | null
-          construction_company?: string | null
-          construction_materials?: Json | null
-          construction_phase?: string | null
-          construction_start?: string | null
-          construction_warranty_details?: string | null
-          construction_year?: number | null
-          coworking_space?: boolean | null
-          created_at?: string | null
-          cyprus_zone?: string | null
-          deposit_terms?: string | null
-          description?: string | null
-          design_style?: string | null
-          detailed_description?: string | null
-          developer_id?: string | null
-          discount_percentage?: number | null
-          discount_valid_until?: string | null
-          district?: string | null
-          drone_footage_url?: string | null
-          drone_footage_urls?: Json | null
-          early_bird_discount?: number | null
-          electricity_connection_status?: string | null
-          energy_efficiency_class?: string | null
-          energy_rating?: string | null
-          ev_charging_power_kw?: number | null
-          ev_charging_stations?: number | null
-          ev_charging_type?: string | null
-          exclusive_commercialization?: boolean | null
-          expected_completion?: string | null
-          favorite_count?: number | null
-          featured_project?: boolean | null
-          featured_property?: boolean | null
-          featured_until?: string | null
-          fiber_optic_available?: boolean | null
-          financing_available?: boolean | null
-          financing_options?: Json | null
-          finishing_level?: string | null
-          full_address?: string | null
-          furniture_package_available?: boolean | null
-          furniture_package_description?: string | null
-          furniture_package_price?: number | null
-          garden_maintenance_fee?: number | null
-          gas_connection_available?: boolean | null
-          geothermal_heating?: boolean | null
-          golden_visa_eligible?: boolean | null
-          golf_course?: boolean | null
-          gps_latitude?: number | null
-          gps_longitude?: number | null
-          green_building_certification?: string | null
-          grey_water_recycling?: boolean | null
-          guaranteed_rental_return?: number | null
-          has_cctv?: boolean | null
-          has_concierge?: boolean | null
-          has_garden?: boolean | null
-          has_generator?: boolean | null
-          has_gym?: boolean | null
-          has_parking?: boolean | null
-          has_playground?: boolean | null
-          has_pool?: boolean | null
-          has_security_24_7?: boolean | null
-          has_security_system?: boolean | null
-          has_solar_panels?: boolean | null
-          has_spa?: boolean | null
-          has_tennis_court?: boolean | null
-          hoa_fees_monthly?: number | null
-          hot_deal?: boolean | null
-          id?: string | null
-          incentives?: Json | null
-          inquiry_count?: number | null
-          interactive_map_url?: string | null
-          internet_speed_mbps?: number | null
-          investment_highlights?: Json | null
-          kids_club?: boolean | null
-          land_area_m2?: number | null
-          land_title_status?: string | null
-          last_price_update?: string | null
-          launch_date?: string | null
-          launch_month?: string | null
-          legal_fees_included?: boolean | null
-          legal_status?: string | null
-          lifestyle_amenities?: Json | null
-          maintenance_fees_yearly?: number | null
-          map_image?: string | null
-          marina_access?: boolean | null
-          marketing_highlights?: Json | null
-          master_plan_url?: string | null
-          meta_description?: string | null
-          meta_keywords?: string | null
-          meta_title?: string | null
-          mini_market?: boolean | null
-          model_3d_urls?: Json | null
-          municipality?: string | null
-          neighborhood?: string | null
-          neighborhood_description?: string | null
-          net_metering_available?: boolean | null
-          og_image_url?: string | null
-          outdoor_facilities?: Json | null
-          parking_type?: string | null
-          payment_plan?: Json | null
-          payment_plans?: Json | null
-          permits_obtained?: Json | null
-          pet_policy?: string | null
-          phase_current?: number | null
-          photo_count?: number | null
-          photo_gallery_urls?: Json | null
-          photos?: Json | null
-          photovoltaic_system?: boolean | null
-          planning_permit_number?: string | null
-          plot_sizes_m2?: Json | null
-          pool_maintenance_fee?: number | null
-          postal_code?: string | null
-          price_from?: number | null
-          price_list?: Json | null
-          price_per_m2?: number | null
-          price_to?: number | null
-          pricing_strategy_notes?: string | null
-          project_code?: string | null
-          project_narrative?: string | null
-          project_phase?: string | null
-          project_presentation_url?: string | null
-          project_status?: string | null
-          property_category?: string | null
-          property_management_company?: string | null
-          property_management_fee?: number | null
-          property_sub_type?: string[] | null
-          property_tax_yearly?: number | null
-          proximity_airport_km?: number | null
-          proximity_city_center_km?: number | null
-          proximity_highway_km?: number | null
-          proximity_sea_km?: number | null
-          rainwater_harvesting?: boolean | null
-          region?: string | null
-          renovation_year?: number | null
-          rental_management_available?: boolean | null
-          rental_pool_option?: boolean | null
-          rental_yield_percent?: number | null
-          reserved_percentage?: number | null
-          restaurant?: boolean | null
-          roi_estimate_percent?: number | null
-          schema_markup?: Json | null
-          search_ranking_weight?: number | null
-          seasonal_features?: Json | null
-          security_features?: Json | null
-          security_service_fee?: number | null
-          seismic_rating?: string | null
-          show_on_website?: boolean | null
-          shuttle_service?: boolean | null
-          site_plan_url?: string | null
-          smart_grid_ready?: boolean | null
-          smart_home_features?: Json | null
-          smoking_policy?: string | null
-          social_proof_stats?: Json | null
-          solar_capacity_kw?: number | null
-          solar_panels_installed?: boolean | null
-          sold_percentage?: number | null
-          special_offers?: Json | null
-          sports_facilities?: boolean | null
-          square_meters_max?: number | null
-          square_meters_min?: number | null
-          stamp_duty_included?: boolean | null
-          status?: string | null
-          statut_commercial?: string | null
-          street_address?: string | null
-          subtitle?: string | null
-          surrounding_amenities?: Json | null
-          sustainability_certifications?: Json | null
-          target_audience?: string | null
-          title?: string | null
-          title_deed_available?: boolean | null
-          title_deed_timeline?: string | null
-          total_phases?: number | null
-          total_units?: number | null
-          transfer_fees_included?: boolean | null
-          unique_selling_points?: Json | null
-          units_available?: number | null
-          units_sold?: number | null
-          updated_at?: string | null
-          ups_system?: boolean | null
-          url_slug?: string | null
-          utilities_connection_status?: string | null
-          vat_included?: boolean | null
-          vat_rate?: number | null
-          video_tour_url?: string | null
-          video_tour_urls?: Json | null
-          video_url?: string | null
-          view_count?: number | null
-          vimeo_tour_url?: string | null
-          virtual_tour_3d_url?: string | null
-          virtual_tour_url?: string | null
-          vr_tour_url?: string | null
-          warranty_years?: number | null
-          water_connection_status?: string | null
-          wellness_center?: boolean | null
-          wellness_facilities?: Json | null
-          wellness_features?: Json | null
-          youtube_tour_url?: string | null
-        }
-        Relationships: []
-      }
-      backup_20250927_properties: {
-        Row: {
-          annual_property_tax: number | null
-          appliances_included: Json | null
-          appliances_list: Json | null
-          availability_status: string | null
-          balcony_area: number | null
-          balcony_count: number | null
-          basement_area: number | null
-          bathroom_fixtures_brand: string | null
-          bathrooms_count: number | null
-          battery_capacity_kwh: number | null
-          battery_storage: boolean | null
-          bedrooms_count: number | null
-          building_id: string | null
-          building_permit_number: string | null
-          butler_pantry: boolean | null
-          cadastral_reference: string | null
-          ceiling_height: number | null
-          commission_amount: number | null
-          commission_rate: number | null
-          communal_fees_monthly: number | null
-          countertop_material: string | null
-          covered_verandas: number | null
-          created_at: string | null
-          created_by: string | null
-          current_price: number | null
-          delivery_date: string | null
-          deposit_amount: number | null
-          deposit_percentage: number | null
-          developer_id: string | null
-          discount_amount: number | null
-          discount_percentage: number | null
-          discount_reason: string | null
-          discount_valid_until: string | null
-          display_order: number | null
-          distance_to_elevator: number | null
-          distance_to_stairs: number | null
-          doors_type: string | null
-          double_glazing: boolean | null
-          en_suite_count: number | null
-          energy_certificate_number: string | null
-          energy_rating: string | null
-          entrance_type: string | null
-          estimated_utility_costs: number | null
-          ev_charger_included: boolean | null
-          ev_charger_type: string | null
-          ev_charging_power_kw: number | null
-          exclusive_listing: boolean | null
-          facing: string | null
-          featured_property: boolean | null
-          finance_available: boolean | null
-          fireplace_type: string | null
-          floor_number: number | null
-          floor_plan_2d_url: string | null
-          floor_plan_3d_url: string | null
-          floor_plan_3d_urls: Json | null
-          floor_plan_url: string | null
-          floor_plan_urls: Json | null
-          flooring_type: string | null
-          furnishing_status: string | null
-          furniture_brand: string | null
-          furniture_package_included: boolean | null
-          furniture_package_value: number | null
-          game_room: boolean | null
-          garden_type: string | null
-          golden_visa_eligible: boolean | null
-          gym_equipped: boolean | null
-          handover_date: string | null
-          has_alarm_system: boolean | null
-          has_automatic_irrigation: boolean | null
-          has_balcony: boolean | null
-          has_bbq_area: boolean | null
-          has_central_vacuum: boolean | null
-          has_city_view: boolean | null
-          has_disabled_access: boolean | null
-          has_dressing_room: boolean | null
-          has_electric_car_charger: boolean | null
-          has_electric_shutters: boolean | null
-          has_fiber_optic: boolean | null
-          has_fireplace: boolean | null
-          has_garden: boolean | null
-          has_garden_view: boolean | null
-          has_guest_wc: boolean | null
-          has_gym: boolean | null
-          has_home_cinema: boolean | null
-          has_jacuzzi: boolean | null
-          has_kitchen_appliances: boolean | null
-          has_laundry_room: boolean | null
-          has_maid_room: boolean | null
-          has_mountain_view: boolean | null
-          has_office: boolean | null
-          has_outdoor_kitchen: boolean | null
-          has_pantry: boolean | null
-          has_parking: boolean | null
-          has_pergola: boolean | null
-          has_playground: boolean | null
-          has_playroom: boolean | null
-          has_pool: boolean | null
-          has_pool_view: boolean | null
-          has_private_elevator: boolean | null
-          has_private_garden: boolean | null
-          has_private_pool: boolean | null
-          has_roof_terrace: boolean | null
-          has_safe: boolean | null
-          has_satellite_tv: boolean | null
-          has_sauna: boolean | null
-          has_sea_view: boolean | null
-          has_security_door: boolean | null
-          has_smart_home: boolean | null
-          has_solar_panels: boolean | null
-          has_spa: boolean | null
-          has_storage_room: boolean | null
-          has_storage_unit: boolean | null
-          has_terrace: boolean | null
-          has_underfloor_heating: boolean | null
-          has_video_intercom: boolean | null
-          has_water_softener: boolean | null
-          has_wine_cellar: boolean | null
-          has_wine_fridge: boolean | null
-          heat_pump_installed: boolean | null
-          heat_pump_type: string | null
-          heating_type: string | null
-          home_automation_app: boolean | null
-          home_theatre_seats: number | null
-          hvac_type: string | null
-          id: string | null
-          internal_area: number | null
-          internal_notes: string | null
-          internet_ready: boolean | null
-          investment_type: string | null
-          is_available: boolean | null
-          is_furnished: boolean | null
-          kitchen_area: number | null
-          kitchen_brand: string | null
-          kitchen_equipped: boolean | null
-          kitchen_type: string | null
-          library_shelving: boolean | null
-          living_room_area: number | null
-          maintenance_fee_monthly: number | null
-          master_bedroom_area: number | null
-          minimum_cash_required: number | null
-          minimum_investment_met: boolean | null
-          occupancy_certificate: string | null
-          orientation: string | null
-          original_price: number | null
-          panic_room: boolean | null
-          parking_included: boolean | null
-          parking_location: string | null
-          parking_size_sqm: number | null
-          parking_spaces: number | null
-          parking_type: string | null
-          parking_type_unit: string | null
-          payment_plan_available: boolean | null
-          payment_plan_details: Json | null
-          photos: Json | null
-          planning_permit_number: string | null
-          plans: Json | null
-          plot_area: number | null
-          pool_size: string | null
-          pool_type: string | null
-          position_in_building_url: string | null
-          position_in_floor: string | null
-          price_excluding_vat: number | null
-          price_including_vat: number | null
-          price_per_sqm: number | null
-          private_garden_area: number | null
-          project_id: string | null
-          property_code: string | null
-          property_status: string | null
-          property_sub_type: string | null
-          property_type: string | null
-          public_description: string | null
-          referral_commission: number | null
-          referral_commission_rate: number | null
-          reservation_date: string | null
-          reservation_expiry_date: string | null
-          reservation_fee: number | null
-          reservation_status: string | null
-          roof_garden_area: number | null
-          safe_room: boolean | null
-          sale_status: string | null
-          security_features: Json | null
-          show_on_website: boolean | null
-          smart_climate_control: boolean | null
-          smart_home_features: Json | null
-          smart_home_system: string | null
-          smart_irrigation: boolean | null
-          smart_lighting: boolean | null
-          smart_security_system: boolean | null
-          solar_capacity_kw: number | null
-          solar_panels_private: boolean | null
-          solar_water_heater: boolean | null
-          sold_date: string | null
-          special_offer_text: string | null
-          storage_area: number | null
-          storage_location: string | null
-          storage_room_included: boolean | null
-          storage_room_size_sqm: number | null
-          storage_spaces: number | null
-          terrace_area: number | null
-          terrace_count: number | null
-          thermal_insulation_rating: string | null
-          title_deed_number: string | null
-          title_deed_status: string | null
-          total_covered_area: number | null
-          total_rooms: number | null
-          transfer_fee_amount: number | null
-          transfer_fee_percentage: number | null
-          translations: Json | null
-          triple_glazing: boolean | null
-          uncovered_verandas: number | null
-          unit_layout_url: string | null
-          unit_number: string | null
-          updated_at: string | null
-          vat_amount: number | null
-          vat_rate: number | null
-          view_quality: string | null
-          view_type: Json | null
-          virtual_tour: string | null
-          virtual_tour_url: string | null
-          voice_control_enabled: boolean | null
-          wall_finish: string | null
-          wc_count: number | null
-          white_goods_included: boolean | null
-          windows_type: string | null
-          wine_cellar_capacity: number | null
-        }
-        Insert: {
-          annual_property_tax?: number | null
-          appliances_included?: Json | null
-          appliances_list?: Json | null
-          availability_status?: string | null
-          balcony_area?: number | null
-          balcony_count?: number | null
-          basement_area?: number | null
-          bathroom_fixtures_brand?: string | null
-          bathrooms_count?: number | null
-          battery_capacity_kwh?: number | null
-          battery_storage?: boolean | null
-          bedrooms_count?: number | null
-          building_id?: string | null
-          building_permit_number?: string | null
-          butler_pantry?: boolean | null
-          cadastral_reference?: string | null
-          ceiling_height?: number | null
-          commission_amount?: number | null
-          commission_rate?: number | null
-          communal_fees_monthly?: number | null
-          countertop_material?: string | null
-          covered_verandas?: number | null
-          created_at?: string | null
-          created_by?: string | null
-          current_price?: number | null
-          delivery_date?: string | null
-          deposit_amount?: number | null
-          deposit_percentage?: number | null
-          developer_id?: string | null
-          discount_amount?: number | null
-          discount_percentage?: number | null
-          discount_reason?: string | null
-          discount_valid_until?: string | null
-          display_order?: number | null
-          distance_to_elevator?: number | null
-          distance_to_stairs?: number | null
-          doors_type?: string | null
-          double_glazing?: boolean | null
-          en_suite_count?: number | null
-          energy_certificate_number?: string | null
-          energy_rating?: string | null
-          entrance_type?: string | null
-          estimated_utility_costs?: number | null
-          ev_charger_included?: boolean | null
-          ev_charger_type?: string | null
-          ev_charging_power_kw?: number | null
-          exclusive_listing?: boolean | null
-          facing?: string | null
-          featured_property?: boolean | null
-          finance_available?: boolean | null
-          fireplace_type?: string | null
-          floor_number?: number | null
-          floor_plan_2d_url?: string | null
-          floor_plan_3d_url?: string | null
-          floor_plan_3d_urls?: Json | null
-          floor_plan_url?: string | null
-          floor_plan_urls?: Json | null
-          flooring_type?: string | null
-          furnishing_status?: string | null
-          furniture_brand?: string | null
-          furniture_package_included?: boolean | null
-          furniture_package_value?: number | null
-          game_room?: boolean | null
-          garden_type?: string | null
-          golden_visa_eligible?: boolean | null
-          gym_equipped?: boolean | null
-          handover_date?: string | null
-          has_alarm_system?: boolean | null
-          has_automatic_irrigation?: boolean | null
-          has_balcony?: boolean | null
-          has_bbq_area?: boolean | null
-          has_central_vacuum?: boolean | null
-          has_city_view?: boolean | null
-          has_disabled_access?: boolean | null
-          has_dressing_room?: boolean | null
-          has_electric_car_charger?: boolean | null
-          has_electric_shutters?: boolean | null
-          has_fiber_optic?: boolean | null
-          has_fireplace?: boolean | null
-          has_garden?: boolean | null
-          has_garden_view?: boolean | null
-          has_guest_wc?: boolean | null
-          has_gym?: boolean | null
-          has_home_cinema?: boolean | null
-          has_jacuzzi?: boolean | null
-          has_kitchen_appliances?: boolean | null
-          has_laundry_room?: boolean | null
-          has_maid_room?: boolean | null
-          has_mountain_view?: boolean | null
-          has_office?: boolean | null
-          has_outdoor_kitchen?: boolean | null
-          has_pantry?: boolean | null
-          has_parking?: boolean | null
-          has_pergola?: boolean | null
-          has_playground?: boolean | null
-          has_playroom?: boolean | null
-          has_pool?: boolean | null
-          has_pool_view?: boolean | null
-          has_private_elevator?: boolean | null
-          has_private_garden?: boolean | null
-          has_private_pool?: boolean | null
-          has_roof_terrace?: boolean | null
-          has_safe?: boolean | null
-          has_satellite_tv?: boolean | null
-          has_sauna?: boolean | null
-          has_sea_view?: boolean | null
-          has_security_door?: boolean | null
-          has_smart_home?: boolean | null
-          has_solar_panels?: boolean | null
-          has_spa?: boolean | null
-          has_storage_room?: boolean | null
-          has_storage_unit?: boolean | null
-          has_terrace?: boolean | null
-          has_underfloor_heating?: boolean | null
-          has_video_intercom?: boolean | null
-          has_water_softener?: boolean | null
-          has_wine_cellar?: boolean | null
-          has_wine_fridge?: boolean | null
-          heat_pump_installed?: boolean | null
-          heat_pump_type?: string | null
-          heating_type?: string | null
-          home_automation_app?: boolean | null
-          home_theatre_seats?: number | null
-          hvac_type?: string | null
-          id?: string | null
-          internal_area?: number | null
-          internal_notes?: string | null
-          internet_ready?: boolean | null
-          investment_type?: string | null
-          is_available?: boolean | null
-          is_furnished?: boolean | null
-          kitchen_area?: number | null
-          kitchen_brand?: string | null
-          kitchen_equipped?: boolean | null
-          kitchen_type?: string | null
-          library_shelving?: boolean | null
-          living_room_area?: number | null
-          maintenance_fee_monthly?: number | null
-          master_bedroom_area?: number | null
-          minimum_cash_required?: number | null
-          minimum_investment_met?: boolean | null
-          occupancy_certificate?: string | null
-          orientation?: string | null
-          original_price?: number | null
-          panic_room?: boolean | null
-          parking_included?: boolean | null
-          parking_location?: string | null
-          parking_size_sqm?: number | null
-          parking_spaces?: number | null
-          parking_type?: string | null
-          parking_type_unit?: string | null
-          payment_plan_available?: boolean | null
-          payment_plan_details?: Json | null
-          photos?: Json | null
-          planning_permit_number?: string | null
-          plans?: Json | null
-          plot_area?: number | null
-          pool_size?: string | null
-          pool_type?: string | null
-          position_in_building_url?: string | null
-          position_in_floor?: string | null
-          price_excluding_vat?: number | null
-          price_including_vat?: number | null
-          price_per_sqm?: number | null
-          private_garden_area?: number | null
-          project_id?: string | null
-          property_code?: string | null
-          property_status?: string | null
-          property_sub_type?: string | null
-          property_type?: string | null
-          public_description?: string | null
-          referral_commission?: number | null
-          referral_commission_rate?: number | null
-          reservation_date?: string | null
-          reservation_expiry_date?: string | null
-          reservation_fee?: number | null
-          reservation_status?: string | null
-          roof_garden_area?: number | null
-          safe_room?: boolean | null
-          sale_status?: string | null
-          security_features?: Json | null
-          show_on_website?: boolean | null
-          smart_climate_control?: boolean | null
-          smart_home_features?: Json | null
-          smart_home_system?: string | null
-          smart_irrigation?: boolean | null
-          smart_lighting?: boolean | null
-          smart_security_system?: boolean | null
-          solar_capacity_kw?: number | null
-          solar_panels_private?: boolean | null
-          solar_water_heater?: boolean | null
-          sold_date?: string | null
-          special_offer_text?: string | null
-          storage_area?: number | null
-          storage_location?: string | null
-          storage_room_included?: boolean | null
-          storage_room_size_sqm?: number | null
-          storage_spaces?: number | null
-          terrace_area?: number | null
-          terrace_count?: number | null
-          thermal_insulation_rating?: string | null
-          title_deed_number?: string | null
-          title_deed_status?: string | null
-          total_covered_area?: number | null
-          total_rooms?: number | null
-          transfer_fee_amount?: number | null
-          transfer_fee_percentage?: number | null
-          translations?: Json | null
-          triple_glazing?: boolean | null
-          uncovered_verandas?: number | null
-          unit_layout_url?: string | null
-          unit_number?: string | null
-          updated_at?: string | null
-          vat_amount?: number | null
-          vat_rate?: number | null
-          view_quality?: string | null
-          view_type?: Json | null
-          virtual_tour?: string | null
-          virtual_tour_url?: string | null
-          voice_control_enabled?: boolean | null
-          wall_finish?: string | null
-          wc_count?: number | null
-          white_goods_included?: boolean | null
-          windows_type?: string | null
-          wine_cellar_capacity?: number | null
-        }
-        Update: {
-          annual_property_tax?: number | null
-          appliances_included?: Json | null
-          appliances_list?: Json | null
-          availability_status?: string | null
-          balcony_area?: number | null
-          balcony_count?: number | null
-          basement_area?: number | null
-          bathroom_fixtures_brand?: string | null
-          bathrooms_count?: number | null
-          battery_capacity_kwh?: number | null
-          battery_storage?: boolean | null
-          bedrooms_count?: number | null
-          building_id?: string | null
-          building_permit_number?: string | null
-          butler_pantry?: boolean | null
-          cadastral_reference?: string | null
-          ceiling_height?: number | null
-          commission_amount?: number | null
-          commission_rate?: number | null
-          communal_fees_monthly?: number | null
-          countertop_material?: string | null
-          covered_verandas?: number | null
-          created_at?: string | null
-          created_by?: string | null
-          current_price?: number | null
-          delivery_date?: string | null
-          deposit_amount?: number | null
-          deposit_percentage?: number | null
-          developer_id?: string | null
-          discount_amount?: number | null
-          discount_percentage?: number | null
-          discount_reason?: string | null
-          discount_valid_until?: string | null
-          display_order?: number | null
-          distance_to_elevator?: number | null
-          distance_to_stairs?: number | null
-          doors_type?: string | null
-          double_glazing?: boolean | null
-          en_suite_count?: number | null
-          energy_certificate_number?: string | null
-          energy_rating?: string | null
-          entrance_type?: string | null
-          estimated_utility_costs?: number | null
-          ev_charger_included?: boolean | null
-          ev_charger_type?: string | null
-          ev_charging_power_kw?: number | null
-          exclusive_listing?: boolean | null
-          facing?: string | null
-          featured_property?: boolean | null
-          finance_available?: boolean | null
-          fireplace_type?: string | null
-          floor_number?: number | null
-          floor_plan_2d_url?: string | null
-          floor_plan_3d_url?: string | null
-          floor_plan_3d_urls?: Json | null
-          floor_plan_url?: string | null
-          floor_plan_urls?: Json | null
-          flooring_type?: string | null
-          furnishing_status?: string | null
-          furniture_brand?: string | null
-          furniture_package_included?: boolean | null
-          furniture_package_value?: number | null
-          game_room?: boolean | null
-          garden_type?: string | null
-          golden_visa_eligible?: boolean | null
-          gym_equipped?: boolean | null
-          handover_date?: string | null
-          has_alarm_system?: boolean | null
-          has_automatic_irrigation?: boolean | null
-          has_balcony?: boolean | null
-          has_bbq_area?: boolean | null
-          has_central_vacuum?: boolean | null
-          has_city_view?: boolean | null
-          has_disabled_access?: boolean | null
-          has_dressing_room?: boolean | null
-          has_electric_car_charger?: boolean | null
-          has_electric_shutters?: boolean | null
-          has_fiber_optic?: boolean | null
-          has_fireplace?: boolean | null
-          has_garden?: boolean | null
-          has_garden_view?: boolean | null
-          has_guest_wc?: boolean | null
-          has_gym?: boolean | null
-          has_home_cinema?: boolean | null
-          has_jacuzzi?: boolean | null
-          has_kitchen_appliances?: boolean | null
-          has_laundry_room?: boolean | null
-          has_maid_room?: boolean | null
-          has_mountain_view?: boolean | null
-          has_office?: boolean | null
-          has_outdoor_kitchen?: boolean | null
-          has_pantry?: boolean | null
-          has_parking?: boolean | null
-          has_pergola?: boolean | null
-          has_playground?: boolean | null
-          has_playroom?: boolean | null
-          has_pool?: boolean | null
-          has_pool_view?: boolean | null
-          has_private_elevator?: boolean | null
-          has_private_garden?: boolean | null
-          has_private_pool?: boolean | null
-          has_roof_terrace?: boolean | null
-          has_safe?: boolean | null
-          has_satellite_tv?: boolean | null
-          has_sauna?: boolean | null
-          has_sea_view?: boolean | null
-          has_security_door?: boolean | null
-          has_smart_home?: boolean | null
-          has_solar_panels?: boolean | null
-          has_spa?: boolean | null
-          has_storage_room?: boolean | null
-          has_storage_unit?: boolean | null
-          has_terrace?: boolean | null
-          has_underfloor_heating?: boolean | null
-          has_video_intercom?: boolean | null
-          has_water_softener?: boolean | null
-          has_wine_cellar?: boolean | null
-          has_wine_fridge?: boolean | null
-          heat_pump_installed?: boolean | null
-          heat_pump_type?: string | null
-          heating_type?: string | null
-          home_automation_app?: boolean | null
-          home_theatre_seats?: number | null
-          hvac_type?: string | null
-          id?: string | null
-          internal_area?: number | null
-          internal_notes?: string | null
-          internet_ready?: boolean | null
-          investment_type?: string | null
-          is_available?: boolean | null
-          is_furnished?: boolean | null
-          kitchen_area?: number | null
-          kitchen_brand?: string | null
-          kitchen_equipped?: boolean | null
-          kitchen_type?: string | null
-          library_shelving?: boolean | null
-          living_room_area?: number | null
-          maintenance_fee_monthly?: number | null
-          master_bedroom_area?: number | null
-          minimum_cash_required?: number | null
-          minimum_investment_met?: boolean | null
-          occupancy_certificate?: string | null
-          orientation?: string | null
-          original_price?: number | null
-          panic_room?: boolean | null
-          parking_included?: boolean | null
-          parking_location?: string | null
-          parking_size_sqm?: number | null
-          parking_spaces?: number | null
-          parking_type?: string | null
-          parking_type_unit?: string | null
-          payment_plan_available?: boolean | null
-          payment_plan_details?: Json | null
-          photos?: Json | null
-          planning_permit_number?: string | null
-          plans?: Json | null
-          plot_area?: number | null
-          pool_size?: string | null
-          pool_type?: string | null
-          position_in_building_url?: string | null
-          position_in_floor?: string | null
-          price_excluding_vat?: number | null
-          price_including_vat?: number | null
-          price_per_sqm?: number | null
-          private_garden_area?: number | null
-          project_id?: string | null
-          property_code?: string | null
-          property_status?: string | null
-          property_sub_type?: string | null
-          property_type?: string | null
-          public_description?: string | null
-          referral_commission?: number | null
-          referral_commission_rate?: number | null
-          reservation_date?: string | null
-          reservation_expiry_date?: string | null
-          reservation_fee?: number | null
-          reservation_status?: string | null
-          roof_garden_area?: number | null
-          safe_room?: boolean | null
-          sale_status?: string | null
-          security_features?: Json | null
-          show_on_website?: boolean | null
-          smart_climate_control?: boolean | null
-          smart_home_features?: Json | null
-          smart_home_system?: string | null
-          smart_irrigation?: boolean | null
-          smart_lighting?: boolean | null
-          smart_security_system?: boolean | null
-          solar_capacity_kw?: number | null
-          solar_panels_private?: boolean | null
-          solar_water_heater?: boolean | null
-          sold_date?: string | null
-          special_offer_text?: string | null
-          storage_area?: number | null
-          storage_location?: string | null
-          storage_room_included?: boolean | null
-          storage_room_size_sqm?: number | null
-          storage_spaces?: number | null
-          terrace_area?: number | null
-          terrace_count?: number | null
-          thermal_insulation_rating?: string | null
-          title_deed_number?: string | null
-          title_deed_status?: string | null
-          total_covered_area?: number | null
-          total_rooms?: number | null
-          transfer_fee_amount?: number | null
-          transfer_fee_percentage?: number | null
-          translations?: Json | null
-          triple_glazing?: boolean | null
-          uncovered_verandas?: number | null
-          unit_layout_url?: string | null
-          unit_number?: string | null
-          updated_at?: string | null
-          vat_amount?: number | null
-          vat_rate?: number | null
-          view_quality?: string | null
-          view_type?: Json | null
-          virtual_tour?: string | null
-          virtual_tour_url?: string | null
-          voice_control_enabled?: boolean | null
-          wall_finish?: string | null
-          wc_count?: number | null
-          white_goods_included?: boolean | null
-          windows_type?: string | null
-          wine_cellar_capacity?: number | null
-        }
-        Relationships: []
-      }
-      backup_buildings_20250119: {
-        Row: {
-          actual_completion: string | null
-          building_class: string | null
-          building_code: string | null
-          building_name: string | null
-          building_type: string | null
-          construction_status: string | null
-          created_at: string | null
-          created_by: string | null
-          display_order: number | null
-          elevator_count: number | null
-          energy_certificate: string | null
-          energy_rating: string | null
-          expected_completion: string | null
-          has_cctv: boolean | null
-          has_concierge: boolean | null
-          has_garden: boolean | null
-          has_generator: boolean | null
-          has_gym: boolean | null
-          has_parking: boolean | null
-          has_playground: boolean | null
-          has_pool: boolean | null
-          has_security_system: boolean | null
-          has_spa: boolean | null
-          id: string | null
-          name: string | null
-          parking_type: string | null
-          project_id: string | null
-          total_floors: number | null
-          total_units: number | null
-          units_available: number | null
-          updated_at: string | null
-        }
-        Insert: {
-          actual_completion?: string | null
-          building_class?: string | null
-          building_code?: string | null
-          building_name?: string | null
-          building_type?: string | null
-          construction_status?: string | null
-          created_at?: string | null
-          created_by?: string | null
-          display_order?: number | null
-          elevator_count?: number | null
-          energy_certificate?: string | null
-          energy_rating?: string | null
-          expected_completion?: string | null
-          has_cctv?: boolean | null
-          has_concierge?: boolean | null
-          has_garden?: boolean | null
-          has_generator?: boolean | null
-          has_gym?: boolean | null
-          has_parking?: boolean | null
-          has_playground?: boolean | null
-          has_pool?: boolean | null
-          has_security_system?: boolean | null
-          has_spa?: boolean | null
-          id?: string | null
-          name?: string | null
-          parking_type?: string | null
-          project_id?: string | null
-          total_floors?: number | null
-          total_units?: number | null
-          units_available?: number | null
-          updated_at?: string | null
-        }
-        Update: {
-          actual_completion?: string | null
-          building_class?: string | null
-          building_code?: string | null
-          building_name?: string | null
-          building_type?: string | null
-          construction_status?: string | null
-          created_at?: string | null
-          created_by?: string | null
-          display_order?: number | null
-          elevator_count?: number | null
-          energy_certificate?: string | null
-          energy_rating?: string | null
-          expected_completion?: string | null
-          has_cctv?: boolean | null
-          has_concierge?: boolean | null
-          has_garden?: boolean | null
-          has_generator?: boolean | null
-          has_gym?: boolean | null
-          has_parking?: boolean | null
-          has_playground?: boolean | null
-          has_pool?: boolean | null
-          has_security_system?: boolean | null
-          has_spa?: boolean | null
-          id?: string | null
-          name?: string | null
-          parking_type?: string | null
-          project_id?: string | null
-          total_floors?: number | null
-          total_units?: number | null
-          units_available?: number | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      backup_complete_20250120: {
-        Row: {
-          data: Json | null
-          table_name: string | null
-        }
-        Insert: {
-          data?: Json | null
-          table_name?: string | null
-        }
-        Update: {
-          data?: Json | null
-          table_name?: string | null
-        }
-        Relationships: []
-      }
-      backup_developers_20250119: {
-        Row: {
-          addresses: string[] | null
-          bank_guarantee: boolean | null
-          commission_rate: number | null
-          company_registration_number: string | null
-          contact_info: Json | null
-          created_at: string | null
-          email_marketing: string | null
-          email_primary: string | null
-          email_sales: string | null
-          financial_stability: string | null
-          founded_year: number | null
-          history: string | null
-          id: string | null
-          insurance_coverage: number | null
-          key_projects: string | null
-          license_number: string | null
-          logo: string | null
-          main_activities: string | null
-          main_city: string | null
-          name: string | null
-          payment_terms: string | null
-          phone_numbers: string[] | null
-          rating_justification: string | null
-          rating_score: number | null
-          reputation_reviews: string | null
-          status: string | null
-          total_projects: number | null
-          updated_at: string | null
-          vat_number: string | null
-          website: string | null
-          years_experience: number | null
-        }
-        Insert: {
-          addresses?: string[] | null
-          bank_guarantee?: boolean | null
-          commission_rate?: number | null
-          company_registration_number?: string | null
-          contact_info?: Json | null
-          created_at?: string | null
-          email_marketing?: string | null
-          email_primary?: string | null
-          email_sales?: string | null
-          financial_stability?: string | null
-          founded_year?: number | null
-          history?: string | null
-          id?: string | null
-          insurance_coverage?: number | null
-          key_projects?: string | null
-          license_number?: string | null
-          logo?: string | null
-          main_activities?: string | null
-          main_city?: string | null
-          name?: string | null
-          payment_terms?: string | null
-          phone_numbers?: string[] | null
-          rating_justification?: string | null
-          rating_score?: number | null
-          reputation_reviews?: string | null
-          status?: string | null
-          total_projects?: number | null
-          updated_at?: string | null
-          vat_number?: string | null
-          website?: string | null
-          years_experience?: number | null
-        }
-        Update: {
-          addresses?: string[] | null
-          bank_guarantee?: boolean | null
-          commission_rate?: number | null
-          company_registration_number?: string | null
-          contact_info?: Json | null
-          created_at?: string | null
-          email_marketing?: string | null
-          email_primary?: string | null
-          email_sales?: string | null
-          financial_stability?: string | null
-          founded_year?: number | null
-          history?: string | null
-          id?: string | null
-          insurance_coverage?: number | null
-          key_projects?: string | null
-          license_number?: string | null
-          logo?: string | null
-          main_activities?: string | null
-          main_city?: string | null
-          name?: string | null
-          payment_terms?: string | null
-          phone_numbers?: string[] | null
-          rating_justification?: string | null
-          rating_score?: number | null
-          reputation_reviews?: string | null
-          status?: string | null
-          total_projects?: number | null
-          updated_at?: string | null
-          vat_number?: string | null
-          website?: string | null
-          years_experience?: number | null
-        }
-        Relationships: []
-      }
-      backup_projects_20250119: {
-        Row: {
-          accessibility_features: string[] | null
-          after_sales_service: boolean | null
-          ai_chatbot_enabled: boolean | null
-          ai_content_disclosure: string | null
-          ai_description: string | null
-          ai_generated_at: string | null
-          ai_generated_content: Json | null
-          amenities: string[] | null
-          ar_experience_url: string | null
-          architect_license_number: string | null
-          architect_name: string | null
-          bathrooms_range: string | null
-          bedrooms_range: string | null
-          bim_model_url: string | null
-          builder_name: string | null
-          building_certification: string | null
-          building_id: string | null
-          building_insurance: string | null
-          building_permit_number: string | null
-          built_area_m2: number | null
-          categorized_photos: Json | null
-          city: string | null
-          commission_rate: number | null
-          community_features: string[] | null
-          completion_date: string | null
-          completion_date_new: string | null
-          compliance_certifications: string[] | null
-          construction_materials: string[] | null
-          construction_phase: string | null
-          construction_start: string | null
-          construction_year: number | null
-          created_at: string | null
-          cyprus_zone: string | null
-          description: string | null
-          design_style: string | null
-          detailed_description: string | null
-          detailed_features: string[] | null
-          developer_id: string | null
-          district: string | null
-          drone_footage_urls: string[] | null
-          energy_rating: string | null
-          engineer_license_number: string | null
-          environmental_permit: string | null
-          exclusive_commercialization: boolean | null
-          favorite_count: number | null
-          featured_new: boolean | null
-          featured_property: boolean | null
-          featured_until: string | null
-          features: string[] | null
-          financing_available: boolean | null
-          financing_options: Json | null
-          finishing_level: string | null
-          floor_number: number | null
-          floor_plan_3d_urls: string[] | null
-          floor_plan_urls: string[] | null
-          floors_total: number | null
-          full_address: string | null
-          furniture_status: string | null
-          golden_visa_eligible: boolean | null
-          golden_visa_eligible_new: boolean | null
-          gps_latitude: number | null
-          gps_longitude: number | null
-          hoa_fees_monthly: number | null
-          id: string | null
-          incentives: string[] | null
-          inquiry_count: number | null
-          interactive_map_url: string | null
-          interests: Json[] | null
-          internet_speed_mbps: number | null
-          land_area_m2: number | null
-          last_price_update: string | null
-          launch_date: string | null
-          legal_status: string | null
-          lifestyle_amenities: string[] | null
-          livability: boolean | null
-          location: Json | null
-          maintenance_fees_yearly: number | null
-          map_image: string | null
-          marketing_highlights: string[] | null
-          marketing_strategy: Json | null
-          meta_description: string | null
-          meta_description_new: string | null
-          meta_keywords: string[] | null
-          meta_title: string | null
-          meta_title_new: string | null
-          metaverse_preview_url: string | null
-          model_3d_urls: string[] | null
-          municipality: string | null
-          neighborhood: string | null
-          neighborhood_description: string | null
-          nft_ownership_available: boolean | null
-          og_image_url: string | null
-          parking_spaces: number | null
-          payment_plan: Json | null
-          permits_obtained: string[] | null
-          pet_policy: string | null
-          photo_count: number | null
-          photo_gallery_urls: string[] | null
-          photos: string[] | null
-          planning_permit_number: string | null
-          plans: string[] | null
-          price: number | null
-          price_from: string | null
-          price_from_new: number | null
-          price_per_m2: number | null
-          price_to: number | null
-          pricing_strategy_notes: string | null
-          project_code: string | null
-          project_narrative: string | null
-          project_phase: string | null
-          project_presentation_url: string | null
-          project_status: string | null
-          property_category: string | null
-          property_sub_type: string[] | null
-          property_tax_yearly: number | null
-          property_types: string[] | null
-          proximity_airport_km: number | null
-          proximity_city_center_km: number | null
-          proximity_highway_km: number | null
-          proximity_sea_km: number | null
-          region: string | null
-          renovation_year: number | null
-          rental_yield_percent: number | null
-          reservation_status: string | null
-          roi_estimate_percent: number | null
-          schema_markup: Json | null
-          search_ranking_weight: number | null
-          seasonal_features: Json | null
-          seismic_rating: string | null
-          smart_home_features: Json | null
-          smoking_policy: string | null
-          social_proof_stats: Json | null
-          status: string | null
-          status_project: string | null
-          statut_commercial: string | null
-          storage_spaces: number | null
-          subtitle: string | null
-          surrounding_amenities: Json | null
-          sustainability_certifications: string[] | null
-          target_audience: string[] | null
-          testimonials: Json | null
-          title: string | null
-          title_deed_available: boolean | null
-          title_deed_status: string | null
-          title_deed_timeline: string | null
-          total_units: number | null
-          total_units_new: number | null
-          transfer_fee: number | null
-          translations: Json | null
-          unique_selling_points: string[] | null
-          unit_number: string | null
-          units: Json[] | null
-          units_available: number | null
-          units_available_new: number | null
-          units_sold: number | null
-          updated_at: string | null
-          url_slug: string | null
-          vat_included: boolean | null
-          vat_rate: number | null
-          vat_rate_new: number | null
-          video_tour_urls: string[] | null
-          video_url: string | null
-          view_count: number | null
-          view_count_new: number | null
-          vimeo_tour_url: string | null
-          virtual_tour: string | null
-          virtual_tour_url: string | null
-          virtual_tour_url_new: string | null
-          vr_tour_url: string | null
-          warranty_years: number | null
-          wellness_features: string[] | null
-          youtube_tour_url: string | null
-        }
-        Insert: {
-          accessibility_features?: string[] | null
-          after_sales_service?: boolean | null
-          ai_chatbot_enabled?: boolean | null
-          ai_content_disclosure?: string | null
-          ai_description?: string | null
-          ai_generated_at?: string | null
-          ai_generated_content?: Json | null
-          amenities?: string[] | null
-          ar_experience_url?: string | null
-          architect_license_number?: string | null
-          architect_name?: string | null
-          bathrooms_range?: string | null
-          bedrooms_range?: string | null
-          bim_model_url?: string | null
-          builder_name?: string | null
-          building_certification?: string | null
-          building_id?: string | null
-          building_insurance?: string | null
-          building_permit_number?: string | null
-          built_area_m2?: number | null
-          categorized_photos?: Json | null
-          city?: string | null
-          commission_rate?: number | null
-          community_features?: string[] | null
-          completion_date?: string | null
-          completion_date_new?: string | null
-          compliance_certifications?: string[] | null
-          construction_materials?: string[] | null
-          construction_phase?: string | null
-          construction_start?: string | null
-          construction_year?: number | null
-          created_at?: string | null
-          cyprus_zone?: string | null
-          description?: string | null
-          design_style?: string | null
-          detailed_description?: string | null
-          detailed_features?: string[] | null
-          developer_id?: string | null
-          district?: string | null
-          drone_footage_urls?: string[] | null
-          energy_rating?: string | null
-          engineer_license_number?: string | null
-          environmental_permit?: string | null
-          exclusive_commercialization?: boolean | null
-          favorite_count?: number | null
-          featured_new?: boolean | null
-          featured_property?: boolean | null
-          featured_until?: string | null
-          features?: string[] | null
-          financing_available?: boolean | null
-          financing_options?: Json | null
-          finishing_level?: string | null
-          floor_number?: number | null
-          floor_plan_3d_urls?: string[] | null
-          floor_plan_urls?: string[] | null
-          floors_total?: number | null
-          full_address?: string | null
-          furniture_status?: string | null
-          golden_visa_eligible?: boolean | null
-          golden_visa_eligible_new?: boolean | null
-          gps_latitude?: number | null
-          gps_longitude?: number | null
-          hoa_fees_monthly?: number | null
-          id?: string | null
-          incentives?: string[] | null
-          inquiry_count?: number | null
-          interactive_map_url?: string | null
-          interests?: Json[] | null
-          internet_speed_mbps?: number | null
-          land_area_m2?: number | null
-          last_price_update?: string | null
-          launch_date?: string | null
-          legal_status?: string | null
-          lifestyle_amenities?: string[] | null
-          livability?: boolean | null
-          location?: Json | null
-          maintenance_fees_yearly?: number | null
-          map_image?: string | null
-          marketing_highlights?: string[] | null
-          marketing_strategy?: Json | null
-          meta_description?: string | null
-          meta_description_new?: string | null
-          meta_keywords?: string[] | null
-          meta_title?: string | null
-          meta_title_new?: string | null
-          metaverse_preview_url?: string | null
-          model_3d_urls?: string[] | null
-          municipality?: string | null
-          neighborhood?: string | null
-          neighborhood_description?: string | null
-          nft_ownership_available?: boolean | null
-          og_image_url?: string | null
-          parking_spaces?: number | null
-          payment_plan?: Json | null
-          permits_obtained?: string[] | null
-          pet_policy?: string | null
-          photo_count?: number | null
-          photo_gallery_urls?: string[] | null
-          photos?: string[] | null
-          planning_permit_number?: string | null
-          plans?: string[] | null
-          price?: number | null
-          price_from?: string | null
-          price_from_new?: number | null
-          price_per_m2?: number | null
-          price_to?: number | null
-          pricing_strategy_notes?: string | null
-          project_code?: string | null
-          project_narrative?: string | null
-          project_phase?: string | null
-          project_presentation_url?: string | null
-          project_status?: string | null
-          property_category?: string | null
-          property_sub_type?: string[] | null
-          property_tax_yearly?: number | null
-          property_types?: string[] | null
-          proximity_airport_km?: number | null
-          proximity_city_center_km?: number | null
-          proximity_highway_km?: number | null
-          proximity_sea_km?: number | null
-          region?: string | null
-          renovation_year?: number | null
-          rental_yield_percent?: number | null
-          reservation_status?: string | null
-          roi_estimate_percent?: number | null
-          schema_markup?: Json | null
-          search_ranking_weight?: number | null
-          seasonal_features?: Json | null
-          seismic_rating?: string | null
-          smart_home_features?: Json | null
-          smoking_policy?: string | null
-          social_proof_stats?: Json | null
-          status?: string | null
-          status_project?: string | null
-          statut_commercial?: string | null
-          storage_spaces?: number | null
-          subtitle?: string | null
-          surrounding_amenities?: Json | null
-          sustainability_certifications?: string[] | null
-          target_audience?: string[] | null
-          testimonials?: Json | null
-          title?: string | null
-          title_deed_available?: boolean | null
-          title_deed_status?: string | null
-          title_deed_timeline?: string | null
-          total_units?: number | null
-          total_units_new?: number | null
-          transfer_fee?: number | null
-          translations?: Json | null
-          unique_selling_points?: string[] | null
-          unit_number?: string | null
-          units?: Json[] | null
-          units_available?: number | null
-          units_available_new?: number | null
-          units_sold?: number | null
-          updated_at?: string | null
-          url_slug?: string | null
-          vat_included?: boolean | null
-          vat_rate?: number | null
-          vat_rate_new?: number | null
-          video_tour_urls?: string[] | null
-          video_url?: string | null
-          view_count?: number | null
-          view_count_new?: number | null
-          vimeo_tour_url?: string | null
-          virtual_tour?: string | null
-          virtual_tour_url?: string | null
-          virtual_tour_url_new?: string | null
-          vr_tour_url?: string | null
-          warranty_years?: number | null
-          wellness_features?: string[] | null
-          youtube_tour_url?: string | null
-        }
-        Update: {
-          accessibility_features?: string[] | null
-          after_sales_service?: boolean | null
-          ai_chatbot_enabled?: boolean | null
-          ai_content_disclosure?: string | null
-          ai_description?: string | null
-          ai_generated_at?: string | null
-          ai_generated_content?: Json | null
-          amenities?: string[] | null
-          ar_experience_url?: string | null
-          architect_license_number?: string | null
-          architect_name?: string | null
-          bathrooms_range?: string | null
-          bedrooms_range?: string | null
-          bim_model_url?: string | null
-          builder_name?: string | null
-          building_certification?: string | null
-          building_id?: string | null
-          building_insurance?: string | null
-          building_permit_number?: string | null
-          built_area_m2?: number | null
-          categorized_photos?: Json | null
-          city?: string | null
-          commission_rate?: number | null
-          community_features?: string[] | null
-          completion_date?: string | null
-          completion_date_new?: string | null
-          compliance_certifications?: string[] | null
-          construction_materials?: string[] | null
-          construction_phase?: string | null
-          construction_start?: string | null
-          construction_year?: number | null
-          created_at?: string | null
-          cyprus_zone?: string | null
-          description?: string | null
-          design_style?: string | null
-          detailed_description?: string | null
-          detailed_features?: string[] | null
-          developer_id?: string | null
-          district?: string | null
-          drone_footage_urls?: string[] | null
-          energy_rating?: string | null
-          engineer_license_number?: string | null
-          environmental_permit?: string | null
-          exclusive_commercialization?: boolean | null
-          favorite_count?: number | null
-          featured_new?: boolean | null
-          featured_property?: boolean | null
-          featured_until?: string | null
-          features?: string[] | null
-          financing_available?: boolean | null
-          financing_options?: Json | null
-          finishing_level?: string | null
-          floor_number?: number | null
-          floor_plan_3d_urls?: string[] | null
-          floor_plan_urls?: string[] | null
-          floors_total?: number | null
-          full_address?: string | null
-          furniture_status?: string | null
-          golden_visa_eligible?: boolean | null
-          golden_visa_eligible_new?: boolean | null
-          gps_latitude?: number | null
-          gps_longitude?: number | null
-          hoa_fees_monthly?: number | null
-          id?: string | null
-          incentives?: string[] | null
-          inquiry_count?: number | null
-          interactive_map_url?: string | null
-          interests?: Json[] | null
-          internet_speed_mbps?: number | null
-          land_area_m2?: number | null
-          last_price_update?: string | null
-          launch_date?: string | null
-          legal_status?: string | null
-          lifestyle_amenities?: string[] | null
-          livability?: boolean | null
-          location?: Json | null
-          maintenance_fees_yearly?: number | null
-          map_image?: string | null
-          marketing_highlights?: string[] | null
-          marketing_strategy?: Json | null
-          meta_description?: string | null
-          meta_description_new?: string | null
-          meta_keywords?: string[] | null
-          meta_title?: string | null
-          meta_title_new?: string | null
-          metaverse_preview_url?: string | null
-          model_3d_urls?: string[] | null
-          municipality?: string | null
-          neighborhood?: string | null
-          neighborhood_description?: string | null
-          nft_ownership_available?: boolean | null
-          og_image_url?: string | null
-          parking_spaces?: number | null
-          payment_plan?: Json | null
-          permits_obtained?: string[] | null
-          pet_policy?: string | null
-          photo_count?: number | null
-          photo_gallery_urls?: string[] | null
-          photos?: string[] | null
-          planning_permit_number?: string | null
-          plans?: string[] | null
-          price?: number | null
-          price_from?: string | null
-          price_from_new?: number | null
-          price_per_m2?: number | null
-          price_to?: number | null
-          pricing_strategy_notes?: string | null
-          project_code?: string | null
-          project_narrative?: string | null
-          project_phase?: string | null
-          project_presentation_url?: string | null
-          project_status?: string | null
-          property_category?: string | null
-          property_sub_type?: string[] | null
-          property_tax_yearly?: number | null
-          property_types?: string[] | null
-          proximity_airport_km?: number | null
-          proximity_city_center_km?: number | null
-          proximity_highway_km?: number | null
-          proximity_sea_km?: number | null
-          region?: string | null
-          renovation_year?: number | null
-          rental_yield_percent?: number | null
-          reservation_status?: string | null
-          roi_estimate_percent?: number | null
-          schema_markup?: Json | null
-          search_ranking_weight?: number | null
-          seasonal_features?: Json | null
-          seismic_rating?: string | null
-          smart_home_features?: Json | null
-          smoking_policy?: string | null
-          social_proof_stats?: Json | null
-          status?: string | null
-          status_project?: string | null
-          statut_commercial?: string | null
-          storage_spaces?: number | null
-          subtitle?: string | null
-          surrounding_amenities?: Json | null
-          sustainability_certifications?: string[] | null
-          target_audience?: string[] | null
-          testimonials?: Json | null
-          title?: string | null
-          title_deed_available?: boolean | null
-          title_deed_status?: string | null
-          title_deed_timeline?: string | null
-          total_units?: number | null
-          total_units_new?: number | null
-          transfer_fee?: number | null
-          translations?: Json | null
-          unique_selling_points?: string[] | null
-          unit_number?: string | null
-          units?: Json[] | null
-          units_available?: number | null
-          units_available_new?: number | null
-          units_sold?: number | null
-          updated_at?: string | null
-          url_slug?: string | null
-          vat_included?: boolean | null
-          vat_rate?: number | null
-          vat_rate_new?: number | null
-          video_tour_urls?: string[] | null
-          video_url?: string | null
-          view_count?: number | null
-          view_count_new?: number | null
-          vimeo_tour_url?: string | null
-          virtual_tour?: string | null
-          virtual_tour_url?: string | null
-          virtual_tour_url_new?: string | null
-          vr_tour_url?: string | null
-          warranty_years?: number | null
-          wellness_features?: string[] | null
-          youtube_tour_url?: string | null
-        }
-        Relationships: []
-      }
-      backup_properties_20250119: {
-        Row: {
-          annual_property_tax: number | null
-          appliances_list: Json | null
-          balcony_area: number | null
-          balcony_count: number | null
-          basement_area: number | null
-          bathroom_fixtures_brand: string | null
-          bathrooms_count: number | null
-          bedrooms_count: number | null
-          building_id: string | null
-          building_permit_number: string | null
-          cadastral_reference: string | null
-          ceiling_height: number | null
-          commission_amount: number | null
-          commission_rate: number | null
-          communal_fees_monthly: number | null
-          countertop_material: string | null
-          covered_verandas: number | null
-          created_at: string | null
-          created_by: string | null
-          current_price: number | null
-          deposit_amount: number | null
-          deposit_percentage: number | null
-          developer_id: string | null
-          discount_amount: number | null
-          discount_percentage: number | null
-          display_order: number | null
-          distance_to_elevator: number | null
-          distance_to_stairs: number | null
-          doors_type: string | null
-          en_suite_count: number | null
-          energy_certificate_number: string | null
-          energy_rating: string | null
-          entrance_type: string | null
-          estimated_utility_costs: number | null
-          facing: string[] | null
-          finance_available: boolean | null
-          fireplace_type: string | null
-          floor_number: number | null
-          flooring_type: string | null
-          furniture_package_value: number | null
-          garden_type: string | null
-          golden_visa_eligible: boolean | null
-          has_alarm_system: boolean | null
-          has_automatic_irrigation: boolean | null
-          has_balcony: boolean | null
-          has_bbq_area: boolean | null
-          has_central_vacuum: boolean | null
-          has_city_view: boolean | null
-          has_disabled_access: boolean | null
-          has_dressing_room: boolean | null
-          has_electric_car_charger: boolean | null
-          has_electric_shutters: boolean | null
-          has_fiber_optic: boolean | null
-          has_fireplace: boolean | null
-          has_garden_view: boolean | null
-          has_guest_wc: boolean | null
-          has_home_cinema: boolean | null
-          has_jacuzzi: boolean | null
-          has_kitchen_appliances: boolean | null
-          has_laundry_room: boolean | null
-          has_maid_room: boolean | null
-          has_mountain_view: boolean | null
-          has_office: boolean | null
-          has_outdoor_kitchen: boolean | null
-          has_pantry: boolean | null
-          has_pergola: boolean | null
-          has_playroom: boolean | null
-          has_pool_view: boolean | null
-          has_private_elevator: boolean | null
-          has_private_garden: boolean | null
-          has_private_pool: boolean | null
-          has_roof_terrace: boolean | null
-          has_safe: boolean | null
-          has_satellite_tv: boolean | null
-          has_sauna: boolean | null
-          has_sea_view: boolean | null
-          has_security_door: boolean | null
-          has_smart_home: boolean | null
-          has_solar_panels: boolean | null
-          has_storage_room: boolean | null
-          has_storage_unit: boolean | null
-          has_terrace: boolean | null
-          has_underfloor_heating: boolean | null
-          has_video_intercom: boolean | null
-          has_water_softener: boolean | null
-          has_wine_cellar: boolean | null
-          has_wine_fridge: boolean | null
-          heating_type: string | null
-          hvac_type: string | null
-          id: string | null
-          internal_area: number | null
-          internal_notes: string | null
-          internet_ready: boolean | null
-          investment_type: string | null
-          is_available: boolean | null
-          is_furnished: boolean | null
-          kitchen_area: number | null
-          kitchen_brand: string | null
-          kitchen_type: string | null
-          living_room_area: number | null
-          maintenance_fee_monthly: number | null
-          master_bedroom_area: number | null
-          minimum_cash_required: number | null
-          minimum_investment_met: boolean | null
-          occupancy_certificate: string | null
-          orientation: string | null
-          original_price: number | null
-          ownership_type: string | null
-          parking_included: boolean | null
-          parking_location: string | null
-          parking_spaces: number | null
-          parking_type: string | null
-          parking_type_unit: string | null
-          payment_plan_available: boolean | null
-          payment_plan_details: Json | null
-          planning_permit_number: string | null
-          plot_area: number | null
-          pool_size: string | null
-          pool_type: string | null
-          position_in_floor: string | null
-          price_excluding_vat: number | null
-          price_including_vat: number | null
-          price_per_sqm: number | null
-          private_garden_area: number | null
-          project_id: string | null
-          property_code: string | null
-          property_status: string | null
-          property_sub_type: string | null
-          property_type: string | null
-          public_description: string | null
-          referral_commission: number | null
-          referral_commission_rate: number | null
-          reservation_date: string | null
-          reservation_fee: number | null
-          roof_garden_area: number | null
-          sale_type: string | null
-          security_features: Json | null
-          smart_home_features: Json | null
-          sold_date: string | null
-          storage_area: number | null
-          storage_location: string | null
-          storage_spaces: number | null
-          terrace_area: number | null
-          terrace_count: number | null
-          title_deed_number: string | null
-          title_deed_status: string | null
-          total_covered_area: number | null
-          total_rooms: number | null
-          transfer_fee_amount: number | null
-          transfer_fee_percentage: number | null
-          uncovered_verandas: number | null
-          unit_number: string | null
-          updated_at: string | null
-          vat_amount: number | null
-          vat_rate: number | null
-          view_quality: string | null
-          view_type: Json | null
-          wall_finish: string | null
-          wc_count: number | null
-          windows_type: string | null
-        }
-        Insert: {
-          annual_property_tax?: number | null
-          appliances_list?: Json | null
-          balcony_area?: number | null
-          balcony_count?: number | null
-          basement_area?: number | null
-          bathroom_fixtures_brand?: string | null
-          bathrooms_count?: number | null
-          bedrooms_count?: number | null
-          building_id?: string | null
-          building_permit_number?: string | null
-          cadastral_reference?: string | null
-          ceiling_height?: number | null
-          commission_amount?: number | null
-          commission_rate?: number | null
-          communal_fees_monthly?: number | null
-          countertop_material?: string | null
-          covered_verandas?: number | null
-          created_at?: string | null
-          created_by?: string | null
-          current_price?: number | null
-          deposit_amount?: number | null
-          deposit_percentage?: number | null
-          developer_id?: string | null
-          discount_amount?: number | null
-          discount_percentage?: number | null
-          display_order?: number | null
-          distance_to_elevator?: number | null
-          distance_to_stairs?: number | null
-          doors_type?: string | null
-          en_suite_count?: number | null
-          energy_certificate_number?: string | null
-          energy_rating?: string | null
-          entrance_type?: string | null
-          estimated_utility_costs?: number | null
-          facing?: string[] | null
-          finance_available?: boolean | null
-          fireplace_type?: string | null
-          floor_number?: number | null
-          flooring_type?: string | null
-          furniture_package_value?: number | null
-          garden_type?: string | null
-          golden_visa_eligible?: boolean | null
-          has_alarm_system?: boolean | null
-          has_automatic_irrigation?: boolean | null
-          has_balcony?: boolean | null
-          has_bbq_area?: boolean | null
-          has_central_vacuum?: boolean | null
-          has_city_view?: boolean | null
-          has_disabled_access?: boolean | null
-          has_dressing_room?: boolean | null
-          has_electric_car_charger?: boolean | null
-          has_electric_shutters?: boolean | null
-          has_fiber_optic?: boolean | null
-          has_fireplace?: boolean | null
-          has_garden_view?: boolean | null
-          has_guest_wc?: boolean | null
-          has_home_cinema?: boolean | null
-          has_jacuzzi?: boolean | null
-          has_kitchen_appliances?: boolean | null
-          has_laundry_room?: boolean | null
-          has_maid_room?: boolean | null
-          has_mountain_view?: boolean | null
-          has_office?: boolean | null
-          has_outdoor_kitchen?: boolean | null
-          has_pantry?: boolean | null
-          has_pergola?: boolean | null
-          has_playroom?: boolean | null
-          has_pool_view?: boolean | null
-          has_private_elevator?: boolean | null
-          has_private_garden?: boolean | null
-          has_private_pool?: boolean | null
-          has_roof_terrace?: boolean | null
-          has_safe?: boolean | null
-          has_satellite_tv?: boolean | null
-          has_sauna?: boolean | null
-          has_sea_view?: boolean | null
-          has_security_door?: boolean | null
-          has_smart_home?: boolean | null
-          has_solar_panels?: boolean | null
-          has_storage_room?: boolean | null
-          has_storage_unit?: boolean | null
-          has_terrace?: boolean | null
-          has_underfloor_heating?: boolean | null
-          has_video_intercom?: boolean | null
-          has_water_softener?: boolean | null
-          has_wine_cellar?: boolean | null
-          has_wine_fridge?: boolean | null
-          heating_type?: string | null
-          hvac_type?: string | null
-          id?: string | null
-          internal_area?: number | null
-          internal_notes?: string | null
-          internet_ready?: boolean | null
-          investment_type?: string | null
-          is_available?: boolean | null
-          is_furnished?: boolean | null
-          kitchen_area?: number | null
-          kitchen_brand?: string | null
-          kitchen_type?: string | null
-          living_room_area?: number | null
-          maintenance_fee_monthly?: number | null
-          master_bedroom_area?: number | null
-          minimum_cash_required?: number | null
-          minimum_investment_met?: boolean | null
-          occupancy_certificate?: string | null
-          orientation?: string | null
-          original_price?: number | null
-          ownership_type?: string | null
-          parking_included?: boolean | null
-          parking_location?: string | null
-          parking_spaces?: number | null
-          parking_type?: string | null
-          parking_type_unit?: string | null
-          payment_plan_available?: boolean | null
-          payment_plan_details?: Json | null
-          planning_permit_number?: string | null
-          plot_area?: number | null
-          pool_size?: string | null
-          pool_type?: string | null
-          position_in_floor?: string | null
-          price_excluding_vat?: number | null
-          price_including_vat?: number | null
-          price_per_sqm?: number | null
-          private_garden_area?: number | null
-          project_id?: string | null
-          property_code?: string | null
-          property_status?: string | null
-          property_sub_type?: string | null
-          property_type?: string | null
-          public_description?: string | null
-          referral_commission?: number | null
-          referral_commission_rate?: number | null
-          reservation_date?: string | null
-          reservation_fee?: number | null
-          roof_garden_area?: number | null
-          sale_type?: string | null
-          security_features?: Json | null
-          smart_home_features?: Json | null
-          sold_date?: string | null
-          storage_area?: number | null
-          storage_location?: string | null
-          storage_spaces?: number | null
-          terrace_area?: number | null
-          terrace_count?: number | null
-          title_deed_number?: string | null
-          title_deed_status?: string | null
-          total_covered_area?: number | null
-          total_rooms?: number | null
-          transfer_fee_amount?: number | null
-          transfer_fee_percentage?: number | null
-          uncovered_verandas?: number | null
-          unit_number?: string | null
-          updated_at?: string | null
-          vat_amount?: number | null
-          vat_rate?: number | null
-          view_quality?: string | null
-          view_type?: Json | null
-          wall_finish?: string | null
-          wc_count?: number | null
-          windows_type?: string | null
-        }
-        Update: {
-          annual_property_tax?: number | null
-          appliances_list?: Json | null
-          balcony_area?: number | null
-          balcony_count?: number | null
-          basement_area?: number | null
-          bathroom_fixtures_brand?: string | null
-          bathrooms_count?: number | null
-          bedrooms_count?: number | null
-          building_id?: string | null
-          building_permit_number?: string | null
-          cadastral_reference?: string | null
-          ceiling_height?: number | null
-          commission_amount?: number | null
-          commission_rate?: number | null
-          communal_fees_monthly?: number | null
-          countertop_material?: string | null
-          covered_verandas?: number | null
-          created_at?: string | null
-          created_by?: string | null
-          current_price?: number | null
-          deposit_amount?: number | null
-          deposit_percentage?: number | null
-          developer_id?: string | null
-          discount_amount?: number | null
-          discount_percentage?: number | null
-          display_order?: number | null
-          distance_to_elevator?: number | null
-          distance_to_stairs?: number | null
-          doors_type?: string | null
-          en_suite_count?: number | null
-          energy_certificate_number?: string | null
-          energy_rating?: string | null
-          entrance_type?: string | null
-          estimated_utility_costs?: number | null
-          facing?: string[] | null
-          finance_available?: boolean | null
-          fireplace_type?: string | null
-          floor_number?: number | null
-          flooring_type?: string | null
-          furniture_package_value?: number | null
-          garden_type?: string | null
-          golden_visa_eligible?: boolean | null
-          has_alarm_system?: boolean | null
-          has_automatic_irrigation?: boolean | null
-          has_balcony?: boolean | null
-          has_bbq_area?: boolean | null
-          has_central_vacuum?: boolean | null
-          has_city_view?: boolean | null
-          has_disabled_access?: boolean | null
-          has_dressing_room?: boolean | null
-          has_electric_car_charger?: boolean | null
-          has_electric_shutters?: boolean | null
-          has_fiber_optic?: boolean | null
-          has_fireplace?: boolean | null
-          has_garden_view?: boolean | null
-          has_guest_wc?: boolean | null
-          has_home_cinema?: boolean | null
-          has_jacuzzi?: boolean | null
-          has_kitchen_appliances?: boolean | null
-          has_laundry_room?: boolean | null
-          has_maid_room?: boolean | null
-          has_mountain_view?: boolean | null
-          has_office?: boolean | null
-          has_outdoor_kitchen?: boolean | null
-          has_pantry?: boolean | null
-          has_pergola?: boolean | null
-          has_playroom?: boolean | null
-          has_pool_view?: boolean | null
-          has_private_elevator?: boolean | null
-          has_private_garden?: boolean | null
-          has_private_pool?: boolean | null
-          has_roof_terrace?: boolean | null
-          has_safe?: boolean | null
-          has_satellite_tv?: boolean | null
-          has_sauna?: boolean | null
-          has_sea_view?: boolean | null
-          has_security_door?: boolean | null
-          has_smart_home?: boolean | null
-          has_solar_panels?: boolean | null
-          has_storage_room?: boolean | null
-          has_storage_unit?: boolean | null
-          has_terrace?: boolean | null
-          has_underfloor_heating?: boolean | null
-          has_video_intercom?: boolean | null
-          has_water_softener?: boolean | null
-          has_wine_cellar?: boolean | null
-          has_wine_fridge?: boolean | null
-          heating_type?: string | null
-          hvac_type?: string | null
-          id?: string | null
-          internal_area?: number | null
-          internal_notes?: string | null
-          internet_ready?: boolean | null
-          investment_type?: string | null
-          is_available?: boolean | null
-          is_furnished?: boolean | null
-          kitchen_area?: number | null
-          kitchen_brand?: string | null
-          kitchen_type?: string | null
-          living_room_area?: number | null
-          maintenance_fee_monthly?: number | null
-          master_bedroom_area?: number | null
-          minimum_cash_required?: number | null
-          minimum_investment_met?: boolean | null
-          occupancy_certificate?: string | null
-          orientation?: string | null
-          original_price?: number | null
-          ownership_type?: string | null
-          parking_included?: boolean | null
-          parking_location?: string | null
-          parking_spaces?: number | null
-          parking_type?: string | null
-          parking_type_unit?: string | null
-          payment_plan_available?: boolean | null
-          payment_plan_details?: Json | null
-          planning_permit_number?: string | null
-          plot_area?: number | null
-          pool_size?: string | null
-          pool_type?: string | null
-          position_in_floor?: string | null
-          price_excluding_vat?: number | null
-          price_including_vat?: number | null
-          price_per_sqm?: number | null
-          private_garden_area?: number | null
-          project_id?: string | null
-          property_code?: string | null
-          property_status?: string | null
-          property_sub_type?: string | null
-          property_type?: string | null
-          public_description?: string | null
-          referral_commission?: number | null
-          referral_commission_rate?: number | null
-          reservation_date?: string | null
-          reservation_fee?: number | null
-          roof_garden_area?: number | null
-          sale_type?: string | null
-          security_features?: Json | null
-          smart_home_features?: Json | null
-          sold_date?: string | null
-          storage_area?: number | null
-          storage_location?: string | null
-          storage_spaces?: number | null
-          terrace_area?: number | null
-          terrace_count?: number | null
-          title_deed_number?: string | null
-          title_deed_status?: string | null
-          total_covered_area?: number | null
-          total_rooms?: number | null
-          transfer_fee_amount?: number | null
-          transfer_fee_percentage?: number | null
-          uncovered_verandas?: number | null
-          unit_number?: string | null
-          updated_at?: string | null
-          vat_amount?: number | null
-          vat_rate?: number | null
-          view_quality?: string | null
-          view_type?: Json | null
-          wall_finish?: string | null
-          wc_count?: number | null
-          windows_type?: string | null
-        }
-        Relationships: []
-      }
-      backup_properties_test_20250119: {
-        Row: {
-          bathrooms: number | null
-          bedrooms: number | null
-          building_id: string | null
-          created_at: string | null
-          floor: number | null
-          id: string | null
-          price: number | null
-          project_id: string | null
-          property_type: string | null
-          status: string | null
-          surface_area: number | null
-          unit_number: string | null
-        }
-        Insert: {
-          bathrooms?: number | null
-          bedrooms?: number | null
-          building_id?: string | null
-          created_at?: string | null
-          floor?: number | null
-          id?: string | null
-          price?: number | null
-          project_id?: string | null
-          property_type?: string | null
-          status?: string | null
-          surface_area?: number | null
-          unit_number?: string | null
-        }
-        Update: {
-          bathrooms?: number | null
-          bedrooms?: number | null
-          building_id?: string | null
-          created_at?: string | null
-          floor?: number | null
-          id?: string | null
-          price?: number | null
-          project_id?: string | null
-          property_type?: string | null
-          status?: string | null
-          surface_area?: number | null
-          unit_number?: string | null
-        }
-        Relationships: []
-      }
       building_drafts: {
         Row: {
           auto_save_enabled: boolean
@@ -3353,9 +461,10 @@ export type Database = {
           accessible_bathrooms: number | null
           accessible_elevator: boolean | null
           actual_completion: string | null
+          annee_construction: number | null
+          annee_renovation: number | null
           audio_assistance: boolean | null
           beach_access: boolean | null
-          bike_storage: boolean | null
           braille_signage: boolean | null
           building_amenities: Json | null
           building_brochure_url: string | null
@@ -3370,17 +479,20 @@ export type Database = {
           club_house: boolean | null
           common_areas: Json | null
           concierge_service: boolean | null
+          configuration_etages: Json | null
           construction_status: string | null
           coworking_space: boolean | null
           created_at: string | null
           created_by: string | null
+          date_mise_en_vente: string | null
           disabled_parking_spaces: number | null
           display_order: number | null
           elevator_count: number | null
           energy_certificate: string | null
-          energy_rating: string | null
           expected_completion: string | null
           floor_plans: Json | null
+          fourchette_prix_max: number | null
+          fourchette_prix_min: number | null
           golf_course: boolean | null
           has_cctv: boolean | null
           has_concierge: boolean | null
@@ -3398,17 +510,29 @@ export type Database = {
           has_solar_panels: boolean | null
           has_spa: boolean | null
           has_tennis_court: boolean | null
+          hauteur_batiment: number | null
           id: string
           infrastructure: Json | null
-          intercom_system: boolean | null
           kids_club: boolean | null
+          local_poussettes: boolean | null
+          local_velos: boolean | null
           marina_access: boolean | null
           mini_market: boolean | null
           model_3d_url: string | null
+          nombre_box_fermes: number | null
+          nombre_caves: number | null
+          nombre_logements_type: Json | null
+          nombre_lots: number | null
+          nombre_places_parking: number | null
+          norme_construction: string | null
+          orientation_principale: string | null
           outdoor_facilities: Json | null
           package_room: boolean | null
           parking_type: string | null
+          parking_visiteurs: number | null
           pet_washing_station: boolean | null
+          position_dans_projet: string | null
+          prix_moyen_m2: number | null
           project_id: string | null
           ramp_access: boolean | null
           restaurant: boolean | null
@@ -3416,11 +540,17 @@ export type Database = {
           shuttle_service: boolean | null
           smart_building_system: boolean | null
           sports_facilities: boolean | null
+          surface_caves: number | null
+          surface_totale_batiment: number | null
+          taux_occupation: number | null
           total_floors: number
           total_units: number | null
+          type_chauffage: string | null
+          type_climatisation: string | null
           typical_floor_plan_url: string | null
           units_available: number | null
           updated_at: string | null
+          vues_principales: string[] | null
           water_purification_system: boolean | null
           water_softener_system: boolean | null
           wellness_center: boolean | null
@@ -3432,9 +562,10 @@ export type Database = {
           accessible_bathrooms?: number | null
           accessible_elevator?: boolean | null
           actual_completion?: string | null
+          annee_construction?: number | null
+          annee_renovation?: number | null
           audio_assistance?: boolean | null
           beach_access?: boolean | null
-          bike_storage?: boolean | null
           braille_signage?: boolean | null
           building_amenities?: Json | null
           building_brochure_url?: string | null
@@ -3449,17 +580,20 @@ export type Database = {
           club_house?: boolean | null
           common_areas?: Json | null
           concierge_service?: boolean | null
+          configuration_etages?: Json | null
           construction_status?: string | null
           coworking_space?: boolean | null
           created_at?: string | null
           created_by?: string | null
+          date_mise_en_vente?: string | null
           disabled_parking_spaces?: number | null
           display_order?: number | null
           elevator_count?: number | null
           energy_certificate?: string | null
-          energy_rating?: string | null
           expected_completion?: string | null
           floor_plans?: Json | null
+          fourchette_prix_max?: number | null
+          fourchette_prix_min?: number | null
           golf_course?: boolean | null
           has_cctv?: boolean | null
           has_concierge?: boolean | null
@@ -3477,17 +611,29 @@ export type Database = {
           has_solar_panels?: boolean | null
           has_spa?: boolean | null
           has_tennis_court?: boolean | null
+          hauteur_batiment?: number | null
           id?: string
           infrastructure?: Json | null
-          intercom_system?: boolean | null
           kids_club?: boolean | null
+          local_poussettes?: boolean | null
+          local_velos?: boolean | null
           marina_access?: boolean | null
           mini_market?: boolean | null
           model_3d_url?: string | null
+          nombre_box_fermes?: number | null
+          nombre_caves?: number | null
+          nombre_logements_type?: Json | null
+          nombre_lots?: number | null
+          nombre_places_parking?: number | null
+          norme_construction?: string | null
+          orientation_principale?: string | null
           outdoor_facilities?: Json | null
           package_room?: boolean | null
           parking_type?: string | null
+          parking_visiteurs?: number | null
           pet_washing_station?: boolean | null
+          position_dans_projet?: string | null
+          prix_moyen_m2?: number | null
           project_id?: string | null
           ramp_access?: boolean | null
           restaurant?: boolean | null
@@ -3495,11 +641,17 @@ export type Database = {
           shuttle_service?: boolean | null
           smart_building_system?: boolean | null
           sports_facilities?: boolean | null
+          surface_caves?: number | null
+          surface_totale_batiment?: number | null
+          taux_occupation?: number | null
           total_floors: number
           total_units?: number | null
+          type_chauffage?: string | null
+          type_climatisation?: string | null
           typical_floor_plan_url?: string | null
           units_available?: number | null
           updated_at?: string | null
+          vues_principales?: string[] | null
           water_purification_system?: boolean | null
           water_softener_system?: boolean | null
           wellness_center?: boolean | null
@@ -3511,9 +663,10 @@ export type Database = {
           accessible_bathrooms?: number | null
           accessible_elevator?: boolean | null
           actual_completion?: string | null
+          annee_construction?: number | null
+          annee_renovation?: number | null
           audio_assistance?: boolean | null
           beach_access?: boolean | null
-          bike_storage?: boolean | null
           braille_signage?: boolean | null
           building_amenities?: Json | null
           building_brochure_url?: string | null
@@ -3528,17 +681,20 @@ export type Database = {
           club_house?: boolean | null
           common_areas?: Json | null
           concierge_service?: boolean | null
+          configuration_etages?: Json | null
           construction_status?: string | null
           coworking_space?: boolean | null
           created_at?: string | null
           created_by?: string | null
+          date_mise_en_vente?: string | null
           disabled_parking_spaces?: number | null
           display_order?: number | null
           elevator_count?: number | null
           energy_certificate?: string | null
-          energy_rating?: string | null
           expected_completion?: string | null
           floor_plans?: Json | null
+          fourchette_prix_max?: number | null
+          fourchette_prix_min?: number | null
           golf_course?: boolean | null
           has_cctv?: boolean | null
           has_concierge?: boolean | null
@@ -3556,17 +712,29 @@ export type Database = {
           has_solar_panels?: boolean | null
           has_spa?: boolean | null
           has_tennis_court?: boolean | null
+          hauteur_batiment?: number | null
           id?: string
           infrastructure?: Json | null
-          intercom_system?: boolean | null
           kids_club?: boolean | null
+          local_poussettes?: boolean | null
+          local_velos?: boolean | null
           marina_access?: boolean | null
           mini_market?: boolean | null
           model_3d_url?: string | null
+          nombre_box_fermes?: number | null
+          nombre_caves?: number | null
+          nombre_logements_type?: Json | null
+          nombre_lots?: number | null
+          nombre_places_parking?: number | null
+          norme_construction?: string | null
+          orientation_principale?: string | null
           outdoor_facilities?: Json | null
           package_room?: boolean | null
           parking_type?: string | null
+          parking_visiteurs?: number | null
           pet_washing_station?: boolean | null
+          position_dans_projet?: string | null
+          prix_moyen_m2?: number | null
           project_id?: string | null
           ramp_access?: boolean | null
           restaurant?: boolean | null
@@ -3574,11 +742,17 @@ export type Database = {
           shuttle_service?: boolean | null
           smart_building_system?: boolean | null
           sports_facilities?: boolean | null
+          surface_caves?: number | null
+          surface_totale_batiment?: number | null
+          taux_occupation?: number | null
           total_floors?: number
           total_units?: number | null
+          type_chauffage?: string | null
+          type_climatisation?: string | null
           typical_floor_plan_url?: string | null
           units_available?: number | null
           updated_at?: string | null
+          vues_principales?: string[] | null
           water_purification_system?: boolean | null
           water_softener_system?: boolean | null
           wellness_center?: boolean | null
@@ -4195,24 +1369,6 @@ export type Database = {
         }
         Relationships: []
       }
-      migration_report_20250119: {
-        Row: {
-          backup_created_at: string | null
-          row_count: number | null
-          table_name: string | null
-        }
-        Insert: {
-          backup_created_at?: string | null
-          row_count?: number | null
-          table_name?: string | null
-        }
-        Update: {
-          backup_created_at?: string | null
-          row_count?: number | null
-          table_name?: string | null
-        }
-        Relationships: []
-      }
       nearby_amenities: {
         Row: {
           category: string
@@ -4595,7 +1751,6 @@ export type Database = {
           architect_name: string | null
           auto_detected_zone: boolean | null
           available_units: number | null
-          backup_power_generator: boolean | null
           bank_partners: Json | null
           beach_access: boolean | null
           bedrooms_range_max: number | null
@@ -4612,7 +1767,6 @@ export type Database = {
           business_center: boolean | null
           cafe: boolean | null
           cancellation_policy: string | null
-          carbon_neutral: boolean | null
           categorized_photos: Json | null
           city: string
           club_house: boolean | null
@@ -4621,7 +1775,6 @@ export type Database = {
           completion_month: string | null
           compliance_certifications: Json | null
           concierge_service: boolean | null
-          construction_company: string | null
           construction_materials: Json | null
           construction_phase: string | null
           construction_start: string | null
@@ -4641,10 +1794,7 @@ export type Database = {
           drone_footage_url: string | null
           drone_footage_urls: Json | null
           early_bird_discount: number | null
-          electricity_connection_status: string | null
           energy_efficiency_class: string | null
-          energy_rating: string | null
-          ev_charging_power_kw: number | null
           ev_charging_stations: number | null
           ev_charging_type: string | null
           exclusive_commercialization: boolean | null
@@ -4669,7 +1819,6 @@ export type Database = {
           gps_latitude: number | null
           gps_longitude: number | null
           green_building_certification: string | null
-          grey_water_recycling: boolean | null
           guaranteed_rental_return: number | null
           has_cctv: boolean | null
           has_concierge: boolean | null
@@ -4694,12 +1843,9 @@ export type Database = {
           investment_highlights: Json | null
           kids_club: boolean | null
           land_area_m2: number | null
-          land_title_status: string | null
           last_price_update: string | null
           launch_date: string | null
           launch_month: string | null
-          legal_fees_included: boolean | null
-          legal_status: string | null
           lifestyle_amenities: Json | null
           maintenance_fees_yearly: number | null
           map_image: string | null
@@ -4714,9 +1860,9 @@ export type Database = {
           municipality: string | null
           neighborhood: string | null
           neighborhood_description: string | null
-          net_metering_available: boolean | null
           og_image_url: string | null
           outdoor_facilities: Json | null
+          parking_spaces: number | null
           parking_type: string | null
           payment_plan: Json | null
           payment_plans: Json | null
@@ -4750,7 +1896,6 @@ export type Database = {
           proximity_city_center_km: number | null
           proximity_highway_km: number | null
           proximity_sea_km: number | null
-          rainwater_harvesting: boolean | null
           region: string | null
           renovation_year: number | null
           rental_management_available: boolean | null
@@ -4779,7 +1924,6 @@ export type Database = {
           sports_facilities: boolean | null
           square_meters_max: number | null
           square_meters_min: number | null
-          stamp_duty_included: boolean | null
           status: string | null
           statut_commercial: string | null
           street_address: string | null
@@ -4790,8 +1934,6 @@ export type Database = {
           sustainability_certifications: Json | null
           target_audience: string | null
           title: string
-          title_deed_available: boolean | null
-          title_deed_timeline: string | null
           total_phases: number | null
           total_units: number | null
           transfer_fees_included: boolean | null
@@ -4799,9 +1941,7 @@ export type Database = {
           units_available: number | null
           units_sold: number | null
           updated_at: string | null
-          ups_system: boolean | null
           url_slug: string | null
-          utilities_connection_status: string | null
           vat_included: boolean | null
           vat_rate: number | null
           video_tour_url: string | null
@@ -4813,7 +1953,6 @@ export type Database = {
           virtual_tour_url: string | null
           vr_tour_url: string | null
           warranty_years: number | null
-          water_connection_status: string | null
           wellness_center: boolean | null
           wellness_facilities: Json | null
           wellness_features: Json | null
@@ -4833,7 +1972,6 @@ export type Database = {
           architect_name?: string | null
           auto_detected_zone?: boolean | null
           available_units?: number | null
-          backup_power_generator?: boolean | null
           bank_partners?: Json | null
           beach_access?: boolean | null
           bedrooms_range_max?: number | null
@@ -4850,7 +1988,6 @@ export type Database = {
           business_center?: boolean | null
           cafe?: boolean | null
           cancellation_policy?: string | null
-          carbon_neutral?: boolean | null
           categorized_photos?: Json | null
           city: string
           club_house?: boolean | null
@@ -4859,7 +1996,6 @@ export type Database = {
           completion_month?: string | null
           compliance_certifications?: Json | null
           concierge_service?: boolean | null
-          construction_company?: string | null
           construction_materials?: Json | null
           construction_phase?: string | null
           construction_start?: string | null
@@ -4879,10 +2015,7 @@ export type Database = {
           drone_footage_url?: string | null
           drone_footage_urls?: Json | null
           early_bird_discount?: number | null
-          electricity_connection_status?: string | null
           energy_efficiency_class?: string | null
-          energy_rating?: string | null
-          ev_charging_power_kw?: number | null
           ev_charging_stations?: number | null
           ev_charging_type?: string | null
           exclusive_commercialization?: boolean | null
@@ -4907,7 +2040,6 @@ export type Database = {
           gps_latitude?: number | null
           gps_longitude?: number | null
           green_building_certification?: string | null
-          grey_water_recycling?: boolean | null
           guaranteed_rental_return?: number | null
           has_cctv?: boolean | null
           has_concierge?: boolean | null
@@ -4932,12 +2064,9 @@ export type Database = {
           investment_highlights?: Json | null
           kids_club?: boolean | null
           land_area_m2?: number | null
-          land_title_status?: string | null
           last_price_update?: string | null
           launch_date?: string | null
           launch_month?: string | null
-          legal_fees_included?: boolean | null
-          legal_status?: string | null
           lifestyle_amenities?: Json | null
           maintenance_fees_yearly?: number | null
           map_image?: string | null
@@ -4952,9 +2081,9 @@ export type Database = {
           municipality?: string | null
           neighborhood?: string | null
           neighborhood_description?: string | null
-          net_metering_available?: boolean | null
           og_image_url?: string | null
           outdoor_facilities?: Json | null
+          parking_spaces?: number | null
           parking_type?: string | null
           payment_plan?: Json | null
           payment_plans?: Json | null
@@ -4988,7 +2117,6 @@ export type Database = {
           proximity_city_center_km?: number | null
           proximity_highway_km?: number | null
           proximity_sea_km?: number | null
-          rainwater_harvesting?: boolean | null
           region?: string | null
           renovation_year?: number | null
           rental_management_available?: boolean | null
@@ -5017,7 +2145,6 @@ export type Database = {
           sports_facilities?: boolean | null
           square_meters_max?: number | null
           square_meters_min?: number | null
-          stamp_duty_included?: boolean | null
           status?: string | null
           statut_commercial?: string | null
           street_address?: string | null
@@ -5028,8 +2155,6 @@ export type Database = {
           sustainability_certifications?: Json | null
           target_audience?: string | null
           title: string
-          title_deed_available?: boolean | null
-          title_deed_timeline?: string | null
           total_phases?: number | null
           total_units?: number | null
           transfer_fees_included?: boolean | null
@@ -5037,9 +2162,7 @@ export type Database = {
           units_available?: number | null
           units_sold?: number | null
           updated_at?: string | null
-          ups_system?: boolean | null
           url_slug?: string | null
-          utilities_connection_status?: string | null
           vat_included?: boolean | null
           vat_rate?: number | null
           video_tour_url?: string | null
@@ -5051,7 +2174,6 @@ export type Database = {
           virtual_tour_url?: string | null
           vr_tour_url?: string | null
           warranty_years?: number | null
-          water_connection_status?: string | null
           wellness_center?: boolean | null
           wellness_facilities?: Json | null
           wellness_features?: Json | null
@@ -5071,7 +2193,6 @@ export type Database = {
           architect_name?: string | null
           auto_detected_zone?: boolean | null
           available_units?: number | null
-          backup_power_generator?: boolean | null
           bank_partners?: Json | null
           beach_access?: boolean | null
           bedrooms_range_max?: number | null
@@ -5088,7 +2209,6 @@ export type Database = {
           business_center?: boolean | null
           cafe?: boolean | null
           cancellation_policy?: string | null
-          carbon_neutral?: boolean | null
           categorized_photos?: Json | null
           city?: string
           club_house?: boolean | null
@@ -5097,7 +2217,6 @@ export type Database = {
           completion_month?: string | null
           compliance_certifications?: Json | null
           concierge_service?: boolean | null
-          construction_company?: string | null
           construction_materials?: Json | null
           construction_phase?: string | null
           construction_start?: string | null
@@ -5117,10 +2236,7 @@ export type Database = {
           drone_footage_url?: string | null
           drone_footage_urls?: Json | null
           early_bird_discount?: number | null
-          electricity_connection_status?: string | null
           energy_efficiency_class?: string | null
-          energy_rating?: string | null
-          ev_charging_power_kw?: number | null
           ev_charging_stations?: number | null
           ev_charging_type?: string | null
           exclusive_commercialization?: boolean | null
@@ -5145,7 +2261,6 @@ export type Database = {
           gps_latitude?: number | null
           gps_longitude?: number | null
           green_building_certification?: string | null
-          grey_water_recycling?: boolean | null
           guaranteed_rental_return?: number | null
           has_cctv?: boolean | null
           has_concierge?: boolean | null
@@ -5170,12 +2285,9 @@ export type Database = {
           investment_highlights?: Json | null
           kids_club?: boolean | null
           land_area_m2?: number | null
-          land_title_status?: string | null
           last_price_update?: string | null
           launch_date?: string | null
           launch_month?: string | null
-          legal_fees_included?: boolean | null
-          legal_status?: string | null
           lifestyle_amenities?: Json | null
           maintenance_fees_yearly?: number | null
           map_image?: string | null
@@ -5190,9 +2302,9 @@ export type Database = {
           municipality?: string | null
           neighborhood?: string | null
           neighborhood_description?: string | null
-          net_metering_available?: boolean | null
           og_image_url?: string | null
           outdoor_facilities?: Json | null
+          parking_spaces?: number | null
           parking_type?: string | null
           payment_plan?: Json | null
           payment_plans?: Json | null
@@ -5226,7 +2338,6 @@ export type Database = {
           proximity_city_center_km?: number | null
           proximity_highway_km?: number | null
           proximity_sea_km?: number | null
-          rainwater_harvesting?: boolean | null
           region?: string | null
           renovation_year?: number | null
           rental_management_available?: boolean | null
@@ -5255,7 +2366,6 @@ export type Database = {
           sports_facilities?: boolean | null
           square_meters_max?: number | null
           square_meters_min?: number | null
-          stamp_duty_included?: boolean | null
           status?: string | null
           statut_commercial?: string | null
           street_address?: string | null
@@ -5266,8 +2376,6 @@ export type Database = {
           sustainability_certifications?: Json | null
           target_audience?: string | null
           title?: string
-          title_deed_available?: boolean | null
-          title_deed_timeline?: string | null
           total_phases?: number | null
           total_units?: number | null
           transfer_fees_included?: boolean | null
@@ -5275,9 +2383,7 @@ export type Database = {
           units_available?: number | null
           units_sold?: number | null
           updated_at?: string | null
-          ups_system?: boolean | null
           url_slug?: string | null
-          utilities_connection_status?: string | null
           vat_included?: boolean | null
           vat_rate?: number | null
           video_tour_url?: string | null
@@ -5289,7 +2395,6 @@ export type Database = {
           virtual_tour_url?: string | null
           vr_tour_url?: string | null
           warranty_years?: number | null
-          water_connection_status?: string | null
           wellness_center?: boolean | null
           wellness_facilities?: Json | null
           wellness_features?: Json | null
@@ -6026,13 +3131,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "properties_building_id_fkey"
-            columns: ["building_id"]
-            isOneToOne: false
-            referencedRelation: "buildings_with_project_info"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "properties_developer_id_fkey"
             columns: ["developer_id"]
             isOneToOne: false
@@ -6047,51 +3145,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      properties_test: {
-        Row: {
-          bathrooms: number | null
-          bedrooms: number | null
-          building_id: string
-          created_at: string | null
-          floor: number | null
-          id: string
-          price: number | null
-          project_id: string
-          property_type: string
-          status: string | null
-          surface_area: number | null
-          unit_number: string
-        }
-        Insert: {
-          bathrooms?: number | null
-          bedrooms?: number | null
-          building_id: string
-          created_at?: string | null
-          floor?: number | null
-          id?: string
-          price?: number | null
-          project_id: string
-          property_type: string
-          status?: string | null
-          surface_area?: number | null
-          unit_number: string
-        }
-        Update: {
-          bathrooms?: number | null
-          bedrooms?: number | null
-          building_id?: string
-          created_at?: string | null
-          floor?: number | null
-          id?: string
-          price?: number | null
-          project_id?: string
-          property_type?: string
-          status?: string | null
-          surface_area?: number | null
-          unit_number?: string
-        }
-        Relationships: []
       }
       property_drafts: {
         Row: {
@@ -6189,115 +3242,32 @@ export type Database = {
         }
         Relationships: []
       }
-      test_properties: {
+      user_roles: {
         Row: {
-          building_id: string | null
-          created_at: string | null
+          created_at: string
+          created_by: string | null
           id: string
-          project_id: string | null
-          property_type: string | null
-          unit_number: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
         }
         Insert: {
-          building_id?: string | null
-          created_at?: string | null
+          created_at?: string
+          created_by?: string | null
           id?: string
-          project_id?: string | null
-          property_type?: string | null
-          unit_number?: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
         }
         Update: {
-          building_id?: string | null
-          created_at?: string | null
+          created_at?: string
+          created_by?: string | null
           id?: string
-          project_id?: string | null
-          property_type?: string | null
-          unit_number?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
         }
         Relationships: []
       }
     }
     Views: {
-      buildings_with_project_info: {
-        Row: {
-          accessible_bathrooms: number | null
-          accessible_elevator: boolean | null
-          actual_completion: string | null
-          audio_assistance: boolean | null
-          bike_storage: boolean | null
-          braille_signage: boolean | null
-          building_amenities: Json | null
-          building_brochure_url: string | null
-          building_class: string | null
-          building_code: string | null
-          building_name: string | null
-          building_type: string | null
-          car_wash_area: boolean | null
-          central_vacuum_system: boolean | null
-          common_areas: Json | null
-          construction_status: string | null
-          created_at: string | null
-          created_by: string | null
-          disabled_parking_spaces: number | null
-          display_order: number | null
-          elevator_count: number | null
-          energy_certificate: string | null
-          energy_rating: string | null
-          expected_completion: string | null
-          floor_plans: Json | null
-          has_cctv: boolean | null
-          has_concierge: boolean | null
-          has_garden: boolean | null
-          has_generator: boolean | null
-          has_gym: boolean | null
-          has_parking: boolean | null
-          has_playground: boolean | null
-          has_pool: boolean | null
-          has_security_system: boolean | null
-          has_solar_panels: boolean | null
-          has_spa: boolean | null
-          id: string | null
-          infrastructure: Json | null
-          intercom_system: boolean | null
-          model_3d_url: string | null
-          outdoor_facilities: Json | null
-          package_room: boolean | null
-          parking_type: string | null
-          pet_washing_station: boolean | null
-          project_city: string | null
-          project_completion_date: string | null
-          project_construction_year: number | null
-          project_energy_rating: string | null
-          project_id: string | null
-          project_postal_code: string | null
-          project_status: string | null
-          project_street_address: string | null
-          project_title: string | null
-          project_zone: string | null
-          ramp_access: boolean | null
-          security_features: Json | null
-          smart_building_system: boolean | null
-          total_floors: number | null
-          total_units: number | null
-          typical_floor_plan_url: string | null
-          units_available: number | null
-          updated_at: string | null
-          water_purification_system: boolean | null
-          water_softener_system: boolean | null
-          wellness_facilities: Json | null
-          wheelchair_accessible: boolean | null
-          wide_doorways: boolean | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "buildings_project_id_fkey"
-            columns: ["project_id"]
-            isOneToOne: false
-            referencedRelation: "projects"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       enki_components: {
         Row: {
           category: string | null
@@ -6480,13 +3450,6 @@ export type Database = {
             columns: ["building_id"]
             isOneToOne: false
             referencedRelation: "buildings"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "properties_building_id_fkey"
-            columns: ["building_id"]
-            isOneToOne: false
-            referencedRelation: "buildings_with_project_info"
             referencedColumns: ["id"]
           },
         ]
@@ -6717,13 +3680,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "properties_building_id_fkey"
-            columns: ["building_id"]
-            isOneToOne: false
-            referencedRelation: "buildings_with_project_info"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "properties_developer_id_fkey"
             columns: ["developer_id"]
             isOneToOne: false
@@ -6834,6 +3790,13 @@ export type Database = {
         Args: { property_id: string }
         Returns: Json
       }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       insert_property_minimal: {
         Args: {
           p_building_id: string
@@ -6860,6 +3823,14 @@ export type Database = {
           p_unit_number: string
         }
         Returns: string
+      }
+      is_admin: {
+        Args: { _user_id?: string }
+        Returns: boolean
+      }
+      is_sales: {
+        Args: { _user_id?: string }
+        Returns: boolean
       }
       log_admin_action: {
         Args: {
@@ -6908,7 +3879,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "sales" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -7035,6 +4006,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "sales", "user"],
+    },
   },
 } as const
