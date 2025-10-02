@@ -266,7 +266,7 @@ const AdminBuildingDetail = () => {
                   <div className="flex items-center justify-between">
                     <span className="text-sm">Classe énergétique:</span>
                     <span className="font-semibold">
-                      {building.energy_rating || 'Non définie'}
+                      {building.energy_certificate || 'Non définie'}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">

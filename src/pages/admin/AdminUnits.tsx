@@ -20,12 +20,12 @@ interface Property {
   id: string;
   unit_number: string;
   property_type: string;
-  status: string;
-  price?: number;
-  bedrooms?: number;
-  bathrooms?: number;
-  surface_area?: number;
-  floor?: number;
+  property_status: string;
+  price_excluding_vat?: number;
+  bedrooms_count?: number;
+  bathrooms_count?: number;
+  internal_area?: number;
+  floor_number?: number;
   created_at: string;
   project_id: string;
   building_id: string;
@@ -110,10 +110,10 @@ const AdminUnits = () => {
       const { from, to } = getPaginationRange(pagination);
       
       let query = supabase
-        .from('properties_test')
+        .from('properties')
         .select(`
-          id, unit_number, property_type, status, price, bedrooms, bathrooms,
-          surface_area, floor, created_at, project_id, building_id
+          id, unit_number, property_type, property_status, price_excluding_vat, bedrooms_count, bathrooms_count,
+          internal_area, floor_number, created_at, project_id, building_id
         `, { count: 'exact' })
         .range(from, to)
         .order('created_at', { ascending: false });
@@ -123,7 +123,7 @@ const AdminUnits = () => {
         query = query.ilike('unit_number', `%${filters.search}%`);
       }
       if (filters.status !== 'all') {
-        query = query.eq('status', filters.status);
+        query = query.eq('property_status', filters.status);
       }
       if (filters.propertyType !== 'all') {
         query = query.eq('property_type', filters.propertyType);
@@ -181,9 +181,9 @@ const AdminUnits = () => {
   const stats = useMemo(() => {
     return {
       total: propertiesData.length,
-      available: propertiesData.filter(p => p.status === 'available').length,
-      reserved: propertiesData.filter(p => p.status === 'reserved').length,
-      sold: propertiesData.filter(p => p.status === 'sold').length,
+      available: propertiesData.filter(p => p.property_status === 'available').length,
+      reserved: propertiesData.filter(p => p.property_status === 'reserved').length,
+      sold: propertiesData.filter(p => p.property_status === 'sold').length,
     };
   }, [propertiesData]);
 
@@ -353,13 +353,13 @@ const AdminUnits = () => {
                       <h3 className="font-semibold text-slate-900">{property.unit_number || 'N/A'}</h3>
                       <p className="text-sm text-slate-600">Référence: {property.id.slice(0, 8)}...</p>
                     </div>
-                    {getStatusBadge(property.status)}
+                    {getStatusBadge(property.property_status)}
                   </div>
                   <div className="space-y-2">
                     {getPropertyTypeBadge(property.property_type)}
                     <div className="text-sm text-slate-600">
-                      <p>Prix: {formatPrice(property.price)}</p>
-                      <p>Surface: {property.surface_area ? `${property.surface_area} m²` : 'N/A'}</p>
+                      <p>Prix: {formatPrice(property.price_excluding_vat)}</p>
+                      <p>Surface: {property.internal_area ? `${property.internal_area} m²` : 'N/A'}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 pt-2 border-t border-slate-200">
@@ -390,11 +390,11 @@ const AdminUnits = () => {
                     </div>
                     <div className="flex items-center gap-2">
                       {getPropertyTypeBadge(property.property_type)}
-                      {getStatusBadge(property.status)}
+                      {getStatusBadge(property.property_status)}
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <span className="font-semibold text-slate-900">{formatPrice(property.price)}</span>
+                    <span className="font-semibold text-slate-900">{formatPrice(property.price_excluding_vat)}</span>
                     <div className="flex items-center gap-2">
                        <Button variant="ghost" size="sm" onClick={() => setPreviewProperty(property)}>
                           <Eye className="h-4 w-4" />
@@ -418,10 +418,10 @@ const AdminUnits = () => {
                   <div className="flex items-center gap-3">
                     <span className="font-medium text-slate-900">{property.unit_number || 'N/A'}</span>
                     {getPropertyTypeBadge(property.property_type)}
-                    {getStatusBadge(property.status)}
+                    {getStatusBadge(property.property_status)}
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-sm font-semibold text-slate-900">{formatPrice(property.price)}</span>
+                    <span className="text-sm font-semibold text-slate-900">{formatPrice(property.price_excluding_vat)}</span>
                     <div className="flex items-center gap-1">
                        <Button variant="ghost" size="sm" onClick={() => setPreviewProperty(property)} className="h-7 w-7 p-0">
                           <Eye className="h-3 w-3" />
@@ -448,30 +448,30 @@ const AdminUnits = () => {
                       <p className="text-sm text-slate-600">Référence: {property.id}</p>
                       <div className="flex items-center gap-2">
                         {getPropertyTypeBadge(property.property_type)}
-                        {getStatusBadge(property.status)}
+                        {getStatusBadge(property.property_status)}
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-2xl font-bold text-slate-900">{formatPrice(property.price)}</div>
+                      <div className="text-2xl font-bold text-slate-900">{formatPrice(property.price_excluding_vat)}</div>
                     </div>
                   </div>
                   
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                     <div>
                       <span className="text-slate-600">Surface:</span>
-                      <div className="font-medium">{property.surface_area ? `${property.surface_area} m²` : 'N/A'}</div>
+                      <div className="font-medium">{property.internal_area ? `${property.internal_area} m²` : 'N/A'}</div>
                     </div>
                     <div>
                       <span className="text-slate-600">Chambres:</span>
-                      <div className="font-medium">{property.bedrooms || 'N/A'}</div>
+                      <div className="font-medium">{property.bedrooms_count || 'N/A'}</div>
                     </div>
                     <div>
                       <span className="text-slate-600">Salles de bain:</span>
-                      <div className="font-medium">{property.bathrooms || 'N/A'}</div>
+                      <div className="font-medium">{property.bathrooms_count || 'N/A'}</div>
                     </div>
                     <div>
                       <span className="text-slate-600">Étage:</span>
-                      <div className="font-medium">{property.floor || 'N/A'}</div>
+                      <div className="font-medium">{property.floor_number || 'N/A'}</div>
                     </div>
                   </div>
 
@@ -701,11 +701,11 @@ const AdminUnits = () => {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-600">Statut:</span>
-                        {getStatusBadge(previewProperty.status)}
+                        {getStatusBadge(previewProperty.property_status)}
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-600">Prix:</span>
-                        <span className="font-medium text-lg">{formatPrice(previewProperty.price)}</span>
+                        <span className="font-medium text-lg">{formatPrice(previewProperty.price_excluding_vat)}</span>
                       </div>
                     </div>
                   </div>
@@ -715,19 +715,19 @@ const AdminUnits = () => {
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span className="text-slate-600">Chambres:</span>
-                        <span className="font-medium">{previewProperty.bedrooms || 'N/A'}</span>
+                        <span className="font-medium">{previewProperty.bedrooms_count || 'N/A'}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-600">Salles de bain:</span>
-                        <span className="font-medium">{previewProperty.bathrooms || 'N/A'}</span>
+                        <span className="font-medium">{previewProperty.bathrooms_count || 'N/A'}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-600">Surface:</span>
-                        <span className="font-medium">{previewProperty.surface_area ? `${previewProperty.surface_area} m²` : 'N/A'}</span>
+                        <span className="font-medium">{previewProperty.internal_area ? `${previewProperty.internal_area} m²` : 'N/A'}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-600">Surface intérieure:</span>
-                        <span className="font-medium">{previewProperty.surface_area ? `${previewProperty.surface_area} m²` : 'N/A'}</span>
+                        <span className="font-medium">{previewProperty.internal_area ? `${previewProperty.internal_area} m²` : 'N/A'}</span>
                       </div>
                     </div>
                   </div>
