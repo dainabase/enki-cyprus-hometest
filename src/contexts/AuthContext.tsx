@@ -40,24 +40,45 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Fetch user profile from profiles table
+  // Fetch user profile from profiles table AND user_roles
   const fetchProfile = async (userId: string) => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
+      
+      // Fetch profile data
+      const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .single();
 
-      if (error) {
-        console.error('Profile fetch error:', error);
+      if (profileError) {
+        console.error('Profile fetch error:', profileError);
         setProfile(null);
-      } else if (data) {
+        setLoading(false);
+        return;
+      }
+
+      // Fetch user roles from user_roles table (secure)
+      const { data: rolesData, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId);
+
+      if (rolesError) {
+        console.error('Roles fetch error:', rolesError);
+      }
+
+      // Determine role from user_roles table (more secure)
+      const roles = rolesData?.map(r => r.role) || [];
+      const isAdmin = roles.includes('admin');
+      const role = isAdmin ? 'admin' : 'user';
+
+      if (profileData) {
         setProfile({
-          ...data,
-          role: data.role as 'admin' | 'user',
-          profile: (data.profile as any) || {}
+          ...profileData,
+          role: role as 'admin' | 'user',
+          profile: (profileData.profile as any) || {}
         });
       }
     } catch (error) {
