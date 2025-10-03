@@ -221,15 +221,15 @@ const AdminProperties = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300">
+        <Card className="bg-gradient-to-br from-[hsl(199,63%,95%)] to-[hsl(199,63%,90%)] border-2 border-[hsl(199,63%,75%)] hover:border-[hsl(199,63%,65%)] hover:shadow-lg transition-all duration-300">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-blue-700">Valeur totale</p>
-                <p className="text-xl font-bold text-blue-900">€{stats.totalValue.toLocaleString()}</p>
+                <p className="text-sm font-medium text-[hsl(199,63%,40%)]">Valeur totale</p>
+                <p className="text-xl font-bold text-[hsl(199,63%,30%)]">€{stats.totalValue.toLocaleString()}</p>
               </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center">
-                <Euro className="h-6 w-6 text-blue-700" />
+              <div className="w-12 h-12 bg-gradient-to-br from-[hsl(199,63%,80%)] to-[hsl(199,63%,70%)] rounded-xl flex items-center justify-center">
+                <Euro className="h-6 w-6 text-[hsl(199,63%,40%)]" />
               </div>
             </div>
           </CardContent>
@@ -243,7 +243,7 @@ const AdminProperties = () => {
           <Input
             type="text"
             placeholder="Rechercher par code, unité, bâtiment ou projet..."
-            className="pl-10 border-2 border-slate-200 focus:border-blue-500 focus:ring-blue-500"
+            className="pl-10 border-2 border-slate-200 focus:border-[hsl(199,63%,59%)] focus:ring-[hsl(199,63%,59%)]"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
