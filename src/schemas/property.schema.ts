@@ -10,8 +10,6 @@ export const propertySchema = z.object({
   property_type: z.enum(['apartment', 'villa', 'penthouse', 'studio', 'townhouse', 'duplex', 'triplex', 'maisonette']),
   property_sub_type: z.string().optional(),
   property_status: z.enum(['available', 'reserved', 'sold', 'rented', 'unavailable']).default('available'),
-  sale_type: z.enum(['sale', 'rent', 'both']).default('sale'),
-  ownership_type: z.enum(['freehold', 'leasehold', 'shared_ownership']).optional().nullable(),
 
   // STEP 2: CONFIGURATION & SURFACES
   bedrooms_count: z.number().min(0).max(20),
