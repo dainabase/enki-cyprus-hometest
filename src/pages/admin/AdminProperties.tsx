@@ -6,9 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Chrome as Home, Search, Euro, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { PropertyGlobalModal } from '@/components/admin/properties/PropertyGlobalModal';
-import { Property, PropertyFormData } from '@/types/property';
-import { createProperty, updateProperty, deleteProperty } from '@/lib/api/properties';
+import { Property } from '@/types/property';
+import { deleteProperty } from '@/lib/api/properties';
 import { toast } from 'sonner';
 import { PropertyCardView } from '@/components/admin/properties/PropertyCardView';
 import { PropertyListView } from '@/components/admin/properties/PropertyListView';
@@ -21,8 +20,6 @@ const AdminProperties = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState('');
-  const [showModal, setShowModal] = useState(false);
-  const [editingProperty, setEditingProperty] = useState(null);
   const [currentView, setCurrentView] = useState<PropertyViewType>('cards');
   const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
 
@@ -44,34 +41,6 @@ const AdminProperties = () => {
 
       if (error) throw error;
       return (data || []) as Property[];
-    }
-  });
-
-  // Create property mutation
-  const createMutation = useMutation({
-    mutationFn: ({ projectId, data }: { projectId: string; data: PropertyFormData }) => 
-      createProperty(projectId, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['all-properties'] });
-      toast.success('Propriété créée avec succès');
-    },
-    onError: (error) => {
-      toast.error('Erreur lors de la création de la propriété');
-      console.error(error);
-    }
-  });
-
-  // Update property mutation
-  const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<PropertyFormData> }) => 
-      updateProperty(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['all-properties'] });
-      toast.success('Propriété modifiée avec succès');
-    },
-    onError: (error) => {
-      toast.error('Erreur lors de la modification de la propriété');
-      console.error(error);
     }
   });
 
@@ -105,20 +74,8 @@ const AdminProperties = () => {
     totalValue: properties.reduce((sum, p) => sum + (p.price_including_vat || 0), 0)
   };
 
-  const handleSaveProperty = async (data: PropertyFormData) => {
-    const projectId = properties.find(p => p.building_id === data.building_id)?.project_id;
-    
-    if (editingProperty) {
-      await updateMutation.mutateAsync({ id: editingProperty.id, data });
-    } else if (projectId) {
-      await createMutation.mutateAsync({ projectId, data });
-    }
-    setEditingProperty(null);
-  };
-
   const handleEditProperty = (property) => {
-    setEditingProperty(property);
-    setShowModal(true);
+    navigate(`/admin/properties/${property.id}/edit`);
   };
 
   const handleDeleteProperty = async (id: string) => {
@@ -330,14 +287,6 @@ const AdminProperties = () => {
         </>
       )}
 
-      {/* Property Modal */}
-      <PropertyGlobalModal
-        open={showModal}
-        onOpenChange={setShowModal}
-        property={editingProperty}
-        onSave={handleSaveProperty}
-        isLoading={createMutation.isPending || updateMutation.isPending}
-      />
     </div>
   );
 };
