@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { Plus, Filter, Trash2, CheckSquare, Brain } from 'lucide-react';
+import { Plus, Filter, Trash2, SquareCheck as CheckSquare, Brain } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSupabaseQuery, getPaginationRange } from '@/hooks/useSupabaseQuery';

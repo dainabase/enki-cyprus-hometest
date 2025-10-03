@@ -10,7 +10,7 @@ import { projectFormSteps } from '@/schemas/projectSchema';
 import { supabase } from '@/integrations/supabase/client';
 import { fetchProject } from '@/lib/supabase/projects';
 import { toast } from 'sonner';
-import { ArrowLeft, ArrowRight, Save, CheckCircle, ChevronLeft, Building } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Save, CircleCheck as CheckCircle, ChevronLeft, Building } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { convertLegacyAmenities, convertPhotosToCategorized, CategorizedPhoto } from '@/utils/amenitiesMapper';
 
