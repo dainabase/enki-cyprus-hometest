@@ -579,7 +579,11 @@ export default function AdminPropertyForm() {
               </CardHeader>
               <CardContent className="p-6">
                 <Form {...form}>
-                  <form onSubmit={handleSubmit}>
+                  <form onSubmit={handleSubmit} onKeyDown={(e) => {
+                    if (e.key === 'Enter' && e.target instanceof HTMLInputElement) {
+                      e.preventDefault();
+                    }
+                  }}>
                     <PropertyFormSteps
                       currentStep={currentStep.id}
                       form={form}
@@ -603,13 +607,17 @@ export default function AdminPropertyForm() {
                       {currentStepIndex < propertyFormSteps.length - 1 ? (
                         <Button
                           type="button"
-                          onClick={handleNext}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleNext();
+                          }}
                         >
                           Suivant
                           <ArrowRight className="h-4 w-4 ml-2" />
                         </Button>
                       ) : (
-                        <Button type="submit">
+                        <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending}>
                           <CheckCircle className="h-4 w-4 mr-2" />
                           {isEdit ? 'Mettre à jour' : 'Créer'}
                         </Button>
