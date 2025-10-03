@@ -89,7 +89,7 @@ export function PropertyModal({
 
   const onSubmit = async (data: PropertyFormData) => {
     await onSave(data);
-    onOpenChange(false);
+    // Ne pas fermer ici, c'est géré par le parent dans handleSave
   };
 
   return (

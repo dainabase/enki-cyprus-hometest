@@ -118,10 +118,18 @@ export function PropertiesSection({ projectId, buildings }: PropertiesSectionPro
   });
 
   const handleSave = async (data: PropertyFormData) => {
-    if (selectedProperty) {
-      await updateMutation.mutateAsync({ id: selectedProperty.id, data });
-    } else {
-      await createMutation.mutateAsync(data);
+    try {
+      if (selectedProperty) {
+        await updateMutation.mutateAsync({ id: selectedProperty.id, data });
+      } else {
+        await createMutation.mutateAsync(data);
+      }
+      // Fermer le modal et réinitialiser l'état seulement en cas de succès
+      setModalOpen(false);
+      setSelectedProperty(null);
+    } catch (error) {
+      // En cas d'erreur, on ne ferme pas le modal pour que l'utilisateur puisse corriger
+      console.error('Error saving property:', error);
     }
   };
 
