@@ -1,17 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Building, Edit, Trash2, Eye, MapPin, Euro, Home } from 'lucide-react';
 import { PropertyModal } from './PropertyModal';
 import { Property, PropertyFormData } from '@/types/property';
-import { 
-  fetchPropertiesByProject, 
-  fetchPropertiesByBuilding, 
-  createProperty, 
-  updateProperty, 
-  deleteProperty 
+import {
+  fetchPropertiesByProject,
+  fetchPropertiesByBuilding,
+  createProperty,
+  updateProperty,
+  deleteProperty
 } from '@/lib/api/properties';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -38,12 +39,13 @@ interface PropertiesSectionProps {
 }
 
 export function PropertiesSection({ projectId, buildings }: PropertiesSectionProps) {
+  const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [selectedBuilding, setSelectedBuilding] = useState<string>('all');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [propertyToDelete, setPropertyToDelete] = useState<Property | null>(null);
-  
+
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -134,8 +136,19 @@ export function PropertiesSection({ projectId, buildings }: PropertiesSectionPro
   };
 
   const handleEdit = (property: Property) => {
-    setSelectedProperty(property);
-    setModalOpen(true);
+    console.log('[PropertiesSection] Editing property:', property);
+    console.log('[PropertiesSection] Property ID:', property?.id);
+    if (!property?.id) {
+      toast({
+        title: 'Erreur',
+        description: 'ID de propriété manquant',
+        variant: 'destructive',
+      });
+      return;
+    }
+    const url = `/admin/properties/${property.id}/edit`;
+    console.log('[PropertiesSection] Navigating to:', url);
+    navigate(url);
   };
 
   const handleDelete = (property: Property) => {
