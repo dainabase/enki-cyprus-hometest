@@ -215,12 +215,9 @@ const Home = () => {
                 Découvrez notre sélection exclusive de programmes immobiliers d'exception, choisis pour leur emplacement privilégié, leur architecture remarquable et leur potentiel d'investissement.
               </motion.p>
             </motion.div>
-            <FeaturedProjectsCarousel 
+            <FeaturedProjectsCarousel
               properties={featuredProperties.slice(0, 3)}
-              onPropertyClick={(property) => {
-                setSelectedProperty(property as any);
-                setIsModalOpen(true);
-              }}
+              onPropertyClick={handlePropertyClick}
               onTrackEvent={trackCustomEvent}
             />
           </div>
@@ -256,9 +253,9 @@ const Home = () => {
               </motion.p>
             </motion.div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {latestProperties.map((property, index) => (
-                <OptimizedPropertyCard 
-                  key={property.id} 
+              {latestProperties.map((property) => (
+                <OptimizedPropertyCard
+                  key={property.id}
                   property={property as any}
                   onSelect={() => {
                     trackCustomEvent('latest_property_clicked', {
@@ -266,8 +263,7 @@ const Home = () => {
                       property_title: property.title,
                       property_location: property.location,
                     });
-                    setSelectedProperty(property as any);
-                    setIsModalOpen(true);
+                    handlePropertyClick(property);
                   }}
                 />
               ))}

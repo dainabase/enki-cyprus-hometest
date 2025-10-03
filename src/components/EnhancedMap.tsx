@@ -89,12 +89,16 @@ const EnhancedMap: React.FC<EnhancedMapProps> = ({
     // Cleanup des markers existants
     try {
       clustererRef.current?.clearMarkers();
-    } catch {}
+    } catch (error) {
+      console.warn('Error clearing clusterer:', error);
+    }
     try {
       markersRef.current.forEach((marker) => {
         marker.setMap(null);
       });
-    } catch {}
+    } catch (error) {
+      console.warn('Error clearing markers:', error);
+    }
     markersRef.current = [];
 
     // Création des nouveaux markers avec animation
@@ -149,12 +153,18 @@ const EnhancedMap: React.FC<EnhancedMapProps> = ({
     }
 
     return () => {
-      try { clustererRef.current?.clearMarkers(); } catch {}
+      try {
+        clustererRef.current?.clearMarkers();
+      } catch (error) {
+        console.warn('Cleanup error clearing clusterer:', error);
+      }
       try {
         markersRef.current.forEach((marker) => {
           marker.setMap(null);
         });
-      } catch {}
+      } catch (error) {
+        console.warn('Cleanup error clearing markers:', error);
+      }
       markersRef.current = [];
     };
   }, [isLoaded, map, state.filteredProperties, onPropertySelect]);

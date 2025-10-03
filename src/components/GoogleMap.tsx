@@ -101,12 +101,16 @@ useEffect(() => {
   // Cleanup previous markers/clusterer
   try {
     clustererRef.current?.clearMarkers();
-  } catch {}
+  } catch (error) {
+    console.warn('Error clearing clusterer:', error);
+  }
   try {
     markersRef.current.forEach((m) => {
       m.setMap(null);
     });
-  } catch {}
+  } catch (error) {
+    console.warn('Error clearing markers:', error);
+  }
   markersRef.current = [];
 
   try {
@@ -139,12 +143,18 @@ useEffect(() => {
   }
 
   return () => {
-    try { clustererRef.current?.clearMarkers(); } catch {}
+    try {
+      clustererRef.current?.clearMarkers();
+    } catch (error) {
+      console.warn('Cleanup error clearing clusterer:', error);
+    }
     try {
       markersRef.current.forEach((m) => {
         m.setMap(null);
       });
-    } catch {}
+    } catch (error) {
+      console.warn('Cleanup error clearing markers:', error);
+    }
     clustererRef.current = null;
     markersRef.current = [];
   };
