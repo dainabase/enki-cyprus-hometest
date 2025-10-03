@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, LogIn, LogOut, User, Settings, UserCog, ChevronDown, Chrome as Home, Search, Building, Info, Mail, Brain, BookOpen } from 'lucide-react';
+import { Menu, X, LogIn, LogOut, User, Settings, UserCog, ChevronDown, Home, Search, Building, Info, Mail, Brain, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
   DropdownMenu,
@@ -24,23 +24,6 @@ const Navbar = () => {
   const { toast } = useToast();
 
 
-  const [firstProjectId, setFirstProjectId] = useState<string | null>(null);
-
-  useEffect(() => {
-    let mounted = true;
-    supabase
-      .from('projects')
-      .select('id')
-      .limit(1)
-      .then(({ data, error }) => {
-        if (!error && data && data.length > 0 && mounted) {
-          setFirstProjectId(data[0].id);
-        }
-      });
-    return () => { mounted = false; };
-  }, []);
-
-  const projectDetailPath = firstProjectId ? `/project-detail/${firstProjectId}` : '/projects';
 
   // Navigation publique - ordre spécifié
   const publicNavigation = [
@@ -101,7 +84,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-transparent">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -110,12 +93,9 @@ const Navbar = () => {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              whileHover={{
-                scale: 1.05,
-                filter: "drop-shadow(0 0 8px rgba(255, 255, 255, 0.4))"
-              }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
-              className="swaarg-card-title text-white hover:text-blue-300 transition-colors duration-300"
+              className="text-2xl font-bold text-foreground hover:text-primary transition-colors duration-300"
             >
               ENKI-REALTY
             </motion.div>
@@ -133,17 +113,17 @@ const Navbar = () => {
                 <Link
                   to={item.href}
                   onClick={() => setIsOpen(false)}
-                  className={`relative px-4 py-2 swaarg-nav rounded-md transition-all duration-200 text-white ${
+                  className={`relative px-4 py-2 rounded-md transition-all duration-200 ${
                     isActive(item.href)
-                      ? ''
-                      : 'hover:border hover:border-white/30'
+                      ? 'text-primary font-medium'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-accent'
                   }`}
                 >
                   {item.name}
                   {isActive(item.href) && (
                     <motion.div
-                      layoutId="activeTab"
-                      className="absolute bottom-0 left-2 right-2 h-0.5 bg-white rounded-full"
+                      layoutId="navbar-active-tab"
+                      className="absolute bottom-0 left-2 right-2 h-0.5 bg-primary rounded-full"
                       initial={false}
                       transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     />
@@ -170,16 +150,16 @@ const Navbar = () => {
                     <Link
                       to={item.href}
                       onClick={() => setIsOpen(false)}
-                      className={`flex items-center px-3 py-2 swaarg-nav rounded-md transition-all duration-200 text-white ${
+                      className={`relative flex items-center px-3 py-2 rounded-md transition-all duration-200 ${
                         isActive(item.href)
-                          ? ''
-                          : 'hover:border hover:border-white/30'
+                          ? 'text-primary font-medium bg-accent'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-accent'
                       }`}
                     >
                       <item.icon className="w-4 h-4 mr-2" />
                       {item.name}
                       {isActive(item.href) && (
-                        <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-white rounded-full" />
+                        <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-primary rounded-full" />
                       )}
                     </Link>
                   </motion.div>
@@ -233,7 +213,6 @@ const Navbar = () => {
                   variant="outline"
                   size="sm"
                   asChild
-                  className="border-white text-white hover:bg-white hover:text-black bg-transparent"
                 >
                   <Link to="/login">
                     <LogIn className="w-4 h-4 mr-2" />
@@ -279,7 +258,7 @@ const Navbar = () => {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="md:hidden border-t border-border bg-background/95 backdrop-blur-sm"
+              className="md:hidden border-t border-border/40 bg-background/95 backdrop-blur-md shadow-lg"
             >
               <div className="px-2 pt-2 pb-3 space-y-1">
                 {/* Navigation Links */}
@@ -352,18 +331,16 @@ const Navbar = () => {
                        animate={{ opacity: 1, y: 0 }}
                        transition={{ delay: allNavigation.length * 0.1, duration: 0.3 }}
                      >
-                       <Button
-                         variant="outline"
-                         size="sm"
-                         asChild
-                         className="w-full justify-start"
-                         onClick={() => setIsOpen(false)}
-                       >
-                         <Link to="/login">
+                       <Link to="/login" onClick={() => setIsOpen(false)}>
+                         <Button
+                           variant="outline"
+                           size="sm"
+                           className="w-full justify-start"
+                         >
                            <LogIn className="w-4 h-4 mr-2" />
                            Connexion
-                         </Link>
-                       </Button>
+                         </Button>
+                       </Link>
                      </motion.div>
                    )}
                 </div>
