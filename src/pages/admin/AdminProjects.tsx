@@ -336,18 +336,18 @@ const AdminProjects = () => {
   return (
     <div className="h-screen flex flex-col">
       {/* Header Section - STICKY */}
-      <div className="sticky top-0 z-10 bg-white border-b border-slate-200 shadow-sm">
+      <div className="sticky top-0 z-10 bg-gradient-to-br from-slate-50 via-white to-blue-50/30 backdrop-blur-sm border-b border-slate-200 shadow-sm">
         <div className="px-8 py-6">
           <div className="flex items-start justify-between">
             <div className="space-y-3">
               <div>
-                <h1 className="text-3xl font-bold text-slate-900">Projets</h1>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">Projets</h1>
                 <p className="text-slate-600">Gérez votre portfolio de projets immobiliers</p>
               </div>
-              <Button 
+              <Button
                 variant="outline"
-                onClick={() => navigate('/admin/ai-import-unified')} 
-                className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200 gap-2"
+                onClick={() => navigate('/admin/ai-import-unified')}
+                className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white border-0 shadow-md hover:shadow-lg transition-all duration-200 gap-2"
                 size="sm"
               >
                 <Brain className="w-4 h-4" />
@@ -363,15 +363,15 @@ const AdminProjects = () => {
               <Button
                 variant="outline"
                 onClick={() => setShowFilters(!showFilters)}
-                className="gap-2 border-slate-200 hover:bg-slate-50"
+                className="gap-2 border-2 border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-200"
               >
                 <Filter className="w-4 h-4" />
                 Filtres & Tri
               </Button>
-              
-              <Button 
-                onClick={() => navigate('/admin/projects/new')} 
-                className="bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 gap-2"
+
+              <Button
+                onClick={() => navigate('/admin/projects/new')}
+                className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-md hover:shadow-lg transition-all duration-200 gap-2"
                 size="lg"
               >
                 <Plus className="w-5 h-5" />
@@ -386,45 +386,45 @@ const AdminProjects = () => {
       <div className="flex-1 overflow-y-auto bg-gradient-to-br from-slate-50 to-slate-100 px-8 py-6 space-y-6">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
+          <Card className="bg-gradient-to-br from-white to-slate-50 border-2 border-slate-200 hover:border-slate-300 hover:shadow-lg transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-600">Total Projets</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-slate-900">{stats.total}</div>
+              <div className="text-3xl font-bold text-slate-900">{stats.total}</div>
             </CardContent>
           </Card>
-          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
+          <Card className="bg-gradient-to-br from-emerald-50 to-green-50 border-2 border-emerald-200 hover:border-emerald-300 hover:shadow-lg transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-600">Disponibles</CardTitle>
+              <CardTitle className="text-sm font-medium text-emerald-700">Disponibles</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-emerald-600">{stats.available}</div>
+              <div className="text-3xl font-bold text-emerald-900">{stats.available}</div>
             </CardContent>
           </Card>
-          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
+          <Card className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 hover:border-orange-300 hover:shadow-lg transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-600">En Construction</CardTitle>
+              <CardTitle className="text-sm font-medium text-orange-700">En Construction</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-orange-600">{stats.construction}</div>
+              <div className="text-3xl font-bold text-orange-900">{stats.construction}</div>
             </CardContent>
           </Card>
-          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 hover:shadow-lg transition-all duration-200">
+          <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-600">Livrés</CardTitle>
+              <CardTitle className="text-sm font-medium text-blue-700">Livrés</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-blue-600">{stats.delivered}</div>
+              <div className="text-3xl font-bold text-blue-900">{stats.delivered}</div>
             </CardContent>
           </Card>
         </div>
 
         {/* Combined Filters and Sort */}
         {showFilters && (
-          <Card className="bg-white/80 backdrop-blur-sm border border-slate-200">
+          <Card className="bg-white/90 backdrop-blur-sm border-2 border-slate-200 shadow-md">
             <CardHeader>
-              <CardTitle className="text-slate-900">Filtres et Tri</CardTitle>
+              <CardTitle className="text-slate-900 font-bold">Filtres et Tri</CardTitle>
             </CardHeader>
             <CardContent>
               <CombinedFiltersAndSort
