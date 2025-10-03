@@ -122,7 +122,10 @@ export default function AdminPropertyForm() {
 
   useEffect(() => {
     if (projectsData) {
+      console.log('AdminPropertyForm - Projects loaded:', projectsData.length, projectsData);
       setProjects(projectsData);
+    } else {
+      console.log('AdminPropertyForm - No projects data yet');
     }
   }, [projectsData]);
 

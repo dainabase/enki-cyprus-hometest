@@ -17,6 +17,10 @@ interface IdentificationStepProps {
 export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form, projects = [], buildings = [] }) => {
   const selectedProjectId = form.watch('project_id');
 
+  // Debug: afficher le nombre de projets
+  console.log('IdentificationStep - Projects count:', projects?.length, 'Projects:', projects);
+  console.log('IdentificationStep - Buildings count:', buildings?.length);
+
   return (
     <div className="space-y-8">
       <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">
@@ -43,11 +47,17 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form, pr
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {projects.map(project => (
-                    <SelectItem key={project.id} value={project.id}>
-                      {project.title}
+                  {projects && projects.length > 0 ? (
+                    projects.map(project => (
+                      <SelectItem key={project.id} value={project.id}>
+                        {project.title}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="no-projects" disabled>
+                      Aucun projet disponible
                     </SelectItem>
-                  ))}
+                  )}
                 </SelectContent>
               </Select>
               <FormMessage />
