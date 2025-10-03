@@ -341,13 +341,13 @@ const AdminProjects = () => {
           <div className="flex items-start justify-between">
             <div className="space-y-3">
               <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">Projets</h1>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-[hsl(199,63%,59%)] to-[hsl(199,63%,65%)] bg-clip-text text-transparent">Projets</h1>
                 <p className="text-slate-600">Gérez votre portfolio de projets immobiliers</p>
               </div>
               <Button
                 variant="outline"
                 onClick={() => navigate('/admin/ai-import-unified')}
-                className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white border-0 shadow-md hover:shadow-lg transition-all duration-200 gap-2"
+                className="bg-gradient-to-r from-[hsl(199,63%,59%)] to-[hsl(199,63%,65%)] hover:from-[hsl(199,63%,55%)] hover:to-[hsl(199,63%,60%)] text-white border-0 shadow-md hover:shadow-lg transition-all duration-200 gap-2"
                 size="sm"
               >
                 <Brain className="w-4 h-4" />
@@ -371,7 +371,7 @@ const AdminProjects = () => {
 
               <Button
                 onClick={() => navigate('/admin/projects/new')}
-                className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-md hover:shadow-lg transition-all duration-200 gap-2"
+                className="bg-gradient-to-r from-[hsl(199,63%,59%)] to-[hsl(199,63%,65%)] hover:from-[hsl(199,63%,55%)] hover:to-[hsl(199,63%,60%)] text-white shadow-md hover:shadow-lg transition-all duration-200 gap-2"
                 size="lg"
               >
                 <Plus className="w-5 h-5" />

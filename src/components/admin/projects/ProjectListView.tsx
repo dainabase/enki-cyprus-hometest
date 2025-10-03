@@ -86,7 +86,7 @@ export const ProjectListView = ({
                      }}
                    />
                  ) : null}
-                 <div className="w-10 h-10 bg-gradient-to-br from-slate-900 to-slate-700 rounded-xl flex items-center justify-center" style={{ display: project.photos && project.photos.length > 0 && project.photos[0] ? 'none' : 'flex' }}>
+                 <div className="w-10 h-10 bg-gradient-to-br from-[hsl(199,63%,59%)] to-[hsl(199,63%,65%)] rounded-xl flex items-center justify-center" style={{ display: project.photos && project.photos.length > 0 && project.photos[0] ? 'none' : 'flex' }}>
                    <Building className="h-6 w-6 text-white" />
                  </div>
                </div>

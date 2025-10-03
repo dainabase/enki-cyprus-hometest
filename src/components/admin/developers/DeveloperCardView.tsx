@@ -53,7 +53,7 @@ export const DeveloperCardView = ({
       {sortedZones.map(zone => (
         <div key={zone} className="space-y-6">
           <div className="flex items-center gap-3">
-            <div className="w-2 h-8 bg-gradient-to-b from-slate-900 to-slate-600 rounded-full"></div>
+            <div className="w-2 h-8 bg-gradient-to-b from-[hsl(199,63%,59%)] to-[hsl(199,63%,65%)] rounded-full"></div>
             <h3 className="text-xl font-bold text-slate-900">{zone}</h3>
             <div className="text-sm text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
               {groupedByZone[zone].length} développeur{groupedByZone[zone].length !== 1 ? 's' : ''}
@@ -73,7 +73,7 @@ export const DeveloperCardView = ({
                           className="w-full h-full object-contain"
                         />
                       ) : (
-                        <div className="w-10 h-10 bg-gradient-to-br from-slate-900 to-slate-700 rounded-xl flex items-center justify-center">
+                        <div className="w-10 h-10 bg-gradient-to-br from-[hsl(199,63%,59%)] to-[hsl(199,63%,65%)] rounded-xl flex items-center justify-center">
                           <span className="text-white font-bold text-lg">
                             {dev.name.charAt(0).toUpperCase()}
                           </span>

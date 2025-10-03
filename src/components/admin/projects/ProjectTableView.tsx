@@ -137,10 +137,10 @@ export const ProjectTableView = ({
   };
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg overflow-hidden">
-      <Table>
+    <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg overflow-x-auto">
+      <Table className="w-full">
         <TableHeader>
-          <TableRow className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
+          <TableRow className="bg-gradient-to-r from-[hsl(199,63%,59%)] to-[hsl(199,63%,65%)] hover:from-[hsl(199,63%,55%)] hover:to-[hsl(199,63%,60%)]">
             <TableHead className="text-white font-bold border-0 w-12">
               <Checkbox 
                 checked={selectedProjects.length === projects.length && projects.length > 0}

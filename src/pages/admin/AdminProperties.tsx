@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Chrome as Home, Search, MapPin, Building2, Euro, Plus, CreditCard as Edit, Trash2, Eye } from 'lucide-react';
+import { Chrome as Home, Search, Euro, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { PropertyGlobalModal } from '@/components/admin/properties/PropertyGlobalModal';
 import { Property, PropertyFormData } from '@/types/property';
 import { createProperty, updateProperty, deleteProperty } from '@/lib/api/properties';
 import { toast } from 'sonner';
+import { PropertyCardView } from '@/components/admin/properties/PropertyCardView';
+import { PropertyListView } from '@/components/admin/properties/PropertyListView';
+import { PropertyTableView } from '@/components/admin/properties/PropertyTableView';
+import { PropertyCompactView } from '@/components/admin/properties/PropertyCompactView';
+import { PropertyDetailedView } from '@/components/admin/properties/PropertyDetailedView';
+import { PropertyViewSelector, PropertyViewType } from '@/components/admin/properties/PropertyViewSelector';
 
 const AdminProperties = () => {
   const navigate = useNavigate();
@@ -18,6 +23,8 @@ const AdminProperties = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editingProperty, setEditingProperty] = useState(null);
+  const [currentView, setCurrentView] = useState<PropertyViewType>('cards');
+  const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
 
   // Fetch toutes les propriétés avec leurs bâtiments et projets
   const { data: properties = [], isLoading } = useQuery({
@@ -144,12 +151,12 @@ const AdminProperties = () => {
       <div className="sticky top-0 z-20 -mx-6 -mt-6 px-6 pt-6 pb-4 bg-gradient-to-br from-slate-50 via-white to-blue-50/30 backdrop-blur-sm border-b border-slate-200 shadow-sm">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">Propriétés</h1>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-[hsl(199,63%,59%)] to-[hsl(199,63%,65%)] bg-clip-text text-transparent">Propriétés</h1>
             <p className="text-slate-600 mt-1">
               Gérez toutes les propriétés de votre portefeuille immobilier
             </p>
           </div>
-          <Button onClick={() => setShowModal(true)} className="gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-md hover:shadow-lg transition-all">
+          <Button onClick={() => setShowModal(true)} className="gap-2 bg-gradient-to-r from-[hsl(199,63%,59%)] to-[hsl(199,63%,65%)] hover:from-[hsl(199,63%,55%)] hover:to-[hsl(199,63%,60%)] shadow-md hover:shadow-lg transition-all">
             <Plus className="h-4 w-4" />
             Nouvelle propriété
           </Button>
@@ -229,19 +236,22 @@ const AdminProperties = () => {
         </Card>
       </div>
 
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-5 w-5" />
-        <Input
-          type="text"
-          placeholder="Rechercher par code, unité, bâtiment ou projet..."
-          className="pl-10 border-2 border-slate-200 focus:border-blue-500 focus:ring-blue-500"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+      {/* Search and View Selector */}
+      <div className="flex items-center gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-5 w-5" />
+          <Input
+            type="text"
+            placeholder="Rechercher par code, unité, bâtiment ou projet..."
+            className="pl-10 border-2 border-slate-200 focus:border-blue-500 focus:ring-blue-500"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <PropertyViewSelector currentView={currentView} onViewChange={setCurrentView} />
       </div>
 
-      {/* Properties Table */}
+      {/* Properties Views */}
       {isLoading ? (
         <div className="text-center py-12">Chargement...</div>
       ) : filteredProperties.length === 0 ? (
@@ -261,97 +271,63 @@ const AdminProperties = () => {
           </CardContent>
         </Card>
       ) : (
-        <Card className="bg-white/80 backdrop-blur-sm border-2 border-slate-200 shadow-lg overflow-hidden">
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-gradient-to-r from-blue-600 to-blue-700 border-0">
-                    <th className="text-left p-4 font-bold text-white">Code</th>
-                    <th className="text-left p-4 font-bold text-white">Unité</th>
-                    <th className="text-left p-4 font-bold text-white">Bâtiment</th>
-                    <th className="text-left p-4 font-bold text-white">Projet</th>
-                    <th className="text-left p-4 font-bold text-white">Type</th>
-                    <th className="text-left p-4 font-bold text-white">Surface</th>
-                    <th className="text-left p-4 font-bold text-white">Prix TTC</th>
-                    <th className="text-left p-4 font-bold text-white">Statut</th>
-                    <th className="text-left p-4 font-bold text-white">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredProperties.map((property, index) => (
-                    <tr key={property.id} className={`border-b hover:bg-blue-50/30 transition-colors ${
-                      index % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'
-                    }`}>
-                      <td className="p-4 font-bold text-slate-900">{property.property_code}</td>
-                      <td className="p-4 font-medium text-slate-700">{property.unit_number}</td>
-                      <td className="p-4">
-                        <div className="flex items-center gap-2">
-                          <Building2 className="h-4 w-4 text-slate-500" />
-                          <span className="font-medium text-slate-700">{property.building?.building_name}</span>
-                        </div>
-                      </td>
-                      <td className="p-4">
-                        <div className="flex items-center gap-2">
-                          <MapPin className="h-4 w-4 text-blue-500" />
-                          <div>
-                            <div className="font-medium text-slate-900">{property.building?.project?.title}</div>
-                            <div className="text-sm text-slate-500">{property.building?.project?.city}</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="p-4">
-                        <Badge variant="outline">
-                          {property.property_type}
-                        </Badge>
-                      </td>
-                      <td className="p-4 font-medium text-slate-700">{property.internal_area}m²</td>
-                      <td className="p-4">
-                        <div className="font-bold text-slate-900">€{property.price_including_vat?.toLocaleString()}</div>
-                        {property.golden_visa_eligible && (
-                          <div className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full inline-block mt-1">Golden Visa</div>
-                        )}
-                      </td>
-                      <td className="p-4">
-                        <Badge className={getStatusColor(property.sale_status)}>
-                          {getStatusLabel(property.sale_status)}
-                        </Badge>
-                      </td>
-                      <td className="p-4">
-                        <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-200"
-                            onClick={() => navigate(`/admin/projects/${property.project_id}/dashboard?tab=properties`)}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="border-blue-200 hover:bg-blue-50 hover:border-blue-300 text-blue-700 hover:text-blue-800 transition-all duration-200"
-                            onClick={() => handleEditProperty(property)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="border-red-200 hover:bg-red-50 hover:border-red-300 text-red-600 hover:text-red-700 transition-all duration-200"
-                            onClick={() => handleDeleteProperty(property.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
+        <>
+          {currentView === 'cards' && (
+            <PropertyCardView
+              properties={filteredProperties}
+              onEdit={handleEditProperty}
+              onDelete={handleDeleteProperty}
+              selectedProperties={selectedProperties}
+              onSelectionChange={setSelectedProperties}
+              getStatusColor={getStatusColor}
+              getStatusLabel={getStatusLabel}
+            />
+          )}
+          {currentView === 'list' && (
+            <PropertyListView
+              properties={filteredProperties}
+              onEdit={handleEditProperty}
+              onDelete={handleDeleteProperty}
+              selectedProperties={selectedProperties}
+              onSelectionChange={setSelectedProperties}
+              getStatusColor={getStatusColor}
+              getStatusLabel={getStatusLabel}
+            />
+          )}
+          {currentView === 'table' && (
+            <PropertyTableView
+              properties={filteredProperties}
+              onEdit={handleEditProperty}
+              onDelete={handleDeleteProperty}
+              selectedProperties={selectedProperties}
+              onSelectionChange={setSelectedProperties}
+              getStatusColor={getStatusColor}
+              getStatusLabel={getStatusLabel}
+            />
+          )}
+          {currentView === 'compact' && (
+            <PropertyCompactView
+              properties={filteredProperties}
+              onEdit={handleEditProperty}
+              onDelete={handleDeleteProperty}
+              selectedProperties={selectedProperties}
+              onSelectionChange={setSelectedProperties}
+              getStatusColor={getStatusColor}
+              getStatusLabel={getStatusLabel}
+            />
+          )}
+          {currentView === 'detailed' && (
+            <PropertyDetailedView
+              properties={filteredProperties}
+              onEdit={handleEditProperty}
+              onDelete={handleDeleteProperty}
+              selectedProperties={selectedProperties}
+              onSelectionChange={setSelectedProperties}
+              getStatusColor={getStatusColor}
+              getStatusLabel={getStatusLabel}
+            />
+          )}
+        </>
       )}
 
       {/* Property Modal */}

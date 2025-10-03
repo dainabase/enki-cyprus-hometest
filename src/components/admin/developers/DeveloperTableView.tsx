@@ -90,7 +90,7 @@ export const DeveloperTableView = ({
     <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg overflow-hidden">
       <Table>
         <TableHeader>
-          <TableRow className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
+          <TableRow className="bg-gradient-to-r from-[hsl(199,63%,59%)] to-[hsl(199,63%,65%)] hover:from-[hsl(199,63%,55%)] hover:to-[hsl(199,63%,60%)]">
             <TableHead className="text-white font-bold border-0">Logo</TableHead>
             <TableHead className="text-white font-bold border-0">
               <Button
