@@ -50,22 +50,22 @@ const ModernMenu = () => {
     open: {
       width: "calc(100vw - 32px)",
       height: "calc(100vh - 32px)",
-      transition: { 
-        type: "spring" as const, 
-        mass: 3, 
-        stiffness: 400, 
-        damping: 50 
+      transition: {
+        type: "spring" as const,
+        mass: 3,
+        stiffness: 400,
+        damping: 50
       },
     },
     closed: {
       width: "48px",
       height: "48px",
-      transition: { 
-        delay: 0.75, 
-        type: "spring" as const, 
-        mass: 3, 
-        stiffness: 400, 
-        damping: 50 
+      transition: {
+        delay: 0.2,
+        type: "spring" as const,
+        mass: 3,
+        stiffness: 400,
+        damping: 50
       },
     },
   };
