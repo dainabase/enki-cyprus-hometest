@@ -1,7 +1,7 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { KPICard } from './KPICard';
-import { Euro, Home, Calendar, Award, MapPin } from 'lucide-react';
+import { Euro, Chrome as Home, Calendar, Award, MapPin } from 'lucide-react';
 import type { ProjectData } from '@/hooks/useProjectData';
 
 interface ProjectHeroProps {
