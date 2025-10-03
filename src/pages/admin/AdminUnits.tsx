@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Plus, Search, Filter, Download, Edit, Eye, Trash2, Building2, MapPin } from 'lucide-react';
+import { Plus, Search, Filter, Download, CreditCard as Edit, Eye, Trash2, Building2, MapPin } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Card, Button, DataGrid } from '@/components/dainabase-ui';
 import { useSupabaseQuery, getPaginationRange } from '@/hooks/useSupabaseQuery';
