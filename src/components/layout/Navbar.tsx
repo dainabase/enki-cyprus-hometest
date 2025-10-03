@@ -50,8 +50,7 @@ const Navbar = () => {
       .limit(1)
       .then(({ data, error }) => {
         if (!error && data && data.length > 0 && mounted) {
-          // @ts-ignore - Supabase returns id as string (uuid)
-          setFirstProjectId(data[0].id as string);
+          setFirstProjectId(data[0].id);
         }
       });
     return () => { mounted = false; };

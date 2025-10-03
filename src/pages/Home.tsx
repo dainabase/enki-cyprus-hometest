@@ -33,26 +33,8 @@ import Alternative3 from '@/components/hero/Alternative3';
 import ChatMessageComponent from '@/components/ChatMessage';
 import PropertyResultCard from '@/components/ui/PropertyResultCard';
 import TestimonialsSection from '@/components/sections/TestimonialsSection';
+import { ChatMessage, AgenticSearchResult, ProjectInterest, MockProperty } from '@/types/search.types';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
-
-// Interface for project interests
-interface ProjectInterest {
-  name: string;
-  link: string;
-  desc: string;
-}
-// Interface pour les messages du chat
-interface ChatMessage {
-  role: 'user' | 'assistant';
-  content: string;
-  timestamp: Date;
-  isTyping?: boolean;
-  properties?: Property[];
-  fiscalOptimization?: {
-    preview: string;
-    details?: any;
-  };
-}
 
 const Home = () => {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
@@ -60,13 +42,13 @@ const Home = () => {
   const [agenticQuery, setAgenticQuery] = useState('');
   const [consent, setConsent] = useState(false);
   const [consentGiven, setConsentGiven] = useState(false);
-  const [searchResults, setSearchResults] = useState<any>(null);
+  const [searchResults, setSearchResults] = useState<AgenticSearchResult | null>(null);
   const [showResultsModal, setShowResultsModal] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [shouldHighlightConsent, setShouldHighlightConsent] = useState(false);
   const [showResults, setShowResults] = useState(false);
-  const [mockProperties, setMockProperties] = useState<any[]>([]);
+  const [mockProperties, setMockProperties] = useState<MockProperty[]>([]);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
  
   const { isAuthenticated, user } = useAuth();
@@ -188,7 +170,7 @@ const Home = () => {
     },
   });
   const saveDossierMutation = useMutation({
-    mutationFn: async (dossierData: any) => {
+    mutationFn: async (dossierData: AgenticSearchResult) => {
       const { data, error } = await supabase
         .from('dossiers')
         .insert({

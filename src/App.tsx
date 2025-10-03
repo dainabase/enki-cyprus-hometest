@@ -42,8 +42,7 @@ const queryClient = new QueryClient({
       staleTime: 5 * 60 * 1000, // 5 minutes
       gcTime: 10 * 60 * 1000, // 10 minutes
       retry: (failureCount, error) => {
-        // @ts-ignore
-        if (error?.message?.includes('network')) return false;
+        if (error instanceof Error && error.message?.includes('network')) return false;
         return failureCount < 2;
       },
     },
