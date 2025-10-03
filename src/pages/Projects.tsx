@@ -21,10 +21,7 @@ const Projects = () => {
       console.log('Fetching projects...');
       const { data, error } = await supabase
         .from('projects')
-        .select(`
-          *,
-          project_images(url, caption, is_primary, display_order)
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (error) {
