@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, LogIn, LogOut, User, Settings, UserCog, ChevronDown, Chrome as Home, Search, Building, Info, Mail, Brain, BookOpen } from 'lucide-react';
+import { Menu, X, LogIn, LogOut, UserCog, Home, Search, Building, Info, Mail, Brain, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { 
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -14,7 +13,6 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,9 +21,6 @@ const Navbar = () => {
   const { user, profile, isAuthenticated, isAdmin, signOut, loading } = useAuth();
   const { toast } = useToast();
 
-
-
-  // Navigation publique - ordre spécifié
   const publicNavigation = [
     { name: 'Accueil', href: '/', icon: Home },
     { name: 'Projets', href: '/projects', icon: Building },
@@ -36,8 +31,6 @@ const Navbar = () => {
     { name: 'Contact', href: '/contact', icon: Mail },
   ];
 
-
-  // Navigation admin
   const adminNavigation = [
     { name: 'Admin', href: '/admin', icon: UserCog },
   ];
@@ -84,52 +77,30 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/40">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center space-x-2">
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
-              className="text-2xl font-bold text-foreground hover:text-primary transition-colors duration-300"
-            >
+          <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center">
+            <span className="text-2xl font-bold text-foreground hover:text-primary transition-colors">
               ENKI-REALTY
-            </motion.div>
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1">
             {publicNavigation.map((item) => (
-              <motion.div
+              <Link
                 key={item.name}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                to={item.href}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  isActive(item.href)
+                    ? 'text-primary bg-accent'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                }`}
               >
-                <Link
-                  to={item.href}
-                  onClick={() => setIsOpen(false)}
-                  className={`relative px-4 py-2 rounded-md transition-all duration-200 ${
-                    isActive(item.href)
-                      ? 'text-primary font-medium'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-accent'
-                  }`}
-                >
-                  {item.name}
-                  {isActive(item.href) && (
-                    <motion.div
-                      layoutId="navbar-active-tab"
-                      className="absolute bottom-0 left-2 right-2 h-0.5 bg-primary rounded-full"
-                      initial={false}
-                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    />
-                  )}
-                </Link>
-              </motion.div>
+                {item.name}
+              </Link>
             ))}
           </div>
 
@@ -139,64 +110,49 @@ const Navbar = () => {
               <div className="w-8 h-8 animate-pulse bg-muted rounded-full" />
             ) : isAuthenticated ? (
               <>
-                {/* Navigation admin */}
                 {isAdmin && adminNavigation.map((item) => (
-                  <motion.div
+                  <Link
                     key={item.name}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.98 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                    to={item.href}
+                    className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      isActive(item.href)
+                        ? 'text-primary bg-accent'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                    }`}
                   >
-                    <Link
-                      to={item.href}
-                      onClick={() => setIsOpen(false)}
-                      className={`relative flex items-center px-3 py-2 rounded-md transition-all duration-200 ${
-                        isActive(item.href)
-                          ? 'text-primary font-medium bg-accent'
-                          : 'text-muted-foreground hover:text-foreground hover:bg-accent'
-                      }`}
-                    >
-                      <item.icon className="w-4 h-4 mr-2" />
-                      {item.name}
-                      {isActive(item.href) && (
-                        <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-primary rounded-full" />
-                      )}
-                    </Link>
-                  </motion.div>
+                    <item.icon className="w-4 h-4 mr-2" />
+                    {item.name}
+                  </Link>
                 ))}
 
-                {/* User Dropdown */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      className="group relative h-10 w-10 rounded-full hover:bg-transparent"
-                    >
+                    <Button variant="ghost" className="h-10 w-10 rounded-full p-0">
                       <Avatar className="h-10 w-10">
-                        <AvatarFallback className="bg-white text-primary font-medium transition-colors duration-200 group-hover:bg-primary group-hover:text-primary-foreground">
+                        <AvatarFallback className="bg-primary text-primary-foreground">
                           {getUserInitials()}
                         </AvatarFallback>
                       </Avatar>
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56" align="end" forceMount>
-                    <DropdownMenuLabel className="font-normal">
+                  <DropdownMenuContent className="w-56" align="end">
+                    <DropdownMenuLabel>
                       <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">
+                        <p className="text-sm font-medium">
                           {profile?.profile?.name || 'Utilisateur'}
                         </p>
-                        <p className="text-xs leading-none text-muted-foreground">
+                        <p className="text-xs text-muted-foreground">
                           {user?.email}
                         </p>
                         {isAdmin && (
-                          <p className="text-xs leading-none text-primary font-medium">
+                          <p className="text-xs text-primary font-medium">
                             Administrateur
                           </p>
                         )}
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:text-red-600">
+                    <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                       <LogOut className="mr-2 h-4 w-4" />
                       Déconnexion
                     </DropdownMenuItem>
@@ -204,112 +160,100 @@ const Navbar = () => {
                 </DropdownMenu>
               </>
             ) : (
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ type: "spring", stiffness: 400, damping: 17 }}
-              >
-                <Button
-                  variant="outline"
-                  size="sm"
-                  asChild
-                >
-                  <Link to="/login">
-                    <LogIn className="w-4 h-4 mr-2" />
-                    Connexion
-                  </Link>
-                </Button>
-              </motion.div>
+              <Button variant="outline" size="sm" asChild>
+                <Link to="/login">
+                  <LogIn className="w-4 h-4 mr-2" />
+                  Connexion
+                </Link>
+              </Button>
             )}
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-foreground"
-            >
-              {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </Button>
-          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden"
+          >
+            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </Button>
         </div>
+      </div>
 
-        {/* Mobile Navigation */}
-        {isOpen && (
-          <div className="md:hidden border-t border-border/40 bg-background/95 backdrop-blur-md shadow-lg">
-            <div className="px-2 pt-2 pb-3 space-y-1">
-              {/* Navigation Links */}
-              {allNavigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`flex items-center px-3 py-2 text-base font-medium rounded-md transition-colors ${
-                    isActive(item.href)
-                      ? 'text-primary bg-accent'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
-                  }`}
-                  onClick={() => setIsOpen(false)}
-                >
-                  <item.icon className="w-5 h-5 mr-3" />
-                  {item.name}
-                </Link>
-              ))}
+      {/* Mobile Navigation */}
+      {isOpen && (
+        <div className="md:hidden border-t border-border bg-background">
+          <div className="px-4 py-3 space-y-1">
+            {allNavigation.map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                onClick={() => setIsOpen(false)}
+                className={`flex items-center px-3 py-2 text-base font-medium rounded-md ${
+                  isActive(item.href)
+                    ? 'text-primary bg-accent'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                }`}
+              >
+                <item.icon className="w-5 h-5 mr-3" />
+                {item.name}
+              </Link>
+            ))}
 
-              {/* Mobile Auth Section */}
-              <div className="pt-3 border-t border-border/50">
-                {loading ? (
-                  <div className="px-3 py-2">
-                    <div className="animate-pulse bg-muted h-10 rounded-md" />
-                  </div>
-                ) : isAuthenticated ? (
-                  <div className="space-y-2">
-                    <div className="px-3 py-2 text-sm text-muted-foreground">
-                      <div className="flex items-center space-x-2">
-                        <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                          <span className="text-xs font-medium text-primary">
-                            {getUserInitials()}
-                          </span>
-                        </div>
-                        <div>
-                          <p className="font-medium text-foreground">
-                            {profile?.profile?.name || 'Utilisateur'}
-                          </p>
-                          <p className="text-xs">{user?.email}</p>
-                          {isAdmin && (
-                            <p className="text-xs text-primary font-medium">Administrateur</p>
-                          )}
-                        </div>
-                      </div>
+            <div className="pt-4 mt-4 border-t border-border">
+              {loading ? (
+                <div className="animate-pulse bg-muted h-10 rounded-md" />
+              ) : isAuthenticated ? (
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-3 px-3 py-2">
+                    <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+                      <span className="text-sm font-medium text-primary-foreground">
+                        {getUserInitials()}
+                      </span>
                     </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleLogout}
-                      className="w-full justify-start text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
-                    >
-                      <LogOut className="w-4 h-4 mr-2" />
-                      Déconnexion
-                    </Button>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-foreground truncate">
+                        {profile?.profile?.name || 'Utilisateur'}
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate">
+                        {user?.email}
+                      </p>
+                      {isAdmin && (
+                        <p className="text-xs text-primary font-medium">
+                          Administrateur
+                        </p>
+                      )}
+                    </div>
                   </div>
-                ) : (
-                  <Link to="/login" onClick={() => setIsOpen(false)}>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full justify-start"
-                    >
-                      <LogIn className="w-4 h-4 mr-2" />
-                      Connexion
-                    </Button>
-                  </Link>
-                )}
-              </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleLogout}
+                    className="w-full justify-start text-red-600 border-red-200 hover:bg-red-50"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Déconnexion
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setIsOpen(false);
+                    navigate('/login');
+                  }}
+                  className="w-full justify-start"
+                >
+                  <LogIn className="w-4 h-4 mr-2" />
+                  Connexion
+                </Button>
+              )}
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </nav>
   );
 };
