@@ -173,7 +173,91 @@ export default function AdminPropertyForm() {
   // Load existing property data
   useEffect(() => {
     if (existingProperty) {
-      form.reset(existingProperty);
+      // Map database property to form data structure
+      const formData: Partial<PropertyFormData> = {
+        project_id: existingProperty.project_id || '',
+        building_id: existingProperty.building_id || null,
+        unit_number: existingProperty.unit_number || '',
+        property_code: existingProperty.property_code || '',
+        property_type: existingProperty.property_type as any,
+        property_sub_type: existingProperty.property_sub_type || '',
+        property_status: existingProperty.property_status as any || 'available',
+        sale_type: 'sale',
+        ownership_type: 'freehold',
+
+        bedrooms_count: existingProperty.bedrooms_count || 0,
+        bathrooms_count: existingProperty.bathrooms_count || 0,
+        wc_count: existingProperty.wc_count || 0,
+        internal_area: existingProperty.internal_area || 0,
+        covered_verandas: existingProperty.covered_verandas || 0,
+        uncovered_verandas: existingProperty.uncovered_verandas || 0,
+        private_garden_area: existingProperty.private_garden_area || 0,
+        roof_garden_area: existingProperty.roof_garden_area || 0,
+        floor_number: existingProperty.floor_number,
+        position_in_floor: existingProperty.position_in_floor || '',
+        orientation: existingProperty.orientation as any,
+
+        has_office: existingProperty.has_office || false,
+        has_maid_room: existingProperty.has_maid_room || false,
+        has_dressing_room: existingProperty.has_dressing_room || false,
+        has_playroom: existingProperty.has_playroom || false,
+        has_wine_cellar: existingProperty.has_wine_cellar || false,
+        has_pantry: existingProperty.has_pantry || false,
+        has_laundry_room: existingProperty.has_laundry_room || false,
+        total_rooms: existingProperty.total_rooms,
+
+        kitchen_type: existingProperty.kitchen_type as any,
+        kitchen_brand: existingProperty.kitchen_brand || '',
+        has_kitchen_appliances: existingProperty.has_kitchen_appliances || false,
+        appliances_list: (existingProperty.appliances_list as any) || [],
+        hvac_type: existingProperty.hvac_type as any,
+        heating_type: existingProperty.heating_type as any,
+        flooring_type: existingProperty.flooring_type as any,
+        windows_type: existingProperty.windows_type as any,
+        doors_type: existingProperty.doors_type as any,
+        smart_home_features: (existingProperty.smart_home_features as any) || [],
+        security_features: (existingProperty.security_features as any) || [],
+
+        balcony_count: existingProperty.balcony_count || 0,
+        balcony_area: existingProperty.balcony_area || 0,
+        terrace_count: existingProperty.terrace_count || 0,
+        terrace_area: existingProperty.terrace_area || 0,
+        has_private_garden: existingProperty.has_private_garden || false,
+        has_private_pool: existingProperty.has_private_pool || false,
+        pool_type: existingProperty.pool_type as any,
+        parking_spaces: existingProperty.parking_spaces || 0,
+        parking_type: existingProperty.parking_type as any,
+        storage_spaces: existingProperty.storage_spaces || 0,
+        storage_area: existingProperty.storage_area || 0,
+        view_type: (existingProperty.view_type as any) || [],
+
+        price_excluding_vat: existingProperty.price_excluding_vat || 0,
+        vat_rate: existingProperty.vat_rate || 5,
+        commission_rate: existingProperty.commission_rate || 5,
+        original_price: existingProperty.original_price,
+        current_price: existingProperty.current_price,
+        deposit_percentage: existingProperty.deposit_percentage || 30,
+        reservation_fee: existingProperty.reservation_fee || 5000,
+        payment_plan_available: existingProperty.payment_plan_available || false,
+        payment_plan_details: existingProperty.payment_plan_details as any,
+        finance_available: existingProperty.finance_available || false,
+        minimum_cash_required: existingProperty.minimum_cash_required,
+        annual_property_tax: existingProperty.annual_property_tax,
+        communal_fees_monthly: existingProperty.communal_fees_monthly,
+        maintenance_fee_monthly: existingProperty.maintenance_fee_monthly,
+
+        title_deed_status: existingProperty.title_deed_status as any || 'pending',
+        planning_permit_number: existingProperty.planning_permit_number || '',
+        building_permit_number: existingProperty.building_permit_number || '',
+        occupancy_certificate: existingProperty.occupancy_certificate || '',
+        energy_certificate_number: existingProperty.energy_certificate_number || '',
+        energy_rating: existingProperty.energy_rating as any,
+        cadastral_reference: existingProperty.cadastral_reference || '',
+        internal_notes: existingProperty.internal_notes || '',
+        public_description: existingProperty.public_description || ''
+      };
+      
+      form.reset(formData as PropertyFormData);
     }
   }, [existingProperty, form]);
 
@@ -302,7 +386,7 @@ export default function AdminPropertyForm() {
 
   // Create property mutation
   const createMutation = useMutation({
-    mutationFn: async (data: PropertyFormData) => {
+    mutationFn: async (data: any) => {
       return await createProperty(data.project_id, data);
     },
     onSuccess: (newProperty) => {
@@ -324,7 +408,7 @@ export default function AdminPropertyForm() {
 
   // Update property mutation
   const updateMutation = useMutation({
-    mutationFn: async (data: PropertyFormData) => {
+    mutationFn: async (data: any) => {
       if (!id) throw new Error('ID manquant');
       return await updateProperty(id, data);
     },

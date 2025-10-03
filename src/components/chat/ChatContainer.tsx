@@ -1,6 +1,6 @@
 import { ChatMessages } from './ChatMessages';
 import { ChatInput } from './ChatInput';
-import { ChatMessage } from '@/types/search.types';
+import { ChatMessage } from '@/components/ChatMessage';
 import { useRef, useEffect, memo } from 'react';
 
 interface ChatContainerProps {

@@ -1,6 +1,5 @@
 import { RefObject } from 'react';
-import ChatMessageComponent from '@/components/ChatMessage';
-import { ChatMessage } from '@/types/search.types';
+import ChatMessageComponent, { ChatMessage } from '@/components/ChatMessage';
 
 interface ChatMessagesProps {
   messages: ChatMessage[];

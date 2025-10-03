@@ -1,17 +1,5 @@
 import { Property } from './property';
 
-export interface ChatMessage {
-  role: 'user' | 'assistant';
-  content: string;
-  timestamp: Date;
-  isTyping?: boolean;
-  properties?: Property[];
-  fiscalOptimization?: {
-    preview: string;
-    details?: FiscalOptimizationDetails;
-  };
-}
-
 export interface FiscalOptimizationDetails {
   taxSavings?: number;
   netIncome?: number;

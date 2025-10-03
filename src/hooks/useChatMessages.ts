@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { ChatMessage, MockProperty } from '@/types/search.types';
+import { ChatMessage } from '@/components/ChatMessage';
+import { MockProperty } from '@/types/search.types';
 
 export const useChatMessages = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
