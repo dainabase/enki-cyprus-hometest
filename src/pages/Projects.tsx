@@ -15,7 +15,6 @@ import { useQuery } from '@tanstack/react-query';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { SEOHead } from '@/components/SEOHead';
 import { trackPageView, trackCustomEvent } from '@/lib/analytics';
-import Layout from '@/components/layout/Layout';
 import { getHeroImage, getGalleryUrls } from '@/utils/gallery';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 const Projects = () => {
@@ -53,7 +52,7 @@ const Projects = () => {
     return matchesQuery && matchesLocation && matchesType && matchesBudget;
   });
   return (
-    <Layout>
+    <>
       <SEOHead
         title="Projets Immobiliers à Chypre | ENKI-REALTY"
         description="Découvrez notre sélection exclusive de projets immobiliers premium à Chypre. Résidences de luxe, villas et appartements dans les meilleurs emplacements."
@@ -62,7 +61,7 @@ const Projects = () => {
         canonical="https://enki-realty.com/projects"
         image="/og-projects.jpg"
       />
-     
+
       <main className="min-h-screen bg-background">
         {/* Hero Section */}
         <section className="relative h-screen flex items-center justify-center overflow-hidden">
@@ -486,7 +485,7 @@ const Projects = () => {
           </div>
         </section>
       </main>
-    </Layout>
+    </>
   );
 };
 export default Projects;
