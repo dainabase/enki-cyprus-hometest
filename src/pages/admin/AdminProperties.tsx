@@ -156,7 +156,7 @@ const AdminProperties = () => {
               Gérez toutes les propriétés de votre portefeuille immobilier
             </p>
           </div>
-          <Button onClick={() => setShowModal(true)} className="gap-2 bg-gradient-to-r from-[hsl(199,63%,59%)] to-[hsl(199,63%,65%)] hover:from-[hsl(199,63%,55%)] hover:to-[hsl(199,63%,60%)] shadow-md hover:shadow-lg transition-all">
+          <Button onClick={() => navigate('/admin/properties/new')} className="gap-2 bg-gradient-to-r from-[hsl(199,63%,59%)] to-[hsl(199,63%,65%)] hover:from-[hsl(199,63%,55%)] hover:to-[hsl(199,63%,60%)] shadow-md hover:shadow-lg transition-all">
             <Plus className="h-4 w-4" />
             Nouvelle propriété
           </Button>

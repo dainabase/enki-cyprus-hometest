@@ -12,22 +12,32 @@ import { formatPrice } from '@/lib/utils/formatters';
 
 interface FinancialStepProps {
   form: UseFormReturn<PropertyFormData>;
+  inheritedData?: {
+    vat_rate?: number;
+    commission_rate?: number;
+  };
+  calculations?: {
+    vat_amount: number;
+    price_including_vat: number;
+    commission_amount: number;
+    golden_visa_eligible: boolean;
+  };
 }
 
-export const FinancialStep: React.FC<FinancialStepProps> = ({ form }) => {
+export const FinancialStep: React.FC<FinancialStepProps> = ({ form, inheritedData, calculations }) => {
   const priceExcludingVat = form.watch('price_excluding_vat') || 0;
-  const vatRate = form.watch('vat_rate') || 5;
-  const commissionRate = form.watch('commission_rate') || 5;
+  const vatRate = form.watch('vat_rate') || inheritedData?.vat_rate || 5;
+  const commissionRate = form.watch('commission_rate') || inheritedData?.commission_rate || 5;
   const internalArea = form.watch('internal_area') || 1;
   const depositPercentage = form.watch('deposit_percentage') || 30;
 
-  // Calculs automatiques
-  const vatAmount = (priceExcludingVat * vatRate) / 100;
-  const priceIncludingVat = priceExcludingVat + vatAmount;
+  // Use calculations from parent or compute locally
+  const vatAmount = calculations?.vat_amount || (priceExcludingVat * vatRate) / 100;
+  const priceIncludingVat = calculations?.price_including_vat || priceExcludingVat + vatAmount;
+  const commissionAmount = calculations?.commission_amount || (priceExcludingVat * commissionRate) / 100;
+  const isGoldenVisa = calculations?.golden_visa_eligible || priceIncludingVat >= 300000;
   const pricePerSqm = priceExcludingVat / internalArea;
-  const commissionAmount = (priceExcludingVat * commissionRate) / 100;
   const depositAmount = (priceExcludingVat * depositPercentage) / 100;
-  const isGoldenVisa = priceIncludingVat >= 300000;
 
   return (
     <div className="space-y-8">

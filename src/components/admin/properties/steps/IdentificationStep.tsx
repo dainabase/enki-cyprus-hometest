@@ -10,39 +10,12 @@ import { PropertyFormData } from '@/schemas/property.schema';
 
 interface IdentificationStepProps {
   form: UseFormReturn<PropertyFormData>;
+  projects?: any[];
+  buildings?: any[];
 }
 
-export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) => {
+export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form, projects = [], buildings = [] }) => {
   const selectedProjectId = form.watch('project_id');
-
-  // Fetch projects
-  const { data: projects = [] } = useQuery({
-    queryKey: ['projects-for-property'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('projects')
-        .select('id, title')
-        .order('title');
-      if (error) throw error;
-      return data;
-    }
-  });
-
-  // Fetch buildings filtered by project
-  const { data: buildings = [] } = useQuery({
-    queryKey: ['buildings-for-property', selectedProjectId],
-    queryFn: async () => {
-      if (!selectedProjectId) return [];
-      const { data, error } = await supabase
-        .from('buildings')
-        .select('id, name, building_name')
-        .eq('project_id', selectedProjectId)
-        .order('name');
-      if (error) throw error;
-      return data;
-    },
-    enabled: !!selectedProjectId
-  });
 
   return (
     <div className="space-y-8">
