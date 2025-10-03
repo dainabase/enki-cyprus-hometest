@@ -63,12 +63,12 @@ export const DeveloperCardView = ({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {groupedByZone[zone].map(dev => (
               <Card key={dev.id} className="group hover:shadow-xl transition-all duration-300 border-2 border-slate-200 bg-white hover:border-slate-300 hover:-translate-y-1 flex flex-col h-full">
-                <CardHeader className="pb-4">
-                  <div className="flex items-start space-x-4 h-20">
+                <CardHeader className="pb-4 bg-gradient-to-br from-slate-50 to-blue-50/30">
+                  <div className="flex items-start space-x-4 min-h-[80px]">
                     <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center overflow-hidden border-2 border-white shadow-sm flex-shrink-0">
                       {getLogo(dev) ? (
-                        <img 
-                          src={getLogo(dev)} 
+                        <img
+                          src={getLogo(dev)}
                           alt={`${dev.name} logo`}
                           className="w-full h-full object-contain"
                         />
@@ -80,16 +80,16 @@ export const DeveloperCardView = ({
                         </div>
                       )}
                     </div>
-                    <div className="flex-1 min-w-0 h-full flex flex-col justify-between">
+                    <div className="flex-1 min-w-0 flex flex-col justify-between">
                       <div>
                         <h4 className="font-bold text-slate-900 text-lg leading-tight line-clamp-2">{dev.name}</h4>
                         <p className="text-slate-500 font-medium mt-1">{dev.main_city}</p>
                       </div>
-                      <div className="flex items-center gap-2 mt-auto">
-                        <Badge 
+                      <div className="flex items-center gap-2 mt-2">
+                        <Badge
                           variant={dev.status === 'active' ? 'default' : 'secondary'}
-                          className={dev.status === 'active' 
-                            ? 'bg-emerald-100 text-emerald-800 border-emerald-200' 
+                          className={dev.status === 'active'
+                            ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
                             : 'bg-slate-100 text-slate-600 border-slate-200'
                           }
                         >
@@ -147,29 +147,29 @@ export const DeveloperCardView = ({
                 </CardContent>
                 
                 <CardFooter className="pt-4 border-t border-slate-100 mt-auto">
-                  <div className="flex gap-2 w-full">
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="flex-1 border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-200"
+                  <div className="grid grid-cols-3 gap-2 w-full">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-200"
                       onClick={() => onViewDetails(dev)}
                     >
-                      <Eye className="h-4 w-4 mr-2" />
+                      <Eye className="h-4 w-4 mr-1" />
                       Voir
                     </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="flex-1 border-blue-200 hover:bg-blue-50 hover:border-blue-300 text-blue-700 hover:text-blue-800 transition-all duration-200"
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-[hsl(199,63%,75%)] hover:bg-[hsl(199,63%,95%)] hover:border-[hsl(199,63%,65%)] text-[hsl(199,63%,40%)] hover:text-[hsl(199,63%,30%)] transition-all duration-200"
                       onClick={() => onEdit(dev)}
                     >
-                      <Edit className="h-4 w-4 mr-2" />
+                      <Edit className="h-4 w-4 mr-1" />
                       Modifier
                     </Button>
                     <Button
                       variant="outline"
                       size="sm"
-                      className="flex-1 border-red-200 hover:bg-red-50 hover:border-red-300 text-red-600 hover:text-red-700 transition-all duration-200"
+                      className="border-red-200 hover:bg-red-50 hover:border-red-300 text-red-600 hover:text-red-700 transition-all duration-200"
                       onClick={() => onDelete(dev)}
                     >
                       <Trash2 className="h-4 w-4" />

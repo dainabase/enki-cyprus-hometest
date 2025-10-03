@@ -629,9 +629,9 @@ export default function AdminDevelopers() {
             </div>
 
             {/* Section Localisation */}
-            <div className="bg-gradient-to-r from-blue-50 to-white p-6 rounded-xl border border-blue-200">
+            <div className="bg-gradient-to-r from-[hsl(199,63%,95%)] to-white p-6 rounded-xl border border-[hsl(199,63%,75%)]">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-2 h-8 bg-gradient-to-b from-blue-600 to-blue-400 rounded-full"></div>
+                <div className="w-2 h-8 bg-gradient-to-b from-[hsl(199,63%,59%)] to-[hsl(199,63%,65%)] rounded-full"></div>
                 <h3 className="text-xl font-bold text-slate-900">Localisation</h3>
               </div>
               
