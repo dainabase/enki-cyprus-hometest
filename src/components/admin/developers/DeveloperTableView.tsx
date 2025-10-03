@@ -90,11 +90,11 @@ export const DeveloperTableView = ({
     <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg overflow-hidden">
       <Table>
         <TableHeader>
-          <TableRow className="bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600">
+          <TableRow className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
             <TableHead className="text-white font-bold border-0">Logo</TableHead>
             <TableHead className="text-white font-bold border-0">
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 className="h-auto p-0 font-bold text-white hover:bg-white/10"
                 onClick={() => handleSort('name')}
               >
@@ -102,8 +102,8 @@ export const DeveloperTableView = ({
               </Button>
             </TableHead>
             <TableHead className="text-white font-bold border-0">
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 className="h-auto p-0 font-bold text-white hover:bg-white/10"
                 onClick={() => handleSort('main_city')}
               >
@@ -111,8 +111,8 @@ export const DeveloperTableView = ({
               </Button>
             </TableHead>
             <TableHead className="text-white font-bold border-0">
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 className="h-auto p-0 font-bold text-white hover:bg-white/10"
                 onClick={() => handleSort('status')}
               >
@@ -121,8 +121,8 @@ export const DeveloperTableView = ({
             </TableHead>
             <TableHead className="text-white font-bold border-0">Site Web</TableHead>
             <TableHead className="text-white font-bold border-0">
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 className="h-auto p-0 font-bold text-white hover:bg-white/10"
                 onClick={() => handleSort('rating_score')}
               >
