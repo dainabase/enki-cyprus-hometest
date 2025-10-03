@@ -282,7 +282,7 @@ const AdminUnits = () => {
             size="sm"
             onClick={() => {
               console.log('Navigating to edit property:', row.id);
-              navigate(`/admin/property-form/${row.id}`);
+              navigate(`/admin/properties/${row.id}/edit`);
             }}
             className="h-8 w-8 p-0"
           >
@@ -365,7 +365,7 @@ const AdminUnits = () => {
                         <Eye className="h-4 w-4 mr-1" />
                         Voir
                       </Button>
-                      <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/property-form/${property.id}`)}>
+                      <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/properties/${property.id}/edit`)}>
                         <Edit className="h-4 w-4 mr-1" />
                         Modifier
                       </Button>
@@ -397,7 +397,7 @@ const AdminUnits = () => {
                        <Button variant="ghost" size="sm" onClick={() => setPreviewProperty(property)}>
                           <Eye className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/property-form/${property.id}`)}>
+                        <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/properties/${property.id}/edit`)}>
                           <Edit className="h-4 w-4" />
                         </Button>
                     </div>
@@ -424,7 +424,7 @@ const AdminUnits = () => {
                        <Button variant="ghost" size="sm" onClick={() => setPreviewProperty(property)} className="h-7 w-7 p-0">
                           <Eye className="h-3 w-3" />
                         </Button>
-                        <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/property-form/${property.id}`)} className="h-7 w-7 p-0">
+                        <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/properties/property.id}`)} className="h-7 w-7 p-0">
                           <Edit className="h-3 w-3" />
                         </Button>
                     </div>
@@ -482,7 +482,7 @@ const AdminUnits = () => {
                           <Eye className="h-4 w-4 mr-2" />
                           Voir détails
                         </Button>
-                        <Button variant="executive" size="sm" onClick={() => navigate(`/admin/property-form/${property.id}`)}>
+                        <Button variant="executive" size="sm" onClick={() => navigate(`/admin/properties/${property.id}/edit`)}>
                           <Edit className="h-4 w-4 mr-2" />
                           Modifier
                         </Button>
