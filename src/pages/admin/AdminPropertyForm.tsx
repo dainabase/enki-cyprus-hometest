@@ -409,15 +409,21 @@ export default function AdminPropertyForm() {
   // Update property mutation
   const updateMutation = useMutation({
     mutationFn: async (data: any) => {
+      console.log('[updateMutation] Starting update for ID:', id);
+      console.log('[updateMutation] Data:', data);
       if (!id) throw new Error('ID manquant');
-      return await updateProperty(id, data);
+      const result = await updateProperty(id, data);
+      console.log('[updateMutation] Result:', result);
+      return result;
     },
     onSuccess: () => {
+      console.log('[updateMutation] ✅ onSuccess called');
       queryClient.invalidateQueries({ queryKey: ['property', id] });
       queryClient.invalidateQueries({ queryKey: ['all-properties'] });
       toast.success('Propriété mise à jour avec succès');
     },
     onError: (error) => {
+      console.error('[updateMutation] ❌ onError called:', error);
       toast.error('Erreur lors de la mise à jour');
       console.error('[PropertyForm] Update error:', error);
     }
@@ -454,17 +460,33 @@ export default function AdminPropertyForm() {
     saveDraftMutation.mutate(values);
   };
 
-  const handleSubmit = form.handleSubmit(async (data) => {
-    try {
-      if (isEdit) {
-        await updateMutation.mutateAsync(data);
-      } else {
-        await createMutation.mutateAsync(data);
+  const handleSubmit = form.handleSubmit(
+    async (data) => {
+      console.log('[PropertyForm] ✅ Form validation passed');
+      console.log('[PropertyForm] 📝 Data to submit:', data);
+      console.log('[PropertyForm] Mode:', isEdit ? 'UPDATE' : 'CREATE');
+
+      try {
+        if (isEdit) {
+          console.log('[PropertyForm] Calling updateMutation...');
+          await updateMutation.mutateAsync(data);
+          console.log('[PropertyForm] ✅ Update successful');
+        } else {
+          console.log('[PropertyForm] Calling createMutation...');
+          await createMutation.mutateAsync(data);
+          console.log('[PropertyForm] ✅ Create successful');
+        }
+      } catch (error) {
+        console.error('[PropertyForm] ❌ Submit error:', error);
       }
-    } catch (error) {
-      console.error('[PropertyForm] Submit error:', error);
+    },
+    (errors) => {
+      console.error('[PropertyForm] ❌ Validation errors:', errors);
+      toast.error('Erreurs de validation', {
+        description: 'Veuillez corriger les champs en erreur'
+      });
     }
-  });
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30">
