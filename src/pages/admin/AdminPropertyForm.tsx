@@ -109,9 +109,6 @@ export default function AdminPropertyForm() {
           city,
           vat_rate,
           project_code,
-          title_deed_status,
-          planning_permit_number,
-          building_permit_number,
           developer:developers(id, name, commission_rate)
         `)
         .order('title');
