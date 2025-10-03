@@ -35,10 +35,11 @@ const Projects = () => {
     trackPageView('/projects', 'Projets - ENKI-REALTY Immobilier Premium Chypre');
   }, []);
 
-  const featuredProjects = useMemo(() =>
-    projects.filter((p: any) => p.featured).slice(0, 3),
-    [projects]
-  );
+  const featuredProjects = useMemo(() => {
+    const featured = projects.filter((p: any) => p.featured);
+    // Si aucun projet featured, prendre les 3 premiers
+    return featured.length > 0 ? featured.slice(0, 3) : projects.slice(0, 3);
+  }, [projects]);
 
   const districts = useMemo(() => {
     const locs = projects.map((p: any) => {
@@ -146,17 +147,20 @@ const Projects = () => {
             </motion.div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {featuredProjects.map((project: any, index: number) => (
-                <motion.div
-                  key={project.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  whileHover={{ y: -8 }}
-                  className="group relative"
-                >
-                  <Link to={`/projects/${project.url_slug || project.id}`}>
+              {featuredProjects.map((project: any, index: number) => {
+                const projectSlug = project.url_slug || project.slug || project.id;
+                console.log('Featured project:', project.title, 'slug:', projectSlug);
+                return (
+                  <motion.div
+                    key={project.id}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1 }}
+                    whileHover={{ y: -8 }}
+                    className="group relative"
+                  >
+                    <Link to={`/projects/${projectSlug}`}>
                     <div className="relative h-[500px] rounded-2xl overflow-hidden">
                       <img
                         src={getHeroImage(project) || 'https://picsum.photos/800/600'}
@@ -188,13 +192,14 @@ const Projects = () => {
                         </div>
                       </div>
                     </div>
-                  </Link>
-                </motion.div>
-              ))}
+                    </Link>
+                  </motion.div>
+                );
+              })}
             </div>
-          </div>
-        </section>
-      )}
+            </div>
+          </section>
+        )}
 
       {/* CYPRUS LIFESTYLE SECTION - Full Width */}
       <section className="w-full py-24 bg-white">
