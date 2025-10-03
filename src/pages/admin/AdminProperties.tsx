@@ -75,7 +75,15 @@ const AdminProperties = () => {
   };
 
   const handleEditProperty = (property) => {
-    navigate(`/admin/properties/${property.id}/edit`);
+    console.log('[AdminProperties] Editing property:', property);
+    console.log('[AdminProperties] Property ID:', property?.id);
+    if (!property?.id) {
+      toast.error('ID de propriété manquant');
+      return;
+    }
+    const url = `/admin/properties/${property.id}/edit`;
+    console.log('[AdminProperties] Navigating to:', url);
+    navigate(url);
   };
 
   const handleDeleteProperty = async (id: string) => {
