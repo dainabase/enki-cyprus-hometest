@@ -12,7 +12,6 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import PropertyWizard from '@/components/admin/properties/PropertyWizard';
 
 type ViewType = 'cards' | 'list' | 'table' | 'compact' | 'detailed';
 
@@ -88,7 +87,6 @@ const AdminUnits = () => {
   });
   const [showFilters, setShowFilters] = useState(false);
   const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   
   const [filters, setFilters] = useState<FilterState>({
     search: '',
@@ -323,7 +321,7 @@ const AdminUnits = () => {
             <Building2 className="w-16 h-16 text-slate-400 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-slate-900 mb-2">Aucune propriété trouvée</h3>
             <p className="text-slate-600 mb-6">Commencez par créer votre première propriété</p>
-            <Button variant="executive" onClick={() => setIsDialogOpen(true)}>
+            <Button variant="executive" onClick={() => navigate('/admin/properties/new')}>
               <Plus className="w-4 h-4 mr-2" />
               Nouvelle Propriété
             </Button>
@@ -529,7 +527,7 @@ const AdminUnits = () => {
                 <Filter className="w-4 h-4" />
                 Filtres
               </Button>
-              <Button variant="executive" onClick={() => setIsDialogOpen(true)}>
+              <Button variant="executive" onClick={() => navigate('/admin/properties/new')}>
                 <Plus className="w-5 h-5 mr-2" />
                 Nouvelle Propriété
               </Button>
@@ -652,37 +650,14 @@ const AdminUnits = () => {
         {renderContent()}
       </div>
 
-      {/* Property Wizard Dialog */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden">
-          <DialogHeader className="pb-4">
-            <DialogTitle>Nouvelle Propriété</DialogTitle>
-            <DialogDescription>
-              Créez une nouvelle propriété en suivant les étapes du formulaire
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex-1 overflow-y-auto">
-            <PropertyWizard 
-              open={isDialogOpen}
-              onClose={() => setIsDialogOpen(false)}
-              onSuccess={() => {
-                setIsDialogOpen(false);
-                refetch();
-                toast({
-                  title: "Propriété créée",
-                  description: "La nouvelle propriété a été créée avec succès"
-                });
-              }}
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Modal de preview de propriété */}
+      {/* Modal de preview de propriété - On garde celui-ci pour la preview */}
       <Dialog open={!!previewProperty} onOpenChange={() => setPreviewProperty(null)}>
         <DialogContent className="max-w-4xl max-h-[80vh]">
           <DialogHeader>
             <DialogTitle>Détails de la propriété {previewProperty?.unit_number}</DialogTitle>
+            <DialogDescription>
+              Visualisez les informations complètes de cette propriété
+            </DialogDescription>
           </DialogHeader>
           <ScrollArea className="max-h-[60vh]">
             {previewProperty && (
