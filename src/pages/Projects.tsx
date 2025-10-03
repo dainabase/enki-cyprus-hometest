@@ -56,10 +56,6 @@ const Projects = () => {
     });
   }, [projects, selectedDistrict]);
 
-  const { scrollYProgress } = useScroll();
-  const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
-
   return (
     <>
       <SEOHead
@@ -71,26 +67,33 @@ const Projects = () => {
         image="/og-projects.jpg"
       />
 
-      {/* HERO SECTION - Full Width */}
-      <motion.section
-        style={{ opacity, scale }}
-        className="relative h-screen w-full overflow-hidden"
-      >
-        <div className="absolute inset-0">
-          <video
-            className="w-full h-full object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-          >
-            <source src="https://videos.pexels.com/video-files/3571264/3571264-uhd_2560_1440_30fps.mp4" type="video/mp4" />
-          </video>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
-        </div>
+      <div className="min-h-screen bg-white">
+        {/* HERO SECTION */}
+        <section className="relative min-h-screen w-full flex items-center justify-center overflow-hidden">
+          <div className="absolute inset-0">
+            <div
+              className="absolute inset-0 w-full h-full object-cover scale-125"
+              style={{
+                backgroundImage: `url(/lovable-uploads/7a1f4c1e-ed5d-401e-98a7-e7d380bb9d99.png)`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+              }}
+            />
+            <div
+              className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-60 scale-125"
+              style={{
+                backgroundImage: `url(/lovable-uploads/7a1f4c1e-ed5d-401e-98a7-e7d380bb9d99.png)`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+              }}
+            />
+          </div>
 
-        <div className="relative z-10 h-full flex items-center justify-center px-4">
-          <div className="text-center max-w-5xl">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-black/45" />
+
+          <div className="relative z-10 text-center px-4">
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -114,35 +117,20 @@ const Projects = () => {
             >
               <Button
                 size="lg"
-                className="group"
+                className="bg-primary hover:bg-primary-hover text-white"
                 onClick={() => document.getElementById('featured')?.scrollIntoView({ behavior: 'smooth' })}
               >
                 Découvrir les projets
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </motion.div>
           </div>
-        </div>
+        </section>
 
-        <motion.div
-          className="absolute bottom-12 left-1/2 -translate-x-1/2"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          <div className="w-6 h-10 border-2 border-white/50 rounded-full flex items-start justify-center p-2">
-            <motion.div
-              className="w-1 h-2 bg-white rounded-full"
-              animate={{ y: [0, 12, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
-          </div>
-        </motion.div>
-      </motion.section>
-
-      {/* TOP 3 FEATURED PROJECTS - Full Width */}
-      {featuredProjects.length > 0 && (
-        <section id="featured" className="w-full py-24 bg-gradient-to-b from-background to-secondary/20">
-          <div className="px-4 md:px-8 lg:px-16">
+        {/* TOP 3 FEATURED PROJECTS */}
+        {featuredProjects.length > 0 && (
+          <section id="featured" className="py-24 md:py-32 bg-white">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -366,6 +354,7 @@ const Projects = () => {
           </motion.div>
         </div>
       </section>
+      </div>
     </>
   );
 };
