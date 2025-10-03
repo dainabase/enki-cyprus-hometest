@@ -225,129 +225,90 @@ const Navbar = () => {
 
           {/* Mobile menu button */}
           <div className="md:hidden">
-            <motion.div
-              whileTap={{ scale: 0.98 }}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsOpen(!isOpen)}
+              className="text-foreground"
             >
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsOpen(!isOpen)}
-              >
-                <AnimatePresence mode="wait" initial={false}>
-                  <motion.div
-                    key={isOpen ? 'close' : 'open'}
-                    initial={{ rotate: -90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: 90, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-                  </motion.div>
-                </AnimatePresence>
-              </Button>
-            </motion.div>
+              {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </Button>
           </div>
         </div>
 
         {/* Mobile Navigation */}
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="md:hidden border-t border-border/40 bg-background/95 backdrop-blur-md shadow-lg"
-            >
-              <div className="px-2 pt-2 pb-3 space-y-1">
-                {/* Navigation Links */}
-                {allNavigation.map((item, index) => (
-                  <motion.div
-                    key={item.name}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1, duration: 0.3 }}
-                  >
-                    <Link
-                      to={item.href}
-                      className={`flex items-center px-3 py-2 text-base font-medium rounded-md transition-all duration-200 ${
-                        isActive(item.href)
-                          ? 'text-primary bg-accent'
-                          : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
-                      }`}
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <item.icon className="w-5 h-5 mr-3" />
-                      {item.name}
-                    </Link>
-                  </motion.div>
-                ))}
+        {isOpen && (
+          <div className="md:hidden border-t border-border/40 bg-background/95 backdrop-blur-md shadow-lg">
+            <div className="px-2 pt-2 pb-3 space-y-1">
+              {/* Navigation Links */}
+              {allNavigation.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={`flex items-center px-3 py-2 text-base font-medium rounded-md transition-colors ${
+                    isActive(item.href)
+                      ? 'text-primary bg-accent'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                  }`}
+                  onClick={() => setIsOpen(false)}
+                >
+                  <item.icon className="w-5 h-5 mr-3" />
+                  {item.name}
+                </Link>
+              ))}
 
-                {/* Mobile Auth Section */}
-                <div className="pt-3 border-t border-border/50">
-                  {loading ? (
-                    <div className="px-3 py-2">
-                      <div className="animate-pulse bg-muted h-10 rounded-md" />
-                    </div>
-                  ) : isAuthenticated ? (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: allNavigation.length * 0.1, duration: 0.3 }}
-                      className="space-y-2"
-                    >
-                      <div className="px-3 py-2 text-sm text-muted-foreground">
-                        <div className="flex items-center space-x-2">
-                          <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                            <span className="text-xs font-medium text-primary">
-                              {getUserInitials()}
-                            </span>
-                          </div>
-                          <div>
-                            <p className="font-medium text-foreground">
-                              {profile?.profile?.name || 'Utilisateur'}
-                            </p>
-                            <p className="text-xs">{user?.email}</p>
-                            {isAdmin && (
-                              <p className="text-xs text-primary font-medium">Administrateur</p>
-                            )}
-                          </div>
+              {/* Mobile Auth Section */}
+              <div className="pt-3 border-t border-border/50">
+                {loading ? (
+                  <div className="px-3 py-2">
+                    <div className="animate-pulse bg-muted h-10 rounded-md" />
+                  </div>
+                ) : isAuthenticated ? (
+                  <div className="space-y-2">
+                    <div className="px-3 py-2 text-sm text-muted-foreground">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                          <span className="text-xs font-medium text-primary">
+                            {getUserInitials()}
+                          </span>
+                        </div>
+                        <div>
+                          <p className="font-medium text-foreground">
+                            {profile?.profile?.name || 'Utilisateur'}
+                          </p>
+                          <p className="text-xs">{user?.email}</p>
+                          {isAdmin && (
+                            <p className="text-xs text-primary font-medium">Administrateur</p>
+                          )}
                         </div>
                       </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleLogout}
-                        className="w-full justify-start text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
-                      >
-                        <LogOut className="w-4 h-4 mr-2" />
-                        Déconnexion
-                      </Button>
-                    </motion.div>
-                   ) : (
-                     <motion.div
-                       initial={{ opacity: 0, y: 20 }}
-                       animate={{ opacity: 1, y: 0 }}
-                       transition={{ delay: allNavigation.length * 0.1, duration: 0.3 }}
-                     >
-                       <Link to="/login" onClick={() => setIsOpen(false)}>
-                         <Button
-                           variant="outline"
-                           size="sm"
-                           className="w-full justify-start"
-                         >
-                           <LogIn className="w-4 h-4 mr-2" />
-                           Connexion
-                         </Button>
-                       </Link>
-                     </motion.div>
-                   )}
-                </div>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleLogout}
+                      className="w-full justify-start text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Déconnexion
+                    </Button>
+                  </div>
+                ) : (
+                  <Link to="/login" onClick={() => setIsOpen(false)}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start"
+                    >
+                      <LogIn className="w-4 h-4 mr-2" />
+                      Connexion
+                    </Button>
+                  </Link>
+                )}
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
