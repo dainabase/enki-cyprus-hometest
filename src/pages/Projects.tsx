@@ -18,6 +18,7 @@ const Projects = () => {
   const { data: projects = [], isLoading } = useQuery({
     queryKey: ['projects'],
     queryFn: async () => {
+      console.log('Fetching projects...');
       const { data, error } = await supabase
         .from('projects')
         .select(`
@@ -26,7 +27,11 @@ const Projects = () => {
         `)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching projects:', error);
+        throw error;
+      }
+      console.log('Projects fetched:', data?.length, 'projects');
       return data || [];
     },
   });
@@ -34,6 +39,11 @@ const Projects = () => {
   useEffect(() => {
     trackPageView('/projects', 'Projets - ENKI-REALTY Immobilier Premium Chypre');
   }, []);
+
+  useEffect(() => {
+    console.log('Projects state:', projects.length, 'projects');
+    console.log('Featured projects:', featuredProjects.length);
+  }, [projects, featuredProjects]);
 
   const featuredProjects = useMemo(() => {
     const featured = projects.filter((p: any) => p.featured);
@@ -56,6 +66,17 @@ const Projects = () => {
       return loc.includes(selectedDistrict);
     });
   }, [projects, selectedDistrict]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Chargement des projets...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -129,7 +150,7 @@ const Projects = () => {
         </section>
 
         {/* TOP 3 FEATURED PROJECTS */}
-        {featuredProjects.length > 0 && (
+        {featuredProjects.length > 0 ? (
           <section id="featured" className="py-24 md:py-32 bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
@@ -197,6 +218,20 @@ const Projects = () => {
                 );
               })}
             </div>
+            </div>
+          </section>
+        ) : (
+          <section className="py-24 md:py-32 bg-white">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+              <h2 className="swaarg-large-title text-primary mb-4">
+                Aucun projet disponible
+              </h2>
+              <p className="swaarg-subtitle text-muted-foreground">
+                Les projets seront bientôt disponibles. Revenez plus tard.
+              </p>
+              <p className="text-sm text-muted-foreground mt-4">
+                Debug: {projects.length} projets trouvés dans la base de données
+              </p>
             </div>
           </section>
         )}
