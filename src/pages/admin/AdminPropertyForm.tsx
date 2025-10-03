@@ -10,15 +10,7 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import {
-  ArrowLeft,
-  ArrowRight,
-  Save,
-  CheckCircle,
-  ChevronLeft,
-  Check,
-  AlertCircle
-} from 'lucide-react';
+import { ArrowLeft, ArrowRight, Save, CircleCheck as CheckCircle, ChevronLeft, Check, CircleAlert as AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { propertySchema, propertyFormSteps, PropertyFormData } from '@/schemas/property.schema';
 import { createProperty, updateProperty } from '@/lib/api/properties';
