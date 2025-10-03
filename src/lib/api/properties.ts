@@ -79,7 +79,12 @@ export const createProperty = async (projectId: string, propertyData: PropertyFo
 
 export const updateProperty = async (id: string, propertyData: Partial<PropertyFormData>): Promise<Property> => {
   let updateData: any = { ...propertyData };
-  
+
+  // Supprimer les champs qui n'existent pas en base
+  delete updateData.ownership_type;
+  delete updateData.sale_type;
+  delete updateData.property_sub_type;
+
   // Recalculer TVA si prix change
   if (propertyData.price_excluding_vat) {
     const vatRate = propertyData.vat_rate || 5.0;
@@ -90,11 +95,13 @@ export const updateProperty = async (id: string, propertyData: Partial<PropertyF
       price_including_vat: propertyData.price_excluding_vat + vatAmount,
       golden_visa_eligible: propertyData.price_excluding_vat >= 300000
     };
-    
+
     if (propertyData.internal_area) {
       updateData.price_per_sqm = propertyData.price_excluding_vat / propertyData.internal_area;
     }
   }
+
+  console.log('[updateProperty] Sending data:', updateData);
 
   const { data, error } = await supabase
     .from('properties')
@@ -103,7 +110,10 @@ export const updateProperty = async (id: string, propertyData: Partial<PropertyF
     .select()
     .single();
 
-  if (error) throw error;
+  if (error) {
+    console.error('[updateProperty] Supabase error:', error);
+    throw error;
+  }
   return data as Property;
 };
 

@@ -53,8 +53,6 @@ export default function AdminPropertyForm() {
       property_code: '',
       property_type: 'apartment',
       property_status: 'available',
-      sale_type: 'sale',
-      ownership_type: 'freehold',
 
       bedrooms_count: 0,
       bathrooms_count: 0,
@@ -182,8 +180,6 @@ export default function AdminPropertyForm() {
         property_type: existingProperty.property_type as any,
         property_sub_type: existingProperty.property_sub_type || '',
         property_status: existingProperty.property_status as any || 'available',
-        sale_type: 'sale',
-        ownership_type: 'freehold',
 
         bedrooms_count: existingProperty.bedrooms_count || 0,
         bathrooms_count: existingProperty.bathrooms_count || 0,
