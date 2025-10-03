@@ -6,7 +6,7 @@ import { Property } from '@/lib/supabase';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Home, Building, Building2, Store } from 'lucide-react';
+import { MapPin, Chrome as Home, Building, Building2, Store } from 'lucide-react';
 import { useGoogleMapsContext } from '@/contexts/GoogleMapsContext';
 interface GoogleMapComponentProps {
   properties: Property[];
