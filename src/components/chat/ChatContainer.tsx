@@ -1,7 +1,7 @@
 import { ChatMessages } from './ChatMessages';
 import { ChatInput } from './ChatInput';
 import { ChatMessage } from '@/types/search.types';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, memo } from 'react';
 
 interface ChatContainerProps {
   messages: ChatMessage[];
@@ -16,7 +16,7 @@ interface ChatContainerProps {
   showResults: boolean;
 }
 
-export const ChatContainer = ({
+export const ChatContainer = memo(({
   messages,
   agenticQuery,
   onQueryChange,
@@ -57,4 +57,6 @@ export const ChatContainer = ({
       />
     </div>
   );
-};
+});
+
+ChatContainer.displayName = 'ChatContainer';

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState, memo } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
 import Autoplay from 'embla-carousel-autoplay'
 import { motion } from 'framer-motion'
@@ -23,10 +23,10 @@ interface FeaturedProjectsCarouselProps {
   onTrackEvent: (eventName: string, data: any) => void;
 }
 
-export const FeaturedProjectsCarousel = ({ 
-  properties, 
-  onPropertyClick, 
-  onTrackEvent 
+const FeaturedProjectsCarousel = memo(({
+  properties,
+  onPropertyClick,
+  onTrackEvent
 }: FeaturedProjectsCarouselProps) => {
   const [emblaRef, emblaApi] = useEmblaCarousel(
     { 
@@ -208,6 +208,9 @@ export const FeaturedProjectsCarousel = ({
       </div>
     </div>
   )
-}
+})
 
+FeaturedProjectsCarousel.displayName = 'FeaturedProjectsCarousel'
+
+export { FeaturedProjectsCarousel }
 export default FeaturedProjectsCarousel

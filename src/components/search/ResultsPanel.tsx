@@ -1,6 +1,7 @@
 import { PropertyResultsList } from './PropertyResultsList';
 import { FiscalOptimizationCard } from './FiscalOptimizationCard';
 import { MockProperty } from '@/types/search.types';
+import { memo } from 'react';
 
 interface ResultsPanelProps {
   showResults: boolean;
@@ -9,7 +10,7 @@ interface ResultsPanelProps {
   onCreateAccount?: () => void;
 }
 
-export const ResultsPanel = ({
+export const ResultsPanel = memo(({
   showResults,
   properties,
   onPropertyClick,
@@ -31,4 +32,6 @@ export const ResultsPanel = ({
       </div>
     </div>
   );
-};
+});
+
+ResultsPanel.displayName = 'ResultsPanel';

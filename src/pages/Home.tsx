@@ -1,4 +1,4 @@
-import { useState, lazy, useEffect, useMemo } from 'react';
+import { useState, lazy, useEffect, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Property } from '@/lib/supabase';
 import { useSupabaseProperties } from '@/hooks/useSupabaseProperties';
@@ -55,7 +55,6 @@ const Home = () => {
   // Ensure interests is always an object
   const safeInterests = interests || {};
   
-  // Use dynamic properties instead of hardcoded
   const featuredProperties = useMemo(() => safeProperties.slice(0, 3), [safeProperties]);
   const latestProperties = useMemo(() => safeProperties.slice(3, 8), [safeProperties]);
 
@@ -64,10 +63,10 @@ const Home = () => {
     trackCustomEvent('home_viewed', { user_authenticated: !!isAuthenticated });
   }, [isAuthenticated]);
 
-  const handlePropertyClick = (property: any) => {
+  const handlePropertyClick = useCallback((property: any) => {
     setSelectedProperty(property);
     setIsModalOpen(true);
-  };
+  }, []);
   return (
     <>
       <SEOHead
@@ -142,6 +141,7 @@ const Home = () => {
               muted
               loop
               playsInline
+              preload="metadata"
               poster="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&h=1080&fit=crop&auto=format"
               onLoadStart={() => {
                 trackCustomEvent('video_viewed', {
