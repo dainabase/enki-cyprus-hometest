@@ -511,6 +511,15 @@ export default function AdminPropertyForm() {
             </div>
 
             <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={async () => {
+                  const { auditPropertyFields } = await import('@/utils/auditPropertyFields');
+                  await auditPropertyFields();
+                }}
+              >
+                🔍 Audit Champs
+              </Button>
               {!isEdit && (
                 <Button variant="outline" onClick={handleSaveDraft}>
                   <Save className="h-4 w-4 mr-2" />
