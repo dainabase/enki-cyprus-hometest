@@ -5,19 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Building2, 
-  Search, 
-  MapPin, 
-  Home,
-  Car,
-  Layers,
-  Calendar,
-  ArrowRight,
-  Plus,
-  Edit,
-  Trash2
-} from 'lucide-react';
+import { Building2, Search, MapPin, Chrome as Home, Car, Layers, Calendar, ArrowRight, Plus, CreditCard as Edit, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 import { fetchAllBuildings, createBuildingGlobal, updateBuilding, deleteBuilding } from '@/lib/api/buildings';

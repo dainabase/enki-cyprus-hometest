@@ -1,4 +1,4 @@
-import { Eye, Edit, Trash2, Mail, Phone, Globe } from 'lucide-react';
+import { Eye, CreditCard as Edit, Trash2, Mail, Phone, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';

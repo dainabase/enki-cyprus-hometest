@@ -5,17 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Home, 
-  Search, 
-  MapPin, 
-  Building2,
-  Euro,
-  Plus,
-  Edit,
-  Trash2,
-  Eye
-} from 'lucide-react';
+import { Chrome as Home, Search, MapPin, Building2, Euro, Plus, CreditCard as Edit, Trash2, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { PropertyGlobalModal } from '@/components/admin/properties/PropertyGlobalModal';
 import { Property, PropertyFormData } from '@/types/property';
