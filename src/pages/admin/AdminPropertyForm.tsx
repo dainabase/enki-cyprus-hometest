@@ -135,7 +135,7 @@ export default function AdminPropertyForm() {
       if (!selectedProjectId) return [];
       const { data, error } = await supabase
         .from('buildings')
-        .select('id, building_name, building_code, energy_rating, energy_certificate, project_id')
+        .select('id, building_name, building_code, energy_certificate, project_id')
         .eq('project_id', selectedProjectId)
         .order('building_name');
       if (error) throw error;
@@ -159,7 +159,7 @@ export default function AdminPropertyForm() {
         .from('properties')
         .select(`
           *,
-          building:buildings(id, building_name, energy_rating, project_id),
+          building:buildings(id, building_name, energy_certificate, project_id),
           project:projects(id, title, vat_rate, developer:developers(commission_rate))
         `)
         .eq('id', id)
@@ -292,11 +292,11 @@ export default function AdminPropertyForm() {
       if (building) {
         setSelectedBuilding(building);
 
-        if (building.energy_rating && !isEdit) {
-          form.setValue('energy_rating', building.energy_rating);
+        if (building.energy_certificate && !isEdit) {
+          form.setValue('energy_rating', building.energy_certificate);
           setInheritedData(prev => ({
             ...prev,
-            energy_rating: building.energy_rating
+            energy_rating: building.energy_certificate
           }));
         }
       }
