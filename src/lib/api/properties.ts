@@ -85,6 +85,19 @@ export const updateProperty = async (id: string, propertyData: Partial<PropertyF
   delete updateData.sale_type;
   delete updateData.property_sub_type;
 
+  // Nettoyer les valeurs null/undefined problématiques
+  // Convertir empty string en null pour les champs optionnels
+  Object.keys(updateData).forEach(key => {
+    if (updateData[key] === '' || updateData[key] === undefined) {
+      updateData[key] = null;
+    }
+  });
+
+  // Forcer payment_plan_details à être un array si c'est un object
+  if (updateData.payment_plan_details && typeof updateData.payment_plan_details === 'object' && !Array.isArray(updateData.payment_plan_details)) {
+    updateData.payment_plan_details = [];
+  }
+
   // Recalculer TVA si prix change
   if (propertyData.price_excluding_vat) {
     const vatRate = propertyData.vat_rate || 5.0;
@@ -101,7 +114,7 @@ export const updateProperty = async (id: string, propertyData: Partial<PropertyF
     }
   }
 
-  console.log('[updateProperty] Sending data:', updateData);
+  console.log('[updateProperty] Cleaned data to send:', updateData);
 
   const { data, error } = await supabase
     .from('properties')
@@ -114,6 +127,8 @@ export const updateProperty = async (id: string, propertyData: Partial<PropertyF
     console.error('[updateProperty] Supabase error:', error);
     throw error;
   }
+
+  console.log('[updateProperty] ✅ Update successful, received:', data);
   return data as Property;
 };
 
