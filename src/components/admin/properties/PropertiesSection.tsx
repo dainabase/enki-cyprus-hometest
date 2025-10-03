@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Building, Edit, Trash2, Eye, MapPin, Euro, Home } from 'lucide-react';
+import { Plus, Building, CreditCard as Edit, Trash2, Eye, MapPin, Euro, Chrome as Home } from 'lucide-react';
 import { PropertyModal } from './PropertyModal';
 import { Property, PropertyFormData } from '@/types/property';
 import {
