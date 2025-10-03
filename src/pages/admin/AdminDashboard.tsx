@@ -6,7 +6,7 @@ import AdminFooter from '@/components/admin/AdminFooter';
 import { useAuth } from '@/contexts/AuthContext';
 import { PrivateRoute } from '@/components/auth/PrivateRoute';
 import { Card } from '@/components/ui/card';
-import { AlertCircle } from 'lucide-react';
+import { CircleAlert as AlertCircle } from 'lucide-react';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
 // Import direct pour AdminOverview pour éviter les problèmes
