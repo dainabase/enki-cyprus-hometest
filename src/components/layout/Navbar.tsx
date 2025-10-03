@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, LogIn, LogOut, UserCog, Home, Search, Building, Info, Mail, Brain, BookOpen } from 'lucide-react';
+import { Menu, X, LogIn, LogOut, UserCog, Chrome as Home, Search, Building, Info, Mail, Brain, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
