@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Eye, Edit, Trash2, ArrowUpDown, ArrowUp, ArrowDown, Building, Euro, Calendar } from 'lucide-react';
+import { Eye, CreditCard as Edit, Trash2, ArrowUpDown, ArrowUp, ArrowDown, Building, Euro, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
