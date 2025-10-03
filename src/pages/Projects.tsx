@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, ArrowRight, Star, Home, Building2, Waves, Mountain, Users } from 'lucide-react';
+import { MapPin, ArrowRight, Star, Chrome as Home, Building2, Waves, Mountain, Users } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import { SEOHead } from '@/components/SEOHead';
