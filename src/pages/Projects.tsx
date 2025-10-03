@@ -40,16 +40,16 @@ const Projects = () => {
     trackPageView('/projects', 'Projets - ENKI-REALTY Immobilier Premium Chypre');
   }, []);
 
-  useEffect(() => {
-    console.log('Projects state:', projects.length, 'projects');
-    console.log('Featured projects:', featuredProjects.length);
-  }, [projects, featuredProjects]);
-
   const featuredProjects = useMemo(() => {
     const featured = projects.filter((p: any) => p.featured);
     // Si aucun projet featured, prendre les 3 premiers
     return featured.length > 0 ? featured.slice(0, 3) : projects.slice(0, 3);
   }, [projects]);
+
+  useEffect(() => {
+    console.log('Projects state:', projects.length, 'projects');
+    console.log('Featured projects:', featuredProjects.length);
+  }, [projects, featuredProjects]);
 
   const districts = useMemo(() => {
     const locs = projects.map((p: any) => {
