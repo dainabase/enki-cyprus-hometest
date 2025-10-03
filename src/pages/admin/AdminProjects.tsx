@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Plus, Filter, Trash2, CheckSquare, Brain } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -144,7 +144,7 @@ const AdminProjects = () => {
   );
 
   // Sort projects based on current sort settings
-  const sortedProjects = React.useMemo(() => {
+  const sortedProjects = useMemo(() => {
     if (!projectsData) return [];
     
     return [...projectsData].sort((a, b) => {
@@ -188,7 +188,7 @@ const AdminProjects = () => {
   }, [projectsData, sortField, sortDirection]);
 
   // Group projects by developer for table view
-  const groupedProjects = React.useMemo(() => {
+  const groupedProjects = useMemo(() => {
     if (currentView !== 'table' || !sortedProjects) return {};
     
     return sortedProjects.reduce((acc, project) => {
@@ -207,32 +207,32 @@ const AdminProjects = () => {
     }, {} as Record<string, { developerName: string; projects: any[] }>);
   }, [sortedProjects, currentView]);
 
-  const openCreateModal = () => {
+  const openCreateModal = useCallback(() => {
     setEditingProject(null);
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const openEditModal = (project: any) => {
+  const openEditModal = useCallback((project: any) => {
     setEditingProject(project);
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const handleProjectSaved = () => {
+  const handleProjectSaved = useCallback(() => {
     setIsModalOpen(false);
     setEditingProject(null);
     refetch();
     toast({
       title: editingProject ? 'Projet mis à jour' : 'Projet créé',
-      description: editingProject 
+      description: editingProject
         ? 'Le projet a été mis à jour avec succès'
         : 'Le nouveau projet a été créé avec succès'
     });
-  };
+  }, [editingProject, refetch, toast]);
 
-  const handleSortChange = (field: ProjectSortField, direction: SortDirection) => {
+  const handleSortChange = useCallback((field: ProjectSortField, direction: SortDirection) => {
     setSortField(field);
     setSortDirection(direction);
-  };
+  }, []);
 
   const renderProjectView = () => {
     if (currentView === 'table') {
