@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Edit, Home, Eye, Trash2 } from 'lucide-react';
+import { CreditCard as Edit, Chrome as Home, Eye, Trash2 } from 'lucide-react';
 
 interface PropertyCompactViewProps {
   properties: any[];

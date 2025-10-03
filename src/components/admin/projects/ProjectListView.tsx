@@ -2,7 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
-import { Edit, MapPin, Building, Calendar, Euro, Star, Crown, Eye, Trash2 } from 'lucide-react';
+import { CreditCard as Edit, MapPin, Building, Calendar, Euro, Star, Crown, Eye, Trash2 } from 'lucide-react';
 
 interface ProjectListViewProps {
   projects: any[];

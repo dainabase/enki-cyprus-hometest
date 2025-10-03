@@ -2,7 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Edit, MapPin, Building2, Eye, Trash2 } from 'lucide-react';
+import { CreditCard as Edit, MapPin, Building2, Eye, Trash2 } from 'lucide-react';
 
 interface PropertyTableViewProps {
   properties: any[];

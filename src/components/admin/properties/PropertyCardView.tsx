@@ -2,7 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Edit, MapPin, Building2, Euro, Home, Bed, Bath, Maximize, Eye, Trash2 } from 'lucide-react';
+import { CreditCard as Edit, MapPin, Building2, Euro, Chrome as Home, Bed, Bath, Maximize, Eye, Trash2 } from 'lucide-react';
 
 interface PropertyCardViewProps {
   properties: any[];
