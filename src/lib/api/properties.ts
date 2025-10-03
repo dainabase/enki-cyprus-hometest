@@ -121,6 +121,22 @@ export const updateProperty = async (id: string, propertyData: Partial<PropertyF
     updateData.payment_plan_details = [];
   }
 
+  // Mapper orientation: front-end (north) -> DB (N)
+  const orientationMap: Record<string, string> = {
+    'north': 'N',
+    'south': 'S',
+    'east': 'E',
+    'west': 'W',
+    'north_east': 'NE',
+    'north_west': 'NW',
+    'south_east': 'SE',
+    'south_west': 'SW'
+  };
+
+  if (updateData.orientation && orientationMap[updateData.orientation]) {
+    updateData.orientation = orientationMap[updateData.orientation];
+  }
+
   // Recalculer TVA si prix change
   if (updateData.price_excluding_vat) {
     const vatRate = updateData.vat_rate || 5.0;
