@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, LogIn, LogOut, User, Settings, UserCog, ChevronDown, Home, Search, Building, Info, Mail, Brain, BookOpen } from 'lucide-react';
+import { Menu, X, LogIn, LogOut, User, Settings, UserCog, ChevronDown, Chrome as Home, Search, Building, Info, Mail, Brain, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
   DropdownMenu,
