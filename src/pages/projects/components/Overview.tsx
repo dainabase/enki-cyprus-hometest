@@ -20,37 +20,37 @@ export default function Overview({ project }: OverviewProps) {
   const projectSpecs = [
     {
       icon: <Home className="w-6 h-6" />,
-      label: 'Total Units',
+      label: 'Total Unités',
       value: project.total_units || 'N/A',
     },
     {
       icon: <Building2 className="w-6 h-6" />,
-      label: 'Buildings',
+      label: 'Bâtiments',
       value: project.number_of_buildings || 'N/A',
     },
     {
       icon: <Layers className="w-6 h-6" />,
-      label: 'Unit Types',
+      label: 'Types de logements',
       value: project.unit_types || 'Studio, 1-3 BR, Penthouse',
     },
     {
       icon: <Ruler className="w-6 h-6" />,
-      label: 'Plot Area',
+      label: 'Surface terrain',
       value: project.plot_area ? `${project.plot_area} m²` : 'N/A',
     },
     {
       icon: <TreePine className="w-6 h-6" />,
-      label: 'Green Spaces',
+      label: 'Espaces verts',
       value: project.green_spaces_percentage ? `${project.green_spaces_percentage}%` : 'N/A',
     },
     {
       icon: <Calendar className="w-6 h-6" />,
-      label: 'Construction Start',
+      label: 'Début construction',
       value: project.construction_start_year || 'TBA',
     },
     {
       icon: <Calendar className="w-6 h-6" />,
-      label: 'Expected Delivery',
+      label: 'Livraison prévue',
       value: project.expected_completion || project.completion_date || 'TBA',
     },
   ];
@@ -69,7 +69,7 @@ export default function Overview({ project }: OverviewProps) {
         >
           <div className="h-[1px] w-20 bg-black mb-6" />
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-black tracking-tight">
-            Project Overview
+            Vue d'ensemble du projet
           </h2>
         </motion.div>
 
@@ -95,7 +95,7 @@ export default function Overview({ project }: OverviewProps) {
             {developerVision && (
               <div className="pt-6 border-t border-black/10">
                 <h3 className="text-sm uppercase tracking-[0.2em] text-black/50 mb-4">
-                  Developer Vision
+                  Vision du développeur
                 </h3>
                 <p className="text-base md:text-lg text-black/70 font-light leading-relaxed">
                   {developerVision}
@@ -107,7 +107,7 @@ export default function Overview({ project }: OverviewProps) {
             {architecturalConcept && (
               <div className="pt-6 border-t border-black/10">
                 <h3 className="text-sm uppercase tracking-[0.2em] text-black/50 mb-4">
-                  Architectural Concept
+                  Concept architectural
                 </h3>
                 <p className="text-base md:text-lg text-black/70 font-light leading-relaxed">
                   {architecturalConcept}
@@ -126,7 +126,7 @@ export default function Overview({ project }: OverviewProps) {
           >
             <div className="bg-white p-8 lg:p-10 shadow-sm">
               <h3 className="text-2xl md:text-3xl font-light text-black mb-8">
-                Key Characteristics
+                Caractéristiques clés
               </h3>
               <div className="space-y-6">
                 {projectSpecs.map((spec, index) => (
@@ -166,7 +166,7 @@ export default function Overview({ project }: OverviewProps) {
             className="border-t border-black/10 pt-16"
           >
             <h3 className="text-2xl md:text-3xl lg:text-4xl font-light text-black mb-10">
-              What Makes This Project Unique
+              Ce qui rend ce projet unique
             </h3>
 
             {/* USP Grid - Full Width Responsive */}
