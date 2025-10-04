@@ -46,13 +46,11 @@ export function LocationInteractive({ projectSlug }: LocationInteractiveProps) {
       if (projectData) {
         setProject(projectData);
 
-        const { data: proxData } = await supabase
-          .from('proximities')
-          .select('*')
-          .eq('project_id', projectData.id)
-          .order('distance', { ascending: true });
-
-        setProximities(proxData || []);
+        // Use surrounding_amenities from project data instead of separate proximities table
+        const amenities = Array.isArray(projectData.surrounding_amenities) 
+          ? projectData.surrounding_amenities 
+          : [];
+        setProximities(amenities);
       }
     } catch (error) {
       console.error('Error loading location data:', error);

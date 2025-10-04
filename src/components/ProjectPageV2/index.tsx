@@ -42,7 +42,7 @@ export function ProjectPageV2() {
         return;
       }
 
-      console.log('[ProjectPageV2] Base project loaded:', baseProject.name);
+      console.log('[ProjectPageV2] Base project loaded:', baseProject.title);
 
       const enriched = enrichProjectData(baseProject);
       setEnrichedProject(enriched);
