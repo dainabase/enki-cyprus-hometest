@@ -107,7 +107,7 @@ export default function HeroSection({ project }: HeroSectionProps) {
       </motion.div>
 
       {/* Content */}
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-start pt-[20vh] px-6 text-center">
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-start pt-[23vh] px-6 text-center">
         {/* Location with slide from left */}
         <motion.div
           className="flex items-center gap-2 mb-4"
