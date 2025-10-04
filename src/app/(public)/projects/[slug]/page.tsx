@@ -25,7 +25,7 @@ export default function ProjectPage() {
         const { data, error } = await supabase
           .from('projects')
           .select('*')
-          .eq('id', slug)
+          .eq('url_slug', slug)
           .maybeSingle();
 
         if (error) throw error;
