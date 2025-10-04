@@ -17,7 +17,7 @@ import { NotificationProvider } from "./components/NotificationProvider";
 import { initGA, trackPageView } from "./lib/analytics";
 
 // Lazy load pages for code splitting  
-const PublicProjectPage = lazy(() => import("./app/(public)/projects/[slug]/page"));
+const PublicProjectPage = lazy(() => import("./pages/projects/ProjectPage"));
 const Home = lazy(() => import("./pages/Home"));
 const Search = lazy(() => import("./pages/Search"));
 const Projects = lazy(() => import("./pages/Projects"));
