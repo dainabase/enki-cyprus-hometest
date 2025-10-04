@@ -10,18 +10,8 @@ interface HeroPrestigeProps {
 }
 
 export function HeroPrestige({ projectSlug }: HeroPrestigeProps) {
-  const heroRef = useRef(null);
   const [project, setProject] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"]
-  });
-
-  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.95]);
-  const y = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
 
   useEffect(() => {
     loadProject();
@@ -58,6 +48,21 @@ export function HeroPrestige({ projectSlug }: HeroPrestigeProps) {
   if (!project) {
     return null;
   }
+
+  return <HeroContent project={project} />;
+}
+
+function HeroContent({ project }: { project: any }) {
+  const heroRef = useRef<HTMLElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"]
+  });
+
+  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.95]);
+  const y = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
 
   const heroImage = project.main_image_url || '/lovable-uploads/marina-bay-hero.jpg';
   const availableUnits = project.buildings?.reduce((sum: number, b: any) => sum + (b.available_units || 0), 0) || 0;
