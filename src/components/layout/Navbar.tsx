@@ -89,19 +89,23 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1">
-            {publicNavigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive(item.href)
-                    ? 'text-primary bg-accent'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-accent'
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
+            {publicNavigation.map((item) => {
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={`flex items-center px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                    isActive(item.href)
+                      ? 'text-primary bg-accent shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                  }`}
+                >
+                  <Icon className="w-4 h-4 mr-2" />
+                  {item.name}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Desktop Auth Section */}
@@ -110,26 +114,29 @@ const Navbar = () => {
               <div className="w-8 h-8 animate-pulse bg-muted rounded-full" />
             ) : isAuthenticated ? (
               <>
-                {isAdmin && adminNavigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      isActive(item.href)
-                        ? 'text-primary bg-accent'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-accent'
-                    }`}
-                  >
-                    <item.icon className="w-4 h-4 mr-2" />
-                    {item.name}
-                  </Link>
-                ))}
+                {isAdmin && adminNavigation.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                        isActive(item.href)
+                          ? 'text-primary bg-accent shadow-sm'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                      }`}
+                    >
+                      <Icon className="w-4 h-4 mr-2" />
+                      {item.name}
+                    </Link>
+                  );
+                })}
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-10 w-10 rounded-full p-0">
+                    <Button variant="ghost" className="h-10 w-10 rounded-full p-0 hover:ring-2 hover:ring-primary/20 transition-all">
                       <Avatar className="h-10 w-10">
-                        <AvatarFallback className="bg-primary text-primary-foreground">
+                        <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
                           {getUserInitials()}
                         </AvatarFallback>
                       </Avatar>
@@ -160,8 +167,8 @@ const Navbar = () => {
                 </DropdownMenu>
               </>
             ) : (
-              <Button variant="outline" size="sm" asChild>
-                <Link to="/login">
+              <Button variant="outline" size="sm" asChild className="hover:bg-primary hover:text-primary-foreground transition-all duration-200">
+                <Link to="/login" className="flex items-center">
                   <LogIn className="w-4 h-4 mr-2" />
                   Connexion
                 </Link>
