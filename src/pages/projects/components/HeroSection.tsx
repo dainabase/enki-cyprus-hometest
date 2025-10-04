@@ -35,11 +35,6 @@ export default function HeroSection({ project }: HeroSectionProps) {
 
   const quickStats = [
     {
-      icon: <MapPin className="w-6 h-6" />,
-      label: 'Location',
-      value: `${project.city}${project.district ? `, ${project.district}` : ''}`,
-    },
-    {
       icon: <Calendar className="w-6 h-6" />,
       label: 'Completion',
       value: project.completion_date || project.expected_completion || 'To be announced',
@@ -123,7 +118,7 @@ export default function HeroSection({ project }: HeroSectionProps) {
       {/* KPI Stats at bottom */}
       <div className="relative z-10 bg-black/40 backdrop-blur-sm border-t border-white/10">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12 py-8">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 lg:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
             {quickStats.map((stat, index) => (
               <div
                 key={index}
