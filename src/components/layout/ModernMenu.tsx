@@ -153,8 +153,8 @@ const ModernMenu = () => {
         animate={active ? "open" : "closed"}
         onClick={toggleMenu}
         disabled={isAnimating}
-        className={`group fixed right-4 top-4 z-50 h-12 w-12 bg-white hover:bg-white/90 transition-all rounded-lg shadow-lg ${
-          active ? "rounded-bl-lg rounded-tr-lg" : "rounded-lg"
+        className={`group fixed right-4 top-4 z-50 h-12 w-12 bg-white hover:bg-white/90 transition-all rounded-sm shadow-lg ${
+          active ? "rounded-bl-sm rounded-tr-sm" : "rounded-sm"
         }`}
       >
         <motion.span
