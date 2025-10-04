@@ -153,26 +153,26 @@ const ModernMenu = () => {
         animate={active ? "open" : "closed"}
         onClick={toggleMenu}
         disabled={isAnimating}
-        className={`group fixed right-4 top-4 z-50 h-12 w-12 bg-primary hover:bg-primary-hover transition-all rounded-lg ${
+        className={`group fixed right-4 top-4 z-50 h-12 w-12 bg-white hover:bg-white/90 transition-all rounded-lg shadow-lg ${
           active ? "rounded-bl-lg rounded-tr-lg" : "rounded-lg"
         }`}
       >
         <motion.span
           animate={active ? { rotate: 45, top: "50%" } : { rotate: 0, top: "35%" }}
           transition={{ duration: 0.3 }}
-          className="absolute block h-[1px] w-6 bg-white"
+          className="absolute block h-[1px] w-6 bg-black"
           style={{ y: "-50%", left: "50%", x: "-50%" }}
         />
         <motion.span
           animate={active ? { rotate: -45, opacity: 1 } : { rotate: 0, opacity: 1 }}
           transition={{ duration: 0.3 }}
-          className="absolute block h-[1px] w-6 bg-white"
+          className="absolute block h-[1px] w-6 bg-black"
           style={{ left: "50%", x: "-50%", top: "50%", y: "-50%" }}
         />
         <motion.span
           animate={active ? { rotate: 45, bottom: "50%", opacity: 0 } : { rotate: 0, bottom: "35%", opacity: 1 }}
           transition={{ duration: 0.3 }}
-          className="absolute block h-[1px] w-3 bg-white"
+          className="absolute block h-[1px] w-3 bg-black"
           style={{ x: "-50%", y: "50%", left: "calc(50% + 10px)" }}
         />
       </motion.button>
