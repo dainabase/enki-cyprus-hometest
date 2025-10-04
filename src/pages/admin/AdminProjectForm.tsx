@@ -439,6 +439,11 @@ const AdminProjectForm: React.FC = () => {
   const onSubmit = async (data: any) => {
     try {
       console.log('📤 Submitting form data:', data);
+      console.log('📸 Photos in form data:', {
+        photosCount: data.photos?.length,
+        photos: data.photos,
+        firstPhoto: data.photos?.[0]
+      });
       
       // Préparer les données pour la DB
       const dbData: any = {
@@ -523,8 +528,13 @@ const AdminProjectForm: React.FC = () => {
       }
       
       console.log('💾 Data prepared for DB:', dbData);
+      console.log('💾 Final photos to save:', {
+        count: dbData.photos?.length,
+        photos: dbData.photos
+      });
       
       if (isEdit) {
+        console.log('⏫ Updating project with ID:', id);
         const { data: updateResult, error } = await supabase
           .from('projects')
           .update(dbData)

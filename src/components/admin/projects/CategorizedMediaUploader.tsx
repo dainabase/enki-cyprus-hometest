@@ -173,6 +173,12 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
 
   const removePhoto = (index: number) => {
     const newPhotos = field.value.filter((_, i) => i !== index);
+    console.log('🗑️ Photo removed:', {
+      removedIndex: index,
+      oldCount: field.value.length,
+      newCount: newPhotos.length,
+      remainingPhotos: newPhotos
+    });
     field.onChange(newPhotos);
   };
 
