@@ -177,34 +177,26 @@ const Projects = () => {
                     whileHover={{ y: -8 }}
                     className="group relative"
                   >
+                    <Link to={`/projects/${projectSlug}`}>
                     <div className="relative h-[500px] rounded-2xl overflow-hidden">
-                      <Link to={`/projects/${projectSlug}`}>
-                        <img
-                          src={getHeroImage(project) || 'https://picsum.photos/800/600'}
-                          alt={project.title}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                      </Link>
+                      <img
+                        src={getHeroImage(project) || 'https://picsum.photos/800/600'}
+                        alt={project.title}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-                      <div className="absolute top-4 right-4 flex gap-2">
+                      <div className="absolute top-4 right-4">
                         <Badge className="bg-yellow-500 text-black">
                           <Star className="w-3 h-3 mr-1 fill-current" />
                           Vedette
                         </Badge>
-                        <Link to={`/project-v2/${projectSlug}`}>
-                          <Badge className="bg-orange-600 text-white hover:bg-orange-700 cursor-pointer transition-colors">
-                            V2
-                          </Badge>
-                        </Link>
                       </div>
 
                       <div className="absolute bottom-0 left-0 right-0 p-6">
-                        <Link to={`/projects/${projectSlug}`}>
-                          <h3 className="swaarg-card-title text-white mb-2 hover:text-orange-400 transition-colors">
-                            {project.title}
-                          </h3>
-                        </Link>
+                        <h3 className="swaarg-card-title text-white mb-2">
+                          {project.title}
+                        </h3>
                         <div className="flex items-center text-white/80 mb-3">
                           <MapPin className="w-4 h-4 mr-1" />
                           <span className="swaarg-body">{typeof project.location === 'string' ? project.location : project.location?.city || 'Chypre'}</span>
@@ -213,12 +205,11 @@ const Projects = () => {
                           <span className="swaarg-card-title text-white">
                             À partir de €{Number(project.price_from || project.price || 0).toLocaleString()}
                           </span>
-                          <Link to={`/projects/${projectSlug}`}>
-                            <ArrowRight className="w-5 h-5 text-white group-hover:translate-x-2 transition-transform" />
-                          </Link>
+                          <ArrowRight className="w-5 h-5 text-white group-hover:translate-x-2 transition-transform" />
                         </div>
                       </div>
                     </div>
+                    </Link>
                   </motion.div>
                 );
               })}
@@ -334,8 +325,8 @@ const Projects = () => {
                   transition={{ delay: index * 0.05 }}
                   whileHover={{ scale: 1.02 }}
                 >
-                  <div className="bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
-                    <Link to={`/projects/${project.url_slug || project.id}`}>
+                  <Link to={`/projects/${project.url_slug || project.id}`}>
+                    <div className="bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
                       <div className="relative h-64">
                         <img
                           src={getHeroImage(project) || 'https://picsum.photos/600/400'}
@@ -349,34 +340,21 @@ const Projects = () => {
                           </Badge>
                         )}
                       </div>
-                    </Link>
-                    <div className="p-5">
-                      <Link to={`/projects/${project.url_slug || project.id}`}>
-                        <h3 className="swaarg-card-title mb-2 line-clamp-1 hover:text-primary transition-colors">{project.title}</h3>
-                      </Link>
-                      <div className="flex items-center text-muted-foreground mb-3">
-                        <MapPin className="w-4 h-4 mr-1" />
-                        <span className="swaarg-body text-sm">{typeof project.location === 'string' ? project.location : project.location?.city || 'Chypre'}</span>
-                      </div>
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="swaarg-card-title text-primary">
-                          €{Number(project.price_from || project.price || 0).toLocaleString()}+
-                        </span>
-                      </div>
-                      <div className="flex gap-2">
-                        <Link to={`/projects/${project.url_slug || project.id}`} className="flex-1">
-                          <Button variant="outline" className="w-full">
-                            Version Standard
-                          </Button>
-                        </Link>
-                        <Link to={`/project-v2/${project.url_slug || project.id}`} className="flex-1">
-                          <Button className="w-full bg-orange-600 hover:bg-orange-700">
-                            Version V2
-                          </Button>
-                        </Link>
+                      <div className="p-5">
+                        <h3 className="swaarg-card-title mb-2 line-clamp-1">{project.title}</h3>
+                        <div className="flex items-center text-muted-foreground mb-3">
+                          <MapPin className="w-4 h-4 mr-1" />
+                          <span className="swaarg-body text-sm">{typeof project.location === 'string' ? project.location : project.location?.city || 'Chypre'}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="swaarg-card-title text-primary">
+                            €{Number(project.price_from || project.price || 0).toLocaleString()}+
+                          </span>
+                          <ArrowRight className="w-4 h-4 text-primary" />
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 </motion.div>
               ))}
             </div>
