@@ -133,12 +133,12 @@ export default function HeroSection({ project }: HeroSectionProps) {
             {quickStats.map((stat, index) => (
               <div
                 key={index}
-                className="bg-white rounded-[2px] p-6 text-center shadow-lg"
+                className="bg-white rounded-[2px] p-4 text-center shadow-lg"
               >
-                <div className="flex justify-center mb-4 text-black/60">
+                <div className="flex justify-center mb-3 text-black/60">
                   {stat.icon}
                 </div>
-                <p className="text-xs uppercase tracking-wider text-black/60 mb-2 font-light">
+                <p className="text-xs uppercase tracking-wider text-black/60 mb-1.5 font-light">
                   {stat.label}
                 </p>
                 <p className="text-base md:text-lg font-light text-black">
