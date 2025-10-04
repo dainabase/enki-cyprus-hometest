@@ -1,18 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
-import {
-  Star,
-  Quote,
-  Play,
-  Award as AwardIcon,
-  TrendingUp,
-  Users,
-  Building,
-  Calendar,
-  Shield,
-  CheckCircle2,
-  ExternalLink
-} from 'lucide-react';
+import { Star, Quote, Play, Award as AwardIcon, TrendingUp, Users, Building, Calendar, Shield, CircleCheck as CheckCircle2, ExternalLink } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useProjectSocialProof } from '@/hooks/useProjectSocialProof';

@@ -1,18 +1,6 @@
 import { useRef, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
-import {
-  Euro,
-  TrendingUp,
-  Home,
-  Globe,
-  Shield,
-  PiggyBank,
-  FileText,
-  Building2,
-  Check,
-  Award,
-  Percent
-} from 'lucide-react';
+import { Euro, TrendingUp, Chrome as Home, Globe, Shield, PiggyBank, FileText, Building2, Check, Award, Percent } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useProjectFinancing } from '@/hooks/useProjectFinancing';
