@@ -22,6 +22,7 @@ import { CommoditiesCheckboxes } from './CommoditiesCheckboxes';
 import PropertySubTypeSelector from './PropertySubTypeSelector';
 import { googleMapsAgent } from '@/services/googleMapsAgent';
 import { BuildingSection } from './BuildingSection';
+import { ModernDistancesSection } from './ModernDistancesSection';
 import { ProjectFormData } from '@/schemas/projectSchema';
 import { ProjectBuilding } from '@/types/building.project';
 import { useQuery } from '@tanstack/react-query';
@@ -1843,329 +1844,42 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               </p>
             </div>
 
-            {/* GRILLE PRINCIPALE */}
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-              {/* COLONNE GAUCHE : Contrôles (3/5) */}
-              <div className="lg:col-span-3 space-y-6">
-                {/* Distances stratégiques SANS COULEURS et avec icônes Lucide */}
-                <div className="space-y-2">
-                  <Label className="text-base font-semibold">Distances stratégiques</Label>
-                  
-                  <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Waves className="h-5 w-5 text-gray-600" />
-                        <span className="text-sm font-semibold">Mer / Plage</span>
-                      </div>
-                      <p className="text-2xl font-bold text-gray-900">
-                        {form.watch('proximity_sea_km') || '—'} km
-                      </p>
-                      {form.watch('proximity_sea_km') && form.watch('proximity_sea_km') > 1 && (
-                        <p className="text-xs text-gray-600 mt-1 flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          ~{Math.round(form.watch('proximity_sea_km') * 2)} min voiture
-                        </p>
-                      )}
-                    </div>
-                    
-                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Building2 className="h-5 w-5 text-gray-600" />
-                        <span className="text-sm font-semibold">Centre-ville</span>
-                      </div>
-                      <p className="text-2xl font-bold text-gray-900">
-                        {form.watch('proximity_city_center_km') || '—'} km
-                      </p>
-                      {form.watch('proximity_city_center_km') > 0 && (
-                        <p className="text-xs text-gray-600 mt-1 flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          ~{Math.round(form.watch('proximity_city_center_km') * 2.5)} min voiture
-                        </p>
-                      )}
-                    </div>
-                    
-                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Car className="h-5 w-5 text-gray-600" />
-                        <span className="text-sm font-semibold">Autoroute</span>
-                      </div>
-                      <p className="text-2xl font-bold text-gray-900">
-                        {form.watch('proximity_highway_km') || '—'} km
-                      </p>
-                      {form.watch('proximity_highway_km') > 0 && (
-                        <p className="text-xs text-gray-600 mt-1 flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          ~{Math.round(form.watch('proximity_highway_km') * 2)} min voiture
-                        </p>
-                      )}
-                    </div>
-                    
-                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Plane className="h-5 w-5 text-gray-600" />
-                        <span className="text-sm font-semibold">Aéroport Larnaca</span>
-                      </div>
-                      <p className="text-2xl font-bold text-gray-900">
-                        {(() => {
-                          const dist = form.watch('proximity_airport_km');
-                          if (dist) return dist;
-                          const lat = form.watch('gps_latitude');
-                          const lng = form.watch('gps_longitude');
-                          if (lat && lng) {
-                            const larnaca = { lat: 34.8751, lng: 33.6248 };
-                            const R = 6371;
-                            const dLat = (larnaca.lat - lat) * Math.PI / 180;
-                            const dLon = (larnaca.lng - lng) * Math.PI / 180;
-                            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                              Math.cos(lat * Math.PI / 180) * Math.cos(larnaca.lat * Math.PI / 180) *
-                              Math.sin(dLon/2) * Math.sin(dLon/2);
-                            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-                            return Math.round(R * c * 10) / 10;
-                          }
-                          return '—';
-                        })()} km
-                      </p>
-                      <p className="text-xs text-gray-600 mt-1 flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        ~{Math.round((form.watch('proximity_airport_km') || 67) * 1.2)} min voiture
-                      </p>
-                    </div>
-                    
-                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Plane className="h-5 w-5 text-gray-600" />
-                        <span className="text-sm font-semibold">Aéroport Paphos</span>
-                      </div>
-                      <p className="text-2xl font-bold text-gray-900">
-                        {(() => {
-                          const lat = form.watch('gps_latitude');
-                          const lng = form.watch('gps_longitude');
-                          if (lat && lng) {
-                            const paphos = { lat: 34.7180, lng: 32.4857 };
-                            const R = 6371;
-                            const dLat = (paphos.lat - lat) * Math.PI / 180;
-                            const dLon = (paphos.lng - lng) * Math.PI / 180;
-                            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                              Math.cos(lat * Math.PI / 180) * Math.cos(paphos.lat * Math.PI / 180) *
-                              Math.sin(dLon/2) * Math.sin(dLon/2);
-                            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-                            return Math.round(R * c * 10) / 10;
-                          }
-                          return '—';
-                        })()} km
-                      </p>
-                      <p className="text-xs text-gray-600 mt-1 flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        ~{Math.round(55 * 1.2)} min voiture
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Commodités de proximité - VERSION AVEC CHECKBOXES FONCTIONNELS */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-base font-semibold">Commodités de proximité</Label>
-                  </div>
-                  
-                  {form.watch('surrounding_amenities')?.length > 0 && (
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <span className="text-sm text-muted-foreground">
-                          {selectedAmenities.size} / {form.watch('surrounding_amenities')?.length} sélectionnées
-                        </span>
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="outline"
-                           onClick={() => {
-                             console.log('🔴 BOUTON TOUT SÉLECTIONNER CLIQUÉ !');
-                             const amenities = form.watch('surrounding_amenities') || [];
-                             console.log('- Amenities:', amenities.length);
-                             console.log('- selectedAmenities.size:', selectedAmenities.size);
-                             
-                             if (selectedAmenities.size === amenities.length) {
-                               console.log('- ACTION: Tout désélectionner');
-                               setSelectedAmenities(new Set());
-                             } else {
-                               console.log('- ACTION: Tout sélectionner');
-                               const allTypes = new Set<string>(amenities.map(a => a.nearby_amenity_id || ''));
-                               console.log('- Tous les IDs:', Array.from(allTypes));
-                               setSelectedAmenities(allTypes);
-                             }
-                           }}
-                         >
-                           {selectedAmenities.size === form.watch('surrounding_amenities')?.length 
-                            ? '❌ Tout désélectionner' 
-                            : '✅ Tout sélectionner'}
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-                  
-                  {form.watch('surrounding_amenities')?.length > 0 ? (
-                    <div className="space-y-4">
-                      {/* Section 1 : Commodités ESSENTIELLES */}
-                      <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                        <h4 className="text-sm font-semibold text-blue-900 mb-3 flex items-center gap-2">
-                          <Star className="h-4 w-4" />
-                          Commodités essentielles (critères d'achat principaux)
-                        </h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                          {form.watch('surrounding_amenities')
-                            ?.filter(a => ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id))
-                            ?.sort((a, b) => a.distance_km - b.distance_km)
-                            ?.map((amenity, idx) => {
-                              const option = amenityOptions.find(opt => opt.value === amenity.nearby_amenity_id);
-                              if (!option) return null;
-                              
-                               const isSelected = selectedAmenities.has(amenity.nearby_amenity_id || '');
-                               console.log(`🔍 CALCUL isSelected pour ${amenity.nearby_amenity_id}:`, isSelected, 'selectedAmenities:', Array.from(selectedAmenities));
-                              const getTimeLabel = (dist) => {
-                                if (dist <= 0.5) return '⚡ 5 min à pied';
-                                if (dist <= 1) return '👟 10 min à pied';
-                                if (dist <= 2) return '🚶 20 min à pied';
-                                return `${Math.round(dist * 2.5)} min voiture`;
-                              };
-                              
-                              return (
-                                <div 
-                                  key={`ess-${amenity.nearby_amenity_id}-${idx}`} 
-                                  className={`bg-white rounded-lg p-3 border transition-all ${
-                                    isSelected ? 'ring-2 ring-blue-500' : ''
-                                  }`}
-                                >
-                                  <div className="flex items-start gap-3">
-                                   <input
-                                     type="checkbox"
-                                     checked={isSelected}
-                                     onChange={() => {
-                                       console.log('🔴 CHECKBOX CLICK DÉTECTÉ - ESSENTIELLE !');
-                                       console.log('- Amenity ID:', amenity.nearby_amenity_id);
-                                       console.log('- Type:', typeof amenity.nearby_amenity_id);
-                                       console.log('- isSelected avant:', isSelected);
-                                       console.log('- selectedAmenities avant:', Array.from(selectedAmenities));
-                                       
-                                       // VERSION ULTRA SIMPLE
-                                       const newSelected = new Set(selectedAmenities);
-                                       if (isSelected) {
-                                         console.log('- ACTION: Supprimer');
-                                         newSelected.delete(amenity.nearby_amenity_id);
-                                       } else {
-                                         console.log('- ACTION: Ajouter');
-                                         newSelected.add(amenity.nearby_amenity_id);
-                                       }
-                                       
-                                       console.log('- newSelected après:', Array.from(newSelected));
-                                       setSelectedAmenities(newSelected);
-                                       console.log('- setSelectedAmenities appelé');
-                                     }}
-                                     className="mt-1 h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 cursor-pointer"
-                                   />
-                                    <div className="flex-1">
-                                      <div className="flex items-center gap-2">
-                                        <span className="text-blue-600">{option.icon}</span>
-                                        <span className="font-medium text-sm">{option.label}</span>
-                                      </div>
-                                      <div className="mt-1 flex items-center gap-2">
-                                        <span className="text-xs font-bold">{amenity.distance_km} km</span>
-                                        <span className="text-xs text-gray-600 flex items-center gap-1">
-                                          <Clock className="h-3 w-3" />
-                                          {getTimeLabel(amenity.distance_km)}
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              );
-                            })}
-                        </div>
-                      </div>
-                      
-                      {/* Section 2 : Autres commodités */}
-                      {form.watch('surrounding_amenities')?.filter(a => !ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id)).length > 0 && (
-                        <div className="bg-gray-50 rounded-lg border">
-                          <details open>
-                            <summary className="p-4 cursor-pointer font-semibold text-sm text-gray-700 hover:bg-gray-100">
-                              <span className="inline-flex items-center gap-2">
-                                <ChevronDown className="h-4 w-4" />
-                                Autres commodités ({form.watch('surrounding_amenities')?.filter(a => !ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id)).length})
-                                <span className="text-xs font-normal text-gray-500 ml-2">
-                                  Cliquez les cases pour sélectionner celles à afficher
-                                </span>
-                              </span>
-                            </summary>
-                            <div className="p-4 pt-0">
-                              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                                {form.watch('surrounding_amenities')
-                                  ?.filter(a => !ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id))
-                                  ?.sort((a, b) => a.distance_km - b.distance_km)
-                                  ?.map((amenity, idx) => {
-                                    const option = amenityOptions.find(opt => opt.value === amenity.nearby_amenity_id);
-                                    if (!option) return null;
-                                    
-                                    const isSelected = selectedAmenities.has(amenity.nearby_amenity_id || '');
-                                    
-                                    return (
-                              <div 
-                                key={`other-${amenity.nearby_amenity_id}-${idx}`} 
-                                className={`bg-white rounded-lg p-3 border transition-all hover:shadow-md ${
-                                  isSelected ? 'ring-2 ring-gray-500 bg-gray-50' : ''
-                                }`}
-                              >
-                                        <div className="flex items-center gap-2">
-                                           <input
-                                             type="checkbox"
-                                             checked={isSelected}
-                                             onChange={() => {
-                                               console.log('🔴 CHECKBOX CLICK DÉTECTÉ - AUTRE !');
-                                               console.log('- Amenity ID:', amenity.nearby_amenity_id);
-                                               console.log('- Type:', typeof amenity.nearby_amenity_id);
-                                               console.log('- isSelected avant:', isSelected);
-                                               console.log('- selectedAmenities avant:', Array.from(selectedAmenities));
-                                               
-                                               // VERSION ULTRA SIMPLE
-                                               const newSelected = new Set(selectedAmenities);
-                                               if (isSelected) {
-                                                 console.log('- ACTION: Supprimer');
-                                                 newSelected.delete(amenity.nearby_amenity_id);
-                                               } else {
-                                                 console.log('- ACTION: Ajouter');
-                                                 newSelected.add(amenity.nearby_amenity_id);
-                                               }
-                                               
-                                               console.log('- newSelected après:', Array.from(newSelected));
-                                               setSelectedAmenities(newSelected);
-                                               console.log('- setSelectedAmenities appelé');
-                                             }}
-                                             className="h-4 w-4 text-gray-600 rounded border-gray-300 cursor-pointer"
-                                           />
-                                          <span className="text-gray-600">{option.icon}</span>
-                                          <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-medium">{option.label}</p>
-                                            <p className="text-xs text-gray-500">{amenity.distance_km} km</p>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    );
-                                  })}
-                              </div>
-                            </div>
-                          </details>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-                      <MapPin className="mx-auto h-12 w-12 text-gray-400" />
-                      <p className="mt-2 text-sm text-gray-600">Aucune commodité détectée</p>
-                    </div>
-                  )}
-                </div>
+            {/* NOUVELLE GRILLE MODERNE */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* COLONNE GAUCHE : Commodités (2/3) */}
+              <div className="lg:col-span-2">
+                <ModernDistancesSection
+                  detectedAmenities={form.watch('surrounding_amenities') || []}
+                  selectedAmenities={selectedAmenities}
+                  onToggleAmenity={(id) => {
+                    const newSelected = new Set(selectedAmenities);
+                    if (newSelected.has(id)) {
+                      newSelected.delete(id);
+                    } else {
+                      newSelected.add(id);
+                    }
+                    setSelectedAmenities(newSelected);
+                  }}
+                  onSelectAll={() => {
+                    const amenities = form.watch('surrounding_amenities') || [];
+                    if (selectedAmenities.size === amenities.length) {
+                      setSelectedAmenities(new Set());
+                    } else {
+                      const allIds = new Set(amenities.map(a => a.nearby_amenity_id));
+                      setSelectedAmenities(allIds);
+                    }
+                  }}
+                  proximitySeaKm={form.watch('proximity_sea_km')}
+                  proximityCityCenterKm={form.watch('proximity_city_center_km')}
+                  proximityHighwayKm={form.watch('proximity_highway_km')}
+                  proximityAirportKm={form.watch('proximity_airport_km')}
+                  gpsLatitude={form.watch('gps_latitude')}
+                  gpsLongitude={form.watch('gps_longitude')}
+                />
               </div>
 
-              {/* COLONNE DROITE : Carte (2/5) */}
-              <div className="lg:col-span-2">
+              {/* COLONNE DROITE : Carte AGRANDIE (1/3) */}
+              <div className="lg:col-span-1">
                 <div className="sticky top-4">
                   <h4 className="font-medium text-sm mb-3">Visualisation sur carte</h4>
                   {(() => {
@@ -2190,7 +1904,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       );
                     } else {
                       return (
-                        <div className="h-[500px] bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+                        <div className="h-[700px] bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
                           <div className="text-center text-gray-500">
                             <MapPin className="h-12 w-12 mx-auto mb-3 opacity-30" />
                             <p className="text-sm">Entrez une adresse pour afficher la carte</p>
