@@ -1,4 +1,4 @@
-import { Grid3X3, List, Table, AlignJustify, FileText } from 'lucide-react';
+import { Grid3x3 as Grid3X3, List, Table, AlignJustify, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ViewType } from '@/hooks/useViewPreference';
 
@@ -25,9 +25,9 @@ export const DeveloperViewSelector = ({ currentView, onViewChange }: DeveloperVi
           size="sm"
           onClick={() => onViewChange(id)}
           className={`
-            h-10 px-4 rounded-lg transition-all duration-200 
-            ${currentView === id 
-              ? 'bg-slate-900 text-white shadow-md' 
+            h-10 px-4 rounded-lg transition-all duration-200
+            ${currentView === id
+              ? 'bg-gradient-to-r from-[hsl(199,63%,59%)] to-[hsl(199,63%,65%)] text-white shadow-md'
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }
           `}

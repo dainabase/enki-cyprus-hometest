@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Plus, Search, Filter, Download, Edit, Eye, Trash2, Building2, MapPin } from 'lucide-react';
+import { Plus, Search, Filter, Download, CreditCard as Edit, Eye, Trash2, Building2, MapPin } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Card, Button, DataGrid } from '@/components/dainabase-ui';
 import { useSupabaseQuery, getPaginationRange } from '@/hooks/useSupabaseQuery';
@@ -12,7 +12,6 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import PropertyWizard from '@/components/admin/properties/PropertyWizard';
 
 type ViewType = 'cards' | 'list' | 'table' | 'compact' | 'detailed';
 
@@ -88,7 +87,6 @@ const AdminUnits = () => {
   });
   const [showFilters, setShowFilters] = useState(false);
   const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   
   const [filters, setFilters] = useState<FilterState>({
     search: '',
@@ -284,7 +282,7 @@ const AdminUnits = () => {
             size="sm"
             onClick={() => {
               console.log('Navigating to edit property:', row.id);
-              navigate(`/admin/property-form/${row.id}`);
+              navigate(`/admin/properties/${row.id}/edit`);
             }}
             className="h-8 w-8 p-0"
           >
@@ -323,7 +321,7 @@ const AdminUnits = () => {
             <Building2 className="w-16 h-16 text-slate-400 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-slate-900 mb-2">Aucune propriété trouvée</h3>
             <p className="text-slate-600 mb-6">Commencez par créer votre première propriété</p>
-            <Button variant="executive" onClick={() => setIsDialogOpen(true)}>
+            <Button variant="executive" onClick={() => navigate('/admin/properties/new')}>
               <Plus className="w-4 h-4 mr-2" />
               Nouvelle Propriété
             </Button>
@@ -367,7 +365,7 @@ const AdminUnits = () => {
                         <Eye className="h-4 w-4 mr-1" />
                         Voir
                       </Button>
-                      <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/property-form/${property.id}`)}>
+                      <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/properties/${property.id}/edit`)}>
                         <Edit className="h-4 w-4 mr-1" />
                         Modifier
                       </Button>
@@ -399,7 +397,7 @@ const AdminUnits = () => {
                        <Button variant="ghost" size="sm" onClick={() => setPreviewProperty(property)}>
                           <Eye className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/property-form/${property.id}`)}>
+                        <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/properties/${property.id}/edit`)}>
                           <Edit className="h-4 w-4" />
                         </Button>
                     </div>
@@ -426,7 +424,7 @@ const AdminUnits = () => {
                        <Button variant="ghost" size="sm" onClick={() => setPreviewProperty(property)} className="h-7 w-7 p-0">
                           <Eye className="h-3 w-3" />
                         </Button>
-                        <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/property-form/${property.id}`)} className="h-7 w-7 p-0">
+                        <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/properties/property.id}`)} className="h-7 w-7 p-0">
                           <Edit className="h-3 w-3" />
                         </Button>
                     </div>
@@ -484,7 +482,7 @@ const AdminUnits = () => {
                           <Eye className="h-4 w-4 mr-2" />
                           Voir détails
                         </Button>
-                        <Button variant="executive" size="sm" onClick={() => navigate(`/admin/property-form/${property.id}`)}>
+                        <Button variant="executive" size="sm" onClick={() => navigate(`/admin/properties/${property.id}/edit`)}>
                           <Edit className="h-4 w-4 mr-2" />
                           Modifier
                         </Button>
@@ -529,7 +527,7 @@ const AdminUnits = () => {
                 <Filter className="w-4 h-4" />
                 Filtres
               </Button>
-              <Button variant="executive" onClick={() => setIsDialogOpen(true)}>
+              <Button variant="executive" onClick={() => navigate('/admin/properties/new')}>
                 <Plus className="w-5 h-5 mr-2" />
                 Nouvelle Propriété
               </Button>
@@ -652,37 +650,14 @@ const AdminUnits = () => {
         {renderContent()}
       </div>
 
-      {/* Property Wizard Dialog */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden">
-          <DialogHeader className="pb-4">
-            <DialogTitle>Nouvelle Propriété</DialogTitle>
-            <DialogDescription>
-              Créez une nouvelle propriété en suivant les étapes du formulaire
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex-1 overflow-y-auto">
-            <PropertyWizard 
-              open={isDialogOpen}
-              onClose={() => setIsDialogOpen(false)}
-              onSuccess={() => {
-                setIsDialogOpen(false);
-                refetch();
-                toast({
-                  title: "Propriété créée",
-                  description: "La nouvelle propriété a été créée avec succès"
-                });
-              }}
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Modal de preview de propriété */}
+      {/* Modal de preview de propriété - On garde celui-ci pour la preview */}
       <Dialog open={!!previewProperty} onOpenChange={() => setPreviewProperty(null)}>
         <DialogContent className="max-w-4xl max-h-[80vh]">
           <DialogHeader>
             <DialogTitle>Détails de la propriété {previewProperty?.unit_number}</DialogTitle>
+            <DialogDescription>
+              Visualisez les informations complètes de cette propriété
+            </DialogDescription>
           </DialogHeader>
           <ScrollArea className="max-h-[60vh]">
             {previewProperty && (

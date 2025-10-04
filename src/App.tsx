@@ -2,7 +2,7 @@ import { ToastProvider } from '@/components/ToastProvider';
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Suspense, lazy, useEffect } from "react";
 import { ErrorBoundary } from "@sentry/react";
 import { HelmetProvider } from "react-helmet-async";
@@ -16,8 +16,8 @@ import { CookieConsentBanner } from "./components/CookieConsent";
 import { NotificationProvider } from "./components/NotificationProvider";
 import { initGA, trackPageView } from "./lib/analytics";
 
-// Lazy load pages for code splitting  
-const PublicProjectPage = lazy(() => import("./app/(public)/projects/[slug]/page"));
+// Lazy load pages for code splitting
+const PublicProjectPage = lazy(() => import("./pages/projects/ProjectPage"));
 const Home = lazy(() => import("./pages/Home"));
 const Search = lazy(() => import("./pages/Search"));
 const Projects = lazy(() => import("./pages/Projects"));
@@ -76,7 +76,12 @@ const AppContent = () => {
   }, []);
 
   return (
-    <BrowserRouter>
+    <BrowserRouter
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
       <TooltipProvider>
         <GoogleMapsProvider>
           <FilterProvider>

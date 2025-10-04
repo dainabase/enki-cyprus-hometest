@@ -15,7 +15,7 @@ import TabsFeaturesAlt5Accordion from '@/components/TabsFeatures-Alternative5-Ac
 import { CountUpStats } from '@/components/CountUpStats';
 import Alternative3 from '@/components/hero/Alternative3';
 import TestimonialsSection from '@/components/sections/TestimonialsSection';
-import { ProjectInterest } from '@/types/search.types';
+import { ProjectInterest } from '@/types/project.types';
 import { ChatContainer } from '@/components/chat/ChatContainer';
 import { ResultsPanel } from '@/components/search/ResultsPanel';
 import { useSearchAnalysis } from '@/hooks/useSearchAnalysis';

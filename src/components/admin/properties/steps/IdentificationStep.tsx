@@ -10,39 +10,16 @@ import { PropertyFormData } from '@/schemas/property.schema';
 
 interface IdentificationStepProps {
   form: UseFormReturn<PropertyFormData>;
+  projects?: any[];
+  buildings?: any[];
 }
 
-export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) => {
+export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form, projects = [], buildings = [] }) => {
   const selectedProjectId = form.watch('project_id');
 
-  // Fetch projects
-  const { data: projects = [] } = useQuery({
-    queryKey: ['projects-for-property'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('projects')
-        .select('id, title')
-        .order('title');
-      if (error) throw error;
-      return data;
-    }
-  });
-
-  // Fetch buildings filtered by project
-  const { data: buildings = [] } = useQuery({
-    queryKey: ['buildings-for-property', selectedProjectId],
-    queryFn: async () => {
-      if (!selectedProjectId) return [];
-      const { data, error } = await supabase
-        .from('buildings')
-        .select('id, name, building_name')
-        .eq('project_id', selectedProjectId)
-        .order('name');
-      if (error) throw error;
-      return data;
-    },
-    enabled: !!selectedProjectId
-  });
+  // Debug: afficher le nombre de projets
+  console.log('IdentificationStep - Projects count:', projects?.length, 'Projects:', projects);
+  console.log('IdentificationStep - Buildings count:', buildings?.length);
 
   return (
     <div className="space-y-8">
@@ -70,11 +47,17 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) 
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {projects.map(project => (
-                    <SelectItem key={project.id} value={project.id}>
-                      {project.title}
+                  {projects && projects.length > 0 ? (
+                    projects.map(project => (
+                      <SelectItem key={project.id} value={project.id}>
+                        {project.title}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="no-projects" disabled>
+                      Aucun projet disponible
                     </SelectItem>
-                  ))}
+                  )}
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -210,20 +193,22 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) 
 
         <FormField
           control={form.control}
-          name="sale_type"
+          name="property_status"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Type de vente</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value || ""}>
+              <FormLabel>Statut de vente</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value || "available"}>
                 <FormControl>
                   <SelectTrigger className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm">
                     <SelectValue placeholder="Sélectionner" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="sale">Vente uniquement</SelectItem>
-                  <SelectItem value="rent">Location uniquement</SelectItem>
-                  <SelectItem value="both">Vente et location</SelectItem>
+                  <SelectItem value="available">Disponible</SelectItem>
+                  <SelectItem value="reserved">Réservé</SelectItem>
+                  <SelectItem value="sold">Vendu</SelectItem>
+                  <SelectItem value="rented">Loué</SelectItem>
+                  <SelectItem value="unavailable">Indisponible</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -232,39 +217,21 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form }) 
         />
           </div>
 
-          {/* Ownership Type */}
+          {/* Sous-type */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <FormField
-          control={form.control}
-          name="ownership_type"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Type de propriété</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value || ""}>
-                <FormControl>
-                  <SelectTrigger className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm">
-                    <SelectValue placeholder="Sélectionner" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="freehold">Pleine propriété</SelectItem>
-                  <SelectItem value="leasehold">Bail emphytéotique</SelectItem>
-                  <SelectItem value="shared_ownership">Copropriété</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
         <FormField
           control={form.control}
           name="property_sub_type"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Sous-type</FormLabel>
+              <FormLabel>Sous-type de propriété</FormLabel>
               <FormControl>
-                <Input placeholder="Ex: Luxe, Standard, Économique" {...field} className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm" />
+                <Input
+                  {...field}
+                  value={field.value || ""}
+                  className="border-2 border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm"
+                  placeholder="Ex: Modern, Luxury, etc."
+                />
               </FormControl>
               <FormDescription>
                 Catégorie ou niveau de finition

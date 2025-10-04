@@ -6,7 +6,7 @@ import AdminFooter from '@/components/admin/AdminFooter';
 import { useAuth } from '@/contexts/AuthContext';
 import { PrivateRoute } from '@/components/auth/PrivateRoute';
 import { Card } from '@/components/ui/card';
-import { AlertCircle } from 'lucide-react';
+import { CircleAlert as AlertCircle } from 'lucide-react';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
 // Import direct pour AdminOverview pour éviter les problèmes
@@ -19,6 +19,7 @@ const AdminBuildings = lazy(() => import('./AdminBuildings'));
 const NewBuilding = lazy(() => import('./buildings/new'));
 const EditBuilding = lazy(() => import('./buildings/[id]/edit'));
 const AdminProperties = lazy(() => import('./AdminProperties'));
+const AdminPropertyForm = lazy(() => import('./AdminPropertyForm'));
 const AdminProjectForm = lazy(() => import('./AdminProjectForm'));
 const AdminProjectDetail = lazy(() => import('./AdminProjectDetail'));
 const ProjectDashboard = lazy(() => import('./projects/[id]/dashboard'));
@@ -85,6 +86,8 @@ const AdminDashboard = () => {
         <Route path="buildings/new" element={<NewBuilding />} />
         <Route path="buildings/:id/edit" element={<EditBuilding />} />
         <Route path="properties" element={<AdminProperties />} />
+        <Route path="properties/new" element={<AdminPropertyForm />} />
+        <Route path="properties/:id/edit" element={<AdminPropertyForm />} />
             <Route path="projects/new" element={<AdminProjectForm />} />
             <Route path="projects/:id" element={<AdminProjectDetail />} />
             <Route path="projects/:id/edit" element={<AdminProjectForm />} />

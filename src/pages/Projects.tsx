@@ -1,59 +1,82 @@
-import { useState, useEffect, Suspense, lazy } from 'react';
+import { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
-import Slider from 'react-slick';
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Search, Filter, Waves, Trees, Dumbbell, Shield, ParkingCircle, ArrowRight } from 'lucide-react';
+import { MapPin, ArrowRight, Star, Building2, Waves, Mountain, Users, Map } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
-import ErrorBoundary from '@/components/ErrorBoundary';
 import { SEOHead } from '@/components/SEOHead';
-import { trackPageView, trackCustomEvent } from '@/lib/analytics';
-import Layout from '@/components/layout/Layout';
-import { getHeroImage, getGalleryUrls } from '@/utils/gallery';
+import { trackPageView } from '@/lib/analytics';
+import { getHeroImage } from '@/utils/gallery';
+
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
+
 const Projects = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedLocation, setSelectedLocation] = useState('');
-  const [selectedType, setSelectedType] = useState('');
-  const [selectedBudget, setSelectedBudget] = useState('');
-  // Récupérer les projets immobiliers depuis la base de données
-  const { data: projects = [], isLoading: loading, error } = useQuery({
+  const [selectedDistrict, setSelectedDistrict] = useState<string>('all');
+
+  const { data: projects = [], isLoading } = useQuery({
     queryKey: ['projects'],
     queryFn: async () => {
+      console.log('Fetching projects...');
       const { data, error } = await supabase
         .from('projects')
-        .select(`
-          *,
-          project_images(url, caption, is_primary, display_order)
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
-     
-      if (error) throw error;
-      return data;
+
+      if (error) {
+        console.error('Error fetching projects:', error);
+        throw error;
+      }
+      console.log('Projects fetched:', data?.length, 'projects');
+      return data || [];
     },
   });
+
   useEffect(() => {
     trackPageView('/projects', 'Projets - ENKI-REALTY Immobilier Premium Chypre');
   }, []);
-  const uniqueTypes = Array.from(new Set(projects.map((p: any) => p.type).filter(Boolean)));
-  const filteredProjects = projects.filter((project: any) => {
-    const projectLocationStr = typeof project.location === 'string' ? project.location : (project.location?.city || project.location?.name || JSON.stringify(project.location));
-    const matchesQuery = project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         projectLocationStr.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesLocation = !selectedLocation || projectLocationStr.includes(selectedLocation);
-    const matchesType = !selectedType || project.type === selectedType;
-    const matchesBudget = !selectedBudget || (project.price_from && Number(project.price_from) <= parseFloat(selectedBudget));
-    return matchesQuery && matchesLocation && matchesType && matchesBudget;
-  });
+
+  const featuredProjects = useMemo(() => {
+    const featured = projects.filter((p: any) => p.featured);
+    // Si aucun projet featured, prendre les 3 premiers
+    return featured.length > 0 ? featured.slice(0, 3) : projects.slice(0, 3);
+  }, [projects]);
+
+  useEffect(() => {
+    console.log('Projects state:', projects.length, 'projects');
+    console.log('Featured projects:', featuredProjects.length);
+  }, [projects, featuredProjects]);
+
+  const districts = useMemo(() => {
+    const locs = projects.map((p: any) => {
+      if (typeof p.location === 'string') return p.location;
+      return p.location?.city || p.location?.district || 'Autre';
+    });
+    return Array.from(new Set(locs));
+  }, [projects]);
+
+  const filteredProjects = useMemo(() => {
+    if (selectedDistrict === 'all') return projects;
+    return projects.filter((p: any) => {
+      const loc = typeof p.location === 'string' ? p.location : (p.location?.city || p.location?.district || '');
+      return loc.includes(selectedDistrict);
+    });
+  }, [projects, selectedDistrict]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Chargement des projets...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <Layout>
+    <>
       <SEOHead
         title="Projets Immobiliers à Chypre | ENKI-REALTY"
         description="Découvrez notre sélection exclusive de projets immobiliers premium à Chypre. Résidences de luxe, villas et appartements dans les meilleurs emplacements."
@@ -62,431 +85,324 @@ const Projects = () => {
         canonical="https://enki-realty.com/projects"
         image="/og-projects.jpg"
       />
-     
-      <main className="min-h-screen bg-background">
-        {/* Hero Section */}
-        <section className="relative h-screen flex items-center justify-center overflow-hidden">
-          <motion.div
-            className="absolute inset-0 z-0"
-            initial={{ scale: 1.1, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 1.2 }}
-          >
-            <video
-              className="w-full h-full object-cover"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-            >
-              <source src="https://videos.pexels.com/video-files/3571264/3571264-uhd_2560_1440_30fps.mp4" type="video/mp4" />
-              <track kind="captions" src="/captions/projects-hero.vtt" srcLang="fr" label="French Captions" default />
-              Votre navigateur ne supporte pas la vidéo.
-            </video>
-            <div className="absolute inset-0 bg-hero-gradient opacity-50" />
-          </motion.div>
-         
-          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+
+      <div className="min-h-screen bg-white">
+        {/* HERO SECTION */}
+        <section className="relative min-h-screen w-full flex items-center justify-center overflow-hidden">
+          <div className="absolute inset-0">
+            <div
+              className="absolute inset-0 w-full h-full object-cover scale-125"
+              style={{
+                backgroundImage: `url(/lovable-uploads/7a1f4c1e-ed5d-401e-98a7-e7d380bb9d99.png)`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+              }}
+            />
+            <div
+              className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-60 scale-125"
+              style={{
+                backgroundImage: `url(/lovable-uploads/7a1f4c1e-ed5d-401e-98a7-e7d380bb9d99.png)`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+              }}
+            />
+          </div>
+
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-black/45" />
+
+          <div className="relative z-10 text-center px-4">
             <motion.h1
-              className="text-6xl sm:text-7xl lg:text-8xl font-light tracking-tight text-white mb-8"
-              initial={{ opacity: 0, y: 50 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="swaarg-hero-title text-white mb-6"
             >
-              Découvrez nos Programmes Immobiliers à Chypre
+              Découvrez nos Programmes<br />Immobiliers à Chypre
             </motion.h1>
             <motion.p
-              className="text-lg sm:text-xl md:text-2xl font-normal leading-relaxed text-white/90 max-w-4xl mx-auto mb-12"
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="swaarg-subtitle text-white/90 mb-12 max-w-3xl mx-auto"
+            >
+              Une sélection de programmes premium conçus pour un art de vivre d'exception
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
             >
-              Découvrez une sélection de programmes premium conçus pour un art de vivre d’exception
-            </motion.p>
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-            >
               <Button
-                className="bg-primary hover:bg-primary-hover text-primary-foreground px-8 py-4 text-base font-medium rounded-lg shadow-lg hover:shadow-premium hover:scale-105 transition-all"
-                onClick={() => document.getElementById('projects-grid')?.scrollIntoView({ behavior: 'smooth' })}
+                size="lg"
+                className="bg-primary hover:bg-primary-hover text-white"
+                onClick={() => document.getElementById('featured')?.scrollIntoView({ behavior: 'smooth' })}
               >
                 Découvrir les projets
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </motion.div>
           </div>
-         
-          <motion.div
-            className="absolute bottom-12 left-1/2 -translate-x-1/2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 1 }}
-          >
-            <div className="w-7 h-11 border-2 border-white/70 rounded-full flex items-start justify-center backdrop-blur-sm">
-              <motion.div
-                className="w-1.5 h-1.5 bg-white rounded-full mt-1.5"
-                animate={{ y: [0, 12, 0], opacity: [1, 0.4, 1] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              />
-            </div>
-          </motion.div>
         </section>
-        {/* Search & Filter Section */}
-        <section className="bg-secondary py-16 px-4 sm:px-6 lg:px-8 relative">
-          <div className="max-w-7xl mx-auto">
-            <motion.h2
-              className="text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight text-primary text-center mb-8"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              Trouvez votre programme idéal
-            </motion.h2>
-            <motion.p
-              className="text-lg sm:text-xl font-normal leading-relaxed text-muted-foreground max-w-3xl mx-auto text-center mb-12"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              Affinez votre recherche pour trouver le programme qui correspond à votre vision
-            </motion.p>
+
+        {/* TOP 3 FEATURED PROJECTS */}
+        {featuredProjects.length > 0 ? (
+          <section id="featured" className="py-24 md:py-32 bg-white">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
-              className="flex flex-col md:flex-row gap-4 max-w-4xl mx-auto"
-              initial={{ opacity: 0, x: 100 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4 }}
+              className="text-center mb-16"
             >
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                <Input
-                  placeholder="Rechercher par localisation, type de programme ou budget..."
-                  className="pl-10 bg-transparent border-0 focus:ring-2 ring-ring text-primary text-lg"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-              <Select value={selectedLocation} onValueChange={setSelectedLocation}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Location" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Paphos">Paphos</SelectItem>
-                  <SelectItem value="Limassol">Limassol</SelectItem>
-                  <SelectItem value="Nicosia">Nicosia</SelectItem>
-                  <SelectItem value="Larnaca">Larnaca</SelectItem>
-                  <SelectItem value="Ayia Napa">Ayia Napa</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={selectedType} onValueChange={setSelectedType}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Type de programme" />
-                </SelectTrigger>
-                <SelectContent>
-                  {uniqueTypes.length > 0 ? (
-                    uniqueTypes.map((t: string) => (
-                      <SelectItem key={t} value={t}>{t}</SelectItem>
-                    ))
-                  ) : (
-                    <>
-                      <SelectItem value="Residential">Residential</SelectItem>
-                      <SelectItem value="Mixed-Use">Mixed-Use</SelectItem>
-                    </>
-                  )}
-                </SelectContent>
-              </Select>
-              <Select value={selectedBudget} onValueChange={setSelectedBudget}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Budget" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="200000">Up to €200k</SelectItem>
-                  <SelectItem value="500000">Up to €500k</SelectItem>
-                  <SelectItem value="1000000">Up to €1M</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button className="bg-primary hover:bg-primary-hover text-primary-foreground">
-                <Filter className="w-4 h-4 mr-2" />
-                Apply
-              </Button>
+              <h2 className="swaarg-large-title text-primary mb-4">
+                Projets en Vedette
+              </h2>
+              <p className="swaarg-subtitle text-muted-foreground max-w-2xl mx-auto">
+                Découvrez notre sélection exclusive des meilleurs programmes immobiliers
+              </p>
             </motion.div>
-          </div>
-        </section>
-        {/* Projects Grid Section */}
-        <section id="projects-grid" className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
-          <div className="max-w-7xl mx-auto">
-            <motion.h2
-              className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight text-primary text-center mb-8"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              Nos Programmes Immobiliers
-            </motion.h2>
-            <motion.p
-              className="text-lg sm:text-xl font-normal leading-relaxed text-muted-foreground max-w-3xl mx-auto text-center mb-12"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              Découvrez une sélection de programmes premium conçus pour la vie moderne
-            </motion.p>
-            {loading ? (
-              <div className="text-center text-muted-foreground">Chargement des projets...</div>
-            ) : error ? (
-              <div className="text-center text-destructive">Erreur de chargement des projets. Veuillez réessayer.</div>
-            ) : filteredProjects.length === 0 ? (
-              <div className="text-center text-muted-foreground">Aucun projet trouvé avec ces critères.</div>
-            ) : (
-              <div className="space-y-16">
-                {filteredProjects.map((project: any, index: number) => (
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {featuredProjects.map((project: any, index: number) => {
+                const projectSlug = project.url_slug || project.id;
+                return (
                   <motion.div
                     key={project.id}
-                    className="relative bg-card border-border/50 rounded-3xl shadow-premium overflow-hidden backdrop-blur-sm"
-                    initial={{ opacity: 0, y: 100 }}
+                    initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 1, delay: index * 0.3, type: 'spring', stiffness: 50 }}
-                    whileHover={{ scale: 1.02 }}
+                    transition={{ delay: index * 0.1 }}
+                    whileHover={{ y: -8 }}
+                    className="group relative"
                   >
-                    {/* Background Parallax Image */}
-                    <motion.div 
-                      className="absolute inset-0 z-0"
-                      style={{
-                        backgroundImage: `url(${getHeroImage(project) || 'https://picsum.photos/1200/800?random=' + project.id})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                      }}
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ duration: 0.5 }}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20" />
-                    </motion.div>
-                    
-                    {/* Glassmorphism Overlay */}
-                    <div className="relative z-10 p-8 lg:p-12 flex flex-col lg:flex-row items-center gap-8 backdrop-blur-sm bg-background/30">
-                      {/* Project Info Column */}
-                      <motion.div 
-                        className="lg:w-1/2 space-y-6"
-                        initial={{ opacity: 0, x: -50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
-                      >
-                        <h3 className="text-3xl lg:text-5xl font-light tracking-tight text-white">{project.title}</h3>
-                        <div className="flex items-center gap-2 text-white/80">
-                          <MapPin className="w-5 h-5" />
-                          <span>{typeof project.location === 'string' ? project.location : (project.location?.city || project.location?.name || JSON.stringify(project.location))}</span>
-                        </div>
-                        <Badge className="bg-white/20 text-white border-white/30">
-                          À partir de €{Number(project.price_from || project.price).toLocaleString()}
+                    <div className="relative h-[500px] rounded-2xl overflow-hidden">
+                      <Link to={`/projects/${projectSlug}`}>
+                        <img
+                          src={getHeroImage(project) || 'https://picsum.photos/800/600'}
+                          alt={project.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                      </Link>
+
+                      <div className="absolute top-4 right-4 flex gap-2">
+                        <Badge className="bg-yellow-500 text-black">
+                          <Star className="w-3 h-3 mr-1 fill-current" />
+                          Vedette
                         </Badge>
-                        <p className="text-white/90 leading-relaxed">
-                          {project.description || 'Un programme immobilier premium offrant des équipements modernes et des vues exceptionnelles.'}
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                          {(project.amenities || []).slice(0, 4).map((amenity: string, i: number) => (
-                            <Badge key={i} className="bg-white/10 text-white border-white/20">{amenity}</Badge>
-                          ))}
+                      </div>
+
+                      <div className="absolute bottom-0 left-0 right-0 p-6">
+                        <Link to={`/projects/${projectSlug}`}>
+                          <h3 className="swaarg-card-title text-white mb-2 hover:text-orange-400 transition-colors">
+                            {project.title}
+                          </h3>
+                        </Link>
+                        <div className="flex items-center text-white/80 mb-3">
+                          <MapPin className="w-4 h-4 mr-1" />
+                          <span className="swaarg-body">{typeof project.location === 'string' ? project.location : project.location?.city || 'Chypre'}</span>
                         </div>
-                        <Button 
-                          asChild
-                          className="bg-white text-primary hover:bg-white/90 mt-4"
-                        >
-                          <Link to={`/projects/${project.url_slug || project.id}`}>
-                            Explorer le projet
-                            <ArrowRight className="ml-2 h-4 w-4" />
+                        <div className="flex items-center justify-between">
+                          <span className="swaarg-card-title text-white">
+                            À partir de €{Number(project.price_from || project.price || 0).toLocaleString()}
+                          </span>
+                          <Link to={`/projects/${projectSlug}`}>
+                            <ArrowRight className="w-5 h-5 text-white group-hover:translate-x-2 transition-transform" />
                           </Link>
-                        </Button>
-                      </motion.div>
-                      
-                      {/* Slideshow Column */}
-                      <motion.div 
-                        className="lg:w-1/2 h-64 lg:h-96 overflow-hidden rounded-2xl"
-                        initial={{ opacity: 0, x: 50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.8, delay: 0.4 }}
-                      >
-                        <Slider {...{
-                          dots: true,
-                          infinite: true,
-                          speed: 500,
-                          slidesToShow: 1,
-                          slidesToScroll: 1,
-                          autoplay: true,
-                          autoplaySpeed: 3000,
-                          arrows: false,
-                          fade: true,
-                        }}>
-                          {getGalleryUrls(project).map((photo: string, photoIndex: number) => (
-                            <motion.div 
-                              key={photoIndex}
-                              className="h-full"
-                              whileHover={{ scale: 1.05 }}
-                              transition={{ duration: 0.5 }}
-                            >
-                              <img 
-                                src={photo || 'https://picsum.photos/800/500?random=' + photoIndex}
-                                alt={`Photo ${photoIndex + 1} du projet ${project.title}`}
-                                className="w-full h-full object-cover"
-                                loading="lazy"
-                                onError={(e) => {
-                                  e.currentTarget.onerror = null;
-                                  e.currentTarget.src = 'https://picsum.photos/800/500?random=' + photoIndex;
-                                }}
-                              />
-                            </motion.div>
-                          ))}
-                        </Slider>
-                      </motion.div>
+                        </div>
+                      </div>
                     </div>
-                    
-                    {/* Futuristic Glow Effect */}
-                    <motion.div 
-                      className="absolute inset-0 pointer-events-none"
-                      animate={{
-                        boxShadow: [
-                          '0 0 20px rgba(0, 144, 230, 0.1)',
-                          '0 0 40px rgba(0, 144, 230, 0.2)',
-                          '0 0 20px rgba(0, 144, 230, 0.1)',
-                        ],
-                      }}
-                      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                    />
                   </motion.div>
-                ))}
-              </div>
-            )}
+                );
+              })}
+            </div>
+            </div>
+          </section>
+        ) : (
+          <section className="py-24 md:py-32 bg-white">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+              <h2 className="swaarg-large-title text-primary mb-4">
+                Aucun projet disponible
+              </h2>
+              <p className="swaarg-subtitle text-muted-foreground">
+                Les projets seront bientôt disponibles. Revenez plus tard.
+              </p>
+              <p className="text-sm text-muted-foreground mt-4">
+                Debug: {projects.length} projets trouvés dans la base de données
+              </p>
+            </div>
+          </section>
+        )}
+
+      {/* CYPRUS LIFESTYLE SECTION - Full Width */}
+      <section className="w-full py-24 bg-white">
+        <div className="px-4 md:px-8 lg:px-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="swaarg-large-title text-primary mb-4">
+              L'Art de Vivre à Chypre
+            </h2>
+            <p className="swaarg-subtitle text-muted-foreground max-w-3xl mx-auto">
+              Plus de 300 jours de soleil par an, entre mer Méditerranée et montagnes majestueuses
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { icon: Waves, title: 'Bord de Mer', desc: 'Plages de sable fin et eaux cristallines' },
+              { icon: Mountain, title: 'Nature', desc: 'Montagnes et paysages préservés' },
+              { icon: Building2, title: 'Urbanisme', desc: 'Villes modernes et infrastructure de qualité' },
+              { icon: Users, title: 'Communauté', desc: 'Accueil chaleureux et qualité de vie' }
+            ].map((item, index) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ y: -4 }}
+                className="p-6 rounded-xl bg-gradient-to-br from-secondary/50 to-secondary/20 border border-border/50"
+              >
+                <item.icon className="w-12 h-12 text-primary mb-4" />
+                <h3 className="swaarg-card-title mb-2">{item.title}</h3>
+                <p className="swaarg-body text-muted-foreground">{item.desc}</p>
+              </motion.div>
+            ))}
           </div>
-        </section>
-        {/* Interactive Map Section */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-secondary relative">
-          <div className="max-w-7xl mx-auto">
-            <motion.h2
-              className="text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight text-primary text-center mb-8"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              Explorer par localisation
-            </motion.h2>
-            <motion.div
-              className="h-64 md:h-96 rounded-xl overflow-hidden shadow-lg"
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-            >
-              <Suspense fallback={<div className="h-full bg-muted animate-pulse" />}>
-                {/* Composant de carte simplifié pour les projets */}
-                <div className="h-full bg-muted rounded-xl flex items-center justify-center text-muted-foreground">
-                  Carte des projets - À implémenter
-                </div>
-              </Suspense>
-            </motion.div>
-          </div>
-        </section>
-        {/* Featured Amenities Section */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
-          <div className="max-w-7xl mx-auto">
-            <motion.h2
-              className="text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight text-primary text-center mb-8"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              Un art de vivre premium, réinventé
-            </motion.h2>
-            <motion.p
-              className="text-lg sm:text-xl font-normal leading-relaxed text-muted-foreground max-w-3xl mx-auto text-center mb-12"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              Découvrez un luxe inégalé au sein de programmes soigneusement conçus
-            </motion.p>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-              {[
-                { icon: Waves, label: 'Infinity Pools' },
-                { icon: Trees, label: 'Lush Gardens' },
-                { icon: Dumbbell, label: 'State-of-the-Art Gym' },
-                { icon: Shield, label: '24/7 Security' },
-                { icon: ParkingCircle, label: 'Underground Parking' },
-                { icon: ArrowRight, label: 'Concierge Services' },
-              ].map((amenity, index) => (
-                <motion.div
-                  key={amenity.label}
-                  className="text-center p-6 rounded-xl bg-card border border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  whileHover={{ scale: 1.05, y: -5 }}
+        </div>
+      </section>
+
+      {/* ALL PROJECTS BY DISTRICT - Full Width */}
+      <section className="w-full py-24 bg-secondary/10">
+        <div className="px-4 md:px-8 lg:px-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="swaarg-large-title text-primary mb-4">
+              Tous nos Programmes
+            </h2>
+            <p className="swaarg-subtitle text-muted-foreground mb-8">
+              Explorez l'ensemble de nos projets par localisation
+            </p>
+
+            {/* District Filter */}
+            <div className="flex flex-wrap justify-center gap-3">
+              <Button
+                variant={selectedDistrict === 'all' ? 'default' : 'outline'}
+                onClick={() => setSelectedDistrict('all')}
+              >
+                Tous
+              </Button>
+              {districts.map((district: string) => (
+                <Button
+                  key={district}
+                  variant={selectedDistrict === district ? 'default' : 'outline'}
+                  onClick={() => setSelectedDistrict(district)}
                 >
-                  <motion.div
-                    className="w-12 h-12 mx-auto mb-4 flex items-center justify-center rounded-full bg-primary/10"
-                    whileHover={{ rotate: 360 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <amenity.icon className="w-6 h-6 text-primary" />
-                  </motion.div>
-                  <h3 className="text-sm font-medium text-primary">{amenity.label}</h3>
+                  {district}
+                </Button>
+              ))}
+            </div>
+          </motion.div>
+
+          {isLoading ? (
+            <div className="text-center py-12">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {filteredProjects.map((project: any, index: number) => (
+                <motion.div
+                  key={project.id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.05 }}
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <div className="bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+                    <Link to={`/projects/${project.url_slug || project.id}`}>
+                      <div className="relative h-64">
+                        <img
+                          src={getHeroImage(project) || 'https://picsum.photos/600/400'}
+                          alt={project.title}
+                          className="w-full h-full object-cover"
+                        />
+                        {project.featured && (
+                          <Badge className="absolute top-3 right-3 bg-yellow-500 text-black">
+                            <Star className="w-3 h-3 mr-1 fill-current" />
+                            Vedette
+                          </Badge>
+                        )}
+                      </div>
+                    </Link>
+                    <div className="p-5">
+                      <Link to={`/projects/${project.url_slug || project.id}`}>
+                        <h3 className="swaarg-card-title mb-2 line-clamp-1 hover:text-primary transition-colors">{project.title}</h3>
+                      </Link>
+                      <div className="flex items-center text-muted-foreground mb-3">
+                        <MapPin className="w-4 h-4 mr-1" />
+                        <span className="swaarg-body text-sm">{typeof project.location === 'string' ? project.location : project.location?.city || 'Chypre'}</span>
+                      </div>
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="swaarg-card-title text-primary">
+                          €{Number(project.price_from || project.price || 0).toLocaleString()}+
+                        </span>
+                      </div>
+                      <Link to={`/projects/${project.url_slug || project.id}`} className="block">
+                        <Button variant="default" className="w-full">
+                          Voir le projet
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
                 </motion.div>
               ))}
             </div>
-          </div>
-        </section>
-        {/* CTA Section */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-primary text-primary-foreground">
-          <div className="max-w-4xl mx-auto text-center">
-            <motion.h2
-              className="text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight mb-8"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+          )}
+        </div>
+      </section>
+
+      {/* CTA SECTION - Full Width */}
+      <section className="w-full py-24 bg-gradient-to-br from-primary to-primary/80 text-white">
+        <div className="px-4 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="swaarg-large-title mb-6">
+              Prêt à Découvrir Votre Futur Chez Vous ?
+            </h2>
+            <p className="swaarg-subtitle mb-12 max-w-2xl mx-auto opacity-90">
+              Contactez notre équipe d'experts pour trouver le programme immobilier parfait
+            </p>
+            <Button
+              size="lg"
+              variant="secondary"
+              asChild
+              className="group"
             >
-              Ready to Make Cyprus Your Home?
-            </motion.h2>
-            <motion.p
-              className="text-lg sm:text-xl font-normal leading-relaxed mb-12 opacity-90"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              Connect with our expert team to discover your perfect property investment
-            </motion.p>
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              <Button
-                asChild
-                size="lg"
-                variant="secondary"
-                className="bg-white text-primary hover:bg-white/90 px-8 py-4 text-base font-medium rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all"
-                onClick={() => trackCustomEvent('cta_contact_clicked')}
-              >
-                <Link to="/contact">
-                  Contact Us
-                </Link>
-              </Button>
-            </motion.div>
-          </div>
-        </section>
-      </main>
-    </Layout>
+              <Link to="/contact">
+                Contactez-nous
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </Button>
+          </motion.div>
+        </div>
+      </section>
+      </div>
+    </>
   );
 };
+
 export default Projects;
