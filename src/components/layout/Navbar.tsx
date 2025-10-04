@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, LogIn, LogOut, UserCog, Chrome as Home, Search, Building, Info, Mail, Brain, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,6 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, profile, isAuthenticated, isAdmin, signOut, loading } = useAuth();
@@ -37,6 +39,69 @@ const Navbar = () => {
 
   const isActive = (path: string) => location.pathname === path;
 
+  // Fonction de fermeture du menu
+  const closeMenu = useCallback(() => {
+    setIsOpen(false);
+  }, []);
+
+  // Fermer le menu lors du changement de route
+  useEffect(() => {
+    closeMenu();
+  }, [location.pathname, closeMenu]);
+
+  // Fermer le menu au clic en dehors (avec ref pour éviter querySelector)
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (isOpen && navRef.current && !navRef.current.contains(target)) {
+        closeMenu();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen, closeMenu]);
+
+  // Verrouiller le scroll du body quand le menu mobile est ouvert
+  useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = originalOverflow;
+    }
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isOpen]);
+
+  // Fermer le menu mobile si on redimensionne vers desktop (avec debounce)
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    
+    const handleResize = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        if (window.innerWidth >= 768 && isOpen) {
+          closeMenu();
+        }
+      }, 150);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(timeoutId);
+    };
+  }, [isOpen, closeMenu]);
+
   const handleLogout = async () => {
     try {
       const { error } = await signOut();
@@ -56,7 +121,7 @@ const Navbar = () => {
     } catch (error) {
       console.error('Logout error:', error);
     }
-    setIsOpen(false);
+    closeMenu();
   };
 
   const getUserInitials = () => {
@@ -77,11 +142,14 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border shadow-sm">
+    <nav 
+      ref={navRef}
+      className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border shadow-sm"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center">
+          <Link to="/" onClick={closeMenu} className="flex items-center">
             <span className="text-2xl font-bold text-foreground hover:text-primary transition-colors">
               ENKI-REALTY
             </span>
@@ -95,7 +163,6 @@ const Navbar = () => {
                 <Link
                   key={item.name}
                   to={item.href}
-                  onClick={() => setIsOpen(false)}
                   className={`flex items-center px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
                     isActive(item.href)
                       ? 'text-primary bg-accent shadow-sm'
@@ -121,7 +188,6 @@ const Navbar = () => {
                     <Link
                       key={item.name}
                       to={item.href}
-                      onClick={() => setIsOpen(false)}
                       className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
                         isActive(item.href)
                           ? 'text-primary bg-accent shadow-sm'
@@ -184,90 +250,98 @@ const Navbar = () => {
             size="sm"
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden"
+            aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu"}
+            aria-expanded={isOpen}
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </Button>
         </div>
       </div>
 
-      {/* Mobile Navigation - Outside container */}
-      {isOpen && (
-        <div className="absolute top-full left-0 right-0 md:hidden border-t border-border bg-background shadow-lg z-50">
-          <div className="px-4 py-3 space-y-1 max-h-[calc(100vh-4rem)] overflow-y-auto">
-            {allNavigation.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  onClick={(e) => {
-                    setIsOpen(false);
-                  }}
-                  className={`flex items-center px-3 py-2 text-base font-medium rounded-md transition-colors ${
-                    isActive(item.href)
-                      ? 'text-primary bg-accent'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-accent'
-                  }`}
-                >
-                  <Icon className="w-5 h-5 mr-3" />
-                  {item.name}
-                </Link>
-              );
-            })}
+      {/* Mobile Navigation */}
+      <AnimatePresence mode="wait">
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className="md:hidden border-t border-border bg-background shadow-lg overflow-hidden"
+          >
+            <div className="px-4 py-3 space-y-1 max-h-[calc(100vh-4rem)] overflow-y-auto">
+              {allNavigation.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    onClick={closeMenu}
+                    className={`flex items-center px-3 py-2 text-base font-medium rounded-md transition-colors ${
+                      isActive(item.href)
+                        ? 'text-primary bg-accent'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5 mr-3" />
+                    {item.name}
+                  </Link>
+                );
+              })}
 
-            <div className="pt-4 mt-4 border-t border-border">
-              {loading ? (
-                <div className="animate-pulse bg-muted h-10 rounded-md" />
-              ) : isAuthenticated ? (
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-3 px-3 py-2">
-                    <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-                      <span className="text-sm font-medium text-primary-foreground">
-                        {getUserInitials()}
-                      </span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-foreground truncate">
-                        {profile?.profile?.name || 'Utilisateur'}
-                      </p>
-                      <p className="text-xs text-muted-foreground truncate">
-                        {user?.email}
-                      </p>
-                      {isAdmin && (
-                        <p className="text-xs text-primary font-medium">
-                          Administrateur
+              <div className="pt-4 mt-4 border-t border-border">
+                {loading ? (
+                  <div className="animate-pulse bg-muted h-10 rounded-md" />
+                ) : isAuthenticated ? (
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-3 px-3 py-2">
+                      <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+                        <span className="text-sm font-medium text-primary-foreground">
+                          {getUserInitials()}
+                        </span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-foreground truncate">
+                          {profile?.profile?.name || 'Utilisateur'}
                         </p>
-                      )}
+                        <p className="text-xs text-muted-foreground truncate">
+                          {user?.email}
+                        </p>
+                        {isAdmin && (
+                          <p className="text-xs text-primary font-medium">
+                            Administrateur
+                          </p>
+                        )}
+                      </div>
                     </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleLogout}
+                      className="w-full justify-start text-red-600 border-red-200 hover:bg-red-50"
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Déconnexion
+                    </Button>
                   </div>
+                ) : (
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={handleLogout}
-                    className="w-full justify-start text-red-600 border-red-200 hover:bg-red-50"
+                    onClick={() => {
+                      closeMenu();
+                      navigate('/login');
+                    }}
+                    className="w-full justify-start"
                   >
-                    <LogOut className="w-4 h-4 mr-2" />
-                    Déconnexion
+                    <LogIn className="w-4 h-4 mr-2" />
+                    Connexion
                   </Button>
-                </div>
-              ) : (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setIsOpen(false);
-                    navigate('/login');
-                  }}
-                  className="w-full justify-start"
-                >
-                  <LogIn className="w-4 h-4 mr-2" />
-                  Connexion
-                </Button>
-              )}
+                )}
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };

@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import HeroSection from './components/HeroSection';
-import Overview from './components/Overview';
-import Specifications from './components/Specifications';
+import { motion } from 'framer-motion';
+import Hero from './components/HeroSection';
+import ProjectInfo from './components/ProjectInfo';
 import Gallery from './components/Gallery';
-import Amenities from './components/Amenities';
+import FloorPlans from './components/FloorPlans';
+import Features from './components/Features';
+import Location from './components/Location';
 import Investment from './components/Investment';
-import Testimonials from './components/Testimonials';
+import Developer from './components/Developer';
 import ContactForm from './components/ContactForm';
-import StickyBar from './components/StickyBar';
 
 export default function ProjectPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -24,7 +25,44 @@ export default function ProjectPage() {
       try {
         const { data, error } = await supabase
           .from('projects')
-          .select('*')
+          .select(`
+            *,
+            developer:developer_id (
+              id,
+              name,
+              logo_url,
+              description,
+              website,
+              phone_numbers,
+              email,
+              projects_count,
+              rating
+            ),
+            project_images (
+              id,
+              url,
+              category,
+              caption,
+              is_primary,
+              display_order
+            ),
+            project_amenities (
+              amenity:amenity_id (
+                id,
+                name,
+                icon,
+                category
+              )
+            ),
+            buildings (
+              id,
+              building_name,
+              floors_above_ground,
+              total_units,
+              building_class,
+              energy_certificate
+            )
+          `)
           .eq('url_slug', slug)
           .maybeSingle();
 
@@ -45,50 +83,45 @@ export default function ProjectPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p>Loading project...</p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-white text-2xl font-light"
+        >
+          Loading...
+        </motion.div>
       </div>
     );
   }
 
   if (error || !project) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Project Not Found</h1>
-          <p className="text-muted-foreground">{error || 'The requested project could not be found.'}</p>
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <div className="text-center text-white">
+          <h1 className="text-4xl font-light mb-4">Project Not Found</h1>
+          <p className="text-white/60">{error || 'The requested project could not be found.'}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen">
-      {/* 1. HERO SECTION (100vh) */}
-      <HeroSection project={project} />
-
-      {/* 2. QUICK OVERVIEW (50/50 desktop, stack mobile) */}
-      <Overview project={project} />
-
-      {/* 3. SPECIFICATIONS GRID */}
-      <Specifications project={project} />
-
-      {/* 4. MEDIA GALLERY */}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
+      className="min-h-screen"
+    >
+      <Hero project={project} />
+      <ProjectInfo project={project} />
       <Gallery project={project} />
-
-      {/* 5. AMENITIES GRID */}
-      <Amenities project={project} />
-
-
-      {/* 7. TESTIMONIALS SLIDER */}
-      <Testimonials project={project} />
-
-      {/* 8. FOOTER CONVERSION ZONE */}
+      <FloorPlans project={project} />
+      <Features project={project} />
+      <Location project={project} />
+      <Investment project={project} />
+      <Developer project={project} />
       <ContactForm project={project} />
-
-    </div>
+    </motion.div>
   );
 }
