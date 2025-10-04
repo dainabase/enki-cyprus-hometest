@@ -35,22 +35,22 @@ export default function HeroSection({ project }: HeroSectionProps) {
 
   const quickStats = [
     {
-      icon: <Euro className="w-6 h-6" />,
+      icon: <Euro className="w-8 h-8" />,
       label: 'Price From',
       value: project.price_from ? formatPrice(project.price_from) : 'On Request',
     },
     {
-      icon: <Home className="w-6 h-6" />,
+      icon: <Home className="w-8 h-8" />,
       label: 'Units',
       value: `${project.total_units || 'Multiple'} units`,
     },
     {
-      icon: <Calendar className="w-6 h-6" />,
+      icon: <Calendar className="w-8 h-8" />,
       label: 'Completion',
       value: project.completion_date || project.expected_completion || 'To be announced',
     },
     {
-      icon: <Ruler className="w-6 h-6" />,
+      icon: <Ruler className="w-8 h-8" />,
       label: 'Size Range',
       value: project.square_meters_min && project.square_meters_max
         ? `${formatArea(project.square_meters_min)} - ${formatArea(project.square_meters_max)}`
@@ -124,13 +124,13 @@ export default function HeroSection({ project }: HeroSectionProps) {
                 key={index}
                 className="bg-white rounded-[2px] p-6 text-center shadow-lg"
               >
-                <div className="flex justify-center mb-3 text-black/60">
+                <div className="flex justify-center mb-4 text-black/60">
                   {stat.icon}
                 </div>
-                <p className="text-xs uppercase tracking-wider text-black/60 mb-2 font-medium">
+                <p className="text-xs uppercase tracking-wider text-black/60 mb-2 font-light">
                   {stat.label}
                 </p>
-                <p className="text-sm md:text-base font-medium text-black">
+                <p className="text-base md:text-lg font-light text-black">
                   {stat.value}
                 </p>
               </div>
