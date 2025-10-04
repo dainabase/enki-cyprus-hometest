@@ -2,28 +2,7 @@ import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import {
-  BarChart3,
-  Building,
-  Building2,
-  DollarSign,
-  Users,
-  TrendingUp,
-  Settings,
-  FileText,
-  Home,
-  Target,
-  LayoutDashboard,
-  FolderOpen,
-  UserPlus,
-  ChartBar,
-  Activity,
-  Settings2,
-  BookOpen,
-  CheckSquare,
-  ChevronDown,
-  ChevronRight
-} from 'lucide-react';
+import { ChartBar as BarChart3, Building, Building2, DollarSign, Users, TrendingUp, Settings, FileText, Chrome as Home, Target, LayoutDashboard, FolderOpen, UserPlus, ChartBar, Activity, Settings2, BookOpen, SquareCheck as CheckSquare, ChevronDown, ChevronRight } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
