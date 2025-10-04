@@ -105,9 +105,12 @@ export default function HeroSection({ project }: HeroSectionProps) {
 
       {/* Content */}
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 text-center">
-        <p className="text-white/60 text-sm tracking-[0.2em] uppercase mb-8 font-light">
-          {city}
-        </p>
+        <div className="flex items-center gap-2 mb-8">
+          <MapPin className="w-4 h-4 text-white/60" />
+          <p className="text-white/60 text-sm tracking-[0.2em] uppercase font-light">
+            {project.city}{project.district && `, ${project.district}`}, Cyprus
+          </p>
+        </div>
 
         <h1 className="text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-light tracking-tight leading-[0.95] mb-12 max-w-7xl">
           {project.title}
