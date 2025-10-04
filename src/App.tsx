@@ -18,7 +18,6 @@ import { initGA, trackPageView } from "./lib/analytics";
 
 // Lazy load pages for code splitting
 const PublicProjectPage = lazy(() => import("./pages/projects/ProjectPage"));
-const ProjectPageV2 = lazy(() => import("./components/ProjectPageV2"));
 const Home = lazy(() => import("./pages/Home"));
 const Search = lazy(() => import("./pages/Search"));
 const Projects = lazy(() => import("./pages/Projects"));
@@ -110,7 +109,6 @@ const AppContent = () => {
                       <Route path="/search" element={<Search />} />
                       <Route path="/projects" element={<Projects />} />
                       <Route path="/projects/:slug" element={<PublicProjectPage />} />
-                      <Route path="/project-v2/:slug" element={<ProjectPageV2 />} />
                       <Route path="/project/:id" element={<ProjectDetail />} />
                       <Route path="/project-detail/:id" element={<ProjectDetail />} />
                       <Route path="/about" element={<About />} />
