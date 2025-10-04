@@ -3,7 +3,7 @@
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { Crown, MapPin, CheckCircle } from 'lucide-react';
+import { Crown, MapPin, CircleCheck as CheckCircle } from 'lucide-react';
 import { truncateText } from '@/lib/utils/formatters';
 
 interface OverviewProps {

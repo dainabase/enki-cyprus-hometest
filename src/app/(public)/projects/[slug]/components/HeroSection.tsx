@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { formatPrice, formatArea } from '@/lib/utils/formatters';
-import { MapPin, Crown, Bed, Home, Calendar } from 'lucide-react';
+import { MapPin, Crown, Bed, Chrome as Home, Calendar } from 'lucide-react';
 
 interface HeroSectionProps {
   project: any;
