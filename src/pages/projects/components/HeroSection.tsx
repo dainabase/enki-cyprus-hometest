@@ -118,7 +118,7 @@ export default function HeroSection({ project }: HeroSectionProps) {
       {/* KPI Stats cards */}
       <div className="absolute bottom-12 left-0 right-0 z-10">
         <div className="max-w-[1190px] mx-auto px-6 lg:px-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
             {quickStats.map((stat, index) => (
               <div
                 key={index}
