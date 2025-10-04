@@ -504,6 +504,10 @@ const AdminProjectForm: React.FC = () => {
         dbData.photos = [];
       }
       
+      // ⚠️ IMPORTANT: Supprimer categorized_photos (obsolète) pour éviter les conflits
+      // Le champ photos est la seule source de vérité pour les images
+      dbData.categorized_photos = null;
+      
       // Convertir correctement les champs JSONB qui étaient des arrays
       if (dbData.meta_keywords && Array.isArray(dbData.meta_keywords)) {
         dbData.meta_keywords = dbData.meta_keywords.join(',');
