@@ -19,6 +19,10 @@ export default function ProjectPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+  }, []);
+
+  useEffect(() => {
     async function fetchProject() {
       if (!slug) return;
 
@@ -115,10 +119,6 @@ export default function ProjectPage() {
       </div>
     );
   }
-
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
-  }, []);
 
   return (
     <motion.div
