@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Building, Home, Calendar, MapPin, TrendingUp, Shield } from 'lucide-react';
+import { Building, Chrome as Home, Calendar, MapPin, TrendingUp, Shield } from 'lucide-react';
 
 interface OverviewProps {
   project: any;

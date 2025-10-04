@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Send, CheckCircle2, Mail, Phone, MapPin } from 'lucide-react';
+import { Send, CircleCheck as CheckCircle2, Mail, Phone, MapPin } from 'lucide-react';
 
 interface ContactFormProps {
   project: any;
