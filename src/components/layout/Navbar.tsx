@@ -95,6 +95,7 @@ const Navbar = () => {
                 <Link
                   key={item.name}
                   to={item.href}
+                  onClick={() => setIsOpen(false)}
                   className={`flex items-center px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
                     isActive(item.href)
                       ? 'text-primary bg-accent shadow-sm'
@@ -120,6 +121,7 @@ const Navbar = () => {
                     <Link
                       key={item.name}
                       to={item.href}
+                      onClick={() => setIsOpen(false)}
                       className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
                         isActive(item.href)
                           ? 'text-primary bg-accent shadow-sm'

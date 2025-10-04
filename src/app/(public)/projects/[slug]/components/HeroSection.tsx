@@ -18,25 +18,26 @@ export default function HeroSection({ project }: HeroSectionProps) {
     project.project_images?.find((i: any) => i.is_primary)?.url ||
     project.photos?.[0] ||
     project.photo_gallery_urls?.[0] ||
-    null;
+    project.main_image_url ||
+    'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200';
   const videoUrl = project.video_url || project.drone_footage_urls?.[0];
 
   const specs = [
     {
       icon: <Bed className="w-4 h-4" />,
-      label: project.bedrooms_range || 'Studio - 3BR',
+      label: project.bedrooms_range || project.units_available ? `${project.units_available} unités` : 'Studio - 3BR',
     },
     {
       icon: <Home className="w-4 h-4" />,
-      label: project.built_area_m2 ? formatArea(project.built_area_m2) : '50-200 m²',
+      label: project.built_area_m2 ? formatArea(project.built_area_m2) : project.total_area_m2 ? formatArea(project.total_area_m2) : '50-200 m²',
     },
     {
       icon: <MapPin className="w-4 h-4" />,
-      label: `${project.city || project.cyprus_zone}, Chypre`,
+      label: `${project.city || project.cyprus_zone || 'Chypre'}`,
     },
     {
       icon: <Calendar className="w-4 h-4" />,
-      label: project.completion_date || 'Q4 2024',
+      label: project.completion_date ? new Date(project.completion_date).toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' }) : 'Livraison prévue',
     },
   ];
 
@@ -98,9 +99,15 @@ export default function HeroSection({ project }: HeroSectionProps) {
             <p className="mb-2">{project.subtitle}</p>
           )}
           <p className="font-semibold">
-            From {formatPrice(project.price_from_new || project.price)}
-            {project.vat_rate && (
-              <span className="text-lg ml-2 text-white/80">+ {project.vat_rate}% VAT</span>
+            {project.price_from_new || project.price || project.price_from ? (
+              <>
+                From {formatPrice(project.price_from_new || project.price_from || project.price)}
+                {project.vat_rate && (
+                  <span className="text-lg ml-2 text-white/80">+ {project.vat_rate}% VAT</span>
+                )}
+              </>
+            ) : (
+              'Prix sur demande'
             )}
           </p>
         </div>

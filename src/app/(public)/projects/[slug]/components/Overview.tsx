@@ -14,13 +14,20 @@ export default function Overview({ project }: OverviewProps) {
   const description = project.detailed_description || project.description || '';
   const shortDescription = truncateText(description, 200);
   
-  const uspPoints = project.unique_selling_points || [
-    'Prime location with sea views',
-    'Modern architectural design',
-    'Premium finishing materials',
-    'Full amenities package',
-    'Investment opportunity'
-  ];
+  let uspPoints = [];
+  if (project.unique_selling_points) {
+    uspPoints = Array.isArray(project.unique_selling_points)
+      ? project.unique_selling_points
+      : JSON.parse(project.unique_selling_points);
+  } else {
+    uspPoints = [
+      'Emplacement privilégié',
+      'Design architectural moderne',
+      'Finitions de qualité supérieure',
+      'Équipements complets',
+      'Opportunité d\'investissement'
+    ];
+  }
 
   // Default coordinates for Cyprus if GPS data not available
   const latitude = project.gps_latitude || 34.7768;

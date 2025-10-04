@@ -20,33 +20,20 @@ export default function ProjectPage() {
   useEffect(() => {
     async function fetchProject() {
       if (!slug) return;
-      
+
       try {
         const { data, error } = await supabase
           .from('projects')
-          .select(`
-            *,
-            developer:developers(*),
-            project_amenities(
-              amenity:amenities(*)
-            ),
-            project_nearby_amenities(
-              amenity:nearby_amenities(*),
-              distance_km,
-              distance_minutes_walk,
-              distance_minutes_drive
-            ),
-            project_documents(*),
-            project_images(*)
-          `)
-          .eq('url_slug', slug)
-          .single();
+          .select('*')
+          .or(`url_slug.eq.${slug},id.eq.${slug}`)
+          .maybeSingle();
 
         if (error) throw error;
         if (!data) throw new Error('Project not found');
 
         setProject(data);
       } catch (err) {
+        console.error('Error fetching project:', err);
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
         setLoading(false);
