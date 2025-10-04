@@ -1775,16 +1775,16 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           </CardContent>
         </Card>
 
-        {/* CARTE 2: Distances & Commodités - VERSION SIMPLIFIÉE SANS COULEURS */}
+        {/* CARTE 2: Distances & Commodités - VERSION MODERNE */}
         <Card className="border-2 border-slate-300 shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+          <CardHeader className="bg-gradient-to-r from-slate-50 to-slate-100 border-b">
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="flex items-center gap-2">
-                  <Navigation className="w-5 h-5" />
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Navigation className="w-5 h-5 text-slate-700" />
                   Distances & Commodités
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-sm">
                   Distances stratégiques et commodités de proximité
                 </CardDescription>
               </div>
@@ -1792,13 +1792,13 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 type="button"
                 onClick={handleDetectAll}
                 disabled={!form.watch('full_address') || isDetecting}
-                variant="outline"
+                className="bg-blue-600 hover:bg-blue-700"
                 size="sm"
               >
                 {isDetecting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Détection...
+                    Analyse...
                   </>
                 ) : (
                   <>
@@ -2154,14 +2154,6 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                           </details>
                         </div>
                       )}
-                      
-                      {/* Note d'information */}
-                      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                        <p className="text-xs text-amber-800">
-                          <strong>💡 Info :</strong> Cliquez sur les cases ou les cartes pour sélectionner les commodités qui apparaîtront sur le site public. 
-                          Les commodités essentielles sont pré-sélectionnées par défaut.
-                        </p>
-                      </div>
                     </div>
                   ) : (
                     <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
