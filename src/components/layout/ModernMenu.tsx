@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion, Variants } from "framer-motion";
-import { ArrowRight, LogIn, LogOut, User } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useScrollLock } from "@/hooks/useScrollLock";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
@@ -10,11 +9,10 @@ import { useEffect } from "react";
 const ModernMenu = () => {
   const [active, setActive] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-  const { isAuthenticated, isAdmin, signOut, user } = useAuth();
+  const { isAuthenticated, isAdmin, signOut } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
-  useScrollLock(active);
 
   const LINKS = [
     { title: "Accueil", href: "/" },
@@ -31,6 +29,28 @@ const ModernMenu = () => {
     setActive(false);
   }, [location.pathname]);
 
+  // Gérer le scroll lock SANS compensation (pour éviter tout shift)
+  useEffect(() => {
+    if (active) {
+      // Sauvegarder l'état actuel
+      const scrollY = window.scrollY;
+      const body = document.body;
+      
+      // Bloquer le scroll en fixant la position
+      body.style.position = 'fixed';
+      body.style.top = `-${scrollY}px`;
+      body.style.width = '100%';
+      
+      return () => {
+        // Restaurer
+        body.style.position = '';
+        body.style.top = '';
+        body.style.width = '';
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [active]);
+
   // Toggle menu avec protection anti-spam
   const toggleMenu = () => {
     if (isAnimating) return;
@@ -38,8 +58,8 @@ const ModernMenu = () => {
     setIsAnimating(true);
     setActive(!active);
     
-    // Débloquer après l'animation
-    setTimeout(() => setIsAnimating(false), 600);
+    // Débloquer après l'animation (synchronisé avec la plus longue animation)
+    setTimeout(() => setIsAnimating(false), 400);
   };
 
   const handleLogout = async () => {
@@ -64,7 +84,7 @@ const ModernMenu = () => {
     }
   };
 
-  // VARIANTS pour les animations
+  // VARIANTS pour les animations - SYNCHRONISÉS
   const UNDERLAY_VARIANTS: Variants = {
     open: {
       width: "calc(100vw - 32px)",
@@ -80,7 +100,7 @@ const ModernMenu = () => {
       width: "48px",
       height: "48px",
       transition: {
-        delay: 0.2,
+        // ✅ SUPPRIMÉ le delay pour synchroniser avec le menu
         type: "spring" as const,
         mass: 3,
         stiffness: 400,
@@ -91,14 +111,20 @@ const ModernMenu = () => {
 
   return (
     <>
-      {/* HAMBURGER BUTTON */}
-      <motion.div
-        initial={false}
-        animate={active ? "open" : "closed"}
-        variants={UNDERLAY_VARIANTS}
-        style={{ top: 16, right: 16 }}
-        className="fixed z-30 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg"
-      />
+      {/* HAMBURGER BUTTON & UNDERLAY - Wrappés ensemble dans AnimatePresence */}
+      <AnimatePresence mode="wait">
+        {active && (
+          <motion.div
+            key="underlay"
+            initial="closed"
+            animate="open"
+            exit="closed"
+            variants={UNDERLAY_VARIANTS}
+            style={{ top: 16, right: 16 }}
+            className="fixed z-30 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg"
+          />
+        )}
+      </AnimatePresence>
       
       <motion.button
         initial={false}
@@ -130,12 +156,14 @@ const ModernMenu = () => {
       </motion.button>
 
       {/* MENU OVERLAY */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {active && (
           <motion.nav 
+            key="menu"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
             className="fixed inset-0 z-40 bg-gradient-to-br from-primary/95 via-primary/90 to-background/95 backdrop-blur-2xl"
           >
             {/* Logo ENKI-REALTY */}
@@ -144,9 +172,9 @@ const ModernMenu = () => {
               animate={{ 
                 opacity: 1, 
                 y: 0, 
-                transition: { delay: 0.3, duration: 0.5 } 
+                transition: { delay: 0.2, duration: 0.4 } 
               }}
-              exit={{ opacity: 0, y: -30 }}
+              exit={{ opacity: 0, y: -30, transition: { duration: 0.2 } }}
               className="absolute left-8 md:left-16 top-8 md:top-12"
             >
               <Link 
@@ -168,15 +196,15 @@ const ModernMenu = () => {
                       opacity: 1,
                       x: 0,
                       transition: {
-                        delay: 0.4 + idx * 0.08,
-                        duration: 0.6,
+                        delay: 0.3 + idx * 0.05,
+                        duration: 0.4,
                         ease: [0.25, 0.46, 0.45, 0.94],
                       },
                     }}
                     exit={{ 
                       opacity: 0, 
                       x: -60,
-                      transition: { duration: 0.3 }
+                      transition: { duration: 0.2 }
                     }}
                   >
                     <Link
@@ -201,15 +229,15 @@ const ModernMenu = () => {
                           opacity: 1,
                           x: 0,
                           transition: {
-                            delay: 0.4 + LINKS.length * 0.08,
-                            duration: 0.6,
+                            delay: 0.3 + LINKS.length * 0.05,
+                            duration: 0.4,
                             ease: [0.25, 0.46, 0.45, 0.94],
                           },
                         }}
                         exit={{ 
                           opacity: 0, 
                           x: -60,
-                          transition: { duration: 0.3 }
+                          transition: { duration: 0.2 }
                         }}
                       >
                         <Link
@@ -230,15 +258,15 @@ const ModernMenu = () => {
                         opacity: 1,
                         x: 0,
                         transition: {
-                          delay: 0.4 + (LINKS.length + 1) * 0.08,
-                          duration: 0.6,
+                          delay: 0.3 + (LINKS.length + 1) * 0.05,
+                          duration: 0.4,
                           ease: [0.25, 0.46, 0.45, 0.94],
                         },
                       }}
                       exit={{ 
                         opacity: 0, 
                         x: -60,
-                        transition: { duration: 0.3 }
+                        transition: { duration: 0.2 }
                       }}
                       className="block group"
                     >
@@ -255,15 +283,15 @@ const ModernMenu = () => {
                       opacity: 1,
                       x: 0,
                       transition: {
-                        delay: 0.4 + LINKS.length * 0.08,
-                        duration: 0.6,
+                        delay: 0.3 + LINKS.length * 0.05,
+                        duration: 0.4,
                         ease: [0.25, 0.46, 0.45, 0.94],
                       },
                     }}
                     exit={{ 
                       opacity: 0, 
                       x: -60,
-                      transition: { duration: 0.3 }
+                      transition: { duration: 0.2 }
                     }}
                   >
                     <Link
@@ -286,14 +314,12 @@ const ModernMenu = () => {
               animate={{ 
                 opacity: 1, 
                 y: 0, 
-                transition: { delay: 0.8, duration: 0.5 } 
+                transition: { delay: 0.5, duration: 0.4 } 
               }}
-              exit={{ opacity: 0, y: 30 }}
+              exit={{ opacity: 0, y: 30, transition: { duration: 0.2 } }}
               className="absolute bottom-8 right-8 md:bottom-12 md:right-16"
             >
-              <Link 
-                to="/contact"
-              >
+              <Link to="/contact">
                 <button className="group flex items-center gap-3 bg-white text-primary px-6 md:px-8 py-3 md:py-4 rounded-lg hover:bg-white/90 transition-all">
                   <span className="swaarg-button">
                     Commencer votre projet
@@ -303,14 +329,14 @@ const ModernMenu = () => {
               </Link>
             </motion.div>
 
-            {/* Contact Info (optionnel) */}
+            {/* Contact Info */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ 
                 opacity: 1, 
-                transition: { delay: 1, duration: 0.5 } 
+                transition: { delay: 0.6, duration: 0.4 } 
               }}
-              exit={{ opacity: 0 }}
+              exit={{ opacity: 0, transition: { duration: 0.2 } }}
               className="absolute bottom-8 left-8 md:bottom-12 md:left-16"
             >
               <p className="swaarg-body text-white/50">
