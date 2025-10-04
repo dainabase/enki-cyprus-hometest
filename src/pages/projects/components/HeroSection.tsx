@@ -11,16 +11,29 @@ export default function HeroSection({ project }: HeroSectionProps) {
   const [videoError, setVideoError] = useState(false);
   const [imageFallback, setImageFallback] = useState<string | null>(null);
 
-  const heroImage =
-    project.project_images?.find((i: any) => i.is_primary)?.url ||
-    project.photos?.[0] ||
-    project.photo_gallery_urls?.[0] ||
-    project.main_image_url ||
-    'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200';
+  // Extract hero image URL from various sources
+  const getHeroImage = () => {
+    // Check project_images table first
+    const primaryImage = project.project_images?.find((i: any) => i.is_primary);
+    if (primaryImage?.url) return primaryImage.url;
+
+    // Check photos array (objects with url property)
+    const primaryPhoto = project.photos?.find((p: any) => p.isPrimary);
+    if (primaryPhoto?.url) return primaryPhoto.url;
+    if (project.photos?.[0]?.url) return project.photos[0].url;
+
+    // Check photo_gallery_urls array (direct URLs)
+    if (project.photo_gallery_urls?.[0]) return project.photo_gallery_urls[0];
+
+    // Fallback
+    return project.main_image_url || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200';
+  };
+
+  const heroImage = getHeroImage();
   const videoUrl = project.video_url || project.drone_footage_urls?.[0];
 
-  const city = project.location?.city || project.location?.address || 'Cyprus';
-  const price = project.price_from_new || project.price_from || project.price;
+  const city = project.city || project.location?.city || project.location?.address || 'Cyprus';
+  const price = project.price_from || project.price_from_new || project.price;
 
   return (
     <section className="relative w-full h-screen bg-black">

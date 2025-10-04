@@ -12,9 +12,13 @@ export default function Gallery({ project }: GalleryProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
+  // Collect all images from different sources
   const allImages = [
-    ...(project.photos || []),
+    // Extract URLs from photos array (objects with url property)
+    ...(project.photos?.map((p: any) => p.url || p) || []),
+    // Direct URLs from photo_gallery_urls
     ...(project.photo_gallery_urls || []),
+    // URLs from project_images table
     ...(project.project_images?.map((img: any) => img.url) || [])
   ].filter(Boolean);
 
