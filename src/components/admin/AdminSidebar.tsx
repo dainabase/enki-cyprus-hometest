@@ -2,7 +2,28 @@ import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { ChartBar as BarChart3, Building, Building2, DollarSign, Users, TrendingUp, Settings, FileText, Chrome as Home, Target, LayoutDashboard, FolderOpen, UserPlus, ChartBar, Activity, Settings2, BookOpen, SquareCheck as CheckSquare, ChevronDown, ChevronRight } from 'lucide-react';
+import {
+  BarChart3,
+  Building,
+  Building2,
+  DollarSign,
+  Users,
+  TrendingUp,
+  Settings,
+  FileText,
+  Home,
+  Target,
+  LayoutDashboard,
+  FolderOpen,
+  UserPlus,
+  ChartBar,
+  Activity,
+  Settings2,
+  BookOpen,
+  CheckSquare,
+  ChevronDown,
+  ChevronRight
+} from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -79,9 +100,9 @@ const getNavigationStructure = (t: any) => ({
 export function AdminSidebar() {
   const location = useLocation();
   const { t } = useTranslation();
-  const { state, openMobile, setOpenMobile, isMobile } = useSidebar();
+  const { state } = useSidebar();
   const collapsed = state === "collapsed";
-
+  
   const navigation = getNavigationStructure(t);
   const [categoryStates, setCategoryStates] = useState(() => {
     const saved = localStorage.getItem('admin-sidebar-categories');
@@ -95,12 +116,7 @@ export function AdminSidebar() {
 
   const isActive = (path: string) => location.pathname === path;
 
-  React.useEffect(() => {
-    if (isMobile && openMobile) {
-      setOpenMobile(false);
-    }
-  }, [location.pathname, isMobile, openMobile, setOpenMobile]);
-
+  // Auto-expand category if it contains active route
   React.useEffect(() => {
     const currentPath = location.pathname;
     const newStates = { ...categoryStates };
