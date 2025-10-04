@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { motion } from 'framer-motion';
 import Hero from './components/HeroSection';
+import Overview from './components/Overview';
 import ProjectInfo from './components/ProjectInfo';
 import Gallery from './components/Gallery';
 import FloorPlans from './components/FloorPlans';
@@ -128,7 +129,7 @@ export default function ProjectPage() {
       className="min-h-screen"
     >
       <Hero project={project} />
-      <ProjectInfo project={project} />
+      <Overview project={project} />
       <Gallery project={project} />
       <FloorPlans project={project} />
       <Features project={project} />
