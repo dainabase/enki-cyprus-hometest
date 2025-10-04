@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, LogIn, LogOut, UserCog, Chrome as Home, Search, Building, Info, Mail, Brain, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -36,6 +37,50 @@ const Navbar = () => {
   ];
 
   const isActive = (path: string) => location.pathname === path;
+
+  // Fermer le menu au clic en dehors
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      const nav = document.querySelector('nav');
+      if (isOpen && nav && !nav.contains(target)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
+  // Verrouiller le scroll du body quand le menu mobile est ouvert
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
+  // Fermer le menu mobile si on redimensionne vers desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768 && isOpen) {
+        setIsOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isOpen]);
 
   const handleLogout = async () => {
     try {
@@ -191,83 +236,92 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Navigation - Outside container */}
-      {isOpen && (
-        <div className="absolute top-full left-0 right-0 md:hidden border-t border-border bg-background shadow-lg z-50">
-          <div className="px-4 py-3 space-y-1 max-h-[calc(100vh-4rem)] overflow-y-auto">
-            {allNavigation.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  onClick={(e) => {
-                    setIsOpen(false);
-                  }}
-                  className={`flex items-center px-3 py-2 text-base font-medium rounded-md transition-colors ${
-                    isActive(item.href)
-                      ? 'text-primary bg-accent'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-accent'
-                  }`}
-                >
-                  <Icon className="w-5 h-5 mr-3" />
-                  {item.name}
-                </Link>
-              );
-            })}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="absolute top-full left-0 right-0 md:hidden border-t border-border bg-background shadow-lg z-50"
+          >
+            <div className="px-4 py-3 space-y-1 max-h-[calc(100vh-4rem)] overflow-y-auto">
+              {allNavigation.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    onClick={() => {
+                      // Délai pour permettre l'animation de fermeture
+                      setTimeout(() => setIsOpen(false), 100);
+                    }}
+                    className={`flex items-center px-3 py-2 text-base font-medium rounded-md transition-colors ${
+                      isActive(item.href)
+                        ? 'text-primary bg-accent'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5 mr-3" />
+                    {item.name}
+                  </Link>
+                );
+              })}
 
-            <div className="pt-4 mt-4 border-t border-border">
-              {loading ? (
-                <div className="animate-pulse bg-muted h-10 rounded-md" />
-              ) : isAuthenticated ? (
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-3 px-3 py-2">
-                    <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-                      <span className="text-sm font-medium text-primary-foreground">
-                        {getUserInitials()}
-                      </span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-foreground truncate">
-                        {profile?.profile?.name || 'Utilisateur'}
-                      </p>
-                      <p className="text-xs text-muted-foreground truncate">
-                        {user?.email}
-                      </p>
-                      {isAdmin && (
-                        <p className="text-xs text-primary font-medium">
-                          Administrateur
+              <div className="pt-4 mt-4 border-t border-border">
+                {loading ? (
+                  <div className="animate-pulse bg-muted h-10 rounded-md" />
+                ) : isAuthenticated ? (
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-3 px-3 py-2">
+                      <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+                        <span className="text-sm font-medium text-primary-foreground">
+                          {getUserInitials()}
+                        </span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-foreground truncate">
+                          {profile?.profile?.name || 'Utilisateur'}
                         </p>
-                      )}
+                        <p className="text-xs text-muted-foreground truncate">
+                          {user?.email}
+                        </p>
+                        {isAdmin && (
+                          <p className="text-xs text-primary font-medium">
+                            Administrateur
+                          </p>
+                        )}
+                      </div>
                     </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleLogout}
+                      className="w-full justify-start text-red-600 border-red-200 hover:bg-red-50"
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Déconnexion
+                    </Button>
                   </div>
+                ) : (
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={handleLogout}
-                    className="w-full justify-start text-red-600 border-red-200 hover:bg-red-50"
+                    onClick={() => {
+                      setIsOpen(false);
+                      navigate('/login');
+                    }}
+                    className="w-full justify-start"
                   >
-                    <LogOut className="w-4 h-4 mr-2" />
-                    Déconnexion
+                    <LogIn className="w-4 h-4 mr-2" />
+                    Connexion
                   </Button>
-                </div>
-              ) : (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setIsOpen(false);
-                    navigate('/login');
-                  }}
-                  className="w-full justify-start"
-                >
-                  <LogIn className="w-4 h-4 mr-2" />
-                  Connexion
-                </Button>
-              )}
+                )}
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };
