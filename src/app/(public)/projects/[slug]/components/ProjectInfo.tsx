@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { formatPrice, formatArea } from '@/lib/utils/formatters';
-import { MapPin, Calendar, Home, Ruler, Euro, TrendingUp, Award, CheckCircle } from 'lucide-react';
+import { MapPin, Calendar, Chrome as Home, Ruler, Euro, TrendingUp, Award, CircleCheck as CheckCircle } from 'lucide-react';
 
 interface ProjectInfoProps {
   project: any;
