@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { AnimatePresence, motion, Variants } from "framer-motion";
-import { ArrowRight, LogIn, LogOut, User } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
-import { useScrollLock } from "@/hooks/useScrollLock";
+import { ArrowRight } from "lucide-react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { useEffect } from "react";
 
 const ModernMenu = () => {
   const [active, setActive] = useState(false);
-  const { isAuthenticated, isAdmin, signOut, user } = useAuth();
+  const [isAnimating, setIsAnimating] = useState(false);
+  const { isAuthenticated, isAdmin, signOut } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
-  useScrollLock(active);
+  const location = useLocation();
 
   const LINKS = [
     { title: "Accueil", href: "/" },
@@ -22,6 +23,70 @@ const ModernMenu = () => {
     { title: "À propos", href: "/about" },
     { title: "Contact", href: "/contact" },
   ];
+
+  // Fermer le menu automatiquement lors du changement de route
+  useEffect(() => {
+    setActive(false);
+  }, [location.pathname]);
+
+  // 🔒 SCROLL LOCK OPTIMISÉ - Compensation scrollbar SANS décalage
+  useEffect(() => {
+    if (active) {
+      // Calculer la largeur de la scrollbar AVANT de la masquer
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      const scrollY = window.scrollY;
+      
+      // Bloquer le scroll
+      document.body.style.overflow = 'hidden';
+      
+      // ✅ COMPENSATION SCROLLBAR sur le body
+      if (scrollbarWidth > 0) {
+        document.body.style.paddingRight = `${scrollbarWidth}px`;
+      }
+      
+      // ✅ COMPENSATION sur les éléments fixed pour éviter qu'ils ne se décalent
+      const fixedElements = document.querySelectorAll('[style*="fixed"]');
+      fixedElements.forEach((el) => {
+        const element = el as HTMLElement;
+        const currentRight = element.style.right;
+        
+        // Stocker la valeur originale pour la restauration
+        element.dataset.originalRight = currentRight;
+        
+        // Compenser le décalage
+        if (scrollbarWidth > 0 && currentRight) {
+          const rightValue = parseInt(currentRight) || 0;
+          element.style.right = `${rightValue + scrollbarWidth}px`;
+        }
+      });
+      
+      return () => {
+        // Restaurer tout à l'état initial
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+        
+        // Restaurer les éléments fixed
+        fixedElements.forEach((el) => {
+          const element = el as HTMLElement;
+          if (element.dataset.originalRight !== undefined) {
+            element.style.right = element.dataset.originalRight;
+            delete element.dataset.originalRight;
+          }
+        });
+      };
+    }
+  }, [active]);
+
+  // Toggle menu avec protection anti-spam
+  const toggleMenu = () => {
+    if (isAnimating) return;
+    
+    setIsAnimating(true);
+    setActive(!active);
+    
+    // Débloquer après l'animation (synchronisé avec la durée totale)
+    setTimeout(() => setIsAnimating(false), 400);
+  };
 
   const handleLogout = async () => {
     try {
@@ -45,46 +110,49 @@ const ModernMenu = () => {
     }
   };
 
-  // VARIANTS pour les animations
+  // ✅ VARIANTS ANIMATIONS SYNCHRONISÉES - 300ms partout
   const UNDERLAY_VARIANTS: Variants = {
     open: {
       width: "calc(100vw - 32px)",
       height: "calc(100vh - 32px)",
       transition: {
-        type: "spring" as const,
-        mass: 3,
-        stiffness: 400,
-        damping: 50
+        duration: 0.3,
+        ease: [0.25, 0.46, 0.45, 0.94]
       },
     },
     closed: {
       width: "48px",
       height: "48px",
       transition: {
-        delay: 0.2,
-        type: "spring" as const,
-        mass: 3,
-        stiffness: 400,
-        damping: 50
+        duration: 0.3,
+        ease: [0.25, 0.46, 0.45, 0.94]
       },
     },
   };
 
   return (
     <>
-      {/* HAMBURGER BUTTON */}
-      <motion.div
-        initial={false}
-        animate={active ? "open" : "closed"}
-        variants={UNDERLAY_VARIANTS}
-        style={{ top: 16, right: 16 }}
-        className="fixed z-30 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg"
-      />
+      {/* ✅ UNDERLAY - Synchronisé avec le menu via AnimatePresence */}
+      <AnimatePresence mode="wait">
+        {active && (
+          <motion.div
+            key="underlay"
+            initial="closed"
+            animate="open"
+            exit="closed"
+            variants={UNDERLAY_VARIANTS}
+            style={{ top: 16, right: 16 }}
+            className="fixed z-30 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg"
+          />
+        )}
+      </AnimatePresence>
       
+      {/* HAMBURGER BUTTON */}
       <motion.button
         initial={false}
         animate={active ? "open" : "closed"}
-        onClick={() => setActive(!active)}
+        onClick={toggleMenu}
+        disabled={isAnimating}
         className={`group fixed right-4 top-4 z-50 h-12 w-12 bg-primary hover:bg-primary-hover transition-all rounded-lg ${
           active ? "rounded-bl-lg rounded-tr-lg" : "rounded-lg"
         }`}
@@ -109,13 +177,15 @@ const ModernMenu = () => {
         />
       </motion.button>
 
-      {/* MENU OVERLAY */}
-      <AnimatePresence>
+      {/* ✅ MENU OVERLAY - Synchronisé 300ms */}
+      <AnimatePresence mode="wait">
         {active && (
           <motion.nav 
+            key="menu"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="fixed inset-0 z-40 bg-gradient-to-br from-primary/95 via-primary/90 to-background/95 backdrop-blur-2xl"
           >
             {/* Logo ENKI-REALTY */}
@@ -124,14 +194,13 @@ const ModernMenu = () => {
               animate={{ 
                 opacity: 1, 
                 y: 0, 
-                transition: { delay: 0.3, duration: 0.5 } 
+                transition: { delay: 0.2, duration: 0.4 } 
               }}
-              exit={{ opacity: 0, y: -30 }}
+              exit={{ opacity: 0, y: -30, transition: { duration: 0.2 } }}
               className="absolute left-8 md:left-16 top-8 md:top-12"
             >
               <Link 
                 to="/" 
-                onClick={() => setActive(false)}
                 className="swaarg-large-title text-white hover:text-white/80 transition-colors"
               >
                 ΣNKI<span className="mx-1">-</span>REALTY
@@ -149,20 +218,19 @@ const ModernMenu = () => {
                       opacity: 1,
                       x: 0,
                       transition: {
-                        delay: 0.4 + idx * 0.08,
-                        duration: 0.6,
+                        delay: 0.3 + idx * 0.05,
+                        duration: 0.4,
                         ease: [0.25, 0.46, 0.45, 0.94],
                       },
                     }}
                     exit={{ 
                       opacity: 0, 
                       x: -60,
-                      transition: { duration: 0.3 }
+                      transition: { duration: 0.2 }
                     }}
                   >
                     <Link
                       to={link.href}
-                      onClick={() => setActive(false)}
                       className="block group"
                     >
                       <span className="swaarg-large-title text-white/70 hover:text-white transition-all duration-300 whitespace-nowrap">
@@ -183,20 +251,19 @@ const ModernMenu = () => {
                           opacity: 1,
                           x: 0,
                           transition: {
-                            delay: 0.4 + LINKS.length * 0.08,
-                            duration: 0.6,
+                            delay: 0.3 + LINKS.length * 0.05,
+                            duration: 0.4,
                             ease: [0.25, 0.46, 0.45, 0.94],
                           },
                         }}
                         exit={{ 
                           opacity: 0, 
                           x: -60,
-                          transition: { duration: 0.3 }
+                          transition: { duration: 0.2 }
                         }}
                       >
                         <Link
                           to="/admin"
-                          onClick={() => setActive(false)}
                           className="block group"
                         >
                           <span className="swaarg-card-title text-white/70 hover:text-white transition-all duration-300">
@@ -213,15 +280,15 @@ const ModernMenu = () => {
                         opacity: 1,
                         x: 0,
                         transition: {
-                          delay: 0.4 + (LINKS.length + 1) * 0.08,
-                          duration: 0.6,
+                          delay: 0.3 + (LINKS.length + 1) * 0.05,
+                          duration: 0.4,
                           ease: [0.25, 0.46, 0.45, 0.94],
                         },
                       }}
                       exit={{ 
                         opacity: 0, 
                         x: -60,
-                        transition: { duration: 0.3 }
+                        transition: { duration: 0.2 }
                       }}
                       className="block group"
                     >
@@ -238,20 +305,19 @@ const ModernMenu = () => {
                       opacity: 1,
                       x: 0,
                       transition: {
-                        delay: 0.4 + LINKS.length * 0.08,
-                        duration: 0.6,
+                        delay: 0.3 + LINKS.length * 0.05,
+                        duration: 0.4,
                         ease: [0.25, 0.46, 0.45, 0.94],
                       },
                     }}
                     exit={{ 
                       opacity: 0, 
                       x: -60,
-                      transition: { duration: 0.3 }
+                      transition: { duration: 0.2 }
                     }}
                   >
                     <Link
                       to="/login"
-                      onClick={() => setActive(false)}
                       className="block group"
                     >
                       <span className="swaarg-card-title text-white/70 hover:text-white transition-all duration-300">
@@ -270,15 +336,12 @@ const ModernMenu = () => {
               animate={{ 
                 opacity: 1, 
                 y: 0, 
-                transition: { delay: 0.8, duration: 0.5 } 
+                transition: { delay: 0.5, duration: 0.4 } 
               }}
-              exit={{ opacity: 0, y: 30 }}
+              exit={{ opacity: 0, y: 30, transition: { duration: 0.2 } }}
               className="absolute bottom-8 right-8 md:bottom-12 md:right-16"
             >
-              <Link 
-                to="/contact"
-                onClick={() => setActive(false)}
-              >
+              <Link to="/contact">
                 <button className="group flex items-center gap-3 bg-white text-primary px-6 md:px-8 py-3 md:py-4 rounded-lg hover:bg-white/90 transition-all">
                   <span className="swaarg-button">
                     Commencer votre projet
@@ -288,14 +351,14 @@ const ModernMenu = () => {
               </Link>
             </motion.div>
 
-            {/* Contact Info (optionnel) */}
+            {/* Contact Info */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ 
                 opacity: 1, 
-                transition: { delay: 1, duration: 0.5 } 
+                transition: { delay: 0.6, duration: 0.4 } 
               }}
-              exit={{ opacity: 0 }}
+              exit={{ opacity: 0, transition: { duration: 0.2 } }}
               className="absolute bottom-8 left-8 md:bottom-12 md:left-16"
             >
               <p className="swaarg-body text-white/50">

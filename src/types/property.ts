@@ -1,3 +1,25 @@
+export interface ProjectUnitType {
+  project_id: string;
+  project_title: string;
+  property_type: string;
+  bedrooms_count: number;
+  total_units: number;
+  available_units: number;
+  reserved_units: number;
+  sold_units: number;
+  price_from: number;
+  price_to: number;
+  price_avg: number;
+  area_from: number;
+  area_to: number;
+  area_avg: number;
+  sample_floor_plan_2d: string | null;
+  sample_floor_plan_3d: string | null;
+  sample_thumbnail: string | null;
+  has_bestseller: boolean;
+  bestseller_count: number;
+}
+
 export interface Property {
   id: string;
   project_id: string;
