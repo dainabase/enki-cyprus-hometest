@@ -115,22 +115,22 @@ export default function HeroSection({ project }: HeroSectionProps) {
         </button>
       </div>
 
-      {/* KPI Stats at bottom */}
-      <div className="relative z-10 bg-black/40 backdrop-blur-sm border-t border-white/10">
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-12 py-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
+      {/* KPI Stats cards */}
+      <div className="absolute bottom-24 left-0 right-0 z-10">
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
             {quickStats.map((stat, index) => (
               <div
                 key={index}
-                className="text-center"
+                className="bg-white rounded-lg p-6 text-center shadow-lg"
               >
-                <div className="flex justify-center mb-2 text-white/40">
+                <div className="flex justify-center mb-3 text-black/60">
                   {stat.icon}
                 </div>
-                <p className="text-xs uppercase tracking-wider text-white/40 mb-1 font-medium">
+                <p className="text-xs uppercase tracking-wider text-black/60 mb-2 font-medium">
                   {stat.label}
                 </p>
-                <p className="text-sm md:text-base font-light text-white">
+                <p className="text-sm md:text-base font-medium text-black">
                   {stat.value}
                 </p>
               </div>
