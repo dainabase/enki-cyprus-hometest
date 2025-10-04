@@ -3,9 +3,13 @@ import { useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import HeroSection from './components/HeroSection';
 import Overview from './components/Overview';
+import Specifications from './components/Specifications';
 import Gallery from './components/Gallery';
 import Amenities from './components/Amenities';
+import Investment from './components/Investment';
+import Testimonials from './components/Testimonials';
 import ContactForm from './components/ContactForm';
+import StickyBar from './components/StickyBar';
 
 export default function ProjectPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -62,12 +66,29 @@ export default function ProjectPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen">
+      {/* 1. HERO SECTION (100vh) */}
       <HeroSection project={project} />
+
+      {/* 2. QUICK OVERVIEW (50/50 desktop, stack mobile) */}
       <Overview project={project} />
+
+      {/* 3. SPECIFICATIONS GRID */}
+      <Specifications project={project} />
+
+      {/* 4. MEDIA GALLERY */}
       <Gallery project={project} />
+
+      {/* 5. AMENITIES GRID */}
       <Amenities project={project} />
+
+
+      {/* 7. TESTIMONIALS SLIDER */}
+      <Testimonials project={project} />
+
+      {/* 8. FOOTER CONVERSION ZONE */}
       <ContactForm project={project} />
+
     </div>
   );
 }
