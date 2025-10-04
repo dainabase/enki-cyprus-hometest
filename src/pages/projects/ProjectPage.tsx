@@ -27,27 +27,26 @@ export default function ProjectPage() {
           .from('projects')
           .select(`
             *,
-            developer:developer_id (
+            developers!developer_id (
               id,
               name,
-              logo_url,
-              description,
+              logo,
+              history,
               website,
               phone_numbers,
-              email,
-              projects_count,
-              rating
+              email_primary,
+              total_projects,
+              rating_score
             ),
             project_images (
               id,
               url,
-              category,
               caption,
               is_primary,
               display_order
             ),
             project_amenities (
-              amenity:amenity_id (
+              amenities (
                 id,
                 name,
                 icon,
@@ -57,7 +56,7 @@ export default function ProjectPage() {
             buildings (
               id,
               building_name,
-              floors_above_ground,
+              total_floors,
               total_units,
               building_class,
               energy_certificate
@@ -69,7 +68,25 @@ export default function ProjectPage() {
         if (error) throw error;
         if (!data) throw new Error('Project not found');
 
-        setProject(data);
+        // Restructure developer data
+        const projectData = {
+          ...data,
+          developer: data.developers ? {
+            id: data.developers.id,
+            name: data.developers.name,
+            logo_url: data.developers.logo,
+            description: data.developers.history,
+            website: data.developers.website,
+            phone_numbers: data.developers.phone_numbers,
+            email: data.developers.email_primary,
+            projects_count: data.developers.total_projects,
+            rating: data.developers.rating_score
+          } : null
+        };
+
+        delete projectData.developers;
+
+        setProject(projectData);
       } catch (err) {
         console.error('Error fetching project:', err);
         setError(err instanceof Error ? err.message : 'An error occurred');
