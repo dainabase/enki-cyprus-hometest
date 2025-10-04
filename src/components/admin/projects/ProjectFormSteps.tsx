@@ -2948,20 +2948,35 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             <FormField
               control={form.control}
               name="photos"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <CategorizedMediaUploader
-                      field={{
-                        value: (field.value as any) || [],
-                        onChange: field.onChange
-                      }}
-                      bucketName="projects"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              render={({ field }) => {
+                // DEBUG: Log photos field state
+                console.log('📸 ProjectFormSteps photos field:', {
+                  value: field.value,
+                  valueLength: Array.isArray(field.value) ? field.value.length : 0,
+                  firstPhoto: Array.isArray(field.value) ? field.value[0] : null
+                });
+                
+                return (
+                  <FormItem>
+                    <FormControl>
+                      <CategorizedMediaUploader
+                        field={{
+                          value: (field.value as any) || [],
+                          onChange: (newValue) => {
+                            console.log('📸 CategorizedMediaUploader onChange called:', {
+                              newValue,
+                              newValueLength: newValue?.length
+                            });
+                            field.onChange(newValue);
+                          }
+                        }}
+                        bucketName="projects"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
           </CardContent>
         </Card>

@@ -58,20 +58,20 @@ const AdminProjectForm: React.FC = () => {
       proximity_city_center_km: null,
       proximity_highway_km: null,
       
-      // Specifications - FIXED: Removed floors_total and storage_spaces
+      // Specifications - FIXED: Empty string for Select fields instead of null
       land_area_m2: null,
       built_area_m2: null,
       total_units: null,
       units_available: null,
       parking_spaces: null,
-      energy_efficiency_class: null,
+      energy_efficiency_class: '', // FIX: Changed from null to ''
       construction_year: null,
       building_certification: '',
       maintenance_fees_yearly: null,
       property_tax_yearly: null,
       hoa_fees_monthly: null,
       internet_speed_mbps: null,
-      pet_policy: null,
+      pet_policy: '', // FIX: Changed from null to ''
       
       // Pricing
       price_from: null,
@@ -203,21 +203,21 @@ const AdminProjectForm: React.FC = () => {
           proximity_city_center_km: projectData.proximity_city_center_km || null,
           proximity_highway_km: projectData.proximity_highway_km || null,
           
-          // SPECIFICATIONS - FIXED: Removed floors_total and storage_spaces
+          // SPECIFICATIONS - FIXED: Empty string for Select fields
           land_area_m2: projectData.land_area_m2 ? Number(projectData.land_area_m2) : null,
           built_area_m2: projectData.built_area_m2 ? Number(projectData.built_area_m2) : null,
           total_units: projectData.total_units ? Number(projectData.total_units) : null,
           units_available: projectData.units_available ? Number(projectData.units_available) : null,
           parking_spaces: projectData.parking_spaces ? Number(projectData.parking_spaces) : null,
-          energy_efficiency_class: projectData.energy_efficiency_class || null,
+          energy_efficiency_class: projectData.energy_efficiency_class || '', // FIX: Changed from null
           construction_year: projectData.construction_year ? Number(projectData.construction_year) : null,
           building_certification: projectData.building_certification || '',
           maintenance_fees_yearly: projectData.maintenance_fees_yearly ? Number(projectData.maintenance_fees_yearly) : null,
           property_tax_yearly: projectData.property_tax_yearly ? Number(projectData.property_tax_yearly) : null,
           hoa_fees_monthly: projectData.hoa_fees_monthly ? Number(projectData.hoa_fees_monthly) : null,
           internet_speed_mbps: projectData.internet_speed_mbps ? Number(projectData.internet_speed_mbps) : null,
-          pet_policy: projectData.pet_policy || null,
-          seismic_rating: projectData.seismic_rating || null,
+          pet_policy: projectData.pet_policy || '', // FIX: Changed from null
+          seismic_rating: projectData.seismic_rating || '', // FIX: Changed from null
           renovation_year: projectData.renovation_year ? Number(projectData.renovation_year) : null,
           architect_license_number: projectData.architect_license_number || '',
           units_sold: projectData.units_sold ? Number(projectData.units_sold) : null,
@@ -225,7 +225,7 @@ const AdminProjectForm: React.FC = () => {
           bedrooms_range_max: projectData.bedrooms_range_max ? Number(projectData.bedrooms_range_max) : null,
           square_meters_min: projectData.square_meters_min ? Number(projectData.square_meters_min) : null,
           square_meters_max: projectData.square_meters_max ? Number(projectData.square_meters_max) : null,
-          smoking_policy: projectData.smoking_policy || null,
+          smoking_policy: projectData.smoking_policy || '', // FIX: Changed from null
           
           // PRICING
           price_from: projectData.price_from ? Number(projectData.price_from) : null,
@@ -270,7 +270,7 @@ const AdminProjectForm: React.FC = () => {
           discount_valid_until: projectData.discount_valid_until || null,
           
           // CONSTRUCTION
-          finishing_level: projectData.finishing_level || null,
+          finishing_level: projectData.finishing_level || '', // FIX: Changed from null
           architect_name: projectData.architect_name || '',
           builder_name: projectData.builder_name || '',
           design_style: projectData.design_style || '',
@@ -295,7 +295,7 @@ const AdminProjectForm: React.FC = () => {
           // BUILDINGS
           buildings: buildingsData || [],
           
-          // MEDIA - Using the converted photos - FIXED: Removed references to non-existent fields
+          // MEDIA - Using the converted photos
           photos: convertedPhotos,
           photo_gallery_urls: projectData.photo_gallery_urls || [],
           video_tour_urls: projectData.video_tour_urls || [],
@@ -335,7 +335,7 @@ const AdminProjectForm: React.FC = () => {
           has_generator: projectData.has_generator || false,
           has_solar_panels: projectData.has_solar_panels || false,
           has_parking: projectData.has_parking || false,
-          parking_type: projectData.parking_type || null,
+          parking_type: projectData.parking_type || '', // FIX: Changed from null
           has_security_24_7: projectData.has_security_24_7 || false,
           has_tennis_court: projectData.has_tennis_court || false,
           club_house: projectData.club_house || false,
@@ -362,7 +362,7 @@ const AdminProjectForm: React.FC = () => {
           smart_home_features: projectData.smart_home_features || [],
           accessibility_features: projectData.accessibility_features || [],
           
-          // MARKETING & SEO - FIXED: Removed non-existent fields
+          // MARKETING & SEO
           project_narrative: projectData.project_narrative || '',
           meta_title: projectData.meta_title || '',
           meta_description: projectData.meta_description || '',
@@ -400,7 +400,7 @@ const AdminProjectForm: React.FC = () => {
           geothermal_heating: projectData.geothermal_heating || false,
           green_building_certification: projectData.green_building_certification || '',
           ev_charging_stations: projectData.ev_charging_stations ? Number(projectData.ev_charging_stations) : 0,
-          ev_charging_type: projectData.ev_charging_type || null,
+          ev_charging_type: projectData.ev_charging_type || '', // FIX: Changed from null
           smart_grid_ready: projectData.smart_grid_ready || false,
           sustainability_certifications: projectData.sustainability_certifications || [],
           
@@ -439,6 +439,11 @@ const AdminProjectForm: React.FC = () => {
   const onSubmit = async (data: any) => {
     try {
       console.log('📤 Submitting form data:', data);
+      console.log('📸 Photos in form data:', {
+        photosCount: data.photos?.length,
+        photos: data.photos,
+        firstPhoto: data.photos?.[0]
+      });
       
       // Préparer les données pour la DB
       const dbData: any = {
@@ -455,6 +460,9 @@ const AdminProjectForm: React.FC = () => {
       if (dbData.finishing_level === '') dbData.finishing_level = null;
       if (dbData.pet_policy === '') dbData.pet_policy = null;
       if (dbData.smoking_policy === '') dbData.smoking_policy = null;
+      if (dbData.seismic_rating === '') dbData.seismic_rating = null;
+      if (dbData.parking_type === '') dbData.parking_type = null;
+      if (dbData.ev_charging_type === '') dbData.ev_charging_type = null;
       
       // Nettoyer les objets mal formés (cas où le formulaire crée des objets {_type, value})
       const cleanObjectFields = [
@@ -482,13 +490,23 @@ const AdminProjectForm: React.FC = () => {
         dbData.amenities = dbData.amenities.filter(Boolean);
       }
       
-      // S'assurer que photos est un tableau valide
+      // 🔧 FIX CRITIQUE: Validation et logging des photos
       if (dbData.photos && Array.isArray(dbData.photos)) {
         dbData.photos = dbData.photos.filter((photo: any) => photo && photo.url);
-        console.log('💾 Photos to save:', dbData.photos);
+        console.log('💾 AdminProjectForm onSubmit: Photos to save', {
+          photosCount: dbData.photos.length,
+          photos: dbData.photos,
+          firstPhotoUrl: dbData.photos[0]?.url,
+          allCategories: dbData.photos.map((p: any) => p.category)
+        });
       } else {
+        console.warn('⚠️ No photos to save or invalid photos array:', dbData.photos);
         dbData.photos = [];
       }
+      
+      // ⚠️ IMPORTANT: Supprimer categorized_photos (obsolète) pour éviter les conflits
+      // Le champ photos est la seule source de vérité pour les images
+      dbData.categorized_photos = null;
       
       // Convertir correctement les champs JSONB qui étaient des arrays
       if (dbData.meta_keywords && Array.isArray(dbData.meta_keywords)) {
@@ -517,8 +535,13 @@ const AdminProjectForm: React.FC = () => {
       }
       
       console.log('💾 Data prepared for DB:', dbData);
+      console.log('💾 Final photos to save:', {
+        count: dbData.photos?.length,
+        photos: dbData.photos
+      });
       
       if (isEdit) {
+        console.log('⏫ Updating project with ID:', id);
         const { data: updateResult, error } = await supabase
           .from('projects')
           .update(dbData)
@@ -608,14 +631,16 @@ const AdminProjectForm: React.FC = () => {
   const nextStep = async () => {
     if (currentStepIndex < projectFormSteps.length - 1) {
       setCurrentStepIndex(currentStepIndex + 1);
-      await refreshFormData();
+      // ❌ REMOVED: refreshFormData() can overwrite unsaved changes
+      // await refreshFormData();
     }
   };
 
   const prevStep = async () => {
     if (currentStepIndex > 0) {
       setCurrentStepIndex(currentStepIndex - 1);
-      await refreshFormData();
+      // ❌ REMOVED: refreshFormData() can overwrite unsaved changes
+      // await refreshFormData();
     }
   };
 
@@ -673,7 +698,8 @@ const AdminProjectForm: React.FC = () => {
                   key={step.id}
                   onClick={async () => {
                     setCurrentStepIndex(index);
-                    await refreshFormData();
+                    // ❌ REMOVED: refreshFormData() écrase les changements non sauvegardés
+                    // await refreshFormData();
                   }}
                   className={`w-full text-left px-4 py-3 rounded-lg transition-colors ${
                     currentStepIndex === index
