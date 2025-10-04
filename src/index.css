@@ -5,6 +5,22 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Performance optimizations for animations */
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+/* GPU acceleration for smooth animations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
 /* ENKI-REALTY Design System - Professional Real Estate Platform
 Inspired by Cyprus Mediterranean elegance with modern minimalism
 All colors MUST be HSL.

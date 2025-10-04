@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { formatPrice, formatArea } from '@/lib/utils/formatters';
 import { MapPin, Calendar, Chrome as Home, Ruler, Euro } from 'lucide-react';
 
@@ -12,6 +12,11 @@ interface HeroSectionProps {
 export default function HeroSection({ project }: HeroSectionProps) {
   const [videoError, setVideoError] = useState(false);
   const [imageFallback, setImageFallback] = useState<string | null>(null);
+  const shouldReduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+  }, []);
 
   // Extract hero image URL from various sources
   const getHeroImage = () => {
@@ -60,15 +65,15 @@ export default function HeroSection({ project }: HeroSectionProps) {
   ];
 
   return (
-    <section className="relative w-full h-screen bg-black flex flex-col overflow-hidden">
+    <section id="hero-section" className="relative w-full h-screen bg-black flex flex-col overflow-hidden">
       {/* Background with Ken Burns Zoom */}
       <motion.div
         className="absolute inset-0"
         initial={{ scale: 1 }}
-        animate={{ scale: 1.1 }}
+        animate={shouldReduceMotion ? { scale: 1 } : { scale: 1.08 }}
         transition={{
-          duration: 20,
-          ease: "linear",
+          duration: 25,
+          ease: "easeInOut",
           repeat: Infinity,
           repeatType: "reverse"
         }}
@@ -109,7 +114,7 @@ export default function HeroSection({ project }: HeroSectionProps) {
           initial={{ x: -100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{
-            duration: 0.8,
+            duration: 0.6,
             ease: [0.22, 1, 0.36, 1]
           }}
         >
@@ -125,16 +130,16 @@ export default function HeroSection({ project }: HeroSectionProps) {
           initial={{ clipPath: "inset(0 100% 0 0)" }}
           animate={{ clipPath: "inset(0 0% 0 0)" }}
           transition={{
-            duration: 1.2,
-            delay: 0.3,
+            duration: 0.9,
+            delay: 0.2,
             ease: [0.22, 1, 0.36, 1]
           }}
         >
           <motion.h1
-            className="text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-light tracking-tight leading-[0.95]"
+            className="text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-light tracking-tight leading-[0.95] will-change-transform"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
           >
             {project.title}
           </motion.h1>
@@ -149,14 +154,14 @@ export default function HeroSection({ project }: HeroSectionProps) {
             hidden: {},
             visible: {
               transition: {
-                staggerChildren: 0.15,
-                delayChildren: 0.8
+                staggerChildren: 0.1,
+                delayChildren: 0.6
               }
             }
           }}
         >
           <motion.button
-            className="relative px-12 py-4 bg-white text-black text-sm tracking-wider uppercase font-medium overflow-hidden group"
+            className="relative px-12 py-4 bg-white text-black text-sm tracking-wider uppercase font-medium overflow-hidden group will-change-transform"
             variants={{
               hidden: { scale: 0, opacity: 0 },
               visible: {
@@ -164,16 +169,17 @@ export default function HeroSection({ project }: HeroSectionProps) {
                 opacity: 1,
                 transition: {
                   type: "spring",
-                  stiffness: 200,
-                  damping: 15
+                  stiffness: 250,
+                  damping: 18
                 }
               }
             }}
             whileHover={{
-              scale: 1.05,
-              boxShadow: "0 0 30px rgba(255,255,255,0.5)"
+              scale: 1.03,
+              boxShadow: "0 0 25px rgba(255,255,255,0.4)",
+              transition: { duration: 0.2 }
             }}
-            whileTap={{ scale: 0.95 }}
+            whileTap={{ scale: 0.97 }}
             onClick={() => {
               document.getElementById('contact-form')?.scrollIntoView({
                 behavior: 'smooth'
@@ -190,7 +196,7 @@ export default function HeroSection({ project }: HeroSectionProps) {
           </motion.button>
 
           <motion.button
-            className="relative px-12 py-4 bg-transparent border border-white text-white text-sm tracking-wider uppercase font-medium group"
+            className="relative px-12 py-4 bg-transparent border border-white text-white text-sm tracking-wider uppercase font-medium group will-change-transform"
             variants={{
               hidden: { scale: 0, opacity: 0 },
               visible: {
@@ -198,17 +204,18 @@ export default function HeroSection({ project }: HeroSectionProps) {
                 opacity: 1,
                 transition: {
                   type: "spring",
-                  stiffness: 200,
-                  damping: 15
+                  stiffness: 250,
+                  damping: 18
                 }
               }
             }}
             whileHover={{
-              scale: 1.05,
+              scale: 1.03,
               borderColor: "rgba(255,255,255,1)",
-              boxShadow: "0 0 30px rgba(255,255,255,0.3)"
+              boxShadow: "0 0 25px rgba(255,255,255,0.3)",
+              transition: { duration: 0.2 }
             }}
-            whileTap={{ scale: 0.95 }}
+            whileTap={{ scale: 0.97 }}
             onClick={() => {
               console.log('Download brochure');
             }}
@@ -236,8 +243,8 @@ export default function HeroSection({ project }: HeroSectionProps) {
               hidden: {},
               visible: {
                 transition: {
-                  staggerChildren: 0.1,
-                  delayChildren: 1.2
+                  staggerChildren: 0.08,
+                  delayChildren: 0.9
                 }
               }
             }}
@@ -245,12 +252,12 @@ export default function HeroSection({ project }: HeroSectionProps) {
             {quickStats.map((stat, index) => (
               <motion.div
                 key={index}
-                className="bg-white rounded-[2px] p-4 text-center shadow-lg relative"
+                className="bg-white rounded-[2px] p-4 text-center shadow-lg relative will-change-transform"
                 variants={{
                   hidden: {
                     rotateX: -90,
                     opacity: 0,
-                    y: 50
+                    y: 40
                   },
                   visible: {
                     rotateX: 0,
@@ -258,14 +265,14 @@ export default function HeroSection({ project }: HeroSectionProps) {
                     y: 0,
                     transition: {
                       type: "spring",
-                      stiffness: 100,
-                      damping: 12
+                      stiffness: 120,
+                      damping: 15
                     }
                   }
                 }}
                 whileHover={{
-                  y: -8,
-                  boxShadow: "0 20px 40px rgba(0,0,0,0.2)",
+                  y: -6,
+                  boxShadow: "0 15px 35px rgba(0,0,0,0.18)",
                   transition: { duration: 0.2 }
                 }}
                 style={{
@@ -281,8 +288,8 @@ export default function HeroSection({ project }: HeroSectionProps) {
                 <div className="relative z-10">
                   <motion.div
                     className="flex justify-center mb-3 text-black/60"
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    transition={{ type: "spring", stiffness: 300 }}
+                    whileHover={{ scale: 1.08, rotate: 3 }}
+                    transition={{ type: "spring", stiffness: 350, damping: 15 }}
                   >
                     {stat.icon}
                   </motion.div>
