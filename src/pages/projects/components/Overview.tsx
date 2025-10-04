@@ -2,15 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import {
-  Building2,
-  Home,
-  TreePine,
-  Calendar,
-  Ruler,
-  CheckCircle,
-  Layers
-} from 'lucide-react';
+import { Building2, Chrome as Home, TreePine, Calendar, Ruler, CircleCheck as CheckCircle, Layers } from 'lucide-react';
 
 interface OverviewProps {
   project: any;
