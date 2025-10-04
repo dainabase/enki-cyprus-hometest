@@ -92,14 +92,14 @@ export default function HeroSection({ project }: HeroSectionProps) {
 
       {/* Content */}
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 text-center">
-        <div className="flex items-center gap-2 mb-8">
+        <div className="flex items-center gap-2 mb-6">
           <MapPin className="w-4 h-4 text-white/60" />
           <p className="text-white/60 text-sm tracking-[0.2em] uppercase font-light">
             {project.city}{project.district && `, ${project.district}`}, Cyprus
           </p>
         </div>
 
-        <h1 className="text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-light tracking-tight leading-[0.95] mb-16 max-w-7xl">
+        <h1 className="text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-light tracking-tight leading-[0.95] mb-12 max-w-7xl">
           {project.title}
         </h1>
 
@@ -127,7 +127,7 @@ export default function HeroSection({ project }: HeroSectionProps) {
       </div>
 
       {/* KPI Stats cards */}
-      <div className="absolute bottom-12 left-0 right-0 z-10">
+      <div className="absolute bottom-20 left-0 right-0 z-10">
         <div className="max-w-[1190px] mx-auto px-6 lg:px-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
             {quickStats.map((stat, index) => (
