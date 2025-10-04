@@ -281,7 +281,7 @@ function InvestorsSection({ investment, basePrice, isInView }: any) {
                     {investment.goldenVisaDetails.requirements.map((req: string, i: number) => (
                       <li key={i} className="flex items-start gap-2 text-sm">
                         <FileText className="w-4 h-4 text-gray-600 flex-shrink-0 mt-0.5" />
-                        <span>{benefit}</span>
+                        <span>{req}</span>
                       </li>
                     ))}
                   </ul>

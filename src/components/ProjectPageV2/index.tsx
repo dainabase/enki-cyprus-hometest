@@ -17,25 +17,43 @@ export function ProjectPageV2() {
   useEffect(() => {
     window.scrollTo(0, 0);
     loadAndEnrichProject();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
 
   async function loadAndEnrichProject() {
     try {
+      console.log('[ProjectPageV2] Loading project with slug:', slug);
+
       const { data: baseProject, error } = await supabase
         .from('projects')
         .select('*, buildings (*)')
         .eq('url_slug', slug || 'azure-marina')
         .maybeSingle();
 
-      if (error) throw error;
+      if (error) {
+        console.error('[ProjectPageV2] Supabase error:', error);
+        throw error;
+      }
 
-      if (baseProject) {
-        const enriched = enrichProjectData(baseProject);
-        setEnrichedProject(enriched);
-        console.log('[ProjectPageV2] Data enriched with mock data:', enriched.meta);
+      if (!baseProject) {
+        console.warn('[ProjectPageV2] No project found for slug:', slug);
+        setEnrichedProject(null);
+        setLoading(false);
+        return;
+      }
+
+      console.log('[ProjectPageV2] Base project loaded:', baseProject.name);
+
+      const enriched = enrichProjectData(baseProject);
+      setEnrichedProject(enriched);
+      console.log('[ProjectPageV2] Data enriched successfully');
+
+      if (enriched.meta?.mockDataSections) {
+        console.log('[ProjectPageV2] Mock data sections:', enriched.meta.mockDataSections);
       }
     } catch (error) {
-      console.error('Error loading project:', error);
+      console.error('[ProjectPageV2] Error loading project:', error);
+      setEnrichedProject(null);
     } finally {
       setLoading(false);
     }
