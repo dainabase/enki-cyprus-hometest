@@ -58,30 +58,6 @@ interface ProjectFormData {
   }>;
 }
 
-// 🔧 Helper function to safely extract image URL
-const getProjectImageUrl = (project: any): string | null => {
-  // Try photos array first (objects with url property)
-  if (Array.isArray(project.photos) && project.photos.length > 0) {
-    const firstPhoto = project.photos[0];
-    // If it's an object with url property, extract url
-    if (typeof firstPhoto === 'object' && firstPhoto.url) {
-      return firstPhoto.url;
-    }
-    // If it's already a string URL
-    if (typeof firstPhoto === 'string') {
-      return firstPhoto;
-    }
-  }
-
-  // Try photo_gallery_urls array (direct URLs)
-  if (Array.isArray(project.photo_gallery_urls) && project.photo_gallery_urls.length > 0) {
-    return project.photo_gallery_urls[0];
-  }
-
-  // No valid image found
-  return null;
-};
-
 const AdminProjects = () => {
   const { profile } = useAuth();
   const { toast } = useToast();
@@ -509,101 +485,400 @@ const AdminProjects = () => {
                   className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                 >
                   <AnimatePresence>
-                    {projects.map((project) => {
-                      const imageUrl = getProjectImageUrl(project);
-                      
-                      return (
-                        <motion.div
-                          key={project.id}
-                          layout
-                          variants={{
-                            hidden: { opacity: 0, y: 20 },
-                            show: { opacity: 1, y: 0 }
-                          }}
-                          exit={{ opacity: 0, scale: 0.9 }}
-                          whileHover={{ y: -5, transition: { type: "spring", stiffness: 300 } }}
-                        >
-                          <Card className="hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20">
-                            <CardContent className="p-0">
-                              {/* Project Image */}
-                              <div className="relative h-32 bg-muted">
-                                {imageUrl ? (
-                                  <img
-                                    src={imageUrl}
-                                    alt={project.title}
-                                    className="w-full h-full object-cover"
-                                    onError={(e) => {
-                                      // If image fails to load, show placeholder
-                                      e.currentTarget.style.display = 'none';
-                                      e.currentTarget.parentElement?.querySelector('.fallback-icon')?.classList.remove('hidden');
-                                    }}
-                                  />
-                                ) : null}
-                                <div className={`fallback-icon w-full h-full flex items-center justify-center ${imageUrl ? 'hidden' : ''}`}>
+                    {projects.map((project) => (
+                      <motion.div
+                        key={project.id}
+                        layout
+                        variants={{
+                          hidden: { opacity: 0, y: 20 },
+                          show: { opacity: 1, y: 0 }
+                        }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        whileHover={{ y: -5, transition: { type: "spring", stiffness: 300 } }}
+                      >
+                        <Card className="hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20">
+                          <CardContent className="p-0">
+                            {/* Project Image */}
+                            <div className="relative h-32 bg-muted">
+                              {Array.isArray(project.photo_gallery_urls) && project.photo_gallery_urls.length > 0 ? (
+                                <img
+                                  src={project.photos[0]}
+                                  alt={project.title}
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center">
                                   <ImageIcon className="w-8 h-8 text-muted-foreground" />
                                 </div>
-                                <div className="absolute top-2 right-2">
-                                  <Badge variant="default">
-                                    Publié
-                                  </Badge>
+                              )}
+                              <div className="absolute top-2 right-2">
+                              <Badge variant="default">
+                                Publié
+                                </Badge>
+                              </div>
+                            </div>
+                            
+                            {/* Project Info */}
+                            <div className="p-4">
+                              <div className="flex items-start justify-between mb-2">
+                                <div className="flex-1 min-w-0">
+                                  <h3 className="font-semibold text-sm truncate">{project.title}</h3>
+                                  <div className="flex items-center text-xs text-muted-foreground mt-1">
+                                    <MapPin className="w-3 h-3 mr-1 flex-shrink-0" />
+                                    <span className="truncate">{project.city}</span>
+                                  </div>
                                 </div>
+                                 <Badge variant="outline" className="text-xs ml-2 flex-shrink-0">
+                                   Résidentiel
+                                 </Badge>
                               </div>
                               
-                              {/* Project Info */}
-                              <div className="p-4">
-                                <div className="flex items-start justify-between mb-2">
-                                  <div className="flex-1 min-w-0">
-                                    <h3 className="font-semibold text-sm truncate">{project.title}</h3>
-                                    <div className="flex items-center text-xs text-muted-foreground mt-1">
-                                      <MapPin className="w-3 h-3 mr-1 flex-shrink-0" />
-                                      <span className="truncate">{project.city}</span>
-                                    </div>
-                                  </div>
-                                  <Badge variant="outline" className="text-xs ml-2 flex-shrink-0">
-                                    Résidentiel
-                                  </Badge>
-                                </div>
-                                
-                                <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
-                                  {project.description}
-                                </p>
-                                
-                                <div className="flex items-center justify-between">
-                                  <span className="font-semibold text-primary text-sm">
-                                    €{project.price_from?.toLocaleString() || 'N/A'}
-                                  </span>
-                                  <div className="flex gap-1">
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      onClick={() => openEditModal(project)}
-                                      disabled={saveProjectMutation.isPending}
-                                    >
-                                      <Edit className="w-3 h-3" />
-                                    </Button>
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      onClick={() => handleDeleteProject(project.id)}
-                                      disabled={deleteProjectMutation.isPending}
-                                    >
-                                      <Trash2 className="w-3 h-3" />
-                                    </Button>
-                                  </div>
+                              <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
+                                {project.description}
+                              </p>
+                              
+                              <div className="flex items-center justify-between">
+                                 <span className="font-semibold text-primary text-sm">
+                                   €{project.price_from?.toLocaleString() || 'N/A'}
+                                 </span>
+                                <div className="flex gap-1">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => openEditModal(project)}
+                                    disabled={saveProjectMutation.isPending}
+                                  >
+                                    <Edit className="w-3 h-3" />
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleDeleteProject(project.id)}
+                                    disabled={deleteProjectMutation.isPending}
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                  </Button>
                                 </div>
                               </div>
-                            </CardContent>
-                          </Card>
-                        </motion.div>
-                      );
-                    })}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    ))}
                   </AnimatePresence>
                 </motion.div>
               )}
             </CardContent>
           </Card>
 
-          {/* Project Modal - TRUNCATED FOR BREVITY, KEEP EXISTING CODE */}
+          {/* Project Modal */}
+          <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+            <DialogContent className="max-w-4xl max-h-[95vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  {editingProject ? <Edit className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+                  {editingProject ? 'Modifier le Projet' : 'Nouveau Projet'}
+                </DialogTitle>
+                <DialogDescription>
+                  {editingProject ? 'Modifiez les informations du projet' : 'Créez un nouveau projet immobilier'}
+                </DialogDescription>
+              </DialogHeader>
+
+              <Tabs defaultValue="basic" className="w-full">
+                <TabsList className="grid w-full grid-cols-4">
+                  <TabsTrigger value="basic">Informations</TabsTrigger>
+                  <TabsTrigger value="media">Médias</TabsTrigger>
+                  <TabsTrigger value="features">Caractéristiques</TabsTrigger>
+                  <TabsTrigger value="units">Unités</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="basic" className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="title">Titre *</Label>
+                      <Input
+                        id="title"
+                        value={formData.title}
+                        onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                        placeholder="Titre du projet"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="type">Type *</Label>
+                      <Select value={formData.type} onValueChange={(value) => setFormData(prev => ({ ...prev, type: value }))}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="apartment">Appartement</SelectItem>
+                          <SelectItem value="villa">Villa</SelectItem>
+                          <SelectItem value="penthouse">Penthouse</SelectItem>
+                          <SelectItem value="commercial">Commercial</SelectItem>
+                          <SelectItem value="maison">Maison</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="price">Prix (€) *</Label>
+                      <Input
+                        id="price"
+                        type="number"
+                        value={formData.price}
+                        onChange={(e) => setFormData(prev => ({ ...prev, price: Number(e.target.value) }))}
+                        placeholder="Prix"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="city">Ville *</Label>
+                      <Input
+                        id="city"
+                        value={formData.location.city}
+                        onChange={(e) => setFormData(prev => ({ 
+                          ...prev, 
+                          location: { ...prev.location, city: e.target.value } 
+                        }))}
+                        placeholder="Ville"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="description">Description *</Label>
+                    <Textarea
+                      id="description"
+                      value={formData.description}
+                      onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                      placeholder="Description courte"
+                      rows={3}
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="detailed_description">Description détaillée</Label>
+                    <Textarea
+                      id="detailed_description"
+                      value={formData.detailed_description}
+                      onChange={(e) => setFormData(prev => ({ ...prev, detailed_description: e.target.value }))}
+                      placeholder="Description complète du projet"
+                      rows={4}
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="status">Statut</Label>
+                    <Select value={formData.status} onValueChange={(value: 'draft' | 'published') => setFormData(prev => ({ ...prev, status: value }))}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="draft">Brouillon</SelectItem>
+                        <SelectItem value="published">Publié</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="media" className="space-y-4">
+                  <div>
+                    <Label>Photos du projet</Label>
+        <ImageUploader 
+          value={formData.photos || []} 
+          onChange={(urls) => setFormData(prev => ({ ...prev, photos: urls }))} 
+        />
+                    {formData.photos.length > 0 && (
+                      <div className="grid grid-cols-3 gap-4 mt-4">
+                        {formData.photos.map((photo, index) => (
+                          <div key={index} className="relative">
+                            <img src={photo} alt={`Photo ${index + 1}`} className="w-full h-20 object-cover rounded" />
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              className="absolute -top-2 -right-2 h-6 w-6 p-0"
+                              onClick={() => setFormData(prev => ({
+                                ...prev,
+                                photos: prev.photos.filter((_, i) => i !== index)
+                              }))}
+                            >
+                              <X className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="virtual_tour">Visite virtuelle (URL)</Label>
+                    <Input
+                      id="virtual_tour"
+                      value={formData.virtual_tour}
+                      onChange={(e) => setFormData(prev => ({ ...prev, virtual_tour: e.target.value }))}
+                      placeholder="URL de la visite virtuelle"
+                    />
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="features" className="space-y-4">
+                  <div>
+                    <Label>Caractéristiques principales</Label>
+                    <div className="flex gap-2 mb-2">
+                      <Input
+                        value={newFeature}
+                        onChange={(e) => setNewFeature(e.target.value)}
+                        placeholder="Nouvelle caractéristique"
+                        onKeyPress={(e) => e.key === 'Enter' && addFeature()}
+                      />
+                      <Button onClick={addFeature} variant="outline">
+                        <Plus className="w-4 h-4" />
+                      </Button>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {formData.features.map((feature, index) => (
+                        <Badge key={index} variant="secondary" className="flex items-center gap-1">
+                          {feature}
+                          <X 
+                            className="w-3 h-3 cursor-pointer" 
+                            onClick={() => removeFeature(index)}
+                          />
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label>Caractéristiques détaillées</Label>
+                    <div className="flex gap-2 mb-2">
+                      <Input
+                        value={newDetailedFeature}
+                        onChange={(e) => setNewDetailedFeature(e.target.value)}
+                        placeholder="Nouvelle caractéristique détaillée"
+                        onKeyPress={(e) => e.key === 'Enter' && addDetailedFeature()}
+                      />
+                      <Button onClick={addDetailedFeature} variant="outline">
+                        <Plus className="w-4 h-4" />
+                      </Button>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {formData.detailed_features.map((feature, index) => (
+                        <Badge key={index} variant="outline" className="flex items-center gap-1">
+                          {feature}
+                          <X 
+                            className="w-3 h-3 cursor-pointer" 
+                            onClick={() => removeDetailedFeature(index)}
+                          />
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="units" className="space-y-4">
+                  <div>
+                    <Label>Ajouter une unité</Label>
+                    <div className="grid grid-cols-2 gap-4 p-4 border border-border rounded-lg">
+                      <Select value={newUnit.type} onValueChange={(value: 'appart' | 'villa') => setNewUnit(prev => ({ ...prev, type: value }))}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="appart">Appartement</SelectItem>
+                          <SelectItem value="villa">Villa</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      
+                      <Select value={newUnit.status} onValueChange={(value: 'available' | 'sold') => setNewUnit(prev => ({ ...prev, status: value }))}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Statut" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="available">Disponible</SelectItem>
+                          <SelectItem value="sold">Vendu</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      
+                      <Input
+                        value={newUnit.price}
+                        onChange={(e) => setNewUnit(prev => ({ ...prev, price: e.target.value }))}
+                        placeholder="Prix (ex: €450,000)"
+                      />
+                      
+                      <Input
+                        value={newUnit.details}
+                        onChange={(e) => setNewUnit(prev => ({ ...prev, details: e.target.value }))}
+                        placeholder="Détails (ex: 3 chambres)"
+                      />
+                      
+                      <div className="col-span-2">
+                        <Button onClick={addUnit} className="w-full">
+                          <Plus className="w-4 h-4 mr-2" />
+                          Ajouter l'unité
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {formData.units && formData.units.length > 0 && (
+                    <div>
+                      <Label>Unités existantes</Label>
+                      <div className="space-y-2">
+                        {formData.units.map((unit, index) => (
+                          <div key={index} className="flex items-center justify-between p-3 border border-border rounded-lg">
+                            <div>
+                              <span className="font-medium">{unit.type === 'villa' ? 'Villa' : 'Appartement'}</span>
+                              <span className="mx-2">•</span>
+                              <span className="text-primary font-semibold">{unit.price}</span>
+                              <span className="mx-2">•</span>
+                              <Badge variant={unit.status === 'available' ? 'default' : 'destructive'}>
+                                {unit.status === 'available' ? 'Disponible' : 'Vendu'}
+                              </Badge>
+                              <p className="text-sm text-muted-foreground mt-1">{unit.details}</p>
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => removeUnit(index)}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </TabsContent>
+              </Tabs>
+
+              <div className="flex justify-end gap-3 pt-4 border-t border-border">
+                <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+                  Annuler
+                </Button>
+                <Button 
+                  onClick={handleSaveProject} 
+                  disabled={saveProjectMutation.isPending}
+                  className="btn-premium"
+                >
+                  {saveProjectMutation.isPending ? (
+                    <>
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        className="w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"
+                      />
+                      Sauvegarde...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4 mr-2" />
+                      {editingProject ? 'Mettre à jour' : 'Créer'}
+                    </>
+                  )}
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </motion.div>
       </div>
     </div>
