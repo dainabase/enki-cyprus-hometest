@@ -1,3 +1,14 @@
+# ⚠️ DEPRECATED - ProjectPageV2 Abandonnée
+
+**Date d'abandon** : 4 Octobre 2025  
+**Raison** : Design non satisfaisant  
+**Décision** : Retour à la version originale ProjectPage  
+**Status** : Archive historique uniquement
+
+📄 **Voir** : `PROJECTV2_DEPRECATED.md` pour détails complets
+
+---
+
 # 🚀 V2 - Prêt pour GitHub/Production
 
 ## ✅ Ce Qui Est Prêt
