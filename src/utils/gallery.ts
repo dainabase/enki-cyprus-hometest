@@ -11,9 +11,9 @@ export interface GalleryImage {
 }
 
 export interface ProjectImageData {
-  categorized_photos?: any; // Obsolète - ignoré
+  categorized_photos?: any;
   project_images?: any[];
-  photos?: any[]; // Format: Array<{url, category, caption, isPrimary}>
+  photos?: string[];
 }
 
 /**
@@ -79,41 +79,37 @@ function mapCategory(category: string): string {
 
 /**
  * Construit une galerie d'images normalisée depuis les données projet
- * Priorité : photos (modern format) > project_images > photos legacy
+ * Priorité : categorized_photos > project_images > photos (legacy)
  */
 export function buildGalleryFromProject(project: ProjectImageData): GalleryImage[] {
   const gallery: GalleryImage[] = [];
 
-  // 1. Priorité : photos (format moderne avec objets {url, category, caption})
-  if (Array.isArray(project.photos) && project.photos.length > 0) {
-    const firstPhoto = project.photos[0];
+  // 1. Priorité : categorized_photos (format admin moderne)
+  if (project.categorized_photos) {
+    const cp = Array.isArray(project.categorized_photos) 
+      ? project.categorized_photos 
+      : [];
     
-    // Vérifier si c'est le nouveau format (objets) ou l'ancien (strings)
-    if (typeof firstPhoto === 'object' && firstPhoto?.url) {
-      // Nouveau format : array d'objets
-      project.photos.forEach((item: any) => {
-        if (item?.url) {
-          gallery.push({
-            url: item.url,
-            category: mapCategory(item.category || 'interior_1'),
-            isPrimary: !!item.isPrimary,
-            caption: item.caption || ''
-          });
-        }
-      });
-    } else if (typeof firstPhoto === 'string') {
-      // Ancien format : array de strings (legacy)
-      project.photos.forEach((url: any, idx: number) => {
-        if (typeof url === 'string') {
+    cp.forEach((item: any) => {
+      if (item?.url) {
+        gallery.push({
+          url: item.url,
+          category: mapCategory(item.category),
+          isPrimary: mapCategory(item.category) === 'hero',
+          caption: item.caption || ''
+        });
+      } else if (Array.isArray(item?.urls)) {
+        const cat = mapCategory(item.category);
+        item.urls.forEach((url: string, idx: number) => {
           gallery.push({
             url,
-            category: idx === 0 ? 'hero' : 'interior_1',
-            isPrimary: idx === 0,
+            category: cat,
+            isPrimary: cat === 'hero' && idx === 0,
             caption: ''
           });
-        }
-      });
-    }
+        });
+      }
+    });
   }
 
   // 2. Fallback : project_images (table relationnelle)
@@ -128,6 +124,18 @@ export function buildGalleryFromProject(project: ProjectImageData): GalleryImage
           caption: img.caption || ''
         });
       });
+  }
+
+  // 3. Fallback : photos (legacy array)
+  if (gallery.length === 0 && Array.isArray(project.photos)) {
+    project.photos.forEach((url: string, idx: number) => {
+      gallery.push({
+        url,
+        category: idx === 0 ? 'hero' : 'interior_1',
+        isPrimary: idx === 0,
+        caption: ''
+      });
+    });
   }
 
   // Déduplication par catégorie (garder le premier)

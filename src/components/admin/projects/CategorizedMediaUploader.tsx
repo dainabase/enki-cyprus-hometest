@@ -50,7 +50,6 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('hero');
-  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
 
   // DEBUG: Log what we receive and validate photos
   React.useEffect(() => {
@@ -128,16 +127,7 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
       };
 
       const withoutCategory = (field.value || []).filter(p => p.category !== category);
-      const updatedPhotos = [...withoutCategory, newPhoto];
-      field.onChange(updatedPhotos);
-
-      console.log('🔄 CategorizedMediaUploader: Photos updated', {
-        newPhoto,
-        totalPhotos: updatedPhotos.length,
-        allPhotos: updatedPhotos,
-        category,
-        publicUrl
-      });
+      field.onChange([...withoutCategory, newPhoto]);
 
       toast({
         title: "Photo mise à jour",
@@ -174,19 +164,13 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
 
   const removePhoto = (index: number) => {
     const newPhotos = field.value.filter((_, i) => i !== index);
-    console.log('🗑️ Photo removed:', {
-      removedIndex: index,
-      oldCount: field.value.length,
-      newCount: newPhotos.length,
-      remainingPhotos: newPhotos
-    });
     field.onChange(newPhotos);
   };
 
   const setPrimary = (index: number) => {
     const newPhotos = field.value.map((photo, i) => ({
       ...photo,
-      isPrimary: i === index
+      isPrimary: i === index && photo.category === 'hero'
     }));
     field.onChange(newPhotos);
   };
@@ -319,16 +303,18 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
                         
                         {/* Actions overlay */}
                         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center space-x-2">
-                          <Button
-                            size="sm"
-                            variant={photo.isPrimary ? "default" : "secondary"}
-                            className="h-8 px-3"
-                            onClick={() => setPrimary(globalIndex)}
-                            title={photo.isPrimary ? "Photo principale" : "Définir comme principale"}
-                          >
-                            <Star className={`w-3 h-3 mr-1 ${photo.isPrimary ? 'fill-current' : ''}`} />
-                            {photo.isPrimary ? 'Principale' : 'Définir'}
-                          </Button>
+                          {category === 'hero' && (
+                            <Button
+                              size="sm"
+                              variant={photo.isPrimary ? "default" : "secondary"}
+                              className="h-8 px-3"
+                              onClick={() => setPrimary(globalIndex)}
+                              title={photo.isPrimary ? "Photo principale" : "Définir comme principale"}
+                            >
+                              <Star className={`w-3 h-3 mr-1 ${photo.isPrimary ? 'fill-current' : ''}`} />
+                              {photo.isPrimary ? 'Principale' : 'Définir'}
+                            </Button>
+                          )}
                           
                           <Button
                             size="sm"
@@ -342,7 +328,7 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
                         </div>
                         
                         {/* Primary badge */}
-                        {photo.isPrimary && (
+                        {category === 'hero' && photo.isPrimary && (
                           <div className="absolute top-2 left-2">
                             <Badge className="bg-primary text-primary-foreground">
                               <Star className="w-3 h-3 mr-1 fill-current" />
@@ -378,228 +364,63 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
     }));
   };
 
-  // Auto-select first photo when photos are added
-  React.useEffect(() => {
-    if (field.value.length > 0 && selectedPhotoIndex === null) {
-      setSelectedPhotoIndex(0);
-    }
-  }, [field.value.length, selectedPhotoIndex]);
-
-  const currentPhoto = selectedPhotoIndex !== null ? field.value[selectedPhotoIndex] : null;
-
   return (
     <div className="space-y-6">
-      {/* Gallery View - Large Preview with Thumbnails */}
-      {field.value.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ImageIcon className="w-5 h-5" />
-              Galerie de Photos ({field.value.length})
-            </CardTitle>
-            <CardDescription>
-              Cliquez sur une miniature pour la prévisualiser et la modifier
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {/* Large Preview */}
-            {currentPhoto && (
-              <div className="space-y-4">
-                <div className="relative aspect-video rounded-lg overflow-hidden bg-muted">
-                  <img 
-                    src={currentPhoto.url} 
-                    alt={currentPhoto.caption || `Photo ${selectedPhotoIndex! + 1}`}
-                    className="w-full h-full object-contain"
-                    onError={(e) => { 
-                      e.currentTarget.onerror = null; 
-                      e.currentTarget.src = '/placeholder.svg'; 
-                    }}
-                  />
-                  
-                  {/* Primary badge on large preview */}
-                  {currentPhoto.isPrimary && (
-                    <div className="absolute top-4 left-4">
-                      <Badge className="bg-primary text-primary-foreground">
-                        <Star className="w-4 h-4 mr-2 fill-current" />
-                        Photo Principale
-                      </Badge>
-                    </div>
-                  )}
-
-                  {/* Category badge */}
-                  <div className="absolute top-4 right-4">
-                    <Badge variant="secondary">
-                      {PHOTO_CATEGORIES.find(c => c.value === currentPhoto.category)?.label}
-                    </Badge>
-                  </div>
-                </div>
-
-                {/* Photo Actions & Caption */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-center gap-2">
-                    <Button
-                      size="sm"
-                      variant={currentPhoto.isPrimary ? "default" : "outline"}
-                      onClick={() => setPrimary(selectedPhotoIndex!)}
-                    >
-                      <Star className={`w-4 h-4 mr-2 ${currentPhoto.isPrimary ? 'fill-current' : ''}`} />
-                      {currentPhoto.isPrimary ? 'Principale' : 'Définir principale'}
-                    </Button>
-                    
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={() => {
-                        removePhoto(selectedPhotoIndex!);
-                        setSelectedPhotoIndex(Math.max(0, selectedPhotoIndex! - 1));
-                      }}
-                    >
-                      <X className="w-4 h-4 mr-2" />
-                      Supprimer
-                    </Button>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="photo-caption" className="text-sm font-medium">
-                      Légende / Nom de la photo
-                    </Label>
-                    <Input
-                      id="photo-caption"
-                      placeholder="Ex: Vue panoramique sur la mer, Cuisine équipée..."
-                      value={currentPhoto.caption || ''}
-                      onChange={(e) => updateCaption(selectedPhotoIndex!, e.target.value)}
-                      className="w-full"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="photo-category" className="text-sm font-medium">
-                      Catégorie
-                    </Label>
-                    <Select
-                      value={currentPhoto.category}
-                      onValueChange={(newCategory) => {
-                        const newPhotos = field.value.map((photo, i) => 
-                          i === selectedPhotoIndex ? { ...photo, category: newCategory as CategorizedPhoto['category'] } : photo
-                        );
-                        field.onChange(newPhotos);
-                      }}
-                    >
-                      <SelectTrigger id="photo-category">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {PHOTO_CATEGORIES.map((cat) => (
-                          <SelectItem key={cat.value} value={cat.value}>
-                            {cat.label} - {cat.description}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
-
-      {/* All Categories Grid - Photos + Empty slots */}
+      {/* Summary & Category Selector */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Camera className="w-5 h-5" />
-            Toutes les Catégories
+            Gestionnaire de Photos
           </CardTitle>
           <CardDescription>
-            Cliquez sur une photo pour la modifier ou sur une catégorie vide pour ajouter une photo
+            Cliquez sur une catégorie pour ajouter des photos
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {PHOTO_CATEGORIES.map((cat) => {
-              const photo = getPhotosByCategory(cat.value)[0]; // One photo per category
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-8 gap-3">
+            {getTotalByCategory().map((cat) => {
               const Icon = cat.icon;
-              const photoIndex = photo ? field.value.findIndex(p => p.url === photo.url) : null;
-              
+              const isSelected = selectedCategory === cat.value;
+              const hasPhotos = cat.count > 0;
               return (
                 <button
                   key={cat.value}
                   type="button"
-                  onClick={() => {
-                    if (photo) {
-                      setSelectedPhotoIndex(photoIndex);
-                    } else {
-                      setSelectedCategory(cat.value);
-                      // Scroll to upload zone
-                      setTimeout(() => {
-                        document.getElementById('upload-zone')?.scrollIntoView({ behavior: 'smooth' });
-                      }, 100);
-                    }
-                  }}
-                  className={`relative rounded-lg overflow-hidden border-2 transition-all hover:scale-105 ${
-                    photo && selectedPhotoIndex === photoIndex
-                      ? 'border-primary shadow-lg ring-2 ring-primary/20' 
-                      : photo
-                        ? 'border-green-500/50 hover:border-green-500'
-                        : 'border-dashed border-muted-foreground/25 hover:border-primary/50 bg-muted/20'
+                  onClick={() => setSelectedCategory(cat.value)}
+                  className={`relative text-center p-3 border-2 rounded-lg transition-all duration-200 hover:scale-105 ${
+                    isSelected 
+                      ? 'border-primary bg-primary/5 shadow-md ring-2 ring-primary/20' 
+                      : hasPhotos 
+                        ? 'border-green-500/50 bg-green-50 hover:border-green-500 dark:bg-green-950/30' 
+                        : 'border-muted hover:border-primary/50 hover:bg-muted/30'
                   }`}
                 >
-                  <div className="aspect-video relative">
-                    {photo ? (
-                      <>
-                        <img 
-                          src={photo.url} 
-                          alt={photo.caption || cat.label}
-                          className="w-full h-full object-cover"
-                          onError={(e) => { 
-                            e.currentTarget.onerror = null; 
-                            e.currentTarget.src = '/placeholder.svg'; 
-                          }}
-                        />
-                        
-                        {/* Primary indicator */}
-                        {photo.isPrimary && (
-                          <div className="absolute top-2 right-2">
-                            <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center shadow-lg">
-                              <Star className="w-4 h-4 text-primary-foreground fill-current" />
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Selection indicator */}
-                        {selectedPhotoIndex === photoIndex && (
-                          <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
-                            <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg">
-                              <Camera className="w-6 h-6 text-primary-foreground" />
-                            </div>
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground">
-                        <Icon className="w-8 h-8 mb-2" />
-                        <Upload className="w-5 h-5 opacity-50" />
-                      </div>
-                    )}
+                  {/* Fixed height icon area */}
+                  <div className="h-8 flex items-center justify-center mb-2">
+                    <Icon className={`w-6 h-6 ${
+                      isSelected ? 'text-primary' : hasPhotos ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'
+                    }`} />
                   </div>
                   
-                  {/* Category label */}
-                  <div className="p-3 bg-background border-t">
-                    <p className="text-sm font-medium text-center truncate">
-                      {cat.label.replace('\n', ' ')}
+                  {/* Text area with fixed min-height */}
+                  <div className="min-h-[2.5rem] flex items-center justify-center mb-2">
+                    <p className={`text-xs font-medium leading-tight text-center whitespace-pre-line ${
+                      isSelected ? 'text-primary' : hasPhotos ? 'text-green-700 dark:text-green-300' : 'text-foreground'
+                    }`}>
+                      {cat.label}
                     </p>
-                    {photo && photo.caption && (
-                      <p className="text-xs text-muted-foreground text-center truncate mt-1">
-                        {photo.caption}
-                      </p>
-                    )}
-                    {!photo && (
-                      <p className="text-xs text-muted-foreground text-center mt-1">
-                        Aucune photo
-                      </p>
-                    )}
                   </div>
+                  
+                  <Badge 
+                    variant={isSelected ? "default" : hasPhotos ? "secondary" : "outline"}
+                    className="text-xs"
+                  >
+                    {cat.count}
+                  </Badge>
+                  {hasPhotos && (
+                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-background" />
+                  )}
                 </button>
               );
             })}
@@ -608,26 +429,121 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
       </Card>
 
       {/* Upload Zone for Selected Category */}
-      <Card id="upload-zone">
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            {(() => {
-              const categoryInfo = PHOTO_CATEGORIES.find(c => c.value === selectedCategory);
-              const Icon = categoryInfo?.icon;
-              return Icon ? <Icon className="w-5 h-5" /> : null;
-            })()}
-            <CardTitle>
-              Ajouter / Remplacer: {PHOTO_CATEGORIES.find(c => c.value === selectedCategory)?.label}
+      {selectedCategory && (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              {(() => {
+                const categoryInfo = PHOTO_CATEGORIES.find(c => c.value === selectedCategory);
+                const Icon = categoryInfo?.icon;
+                return Icon ? <Icon className="w-5 h-5" /> : null;
+              })()}
+              <CardTitle>
+                {PHOTO_CATEGORIES.find(c => c.value === selectedCategory)?.label}
+              </CardTitle>
+            </div>
+            <CardDescription>
+              {PHOTO_CATEGORIES.find(c => c.value === selectedCategory)?.description}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {renderUploadZone(selectedCategory)}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* All Photos Display */}
+      {field.value.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ImageIcon className="w-5 h-5" />
+              Toutes les photos ({field.value.length})
             </CardTitle>
-          </div>
-          <CardDescription>
-            {PHOTO_CATEGORIES.find(c => c.value === selectedCategory)?.description}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {renderUploadZone(selectedCategory)}
-        </CardContent>
-      </Card>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {PHOTO_CATEGORIES.map((cat) => {
+                const photos = getPhotosByCategory(cat.value);
+                if (photos.length === 0) return null;
+                
+                const Icon = cat.icon;
+                return (
+                  <div key={cat.value} className="space-y-3">
+                    <div className="flex items-center gap-2 pb-2 border-b">
+                      <Icon className="w-4 h-4 text-muted-foreground" />
+                      <h4 className="text-sm font-semibold">{cat.label}</h4>
+                      <Badge variant="outline" className="text-xs">
+                        {photos.length}
+                      </Badge>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
+                      {photos.map((photo, photoIndex) => {
+                        const globalIndex = field.value.findIndex(p => p.url === photo.url);
+                        return (
+                          <Card key={photo.url} className="overflow-hidden group hover:shadow-md transition-all duration-200">
+                            <div className="relative aspect-square">
+                              <img 
+                                src={photo.url} 
+                                alt={photo.caption || `${cat.label} ${photoIndex + 1}`}
+                                className="w-full h-full object-cover"
+                                onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/placeholder.svg'; }}
+                              />
+                              
+                              {/* Actions overlay */}
+                              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center space-x-1">
+                                {cat.value === 'hero' && (
+                                  <Button
+                                    size="sm"
+                                    variant={photo.isPrimary ? "default" : "secondary"}
+                                    className="h-7 px-2 text-xs"
+                                    onClick={() => setPrimary(globalIndex)}
+                                    title={photo.isPrimary ? "Photo principale" : "Définir comme principale"}
+                                  >
+                                    <Star className={`w-3 h-3 ${photo.isPrimary ? 'fill-current' : ''}`} />
+                                  </Button>
+                                )}
+                                
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  className="h-7 px-2 text-xs"
+                                  onClick={() => removePhoto(globalIndex)}
+                                >
+                                  <X className="w-3 h-3" />
+                                </Button>
+                              </div>
+                              
+                              {/* Primary badge */}
+                              {cat.value === 'hero' && photo.isPrimary && (
+                                <div className="absolute top-1 left-1">
+                                  <Badge className="bg-primary text-primary-foreground text-xs">
+                                    <Star className="w-2 h-2 mr-1 fill-current" />
+                                    Principale
+                                  </Badge>
+                                </div>
+                              )}
+                            </div>
+                            
+                            <CardContent className="p-2">
+                              <Input
+                                placeholder="Légende..."
+                                value={photo.caption || ''}
+                                onChange={(e) => updateCaption(globalIndex, e.target.value)}
+                                className="text-xs h-7 border-0 bg-muted/30 focus:bg-background transition-colors"
+                              />
+                            </CardContent>
+                          </Card>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
