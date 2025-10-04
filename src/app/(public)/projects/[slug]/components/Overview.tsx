@@ -70,23 +70,15 @@ export default function Overview({ project }: OverviewProps) {
             </div>
 
             {/* Location Info */}
-            {(project.city || project.neighborhood) && (
-              <div>
-                <h3 className="text-xl font-semibold mb-2">Location</h3>
-                <div className="flex items-center space-x-2 text-muted-foreground">
-                  <MapPin className="w-4 h-4" />
-                  <span>
-                    {project.neighborhood && `${project.neighborhood}, `}
-                    {project.city || project.cyprus_zone}, Cyprus
-                  </span>
-                </div>
-                {project.neighborhood_description && (
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    {project.neighborhood_description}
-                  </p>
-                )}
+            <div>
+              <h3 className="text-xl font-semibold mb-2">Location</h3>
+              <div className="flex items-center space-x-2 text-muted-foreground">
+                <MapPin className="w-4 h-4" />
+                <span>
+                  {project.location?.city || project.location?.address || 'Chypre'}
+                </span>
               </div>
-            )}
+            </div>
           </div>
 
           {/* Right Column - Interactive Map */}
