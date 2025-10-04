@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -22,26 +22,15 @@ import { CommoditiesCheckboxes } from './CommoditiesCheckboxes';
 import PropertySubTypeSelector from './PropertySubTypeSelector';
 import { googleMapsAgent } from '@/services/googleMapsAgent';
 import { BuildingSection } from './BuildingSection';
+import { ModernDistancesSection } from './ModernDistancesSection';
 import { ProjectFormData } from '@/schemas/projectSchema';
 import { ProjectBuilding } from '@/types/building.project';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { ProjectEquipmentsStep } from './steps/ProjectEquipmentsStep';
-import { LegalComplianceStep } from './steps/LegalComplianceStep';
-import { UtilitiesServicesStep } from './steps/UtilitiesServicesStep';
-import { 
-  Building, MapPin, Home, Zap, Landmark, Building2, Waves, Shield, 
-  Sprout, Accessibility, Map as MapIcon, Palmtree, Users, Heart,
-  HardHat, Palette, Sparkles, FileText, CreditCard, Gift, 
-  PiggyBank, BarChart3, Youtube, Video, Headphones, Smartphone,
-  Globe, Search, Star, Target, Link, Plus, Brain,
-  Stethoscope, Smile, PawPrint, ShoppingCart, Store, ShoppingBag, 
-  School, GraduationCap, Library, Globe2, Baby, BookOpen, Bus, Car, 
-  Plane, Anchor, Fuel, Mail, Trees, Flag, Dumbbell, Circle, Dice1, 
-  Film, Drama, UtensilsCrossed, Coffee, Wine, Pizza, Utensils, Music, Church,
-  Navigation, Route, Loader2, ParkingSquare as ParkingCircle, Train, 
-  Croissant, Flame, Camera, Hotel, Shirt, Scissors, ChevronRight, ChevronDown, Eye, EyeOff, Clock
-} from 'lucide-react';
+// import { ProjectEquipmentsStep } from './steps/ProjectEquipmentsStep';
+// import { LegalComplianceStep } from './steps/LegalComplianceStep';
+// import { UtilitiesServicesStep } from './steps/UtilitiesServicesStep';
+import { Building, MapPin, Chrome as Home, Zap, Landmark, Building2, Waves, Shield, Sprout, Accessibility, Map as MapIcon, TreePalm as Palmtree, Users, Heart, HardHat, Palette, Sparkles, FileText, CreditCard, Gift, PiggyBank, ChartBar as BarChart3, Youtube, Video, Headphones, Smartphone, Globe, Search, Star, Target, Link, Plus, Brain, Stethoscope, Smile, PawPrint, ShoppingCart, Store, ShoppingBag, School, GraduationCap, Library, Globe as Globe2, Baby, BookOpen, Bus, Car, Plane, Anchor, Fuel, Mail, Trees, Flag, Dumbbell, Circle, Dice1, Film, Drama, UtensilsCrossed, Coffee, Wine, Pizza, Utensils, Music, Church, Navigation, Route, Loader as Loader2, SquareParking as ParkingCircle, Brain as Train, Croissant, Flame, Camera, Hotel, Shirt, Scissors, ChevronRight, ChevronDown, Eye, EyeOff, Clock } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 import { debounce } from 'lodash';
@@ -64,62 +53,72 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
   const [showMap, setShowMap] = useState(false);
   const [selectedAmenities, setSelectedAmenities] = useState<Set<string>>(new Set());
 
-  // COMMODITÉS ESSENTIELLES (12 critères d'achat prioritaires)
+  // 🛡️ PROTECTION: Flag pour bloquer les appels simultanés
+  const isDetectionInProgress = useRef(false);
+
+  // 🛡️ PROTECTION: Ref pour éviter la boucle infinie useEffect
+  const amenitiesLengthRef = useRef(0);
+  const isInitializedRef = useRef(false);
+
+  // COMMODITÉS ESSENTIELLES (13 critères d'achat prioritaires validés)
   const ESSENTIAL_AMENITIES = [
-    'school',           // 1. École
-    'supermarket',      // 2. Supermarché  
-    'transport_public', // 3. Transport public
-    'hospital',         // 4. Hôpital
-    'pharmacy',         // 5. Pharmacie
-    'shopping_center',  // 6. Centre commercial
-    'university',       // 7. Université
-    'beach',           // 8. Plage
-    'bank',            // 9. Banque
-    'restaurant',      // 10. Restaurant
-    'gym',             // 11. Salle de sport
-    'cafe'             // 12. Café
+    // 🏥 Santé (3)
+    'hospital',         // Hôpital
+    'pharmacy',         // Pharmacie (inclut aussi 'doctor')
+
+    // 🎓 Éducation (3)
+    'school',           // École (inclut aussi 'primary_school')
+    'university',       // Université
+
+    // 🛒 Shopping (2)
+    'supermarket',      // Supermarché
+    'shopping_center',  // Centre commercial
+
+    // 🚇 Transport (1)
+    'transport_public', // Transport public (bus_station)
+
+    // 💰 Services (1)
+    'bank',             // Banque
+
+    // 🏋️ Loisirs & Bien-être (2)
+    'gym',              // Salle de sport
+    'park',             // Parc
+
+    // 🚓 Sécurité (1)
+    'police'            // Police
+
+    // Note: 'beach' est géré séparément dans findStrategicDistances()
   ];
 
+  // ✅ 13 COMMODITÉS VALIDÉES (dans l'ordre de priorité)
   const amenityOptions = [
-    { value: 'transport_public', label: 'Transport public', icon: <Bus className="h-4 w-4" /> },
-    { value: 'beach', label: 'Plage', icon: <Waves className="h-4 w-4" /> },
-    { value: 'hospital', label: 'Hôpital', icon: <Building2 className="h-4 w-4" /> },
-    { value: 'pharmacy', label: 'Pharmacie', icon: <Heart className="h-4 w-4" /> },
-    { value: 'school', label: 'École', icon: <GraduationCap className="h-4 w-4" /> },
-    { value: 'university', label: 'Université', icon: <School className="h-4 w-4" /> },
-    { value: 'supermarket', label: 'Supermarché', icon: <ShoppingCart className="h-4 w-4" /> },
-    { value: 'shopping_center', label: 'Centre commercial', icon: <Store className="h-4 w-4" /> },
-    { value: 'restaurant', label: 'Restaurant', icon: <UtensilsCrossed className="h-4 w-4" /> },
-    { value: 'cafe', label: 'Café', icon: <Coffee className="h-4 w-4" /> },
-    { value: 'bank', label: 'Banque', icon: <Landmark className="h-4 w-4" /> },
-    { value: 'atm', label: 'ATM', icon: <CreditCard className="h-4 w-4" /> },
-    { value: 'post_office', label: 'Bureau de poste', icon: <Mail className="h-4 w-4" /> },
-    { value: 'park', label: 'Parc', icon: <Trees className="h-4 w-4" /> },
-    { value: 'gym', label: 'Salle de sport', icon: <Dumbbell className="h-4 w-4" /> },
-    { value: 'spa', label: 'Spa', icon: <Sparkles className="h-4 w-4" /> },
-    { value: 'cinema', label: 'Cinéma', icon: <Film className="h-4 w-4" /> },
-    { value: 'parking', label: 'Parking', icon: <ParkingCircle className="h-4 w-4" /> },
-    { value: 'gas_station', label: 'Station essence', icon: <Fuel className="h-4 w-4" /> },
-    { value: 'church', label: 'Église', icon: <Church className="h-4 w-4" /> },
-    { value: 'airport', label: 'Aéroport', icon: <Plane className="h-4 w-4" /> },
-    { value: 'train_station', label: 'Gare', icon: <Train className="h-4 w-4" /> },
-    { value: 'bus_station', label: 'Arrêt de bus', icon: <Bus className="h-4 w-4" /> },
-    { value: 'dentist', label: 'Dentiste', icon: <Heart className="h-4 w-4" /> },
-    { value: 'veterinary_care', label: 'Vétérinaire', icon: <Heart className="h-4 w-4" /> },
-    { value: 'physiotherapist', label: 'Kinésithérapeute', icon: <Heart className="h-4 w-4" /> },
-    { value: 'bakery', label: 'Boulangerie', icon: <Croissant className="h-4 w-4" /> },
-    { value: 'bar', label: 'Bar', icon: <Wine className="h-4 w-4" /> },
-    { value: 'night_club', label: 'Discothèque', icon: <Music className="h-4 w-4" /> },
-    { value: 'police', label: 'Police', icon: <Shield className="h-4 w-4" /> },
-    { value: 'fire_station', label: 'Pompiers', icon: <Flame className="h-4 w-4" /> },
-    { value: 'city_hall', label: 'Mairie', icon: <Building className="h-4 w-4" /> },
-    { value: 'museum', label: 'Musée', icon: <Building2 className="h-4 w-4" /> },
-    { value: 'art_gallery', label: 'Galerie d\'art', icon: <Palette className="h-4 w-4" /> },
-    { value: 'library', label: 'Bibliothèque', icon: <BookOpen className="h-4 w-4" /> },
-    { value: 'tourist_attraction', label: 'Attraction touristique', icon: <Camera className="h-4 w-4" /> },
-    { value: 'hotel', label: 'Hôtel', icon: <Hotel className="h-4 w-4" /> },
-    { value: 'laundry', label: 'Laverie', icon: <Shirt className="h-4 w-4" /> },
-    { value: 'hair_salon', label: 'Salon de coiffure', icon: <Scissors className="h-4 w-4" /> }
+    // 🏥 Santé (3)
+    { value: 'hospital', label: 'Hôpital', icon: <Building2 className="h-4 w-4" />, priority: 1 },
+    { value: 'pharmacy', label: 'Pharmacie', icon: <Heart className="h-4 w-4" />, priority: 2 },
+
+    // 🎓 Éducation (3)
+    { value: 'school', label: 'École', icon: <GraduationCap className="h-4 w-4" />, priority: 3 },
+    { value: 'university', label: 'Université', icon: <School className="h-4 w-4" />, priority: 4 },
+
+    // 🛒 Shopping (2)
+    { value: 'supermarket', label: 'Supermarché', icon: <ShoppingCart className="h-4 w-4" />, priority: 5 },
+    { value: 'shopping_center', label: 'Centre commercial', icon: <Store className="h-4 w-4" />, priority: 6 },
+
+    // 🚇 Transport (1)
+    { value: 'transport_public', label: 'Transport public', icon: <Bus className="h-4 w-4" />, priority: 7 },
+
+    // 💰 Services (1)
+    { value: 'bank', label: 'Banque', icon: <Landmark className="h-4 w-4" />, priority: 8 },
+
+    // 🏋️ Loisirs & Bien-être (2)
+    { value: 'gym', label: 'Salle de sport', icon: <Dumbbell className="h-4 w-4" />, priority: 9 },
+    { value: 'park', label: 'Parc', icon: <Trees className="h-4 w-4" />, priority: 10 },
+
+    // 🚓 Sécurité (1)
+    { value: 'police', label: 'Police', icon: <Shield className="h-4 w-4" />, priority: 11 },
+
+    // 🌊 Distance stratégique (géré séparément)
+    { value: 'beach', label: 'Plage', icon: <Waves className="h-4 w-4" />, priority: 12 }
   ];
 
   // Préparer les données pour la carte avec coordonnées réelles
@@ -1211,14 +1210,24 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
   const handleDetectAll = async () => {
     const address = form.watch('full_address') || '';
-    
+
     if (!address) {
       toast.error('Veuillez entrer une adresse');
       return;
     }
 
+    // 🛡️ PROTECTION: Bloquer les appels simultanés et les boucles infinies
+    if (isDetectionInProgress.current) {
+      console.warn('⚠️ Détection déjà en cours - Appel ignoré pour éviter la boucle infinie');
+      toast.warning('Détection déjà en cours...', {
+        description: 'Veuillez patienter'
+      });
+      return;
+    }
+
+    isDetectionInProgress.current = true;
     setIsDetecting(true);
-    
+
     try {
       console.log('🚀 Début de la détection automatique');
       console.log('📍 Adresse:', address);
@@ -1276,11 +1285,18 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         );
         setSelectedAmenities(preSelected);
 
-        // AJOUTER CES LOGS POUR DÉBUGGER
+        // 📊 Afficher les métriques de coût API
+        if (result.metrics) {
+          console.log('💰 MÉTRIQUES API:');
+          console.log(`   - Requêtes effectuées: ${result.metrics.apiCallsCount}`);
+          console.log(`   - Coût estimé: CHF ${result.metrics.estimatedCostCHF}`);
+          console.log(`   - Lieux uniques: ${result.metrics.uniquePlacesFound}`);
+        }
+
         console.log('🎯 Commodités détectées:', nearbyAmenities.length);
         console.log('✅ Pré-sélectionnées:', preSelected.size);
         console.log('📋 État selectedAmenities:', Array.from(preSelected));
-        
+
         if (result.strategicDistances) {
           const distances = {
             nearest_beach: result.strategicDistances.nearest_beach || 0,
@@ -1303,9 +1319,18 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           console.log('- Aéroport Paphos:', distances.paphos_airport_distance, 'km');
           console.log('- Centre-ville:', distances.city_center_distance, 'km');
           console.log('- Autoroute:', distances.highway_distance, 'km');
-          
+
+          // 🆕 Toast avec métriques de coût
+          const metricsText = result.metrics
+            ? `Coût: CHF ${result.metrics.estimatedCostCHF} (${result.metrics.apiCallsCount} requêtes)`
+            : '';
+
           toast.success(
-            `✅ Détection complète! ${nearbyAmenities.length} types de commodités trouvés`
+            `✅ Détection complète! ${nearbyAmenities.length} types de commodités trouvés`,
+            {
+              description: metricsText,
+              duration: 5000
+            }
           );
         } else {
           console.warn('⚠️ Distances stratégiques non disponibles');
@@ -1322,62 +1347,66 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
       toast.error('Erreur lors de la détection automatique');
     } finally {
       setIsDetecting(false);
+      isDetectionInProgress.current = false; // 🛡️ Libérer le verrou
       console.log('🏁 Détection terminée');
     }
   };
 
-  // Initialiser les commodités sélectionnées UNE SEULE FOIS
+  // 🛡️ CORRECTION: Initialiser les commodités sélectionnées UNE SEULE FOIS (sans boucle infinie)
   useEffect(() => {
-    console.log('🔍 USEEFFECT 1 - INITIALISATION');
-    // Ne s'exécute qu'au premier chargement ou quand de nouvelles commodités sont détectées
     const amenities = form.watch('surrounding_amenities') || [];
-    console.log('- Amenities détectées:', amenities.length);
-    console.log('- selectedAmenities.size actuel:', selectedAmenities.size);
-    
-    // Si selectedAmenities est vide ET qu'on a des commodités, initialiser avec les essentielles
-    if (selectedAmenities.size === 0 && amenities.length > 0) {
-      const selected = new Set<string>(
-        amenities
-          .filter(a => ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id || ''))
-          .map(a => a.nearby_amenity_id || '')
-      );
-      console.log('- Initialisation avec:', Array.from(selected));
-      setSelectedAmenities(selected);
-    } else {
-      console.log('- Pas d\'initialisation (déjà des sélections ou pas d\'amenities)');
-    }
-    // NE PAS réinitialiser si l'utilisateur a déjà fait des sélections
-  }, [form.watch('surrounding_amenities')?.length]); // Surveiller seulement la longueur, pas le contenu
+    const currentLength = amenities.length;
 
-  // Synchroniser les sélections vers le formulaire - VERSION SIMPLIFIÉE
+    // Ne déclencher QUE si la longueur a VRAIMENT changé (évite re-render inutiles)
+    if (currentLength !== amenitiesLengthRef.current) {
+      console.log('🔍 USEEFFECT 1 - Détection changement:', amenitiesLengthRef.current, '->', currentLength);
+      amenitiesLengthRef.current = currentLength;
+
+      // Initialiser SEULEMENT si jamais initialisé ET qu'on a des commodités
+      if (!isInitializedRef.current && amenities.length > 0) {
+        const selected = new Set<string>(
+          amenities
+            .filter(a => ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id || ''))
+            .map(a => a.nearby_amenity_id || '')
+        );
+        console.log('✅ Initialisation unique avec:', Array.from(selected));
+        setSelectedAmenities(selected);
+        isInitializedRef.current = true; // Marquer comme initialisé
+      }
+    }
+  }, [form.watch('surrounding_amenities')?.length]);
+
+  // 🛡️ CORRECTION: Synchroniser UNIQUEMENT lors du changement de sélection par l'utilisateur
+  // Ne PAS synchroniser automatiquement pour éviter la boucle infinie
   useEffect(() => {
-    console.log('🔍 USEEFFECT 2 - SYNCHRONISATION');
+    if (!isInitializedRef.current) {
+      console.log('⏭️ USEEFFECT 2 - Skip (pas encore initialisé)');
+      return; // Ne rien faire tant qu'on n'est pas initialisé
+    }
+
     const currentAmenities = form.watch('surrounding_amenities');
-    console.log('- selectedAmenities:', Array.from(selectedAmenities));
-    console.log('- currentAmenities length:', currentAmenities?.length || 0);
-    
+
     if (!currentAmenities || currentAmenities.length === 0) {
-      console.log('- Pas d\'amenities, sortie');
       return;
     }
-    
-    // Sauvegarder les sélections dans le formulaire pour la persistance
-    const updatedAmenities = currentAmenities.map(a => ({
-      ...a,
-      selected: selectedAmenities.has(a.nearby_amenity_id || '')
-    }));
-    
-    // Utiliser une comparaison JSON pour éviter les boucles infinies
-    const currentJSON = JSON.stringify(currentAmenities.map(a => a.selected));
-    const newJSON = JSON.stringify(updatedAmenities.map(a => a.selected));
-    
-    if (currentJSON !== newJSON) {
-      console.log('- Mise à jour du formulaire nécessaire');
+
+    // Vérifier si au moins une sélection a changé
+    const hasChanges = currentAmenities.some(a => {
+      const isSelected = selectedAmenities.has(a.nearby_amenity_id || '');
+      return a.selected !== isSelected;
+    });
+
+    if (hasChanges) {
+      console.log('🔄 USEEFFECT 2 - Synchronisation nécessaire');
+      const updatedAmenities = currentAmenities.map(a => ({
+        ...a,
+        selected: selectedAmenities.has(a.nearby_amenity_id || '')
+      }));
+
+      // ⚠️ CRITIQUE: shouldValidate: false pour éviter de re-déclencher le useEffect #1
       form.setValue('surrounding_amenities', updatedAmenities, { shouldValidate: false });
-    } else {
-      console.log('- Pas de mise à jour nécessaire');
     }
-  }, [selectedAmenities]); // Retirer 'form' de la dépendance
+  }, [selectedAmenities]); // Déclenché UNIQUEMENT par changement utilisateur
 
   // Fonction pour extraire les détails depuis une adresse complète
   const handleExtractAddressDetails = async () => {
@@ -1520,13 +1549,22 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             form.setValue('gps_longitude', lng);
           }
           
-          // Mettre à jour tous les champs
-          if (city) form.setValue('city', city);
-          // Aussi stocker dans street_address pour la DB (concaténation)
-          if (streetAddress) form.setValue('street_address', streetAddress);
-          if (postalCode) form.setValue('postal_code', postalCode);
-          if (neighborhood) form.setValue('neighborhood', neighborhood);
-          if (detectedZone) form.setValue('cyprus_zone', detectedZone);
+          // Mettre à jour tous les champs - AVEC shouldDirty pour forcer la sauvegarde
+          if (city) {
+            form.setValue('city', city, { shouldDirty: true, shouldTouch: true });
+          }
+          if (streetAddress) {
+            form.setValue('street_address', streetAddress, { shouldDirty: true, shouldTouch: true });
+          }
+          if (postalCode) {
+            form.setValue('postal_code', postalCode, { shouldDirty: true, shouldTouch: true });
+          }
+          if (neighborhood) {
+            form.setValue('neighborhood', neighborhood, { shouldDirty: true, shouldTouch: true });
+          }
+          if (detectedZone) {
+            form.setValue('cyprus_zone', detectedZone, { shouldDirty: true, shouldTouch: true });
+          }
           
           // Afficher une notification de succès
           toast.success('✅ Détails extraits avec succès', {
@@ -1738,16 +1776,16 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           </CardContent>
         </Card>
 
-        {/* CARTE 2: Distances & Commodités - VERSION SIMPLIFIÉE SANS COULEURS */}
+        {/* CARTE 2: Distances & Commodités - VERSION MODERNE */}
         <Card className="border-2 border-slate-300 shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b-2 border-slate-200">
+          <CardHeader className="bg-gradient-to-r from-slate-50 to-slate-100 border-b">
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="flex items-center gap-2">
-                  <Navigation className="w-5 h-5" />
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Navigation className="w-5 h-5 text-slate-700" />
                   Distances & Commodités
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-sm">
                   Distances stratégiques et commodités de proximité
                 </CardDescription>
               </div>
@@ -1755,13 +1793,13 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 type="button"
                 onClick={handleDetectAll}
                 disabled={!form.watch('full_address') || isDetecting}
-                variant="outline"
+                className="bg-blue-600 hover:bg-blue-700"
                 size="sm"
               >
                 {isDetecting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Détection...
+                    Analyse...
                   </>
                 ) : (
                   <>
@@ -1806,339 +1844,44 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               </p>
             </div>
 
-            {/* GRILLE PRINCIPALE */}
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-              {/* COLONNE GAUCHE : Contrôles (3/5) */}
-              <div className="lg:col-span-3 space-y-6">
-                {/* Distances stratégiques SANS COULEURS et avec icônes Lucide */}
-                <div className="space-y-2">
-                  <Label className="text-base font-semibold">Distances stratégiques</Label>
-                  
-                  <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Waves className="h-5 w-5 text-gray-600" />
-                        <span className="text-sm font-semibold">Mer / Plage</span>
-                      </div>
-                      <p className="text-2xl font-bold text-gray-900">
-                        {form.watch('proximity_sea_km') || '—'} km
-                      </p>
-                      {form.watch('proximity_sea_km') && form.watch('proximity_sea_km') > 1 && (
-                        <p className="text-xs text-gray-600 mt-1 flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          ~{Math.round(form.watch('proximity_sea_km') * 2)} min voiture
-                        </p>
-                      )}
-                    </div>
-                    
-                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Building2 className="h-5 w-5 text-gray-600" />
-                        <span className="text-sm font-semibold">Centre-ville</span>
-                      </div>
-                      <p className="text-2xl font-bold text-gray-900">
-                        {form.watch('proximity_city_center_km') || '—'} km
-                      </p>
-                      {form.watch('proximity_city_center_km') > 0 && (
-                        <p className="text-xs text-gray-600 mt-1 flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          ~{Math.round(form.watch('proximity_city_center_km') * 2.5)} min voiture
-                        </p>
-                      )}
-                    </div>
-                    
-                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Car className="h-5 w-5 text-gray-600" />
-                        <span className="text-sm font-semibold">Autoroute</span>
-                      </div>
-                      <p className="text-2xl font-bold text-gray-900">
-                        {form.watch('proximity_highway_km') || '—'} km
-                      </p>
-                      {form.watch('proximity_highway_km') > 0 && (
-                        <p className="text-xs text-gray-600 mt-1 flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          ~{Math.round(form.watch('proximity_highway_km') * 2)} min voiture
-                        </p>
-                      )}
-                    </div>
-                    
-                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Plane className="h-5 w-5 text-gray-600" />
-                        <span className="text-sm font-semibold">Aéroport Larnaca</span>
-                      </div>
-                      <p className="text-2xl font-bold text-gray-900">
-                        {(() => {
-                          const dist = form.watch('proximity_airport_km');
-                          if (dist) return dist;
-                          const lat = form.watch('gps_latitude');
-                          const lng = form.watch('gps_longitude');
-                          if (lat && lng) {
-                            const larnaca = { lat: 34.8751, lng: 33.6248 };
-                            const R = 6371;
-                            const dLat = (larnaca.lat - lat) * Math.PI / 180;
-                            const dLon = (larnaca.lng - lng) * Math.PI / 180;
-                            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                              Math.cos(lat * Math.PI / 180) * Math.cos(larnaca.lat * Math.PI / 180) *
-                              Math.sin(dLon/2) * Math.sin(dLon/2);
-                            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-                            return Math.round(R * c * 10) / 10;
-                          }
-                          return '—';
-                        })()} km
-                      </p>
-                      <p className="text-xs text-gray-600 mt-1 flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        ~{Math.round((form.watch('proximity_airport_km') || 67) * 1.2)} min voiture
-                      </p>
-                    </div>
-                    
-                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Plane className="h-5 w-5 text-gray-600" />
-                        <span className="text-sm font-semibold">Aéroport Paphos</span>
-                      </div>
-                      <p className="text-2xl font-bold text-gray-900">
-                        {(() => {
-                          const lat = form.watch('gps_latitude');
-                          const lng = form.watch('gps_longitude');
-                          if (lat && lng) {
-                            const paphos = { lat: 34.7180, lng: 32.4857 };
-                            const R = 6371;
-                            const dLat = (paphos.lat - lat) * Math.PI / 180;
-                            const dLon = (paphos.lng - lng) * Math.PI / 180;
-                            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                              Math.cos(lat * Math.PI / 180) * Math.cos(paphos.lat * Math.PI / 180) *
-                              Math.sin(dLon/2) * Math.sin(dLon/2);
-                            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-                            return Math.round(R * c * 10) / 10;
-                          }
-                          return '—';
-                        })()} km
-                      </p>
-                      <p className="text-xs text-gray-600 mt-1 flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        ~{Math.round(55 * 1.2)} min voiture
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Commodités de proximité - VERSION AVEC CHECKBOXES FONCTIONNELS */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-base font-semibold">Commodités de proximité</Label>
-                  </div>
-                  
-                  {form.watch('surrounding_amenities')?.length > 0 && (
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <span className="text-sm text-muted-foreground">
-                          {selectedAmenities.size} / {form.watch('surrounding_amenities')?.length} sélectionnées
-                        </span>
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="outline"
-                           onClick={() => {
-                             console.log('🔴 BOUTON TOUT SÉLECTIONNER CLIQUÉ !');
-                             const amenities = form.watch('surrounding_amenities') || [];
-                             console.log('- Amenities:', amenities.length);
-                             console.log('- selectedAmenities.size:', selectedAmenities.size);
-                             
-                             if (selectedAmenities.size === amenities.length) {
-                               console.log('- ACTION: Tout désélectionner');
-                               setSelectedAmenities(new Set());
-                             } else {
-                               console.log('- ACTION: Tout sélectionner');
-                               const allTypes = new Set<string>(amenities.map(a => a.nearby_amenity_id || ''));
-                               console.log('- Tous les IDs:', Array.from(allTypes));
-                               setSelectedAmenities(allTypes);
-                             }
-                           }}
-                         >
-                           {selectedAmenities.size === form.watch('surrounding_amenities')?.length 
-                            ? '❌ Tout désélectionner' 
-                            : '✅ Tout sélectionner'}
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-                  
-                  {form.watch('surrounding_amenities')?.length > 0 ? (
-                    <div className="space-y-4">
-                      {/* Section 1 : Commodités ESSENTIELLES */}
-                      <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                        <h4 className="text-sm font-semibold text-blue-900 mb-3 flex items-center gap-2">
-                          <Star className="h-4 w-4" />
-                          Commodités essentielles (critères d'achat principaux)
-                        </h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                          {form.watch('surrounding_amenities')
-                            ?.filter(a => ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id))
-                            ?.sort((a, b) => a.distance_km - b.distance_km)
-                            ?.map((amenity, idx) => {
-                              const option = amenityOptions.find(opt => opt.value === amenity.nearby_amenity_id);
-                              if (!option) return null;
-                              
-                               const isSelected = selectedAmenities.has(amenity.nearby_amenity_id || '');
-                               console.log(`🔍 CALCUL isSelected pour ${amenity.nearby_amenity_id}:`, isSelected, 'selectedAmenities:', Array.from(selectedAmenities));
-                              const getTimeLabel = (dist) => {
-                                if (dist <= 0.5) return '⚡ 5 min à pied';
-                                if (dist <= 1) return '👟 10 min à pied';
-                                if (dist <= 2) return '🚶 20 min à pied';
-                                return `${Math.round(dist * 2.5)} min voiture`;
-                              };
-                              
-                              return (
-                                <div 
-                                  key={`ess-${amenity.nearby_amenity_id}-${idx}`} 
-                                  className={`bg-white rounded-lg p-3 border transition-all ${
-                                    isSelected ? 'ring-2 ring-blue-500' : ''
-                                  }`}
-                                >
-                                  <div className="flex items-start gap-3">
-                                   <input
-                                     type="checkbox"
-                                     checked={isSelected}
-                                     onChange={() => {
-                                       console.log('🔴 CHECKBOX CLICK DÉTECTÉ - ESSENTIELLE !');
-                                       console.log('- Amenity ID:', amenity.nearby_amenity_id);
-                                       console.log('- Type:', typeof amenity.nearby_amenity_id);
-                                       console.log('- isSelected avant:', isSelected);
-                                       console.log('- selectedAmenities avant:', Array.from(selectedAmenities));
-                                       
-                                       // VERSION ULTRA SIMPLE
-                                       const newSelected = new Set(selectedAmenities);
-                                       if (isSelected) {
-                                         console.log('- ACTION: Supprimer');
-                                         newSelected.delete(amenity.nearby_amenity_id);
-                                       } else {
-                                         console.log('- ACTION: Ajouter');
-                                         newSelected.add(amenity.nearby_amenity_id);
-                                       }
-                                       
-                                       console.log('- newSelected après:', Array.from(newSelected));
-                                       setSelectedAmenities(newSelected);
-                                       console.log('- setSelectedAmenities appelé');
-                                     }}
-                                     className="mt-1 h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 cursor-pointer"
-                                   />
-                                    <div className="flex-1">
-                                      <div className="flex items-center gap-2">
-                                        <span className="text-blue-600">{option.icon}</span>
-                                        <span className="font-medium text-sm">{option.label}</span>
-                                      </div>
-                                      <div className="mt-1 flex items-center gap-2">
-                                        <span className="text-xs font-bold">{amenity.distance_km} km</span>
-                                        <span className="text-xs text-gray-600 flex items-center gap-1">
-                                          <Clock className="h-3 w-3" />
-                                          {getTimeLabel(amenity.distance_km)}
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              );
-                            })}
-                        </div>
-                      </div>
-                      
-                      {/* Section 2 : Autres commodités */}
-                      {form.watch('surrounding_amenities')?.filter(a => !ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id)).length > 0 && (
-                        <div className="bg-gray-50 rounded-lg border">
-                          <details open>
-                            <summary className="p-4 cursor-pointer font-semibold text-sm text-gray-700 hover:bg-gray-100">
-                              <span className="inline-flex items-center gap-2">
-                                <ChevronDown className="h-4 w-4" />
-                                Autres commodités ({form.watch('surrounding_amenities')?.filter(a => !ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id)).length})
-                                <span className="text-xs font-normal text-gray-500 ml-2">
-                                  Cliquez les cases pour sélectionner celles à afficher
-                                </span>
-                              </span>
-                            </summary>
-                            <div className="p-4 pt-0">
-                              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                                {form.watch('surrounding_amenities')
-                                  ?.filter(a => !ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id))
-                                  ?.sort((a, b) => a.distance_km - b.distance_km)
-                                  ?.map((amenity, idx) => {
-                                    const option = amenityOptions.find(opt => opt.value === amenity.nearby_amenity_id);
-                                    if (!option) return null;
-                                    
-                                    const isSelected = selectedAmenities.has(amenity.nearby_amenity_id || '');
-                                    
-                                    return (
-                              <div 
-                                key={`other-${amenity.nearby_amenity_id}-${idx}`} 
-                                className={`bg-white rounded-lg p-3 border transition-all hover:shadow-md ${
-                                  isSelected ? 'ring-2 ring-gray-500 bg-gray-50' : ''
-                                }`}
-                              >
-                                        <div className="flex items-center gap-2">
-                                           <input
-                                             type="checkbox"
-                                             checked={isSelected}
-                                             onChange={() => {
-                                               console.log('🔴 CHECKBOX CLICK DÉTECTÉ - AUTRE !');
-                                               console.log('- Amenity ID:', amenity.nearby_amenity_id);
-                                               console.log('- Type:', typeof amenity.nearby_amenity_id);
-                                               console.log('- isSelected avant:', isSelected);
-                                               console.log('- selectedAmenities avant:', Array.from(selectedAmenities));
-                                               
-                                               // VERSION ULTRA SIMPLE
-                                               const newSelected = new Set(selectedAmenities);
-                                               if (isSelected) {
-                                                 console.log('- ACTION: Supprimer');
-                                                 newSelected.delete(amenity.nearby_amenity_id);
-                                               } else {
-                                                 console.log('- ACTION: Ajouter');
-                                                 newSelected.add(amenity.nearby_amenity_id);
-                                               }
-                                               
-                                               console.log('- newSelected après:', Array.from(newSelected));
-                                               setSelectedAmenities(newSelected);
-                                               console.log('- setSelectedAmenities appelé');
-                                             }}
-                                             className="h-4 w-4 text-gray-600 rounded border-gray-300 cursor-pointer"
-                                           />
-                                          <span className="text-gray-600">{option.icon}</span>
-                                          <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-medium">{option.label}</p>
-                                            <p className="text-xs text-gray-500">{amenity.distance_km} km</p>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    );
-                                  })}
-                              </div>
-                            </div>
-                          </details>
-                        </div>
-                      )}
-                      
-                      {/* Note d'information */}
-                      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                        <p className="text-xs text-amber-800">
-                          <strong>💡 Info :</strong> Cliquez sur les cases ou les cartes pour sélectionner les commodités qui apparaîtront sur le site public. 
-                          Les commodités essentielles sont pré-sélectionnées par défaut.
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-                      <MapPin className="mx-auto h-12 w-12 text-gray-400" />
-                      <p className="mt-2 text-sm text-gray-600">Aucune commodité détectée</p>
-                    </div>
-                  )}
-                </div>
+            {/* GRILLE OPTIMISÉE : 50/50 */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* COLONNE GAUCHE : Commodités */}
+              <div>
+                <ModernDistancesSection
+                  detectedAmenities={form.watch('surrounding_amenities') || []}
+                  selectedAmenities={selectedAmenities}
+                  onToggleAmenity={(id) => {
+                    const newSelected = new Set(selectedAmenities);
+                    if (newSelected.has(id)) {
+                      newSelected.delete(id);
+                    } else {
+                      newSelected.add(id);
+                    }
+                    setSelectedAmenities(newSelected);
+                  }}
+                  onSelectAll={() => {
+                    const amenities = form.watch('surrounding_amenities') || [];
+                    if (selectedAmenities.size === amenities.length) {
+                      setSelectedAmenities(new Set());
+                    } else {
+                      const allIds = new Set<string>(amenities.map(a => a.nearby_amenity_id));
+                      setSelectedAmenities(allIds);
+                    }
+                  }}
+                  proximitySeaKm={form.watch('proximity_sea_km')}
+                  proximityCityCenterKm={form.watch('proximity_city_center_km')}
+                  proximityHighwayKm={form.watch('proximity_highway_km')}
+                  proximityAirportKm={form.watch('proximity_airport_km')}
+                  gpsLatitude={form.watch('gps_latitude')}
+                  gpsLongitude={form.watch('gps_longitude')}
+                />
               </div>
 
-              {/* COLONNE DROITE : Carte (2/5) */}
-              <div className="lg:col-span-2">
+              {/* COLONNE DROITE : Carte */}
+              <div>
                 <div className="sticky top-4">
-                  <h4 className="font-medium text-sm mb-3">Visualisation sur carte</h4>
+                  <h4 className="font-medium text-sm text-gray-700 mb-3">Carte</h4>
                   {(() => {
                     const lat = form.watch('gps_latitude');
                     const lng = form.watch('gps_longitude');
@@ -2161,7 +1904,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       );
                     } else {
                       return (
-                        <div className="h-[500px] bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+                        <div className="h-[900px] bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
                           <div className="text-center text-gray-500">
                             <MapPin className="h-12 w-12 mx-auto mb-3 opacity-30" />
                             <p className="text-sm">Entrez une adresse pour afficher la carte</p>
@@ -3593,11 +3336,11 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     case 'marketing':
       return renderMarketingStep();
     case 'project-amenities':
-      return <ProjectEquipmentsStep form={form} />;
+      return <div>Project Amenities Step (TODO)</div>;
     case 'legal-compliance':
-      return <LegalComplianceStep form={form} />;
+      return <div>Legal Compliance Step (TODO)</div>;
     case 'utilities-services':
-      return <UtilitiesServicesStep form={form} />;
+      return <div>Utilities Services Step (TODO)</div>;
     case 'summary':
       return renderSummaryStep();
     default:

@@ -46,6 +46,9 @@ const AdminProjectForm: React.FC = () => {
       
       // Location
       full_address: '',
+      street_address: '', // ✅ AJOUTÉ
+      postal_code: '', // ✅ AJOUTÉ
+      district: '', // ✅ AJOUTÉ
       city: '',
       region: '',
       neighborhood: '',
@@ -191,6 +194,9 @@ const AdminProjectForm: React.FC = () => {
           
           // LOCATION
           full_address: projectData.full_address || '',
+          street_address: projectData.street_address || '', // ✅ AJOUTÉ
+          postal_code: projectData.postal_code || '', // ✅ AJOUTÉ
+          district: projectData.district || '', // ✅ AJOUTÉ
           city: projectData.city || '',
           region: projectData.region || '',
           neighborhood: projectData.neighborhood || '',
