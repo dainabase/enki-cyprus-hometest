@@ -103,16 +103,27 @@ export default function HeroSection({ project }: HeroSectionProps) {
           {project.title}
         </h1>
 
-        <button
-          className="px-12 py-4 bg-white text-black text-sm tracking-wider uppercase font-medium hover:bg-white/90 transition-all duration-300"
-          onClick={() => {
-            document.getElementById('contact-form')?.scrollIntoView({
-              behavior: 'smooth'
-            });
-          }}
-        >
-          Inquire
-        </button>
+        <div className="flex flex-col sm:flex-row gap-4 items-center">
+          <button
+            className="px-12 py-4 bg-white text-black text-sm tracking-wider uppercase font-medium hover:bg-white/90 transition-all duration-300"
+            onClick={() => {
+              document.getElementById('contact-form')?.scrollIntoView({
+                behavior: 'smooth'
+              });
+            }}
+          >
+            Je suis intéressé
+          </button>
+          <button
+            className="px-12 py-4 bg-transparent border border-white text-white text-sm tracking-wider uppercase font-medium hover:bg-white/10 transition-all duration-300"
+            onClick={() => {
+              // TODO: Implement brochure download
+              console.log('Download brochure');
+            }}
+          >
+            Télécharger la brochure
+          </button>
+        </div>
       </div>
 
       {/* KPI Stats cards */}
