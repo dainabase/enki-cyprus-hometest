@@ -1,5 +1,5 @@
 import { useProjectTypologies } from '@/hooks/useProjectTypologies';
-import { Loader2, Home, Check, Clock, X } from 'lucide-react';
+import { Loader as Loader2, Chrome as Home, Check, Clock, X } from 'lucide-react';
 
 interface Section5Props {
   projectId: string;
