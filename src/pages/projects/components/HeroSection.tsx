@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { formatPrice } from '@/lib/utils/formatters';
+import { formatPrice, formatArea } from '@/lib/utils/formatters';
+import { MapPin, Calendar, Chrome as Home, Ruler, Euro, TrendingUp } from 'lucide-react';
 
 interface HeroSectionProps {
   project: any;
@@ -35,8 +36,43 @@ export default function HeroSection({ project }: HeroSectionProps) {
   const city = project.city || project.location?.city || project.location?.address || 'Cyprus';
   const price = project.price_from || project.price_from_new || project.price;
 
+  const quickStats = [
+    {
+      icon: <MapPin className="w-6 h-6" />,
+      label: 'Location',
+      value: `${project.city}${project.district ? `, ${project.district}` : ''}`,
+    },
+    {
+      icon: <Calendar className="w-6 h-6" />,
+      label: 'Completion',
+      value: project.completion_date || project.expected_completion || 'To be announced',
+    },
+    {
+      icon: <Home className="w-6 h-6" />,
+      label: 'Units',
+      value: `${project.total_units || 'Multiple'} units`,
+    },
+    {
+      icon: <Ruler className="w-6 h-6" />,
+      label: 'Size Range',
+      value: project.square_meters_min && project.square_meters_max
+        ? `${formatArea(project.square_meters_min)} - ${formatArea(project.square_meters_max)}`
+        : 'Various sizes',
+    },
+    {
+      icon: <Euro className="w-6 h-6" />,
+      label: 'Price From',
+      value: project.price_from ? formatPrice(project.price_from) : 'On Request',
+    },
+    {
+      icon: <TrendingUp className="w-6 h-6" />,
+      label: 'ROI',
+      value: project.roi_estimate_percent ? `${project.roi_estimate_percent}%` : 'N/A',
+    },
+  ];
+
   return (
-    <section className="relative w-full h-screen bg-black">
+    <section className="relative w-full h-screen bg-black flex flex-col">
       {/* Background */}
       <div className="absolute inset-0">
         {videoUrl && !videoError ? (
@@ -68,7 +104,7 @@ export default function HeroSection({ project }: HeroSectionProps) {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center">
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 text-center">
         <p className="text-white/60 text-sm tracking-[0.2em] uppercase mb-8 font-light">
           {city}
         </p>
@@ -95,9 +131,28 @@ export default function HeroSection({ project }: HeroSectionProps) {
         </button>
       </div>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2">
-        <div className="w-[1px] h-16 bg-white/30" />
+      {/* KPI Stats at bottom */}
+      <div className="relative z-10 bg-black/40 backdrop-blur-sm border-t border-white/10">
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-12 py-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 lg:gap-8">
+            {quickStats.map((stat, index) => (
+              <div
+                key={index}
+                className="text-center"
+              >
+                <div className="flex justify-center mb-2 text-white/40">
+                  {stat.icon}
+                </div>
+                <p className="text-xs uppercase tracking-wider text-white/40 mb-1 font-medium">
+                  {stat.label}
+                </p>
+                <p className="text-sm md:text-base font-light text-white">
+                  {stat.value}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
