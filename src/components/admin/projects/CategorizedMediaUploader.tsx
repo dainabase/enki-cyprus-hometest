@@ -436,15 +436,14 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
 
                 {/* Photo Actions & Caption */}
                 <div className="space-y-3">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-center gap-2">
                     <Button
                       size="sm"
                       variant={currentPhoto.isPrimary ? "default" : "outline"}
                       onClick={() => setPrimary(selectedPhotoIndex!)}
-                      className="flex-1"
                     >
                       <Star className={`w-4 h-4 mr-2 ${currentPhoto.isPrimary ? 'fill-current' : ''}`} />
-                      {currentPhoto.isPrimary ? 'Photo principale' : 'Définir comme principale'}
+                      {currentPhoto.isPrimary ? 'Principale' : 'Définir principale'}
                     </Button>
                     
                     <Button
