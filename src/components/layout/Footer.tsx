@@ -1,199 +1,135 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
+import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
-
-  const links = {
-    navigation: [
-      { name: 'Accueil', href: '/' },
-      { name: 'Projets', href: '/projects' },
-      { name: 'Recherche IA', href: '/search' },
-      { name: 'Conseil Fiscal IA', href: '/lexaia' },
-      { name: 'Blog', href: '/blog' },
-      { name: 'À Propos', href: '/about' },
-      { name: 'Contact', href: '/contact' },
-    ],
-    legal: [
-      { name: 'Mentions légales', href: '/legal' },
-      { name: 'Politique de confidentialité', href: '/privacy-policy' },
-      { name: 'RGPD', href: '/gdpr' },
-      { name: 'Cookies', href: '/cookies' },
-    ],
-    social: [
-      { icon: Facebook, href: 'https://facebook.com', label: 'Facebook' },
-      { icon: Instagram, href: 'https://instagram.com', label: 'Instagram' },
-      { icon: Linkedin, href: 'https://linkedin.com', label: 'LinkedIn' },
-    ],
-  };
+  const socialLinks = [
+    { icon: Facebook, href: '#', label: 'Facebook' },
+    { icon: Instagram, href: '#', label: 'Instagram' },
+    { icon: Linkedin, href: '#', label: 'LinkedIn' },
+  ];
 
   return (
-    <footer className="w-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
-      {/* Main Footer Content */}
-      <div className="w-full py-16 px-4 md:px-8 lg:px-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-          {/* Brand Column */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="space-y-6"
-          >
-            <Link to="/" className="inline-block group">
-              <h3 className="swaarg-large-title text-white group-hover:text-primary transition-colors">
-                ENKI-REALTY
-              </h3>
-            </Link>
-            <p className="swaarg-body text-white/70 leading-relaxed">
+    <footer className="bg-card border-t border-border">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* Company Info */}
+          <div className="space-y-4">
+            <div className="swaarg-large-title text-primary hover:scale-105 transition-transform duration-200">
+              ENKI-REALTY
+            </div>
+            <p className="swaarg-body">
               Votre partenaire de confiance pour l'immobilier premium à Chypre.
               Découvrez des propriétés d'exception avec notre expertise locale.
             </p>
-            <div className="flex space-x-3">
-              {links.social.map((social) => (
+            <div className="flex space-x-4">
+              {socialLinks.map((social, index) => (
                 <motion.a
                   key={social.label}
                   href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="w-10 h-10 rounded-lg bg-white/10 hover:bg-primary flex items-center justify-center transition-colors"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="p-2 rounded-lg bg-accent hover:bg-primary hover:text-primary-foreground transition-colors"
                   aria-label={social.label}
                 >
-                  <social.icon className="w-5 h-5" />
+                  <social.icon className="w-4 h-4" />
                 </motion.a>
               ))}
             </div>
-          </motion.div>
+          </div>
 
-          {/* Navigation Column */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="space-y-4"
-          >
-            <h4 className="swaarg-card-title mb-6">Navigation</h4>
-            <ul className="space-y-3">
-              {links.navigation.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    to={link.href}
-                    className="swaarg-body text-white/70 hover:text-white hover:translate-x-1 inline-flex items-center group transition-all"
-                  >
-                    <ArrowRight className="w-4 h-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
+          {/* Quick Links */}
+          <div className="space-y-4">
+            <h3 className="swaarg-card-title">Navigation</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/" className="swaarg-body hover:text-primary transition-colors">
+                  Accueil
+                </Link>
+              </li>
+              <li>
+                <Link to="/search" className="swaarg-body hover:text-primary transition-colors">
+                  Recherche
+                </Link>
+              </li>
+              <li>
+                <Link to="/projects" className="swaarg-body hover:text-primary transition-colors">
+                  Projets
+                </Link>
+              </li>
+              <li>
+                <Link to="/blog" className="swaarg-body hover:text-primary transition-colors">
+                  Blog
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" className="swaarg-body hover:text-primary transition-colors">
+                  À Propos
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="swaarg-body hover:text-primary transition-colors">
+                  Contact
+                </Link>
+              </li>
             </ul>
-          </motion.div>
+          </div>
 
-          {/* Contact Column */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="space-y-4"
-          >
-            <h4 className="swaarg-card-title mb-6">Contact</h4>
-            <div className="space-y-4">
-              <motion.div
-                whileHover={{ x: 4 }}
-                className="flex items-start space-x-3 text-white/70 hover:text-white transition-colors"
-              >
-                <MapPin className="w-5 h-5 mt-1 text-primary flex-shrink-0" />
-                <span className="swaarg-body">
-                  Limassol Marina<br />
-                  Chypre
-                </span>
-              </motion.div>
-              <motion.a
-                href="tel:+35725123456"
-                whileHover={{ x: 4 }}
-                className="flex items-center space-x-3 text-white/70 hover:text-white transition-colors"
-              >
-                <Phone className="w-5 h-5 text-primary flex-shrink-0" />
-                <span className="swaarg-body">+357 25 123 456</span>
-              </motion.a>
-              <motion.a
-                href="mailto:contact@enki-realty.com"
-                whileHover={{ x: 4 }}
-                className="flex items-center space-x-3 text-white/70 hover:text-white transition-colors"
-              >
-                <Mail className="w-5 h-5 text-primary flex-shrink-0" />
-                <span className="swaarg-body">contact@enki-realty.com</span>
-              </motion.a>
-            </div>
-          </motion.div>
+          {/* Services */}
+          <div className="space-y-4">
+            <h3 className="swaarg-card-title">Services</h3>
+            <ul className="space-y-2">
+              <li className="swaarg-body">Vente de propriétés</li>
+              <li className="swaarg-body">Location saisonnière</li>
+              <li className="swaarg-body">Gestion locative</li>
+              <li className="swaarg-body">Conseil en investissement</li>
+              <li className="swaarg-body">Évaluation immobilière</li>
+            </ul>
+          </div>
 
-          {/* Newsletter Column */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-            className="space-y-4"
-          >
-            <h4 className="swaarg-card-title mb-6">Newsletter</h4>
-            <p className="swaarg-body text-white/70">
-              Restez informé de nos derniers programmes immobiliers
-            </p>
+          {/* Contact */}
+          <div className="space-y-4">
+            <h3 className="swaarg-card-title">Contact</h3>
             <div className="space-y-3">
-              <input
-                type="email"
-                placeholder="Votre email"
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:border-primary transition-colors"
-              />
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full px-4 py-3 rounded-lg bg-primary hover:bg-primary/90 text-white font-medium transition-colors"
-              >
-                S'inscrire
-              </motion.button>
+              <div className="flex items-center space-x-2">
+                <MapPin className="w-4 h-4 text-primary" />
+                <span className="swaarg-body">Limassol Marina, Chypre</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Phone className="w-4 h-4 text-primary" />
+                <span className="swaarg-body">+357 25 123 456</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Mail className="w-4 h-4 text-primary" />
+                <span className="swaarg-body">contact@enki-realty.com</span>
+              </div>
             </div>
-          </motion.div>
+          </div>
         </div>
 
-        {/* Divider */}
-        <div className="w-full h-px bg-white/10 mb-8" />
-
-        {/* Bottom Bar */}
-        <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="swaarg-body text-white/60 text-center md:text-left"
-          >
-            © {currentYear} ENKI-REALTY. Tous droits réservés.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="flex flex-wrap justify-center gap-6"
-          >
-            {links.legal.map((link) => (
-              <Link
-                key={link.name}
-                to={link.href}
-                className="swaarg-body text-white/60 hover:text-white transition-colors text-sm"
-              >
-                {link.name}
-              </Link>
-            ))}
-          </motion.div>
+        {/* Bottom Section */}
+        <div className="border-t border-border mt-8 pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <div className="swaarg-body">
+              © 2025 ENKI-REALTY. Tous droits réservés.
+            </div>
+            <div className="flex flex-wrap space-x-6">
+              <a href="#" className="swaarg-body hover:text-primary transition-colors">
+                Mentions légales
+              </a>
+              <a href="#" className="swaarg-body hover:text-primary transition-colors">
+                Politique de confidentialité
+              </a>
+              <a href="#" className="swaarg-body hover:text-primary transition-colors">
+                RGPD
+              </a>
+              <a href="#" className="swaarg-body hover:text-primary transition-colors">
+                Cookies
+              </a>
+            </div>
+          </div>
         </div>
       </div>
-
-      {/* Design Accent */}
-      <div className="w-full h-1 bg-gradient-to-r from-primary via-cyan-500 to-primary" />
     </footer>
   );
 };

@@ -9,12 +9,9 @@ import { PropertyFormData } from '@/schemas/property.schema';
 
 interface DocumentationStepProps {
   form: UseFormReturn<PropertyFormData>;
-  inheritedData?: {
-    energy_rating?: string;
-  };
 }
 
-export const DocumentationStep: React.FC<DocumentationStepProps> = ({ form, inheritedData }) => {
+export const DocumentationStep: React.FC<DocumentationStepProps> = ({ form }) => {
   return (
     <div className="space-y-8">
       <Card className="border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-200">

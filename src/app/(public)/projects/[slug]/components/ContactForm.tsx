@@ -1,19 +1,38 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { formatPrice } from '@/lib/utils/formatters';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
+import { 
+  MessageSquare, 
+  Phone, 
+  Mail, 
+  MapPin,
+  Send,
+  CheckCircle,
+  User,
+  Calendar
+} from 'lucide-react';
+import { getWhatsAppUrl } from '@/lib/utils/formatters';
 
 interface ContactFormProps {
   project: any;
 }
 
 export default function ContactForm({ project }: ContactFormProps) {
+  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
     phone: '',
     message: '',
+    interestedIn: 'viewing',
+    contactPreference: 'email'
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -22,10 +41,18 @@ export default function ContactForm({ project }: ContactFormProps) {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleStep1Submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (formData.firstName && formData.email) {
+      setStep(2);
+    }
+  };
+
+  const handleFinalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-
+    
+    // Simulate form submission
     try {
       await new Promise(resolve => setTimeout(resolve, 2000));
       setIsSubmitted(true);
@@ -36,174 +63,230 @@ export default function ContactForm({ project }: ContactFormProps) {
     }
   };
 
-  const price = project.price_from_new || project.price_from || project.price;
-  const city = project.location?.city || project.location?.address || 'Cyprus';
+  const developer = project.developer;
+  const whatsappMessage = `Hi, I'm interested in ${project.title}. Could you please provide more information?`;
+  const whatsappUrl = developer?.phone_numbers?.[0] 
+    ? getWhatsAppUrl(developer.phone_numbers[0], whatsappMessage)
+    : '#';
 
   if (isSubmitted) {
     return (
-      <section id="contact-form" className="bg-black py-32 lg:py-48">
-        <div className="max-w-[600px] mx-auto px-6 text-center text-white">
-          <motion.h3
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-4xl md:text-5xl font-light mb-6 tracking-tight"
-          >
-            Thank You
-          </motion.h3>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-lg text-white/60 font-light mb-12"
-          >
-            We'll be in touch soon.
-          </motion.p>
-          <motion.button
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            whileHover={{ scale: 1.05 }}
-            onClick={() => {
-              setIsSubmitted(false);
-              setFormData({
-                name: '',
-                email: '',
-                phone: '',
-                message: '',
-              });
-            }}
-            className="px-8 py-3 bg-white text-black text-sm uppercase tracking-wider font-medium hover:bg-white/90 transition-all duration-300"
-          >
-            Send Another
-          </motion.button>
+      <section id="contact-form" className="py-16 bg-primary/5">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <Card className="max-w-md mx-auto text-center">
+            <CardContent className="p-8">
+              <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-4" />
+              <h3 className="text-2xl font-bold mb-2">Thank You!</h3>
+              <p className="text-muted-foreground mb-6">
+                We've received your inquiry and will contact you within 24 hours.
+              </p>
+              <Button 
+                onClick={() => {
+                  setIsSubmitted(false);
+                  setStep(1);
+                  setFormData({
+                    firstName: '',
+                    lastName: '',
+                    email: '',
+                    phone: '',
+                    message: '',
+                    interestedIn: 'viewing',
+                    contactPreference: 'email'
+                  });
+                }}
+                variant="outline"
+              >
+                Send Another Inquiry
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </section>
     );
   }
 
   return (
-    <section id="contact-form" className="bg-black py-32 lg:py-48">
-      <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
-        <div className="grid lg:grid-cols-2 gap-24 lg:gap-32">
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-white mb-12 tracking-tight">
-              Get in Touch
-            </h2>
+    <section id="contact-form" className="py-16 bg-primary/5">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold mb-4">Get in Touch</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            Ready to take the next step? Contact us for more information or to schedule a viewing.
+          </p>
+        </div>
 
-            <form onSubmit={handleSubmit} className="space-y-8">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.1 }}
-              >
-                <input
-                  type="text"
-                  placeholder="Name"
-                  value={formData.name}
-                  onChange={(e) => handleInputChange('name', e.target.value)}
-                  required
-                  className="w-full bg-transparent border-b border-white/20 py-4 text-white placeholder:text-white/40 focus:outline-none focus:border-white/60 transition-all duration-300 font-light text-lg"
-                />
-              </motion.div>
+        <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+          
+          {/* Contact Form */}
+          <div>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <MessageSquare className="w-5 h-5" />
+                  <span>Send us a Message</span>
+                </CardTitle>
+                <div className="flex space-x-2">
+                  <Badge variant={step === 1 ? "default" : "secondary"}>1. Contact Info</Badge>
+                  <Badge variant={step === 2 ? "default" : "secondary"}>2. Your Inquiry</Badge>
+                </div>
+              </CardHeader>
+              <CardContent>
+                
+                {/* Step 1 - Basic Info */}
+                {step === 1 && (
+                  <form onSubmit={handleStep1Submit} className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="firstName">First Name *</Label>
+                        <Input
+                          id="firstName"
+                          value={formData.firstName}
+                          onChange={(e) => handleInputChange('firstName', e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="lastName">Last Name</Label>
+                        <Input
+                          id="lastName"
+                          value={formData.lastName}
+                          onChange={(e) => handleInputChange('lastName', e.target.value)}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email Address *</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) => handleInputChange('email', e.target.value)}
+                        required
+                      />
+                    </div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.2 }}
-              >
-                <input
-                  type="email"
-                  placeholder="Email"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                  required
-                  className="w-full bg-transparent border-b border-white/20 py-4 text-white placeholder:text-white/40 focus:outline-none focus:border-white/60 transition-all duration-300 font-light text-lg"
-                />
-              </motion.div>
+                    <Button type="submit" className="w-full">
+                      Continue
+                    </Button>
+                  </form>
+                )}
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.3 }}
-              >
-                <input
-                  type="tel"
-                  placeholder="Phone"
-                  value={formData.phone}
-                  onChange={(e) => handleInputChange('phone', e.target.value)}
-                  className="w-full bg-transparent border-b border-white/20 py-4 text-white placeholder:text-white/40 focus:outline-none focus:border-white/60 transition-all duration-300 font-light text-lg"
-                />
-              </motion.div>
+                {/* Step 2 - Detailed Inquiry */}
+                {step === 2 && (
+                  <form onSubmit={handleFinalSubmit} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Phone Number</Label>
+                      <Input
+                        id="phone"
+                        type="tel"
+                        value={formData.phone}
+                        onChange={(e) => handleInputChange('phone', e.target.value)}
+                      />
+                    </div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.4 }}
-              >
-                <textarea
-                  placeholder="Message"
-                  value={formData.message}
-                  onChange={(e) => handleInputChange('message', e.target.value)}
-                  rows={4}
-                  className="w-full bg-transparent border-b border-white/20 py-4 text-white placeholder:text-white/40 focus:outline-none focus:border-white/60 transition-all duration-300 font-light text-lg resize-none"
-                />
-              </motion.div>
+                    <div className="space-y-2">
+                      <Label htmlFor="interestedIn">I'm interested in</Label>
+                      <select
+                        id="interestedIn"
+                        value={formData.interestedIn}
+                        onChange={(e) => handleInputChange('interestedIn', e.target.value)}
+                        className="w-full p-2 border rounded-md"
+                      >
+                        <option value="viewing">Scheduling a viewing</option>
+                        <option value="investment">Investment information</option>
+                        <option value="financing">Financing options</option>
+                        <option value="golden-visa">Golden Visa process</option>
+                        <option value="general">General information</option>
+                      </select>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="message">Message</Label>
+                      <Textarea
+                        id="message"
+                        placeholder="Tell us more about your requirements..."
+                        rows={4}
+                        value={formData.message}
+                        onChange={(e) => handleInputChange('message', e.target.value)}
+                      />
+                    </div>
 
-              <motion.button
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.5 }}
-                whileHover={{ scale: 1.05 }}
-                type="submit"
-                disabled={isSubmitting}
-                className="px-12 py-4 bg-white text-black text-sm tracking-wider uppercase font-medium hover:bg-white/90 transition-all duration-300 disabled:opacity-50"
-              >
-                {isSubmitting ? 'Sending...' : 'Send Inquiry'}
-              </motion.button>
-            </form>
-          </motion.div>
+                    <div className="flex space-x-3">
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        onClick={() => setStep(1)}
+                        className="flex-1"
+                      >
+                        Back
+                      </Button>
+                      <Button 
+                        type="submit" 
+                        disabled={isSubmitting}
+                        className="flex-1"
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                            Sending...
+                          </>
+                        ) : (
+                          <>
+                            <Send className="w-4 h-4 mr-2" />
+                            Send Inquiry
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </form>
+                )}
+              </CardContent>
+            </Card>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="space-y-12 text-white lg:pt-32"
-          >
-            <div>
-              <p className="text-xs uppercase tracking-wider text-white/40 mb-2 font-medium">
-                Property
-              </p>
-              <p className="text-xl font-light">{project.title}</p>
-            </div>
+          {/* Contact Information */}
+          <div className="space-y-6">
+            
+            {/* Property Information */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Property Information</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Property</span>
+                  <span className="font-medium">{project.title}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Location</span>
+                  <span className="font-medium">{project.city || project.cyprus_zone}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Price from</span>
+                  <span className="font-medium">€{project.price_from_new || project.price}</span>
+                </div>
+              </CardContent>
+            </Card>
 
-            <div>
-              <p className="text-xs uppercase tracking-wider text-white/40 mb-2 font-medium">
-                Location
-              </p>
-              <p className="text-xl font-light">{city}</p>
-            </div>
-
-            {price && (
-              <div>
-                <p className="text-xs uppercase tracking-wider text-white/40 mb-2 font-medium">
-                  Price From
-                </p>
-                <p className="text-xl font-light">{formatPrice(price)}</p>
-              </div>
-            )}
-          </motion.div>
+            {/* Quick Schedule */}
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-4">
+                  <Calendar className="w-8 h-8 text-primary" />
+                  <div>
+                    <h3 className="font-semibold">Schedule a Viewing</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Available 7 days a week, 9 AM - 6 PM
+                    </p>
+                  </div>
+                  <Button variant="outline">
+                    Book Now
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </section>

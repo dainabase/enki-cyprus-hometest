@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Chrome as Home, Search, Euro, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { Property } from '@/types/property';
-import { deleteProperty } from '@/lib/api/properties';
+import { PropertyGlobalModal } from '@/components/admin/properties/PropertyGlobalModal';
+import { Property, PropertyFormData } from '@/types/property';
+import { createProperty, updateProperty, deleteProperty } from '@/lib/api/properties';
 import { toast } from 'sonner';
 import { PropertyCardView } from '@/components/admin/properties/PropertyCardView';
 import { PropertyListView } from '@/components/admin/properties/PropertyListView';
@@ -20,6 +21,8 @@ const AdminProperties = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [editingProperty, setEditingProperty] = useState(null);
   const [currentView, setCurrentView] = useState<PropertyViewType>('cards');
   const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
 
@@ -41,6 +44,34 @@ const AdminProperties = () => {
 
       if (error) throw error;
       return (data || []) as Property[];
+    }
+  });
+
+  // Create property mutation
+  const createMutation = useMutation({
+    mutationFn: ({ projectId, data }: { projectId: string; data: PropertyFormData }) => 
+      createProperty(projectId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['all-properties'] });
+      toast.success('Propriété créée avec succès');
+    },
+    onError: (error) => {
+      toast.error('Erreur lors de la création de la propriété');
+      console.error(error);
+    }
+  });
+
+  // Update property mutation
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<PropertyFormData> }) => 
+      updateProperty(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['all-properties'] });
+      toast.success('Propriété modifiée avec succès');
+    },
+    onError: (error) => {
+      toast.error('Erreur lors de la modification de la propriété');
+      console.error(error);
     }
   });
 
@@ -74,16 +105,20 @@ const AdminProperties = () => {
     totalValue: properties.reduce((sum, p) => sum + (p.price_including_vat || 0), 0)
   };
 
-  const handleEditProperty = (property) => {
-    console.log('[AdminProperties] Editing property:', property);
-    console.log('[AdminProperties] Property ID:', property?.id);
-    if (!property?.id) {
-      toast.error('ID de propriété manquant');
-      return;
+  const handleSaveProperty = async (data: PropertyFormData) => {
+    const projectId = properties.find(p => p.building_id === data.building_id)?.project_id;
+    
+    if (editingProperty) {
+      await updateMutation.mutateAsync({ id: editingProperty.id, data });
+    } else if (projectId) {
+      await createMutation.mutateAsync({ projectId, data });
     }
-    const url = `/admin/properties/${property.id}/edit`;
-    console.log('[AdminProperties] Navigating to:', url);
-    navigate(url);
+    setEditingProperty(null);
+  };
+
+  const handleEditProperty = (property) => {
+    setEditingProperty(property);
+    setShowModal(true);
   };
 
   const handleDeleteProperty = async (id: string) => {
@@ -121,7 +156,7 @@ const AdminProperties = () => {
               Gérez toutes les propriétés de votre portefeuille immobilier
             </p>
           </div>
-          <Button onClick={() => navigate('/admin/properties/new')} className="gap-2 bg-gradient-to-r from-[hsl(199,63%,59%)] to-[hsl(199,63%,65%)] hover:from-[hsl(199,63%,55%)] hover:to-[hsl(199,63%,60%)] shadow-md hover:shadow-lg transition-all">
+          <Button onClick={() => setShowModal(true)} className="gap-2 bg-gradient-to-r from-[hsl(199,63%,59%)] to-[hsl(199,63%,65%)] hover:from-[hsl(199,63%,55%)] hover:to-[hsl(199,63%,60%)] shadow-md hover:shadow-lg transition-all">
             <Plus className="h-4 w-4" />
             Nouvelle propriété
           </Button>
@@ -186,15 +221,15 @@ const AdminProperties = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-[hsl(199,63%,95%)] to-[hsl(199,63%,90%)] border-2 border-[hsl(199,63%,75%)] hover:border-[hsl(199,63%,65%)] hover:shadow-lg transition-all duration-300">
+        <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-[hsl(199,63%,40%)]">Valeur totale</p>
-                <p className="text-xl font-bold text-[hsl(199,63%,30%)]">€{stats.totalValue.toLocaleString()}</p>
+                <p className="text-sm font-medium text-blue-700">Valeur totale</p>
+                <p className="text-xl font-bold text-blue-900">€{stats.totalValue.toLocaleString()}</p>
               </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-[hsl(199,63%,80%)] to-[hsl(199,63%,70%)] rounded-xl flex items-center justify-center">
-                <Euro className="h-6 w-6 text-[hsl(199,63%,40%)]" />
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center">
+                <Euro className="h-6 w-6 text-blue-700" />
               </div>
             </div>
           </CardContent>
@@ -208,7 +243,7 @@ const AdminProperties = () => {
           <Input
             type="text"
             placeholder="Rechercher par code, unité, bâtiment ou projet..."
-            className="pl-10 border-2 border-slate-200 focus:border-[hsl(199,63%,59%)] focus:ring-[hsl(199,63%,59%)]"
+            className="pl-10 border-2 border-slate-200 focus:border-blue-500 focus:ring-blue-500"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -295,6 +330,14 @@ const AdminProperties = () => {
         </>
       )}
 
+      {/* Property Modal */}
+      <PropertyGlobalModal
+        open={showModal}
+        onOpenChange={setShowModal}
+        property={editingProperty}
+        onSave={handleSaveProperty}
+        isLoading={createMutation.isPending || updateMutation.isPending}
+      />
     </div>
   );
 };

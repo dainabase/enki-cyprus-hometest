@@ -9,12 +9,19 @@ import { useNavigate } from 'react-router-dom';
 
 import { fetchAllBuildings, deleteBuilding } from '@/lib/api/buildings';
 import { toast } from 'sonner';
+import { BuildingCardView } from '@/components/admin/buildings/BuildingCardView';
+import { BuildingListView } from '@/components/admin/buildings/BuildingListView';
 import BuildingsTable from '@/components/admin/buildings/BuildingsTable';
+import { BuildingCompactView } from '@/components/admin/buildings/BuildingCompactView';
+import { BuildingDetailedView } from '@/components/admin/buildings/BuildingDetailedView';
+import { BuildingViewSelector, BuildingViewType } from '@/components/admin/buildings/BuildingViewSelector';
 
 const AdminBuildings = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState('');
+  const [currentView, setCurrentView] = useState<BuildingViewType>('cards');
+  const [selectedBuildings, setSelectedBuildings] = useState<string[]>([]);
 
   // Fetch tous les bâtiments avec leurs projets
   const { data: buildings = [], isLoading } = useQuery({
@@ -160,19 +167,22 @@ const AdminBuildings = () => {
         </Card>
       </div>
 
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-5 w-5" />
-        <Input
-          type="text"
-          placeholder="Rechercher par nom, projet ou type..."
-          className="pl-10 border-2 border-slate-200 focus:border-blue-500 focus:ring-blue-500"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+      {/* Search and View Selector */}
+      <div className="flex items-center gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-5 w-5" />
+          <Input
+            type="text"
+            placeholder="Rechercher par nom, projet ou type..."
+            className="pl-10 border-2 border-slate-200 focus:border-blue-500 focus:ring-blue-500"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <BuildingViewSelector currentView={currentView} onViewChange={setCurrentView} />
       </div>
 
-      {/* Buildings Table */}
+      {/* Buildings Views */}
       {isLoading ? (
         <div className="text-center py-12">Chargement...</div>
       ) : filteredBuildings.length === 0 ? (
@@ -192,12 +202,59 @@ const AdminBuildings = () => {
           </CardContent>
         </Card>
       ) : (
-        <BuildingsTable
-          buildings={filteredBuildings}
-          onEdit={handleEditBuilding}
-          onRefetch={() => queryClient.invalidateQueries({ queryKey: ['all-buildings'] })}
-          isLoading={isLoading}
-        />
+        <>
+          {currentView === 'cards' && (
+            <BuildingCardView
+              buildings={filteredBuildings}
+              onEdit={handleEditBuilding}
+              onDelete={handleDeleteBuilding}
+              onManage={handleManageBuilding}
+              selectedBuildings={selectedBuildings}
+              onSelectionChange={setSelectedBuildings}
+            />
+          )}
+          {currentView === 'list' && (
+            <BuildingListView
+              buildings={filteredBuildings}
+              onEdit={handleEditBuilding}
+              onDelete={handleDeleteBuilding}
+              onManage={handleManageBuilding}
+              selectedBuildings={selectedBuildings}
+              onSelectionChange={setSelectedBuildings}
+            />
+          )}
+          {currentView === 'table' && (
+            <BuildingsTable
+              buildings={filteredBuildings}
+              onEdit={handleEditBuilding}
+              onDelete={handleDeleteBuilding}
+              onManage={handleManageBuilding}
+              selectedBuildings={selectedBuildings}
+              onSelectionChange={setSelectedBuildings}
+              isLoading={isLoading}
+            />
+          )}
+          {currentView === 'compact' && (
+            <BuildingCompactView
+              buildings={filteredBuildings}
+              onEdit={handleEditBuilding}
+              onDelete={handleDeleteBuilding}
+              onManage={handleManageBuilding}
+              selectedBuildings={selectedBuildings}
+              onSelectionChange={setSelectedBuildings}
+            />
+          )}
+          {currentView === 'detailed' && (
+            <BuildingDetailedView
+              buildings={filteredBuildings}
+              onEdit={handleEditBuilding}
+              onDelete={handleDeleteBuilding}
+              onManage={handleManageBuilding}
+              selectedBuildings={selectedBuildings}
+              onSelectionChange={setSelectedBuildings}
+            />
+          )}
+        </>
       )}
     </div>
   );

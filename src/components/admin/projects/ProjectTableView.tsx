@@ -295,16 +295,25 @@ export const ProjectTableView = ({
                 )}
               </TableCell>
               <TableCell className="py-4">
-                {/* Date de livraison - afficher completion_month ou completion_date_new */}
-                {project.completion_month || project.completion_date_new ? (
+                {/* Date de livraison */}
+                {project.completion_month ? (
+                  <div className="flex items-center gap-1 text-slate-600">
+                    <Calendar className="h-3 w-3" />
+                    <span className="text-xs">{project.completion_month}</span>
+                  </div>
+                ) : (
+                  <span className="text-slate-400">-</span>
+                )}
+              </TableCell>
+              <TableCell className="py-4">
+                {project.completion_date_new ? (
                   <div className="flex items-center gap-1 text-slate-600">
                     <Calendar className="h-3 w-3" />
                     <span className="text-xs">
-                      {project.completion_month ||
-                       (project.completion_date_new && new Date(project.completion_date_new).toLocaleDateString('fr-FR', {
-                        year: 'numeric',
-                        month: 'short'
-                      }))}
+                      {new Date(project.completion_date_new).toLocaleDateString('fr-FR', { 
+                        year: 'numeric', 
+                        month: 'short' 
+                      })}
                     </span>
                   </div>
                 ) : (

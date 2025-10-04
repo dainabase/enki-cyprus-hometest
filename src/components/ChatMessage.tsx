@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { Property } from '@/lib/supabase';
 import PropertyCard from '@/components/ui/PropertyCard';
 
-export interface ChatMessage {
+interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;

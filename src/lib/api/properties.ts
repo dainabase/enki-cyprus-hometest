@@ -77,80 +77,24 @@ export const createProperty = async (projectId: string, propertyData: PropertyFo
   return data as Property;
 };
 
-// Liste EXHAUSTIVE des champs valides en base de données
-const VALID_DB_FIELDS = new Set([
-  'project_id', 'building_id', 'developer_id', 'property_code', 'unit_number',
-  'property_type', 'property_status', 'floor_number', 'position_in_floor', 'orientation',
-  'internal_area', 'covered_verandas', 'uncovered_verandas', 'balcony_area', 'terrace_area',
-  'private_garden_area', 'roof_garden_area', 'bedrooms_count', 'bathrooms_count', 'wc_count',
-  'has_office', 'has_maid_room', 'has_laundry_room', 'has_dressing_room', 'has_playroom',
-  'has_wine_cellar', 'has_pantry', 'total_rooms', 'kitchen_type', 'kitchen_brand',
-  'has_kitchen_appliances', 'appliances_list', 'hvac_type', 'heating_type',
-  'flooring_type', 'windows_type', 'doors_type', 'smart_home_features', 'security_features',
-  'balcony_count', 'terrace_count', 'has_private_garden', 'has_private_pool', 'pool_type',
-  'parking_spaces', 'parking_type', 'storage_spaces', 'storage_area', 'view_type',
-  'price_excluding_vat', 'vat_rate', 'commission_rate', 'original_price', 'current_price',
-  'deposit_percentage', 'reservation_fee', 'payment_plan_available', 'payment_plan_details',
-  'finance_available', 'minimum_cash_required', 'annual_property_tax', 'communal_fees_monthly',
-  'maintenance_fee_monthly', 'title_deed_status', 'planning_permit_number', 'building_permit_number',
-  'occupancy_certificate', 'energy_certificate_number', 'energy_rating', 'cadastral_reference',
-  'internal_notes', 'public_description'
-]);
-
 export const updateProperty = async (id: string, propertyData: Partial<PropertyFormData>): Promise<Property> => {
-  // FILTRER: ne garder QUE les champs valides en base
-  const updateData: any = {};
-
-  Object.keys(propertyData).forEach(key => {
-    if (VALID_DB_FIELDS.has(key)) {
-      let value = (propertyData as any)[key];
-
-      // Convertir empty string en null
-      if (value === '' || value === undefined) {
-        value = null;
-      }
-
-      updateData[key] = value;
-    } else {
-      console.warn(`[updateProperty] ⚠️  Champ ignoré (n'existe pas en base): ${key}`);
-    }
-  });
-
-  // Forcer payment_plan_details à être un array
-  if (updateData.payment_plan_details && typeof updateData.payment_plan_details === 'object' && !Array.isArray(updateData.payment_plan_details)) {
-    updateData.payment_plan_details = [];
-  }
-
-  // Mapper orientation: front-end (north) -> DB (N)
-  const orientationMap: Record<string, string> = {
-    'north': 'N',
-    'south': 'S',
-    'east': 'E',
-    'west': 'W',
-    'north_east': 'NE',
-    'north_west': 'NW',
-    'south_east': 'SE',
-    'south_west': 'SW'
-  };
-
-  if (updateData.orientation && orientationMap[updateData.orientation]) {
-    updateData.orientation = orientationMap[updateData.orientation];
-  }
-
+  let updateData: any = { ...propertyData };
+  
   // Recalculer TVA si prix change
-  if (updateData.price_excluding_vat) {
-    const vatRate = updateData.vat_rate || 5.0;
-    const vatAmount = (updateData.price_excluding_vat * vatRate) / 100;
-    updateData.vat_amount = vatAmount;
-    updateData.price_including_vat = updateData.price_excluding_vat + vatAmount;
-    updateData.golden_visa_eligible = updateData.price_including_vat >= 300000;
-
-    if (updateData.internal_area) {
-      updateData.price_per_sqm = updateData.price_excluding_vat / updateData.internal_area;
+  if (propertyData.price_excluding_vat) {
+    const vatRate = propertyData.vat_rate || 5.0;
+    const vatAmount = (propertyData.price_excluding_vat * vatRate) / 100;
+    updateData = {
+      ...updateData,
+      vat_amount: vatAmount,
+      price_including_vat: propertyData.price_excluding_vat + vatAmount,
+      golden_visa_eligible: propertyData.price_excluding_vat >= 300000
+    };
+    
+    if (propertyData.internal_area) {
+      updateData.price_per_sqm = propertyData.price_excluding_vat / propertyData.internal_area;
     }
   }
-
-  console.log('[updateProperty] ✅ Filtered fields:', Object.keys(updateData).sort());
 
   const { data, error } = await supabase
     .from('properties')
@@ -159,13 +103,7 @@ export const updateProperty = async (id: string, propertyData: Partial<PropertyF
     .select()
     .single();
 
-  if (error) {
-    console.error('[updateProperty] ❌ Supabase error:', error);
-    console.error('[updateProperty] 📋 Data sent:', updateData);
-    throw error;
-  }
-
-  console.log('[updateProperty] ✅ Update successful');
+  if (error) throw error;
   return data as Property;
 };
 

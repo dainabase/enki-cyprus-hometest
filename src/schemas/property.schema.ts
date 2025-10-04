@@ -3,13 +3,15 @@ import { z } from 'zod';
 export const propertySchema = z.object({
   // STEP 1: IDENTIFICATION
   project_id: z.string().uuid("Sélectionnez un projet"),
-  building_id: z.union([z.string(), z.null()]).default(null)
+  building_id: z.string().nullable().optional()
     .transform(val => val === '' ? null : val),
   unit_number: z.string().min(1, "Numéro d'unité requis"),
   property_code: z.string().optional(),
   property_type: z.enum(['apartment', 'villa', 'penthouse', 'studio', 'townhouse', 'duplex', 'triplex', 'maisonette']),
   property_sub_type: z.string().optional(),
   property_status: z.enum(['available', 'reserved', 'sold', 'rented', 'unavailable']).default('available'),
+  sale_type: z.enum(['sale', 'rent', 'both']).default('sale'),
+  ownership_type: z.enum(['freehold', 'leasehold', 'shared_ownership']).default('freehold'),
 
   // STEP 2: CONFIGURATION & SURFACES
   bedrooms_count: z.number().min(0).max(20),
@@ -54,7 +56,7 @@ export const propertySchema = z.object({
   terrace_area: z.number().min(0).optional(),
   has_private_garden: z.boolean().default(false),
   has_private_pool: z.boolean().default(false),
-  pool_type: z.enum(['private', 'shared', 'communal']).optional().nullable(),
+  pool_type: z.enum(['private', 'shared', 'communal']).optional(),
   parking_spaces: z.number().min(0).default(0),
   parking_type: z.enum(['garage', 'covered', 'uncovered']).optional(),
   storage_spaces: z.number().min(0).default(0),
@@ -70,9 +72,9 @@ export const propertySchema = z.object({
   deposit_percentage: z.number().min(0).max(100).default(30),
   reservation_fee: z.number().min(0).default(5000),
   payment_plan_available: z.boolean().default(false),
-  payment_plan_details: z.union([z.record(z.any()), z.array(z.any())]).optional().nullable(),
+  payment_plan_details: z.record(z.any()).optional(),
   finance_available: z.boolean().default(false),
-  minimum_cash_required: z.number().min(0).optional().nullable(),
+  minimum_cash_required: z.number().min(0).optional(),
   annual_property_tax: z.number().min(0).optional(),
   communal_fees_monthly: z.number().min(0).optional(),
   maintenance_fee_monthly: z.number().min(0).optional(),
