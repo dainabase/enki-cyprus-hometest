@@ -107,10 +107,10 @@ export default function HeroSection({ project }: HeroSectionProps) {
       </motion.div>
 
       {/* Content */}
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 text-center">
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-start pt-[15vh] px-6 text-center">
         {/* Location with slide from left */}
         <motion.div
-          className="flex items-center gap-2 mb-6"
+          className="flex items-center gap-2 mb-4"
           initial={{ x: -100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{
@@ -126,7 +126,7 @@ export default function HeroSection({ project }: HeroSectionProps) {
 
         {/* Title with clip path reveal */}
         <motion.div
-          className="overflow-hidden mb-12 max-w-7xl"
+          className="overflow-hidden mb-8 max-w-7xl"
           initial={{ clipPath: "inset(0 100% 0 0)" }}
           animate={{ clipPath: "inset(0 0% 0 0)" }}
           transition={{
