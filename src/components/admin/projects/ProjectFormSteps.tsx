@@ -29,19 +29,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { ProjectEquipmentsStep } from './steps/ProjectEquipmentsStep';
 import { LegalComplianceStep } from './steps/LegalComplianceStep';
 import { UtilitiesServicesStep } from './steps/UtilitiesServicesStep';
-import { 
-  Building, MapPin, Home, Zap, Landmark, Building2, Waves, Shield, 
-  Sprout, Accessibility, Map as MapIcon, Palmtree, Users, Heart,
-  HardHat, Palette, Sparkles, FileText, CreditCard, Gift, 
-  PiggyBank, BarChart3, Youtube, Video, Headphones, Smartphone,
-  Globe, Search, Star, Target, Link, Plus, Brain,
-  Stethoscope, Smile, PawPrint, ShoppingCart, Store, ShoppingBag, 
-  School, GraduationCap, Library, Globe2, Baby, BookOpen, Bus, Car, 
-  Plane, Anchor, Fuel, Mail, Trees, Flag, Dumbbell, Circle, Dice1, 
-  Film, Drama, UtensilsCrossed, Coffee, Wine, Pizza, Utensils, Music, Church,
-  Navigation, Route, Loader2, ParkingSquare as ParkingCircle, Train, 
-  Croissant, Flame, Camera, Hotel, Shirt, Scissors, ChevronRight, ChevronDown, Eye, EyeOff, Clock
-} from 'lucide-react';
+import { Building, MapPin, Chrome as Home, Zap, Landmark, Building2, Waves, Shield, Sprout, Accessibility, Map as MapIcon, TreePalm as Palmtree, Users, Heart, HardHat, Palette, Sparkles, FileText, CreditCard, Gift, PiggyBank, ChartBar as BarChart3, Youtube, Video, Headphones, Smartphone, Globe, Search, Star, Target, Link, Plus, Brain, Stethoscope, Smile, PawPrint, ShoppingCart, Store, ShoppingBag, School, GraduationCap, Library, Globe as Globe2, Baby, BookOpen, Bus, Car, Plane, Anchor, Fuel, Mail, Trees, Flag, Dumbbell, Circle, Dice1, Film, Drama, UtensilsCrossed, Coffee, Wine, Pizza, Utensils, Music, Church, Navigation, Route, Loader as Loader2, SquareParking as ParkingCircle, Brain as Train, Croissant, Flame, Camera, Hotel, Shirt, Scissors, ChevronRight, ChevronDown, Eye, EyeOff, Clock } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 import { debounce } from 'lodash';
