@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, LogIn, LogOut, UserCog, Chrome as Home, Search, Building, Info, Mail, Brain, BookOpen } from 'lucide-react';
@@ -17,6 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, profile, isAuthenticated, isAdmin, signOut, loading } = useAuth();
@@ -38,13 +39,22 @@ const Navbar = () => {
 
   const isActive = (path: string) => location.pathname === path;
 
-  // Fermer le menu au clic en dehors
+  // Fonction de fermeture du menu
+  const closeMenu = useCallback(() => {
+    setIsOpen(false);
+  }, []);
+
+  // Fermer le menu lors du changement de route
+  useEffect(() => {
+    closeMenu();
+  }, [location.pathname, closeMenu]);
+
+  // Fermer le menu au clic en dehors (avec ref pour éviter querySelector)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
-      const nav = document.querySelector('nav');
-      if (isOpen && nav && !nav.contains(target)) {
-        setIsOpen(false);
+      if (isOpen && navRef.current && !navRef.current.contains(target)) {
+        closeMenu();
       }
     };
 
@@ -55,32 +65,42 @@ const Navbar = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isOpen]);
+  }, [isOpen, closeMenu]);
 
   // Verrouiller le scroll du body quand le menu mobile est ouvert
   useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    
     if (isOpen) {
       document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = originalOverflow;
     }
 
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = originalOverflow;
     };
   }, [isOpen]);
 
-  // Fermer le menu mobile si on redimensionne vers desktop
+  // Fermer le menu mobile si on redimensionne vers desktop (avec debounce)
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    
     const handleResize = () => {
-      if (window.innerWidth >= 768 && isOpen) {
-        setIsOpen(false);
-      }
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        if (window.innerWidth >= 768 && isOpen) {
+          closeMenu();
+        }
+      }, 150);
     };
 
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [isOpen]);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(timeoutId);
+    };
+  }, [isOpen, closeMenu]);
 
   const handleLogout = async () => {
     try {
@@ -101,7 +121,7 @@ const Navbar = () => {
     } catch (error) {
       console.error('Logout error:', error);
     }
-    setIsOpen(false);
+    closeMenu();
   };
 
   const getUserInitials = () => {
@@ -122,11 +142,14 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border shadow-sm">
+    <nav 
+      ref={navRef}
+      className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border shadow-sm"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center">
+          <Link to="/" onClick={closeMenu} className="flex items-center">
             <span className="text-2xl font-bold text-foreground hover:text-primary transition-colors">
               ENKI-REALTY
             </span>
@@ -140,7 +163,6 @@ const Navbar = () => {
                 <Link
                   key={item.name}
                   to={item.href}
-                  onClick={() => setIsOpen(false)}
                   className={`flex items-center px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
                     isActive(item.href)
                       ? 'text-primary bg-accent shadow-sm'
@@ -166,7 +188,6 @@ const Navbar = () => {
                     <Link
                       key={item.name}
                       to={item.href}
-                      onClick={() => setIsOpen(false)}
                       className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
                         isActive(item.href)
                           ? 'text-primary bg-accent shadow-sm'
@@ -229,21 +250,23 @@ const Navbar = () => {
             size="sm"
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden"
+            aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu"}
+            aria-expanded={isOpen}
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </Button>
         </div>
       </div>
 
-      {/* Mobile Navigation - Outside container */}
-      <AnimatePresence>
+      {/* Mobile Navigation */}
+      <AnimatePresence mode="wait">
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="absolute top-full left-0 right-0 md:hidden border-t border-border bg-background shadow-lg z-50"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className="md:hidden border-t border-border bg-background shadow-lg overflow-hidden"
           >
             <div className="px-4 py-3 space-y-1 max-h-[calc(100vh-4rem)] overflow-y-auto">
               {allNavigation.map((item) => {
@@ -252,10 +275,7 @@ const Navbar = () => {
                   <Link
                     key={item.name}
                     to={item.href}
-                    onClick={() => {
-                      // Délai pour permettre l'animation de fermeture
-                      setTimeout(() => setIsOpen(false), 100);
-                    }}
+                    onClick={closeMenu}
                     className={`flex items-center px-3 py-2 text-base font-medium rounded-md transition-colors ${
                       isActive(item.href)
                         ? 'text-primary bg-accent'
@@ -308,7 +328,7 @@ const Navbar = () => {
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      setIsOpen(false);
+                      closeMenu();
                       navigate('/login');
                     }}
                     className="w-full justify-start"
