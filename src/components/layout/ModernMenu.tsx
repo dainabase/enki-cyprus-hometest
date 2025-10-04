@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import { ArrowRight, LogIn, LogOut, User } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { useEffect } from "react";
 
 const ModernMenu = () => {
   const [active, setActive] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
   const { isAuthenticated, isAdmin, signOut, user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   useScrollLock(active);
 
   const LINKS = [
@@ -22,6 +25,22 @@ const ModernMenu = () => {
     { title: "À propos", href: "/about" },
     { title: "Contact", href: "/contact" },
   ];
+
+  // Fermer le menu automatiquement lors du changement de route
+  useEffect(() => {
+    setActive(false);
+  }, [location.pathname]);
+
+  // Toggle menu avec protection anti-spam
+  const toggleMenu = () => {
+    if (isAnimating) return;
+    
+    setIsAnimating(true);
+    setActive(!active);
+    
+    // Débloquer après l'animation
+    setTimeout(() => setIsAnimating(false), 600);
+  };
 
   const handleLogout = async () => {
     try {
@@ -84,7 +103,8 @@ const ModernMenu = () => {
       <motion.button
         initial={false}
         animate={active ? "open" : "closed"}
-        onClick={() => setActive(!active)}
+        onClick={toggleMenu}
+        disabled={isAnimating}
         className={`group fixed right-4 top-4 z-50 h-12 w-12 bg-primary hover:bg-primary-hover transition-all rounded-lg ${
           active ? "rounded-bl-lg rounded-tr-lg" : "rounded-lg"
         }`}
@@ -131,7 +151,6 @@ const ModernMenu = () => {
             >
               <Link 
                 to="/" 
-                onClick={() => setActive(false)}
                 className="swaarg-large-title text-white hover:text-white/80 transition-colors"
               >
                 ΣNKI<span className="mx-1">-</span>REALTY
@@ -162,7 +181,6 @@ const ModernMenu = () => {
                   >
                     <Link
                       to={link.href}
-                      onClick={() => setActive(false)}
                       className="block group"
                     >
                       <span className="swaarg-large-title text-white/70 hover:text-white transition-all duration-300 whitespace-nowrap">
@@ -196,7 +214,6 @@ const ModernMenu = () => {
                       >
                         <Link
                           to="/admin"
-                          onClick={() => setActive(false)}
                           className="block group"
                         >
                           <span className="swaarg-card-title text-white/70 hover:text-white transition-all duration-300">
@@ -251,7 +268,6 @@ const ModernMenu = () => {
                   >
                     <Link
                       to="/login"
-                      onClick={() => setActive(false)}
                       className="block group"
                     >
                       <span className="swaarg-card-title text-white/70 hover:text-white transition-all duration-300">
@@ -277,7 +293,6 @@ const ModernMenu = () => {
             >
               <Link 
                 to="/contact"
-                onClick={() => setActive(false)}
               >
                 <button className="group flex items-center gap-3 bg-white text-primary px-6 md:px-8 py-3 md:py-4 rounded-lg hover:bg-white/90 transition-all">
                   <span className="swaarg-button">
