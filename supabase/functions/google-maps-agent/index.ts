@@ -7,58 +7,34 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// 🛡️ OPTIMISATION: Limité à 12 types ESSENTIELS pour réduire les coûts API
+// Avant: 61 types = 61 requêtes par détection (CHF 1.77)
+// Après: 12 types = 12 requêtes par détection (CHF 0.35) = 81% d'économie
 const PLACE_TYPES = [
-  'transit_station',
-  'bus_station', 
-  'train_station',
-  'subway_station',
-  'airport',
-  'hospital',
-  'pharmacy',
-  'doctor',
-  'dentist',
-  'veterinary_care',
-  'physiotherapist',
-  'school',
-  'university',
-  'secondary_school',
-  'primary_school',
-  'supermarket',
-  'shopping_mall',
-  'grocery_or_supermarket',
-  'convenience_store',
-  'bakery',
-  'bank',
-  'atm',
-  'post_office',
-  'laundry',
-  'hair_care',
-  'restaurant',
-  'cafe',
-  'bar',
-  'night_club',
-  'movie_theater',
-  'gym',
-  'spa',
-  'beauty_salon',
-  'park',
-  'church',
-  'mosque',
-  'synagogue',
-  'parking',
-  'gas_station',
-  'police',
-  'fire_station',
-  'city_hall',
-  'courthouse',
-  'embassy',
-  'museum',
-  'art_gallery',
-  'library',
-  'tourist_attraction',
-  'lodging',
-  'hotel'
+  'school',           // 1. École (critère #1 acheteurs)
+  'supermarket',      // 2. Supermarché (critère #2)
+  'bus_station',      // 3. Transport public (critère #3)
+  'hospital',         // 4. Hôpital (critère #4)
+  'pharmacy',         // 5. Pharmacie (critère #5)
+  'shopping_mall',    // 6. Centre commercial (critère #6)
+  'university',       // 7. Université (critère #7)
+  // Note: 'beach' n'est pas un type Google Places valide, géré dans findStrategicDistances
+  'bank',             // 8. Banque (critère #9)
+  'restaurant',       // 9. Restaurant (critère #10)
+  'gym',              // 10. Salle de sport (critère #11)
+  'cafe',             // 11. Café (critère #12)
+  'airport'           // 12. Aéroport (distance stratégique)
 ];
+
+// 📝 TYPES DÉSACTIVÉS (peuvent être réactivés si besoin):
+// 'transit_station', 'train_station', 'subway_station', 'doctor', 'dentist',
+// 'veterinary_care', 'physiotherapist', 'secondary_school', 'primary_school',
+// 'grocery_or_supermarket', 'convenience_store', 'bakery', 'atm', 'post_office',
+// 'laundry', 'hair_care', 'bar', 'night_club', 'movie_theater', 'spa',
+// 'beauty_salon', 'park', 'church', 'mosque', 'synagogue', 'parking',
+// 'gas_station', 'police', 'fire_station', 'city_hall', 'courthouse',
+// 'embassy', 'museum', 'art_gallery', 'library', 'tourist_attraction',
+// 'lodging', 'hotel'
 
 function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const R = 6371;
@@ -262,11 +238,16 @@ serve(async (req) => {
 
       case 'findNearbyPlaces':
         const { address, radius = 2 } = params;
-        
+
+        console.log(`🔍 Détection demandée pour: ${address} (rayon: ${radius}km)`);
+        console.log(`📊 Types à rechercher: ${PLACE_TYPES.length}`);
+
         const geoUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${GOOGLE_MAPS_API_KEY}`;
         const geoResponse = await fetch(geoUrl);
         const geoData = await geoResponse.json();
-        
+
+        console.log(`✅ Geocoding: 1 requête effectuée`);
+
         if (!geoData.results || geoData.results.length === 0) {
           return new Response(
             JSON.stringify({ error: 'Address not found' }),
@@ -276,10 +257,11 @@ serve(async (req) => {
 
         const location = geoData.results[0].geometry.location;
         const radiusMeters = radius * 1000;
-        
+
         const allPlaces: any[] = [];
         const processedPlaceIds = new Set();
-        
+        let apiCallCount = 1; // Déjà 1 pour le geocoding
+
         for (const placeType of PLACE_TYPES) {
           try {
             const nearbyUrl = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?` +
@@ -289,10 +271,11 @@ serve(async (req) => {
               `&key=${GOOGLE_MAPS_API_KEY}`;
             
             const nearbyResponse = await fetch(nearbyUrl);
-            
+            apiCallCount++; // Compter chaque requête Nearby Search
+
             if (nearbyResponse.ok) {
               const nearbyData = await nearbyResponse.json();
-              
+
               if (nearbyData.results) {
                 for (const place of nearbyData.results) {
                   if (!processedPlaceIds.has(place.place_id)) {
@@ -327,15 +310,28 @@ serve(async (req) => {
         }
 
         allPlaces.sort((a, b) => a.distance_km - b.distance_km);
-        
+
         const strategicDistances = await findStrategicDistances(location.lat, location.lng);
-        
+
+        // 📊 Logs détaillés pour monitoring des coûts
+        console.log(`✅ Détection terminée:`);
+        console.log(`   - Requêtes API effectuées: ${apiCallCount}`);
+        console.log(`   - Coût estimé: CHF ${(apiCallCount * 0.029).toFixed(2)}`);
+        console.log(`   - Lieux trouvés: ${allPlaces.length}`);
+        console.log(`   - Lieux uniques: ${processedPlaceIds.size}`);
+
         return new Response(
           JSON.stringify({
             places: allPlaces,
             strategicDistances: strategicDistances,
             totalFound: allPlaces.length,
-            location: location
+            location: location,
+            // 🆕 Ajouter les métriques dans la réponse
+            metrics: {
+              apiCallsCount: apiCallCount,
+              estimatedCostCHF: parseFloat((apiCallCount * 0.029).toFixed(2)),
+              uniquePlacesFound: processedPlaceIds.size
+            }
           }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );

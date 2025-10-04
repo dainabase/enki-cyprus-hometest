@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -63,6 +63,13 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
   const [detectedCount, setDetectedCount] = useState(0);
   const [showMap, setShowMap] = useState(false);
   const [selectedAmenities, setSelectedAmenities] = useState<Set<string>>(new Set());
+
+  // 🛡️ PROTECTION: Flag pour bloquer les appels simultanés
+  const isDetectionInProgress = useRef(false);
+
+  // 🛡️ PROTECTION: Ref pour éviter la boucle infinie useEffect
+  const amenitiesLengthRef = useRef(0);
+  const isInitializedRef = useRef(false);
 
   // COMMODITÉS ESSENTIELLES (12 critères d'achat prioritaires)
   const ESSENTIAL_AMENITIES = [
@@ -1211,14 +1218,24 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
   const handleDetectAll = async () => {
     const address = form.watch('full_address') || '';
-    
+
     if (!address) {
       toast.error('Veuillez entrer une adresse');
       return;
     }
 
+    // 🛡️ PROTECTION: Bloquer les appels simultanés et les boucles infinies
+    if (isDetectionInProgress.current) {
+      console.warn('⚠️ Détection déjà en cours - Appel ignoré pour éviter la boucle infinie');
+      toast.warning('Détection déjà en cours...', {
+        description: 'Veuillez patienter'
+      });
+      return;
+    }
+
+    isDetectionInProgress.current = true;
     setIsDetecting(true);
-    
+
     try {
       console.log('🚀 Début de la détection automatique');
       console.log('📍 Adresse:', address);
@@ -1276,11 +1293,18 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
         );
         setSelectedAmenities(preSelected);
 
-        // AJOUTER CES LOGS POUR DÉBUGGER
+        // 📊 Afficher les métriques de coût API
+        if (result.metrics) {
+          console.log('💰 MÉTRIQUES API:');
+          console.log(`   - Requêtes effectuées: ${result.metrics.apiCallsCount}`);
+          console.log(`   - Coût estimé: CHF ${result.metrics.estimatedCostCHF}`);
+          console.log(`   - Lieux uniques: ${result.metrics.uniquePlacesFound}`);
+        }
+
         console.log('🎯 Commodités détectées:', nearbyAmenities.length);
         console.log('✅ Pré-sélectionnées:', preSelected.size);
         console.log('📋 État selectedAmenities:', Array.from(preSelected));
-        
+
         if (result.strategicDistances) {
           const distances = {
             nearest_beach: result.strategicDistances.nearest_beach || 0,
@@ -1303,9 +1327,18 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           console.log('- Aéroport Paphos:', distances.paphos_airport_distance, 'km');
           console.log('- Centre-ville:', distances.city_center_distance, 'km');
           console.log('- Autoroute:', distances.highway_distance, 'km');
-          
+
+          // 🆕 Toast avec métriques de coût
+          const metricsText = result.metrics
+            ? `Coût: CHF ${result.metrics.estimatedCostCHF} (${result.metrics.apiCallsCount} requêtes)`
+            : '';
+
           toast.success(
-            `✅ Détection complète! ${nearbyAmenities.length} types de commodités trouvés`
+            `✅ Détection complète! ${nearbyAmenities.length} types de commodités trouvés`,
+            {
+              description: metricsText,
+              duration: 5000
+            }
           );
         } else {
           console.warn('⚠️ Distances stratégiques non disponibles');
@@ -1322,62 +1355,66 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
       toast.error('Erreur lors de la détection automatique');
     } finally {
       setIsDetecting(false);
+      isDetectionInProgress.current = false; // 🛡️ Libérer le verrou
       console.log('🏁 Détection terminée');
     }
   };
 
-  // Initialiser les commodités sélectionnées UNE SEULE FOIS
+  // 🛡️ CORRECTION: Initialiser les commodités sélectionnées UNE SEULE FOIS (sans boucle infinie)
   useEffect(() => {
-    console.log('🔍 USEEFFECT 1 - INITIALISATION');
-    // Ne s'exécute qu'au premier chargement ou quand de nouvelles commodités sont détectées
     const amenities = form.watch('surrounding_amenities') || [];
-    console.log('- Amenities détectées:', amenities.length);
-    console.log('- selectedAmenities.size actuel:', selectedAmenities.size);
-    
-    // Si selectedAmenities est vide ET qu'on a des commodités, initialiser avec les essentielles
-    if (selectedAmenities.size === 0 && amenities.length > 0) {
-      const selected = new Set<string>(
-        amenities
-          .filter(a => ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id || ''))
-          .map(a => a.nearby_amenity_id || '')
-      );
-      console.log('- Initialisation avec:', Array.from(selected));
-      setSelectedAmenities(selected);
-    } else {
-      console.log('- Pas d\'initialisation (déjà des sélections ou pas d\'amenities)');
-    }
-    // NE PAS réinitialiser si l'utilisateur a déjà fait des sélections
-  }, [form.watch('surrounding_amenities')?.length]); // Surveiller seulement la longueur, pas le contenu
+    const currentLength = amenities.length;
 
-  // Synchroniser les sélections vers le formulaire - VERSION SIMPLIFIÉE
+    // Ne déclencher QUE si la longueur a VRAIMENT changé (évite re-render inutiles)
+    if (currentLength !== amenitiesLengthRef.current) {
+      console.log('🔍 USEEFFECT 1 - Détection changement:', amenitiesLengthRef.current, '->', currentLength);
+      amenitiesLengthRef.current = currentLength;
+
+      // Initialiser SEULEMENT si jamais initialisé ET qu'on a des commodités
+      if (!isInitializedRef.current && amenities.length > 0) {
+        const selected = new Set<string>(
+          amenities
+            .filter(a => ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id || ''))
+            .map(a => a.nearby_amenity_id || '')
+        );
+        console.log('✅ Initialisation unique avec:', Array.from(selected));
+        setSelectedAmenities(selected);
+        isInitializedRef.current = true; // Marquer comme initialisé
+      }
+    }
+  }, [form.watch('surrounding_amenities')?.length]);
+
+  // 🛡️ CORRECTION: Synchroniser UNIQUEMENT lors du changement de sélection par l'utilisateur
+  // Ne PAS synchroniser automatiquement pour éviter la boucle infinie
   useEffect(() => {
-    console.log('🔍 USEEFFECT 2 - SYNCHRONISATION');
+    if (!isInitializedRef.current) {
+      console.log('⏭️ USEEFFECT 2 - Skip (pas encore initialisé)');
+      return; // Ne rien faire tant qu'on n'est pas initialisé
+    }
+
     const currentAmenities = form.watch('surrounding_amenities');
-    console.log('- selectedAmenities:', Array.from(selectedAmenities));
-    console.log('- currentAmenities length:', currentAmenities?.length || 0);
-    
+
     if (!currentAmenities || currentAmenities.length === 0) {
-      console.log('- Pas d\'amenities, sortie');
       return;
     }
-    
-    // Sauvegarder les sélections dans le formulaire pour la persistance
-    const updatedAmenities = currentAmenities.map(a => ({
-      ...a,
-      selected: selectedAmenities.has(a.nearby_amenity_id || '')
-    }));
-    
-    // Utiliser une comparaison JSON pour éviter les boucles infinies
-    const currentJSON = JSON.stringify(currentAmenities.map(a => a.selected));
-    const newJSON = JSON.stringify(updatedAmenities.map(a => a.selected));
-    
-    if (currentJSON !== newJSON) {
-      console.log('- Mise à jour du formulaire nécessaire');
+
+    // Vérifier si au moins une sélection a changé
+    const hasChanges = currentAmenities.some(a => {
+      const isSelected = selectedAmenities.has(a.nearby_amenity_id || '');
+      return a.selected !== isSelected;
+    });
+
+    if (hasChanges) {
+      console.log('🔄 USEEFFECT 2 - Synchronisation nécessaire');
+      const updatedAmenities = currentAmenities.map(a => ({
+        ...a,
+        selected: selectedAmenities.has(a.nearby_amenity_id || '')
+      }));
+
+      // ⚠️ CRITIQUE: shouldValidate: false pour éviter de re-déclencher le useEffect #1
       form.setValue('surrounding_amenities', updatedAmenities, { shouldValidate: false });
-    } else {
-      console.log('- Pas de mise à jour nécessaire');
     }
-  }, [selectedAmenities]); // Retirer 'form' de la dépendance
+  }, [selectedAmenities]); // Déclenché UNIQUEMENT par changement utilisateur
 
   // Fonction pour extraire les détails depuis une adresse complète
   const handleExtractAddressDetails = async () => {
