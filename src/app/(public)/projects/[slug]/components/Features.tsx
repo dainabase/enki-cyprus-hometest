@@ -2,10 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import {
-  Building2, Zap, Droplet, Wind, Shield, Wifi,
-  Car, Trees, Dumbbell, Home, Sun, Lock
-} from 'lucide-react';
+import { Building2, Zap, Droplet, Wind, Shield, Wifi, Car, Trees, Dumbbell, Chrome as Home, Sun, Lock } from 'lucide-react';
 
 interface FeaturesProps {
   project: any;
