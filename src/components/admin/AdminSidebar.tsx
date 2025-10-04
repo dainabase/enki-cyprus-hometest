@@ -100,9 +100,9 @@ const getNavigationStructure = (t: any) => ({
 export function AdminSidebar() {
   const location = useLocation();
   const { t } = useTranslation();
-  const { state } = useSidebar();
+  const { state, openMobile, setOpenMobile, isMobile } = useSidebar();
   const collapsed = state === "collapsed";
-  
+
   const navigation = getNavigationStructure(t);
   const [categoryStates, setCategoryStates] = useState(() => {
     const saved = localStorage.getItem('admin-sidebar-categories');
@@ -116,7 +116,12 @@ export function AdminSidebar() {
 
   const isActive = (path: string) => location.pathname === path;
 
-  // Auto-expand category if it contains active route
+  React.useEffect(() => {
+    if (isMobile && openMobile) {
+      setOpenMobile(false);
+    }
+  }, [location.pathname, isMobile, openMobile, setOpenMobile]);
+
   React.useEffect(() => {
     const currentPath = location.pathname;
     const newStates = { ...categoryStates };

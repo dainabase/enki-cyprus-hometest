@@ -1,12 +1,9 @@
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { AppShell } from '@/components/dainabase-ui';
-import { AdminSidebarExecutive } from '@/components/admin/AdminSidebarExecutive';
-import AdminFooter from '@/components/admin/AdminFooter';
+import { AdminSidebar } from '@/components/admin/AdminSidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
 import { useAuth } from '@/contexts/AuthContext';
 import { PrivateRoute } from '@/components/auth/PrivateRoute';
-import { Card } from '@/components/ui/card';
-import { CircleAlert as AlertCircle } from 'lucide-react';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
 // Import direct pour AdminOverview pour éviter les problèmes
@@ -42,20 +39,28 @@ const AdminReports = lazy(() => import('./AdminReports'));
 const AdminTests = lazy(() => import('./AdminTests'));
 
 const AdminHeader = () => (
-  <div className="sticky top-0 z-50 h-32 px-6 flex items-center justify-between bg-white border-b border-slate-200">
-    <div className="flex items-center gap-4">
-      <a href="/" className="text-2xl font-bold text-slate-900 hover:text-slate-700 transition-colors uppercase">
-        ENKI-REALTY
-      </a>
-      <span className="text-slate-400">|</span>
-      <span className="text-lg text-slate-500">Admin Dashboard</span>
+  <header className="sticky top-0 z-40 h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <div className="flex h-full items-center justify-between px-6">
+      <div className="flex items-center gap-4">
+        <a
+          href="/"
+          className="text-xl font-bold text-primary hover:text-primary/80 transition-colors uppercase tracking-tight"
+        >
+          ENKI-REALTY
+        </a>
+        <span className="text-muted-foreground">|</span>
+        <span className="text-sm text-muted-foreground font-medium">Admin Dashboard</span>
+      </div>
+      <div className="flex items-center gap-4">
+        <a
+          href="/"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          Retour au site
+        </a>
+      </div>
     </div>
-    <div className="flex items-center gap-4">
-      <a href="/" className="text-base text-slate-600 hover:text-slate-900 transition-colors">
-        Retour au site
-      </a>
-    </div>
-  </div>
+  </header>
 );
 
 const LoadingFallback = () => (
@@ -72,44 +77,50 @@ const AdminDashboard = () => {
 
   return (
     <PrivateRoute adminOnly>
-      <AppShell
-        variant="executive"
-        header={<AdminHeader />}
-        sidebar={<AdminSidebarExecutive />}
-      >
-        <Suspense fallback={<LoadingFallback />}>
-          <Routes>
-            <Route path="/" element={<AdminOverview />} />
-            <Route path="developers" element={<AdminDevelopers />} />
-            <Route path="projects" element={<AdminProjects />} />
-        <Route path="buildings" element={<AdminBuildings />} />
-        <Route path="buildings/new" element={<NewBuilding />} />
-        <Route path="buildings/:id/edit" element={<EditBuilding />} />
-        <Route path="properties" element={<AdminProperties />} />
-        <Route path="properties/new" element={<AdminPropertyForm />} />
-        <Route path="properties/:id/edit" element={<AdminPropertyForm />} />
-            <Route path="projects/new" element={<AdminProjectForm />} />
-            <Route path="projects/:id" element={<AdminProjectDetail />} />
-            <Route path="projects/:id/edit" element={<AdminProjectForm />} />
-            <Route path="projects/:id/dashboard" element={<ProjectDashboard />} />
-            <Route path="units" element={<AdminUnits />} />
-            <Route path="leads" element={<AdminLeads />} />
-            <Route path="pipeline" element={<AdminPipeline />} />
-            <Route path="commissions" element={<AdminCommissions />} />
-            <Route path="analytics" element={<AdminAnalytics />} />
-            <Route path="predictions" element={<AdminPredictions />} />
-            <Route path="segmentation" element={<AdminSegmentation />} />
-            <Route path="performance" element={<AdminPerformance />} />
-            <Route path="documentation" element={<AdminDocumentation />} />
-            <Route path="reports" element={<AdminReports />} />
-            <Route path="settings" element={<AdminSettings />} />
-            {process.env.NODE_ENV === 'development' && (
-              <Route path="tests" element={<AdminTests />} />
-            )}
-            <Route path="*" element={<Navigate to="/admin" replace />} />
-          </Routes>
-        </Suspense>
-      </AppShell>
+      <SidebarProvider defaultOpen={true}>
+        <div className="flex min-h-screen w-full">
+          <AdminSidebar />
+
+          <div className="flex flex-1 flex-col">
+            <AdminHeader />
+
+            <main className="flex-1 overflow-auto p-6">
+              <Suspense fallback={<LoadingFallback />}>
+                <Routes>
+                  <Route path="/" element={<AdminOverview />} />
+                  <Route path="developers" element={<AdminDevelopers />} />
+                  <Route path="projects" element={<AdminProjects />} />
+                  <Route path="buildings" element={<AdminBuildings />} />
+                  <Route path="buildings/new" element={<NewBuilding />} />
+                  <Route path="buildings/:id/edit" element={<EditBuilding />} />
+                  <Route path="properties" element={<AdminProperties />} />
+                  <Route path="properties/new" element={<AdminPropertyForm />} />
+                  <Route path="properties/:id/edit" element={<AdminPropertyForm />} />
+                  <Route path="projects/new" element={<AdminProjectForm />} />
+                  <Route path="projects/:id" element={<AdminProjectDetail />} />
+                  <Route path="projects/:id/edit" element={<AdminProjectForm />} />
+                  <Route path="projects/:id/dashboard" element={<ProjectDashboard />} />
+                  <Route path="units" element={<AdminUnits />} />
+                  <Route path="leads" element={<AdminLeads />} />
+                  <Route path="pipeline" element={<AdminPipeline />} />
+                  <Route path="commissions" element={<AdminCommissions />} />
+                  <Route path="analytics" element={<AdminAnalytics />} />
+                  <Route path="predictions" element={<AdminPredictions />} />
+                  <Route path="segmentation" element={<AdminSegmentation />} />
+                  <Route path="performance" element={<AdminPerformance />} />
+                  <Route path="documentation" element={<AdminDocumentation />} />
+                  <Route path="reports" element={<AdminReports />} />
+                  <Route path="settings" element={<AdminSettings />} />
+                  {process.env.NODE_ENV === 'development' && (
+                    <Route path="tests" element={<AdminTests />} />
+                  )}
+                  <Route path="*" element={<Navigate to="/admin" replace />} />
+                </Routes>
+              </Suspense>
+            </main>
+          </div>
+        </div>
+      </SidebarProvider>
     </PrivateRoute>
   );
 };
