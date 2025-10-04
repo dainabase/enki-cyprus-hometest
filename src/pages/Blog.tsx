@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Search, Building2, TrendingUp, Scale, Palmtree, Calendar, ArrowRight, User, Clock } from 'lucide-react';
+import { Search, Building2, TrendingUp, Scale, TreePalm as Palmtree, Calendar, ArrowRight, User, Clock } from 'lucide-react';
 import { SEOHead } from '@/components/SEOHead';
 import { fadeInUp, fadeInLeft, fadeInRight, scaleIn, staggerContainer } from '@/lib/animations';
 
