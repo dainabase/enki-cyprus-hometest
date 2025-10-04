@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
-import {
-  MapPin, Train, GraduationCap, Hospital, ShoppingCart,
-  Palmtree, Euro, TrendingUp
-} from 'lucide-react';
+import { MapPin, Brain as Train, GraduationCap, Hospital, ShoppingCart, TreePalm as Palmtree, Euro, TrendingUp } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/lib/supabase';
