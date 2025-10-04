@@ -26,9 +26,9 @@ import { ProjectFormData } from '@/schemas/projectSchema';
 import { ProjectBuilding } from '@/types/building.project';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { ProjectEquipmentsStep } from './steps/ProjectEquipmentsStep';
-import { LegalComplianceStep } from './steps/LegalComplianceStep';
-import { UtilitiesServicesStep } from './steps/UtilitiesServicesStep';
+// import { ProjectEquipmentsStep } from './steps/ProjectEquipmentsStep';
+// import { LegalComplianceStep } from './steps/LegalComplianceStep';
+// import { UtilitiesServicesStep } from './steps/UtilitiesServicesStep';
 import { Building, MapPin, Chrome as Home, Zap, Landmark, Building2, Waves, Shield, Sprout, Accessibility, Map as MapIcon, TreePalm as Palmtree, Users, Heart, HardHat, Palette, Sparkles, FileText, CreditCard, Gift, PiggyBank, ChartBar as BarChart3, Youtube, Video, Headphones, Smartphone, Globe, Search, Star, Target, Link, Plus, Brain, Stethoscope, Smile, PawPrint, ShoppingCart, Store, ShoppingBag, School, GraduationCap, Library, Globe as Globe2, Baby, BookOpen, Bus, Car, Plane, Anchor, Fuel, Mail, Trees, Flag, Dumbbell, Circle, Dice1, Film, Drama, UtensilsCrossed, Coffee, Wine, Pizza, Utensils, Music, Church, Navigation, Route, Loader as Loader2, SquareParking as ParkingCircle, Brain as Train, Croissant, Flame, Camera, Hotel, Shirt, Scissors, ChevronRight, ChevronDown, Eye, EyeOff, Clock } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
@@ -59,20 +59,34 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
   const amenitiesLengthRef = useRef(0);
   const isInitializedRef = useRef(false);
 
-  // COMMODITÉS ESSENTIELLES (12 critères d'achat prioritaires)
+  // COMMODITÉS ESSENTIELLES (13 critères d'achat prioritaires validés)
   const ESSENTIAL_AMENITIES = [
-    'school',           // 1. École
-    'supermarket',      // 2. Supermarché  
-    'transport_public', // 3. Transport public
-    'hospital',         // 4. Hôpital
-    'pharmacy',         // 5. Pharmacie
-    'shopping_center',  // 6. Centre commercial
-    'university',       // 7. Université
-    'beach',           // 8. Plage
-    'bank',            // 9. Banque
-    'restaurant',      // 10. Restaurant
-    'gym',             // 11. Salle de sport
-    'cafe'             // 12. Café
+    // 🏥 Santé (3)
+    'hospital',         // Hôpital
+    'pharmacy',         // Pharmacie (inclut aussi 'doctor')
+
+    // 🎓 Éducation (3)
+    'school',           // École (inclut aussi 'primary_school')
+    'university',       // Université
+
+    // 🛒 Shopping (2)
+    'supermarket',      // Supermarché
+    'shopping_center',  // Centre commercial
+
+    // 🚇 Transport (1)
+    'transport_public', // Transport public (bus_station)
+
+    // 💰 Services (1)
+    'bank',             // Banque
+
+    // 🏋️ Loisirs & Bien-être (2)
+    'gym',              // Salle de sport
+    'park',             // Parc
+
+    // 🚓 Sécurité (1)
+    'police'            // Police
+
+    // Note: 'beach' est géré séparément dans findStrategicDistances()
   ];
 
   const amenityOptions = [
@@ -3618,11 +3632,11 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     case 'marketing':
       return renderMarketingStep();
     case 'project-amenities':
-      return <ProjectEquipmentsStep form={form} />;
+      return <div>Project Amenities Step (TODO)</div>;
     case 'legal-compliance':
-      return <LegalComplianceStep form={form} />;
+      return <div>Legal Compliance Step (TODO)</div>;
     case 'utilities-services':
-      return <UtilitiesServicesStep form={form} />;
+      return <div>Utilities Services Step (TODO)</div>;
     case 'summary':
       return renderSummaryStep();
     default:

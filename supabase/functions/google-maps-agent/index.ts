@@ -7,34 +7,54 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// 🛡️ OPTIMISATION: Limité à 12 types ESSENTIELS pour réduire les coûts API
+// 🛡️ OPTIMISATION: 13 types VALIDÉS pour réduire les coûts API
 // Avant: 61 types = 61 requêtes par détection (CHF 1.77)
-// Après: 12 types = 12 requêtes par détection (CHF 0.35) = 81% d'économie
+// Après: 13 types = 13 requêtes par détection (CHF 0.38) = 79% d'économie
 const PLACE_TYPES = [
-  'school',           // 1. École (critère #1 acheteurs)
-  'supermarket',      // 2. Supermarché (critère #2)
-  'bus_station',      // 3. Transport public (critère #3)
-  'hospital',         // 4. Hôpital (critère #4)
-  'pharmacy',         // 5. Pharmacie (critère #5)
-  'shopping_mall',    // 6. Centre commercial (critère #6)
-  'university',       // 7. Université (critère #7)
-  // Note: 'beach' n'est pas un type Google Places valide, géré dans findStrategicDistances
-  'bank',             // 8. Banque (critère #9)
-  'restaurant',       // 9. Restaurant (critère #10)
-  'gym',              // 10. Salle de sport (critère #11)
-  'cafe',             // 11. Café (critère #12)
-  'airport'           // 12. Aéroport (distance stratégique)
+  // 🏥 Santé (3)
+  'hospital',         // Hôpital
+  'pharmacy',         // Pharmacie
+  'doctor',           // Médecin
+
+  // 🎓 Éducation (3)
+  'school',           // École
+  'university',       // Université
+  'primary_school',   // École primaire
+
+  // 🛒 Shopping (2)
+  'supermarket',      // Supermarché
+  'shopping_mall',    // Centre commercial
+
+  // 🚇 Transport (1)
+  'bus_station',      // Arrêt de bus
+
+  // 💰 Services (1)
+  'bank',             // Banque
+
+  // 🏋️ Loisirs & Bien-être (2)
+  'gym',              // Salle de sport
+  'park',             // Parc
+
+  // 🚓 Sécurité (1)
+  'police'            // Police
 ];
 
 // 📝 TYPES DÉSACTIVÉS (peuvent être réactivés si besoin):
-// 'transit_station', 'train_station', 'subway_station', 'doctor', 'dentist',
-// 'veterinary_care', 'physiotherapist', 'secondary_school', 'primary_school',
-// 'grocery_or_supermarket', 'convenience_store', 'bakery', 'atm', 'post_office',
-// 'laundry', 'hair_care', 'bar', 'night_club', 'movie_theater', 'spa',
-// 'beauty_salon', 'park', 'church', 'mosque', 'synagogue', 'parking',
-// 'gas_station', 'police', 'fire_station', 'city_hall', 'courthouse',
-// 'embassy', 'museum', 'art_gallery', 'library', 'tourist_attraction',
-// 'lodging', 'hotel'
+// Transport: 'transit_station', 'train_station', 'subway_station', 'airport'
+// Santé: 'dentist', 'veterinary_care', 'physiotherapist'
+// Éducation: 'secondary_school'
+// Shopping: 'grocery_or_supermarket', 'convenience_store', 'bakery'
+// Finance: 'atm', 'post_office'
+// Services: 'laundry', 'hair_care'
+// Restauration: 'restaurant', 'cafe', 'bar', 'night_club'
+// Loisirs: 'movie_theater', 'spa', 'beauty_salon'
+// Religion: 'church', 'mosque', 'synagogue'
+// Auto: 'parking', 'gas_station'
+// Sécurité: 'fire_station'
+// Administration: 'city_hall', 'courthouse', 'embassy'
+// Culture: 'museum', 'art_gallery', 'library', 'tourist_attraction'
+// Hébergement: 'lodging', 'hotel'
+// Note: 'beach' géré séparément dans findStrategicDistances()
 
 function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const R = 6371;
