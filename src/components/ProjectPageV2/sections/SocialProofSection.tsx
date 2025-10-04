@@ -1,9 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
-import {
-  Star, Play, Award, Trophy, Newspaper, Users, Building2,
-  TrendingUp, CheckCircle
-} from 'lucide-react';
+import { Star, Play, Award, Trophy, Newspaper, Users, Building2, TrendingUp, CircleCheck as CheckCircle } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
