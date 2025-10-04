@@ -185,7 +185,7 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
   const setPrimary = (index: number) => {
     const newPhotos = field.value.map((photo, i) => ({
       ...photo,
-      isPrimary: i === index && photo.category === 'hero'
+      isPrimary: i === index
     }));
     field.onChange(newPhotos);
   };
@@ -318,18 +318,16 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
                         
                         {/* Actions overlay */}
                         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center space-x-2">
-                          {category === 'hero' && (
-                            <Button
-                              size="sm"
-                              variant={photo.isPrimary ? "default" : "secondary"}
-                              className="h-8 px-3"
-                              onClick={() => setPrimary(globalIndex)}
-                              title={photo.isPrimary ? "Photo principale" : "Définir comme principale"}
-                            >
-                              <Star className={`w-3 h-3 mr-1 ${photo.isPrimary ? 'fill-current' : ''}`} />
-                              {photo.isPrimary ? 'Principale' : 'Définir'}
-                            </Button>
-                          )}
+                          <Button
+                            size="sm"
+                            variant={photo.isPrimary ? "default" : "secondary"}
+                            className="h-8 px-3"
+                            onClick={() => setPrimary(globalIndex)}
+                            title={photo.isPrimary ? "Photo principale" : "Définir comme principale"}
+                          >
+                            <Star className={`w-3 h-3 mr-1 ${photo.isPrimary ? 'fill-current' : ''}`} />
+                            {photo.isPrimary ? 'Principale' : 'Définir'}
+                          </Button>
                           
                           <Button
                             size="sm"
@@ -343,7 +341,7 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
                         </div>
                         
                         {/* Primary badge */}
-                        {category === 'hero' && photo.isPrimary && (
+                        {photo.isPrimary && (
                           <div className="absolute top-2 left-2">
                             <Badge className="bg-primary text-primary-foreground">
                               <Star className="w-3 h-3 mr-1 fill-current" />
