@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { formatPrice } from '@/lib/utils/formatters';
 
 interface ContactFormProps {
@@ -42,13 +43,27 @@ export default function ContactForm({ project }: ContactFormProps) {
     return (
       <section id="contact-form" className="bg-black py-32 lg:py-48">
         <div className="max-w-[600px] mx-auto px-6 text-center text-white">
-          <h3 className="text-4xl md:text-5xl font-light mb-6 tracking-tight">
+          <motion.h3
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-4xl md:text-5xl font-light mb-6 tracking-tight"
+          >
             Thank You
-          </h3>
-          <p className="text-lg text-white/60 font-light mb-12">
+          </motion.h3>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-lg text-white/60 font-light mb-12"
+          >
             We'll be in touch soon.
-          </p>
-          <button
+          </motion.p>
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            whileHover={{ scale: 1.05 }}
             onClick={() => {
               setIsSubmitted(false);
               setFormData({
@@ -61,7 +76,7 @@ export default function ContactForm({ project }: ContactFormProps) {
             className="px-8 py-3 bg-white text-black text-sm uppercase tracking-wider font-medium hover:bg-white/90 transition-all duration-300"
           >
             Send Another
-          </button>
+          </motion.button>
         </div>
       </section>
     );
@@ -71,14 +86,23 @@ export default function ContactForm({ project }: ContactFormProps) {
     <section id="contact-form" className="bg-black py-32 lg:py-48">
       <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
         <div className="grid lg:grid-cols-2 gap-24 lg:gap-32">
-          {/* Left: Form */}
-          <div>
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-white mb-12 tracking-tight">
               Get in Touch
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-8">
-              <div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: 0.1 }}
+              >
                 <input
                   type="text"
                   placeholder="Name"
@@ -87,9 +111,14 @@ export default function ContactForm({ project }: ContactFormProps) {
                   required
                   className="w-full bg-transparent border-b border-white/20 py-4 text-white placeholder:text-white/40 focus:outline-none focus:border-white/60 transition-all duration-300 font-light text-lg"
                 />
-              </div>
+              </motion.div>
 
-              <div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: 0.2 }}
+              >
                 <input
                   type="email"
                   placeholder="Email"
@@ -98,9 +127,14 @@ export default function ContactForm({ project }: ContactFormProps) {
                   required
                   className="w-full bg-transparent border-b border-white/20 py-4 text-white placeholder:text-white/40 focus:outline-none focus:border-white/60 transition-all duration-300 font-light text-lg"
                 />
-              </div>
+              </motion.div>
 
-              <div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: 0.3 }}
+              >
                 <input
                   type="tel"
                   placeholder="Phone"
@@ -108,9 +142,14 @@ export default function ContactForm({ project }: ContactFormProps) {
                   onChange={(e) => handleInputChange('phone', e.target.value)}
                   className="w-full bg-transparent border-b border-white/20 py-4 text-white placeholder:text-white/40 focus:outline-none focus:border-white/60 transition-all duration-300 font-light text-lg"
                 />
-              </div>
+              </motion.div>
 
-              <div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: 0.4 }}
+              >
                 <textarea
                   placeholder="Message"
                   value={formData.message}
@@ -118,20 +157,30 @@ export default function ContactForm({ project }: ContactFormProps) {
                   rows={4}
                   className="w-full bg-transparent border-b border-white/20 py-4 text-white placeholder:text-white/40 focus:outline-none focus:border-white/60 transition-all duration-300 font-light text-lg resize-none"
                 />
-              </div>
+              </motion.div>
 
-              <button
+              <motion.button
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: 0.5 }}
+                whileHover={{ scale: 1.05 }}
                 type="submit"
                 disabled={isSubmitting}
                 className="px-12 py-4 bg-white text-black text-sm tracking-wider uppercase font-medium hover:bg-white/90 transition-all duration-300 disabled:opacity-50"
               >
                 {isSubmitting ? 'Sending...' : 'Send Inquiry'}
-              </button>
+              </motion.button>
             </form>
-          </div>
+          </motion.div>
 
-          {/* Right: Project Info */}
-          <div className="space-y-12 text-white lg:pt-32">
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="space-y-12 text-white lg:pt-32"
+          >
             <div>
               <p className="text-xs uppercase tracking-wider text-white/40 mb-2 font-medium">
                 Property
@@ -154,7 +203,7 @@ export default function ContactForm({ project }: ContactFormProps) {
                 <p className="text-xl font-light">{formatPrice(price)}</p>
               </div>
             )}
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
