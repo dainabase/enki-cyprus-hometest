@@ -549,7 +549,9 @@ amber-600: #D97706
 
 ---
 
-## 🎬 ANIMATIONS & TRANSITIONS
+## 🎬 ANIMATIONS & TRANSITIONS AVANCÉES (FRAMER MOTION)
+
+> **PHILOSOPHIE** : Animations fluides et naturelles inspirées des sites Framer originaux. Chaque mouvement doit avoir un **but** et améliorer l'expérience utilisateur.
 
 ### Durées Standards
 
@@ -559,50 +561,558 @@ duration-200  /* 200ms - Buttons, links, borders */
 duration-300  /* 300ms - Cards, modals */
 duration-500  /* 500ms - Images scale, complex transitions */
 duration-700  /* 700ms - Page transitions */
+duration-1000 /* 1000ms - Parallax, scroll animations */
 ```
 
-### Easing Functions
+### Easing Functions (Framer Motion)
 
-```css
-ease-in      /* Accélération douce */
-ease-out     /* Décélération douce (défaut) */
-ease-in-out  /* Courbe en S */
+```typescript
+// Easing naturels Framer Motion
+const easings = {
+  easeOut: [0.16, 1, 0.3, 1],        // Standard (défaut)
+  easeInOut: [0.43, 0.13, 0.23, 0.96], // Smooth S-curve
+  anticipate: [0.25, 0.1, 0.25, 1],  // Bounce léger
+  backOut: [0.34, 1.56, 0.64, 1],    // Overshoot élégant
+};
 ```
 
-### Patterns Courants
+---
 
-#### Hover Card
+## 🌊 ANIMATIONS AU SCROLL (SCROLL-TRIGGERED)
+
+### Pattern 1 : Fade In Up (Apparition au scroll)
+
+**Usage :** Sections, cartes, blocs de contenu
+
 ```tsx
-<div className="
-  transition-all duration-300 ease-out
-  hover:shadow-xl hover:scale-[1.02]
-">
+import { motion } from 'framer-motion';
+import { useInView } from 'react-intersection-observer';
+
+function FadeInSection({ children }) {
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 60 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+    >
+      {children}
+    </motion.div>
+  );
+}
 ```
 
-#### Button Hover
+### Pattern 2 : Stagger Children (Apparition en cascade)
+
+**Usage :** Listes, grilles, features
+
 ```tsx
-<button className="
-  transition-colors duration-200
-  hover:bg-primary-hover
-">
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
+<motion.div
+  variants={containerVariants}
+  initial="hidden"
+  animate="visible"
+>
+  {items.map((item, i) => (
+    <motion.div key={i} variants={itemVariants}>
+      {item}
+    </motion.div>
+  ))}
+</motion.div>
 ```
 
-#### Image Zoom (Hover)
-```tsx
-<div className="overflow-hidden">
-  <img className="
-    transition-transform duration-500 ease-out
-    group-hover:scale-110
-  " />
-</div>
-```
+### Pattern 3 : Scale In (Zoom progressif)
 
-#### Fade In (Page Load)
+**Usage :** Images, cartes premium, CTAs
+
 ```tsx
 <motion.div
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.5 }}
+  initial={{ opacity: 0, scale: 0.8 }}
+  whileInView={{ opacity: 1, scale: 1 }}
+  viewport={{ once: true, amount: 0.3 }}
+  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+>
+  {children}
+</motion.div>
+```
+
+---
+
+## 📌 STICKY SCROLL ANIMATIONS
+
+### Pattern 1 : Sticky Header (Navbar)
+
+```tsx
+import { motion, useScroll, useTransform } from 'framer-motion';
+
+function StickyNavbar() {
+  const { scrollY } = useScroll();
+
+  const backgroundColor = useTransform(
+    scrollY,
+    [0, 100],
+    ['rgba(0, 0, 0, 0)', 'rgba(255, 255, 255, 0.95)']
+  );
+
+  const textColor = useTransform(
+    scrollY,
+    [0, 100],
+    ['#FFFFFF', '#171717']
+  );
+
+  const padding = useTransform(
+    scrollY,
+    [0, 100],
+    ['2rem', '1rem']
+  );
+
+  return (
+    <motion.nav
+      style={{ backgroundColor, padding }}
+      className="fixed top-0 w-full z-50 backdrop-blur-md"
+    >
+      <motion.div style={{ color: textColor }}>
+        Logo
+      </motion.div>
+    </motion.nav>
+  );
+}
+```
+
+### Pattern 2 : Sticky Sidebar (Table des matières)
+
+```tsx
+<motion.div
+  className="sticky top-24"
+  initial={{ opacity: 0, x: -20 }}
+  animate={{ opacity: 1, x: 0 }}
+  transition={{ delay: 0.3 }}
+>
+  {/* Table of contents */}
+</motion.div>
+```
+
+### Pattern 3 : Sticky CTA (Bottom Bar)
+
+```tsx
+function StickyCTA() {
+  const [ref, inView] = useInView({ threshold: 0 });
+
+  return (
+    <>
+      <div ref={ref} /> {/* Trigger point */}
+      <motion.div
+        initial={{ y: 100 }}
+        animate={{ y: inView ? 100 : 0 }}
+        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+        className="fixed bottom-0 w-full bg-white border-t shadow-xl p-4 z-50"
+      >
+        <button>Contactez-nous</button>
+      </motion.div>
+    </>
+  );
+}
+```
+
+---
+
+## 🎢 PARALLAX SCROLL EFFECTS
+
+### Pattern 1 : Simple Parallax (Backgrounds)
+
+```tsx
+import { motion, useScroll, useTransform } from 'framer-motion';
+
+function ParallaxSection() {
+  const { scrollYProgress } = useScroll();
+  const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
+
+  return (
+    <section className="relative h-screen overflow-hidden">
+      <motion.div
+        style={{ y }}
+        className="absolute inset-0"
+      >
+        <img src="/bg.jpg" className="w-full h-[120vh] object-cover" />
+      </motion.div>
+      <div className="relative z-10">
+        {/* Content */}
+      </div>
+    </section>
+  );
+}
+```
+
+### Pattern 2 : Multi-Layer Parallax
+
+```tsx
+function MultiLayerParallax() {
+  const { scrollYProgress } = useScroll();
+
+  const yBackground = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
+  const yMiddle = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
+  const yForeground = useTransform(scrollYProgress, [0, 1], ['0%', '25%']);
+
+  return (
+    <section className="relative h-screen">
+      <motion.div style={{ y: yBackground }} className="absolute inset-0">
+        {/* Background layer */}
+      </motion.div>
+      <motion.div style={{ y: yMiddle }}>
+        {/* Middle layer */}
+      </motion.div>
+      <motion.div style={{ y: yForeground }}>
+        {/* Foreground layer */}
+      </motion.div>
+    </section>
+  );
+}
+```
+
+### Pattern 3 : Zoom Parallax (Images)
+
+```tsx
+function ZoomParallax() {
+  const { scrollYProgress } = useScroll();
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.3]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.8, 0.3]);
+
+  return (
+    <motion.div
+      style={{ scale, opacity }}
+      className="sticky top-0 h-screen"
+    >
+      <img src="/hero.jpg" className="w-full h-full object-cover" />
+    </motion.div>
+  );
+}
+```
+
+---
+
+## 🔄 SCROLL HORIZONTAL (Défilement horizontal en scrollant verticalement)
+
+### Pattern : Horizontal Gallery
+
+```tsx
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { useRef } from 'react';
+
+function HorizontalScroll() {
+  const targetRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: targetRef,
+    offset: ["start start", "end end"]
+  });
+
+  const x = useTransform(scrollYProgress, [0, 1], ['0%', '-75%']);
+
+  return (
+    <section ref={targetRef} className="relative h-[400vh]">
+      <div className="sticky top-0 h-screen flex items-center overflow-hidden">
+        <motion.div
+          style={{ x }}
+          className="flex gap-8"
+        >
+          {items.map((item, i) => (
+            <div
+              key={i}
+              className="min-w-[600px] h-[70vh] rounded-2xl bg-white p-8"
+            >
+              {item}
+            </div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+```
+
+---
+
+## ✨ MICRO-INTERACTIONS (Hover & Click)
+
+### Pattern 1 : Magnetic Button (Bouton aimanté)
+
+```tsx
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { useRef } from 'react';
+
+function MagneticButton({ children }) {
+  const ref = useRef(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const springConfig = { damping: 15, stiffness: 150 };
+  const xSpring = useSpring(x, springConfig);
+  const ySpring = useSpring(y, springConfig);
+
+  const handleMouseMove = (e) => {
+    const rect = ref.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    x.set((e.clientX - centerX) / 4);
+    y.set((e.clientY - centerY) / 4);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <motion.button
+      ref={ref}
+      style={{ x: xSpring, y: ySpring }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="px-8 py-4 bg-primary text-white rounded-lg"
+    >
+      {children}
+    </motion.button>
+  );
+}
+```
+
+### Pattern 2 : Tilt Card (Carte qui s'incline)
+
+```tsx
+function TiltCard({ children }) {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const rotateX = useTransform(y, [-100, 100], [10, -10]);
+  const rotateY = useTransform(x, [-100, 100], [-10, 10]);
+
+  return (
+    <motion.div
+      style={{ rotateX, rotateY }}
+      onMouseMove={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        x.set(e.clientX - rect.left - rect.width / 2);
+        y.set(e.clientY - rect.top - rect.height / 2);
+      }}
+      onMouseLeave={() => {
+        x.set(0);
+        y.set(0);
+      }}
+      className="bg-white rounded-xl p-8 shadow-lg"
+      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+```
+
+### Pattern 3 : Ripple Effect (Effet d'onde au clic)
+
+```tsx
+function RippleButton({ children }) {
+  const [ripples, setRipples] = useState([]);
+
+  const handleClick = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = e.clientX - rect.left - size / 2;
+    const y = e.clientY - rect.top - size / 2;
+
+    const newRipple = { x, y, size, id: Date.now() };
+    setRipples([...ripples, newRipple]);
+
+    setTimeout(() => {
+      setRipples(r => r.filter(ripple => ripple.id !== newRipple.id));
+    }, 600);
+  };
+
+  return (
+    <button
+      onClick={handleClick}
+      className="relative overflow-hidden px-8 py-4 bg-primary text-white rounded-lg"
+    >
+      {ripples.map((ripple) => (
+        <motion.span
+          key={ripple.id}
+          initial={{ scale: 0, opacity: 0.5 }}
+          animate={{ scale: 2, opacity: 0 }}
+          transition={{ duration: 0.6 }}
+          style={{
+            position: 'absolute',
+            left: ripple.x,
+            top: ripple.y,
+            width: ripple.size,
+            height: ripple.size,
+            borderRadius: '50%',
+            background: 'rgba(255,255,255,0.5)',
+          }}
+        />
+      ))}
+      {children}
+    </button>
+  );
+}
+```
+
+---
+
+## 🎯 SCROLL PROGRESS INDICATOR
+
+```tsx
+import { motion, useScroll } from 'framer-motion';
+
+function ScrollProgress() {
+  const { scrollYProgress } = useScroll();
+
+  return (
+    <motion.div
+      style={{ scaleX: scrollYProgress }}
+      className="fixed top-0 left-0 right-0 h-1 bg-primary origin-left z-50"
+    />
+  );
+}
+```
+
+---
+
+## 🌀 PAGE TRANSITIONS
+
+### Pattern : Route Transition
+
+```tsx
+import { motion, AnimatePresence } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
+
+function PageTransition({ children }) {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.3 }}
+      >
+        {children}
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+```
+
+---
+
+## 📱 MOBILE GESTURES (Swipe, Drag)
+
+### Pattern : Swipeable Cards
+
+```tsx
+import { motion, useMotionValue, useTransform } from 'framer-motion';
+
+function SwipeableCard({ onSwipe }) {
+  const x = useMotionValue(0);
+  const rotate = useTransform(x, [-200, 0, 200], [-25, 0, 25]);
+  const opacity = useTransform(x, [-200, 0, 200], [0, 1, 0]);
+
+  return (
+    <motion.div
+      drag="x"
+      dragConstraints={{ left: 0, right: 0 }}
+      style={{ x, rotate, opacity }}
+      onDragEnd={(e, { offset, velocity }) => {
+        if (Math.abs(offset.x) > 100) {
+          onSwipe(offset.x > 0 ? 'right' : 'left');
+        }
+      }}
+      className="absolute w-full h-full bg-white rounded-2xl shadow-xl"
+    >
+      {/* Card content */}
+    </motion.div>
+  );
+}
+```
+
+---
+
+## 🎨 ANIMATION VARIANTS (Presets Réutilisables)
+
+```typescript
+// animations.ts
+export const fadeInUp = {
+  hidden: { opacity: 0, y: 60 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+  }
+};
+
+export const fadeInLeft = {
+  hidden: { opacity: 0, x: -60 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+  }
+};
+
+export const scaleIn = {
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
+  }
+};
+
+export const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2
+    }
+  }
+};
+```
+
+**Usage :**
+```tsx
+import { fadeInUp } from './animations';
+
+<motion.div
+  variants={fadeInUp}
+  initial="hidden"
+  whileInView="visible"
+  viewport={{ once: true }}
 >
 ```
 
