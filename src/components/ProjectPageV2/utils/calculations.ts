@@ -71,13 +71,14 @@ export const calculateROI = (
 
 export const formatCurrency = (
   amount: number,
-  symbol: string = '€'
+  currency: string = 'EUR',
+  locale: string = 'fr-FR'
 ): string => {
-  if (typeof amount !== 'number' || isNaN(amount)) {
-    return `${symbol}0`;
-  }
-  const formatted = Math.round(amount).toLocaleString('fr-FR');
-  return `${formatted}${symbol}`;
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency,
+    maximumFractionDigits: 0
+  }).format(amount);
 };
 
 export const formatNumber = (

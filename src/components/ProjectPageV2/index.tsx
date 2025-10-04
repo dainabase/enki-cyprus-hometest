@@ -4,9 +4,9 @@ import { supabase } from '@/lib/supabase';
 import { enrichProjectData } from '../../../utils/mockProjectEnrichment';
 import { HeroPrestige } from './sections/HeroPrestige';
 import { LocationInteractive } from './sections/LocationInteractive';
-// import { Section5TypologiesReal } from './sections/Section5TypologiesReal';
-// import { FinancingInvestmentSection } from './sections/FinancingInvestmentSection';
-// import { SocialProofSection } from './sections/SocialProofSection';
+import { UnitTypologiesSection } from './sections/UnitTypologiesSection';
+import { FinancingInvestmentSection } from './sections/FinancingInvestmentSection';
+import { SocialProofSection } from './sections/SocialProofSection';
 import { SEOHead } from '@/components/SEOHead';
 
 export function ProjectPageV2() {
@@ -17,43 +17,25 @@ export function ProjectPageV2() {
   useEffect(() => {
     window.scrollTo(0, 0);
     loadAndEnrichProject();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
 
   async function loadAndEnrichProject() {
     try {
-      console.log('[ProjectPageV2] Loading project with slug:', slug);
-
       const { data: baseProject, error } = await supabase
         .from('projects')
         .select('*, buildings (*)')
-        .eq('url_slug', slug)
+        .eq('url_slug', slug || 'azure-marina')
         .maybeSingle();
 
-      if (error) {
-        console.error('[ProjectPageV2] Supabase error:', error);
-        throw error;
-      }
+      if (error) throw error;
 
-      if (!baseProject) {
-        console.warn('[ProjectPageV2] Projet non trouvé pour slug:', slug);
-        setEnrichedProject(null);
-        setLoading(false);
-        return;
-      }
-
-      console.log('[ProjectPageV2] Base project loaded:', baseProject.title);
-
-      const enriched = enrichProjectData(baseProject);
-      setEnrichedProject(enriched);
-      console.log('[ProjectPageV2] Data enriched successfully');
-
-      if (enriched.meta?.mockDataSections) {
-        console.log('[ProjectPageV2] Mock data sections:', enriched.meta.mockDataSections);
+      if (baseProject) {
+        const enriched = enrichProjectData(baseProject);
+        setEnrichedProject(enriched);
+        console.log('[ProjectPageV2] Data enriched with mock data:', enriched.meta);
       }
     } catch (error) {
-      console.error('[ProjectPageV2] Error loading project:', error);
-      setEnrichedProject(null);
+      console.error('Error loading project:', error);
     } finally {
       setLoading(false);
     }
@@ -84,14 +66,15 @@ export function ProjectPageV2() {
       />
 
       <div className="min-h-screen bg-white">
-        <HeroPrestige project={enrichedProject} />
+        <HeroPrestige projectSlug={slug} />
 
-        <LocationInteractive project={enrichedProject} />
+        <LocationInteractive projectSlug={slug} />
 
-        {/* Sections désactivées temporairement en attendant les migrations BDD */}
-        {/* <Section5TypologiesReal projectId={enrichedProject.id} /> */}
-        {/* <FinancingInvestmentSection project={enrichedProject} /> */}
-        {/* <SocialProofSection project={enrichedProject} /> */}
+        <UnitTypologiesSection project={enrichedProject} />
+
+        <FinancingInvestmentSection project={enrichedProject} />
+
+        <SocialProofSection project={enrichedProject} />
       </div>
     </>
   );

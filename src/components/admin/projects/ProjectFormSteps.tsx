@@ -1865,7 +1865,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                     if (selectedAmenities.size === amenities.length) {
                       setSelectedAmenities(new Set());
                     } else {
-                      const allIds = new Set<string>(amenities.map(a => a.nearby_amenity_id));
+                      const allIds = new Set(amenities.map(a => a.nearby_amenity_id));
                       setSelectedAmenities(allIds);
                     }
                   }}

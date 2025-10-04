@@ -1,9 +1,12 @@
-import { useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Euro, TrendingUp, Chrome as Home, Globe, Shield, PiggyBank, FileText, Building2, Check, Award, Percent } from 'lucide-react';
+import { Euro, TrendingUp, Chrome as Home, Globe, Shield, Calculator, PiggyBank, FileText, Building2, Check } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { useProjectFinancing } from '@/hooks/useProjectFinancing';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { formatCurrency, calculateMonthlyPayment, calculateROI } from '../utils/calculations';
 import { trackSectionView } from '../utils/tracking';
 
 interface FinancingInvestmentSectionProps {
@@ -14,40 +17,19 @@ export function FinancingInvestmentSection({ project }: FinancingInvestmentSecti
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
 
-  const { data: financing, isLoading } = useProjectFinancing(project?.id);
-
   useEffect(() => {
     if (isInView) {
       trackSectionView('financing_investment');
     }
   }, [isInView]);
 
-  if (isLoading) {
-    return (
-      <section className="w-full bg-gradient-to-br from-slate-50 to-white py-16 sm:py-20">
-        <div className="w-full max-w-7xl mx-auto px-6 md:px-8">
-          <div className="text-center">
-            <div className="animate-pulse">
-              <div className="h-8 bg-gray-200 rounded w-64 mx-auto mb-4"></div>
-              <div className="h-4 bg-gray-200 rounded w-96 mx-auto"></div>
-            </div>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  if (!financing) return null;
-
-  const hasInvestmentMetrics = financing.rental_yield_percentage || financing.capital_appreciation_5y || financing.cap_rate;
-  const hasGoldenVisa = financing.golden_visa_details;
-  const hasTaxBenefits = financing.tax_benefits;
-  const hasFinancingOptions = financing.financing_options;
+  const { investment, financing, price } = project;
+  const basePrice = price?.from || project.price_from || 450000;
 
   return (
     <section
       ref={sectionRef}
-      className="w-full bg-gradient-to-br from-slate-50 to-white py-16 sm:py-20 md:py-24"
+      className="w-full bg-gradient-to-br from-gray-50 to-white py-16 sm:py-20 md:py-24"
     >
       <div className="w-full max-w-7xl mx-auto px-6 md:px-8 lg:px-12">
         <motion.div
@@ -57,341 +39,405 @@ export function FinancingInvestmentSection({ project }: FinancingInvestmentSecti
           className="text-center mb-12 sm:mb-16"
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-light text-gray-900 tracking-tight mb-6">
-            Financement & <span className="font-normal">Investissement</span>
+            Financement & Opportunite
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Solutions de financement flexibles et opportunité d'investissement exceptionnelle
+            Solutions de financement flexibles et opportunite d'investissement exceptionnelle
           </p>
         </motion.div>
 
-        {hasInvestmentMetrics && (
-          <InvestmentMetrics financing={financing} isInView={isInView} />
-        )}
+        <Tabs defaultValue="all" className="w-full">
+          <TabsList className="grid w-full grid-cols-3 mb-8">
+            <TabsTrigger value="all">Pour Tous</TabsTrigger>
+            <TabsTrigger value="investors">Investisseurs</TabsTrigger>
+            <TabsTrigger value="residents">Occupants</TabsTrigger>
+          </TabsList>
 
-        {hasGoldenVisa && (
-          <GoldenVisaShowcase goldenVisa={financing.golden_visa_details!} isInView={isInView} />
-        )}
+          <TabsContent value="all">
+            <AllSection
+              pricing={price}
+              financing={financing}
+              basePrice={basePrice}
+              isInView={isInView}
+            />
+          </TabsContent>
 
-        {hasTaxBenefits && (
-          <TaxBenefitsTimeline taxBenefits={financing.tax_benefits!} isInView={isInView} />
-        )}
+          <TabsContent value="investors">
+            <InvestorsSection
+              investment={investment}
+              basePrice={basePrice}
+              isInView={isInView}
+            />
+          </TabsContent>
 
-        {hasFinancingOptions && (
-          <FinancingOptionsGrid options={financing.financing_options!} isInView={isInView} />
-        )}
+          <TabsContent value="residents">
+            <ResidentsSection
+              basePrice={basePrice}
+              financing={financing}
+              isInView={isInView}
+            />
+          </TabsContent>
+        </Tabs>
       </div>
     </section>
   );
 }
 
-function InvestmentMetrics({ financing, isInView }: { financing: any; isInView: boolean }) {
-  const metrics = [
-    {
-      label: 'Rendement Locatif',
-      value: financing.rental_yield_percentage,
-      suffix: '%',
-      icon: Percent,
-      color: 'text-green-600',
-      bgColor: 'bg-green-50',
-    },
-    {
-      label: 'Appréciation 5 ans',
-      value: financing.capital_appreciation_5y,
-      suffix: '%',
-      icon: TrendingUp,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50',
-    },
-    {
-      label: 'Cap Rate',
-      value: financing.cap_rate,
-      suffix: '%',
-      icon: PiggyBank,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-50',
-    },
-    {
-      label: 'Cash-on-Cash Return',
-      value: financing.cash_on_cash_return,
-      suffix: '%',
-      icon: Euro,
-      color: 'text-amber-600',
-      bgColor: 'bg-amber-50',
-    },
-    {
-      label: 'Location Mensuelle',
-      value: financing.rental_price_monthly,
-      prefix: '€',
-      suffix: '/mois',
-      icon: Home,
-      color: 'text-teal-600',
-      bgColor: 'bg-teal-50',
-    },
-  ].filter(m => m.value);
+function AllSection({ pricing, financing, basePrice, isInView }: any) {
+  const paymentPlan = financing?.paymentPlan || [
+    { phase: 'Reservation', percent: 10, timing: 'Signature' },
+    { phase: 'Echelonniers construction', percent: 50, timing: '18-24 mois' },
+    { phase: 'Solde livraison', percent: 40, timing: 'Remise cles' }
+  ];
 
-  if (metrics.length === 0) return null;
+  const fees = pricing?.fees || {
+    vat: 0.19,
+    transfer: 0.04,
+    legal: 0.02
+  };
+
+  const totalFees = fees.vat + fees.transfer + fees.legal;
+  const totalBudget = basePrice * (1 + totalFees);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.8, delay: 0.2 }}
-      className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-16"
-    >
-      {metrics.map((metric, index) => {
-        const Icon = metric.icon;
-        return (
-          <Card key={index} className="hover:shadow-xl transition-shadow duration-300">
-            <CardContent className="p-6">
-              <div className={`w-12 h-12 rounded-lg ${metric.bgColor} flex items-center justify-center mb-4`}>
-                <Icon className={`w-6 h-6 ${metric.color}`} />
+    <div className="space-y-8">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={isInView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
+        <h3 className="text-2xl font-light text-gray-900 mb-6">Echeancier de Paiement</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {paymentPlan.map((phase: any, index: number) => (
+            <Card key={index} className="border-gray-200">
+              <CardContent className="p-6 text-center">
+                <div className="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-white text-xl font-light">{phase.percent}%</span>
+                </div>
+                <h4 className="font-medium text-gray-900 mb-2">{phase.phase}</h4>
+                <p className="text-sm text-gray-600">{phase.timing}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={isInView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.6, delay: 0.4 }}
+      >
+        <Card className="bg-gradient-to-br from-gray-900 to-gray-800 text-white border-0">
+          <CardContent className="p-8">
+            <h3 className="text-2xl font-light mb-6">Transparence Couts Totaux</h3>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span>Prix affiche</span>
+                <span className="text-xl font-medium">{formatCurrency(basePrice)}</span>
               </div>
-              <p className="text-sm text-gray-600 mb-2">{metric.label}</p>
-              <p className={`text-3xl font-bold ${metric.color}`}>
-                {metric.prefix}{metric.value}{metric.suffix}
+              <div className="flex justify-between items-center text-white/70">
+                <span>+ TVA ({(fees.vat * 100).toFixed(0)}%)</span>
+                <span>{formatCurrency(basePrice * fees.vat)}</span>
+              </div>
+              <div className="flex justify-between items-center text-white/70">
+                <span>+ Frais transfert ({(fees.transfer * 100).toFixed(0)}%)</span>
+                <span>{formatCurrency(basePrice * fees.transfer)}</span>
+              </div>
+              <div className="flex justify-between items-center text-white/70">
+                <span>+ Notaire/Legal ({(fees.legal * 100).toFixed(0)}%)</span>
+                <span>{formatCurrency(basePrice * fees.legal)}</span>
+              </div>
+              <div className="border-t border-white/20 my-4"></div>
+              <div className="flex justify-between items-center text-2xl font-light">
+                <span>Budget Total</span>
+                <span>{formatCurrency(totalBudget)}</span>
+              </div>
+              <p className="text-sm text-white/60 text-center mt-2">
+                (+{((totalFees) * 100).toFixed(0)}% du prix affiche)
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {financing?.partners && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.6 }}
+        >
+          <h3 className="text-2xl font-light text-gray-900 mb-6">Partenaires Bancaires</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {financing.partners.slice(0, 4).map((bank: any, index: number) => (
+              <Card key={index} className="border-gray-200">
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-4">
+                    <Building2 className="w-8 h-8 text-gray-700 flex-shrink-0" />
+                    <div className="flex-1">
+                      <h4 className="font-medium text-gray-900 mb-2">{bank.name}</h4>
+                      <div className="space-y-1 text-sm text-gray-600 mb-3">
+                        <p>LTV max: {bank.maxLTV}%</p>
+                        <p>Taux: {bank.interestRate}%</p>
+                        <p>Duree: {bank.termYears} ans</p>
+                      </div>
+                      <p className="text-xs text-gray-500">{bank.description}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
+function InvestorsSection({ investment, basePrice, isInView }: any) {
+  const [calculatorValues, setCalculatorValues] = useState({
+    purchasePrice: basePrice,
+    downPayment: basePrice * 0.3,
+    interestRate: 3.5,
+    loanTerm: 25
+  });
+
+  const roi = calculateROI(
+    basePrice,
+    investment?.rentalPriceMonthly || 2050,
+    0.085,
+    5
+  );
+
+  return (
+    <div className="space-y-8">
+      {investment?.goldenVisa && investment?.goldenVisaDetails && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-3 text-2xl">
+                <Globe className="w-8 h-8 text-amber-600" />
+                <span>Golden Visa - Votre Passeport pour l'Europe</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <Card className="bg-white border-amber-200">
+                  <CardContent className="p-4 text-center">
+                    <Euro className="w-6 h-6 mx-auto mb-2 text-amber-600" />
+                    <p className="text-sm text-gray-600 mb-1">Investissement Min.</p>
+                    <p className="text-2xl font-light text-gray-900">
+                      {formatCurrency(investment.goldenVisaDetails.minimumInvestment)}
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-white border-amber-200">
+                  <CardContent className="p-4 text-center">
+                    <Shield className="w-6 h-6 mx-auto mb-2 text-amber-600" />
+                    <p className="text-sm text-gray-600 mb-1">Delai</p>
+                    <p className="text-2xl font-light text-gray-900">
+                      {investment.goldenVisaDetails.processingTime}
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-white border-amber-200">
+                  <CardContent className="p-4 text-center">
+                    <Home className="w-6 h-6 mx-auto mb-2 text-amber-600" />
+                    <p className="text-sm text-gray-600 mb-1">Residence</p>
+                    <p className="text-xl font-light text-gray-900">Permanente</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-white border-amber-200">
+                  <CardContent className="p-4 text-center">
+                    <Globe className="w-6 h-6 mx-auto mb-2 text-amber-600" />
+                    <p className="text-sm text-gray-600 mb-1">Circulation</p>
+                    <p className="text-xl font-light text-gray-900">UE libre</p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="font-medium text-gray-900 mb-3">Avantages</h4>
+                  <ul className="space-y-2">
+                    {investment.goldenVisaDetails.benefits.map((benefit: string, i: number) => (
+                      <li key={i} className="flex items-start gap-2 text-sm">
+                        <Check className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                        <span>{benefit}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="font-medium text-gray-900 mb-3">Requis</h4>
+                  <ul className="space-y-2">
+                    {investment.goldenVisaDetails.requirements.map((req: string, i: number) => (
+                      <li key={i} className="flex items-start gap-2 text-sm">
+                        <FileText className="w-4 h-4 text-gray-600 flex-shrink-0 mt-0.5" />
+                        <span>{benefit}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={isInView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.6, delay: 0.4 }}
+      >
+        <h3 className="text-2xl font-light text-gray-900 mb-6">Rendements & ROI</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
+            <CardContent className="p-6 text-center">
+              <TrendingUp className="w-8 h-8 mx-auto mb-3 text-green-600" />
+              <p className="text-sm text-gray-600 mb-1">Rendement Brut</p>
+              <p className="text-4xl font-light text-gray-900 mb-2">
+                {investment?.rentalYield || 7.03}%
+              </p>
+              <p className="text-xs text-gray-500">par an</p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white border-gray-200">
+            <CardContent className="p-6 text-center">
+              <Euro className="w-8 h-8 mx-auto mb-3 text-gray-700" />
+              <p className="text-sm text-gray-600 mb-1">Loyer Mensuel</p>
+              <p className="text-3xl font-light text-gray-900 mb-2">
+                {formatCurrency(investment?.rentalPriceMonthly || 2050)}
+              </p>
+              <p className="text-xs text-gray-500">estime</p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white border-gray-200">
+            <CardContent className="p-6 text-center">
+              <PiggyBank className="w-8 h-8 mx-auto mb-3 text-gray-700" />
+              <p className="text-sm text-gray-600 mb-1">Plus-value Historique</p>
+              <p className="text-3xl font-light text-gray-900 mb-2">
+                {investment?.appreciationHistorical || 8.5}%
+              </p>
+              <p className="text-xs text-gray-500">annuel moyen</p>
+            </CardContent>
+          </Card>
+        </div>
+      </motion.div>
+
+      {investment?.taxBenefits && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.6 }}
+        >
+          <h3 className="text-2xl font-light text-gray-900 mb-6">Avantages Fiscaux</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {investment.taxBenefits.map((benefit: any, index: number) => (
+              <Card key={index} className="border-gray-200">
+                <CardContent className="p-6">
+                  <h4 className="font-medium text-gray-900 mb-2">{benefit.type}</h4>
+                  <p className="text-sm text-gray-600 mb-3">{benefit.description}</p>
+                  <Badge className="bg-green-100 text-green-800">
+                    Economie: {benefit.savingEstimate}%
+                  </Badge>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
+function ResidentsSection({ basePrice, financing, isInView }: any) {
+  const [loanAmount, setLoanAmount] = useState(basePrice * 0.7);
+  const monthlyPayment = calculateMonthlyPayment(loanAmount, 3.5, 25);
+
+  return (
+    <div className="space-y-8">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={isInView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
+        <Card className="border-gray-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-3">
+              <Calculator className="w-6 h-6" />
+              <span>Simulateur Mensualites</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm text-gray-600 mb-2 block">Prix d'achat</label>
+                <Input
+                  type="text"
+                  value={formatCurrency(basePrice)}
+                  disabled
+                  className="bg-gray-50"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm text-gray-600 mb-2 block">Montant du pret (70%)</label>
+                <Input
+                  type="text"
+                  value={formatCurrency(loanAmount)}
+                  disabled
+                  className="bg-gray-50"
+                />
+              </div>
+
+              <div className="bg-gradient-to-br from-gray-900 to-gray-800 text-white p-6 rounded-lg">
+                <p className="text-sm text-white/70 mb-2">Mensualites estimees</p>
+                <p className="text-4xl font-light mb-1">{formatCurrency(monthlyPayment)}</p>
+                <p className="text-sm text-white/60">sur 25 ans a 3.5%</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={isInView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.6, delay: 0.4 }}
+      >
+        <h3 className="text-2xl font-light text-gray-900 mb-6">Garanties & Securite</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card className="border-gray-200">
+            <CardContent className="p-6">
+              <Shield className="w-8 h-8 text-gray-700 mb-3" />
+              <h4 className="font-medium text-gray-900 mb-2">Garantie Decennale</h4>
+              <p className="text-sm text-gray-600">
+                Protection complete 10 ans pour tous les travaux de construction
               </p>
             </CardContent>
           </Card>
-        );
-      })}
-    </motion.div>
-  );
-}
 
-function GoldenVisaShowcase({ goldenVisa, isInView }: { goldenVisa: any; isInView: boolean }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.8, delay: 0.3 }}
-      className="mb-16"
-    >
-      <Card className="bg-gradient-to-br from-amber-50 to-amber-100 border-amber-200 overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-amber-600 to-amber-700 text-white">
-          <div className="flex items-center gap-3">
-            <Award className="w-8 h-8" />
-            <div>
-              <CardTitle className="text-2xl mb-1">Résidence Permanente UE</CardTitle>
-              <p className="text-amber-100 text-sm">Éligible Golden Visa Cyprus</p>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="p-8">
-          <div className="grid md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="text-xl font-semibold mb-4">Détails</h3>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Investissement Minimum</p>
-                  <p className="text-2xl font-bold text-amber-700">
-                    €{(goldenVisa.minimum_investment / 1000).toFixed(0)}K
-                  </p>
-                </div>
-                {goldenVisa.processing_time && (
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Délai de Traitement</p>
-                    <p className="text-lg font-semibold">{goldenVisa.processing_time}</p>
-                  </div>
-                )}
-                {goldenVisa.fees && (
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Frais</p>
-                    <p className="text-lg font-semibold">{goldenVisa.fees}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-semibold mb-4">Bénéfices</h3>
-              <ul className="space-y-2">
-                {goldenVisa.benefits?.map((benefit: string, index: number) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700">{benefit}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {goldenVisa.requirements && goldenVisa.requirements.length > 0 && (
-            <div className="mt-6 pt-6 border-t border-amber-200">
-              <h3 className="text-lg font-semibold mb-3">Requirements</h3>
-              <ul className="grid md:grid-cols-2 gap-2">
-                {goldenVisa.requirements.map((req: string, index: number) => (
-                  <li key={index} className="flex items-start gap-2 text-sm">
-                    <Shield className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-600">{req}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </motion.div>
-  );
-}
-
-function TaxBenefitsTimeline({ taxBenefits, isInView }: { taxBenefits: any; isInView: boolean }) {
-  const benefits = [
-    { label: 'TVA Propriété Neuve', value: `${taxBenefits.vat_new_property}%`, icon: Building2 },
-    { label: 'TVA Revente', value: `${taxBenefits.vat_resale}%`, icon: FileText },
-    { label: 'Impôt Sociétés', value: `${taxBenefits.corporate_tax}%`, icon: Euro },
-    { label: 'Impôt Succession', value: `${taxBenefits.inheritance_tax}%`, icon: Shield },
-    { label: 'Traités Fiscaux', value: taxBenefits.tax_treaties, icon: Globe },
-  ];
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.8, delay: 0.4 }}
-      className="mb-16"
-    >
-      <h3 className="text-2xl font-light text-center mb-8">
-        Avantages <span className="font-normal">Fiscaux</span>
-      </h3>
-
-      <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-4">
-        {benefits.map((benefit, index) => {
-          const Icon = benefit.icon;
-          return (
-            <Card key={index} className="text-center hover:shadow-lg transition-shadow">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center mx-auto mb-3">
-                  <Icon className="w-6 h-6 text-blue-600" />
-                </div>
-                <p className="text-sm text-gray-600 mb-2">{benefit.label}</p>
-                <p className="text-2xl font-bold text-blue-600">{benefit.value}</p>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
-
-      {taxBenefits.non_dom_benefits && taxBenefits.non_dom_benefits.length > 0 && (
-        <Card className="mt-6 bg-gradient-to-br from-blue-50 to-white">
-          <CardContent className="p-6">
-            <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <Globe className="w-5 h-5 text-blue-600" />
-              Statut Non-Domicilié
-            </h4>
-            <ul className="grid md:grid-cols-2 gap-3">
-              {taxBenefits.non_dom_benefits.map((benefit: string, index: number) => (
-                <li key={index} className="flex items-start gap-2">
-                  <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-700">{benefit}</span>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-      )}
-    </motion.div>
-  );
-}
-
-function FinancingOptionsGrid({ options, isInView }: { options: any; isInView: boolean }) {
-  const localBanks = options.banks?.filter((b: any) => b.type === 'local') || [];
-  const internationalBanks = options.banks?.filter((b: any) => b.type === 'international') || [];
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.8, delay: 0.5 }}
-    >
-      <h3 className="text-2xl font-light text-center mb-8">
-        Options de <span className="font-normal">Financement</span>
-      </h3>
-
-      <div className="grid gap-6 mb-6">
-        <Card className="bg-gradient-to-r from-green-50 to-white border-green-200">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 mb-1">Acompte Minimum</p>
-                <p className="text-3xl font-bold text-green-600">{options.minimum_deposit}%</p>
-              </div>
-              <div className="text-right">
-                <p className="text-sm text-gray-600 mb-1">Taux Typique</p>
-                <p className="text-3xl font-bold text-blue-600">{options.typical_interest_rate}%</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {localBanks.length > 0 && (
-        <div className="mb-8">
-          <h4 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            <Building2 className="w-5 h-5 text-blue-600" />
-            Banques Locales
-          </h4>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {localBanks.map((bank: any, index: number) => (
-              <BankCard key={index} bank={bank} />
-            ))}
-          </div>
+          <Card className="border-gray-200">
+            <CardContent className="p-6">
+              <Check className="w-8 h-8 text-green-600 mb-3" />
+              <h4 className="font-medium text-gray-900 mb-2">Garantie Achevement</h4>
+              <p className="text-sm text-gray-600">
+                Livraison garantie selon planning avec clauses penalites
+              </p>
+            </CardContent>
+          </Card>
         </div>
-      )}
-
-      {internationalBanks.length > 0 && (
-        <div>
-          <h4 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            <Globe className="w-5 h-5 text-purple-600" />
-            Banques Internationales
-          </h4>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {internationalBanks.map((bank: any, index: number) => (
-              <BankCard key={index} bank={bank} />
-            ))}
-          </div>
-        </div>
-      )}
-    </motion.div>
-  );
-}
-
-function BankCard({ bank }: { bank: any }) {
-  return (
-    <Card className="hover:shadow-lg transition-shadow">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-lg">{bank.bank_name}</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <div>
-          <p className="text-xs text-gray-500">Taux d'intérêt</p>
-          <p className="text-lg font-semibold text-blue-600">
-            {bank.interest_rate_from}% - {bank.interest_rate_to}%
-          </p>
-        </div>
-        <div className="grid grid-cols-2 gap-2">
-          <div>
-            <p className="text-xs text-gray-500">LTV Max</p>
-            <p className="font-semibold">{bank.ltv_max}%</p>
-          </div>
-          <div>
-            <p className="text-xs text-gray-500">Durée</p>
-            <p className="font-semibold">{bank.duration_years} ans</p>
-          </div>
-        </div>
-        {bank.requirements && bank.requirements.length > 0 && (
-          <div className="pt-2 border-t">
-            <p className="text-xs text-gray-500 mb-2">Requirements</p>
-            <ul className="space-y-1">
-              {bank.requirements.slice(0, 2).map((req: string, i: number) => (
-                <li key={i} className="text-xs text-gray-600 flex items-start gap-1">
-                  <Check className="w-3 h-3 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span>{req}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+      </motion.div>
+    </div>
   );
 }
