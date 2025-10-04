@@ -33,9 +33,6 @@ export default function HeroSection({ project }: HeroSectionProps) {
   const heroImage = getHeroImage();
   const videoUrl = project.video_url || project.drone_footage_urls?.[0];
 
-  const city = project.city || project.location?.city || project.location?.address || 'Cyprus';
-  const price = project.price_from || project.price_from_new || project.price;
-
   const quickStats = [
     {
       icon: <MapPin className="w-6 h-6" />,
@@ -112,15 +109,9 @@ export default function HeroSection({ project }: HeroSectionProps) {
           </p>
         </div>
 
-        <h1 className="text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-light tracking-tight leading-[0.95] mb-12 max-w-7xl">
+        <h1 className="text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-light tracking-tight leading-[0.95] mb-16 max-w-7xl">
           {project.title}
         </h1>
-
-        {price && (
-          <p className="text-white/80 text-lg sm:text-xl md:text-2xl font-light mb-16">
-            From {formatPrice(price)}
-          </p>
-        )}
 
         <button
           className="px-12 py-4 bg-white text-black text-sm tracking-wider uppercase font-medium hover:bg-white/90 transition-all duration-300"
