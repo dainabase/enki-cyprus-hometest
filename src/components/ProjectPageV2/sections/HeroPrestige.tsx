@@ -25,7 +25,7 @@ export function HeroPrestige({ projectSlug }: HeroPrestigeProps) {
           *,
           buildings (*)
         `)
-        .eq('url_slug', projectSlug || 'azure-marina')
+        .eq('url_slug', projectSlug || 'marina-bay-residences-limassol')
         .maybeSingle();
 
       if (error) throw error;

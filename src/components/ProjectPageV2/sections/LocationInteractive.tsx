@@ -40,7 +40,7 @@ export function LocationInteractive({ projectSlug }: LocationInteractiveProps) {
       const { data: projectData } = await supabase
         .from('projects')
         .select('*')
-        .eq('url_slug', projectSlug || 'azure-marina')
+        .eq('url_slug', projectSlug || 'marina-bay-residences-limassol')
         .maybeSingle();
 
       if (projectData) {

@@ -27,7 +27,7 @@ export function ProjectPageV2() {
       const { data: baseProject, error } = await supabase
         .from('projects')
         .select('*, buildings (*)')
-        .eq('url_slug', slug || 'azure-marina')
+        .eq('url_slug', slug || 'marina-bay-residences-limassol')
         .maybeSingle();
 
       if (error) {
