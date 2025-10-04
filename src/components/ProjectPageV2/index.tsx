@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase';
 import { enrichProjectData } from '../../../utils/mockProjectEnrichment';
 import { HeroPrestige } from './sections/HeroPrestige';
 import { LocationInteractive } from './sections/LocationInteractive';
-import { UnitTypologiesSection } from './sections/UnitTypologiesSection';
+import { Section5TypologiesReal } from './sections/Section5TypologiesReal';
 import { FinancingInvestmentSection } from './sections/FinancingInvestmentSection';
 import { SocialProofSection } from './sections/SocialProofSection';
 import { SEOHead } from '@/components/SEOHead';
@@ -88,7 +88,7 @@ export function ProjectPageV2() {
 
         <LocationInteractive projectSlug={slug} />
 
-        <UnitTypologiesSection project={enrichedProject} />
+        <Section5TypologiesReal projectId={enrichedProject.id} />
 
         <FinancingInvestmentSection project={enrichedProject} />
 
