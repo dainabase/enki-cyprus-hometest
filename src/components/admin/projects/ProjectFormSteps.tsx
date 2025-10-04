@@ -1844,10 +1844,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               </p>
             </div>
 
-            {/* NOUVELLE GRILLE MODERNE */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* COLONNE GAUCHE : Commodités (2/3) */}
-              <div className="lg:col-span-2">
+            {/* GRILLE OPTIMISÉE : 50/50 */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* COLONNE GAUCHE : Commodités */}
+              <div>
                 <ModernDistancesSection
                   detectedAmenities={form.watch('surrounding_amenities') || []}
                   selectedAmenities={selectedAmenities}
@@ -1878,10 +1878,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 />
               </div>
 
-              {/* COLONNE DROITE : Carte AGRANDIE (1/3) */}
-              <div className="lg:col-span-1">
+              {/* COLONNE DROITE : Carte */}
+              <div>
                 <div className="sticky top-4">
-                  <h4 className="font-medium text-sm mb-3">Visualisation sur carte</h4>
+                  <h4 className="font-medium text-sm text-gray-700 mb-3">Carte</h4>
                   {(() => {
                     const lat = form.watch('gps_latitude');
                     const lng = form.watch('gps_longitude');
@@ -1904,7 +1904,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                       );
                     } else {
                       return (
-                        <div className="h-[700px] bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+                        <div className="h-[900px] bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
                           <div className="text-center text-gray-500">
                             <MapPin className="h-12 w-12 mx-auto mb-3 opacity-30" />
                             <p className="text-sm">Entrez une adresse pour afficher la carte</p>

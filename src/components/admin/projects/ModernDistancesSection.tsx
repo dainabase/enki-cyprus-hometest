@@ -1,6 +1,4 @@
-import { Building2, Heart, GraduationCap, School, ShoppingCart, Store, Bus, Landmark, Dumbbell, Trees, Shield, Waves, Plane, Car, MapPin, Clock, Navigation } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Building2, Heart, GraduationCap, School, ShoppingCart, Store, Bus, Landmark, Dumbbell, Trees, Shield, Waves, Plane, Car, Clock } from 'lucide-react';
 
 // Types
 interface Amenity {
@@ -24,20 +22,21 @@ interface DistancesSectionProps {
   gpsLongitude?: number;
 }
 
-// 13 COMMODITÉS VALIDÉES
+// 13 COMMODITÉS VALIDÉES (12 uniques après mapping)
 const FIXED_AMENITIES = [
-  { id: 'hospital', label: 'Hôpital', icon: Building2, category: 'Santé' },
-  { id: 'pharmacy', label: 'Pharmacie', icon: Heart, category: 'Santé' },
-  { id: 'school', label: 'École', icon: GraduationCap, category: 'Éducation' },
-  { id: 'university', label: 'Université', icon: School, category: 'Éducation' },
-  { id: 'supermarket', label: 'Supermarché', icon: ShoppingCart, category: 'Shopping' },
-  { id: 'shopping_center', label: 'Centre commercial', icon: Store, category: 'Shopping' },
-  { id: 'transport_public', label: 'Transport public', icon: Bus, category: 'Transport' },
-  { id: 'bank', label: 'Banque', icon: Landmark, category: 'Services' },
-  { id: 'gym', label: 'Salle de sport', icon: Dumbbell, category: 'Loisirs' },
-  { id: 'park', label: 'Parc', icon: Trees, category: 'Loisirs' },
-  { id: 'police', label: 'Police', icon: Shield, category: 'Sécurité' },
-  { id: 'beach', label: 'Plage', icon: Waves, category: 'Stratégique' }
+  { id: 'hospital', label: 'Hôpital', icon: Heart },
+  { id: 'pharmacy', label: 'Pharmacie', icon: Heart },
+  { id: 'school', label: 'École', icon: GraduationCap },
+  { id: 'university', label: 'Université', icon: School },
+  { id: 'supermarket', label: 'Supermarché', icon: ShoppingCart },
+  { id: 'shopping_center', label: 'Centre commercial', icon: Store },
+  { id: 'transport_public', label: 'Transport public', icon: Bus },
+  { id: 'bank', label: 'Banque', icon: Landmark },
+  { id: 'gym', label: 'Salle de sport', icon: Dumbbell },
+  { id: 'park', label: 'Parc', icon: Trees },
+  { id: 'police', label: 'Police', icon: Shield },
+  { id: 'beach', label: 'Plage', icon: Waves },
+  { id: 'doctor', label: 'Médecin', icon: Heart }
 ];
 
 // Helper pour calculer distance
@@ -81,72 +80,72 @@ export function ModernDistancesSection({
 
   return (
     <div className="space-y-6">
-      {/* DISTANCES STRATÉGIQUES - VERSION COMPACTE */}
+      {/* DISTANCES STRATÉGIQUES */}
       <div>
-        <h3 className="text-sm font-semibold text-slate-900 mb-3">Distances stratégiques</h3>
+        <h3 className="text-sm font-medium text-gray-700 mb-3">Distances stratégiques</h3>
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
-          <div className="bg-white rounded-lg p-3 border border-slate-200 shadow-sm">
+          <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
             <div className="flex items-center gap-2 mb-1">
-              <Waves className="h-4 w-4 text-blue-500" />
-              <span className="text-xs font-medium text-slate-600">Mer/Plage</span>
+              <Waves className="h-4 w-4 text-gray-600" />
+              <span className="text-xs font-medium text-gray-600">Mer/Plage</span>
             </div>
-            <p className="text-xl font-bold text-slate-900">
+            <p className="text-lg font-semibold text-gray-900">
               {proximitySeaKm ? `${proximitySeaKm} km` : '—'}
             </p>
           </div>
 
-          <div className="bg-white rounded-lg p-3 border border-slate-200 shadow-sm">
+          <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
             <div className="flex items-center gap-2 mb-1">
-              <Building2 className="h-4 w-4 text-slate-500" />
-              <span className="text-xs font-medium text-slate-600">Centre-ville</span>
+              <Building2 className="h-4 w-4 text-gray-600" />
+              <span className="text-xs font-medium text-gray-600">Centre-ville</span>
             </div>
-            <p className="text-xl font-bold text-slate-900">
+            <p className="text-lg font-semibold text-gray-900">
               {proximityCityCenterKm ? `${proximityCityCenterKm} km` : '—'}
             </p>
           </div>
 
-          <div className="bg-white rounded-lg p-3 border border-slate-200 shadow-sm">
+          <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
             <div className="flex items-center gap-2 mb-1">
-              <Car className="h-4 w-4 text-slate-500" />
-              <span className="text-xs font-medium text-slate-600">Autoroute</span>
+              <Car className="h-4 w-4 text-gray-600" />
+              <span className="text-xs font-medium text-gray-600">Autoroute</span>
             </div>
-            <p className="text-xl font-bold text-slate-900">
+            <p className="text-lg font-semibold text-gray-900">
               {proximityHighwayKm ? `${proximityHighwayKm} km` : '—'}
             </p>
           </div>
 
-          <div className="bg-white rounded-lg p-3 border border-slate-200 shadow-sm">
+          <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
             <div className="flex items-center gap-2 mb-1">
-              <Plane className="h-4 w-4 text-slate-500" />
-              <span className="text-xs font-medium text-slate-600">Larnaca</span>
+              <Plane className="h-4 w-4 text-gray-600" />
+              <span className="text-xs font-medium text-gray-600">Larnaca</span>
             </div>
-            <p className="text-xl font-bold text-slate-900">
+            <p className="text-lg font-semibold text-gray-900">
               {larnacaDistance ? `${larnacaDistance} km` : '—'}
             </p>
           </div>
 
-          <div className="bg-white rounded-lg p-3 border border-slate-200 shadow-sm">
+          <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
             <div className="flex items-center gap-2 mb-1">
-              <Plane className="h-4 w-4 text-slate-500" />
-              <span className="text-xs font-medium text-slate-600">Paphos</span>
+              <Plane className="h-4 w-4 text-gray-600" />
+              <span className="text-xs font-medium text-gray-600">Paphos</span>
             </div>
-            <p className="text-xl font-bold text-slate-900">
+            <p className="text-lg font-semibold text-gray-900">
               {paphosDistance ? `${paphosDistance} km` : '—'}
             </p>
           </div>
         </div>
       </div>
 
-      {/* 13 COMMODITÉS FIXES - TOUJOURS AFFICHÉES */}
+      {/* 13 COMMODITÉS FIXES */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-semibold text-slate-900">Commodités de proximité</h3>
+          <h3 className="text-sm font-medium text-gray-700">Commodités de proximité</h3>
           <button
             type="button"
             onClick={onSelectAll}
-            className="text-xs text-blue-600 hover:text-blue-700 font-medium"
+            className="text-xs text-gray-600 hover:text-gray-900 font-medium"
           >
-            {selectedAmenities.size === FIXED_AMENITIES.length ? 'Tout désélectionner' : 'Tout sélectionner'}
+            {selectedAmenities.size === detectedAmenities.length ? 'Tout désélectionner' : 'Tout sélectionner'}
           </button>
         </div>
 
@@ -161,37 +160,36 @@ export function ModernDistancesSection({
                 key={amenity.id}
                 onClick={() => detected && onToggleAmenity(amenity.id)}
                 className={`
-                  relative bg-white rounded-lg p-3 border transition-all
-                  ${detected ? 'cursor-pointer hover:shadow-md border-slate-200' : 'border-slate-100 opacity-60'}
-                  ${isSelected && detected ? 'ring-2 ring-blue-500 bg-blue-50' : ''}
+                  relative bg-white rounded-lg p-3 border border-gray-200
+                  ${detected ? 'cursor-pointer hover:border-gray-300' : 'opacity-50'}
                 `}
               >
-                {/* Checkbox */}
+                {/* Checkbox simple */}
                 {detected && (
                   <input
                     type="checkbox"
                     checked={isSelected}
                     onChange={() => onToggleAmenity(amenity.id)}
                     onClick={(e) => e.stopPropagation()}
-                    className="absolute top-2 right-2 h-4 w-4 text-blue-600 rounded border-slate-300 cursor-pointer"
+                    className="absolute top-2 right-2 h-4 w-4 rounded border-gray-300 text-gray-900 cursor-pointer"
                   />
                 )}
 
                 {/* Contenu */}
                 <div className="pr-6">
                   <div className="flex items-center gap-2 mb-2">
-                    <Icon className={`h-4 w-4 ${detected ? 'text-slate-700' : 'text-slate-400'}`} />
-                    <span className={`text-sm font-medium ${detected ? 'text-slate-900' : 'text-slate-400'}`}>
+                    <Icon className={`h-4 w-4 ${detected ? 'text-gray-700' : 'text-gray-400'}`} />
+                    <span className={`text-sm font-medium ${detected ? 'text-gray-900' : 'text-gray-400'}`}>
                       {amenity.label}
                     </span>
                   </div>
 
                   {detected ? (
                     <div className="space-y-1">
-                      <div className="text-lg font-bold text-slate-900">
+                      <div className="text-base font-semibold text-gray-900">
                         {detected.distance_km} km
                       </div>
-                      <div className="flex items-center gap-1 text-xs text-slate-500">
+                      <div className="flex items-center gap-1 text-xs text-gray-500">
                         <Clock className="h-3 w-3" />
                         {detected.distance_km <= 0.5 && '5 min'}
                         {detected.distance_km > 0.5 && detected.distance_km <= 1 && '10 min'}
@@ -200,25 +198,18 @@ export function ModernDistancesSection({
                       </div>
                     </div>
                   ) : (
-                    <div className="text-xs text-slate-400 italic">
+                    <div className="text-xs text-gray-400 italic">
                       Non détecté
                     </div>
                   )}
-                </div>
-
-                {/* Badge catégorie */}
-                <div className="mt-2">
-                  <Badge variant="outline" className="text-xs py-0 px-1.5 border-slate-200 text-slate-600">
-                    {amenity.category}
-                  </Badge>
                 </div>
               </div>
             );
           })}
         </div>
 
-        <p className="text-xs text-slate-500 mt-3">
-          {detectedAmenities.length} / {FIXED_AMENITIES.length} commodités détectées • {selectedAmenities.size} sélectionnées pour le site public
+        <p className="text-xs text-gray-500 mt-3">
+          {detectedAmenities.length} / {FIXED_AMENITIES.length} commodités détectées • {selectedAmenities.size} sélectionnées
         </p>
       </div>
     </div>
