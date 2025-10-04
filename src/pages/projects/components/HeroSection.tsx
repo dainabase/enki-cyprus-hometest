@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { formatPrice, formatArea } from '@/lib/utils/formatters';
-import { MapPin, Calendar, Chrome as Home, Ruler, Euro, TrendingUp } from 'lucide-react';
+import { MapPin, Calendar, Chrome as Home, Ruler, Euro } from 'lucide-react';
 
 interface HeroSectionProps {
   project: any;
@@ -60,11 +60,6 @@ export default function HeroSection({ project }: HeroSectionProps) {
       icon: <Euro className="w-6 h-6" />,
       label: 'Price From',
       value: project.price_from ? formatPrice(project.price_from) : 'On Request',
-    },
-    {
-      icon: <TrendingUp className="w-6 h-6" />,
-      label: 'ROI',
-      value: project.roi_estimate_percent ? `${project.roi_estimate_percent}%` : 'N/A',
     },
   ];
 
