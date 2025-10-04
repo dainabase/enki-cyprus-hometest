@@ -1,3 +1,16 @@
+# ⚠️ DEPRECATED - ProjectPageV2 Abandonnée
+
+**Date d'abandon** : 4 Octobre 2025  
+**Raison** : Design non satisfaisant  
+**Décision** : Retour à la version originale ProjectPage  
+**Status** : Archive historique uniquement
+
+📄 **Voir** : `PROJECTV2_DEPRECATED.md` pour détails complets
+
+⚠️ **Note** : Les migrations BDD listées ci-dessous ont été appliquées avec succès et les tables/colonnes sont **CONSERVÉES** pour usage futur éventuel.
+
+---
+
 # 🚀 PHASE 2 SEMAINE 2 - MIGRATIONS COMPLÈTES
 
 ## 📅 Date : 4 Octobre 2025, 16h00
