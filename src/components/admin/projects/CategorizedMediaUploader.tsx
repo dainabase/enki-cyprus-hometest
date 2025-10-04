@@ -500,114 +500,106 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
                 </div>
               </div>
             )}
-
-            {/* Thumbnails Grid */}
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">
-                Toutes les photos ({field.value.length})
-              </Label>
-              <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2">
-                {field.value.map((photo, index) => (
-                  <button
-                    key={photo.url}
-                    type="button"
-                    onClick={() => setSelectedPhotoIndex(index)}
-                    className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all hover:scale-105 ${
-                      selectedPhotoIndex === index 
-                        ? 'border-primary shadow-lg ring-2 ring-primary/20' 
-                        : 'border-muted hover:border-primary/50'
-                    }`}
-                  >
-                    <img 
-                      src={photo.url} 
-                      alt={photo.caption || `Photo ${index + 1}`}
-                      className="w-full h-full object-cover"
-                      onError={(e) => { 
-                        e.currentTarget.onerror = null; 
-                        e.currentTarget.src = '/placeholder.svg'; 
-                      }}
-                    />
-                    
-                    {/* Primary indicator */}
-                    {photo.isPrimary && (
-                      <div className="absolute top-1 right-1">
-                        <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center">
-                          <Star className="w-3 h-3 text-primary-foreground fill-current" />
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Selection indicator */}
-                    {selectedPhotoIndex === index && (
-                      <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
-                        <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                          <Camera className="w-4 h-4 text-primary-foreground" />
-                        </div>
-                      </div>
-                    )}
-                  </button>
-                ))}
-              </div>
-            </div>
           </CardContent>
         </Card>
       )}
 
-      {/* Summary & Category Selector */}
+      {/* All Categories Grid - Photos + Empty slots */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Camera className="w-5 h-5" />
-            Ajouter des Photos
+            Toutes les Catégories
           </CardTitle>
           <CardDescription>
-            Sélectionnez une catégorie pour ajouter ou remplacer des photos
+            Cliquez sur une photo pour la modifier ou sur une catégorie vide pour ajouter une photo
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-8 gap-3">
-            {getTotalByCategory().map((cat) => {
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {PHOTO_CATEGORIES.map((cat) => {
+              const photo = getPhotosByCategory(cat.value)[0]; // One photo per category
               const Icon = cat.icon;
-              const isSelected = selectedCategory === cat.value;
-              const hasPhotos = cat.count > 0;
+              const photoIndex = photo ? field.value.findIndex(p => p.url === photo.url) : null;
+              
               return (
                 <button
                   key={cat.value}
                   type="button"
-                  onClick={() => setSelectedCategory(cat.value)}
-                  className={`relative text-center p-3 border-2 rounded-lg transition-all duration-200 hover:scale-105 ${
-                    isSelected 
-                      ? 'border-primary bg-primary/5 shadow-md ring-2 ring-primary/20' 
-                      : hasPhotos 
-                        ? 'border-green-500/50 bg-green-50 hover:border-green-500 dark:bg-green-950/30' 
-                        : 'border-muted hover:border-primary/50 hover:bg-muted/30'
+                  onClick={() => {
+                    if (photo) {
+                      setSelectedPhotoIndex(photoIndex);
+                    } else {
+                      setSelectedCategory(cat.value);
+                      // Scroll to upload zone
+                      setTimeout(() => {
+                        document.getElementById('upload-zone')?.scrollIntoView({ behavior: 'smooth' });
+                      }, 100);
+                    }
+                  }}
+                  className={`relative rounded-lg overflow-hidden border-2 transition-all hover:scale-105 ${
+                    photo && selectedPhotoIndex === photoIndex
+                      ? 'border-primary shadow-lg ring-2 ring-primary/20' 
+                      : photo
+                        ? 'border-green-500/50 hover:border-green-500'
+                        : 'border-dashed border-muted-foreground/25 hover:border-primary/50 bg-muted/20'
                   }`}
                 >
-                  {/* Fixed height icon area */}
-                  <div className="h-8 flex items-center justify-center mb-2">
-                    <Icon className={`w-6 h-6 ${
-                      isSelected ? 'text-primary' : hasPhotos ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'
-                    }`} />
+                  <div className="aspect-video relative">
+                    {photo ? (
+                      <>
+                        <img 
+                          src={photo.url} 
+                          alt={photo.caption || cat.label}
+                          className="w-full h-full object-cover"
+                          onError={(e) => { 
+                            e.currentTarget.onerror = null; 
+                            e.currentTarget.src = '/placeholder.svg'; 
+                          }}
+                        />
+                        
+                        {/* Primary indicator */}
+                        {photo.isPrimary && (
+                          <div className="absolute top-2 right-2">
+                            <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center shadow-lg">
+                              <Star className="w-4 h-4 text-primary-foreground fill-current" />
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Selection indicator */}
+                        {selectedPhotoIndex === photoIndex && (
+                          <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                            <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg">
+                              <Camera className="w-6 h-6 text-primary-foreground" />
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground">
+                        <Icon className="w-8 h-8 mb-2" />
+                        <Upload className="w-5 h-5 opacity-50" />
+                      </div>
+                    )}
                   </div>
                   
-                  {/* Text area with fixed min-height */}
-                  <div className="min-h-[2.5rem] flex items-center justify-center mb-2">
-                    <p className={`text-xs font-medium leading-tight text-center whitespace-pre-line ${
-                      isSelected ? 'text-primary' : hasPhotos ? 'text-green-700 dark:text-green-300' : 'text-foreground'
-                    }`}>
-                      {cat.label}
+                  {/* Category label */}
+                  <div className="p-3 bg-background border-t">
+                    <p className="text-sm font-medium text-center truncate">
+                      {cat.label.replace('\n', ' ')}
                     </p>
+                    {photo && photo.caption && (
+                      <p className="text-xs text-muted-foreground text-center truncate mt-1">
+                        {photo.caption}
+                      </p>
+                    )}
+                    {!photo && (
+                      <p className="text-xs text-muted-foreground text-center mt-1">
+                        Aucune photo
+                      </p>
+                    )}
                   </div>
-                  
-                  <Badge 
-                    variant={isSelected ? "default" : hasPhotos ? "secondary" : "outline"}
-                    className="text-xs"
-                  >
-                    {cat.count}
-                  </Badge>
-                  {hasPhotos && (
-                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-background" />
-                  )}
                 </button>
               );
             })}
@@ -616,28 +608,26 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
       </Card>
 
       {/* Upload Zone for Selected Category */}
-      {selectedCategory && (
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              {(() => {
-                const categoryInfo = PHOTO_CATEGORIES.find(c => c.value === selectedCategory);
-                const Icon = categoryInfo?.icon;
-                return Icon ? <Icon className="w-5 h-5" /> : null;
-              })()}
-              <CardTitle>
-                {PHOTO_CATEGORIES.find(c => c.value === selectedCategory)?.label}
-              </CardTitle>
-            </div>
-            <CardDescription>
-              {PHOTO_CATEGORIES.find(c => c.value === selectedCategory)?.description}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {renderUploadZone(selectedCategory)}
-          </CardContent>
-        </Card>
-      )}
+      <Card id="upload-zone">
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            {(() => {
+              const categoryInfo = PHOTO_CATEGORIES.find(c => c.value === selectedCategory);
+              const Icon = categoryInfo?.icon;
+              return Icon ? <Icon className="w-5 h-5" /> : null;
+            })()}
+            <CardTitle>
+              Ajouter / Remplacer: {PHOTO_CATEGORIES.find(c => c.value === selectedCategory)?.label}
+            </CardTitle>
+          </div>
+          <CardDescription>
+            {PHOTO_CATEGORIES.find(c => c.value === selectedCategory)?.description}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {renderUploadZone(selectedCategory)}
+        </CardContent>
+      </Card>
     </div>
   );
 };
