@@ -15,7 +15,6 @@ import TabsFeaturesAlt5Accordion from '@/components/TabsFeatures-Alternative5-Ac
 import { CountUpStats } from '@/components/CountUpStats';
 import Alternative3 from '@/components/hero/Alternative3';
 import TestimonialsSection from '@/components/sections/TestimonialsSection';
-import { TextParallaxContentExample } from '@/components/sections/TextParallaxContent';
 import { ProjectInterest } from '@/types/project.types';
 import { ChatContainer } from '@/components/chat/ChatContainer';
 import { ResultsPanel } from '@/components/search/ResultsPanel';
@@ -187,10 +186,6 @@ const Home = () => {
             <TabsFeaturesAlt5Accordion />
           </div>
         </section>
-
-        {/* Text Parallax Content Section */}
-        <TextParallaxContentExample />
-
         {/* Projets Vedette */}
         <section id="featured-projects" className="py-24 md:py-32 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
