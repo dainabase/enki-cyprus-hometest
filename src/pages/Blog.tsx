@@ -194,18 +194,18 @@ const Blog = () => {
             />
           </div>
 
-          <div className="relative z-10 text-center text-white px-6 max-w-5xl mx-auto">
+          <div className="relative z-10 text-center text-white w-full px-6 max-w-7xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              <p className="text-sm tracking-[0.3em] uppercase mb-8 font-light text-white/70">
+              <p className="text-xs sm:text-sm tracking-[0.3em] uppercase mb-6 sm:mb-8 font-light text-white/70">
                 Centre de Connaissances
               </p>
 
               <motion.h1
-                className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-light tracking-tight leading-[0.95] mb-8"
+                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light tracking-tight leading-[0.95] mb-6 sm:mb-8"
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 0.4 }}
@@ -216,7 +216,7 @@ const Blog = () => {
               </motion.h1>
 
               <motion.p
-                className="text-lg text-white/80 mb-12 max-w-2xl mx-auto font-light leading-relaxed"
+                className="text-base sm:text-lg text-white/80 mb-8 sm:mb-12 max-w-2xl mx-auto font-light leading-relaxed px-4"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
@@ -224,20 +224,20 @@ const Blog = () => {
                 Guides, analyses et conseils d'experts sur l'investissement immobilier à Chypre
               </motion.p>
 
-              {/* Search Bar */}
+              {/* Search Bar - Full width sur mobile */}
               <motion.div
-                className="max-w-2xl mx-auto relative"
+                className="w-full max-w-2xl mx-auto relative"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.8 }}
               >
-                <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Search className="absolute left-4 sm:left-6 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
                 <Input
                   type="text"
                   placeholder="Rechercher un article..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-14 pr-6 py-6 bg-white/10 backdrop-blur-md border-white/20 text-white placeholder:text-white/50 rounded-full shadow-2xl focus:bg-white/20 transition-all duration-300"
+                  className="w-full pl-12 sm:pl-14 pr-4 sm:pr-6 py-4 sm:py-6 text-sm sm:text-base bg-white/10 backdrop-blur-md border-white/20 text-white placeholder:text-white/50 rounded-full shadow-2xl focus:bg-white/20 transition-all duration-300"
                 />
               </motion.div>
             </motion.div>
@@ -259,11 +259,11 @@ const Blog = () => {
           </motion.div>
         </motion.section>
 
-        <div className="max-w-7xl mx-auto px-6 py-24">
+        <div className="w-full px-6 md:px-8 lg:px-12 py-16 sm:py-20 md:py-24 max-w-7xl mx-auto">
           {/* Catégories avec Stagger Animation */}
-          <section className="mb-32">
+          <section className="mb-20 sm:mb-24 md:mb-32">
             <motion.h2
-              className="text-4xl md:text-5xl font-light text-center mb-20 text-gray-900 tracking-tight"
+              className="text-3xl sm:text-4xl md:text-5xl font-light text-center mb-12 sm:mb-16 md:mb-20 text-gray-900 tracking-tight"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -273,7 +273,7 @@ const Blog = () => {
             </motion.h2>
 
             <motion.div
-              className="grid md:grid-cols-2 lg:grid-cols-4 gap-6"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
               variants={staggerContainer}
               initial="hidden"
               whileInView="visible"
@@ -380,9 +380,9 @@ function CategoryCard({ category, isSelected, onClick, Icon, index }) {
 // Featured Section
 function FeaturedSection({ posts, getCategoryInfo, formatDate }) {
   return (
-    <section className="mb-32">
+    <section className="mb-20 sm:mb-24 md:mb-32">
       <motion.h2
-        className="text-4xl font-light mb-16 text-gray-900 tracking-tight"
+        className="text-3xl sm:text-4xl font-light mb-12 sm:mb-16 text-gray-900 tracking-tight"
         initial={{ opacity: 0, x: -30 }}
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true }}
@@ -391,7 +391,7 @@ function FeaturedSection({ posts, getCategoryInfo, formatDate }) {
         À la Une
       </motion.h2>
 
-      <div className="grid lg:grid-cols-2 gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 md:gap-12">
         {posts.map((post, i) => (
           <FeaturedCard
             key={post.id}
@@ -477,9 +477,9 @@ function FeaturedCard({ post, getCategoryInfo, formatDate, index }) {
 function RegularArticlesSection({ posts, getCategoryInfo, formatDate, selectedCategory, filteredCount }) {
   return (
     <section>
-      <div className="flex items-center justify-between mb-16">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-12 sm:mb-16">
         <motion.h2
-          className="text-4xl font-light text-gray-900 tracking-tight"
+          className="text-2xl sm:text-3xl md:text-4xl font-light text-gray-900 tracking-tight"
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
@@ -487,13 +487,13 @@ function RegularArticlesSection({ posts, getCategoryInfo, formatDate, selectedCa
           {selectedCategory === 'all' ? 'Tous les Articles' :
            `Articles - ${getCategoryInfo(selectedCategory)?.name}`}
         </motion.h2>
-        <Badge variant="outline" className="border-gray-200 text-gray-600 px-4 py-2">
+        <Badge variant="outline" className="border-gray-200 text-gray-600 px-3 sm:px-4 py-1 sm:py-2 text-sm">
           {filteredCount} article{filteredCount > 1 ? 's' : ''}
         </Badge>
       </div>
 
       <motion.div
-        className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
         variants={staggerContainer}
         initial="hidden"
         whileInView="visible"
@@ -601,39 +601,39 @@ function EmptyState({ onReset }) {
 function NewsletterSection() {
   return (
     <motion.section
-      className="mt-32"
+      className="mt-20 sm:mt-24 md:mt-32"
       initial={{ opacity: 0, y: 60 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.8 }}
     >
-      <Card className="bg-black text-white border-0 rounded-3xl overflow-hidden relative">
+      <Card className="bg-black text-white border-0 rounded-2xl sm:rounded-3xl overflow-hidden relative">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-900 to-black opacity-90"></div>
 
-        <CardContent className="p-16 text-center relative z-10">
+        <CardContent className="p-8 sm:p-12 md:p-16 text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
           >
-            <h3 className="text-4xl md:text-5xl font-light mb-6 tracking-tight">Restez Informé</h3>
-            <p className="text-lg text-white/70 mb-12 max-w-2xl mx-auto font-light">
+            <h3 className="text-3xl sm:text-4xl md:text-5xl font-light mb-4 sm:mb-6 tracking-tight">Restez Informé</h3>
+            <p className="text-base sm:text-lg text-white/70 mb-8 sm:mb-12 max-w-2xl mx-auto font-light px-4">
               Recevez nos derniers articles et analyses directement dans votre boîte mail.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full max-w-lg mx-auto">
               <Input
                 type="email"
                 placeholder="Votre adresse email"
-                className="bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-white/50 rounded-full py-6 px-6"
+                className="w-full bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-white/50 rounded-full py-4 sm:py-6 px-4 sm:px-6 text-sm sm:text-base"
               />
-              <Button className="bg-white text-black hover:bg-white/90 rounded-full px-8 py-6 font-medium">
+              <Button className="w-full sm:w-auto bg-white text-black hover:bg-white/90 rounded-full px-6 sm:px-8 py-4 sm:py-6 font-medium text-sm sm:text-base whitespace-nowrap">
                 S'abonner
               </Button>
             </div>
 
-            <p className="text-sm text-white/50 mt-6">
+            <p className="text-xs sm:text-sm text-white/50 mt-4 sm:mt-6">
               Pas de spam, désabonnement en un clic.
             </p>
           </motion.div>

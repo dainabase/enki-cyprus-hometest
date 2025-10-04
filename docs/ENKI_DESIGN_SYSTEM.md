@@ -1118,45 +1118,300 @@ import { fadeInUp } from './animations';
 
 ---
 
-## 📱 RESPONSIVE DESIGN
+## 📱 RESPONSIVE DESIGN (MOBILE-FIRST OBLIGATOIRE)
+
+> **RÈGLE ABSOLUE** : TOUT doit être **mobile-first**, **full-width** et **parfaitement responsive** sur smartphone (320px-768px), tablette (768px-1024px) et desktop (1024px+).
+
+### ⚠️ RÈGLES NON-NÉGOCIABLES
+
+#### 1. MOBILE-FIRST OBLIGATOIRE
+- **TOUJOURS** coder d'abord pour mobile (320px-375px)
+- **TOUJOURS** utiliser des classes sans breakpoint pour mobile
+- **TOUJOURS** ajouter breakpoints `sm:`, `md:`, `lg:` progressivement
+- **JAMAIS** de `hidden` sur mobile sans alternative
+
+#### 2. FULL-WIDTH PAR DÉFAUT
+- **TOUS les composants** doivent occuper 100% de la largeur sur mobile
+- **Container max-width** : Seulement sur desktop (lg:max-w-7xl)
+- **Padding horizontal** : TOUJOURS `px-6` minimum sur mobile
+- **Sections hero** : TOUJOURS `w-full h-screen` (pas de padding latéral sur hero)
+
+#### 3. IMAGES RESPONSIVE
+- **TOUJOURS** `w-full h-auto` ou `w-full h-[fixed]`
+- **TOUJOURS** `object-cover` pour maintenir ratio
+- **JAMAIS** de tailles fixes en pixels
+- **TOUJOURS** tester sur iPhone SE (375px) et iPhone 12 Pro (390px)
+
+#### 4. TYPOGRAPHY RESPONSIVE OBLIGATOIRE
+- **Titres** : TOUJOURS 5 breakpoints minimum
+- **Corps** : Au moins 3 breakpoints (base, md:, lg:)
+- **Jamais** de text-9xl sur mobile (max text-5xl)
+
+#### 5. GRIDS & LAYOUTS
+- **Mobile** : TOUJOURS `grid-cols-1` ou `flex-col`
+- **Tablette** : `md:grid-cols-2` possible
+- **Desktop** : `lg:grid-cols-3` ou `lg:grid-cols-4` maximum
+- **Gaps** : Progressifs (gap-4, md:gap-6, lg:gap-8)
 
 ### Breakpoints Tailwind
 
-| Breakpoint | Taille | Usage |
-|------------|--------|-------|
-| `sm` | 640px | Petits mobiles landscape |
-| `md` | 768px | Tablettes portrait |
-| `lg` | 1024px | Tablettes landscape, petits laptops |
-| `xl` | 1280px | Desktop standard |
-| `2xl` | 1536px | Grand desktop |
+| Breakpoint | Taille | Device | Usage Prioritaire |
+|------------|--------|--------|-------------------|
+| (none) | 0-639px | **Mobile** | **BASE - TOUJOURS définir** |
+| `sm:` | 640px+ | Mobile landscape | Petits ajustements |
+| `md:` | 768px+ | **Tablette** | **Layout changes** |
+| `lg:` | 1024px+ | **Desktop** | **Multi-colonnes** |
+| `xl:` | 1280px+ | Large desktop | Spacieux |
+| `2xl:` | 1536px+ | Extra large | Max-width containers |
 
-### Patterns Mobile-First
+### 📐 PATTERNS FULL-WIDTH OBLIGATOIRES
 
-#### Typography Responsive
+#### Hero Section (TOUJOURS Full-Width)
 ```tsx
-<h1 className="
-  text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl
-  font-light tracking-tight
-">
-```
-
-#### Padding Responsive
-```tsx
+// ✅ CORRECT - Full width sur tous devices
 <section className="
-  py-12 px-6
-  md:py-16 md:px-8
-  lg:py-24 lg:px-12
+  relative w-full h-screen
+  px-6 py-12
+  md:px-8 md:py-16
+  lg:px-12 lg:py-24
 ">
+  <div className="
+    max-w-7xl mx-auto
+    text-center
+  ">
+    {/* Content centré avec max-width */}
+  </div>
+</section>
+
+// ❌ INCORRECT - Pas de w-full
+<section className="h-screen">
 ```
 
-#### Grid Responsive
+#### Container Pattern (Desktop Max-Width)
 ```tsx
+// ✅ CORRECT - Full width mobile, max-width desktop
 <div className="
-  grid grid-cols-1 gap-4
-  md:grid-cols-2 md:gap-6
-  lg:grid-cols-3 lg:gap-8
+  w-full px-6
+  lg:max-w-7xl lg:mx-auto lg:px-12
 ">
+  {/* Content */}
+</div>
+
+// ❌ INCORRECT - Max-width sur mobile
+<div className="max-w-7xl mx-auto">
 ```
+
+#### Typography Responsive COMPLÈTE
+```tsx
+// ✅ CORRECT - 5 breakpoints, lisible sur tous devices
+<h1 className="
+  text-4xl      /* Mobile (base) */
+  sm:text-5xl   /* Mobile landscape */
+  md:text-6xl   /* Tablette */
+  lg:text-7xl   /* Desktop */
+  xl:text-8xl   /* Large desktop */
+  font-light tracking-tight leading-tight
+">
+
+// ❌ INCORRECT - Trop gros sur mobile
+<h1 className="text-9xl">
+```
+
+#### Padding Responsive PROGRESSIF
+```tsx
+// ✅ CORRECT - Progressif et proportionnel
+<section className="
+  py-12 px-6    /* Mobile: compact */
+  md:py-16 md:px-8    /* Tablette: moyen */
+  lg:py-24 lg:px-12   /* Desktop: généreux */
+">
+
+// ❌ INCORRECT - Identique partout
+<section className="py-24 px-12">
+```
+
+#### Grid Responsive OBLIGATOIRE
+```tsx
+// ✅ CORRECT - Progressive enhancement
+<div className="
+  grid grid-cols-1 gap-4          /* Mobile: 1 col */
+  md:grid-cols-2 md:gap-6         /* Tablette: 2 cols */
+  lg:grid-cols-3 lg:gap-8         /* Desktop: 3 cols */
+">
+
+// ❌ INCORRECT - Forcé 3 colonnes partout
+<div className="grid grid-cols-3 gap-8">
+```
+
+#### Images Responsive PARFAITES
+```tsx
+// ✅ CORRECT - Responsive et optimisé
+<div className="
+  relative w-full
+  h-64          /* Mobile: 256px */
+  md:h-80       /* Tablette: 320px */
+  lg:h-96       /* Desktop: 384px */
+  overflow-hidden rounded-xl
+">
+  <img
+    src={url}
+    alt="Description"
+    className="w-full h-full object-cover"
+  />
+</div>
+
+// ❌ INCORRECT - Hauteur fixe non responsive
+<img src={url} className="h-96" />
+```
+
+#### Flex Direction Responsive
+```tsx
+// ✅ CORRECT - Colonne mobile, ligne desktop
+<div className="
+  flex flex-col gap-4           /* Mobile: vertical */
+  md:flex-row md:gap-6         /* Tablette+: horizontal */
+  lg:gap-8
+">
+
+// ❌ INCORRECT - Toujours horizontal
+<div className="flex flex-row gap-8">
+```
+
+#### Buttons & CTAs Responsive
+```tsx
+// ✅ CORRECT - Full width mobile, auto desktop
+<button className="
+  w-full px-6 py-3 text-base      /* Mobile: full width */
+  md:w-auto md:px-8 md:py-4      /* Desktop: auto width */
+  rounded-full font-medium
+">
+
+// ❌ INCORRECT - Pas responsive
+<button className="px-8 py-4">
+```
+
+### 📱 TESTS OBLIGATOIRES
+
+#### Devices à Tester Systématiquement
+
+| Device | Width | Notes |
+|--------|-------|-------|
+| **iPhone SE** | 375px | Minimum absolu |
+| **iPhone 12/13/14** | 390px | Standard iOS |
+| **iPhone 14 Pro Max** | 430px | Large iOS |
+| **Samsung Galaxy S21** | 360px | Standard Android |
+| **iPad Mini** | 768px | Tablette portrait |
+| **iPad Pro** | 1024px | Tablette landscape |
+| **MacBook Air** | 1280px | Desktop standard |
+| **iMac 27"** | 2560px | Large desktop |
+
+#### Chrome DevTools Breakpoints Custom
+```
+320px  - Minimum (petits Android)
+375px  - iPhone SE
+390px  - iPhone 12+
+768px  - iPad portrait
+1024px - iPad landscape
+1280px - Desktop
+1920px - Full HD
+```
+
+### 🚫 ERREURS COURANTES À ÉVITER
+
+#### ❌ Ce qu'il NE FAUT JAMAIS faire :
+
+1. **Fixed Width sans Responsive**
+```tsx
+// ❌ MAUVAIS
+<div className="w-[1200px]">
+```
+
+2. **Text trop grand sur Mobile**
+```tsx
+// ❌ MAUVAIS - Illisible sur mobile
+<h1 className="text-9xl">
+```
+
+3. **Padding trop grand sur Mobile**
+```tsx
+// ❌ MAUVAIS - Gaspille l'espace
+<section className="py-24 px-12">
+```
+
+4. **Grid multi-colonnes sur Mobile**
+```tsx
+// ❌ MAUVAIS - Colonnes trop étroites
+<div className="grid grid-cols-3">
+```
+
+5. **Hidden sans Alternative**
+```tsx
+// ❌ MAUVAIS - Contenu perdu sur mobile
+<div className="hidden lg:block">
+  Important content
+</div>
+```
+
+6. **Absolute Positioning sans Responsive**
+```tsx
+// ❌ MAUVAIS - Déborde sur mobile
+<div className="absolute right-12 top-12">
+```
+
+#### ✅ Solutions Correctes :
+
+1. **Max-Width avec Full Width Mobile**
+```tsx
+// ✅ BON
+<div className="w-full lg:max-w-7xl lg:mx-auto">
+```
+
+2. **Typography Progressive**
+```tsx
+// ✅ BON
+<h1 className="text-4xl md:text-6xl lg:text-8xl">
+```
+
+3. **Padding Progressif**
+```tsx
+// ✅ BON
+<section className="py-12 px-6 md:py-16 lg:py-24">
+```
+
+4. **Grid Responsive**
+```tsx
+// ✅ BON
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+```
+
+5. **Conditional Rendering avec Alternative**
+```tsx
+// ✅ BON - Menu burger mobile, full menu desktop
+<div className="lg:hidden">
+  <MobileMenu />
+</div>
+<div className="hidden lg:block">
+  <DesktopMenu />
+</div>
+```
+
+### 📋 CHECKLIST RESPONSIVE OBLIGATOIRE
+
+Avant chaque commit, vérifier :
+
+- [ ] **Testé sur iPhone SE (375px)** - Plus petit device commun
+- [ ] **Texte lisible** sur 320px minimum
+- [ ] **Images responsive** avec w-full et object-cover
+- [ ] **Pas de débordement horizontal** (overflow-x)
+- [ ] **Padding adapté** par breakpoint (px-6, md:px-8, lg:px-12)
+- [ ] **Typography scalable** (5 breakpoints pour H1)
+- [ ] **Grids en 1 colonne** sur mobile
+- [ ] **Buttons full-width** sur mobile si nécessaire
+- [ ] **Pas de fixed width** sans max-width responsive
+- [ ] **Navigation mobile** fonctionnelle (burger menu)
+- [ ] **Touch targets** 44x44px minimum
+- [ ] **Scroll performance** fluide sur mobile
+- [ ] **Animations performantes** (60fps sur mobile)
 
 ---
 
@@ -1182,20 +1437,46 @@ import { fadeInUp } from './animations';
 
 ---
 
-## 📋 CHECKLIST DESIGN
+## 📋 CHECKLIST DESIGN COMPLÈTE
 
 ### Avant de Déployer un Composant
 
-- [ ] Police Inter utilisée partout
-- [ ] Palette limitée (gray + primary + 1 accent max)
-- [ ] Aucune couleur bleue/violette criarde
-- [ ] Espacement cohérent (système 4px)
-- [ ] Transitions sur hover (200-300ms)
-- [ ] Contrastes WCAG AA validés
-- [ ] Responsive mobile-first
-- [ ] Focus states visibles
-- [ ] Alt text sur images
-- [ ] Cohérent avec composants existants
+#### Design & Typography
+- [ ] Police **Inter** utilisée partout (font-light pour titres, font-medium pour corps)
+- [ ] Palette limitée (**gray + primary** + 1 accent max, **jamais de bleu/violet criard**)
+- [ ] Typography **5 breakpoints minimum** pour H1 (text-4xl, sm:, md:, lg:, xl:)
+- [ ] Espacement cohérent (**système 4px** : gap-4, md:gap-6, lg:gap-8)
+- [ ] Transitions sur hover (**200-300ms** avec easing `[0.16, 1, 0.3, 1]`)
+
+#### Responsive & Mobile-First
+- [ ] **Testé sur iPhone SE (375px)** - Plus petit device commun
+- [ ] **Full-width sur mobile** (`w-full` par défaut, `lg:max-w-7xl` sur desktop)
+- [ ] **Grids en 1 colonne mobile** (`grid-cols-1`, `md:grid-cols-2`, `lg:grid-cols-3`)
+- [ ] **Padding progressif** (`px-6`, `md:px-8`, `lg:px-12`)
+- [ ] **Typography scalable** (base, sm:, md:, lg:, xl:)
+- [ ] **Images responsive** (`w-full h-auto` ou `w-full h-[fixed]` avec `object-cover`)
+- [ ] **Buttons full-width mobile** si CTAs principales
+- [ ] **Pas de débordement horizontal** (overflow-x vérifié)
+
+#### Animations Framer Motion
+- [ ] **Fade In au scroll** sur sections principales (`whileInView`)
+- [ ] **Stagger animations** sur grilles/listes (`staggerContainer`)
+- [ ] **Image zoom au hover** (`whileHover={{ scale: 1.05-1.1 }}`)
+- [ ] **Smooth transitions** (duration 0.6-0.8s)
+- [ ] **Parallax hero** si page avec hero fullscreen
+- [ ] **Animations performantes** 60fps sur mobile (`viewport={{ once: true }}`)
+
+#### Accessibilité
+- [ ] **Contrastes WCAG AA** validés (gray-900 sur white = 16:1)
+- [ ] **Focus states visibles** (`focus:ring-2 focus:ring-primary/20`)
+- [ ] **Alt text** sur toutes les images
+- [ ] **Touch targets** 44x44px minimum sur mobile
+- [ ] **Keyboard navigation** fonctionnelle
+
+#### Cohérence
+- [ ] **Cohérent avec composants existants** (même style, même patterns)
+- [ ] **Framer Motion** importé de `@/lib/animations` si presets utilisés
+- [ ] **Pas de code dupliqué** (composants réutilisables créés)
 
 ---
 
