@@ -15,8 +15,26 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
+// Utilitaire pour calculer la largeur de la scrollbar
+const getScrollbarWidth = () => {
+  const outer = document.createElement('div');
+  outer.style.visibility = 'hidden';
+  outer.style.overflow = 'scroll';
+  document.body.appendChild(outer);
+  
+  const inner = document.createElement('div');
+  outer.appendChild(inner);
+  
+  const scrollbarWidth = outer.offsetWidth - inner.offsetWidth;
+  
+  outer.parentNode?.removeChild(outer);
+  
+  return scrollbarWidth;
+};
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
   const navRef = useRef<HTMLElement>(null);
   const location = useLocation();
   const navigate = useNavigate();
@@ -44,12 +62,23 @@ const Navbar = () => {
     setIsOpen(false);
   }, []);
 
+  // Toggle menu avec protection anti-spam
+  const toggleMenu = useCallback(() => {
+    if (isAnimating) return;
+    
+    setIsAnimating(true);
+    setIsOpen(prev => !prev);
+    
+    // Débloquer après l'animation (300ms)
+    setTimeout(() => setIsAnimating(false), 300);
+  }, [isAnimating]);
+
   // Fermer le menu lors du changement de route
   useEffect(() => {
     closeMenu();
   }, [location.pathname, closeMenu]);
 
-  // Fermer le menu au clic en dehors (avec ref pour éviter querySelector)
+  // Fermer le menu au clic en dehors
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
@@ -67,18 +96,29 @@ const Navbar = () => {
     };
   }, [isOpen, closeMenu]);
 
-  // Verrouiller le scroll du body quand le menu mobile est ouvert
+  // Verrouiller le scroll ET compenser la scrollbar
   useEffect(() => {
     const originalOverflow = document.body.style.overflow;
+    const originalPaddingRight = document.body.style.paddingRight;
     
     if (isOpen) {
+      const scrollbarWidth = getScrollbarWidth();
+      
+      // Bloquer le scroll
       document.body.style.overflow = 'hidden';
+      
+      // Compenser la disparition de la scrollbar pour éviter le shift
+      if (scrollbarWidth > 0) {
+        document.body.style.paddingRight = `${scrollbarWidth}px`;
+      }
     } else {
       document.body.style.overflow = originalOverflow;
+      document.body.style.paddingRight = originalPaddingRight;
     }
 
     return () => {
       document.body.style.overflow = originalOverflow;
+      document.body.style.paddingRight = originalPaddingRight;
     };
   }, [isOpen]);
 
@@ -149,7 +189,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" onClick={closeMenu} className="flex items-center">
+          <Link to="/" className="flex items-center">
             <span className="text-2xl font-bold text-foreground hover:text-primary transition-colors">
               ENKI-REALTY
             </span>
@@ -248,10 +288,11 @@ const Navbar = () => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={toggleMenu}
             className="md:hidden"
             aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu"}
             aria-expanded={isOpen}
+            disabled={isAnimating}
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </Button>
@@ -275,7 +316,6 @@ const Navbar = () => {
                   <Link
                     key={item.name}
                     to={item.href}
-                    onClick={closeMenu}
                     className={`flex items-center px-3 py-2 text-base font-medium rounded-md transition-colors ${
                       isActive(item.href)
                         ? 'text-primary bg-accent'
