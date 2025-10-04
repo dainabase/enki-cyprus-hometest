@@ -192,11 +192,6 @@ const Projects = () => {
                           <Star className="w-3 h-3 mr-1 fill-current" />
                           Vedette
                         </Badge>
-                        <Link to={`/project-v2/${projectSlug}`}>
-                          <Badge className="bg-orange-600 text-white hover:bg-orange-700 cursor-pointer transition-colors">
-                            V2
-                          </Badge>
-                        </Link>
                       </div>
 
                       <div className="absolute bottom-0 left-0 right-0 p-6">
@@ -363,18 +358,11 @@ const Projects = () => {
                           €{Number(project.price_from || project.price || 0).toLocaleString()}+
                         </span>
                       </div>
-                      <div className="flex gap-2">
-                        <Link to={`/projects/${project.url_slug || project.id}`} className="flex-1">
-                          <Button variant="outline" className="w-full">
-                            Version Standard
-                          </Button>
-                        </Link>
-                        <Link to={`/project-v2/${project.url_slug || project.id}`} className="flex-1">
-                          <Button className="w-full bg-orange-600 hover:bg-orange-700">
-                            Version V2
-                          </Button>
-                        </Link>
-                      </div>
+                      <Link to={`/projects/${project.url_slug || project.id}`} className="block">
+                        <Button variant="default" className="w-full">
+                          Voir le projet
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                 </motion.div>
