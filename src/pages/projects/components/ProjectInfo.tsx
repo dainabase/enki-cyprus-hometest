@@ -118,22 +118,6 @@ export default function ProjectInfo({ project }: ProjectInfoProps) {
                 {description}
               </p>
             </div>
-
-            {/* Golden Visa Badge */}
-            {project.golden_visa_eligible && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.3 }}
-                className="mt-8 inline-flex items-center gap-3 px-6 py-3 bg-amber-50 border border-amber-200 rounded-full"
-              >
-                <Award className="w-5 h-5 text-amber-600" />
-                <span className="text-sm font-medium text-amber-900">
-                  Golden Visa Eligible
-                </span>
-              </motion.div>
-            )}
           </motion.div>
 
           {/* Key Features */}
