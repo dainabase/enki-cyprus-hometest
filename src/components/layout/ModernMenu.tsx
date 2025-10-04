@@ -29,24 +29,50 @@ const ModernMenu = () => {
     setActive(false);
   }, [location.pathname]);
 
-  // Gérer le scroll lock SANS compensation (pour éviter tout shift)
+  // 🔒 SCROLL LOCK OPTIMISÉ - Compensation scrollbar SANS décalage
   useEffect(() => {
     if (active) {
-      // Sauvegarder l'état actuel
+      // Calculer la largeur de la scrollbar AVANT de la masquer
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
       const scrollY = window.scrollY;
-      const body = document.body;
       
-      // Bloquer le scroll en fixant la position
-      body.style.position = 'fixed';
-      body.style.top = `-${scrollY}px`;
-      body.style.width = '100%';
+      // Bloquer le scroll
+      document.body.style.overflow = 'hidden';
+      
+      // ✅ COMPENSATION SCROLLBAR sur le body
+      if (scrollbarWidth > 0) {
+        document.body.style.paddingRight = `${scrollbarWidth}px`;
+      }
+      
+      // ✅ COMPENSATION sur les éléments fixed pour éviter qu'ils ne se décalent
+      const fixedElements = document.querySelectorAll('[style*="fixed"]');
+      fixedElements.forEach((el) => {
+        const element = el as HTMLElement;
+        const currentRight = element.style.right;
+        
+        // Stocker la valeur originale pour la restauration
+        element.dataset.originalRight = currentRight;
+        
+        // Compenser le décalage
+        if (scrollbarWidth > 0 && currentRight) {
+          const rightValue = parseInt(currentRight) || 0;
+          element.style.right = `${rightValue + scrollbarWidth}px`;
+        }
+      });
       
       return () => {
-        // Restaurer
-        body.style.position = '';
-        body.style.top = '';
-        body.style.width = '';
-        window.scrollTo(0, scrollY);
+        // Restaurer tout à l'état initial
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+        
+        // Restaurer les éléments fixed
+        fixedElements.forEach((el) => {
+          const element = el as HTMLElement;
+          if (element.dataset.originalRight !== undefined) {
+            element.style.right = element.dataset.originalRight;
+            delete element.dataset.originalRight;
+          }
+        });
       };
     }
   }, [active]);
@@ -58,7 +84,7 @@ const ModernMenu = () => {
     setIsAnimating(true);
     setActive(!active);
     
-    // Débloquer après l'animation (synchronisé avec la plus longue animation)
+    // Débloquer après l'animation (synchronisé avec la durée totale)
     setTimeout(() => setIsAnimating(false), 400);
   };
 
@@ -84,34 +110,29 @@ const ModernMenu = () => {
     }
   };
 
-  // VARIANTS pour les animations - SYNCHRONISÉS
+  // ✅ VARIANTS ANIMATIONS SYNCHRONISÉES - 300ms partout
   const UNDERLAY_VARIANTS: Variants = {
     open: {
       width: "calc(100vw - 32px)",
       height: "calc(100vh - 32px)",
       transition: {
-        type: "spring" as const,
-        mass: 3,
-        stiffness: 400,
-        damping: 50
+        duration: 0.3,
+        ease: [0.25, 0.46, 0.45, 0.94]
       },
     },
     closed: {
       width: "48px",
       height: "48px",
       transition: {
-        // ✅ SUPPRIMÉ le delay pour synchroniser avec le menu
-        type: "spring" as const,
-        mass: 3,
-        stiffness: 400,
-        damping: 50
+        duration: 0.3,
+        ease: [0.25, 0.46, 0.45, 0.94]
       },
     },
   };
 
   return (
     <>
-      {/* HAMBURGER BUTTON & UNDERLAY - Wrappés ensemble dans AnimatePresence */}
+      {/* ✅ UNDERLAY - Synchronisé avec le menu via AnimatePresence */}
       <AnimatePresence mode="wait">
         {active && (
           <motion.div
@@ -126,6 +147,7 @@ const ModernMenu = () => {
         )}
       </AnimatePresence>
       
+      {/* HAMBURGER BUTTON */}
       <motion.button
         initial={false}
         animate={active ? "open" : "closed"}
@@ -155,7 +177,7 @@ const ModernMenu = () => {
         />
       </motion.button>
 
-      {/* MENU OVERLAY */}
+      {/* ✅ MENU OVERLAY - Synchronisé 300ms */}
       <AnimatePresence mode="wait">
         {active && (
           <motion.nav 
@@ -163,7 +185,7 @@ const ModernMenu = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="fixed inset-0 z-40 bg-gradient-to-br from-primary/95 via-primary/90 to-background/95 backdrop-blur-2xl"
           >
             {/* Logo ENKI-REALTY */}
