@@ -23,70 +23,63 @@ export default function ProjectPage() {
       if (!slug) return;
 
       try {
-        const { data, error } = await supabase
+        // Fetch main project data
+        const { data: projectData, error: projectError } = await supabase
           .from('projects')
-          .select(`
-            *,
-            developers!developer_id (
-              id,
-              name,
-              logo,
-              history,
-              website,
-              phone_numbers,
-              email_primary,
-              total_projects,
-              rating_score
-            ),
-            project_images (
-              id,
-              url,
-              caption,
-              is_primary,
-              display_order
-            ),
-            project_amenities (
-              amenities (
-                id,
-                name,
-                icon,
-                category
-              )
-            ),
-            buildings (
-              id,
-              building_name,
-              total_floors,
-              total_units,
-              building_class,
-              energy_certificate
-            )
-          `)
+          .select('*')
           .eq('url_slug', slug)
           .maybeSingle();
 
-        if (error) throw error;
-        if (!data) throw new Error('Project not found');
+        if (projectError) throw projectError;
+        if (!projectData) throw new Error('Project not found');
 
-        // Restructure developer data
-        const projectData = {
-          ...data,
-          developer: data.developers ? {
-            id: data.developers.id,
-            name: data.developers.name,
-            logo_url: data.developers.logo,
-            description: data.developers.history,
-            website: data.developers.website,
-            phone_numbers: data.developers.phone_numbers,
-            email: data.developers.email_primary,
-            projects_count: data.developers.total_projects,
-            rating: data.developers.rating_score
-          } : null
+        // Fetch developer data
+        let developerData = null;
+        if (projectData.developer_id) {
+          const { data: dev } = await supabase
+            .from('developers')
+            .select('id, name, logo, history, website, phone_numbers, email_primary, total_projects, rating_score')
+            .eq('id', projectData.developer_id)
+            .maybeSingle();
+          
+          if (dev) {
+            developerData = {
+              id: dev.id,
+              name: dev.name,
+              logo_url: dev.logo,
+              description: dev.history,
+              website: dev.website,
+              phone_numbers: dev.phone_numbers,
+              email: dev.email_primary,
+              projects_count: dev.total_projects,
+              rating: dev.rating_score
+            };
+          }
+        }
+
+        // Fetch project images
+        const { data: images } = await supabase
+          .from('project_images')
+          .select('id, url, caption, is_primary, display_order')
+          .eq('project_id', projectData.id)
+          .order('display_order');
+
+        // Fetch buildings
+        const { data: buildings } = await supabase
+          .from('buildings')
+          .select('id, building_name, total_floors, total_units, building_class, energy_certificate')
+          .eq('project_id', projectData.id)
+          .order('display_order');
+
+        // Combine all data
+        const completeProject = {
+          ...projectData,
+          developer: developerData,
+          project_images: images || [],
+          buildings: buildings || []
         };
 
-        delete projectData.developers;
-
-        setProject(projectData);
+        setProject(completeProject);
       } catch (err) {
         console.error('Error fetching project:', err);
         setError(err instanceof Error ? err.message : 'An error occurred');
