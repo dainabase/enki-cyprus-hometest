@@ -110,7 +110,6 @@ const AppContent = () => {
                       <Route path="/search" element={<Search />} />
                       <Route path="/projects" element={<Projects />} />
                       <Route path="/projects/:slug" element={<PublicProjectPage />} />
-                      <Route path="/project-v2/azure-marina" element={<Navigate to="/project-v2/marina-bay-residences-limassol" replace />} />
                       <Route path="/project-v2/:slug" element={<ProjectPageV2 />} />
                       <Route path="/project/:id" element={<ProjectDetail />} />
                       <Route path="/project-detail/:id" element={<ProjectDetail />} />

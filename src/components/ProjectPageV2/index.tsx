@@ -27,7 +27,7 @@ export function ProjectPageV2() {
       const { data: baseProject, error } = await supabase
         .from('projects')
         .select('*, buildings (*)')
-        .eq('url_slug', slug || 'marina-bay-residences-limassol')
+        .eq('url_slug', slug)
         .maybeSingle();
 
       if (error) {
@@ -36,7 +36,7 @@ export function ProjectPageV2() {
       }
 
       if (!baseProject) {
-        console.warn('[ProjectPageV2] No project found for slug:', slug);
+        console.warn('[ProjectPageV2] Projet non trouvé pour slug:', slug);
         setEnrichedProject(null);
         setLoading(false);
         return;
@@ -84,9 +84,9 @@ export function ProjectPageV2() {
       />
 
       <div className="min-h-screen bg-white">
-        <HeroPrestige projectSlug={slug} />
+        <HeroPrestige project={enrichedProject} />
 
-        <LocationInteractive projectSlug={slug} />
+        <LocationInteractive project={enrichedProject} />
 
         <Section5TypologiesReal projectId={enrichedProject.id} />
 

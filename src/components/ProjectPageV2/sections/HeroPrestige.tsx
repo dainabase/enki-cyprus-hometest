@@ -1,58 +1,14 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import { CTAButton } from '../components/CTAButton';
-import { supabase } from '@/lib/supabase';
 import { Badge } from '@/components/ui/badge';
 
 interface HeroPrestigeProps {
-  projectSlug?: string;
+  project: any;
 }
 
-export function HeroPrestige({ projectSlug }: HeroPrestigeProps) {
-  const [project, setProject] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    loadProject();
-  }, [projectSlug]);
-
-  async function loadProject() {
-    try {
-      const { data, error } = await supabase
-        .from('projects')
-        .select(`
-          *,
-          buildings (*)
-        `)
-        .eq('url_slug', projectSlug || 'marina-bay-residences-limassol')
-        .maybeSingle();
-
-      if (error) throw error;
-      setProject(data);
-    } catch (error) {
-      console.error('Error loading project:', error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  if (loading) {
-    return (
-      <section className="relative w-full h-screen bg-black flex items-center justify-center">
-        <div className="text-white text-2xl font-light">Chargement...</div>
-      </section>
-    );
-  }
-
-  if (!project) {
-    return null;
-  }
-
-  return <HeroContent project={project} />;
-}
-
-function HeroContent({ project }: { project: any }) {
+export function HeroPrestige({ project }: HeroPrestigeProps) {
   const heroRef = useRef<HTMLElement>(null);
 
   const { scrollYProgress } = useScroll({
@@ -64,8 +20,16 @@ function HeroContent({ project }: { project: any }) {
   const scale = useTransform(scrollYProgress, [0, 1], [1, 0.95]);
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
 
-  const heroImage = project.main_image_url || '/lovable-uploads/marina-bay-hero.jpg';
+  if (!project) {
+    return null;
+  }
+
+  const heroImage = project.main_image_url || project.photo_gallery_urls?.[0] || '/placeholder-project.jpg';
   const availableUnits = project.buildings?.reduce((sum: number, b: any) => sum + (b.available_units || 0), 0) || 0;
+  const title = project.name || project.title || 'Projet Immobilier';
+  const city = project.location_city || project.city || '';
+  const country = project.location_country || project.country || '';
+  const description = project.tagline || project.description?.split('.')[0] || '';
 
   return (
     <motion.section
@@ -79,7 +43,7 @@ function HeroContent({ project }: { project: any }) {
       >
         <img
           src={heroImage}
-          alt={project.name}
+          alt={title}
           className="w-full h-full object-cover"
           style={{ filter: 'brightness(0.6)' }}
         />
@@ -101,7 +65,7 @@ function HeroContent({ project }: { project: any }) {
               className="mb-8"
             >
               <Badge className="bg-amber-600 text-white px-6 py-3 text-sm font-medium rounded-full border-2 border-amber-400">
-                \u00c9ligible R\u00e9sidence Permanente UE
+                Éligible Résidence Permanente UE
               </Badge>
             </motion.div>
           )}
@@ -112,7 +76,7 @@ function HeroContent({ project }: { project: any }) {
             transition={{ duration: 0.8, delay: 0.6 }}
             className="text-xs sm:text-sm tracking-[0.3em] uppercase mb-6 sm:mb-8 font-light text-white/70"
           >
-            {project.location_city}, {project.location_country}
+            {city}{city && country && ', '}{country}
           </motion.p>
 
           <motion.h1
@@ -121,17 +85,19 @@ function HeroContent({ project }: { project: any }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.8 }}
           >
-            {project.name}
+            {title}
           </motion.h1>
 
-          <motion.p
-            className="text-base sm:text-lg md:text-xl text-white/90 mb-8 sm:mb-12 max-w-3xl mx-auto font-light leading-relaxed px-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 1 }}
-          >
-            {project.tagline || project.description?.split('.')[0]}
-          </motion.p>
+          {description && (
+            <motion.p
+              className="text-base sm:text-lg md:text-xl text-white/90 mb-8 sm:mb-12 max-w-3xl mx-auto font-light leading-relaxed px-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 1 }}
+            >
+              {description}
+            </motion.p>
+          )}
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -140,7 +106,7 @@ function HeroContent({ project }: { project: any }) {
             className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
           >
             <CTAButton
-              text="R\u00e9server Visite Priv\u00e9e"
+              text="Réserver Visite Privée"
               variant="primary"
               size="lg"
               location="hero"
@@ -151,7 +117,7 @@ function HeroContent({ project }: { project: any }) {
 
             {project.virtual_tour_url && (
               <CTAButton
-                text="Visite Virtuelle 360\u00b0"
+                text="Visite Virtuelle 360°"
                 variant="secondary"
                 size="lg"
                 location="hero-virtual-tour"
@@ -167,7 +133,7 @@ function HeroContent({ project }: { project: any }) {
               transition={{ duration: 0.6, delay: 1.4 }}
             >
               <Badge className="bg-red-600 text-white px-5 py-2 text-sm rounded-full animate-pulse">
-                {availableUnits} unit\u00e9s restantes
+                {availableUnits} unités restantes
               </Badge>
             </motion.div>
           )}
@@ -183,7 +149,7 @@ function HeroContent({ project }: { project: any }) {
         <Badge className="bg-white/10 backdrop-blur-md text-white px-4 py-2 rounded-full border border-white/20">
           {project.status === 'in_construction' ? 'En Construction' :
            project.status === 'planning' ? 'En Planification' :
-           project.status === 'completed' ? 'Livr\u00e9' : 'Disponible'}
+           project.status === 'completed' ? 'Livré' : 'Disponible'}
         </Badge>
       </motion.div>
 
