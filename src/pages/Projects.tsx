@@ -166,7 +166,8 @@ const Projects = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {featuredProjects.map((project: any, index: number) => {
-                const projectSlug = project.url_slug || project.id;
+                const projectSlug = project.url_slug || project.slug || project.id;
+                console.log('Featured project:', project.title, 'slug:', projectSlug);
                 return (
                   <motion.div
                     key={project.id}

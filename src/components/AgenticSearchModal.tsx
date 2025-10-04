@@ -205,7 +205,7 @@ const AgenticSearchModal = ({ isOpen, onClose, results }: AgenticSearchModalProp
                         variant="outline"
                         size="sm"
                       >
-                        <Link to={`/projects/${property.url_slug || property.id}`}>
+                        <Link to={`/projects/${property.id}`}>
                           <ExternalLink className="w-4 h-4 mr-2" />
                           Voir les détails
                         </Link>
