@@ -29,9 +29,9 @@ export function LocationInteractive({ project }: LocationInteractiveProps) {
 
   if (!project) return null;
 
-  const proximities = Array.isArray(project.surrounding_amenities)
+  const proximities = (Array.isArray(project.surrounding_amenities)
     ? project.surrounding_amenities
-    : [];
+    : []) as any[];
 
   const latitude = project.gps_latitude || 34.7042;
   const longitude = project.gps_longitude || 33.0222;
@@ -39,7 +39,7 @@ export function LocationInteractive({ project }: LocationInteractiveProps) {
   const neighborhood = project.neighborhood || '';
   const country = project.location_country || project.country || '';
 
-  const groupedProximities = proximities.reduce((acc, prox) => {
+  const groupedProximities = proximities.reduce((acc: Record<string, any[]>, prox: any) => {
     const category = prox.category || 'other';
     if (!acc[category]) acc[category] = [];
     acc[category].push(prox);
@@ -98,7 +98,7 @@ export function LocationInteractive({ project }: LocationInteractiveProps) {
               {Object.entries(groupedProximities).map(([category, items], categoryIndex) => {
                 const Icon = categoryIcons[category as keyof typeof categoryIcons] || MapPin;
 
-                return items.map((prox: any, index: number) => (
+                return (items as any[]).map((prox: any, index: number) => (
                   <motion.div
                     key={`${category}-${index}`}
                     initial={{ opacity: 0, y: 20 }}
