@@ -127,7 +127,16 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
       };
 
       const withoutCategory = (field.value || []).filter(p => p.category !== category);
-      field.onChange([...withoutCategory, newPhoto]);
+      const updatedPhotos = [...withoutCategory, newPhoto];
+      field.onChange(updatedPhotos);
+
+      console.log('🔄 CategorizedMediaUploader: Photos updated', {
+        newPhoto,
+        totalPhotos: updatedPhotos.length,
+        allPhotos: updatedPhotos,
+        category,
+        publicUrl
+      });
 
       toast({
         title: "Photo mise à jour",

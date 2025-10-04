@@ -482,11 +482,17 @@ const AdminProjectForm: React.FC = () => {
         dbData.amenities = dbData.amenities.filter(Boolean);
       }
       
-      // S'assurer que photos est un tableau valide
+      // 🔧 FIX CRITIQUE: Validation et logging des photos
       if (dbData.photos && Array.isArray(dbData.photos)) {
         dbData.photos = dbData.photos.filter((photo: any) => photo && photo.url);
-        console.log('💾 Photos to save:', dbData.photos);
+        console.log('💾 AdminProjectForm onSubmit: Photos to save', {
+          photosCount: dbData.photos.length,
+          photos: dbData.photos,
+          firstPhotoUrl: dbData.photos[0]?.url,
+          allCategories: dbData.photos.map((p: any) => p.category)
+        });
       } else {
+        console.warn('⚠️ No photos to save or invalid photos array:', dbData.photos);
         dbData.photos = [];
       }
       
@@ -608,14 +614,16 @@ const AdminProjectForm: React.FC = () => {
   const nextStep = async () => {
     if (currentStepIndex < projectFormSteps.length - 1) {
       setCurrentStepIndex(currentStepIndex + 1);
-      await refreshFormData();
+      // ❌ REMOVED: refreshFormData() can overwrite unsaved changes
+      // await refreshFormData();
     }
   };
 
   const prevStep = async () => {
     if (currentStepIndex > 0) {
       setCurrentStepIndex(currentStepIndex - 1);
-      await refreshFormData();
+      // ❌ REMOVED: refreshFormData() can overwrite unsaved changes
+      // await refreshFormData();
     }
   };
 
@@ -673,7 +681,8 @@ const AdminProjectForm: React.FC = () => {
                   key={step.id}
                   onClick={async () => {
                     setCurrentStepIndex(index);
-                    await refreshFormData();
+                    // ❌ REMOVED: refreshFormData() écrase les changements non sauvegardés
+                    // await refreshFormData();
                   }}
                   className={`w-full text-left px-4 py-3 rounded-lg transition-colors ${
                     currentStepIndex === index
