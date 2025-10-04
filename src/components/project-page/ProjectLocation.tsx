@@ -100,13 +100,9 @@ export function ProjectLocation({ project }: ProjectLocationProps) {
             </div>
           }>
             <GoogleMapComponent
-              properties={[{
-                ...project,
-                location: {
-                  lat: project.latitude,
-                  lng: project.longitude
-                }
-              }]}
+              properties={[]}
+              center={{ lat: Number(project.latitude), lng: Number(project.longitude) }}
+              zoom={14}
             />
           </Suspense>
 

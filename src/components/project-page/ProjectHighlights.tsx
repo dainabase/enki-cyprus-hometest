@@ -27,11 +27,7 @@ const itemVariants = {
   show: {
     opacity: 1,
     y: 0,
-    scale: 1,
-    transition: {
-      duration: 0.6,
-      ease: [0.22, 1, 0.36, 1]
-    }
+    scale: 1
   }
 };
 
@@ -106,10 +102,8 @@ export function ProjectHighlights({ project }: ProjectHighlightsProps) {
               <motion.div
                 key={index}
                 variants={itemVariants}
-                whileHover={{
-                  y: -8,
-                  transition: { duration: 0.3 }
-                }}
+                whileHover={{ y: -8 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
                 className="relative group"
               >
                 <div className="bg-card border border-border rounded-2xl p-8 hover:border-primary/50 transition-all duration-300 hover:shadow-xl">

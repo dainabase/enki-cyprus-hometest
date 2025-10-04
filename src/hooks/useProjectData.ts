@@ -37,7 +37,7 @@ export interface ProjectData {
   proximity_city_center_km: number;
   proximity_highway_km: number;
   project_highlights: string[];
-  architecture_style: string;
+  architecture_style?: string;
   lifestyle_amenities: string[];
   surrounding_amenities: string[];
   property_category: string;
@@ -45,10 +45,10 @@ export interface ProjectData {
   developer: {
     id: string;
     name: string;
-    logo_url: string;
-    description: string;
+    logo_url?: string;
+    description?: string;
     rating_score: number;
-    completed_projects_count: number;
+    completed_projects_count?: number;
   };
   buildings: any[];
   properties: any[];
@@ -75,17 +75,12 @@ export function useProjectData(slug: string) {
           developer:developers(
             id,
             name,
-            logo_url,
-            description,
-            rating_score,
-            completed_projects_count
+            logo,
+            rating_score
           ),
           buildings:buildings(
             id,
-            building_name,
-            energy_rating,
-            building_amenities,
-            building_equipments
+            building_name
           ),
           properties:properties(
             id,
@@ -99,14 +94,7 @@ export function useProjectData(slug: string) {
             price_including_vat,
             sale_status,
             floor_number,
-            has_sea_view,
-            property_images:property_images(url, category)
-          ),
-          project_images:project_images(
-            url,
-            caption,
-            category,
-            display_order
+            has_sea_view
           )
         `)
         .eq('url_slug', slug)
@@ -131,28 +119,41 @@ export function useProjectData(slug: string) {
         )
       ].sort((a, b) => a - b);
 
+      const photoGallery = Array.isArray(project.photo_gallery_urls) 
+        ? project.photo_gallery_urls 
+        : (project.photos ? (Array.isArray(project.photos) ? project.photos : []) : []);
+
       const photos_categorized = {
-        exterior: project.project_images?.filter((img: any) => img.category === 'exterior') || [],
-        interior: project.project_images?.filter((img: any) => img.category === 'interior') || [],
-        aerial: project.project_images?.filter((img: any) => img.category === 'aerial') || [],
-        plans: project.project_images?.filter((img: any) => img.category === 'floor_plan') || []
+        exterior: photoGallery.filter((img: any) => img.category === 'exterior' || img.type === 'exterior') || [],
+        interior: photoGallery.filter((img: any) => img.category === 'interior' || img.type === 'interior') || [],
+        aerial: photoGallery.filter((img: any) => img.category === 'aerial' || img.type === 'aerial') || [],
+        plans: photoGallery.filter((img: any) => img.category === 'floor_plan' || img.type === 'floor_plan') || []
       };
 
       const amenitiesHierarchy = {
-        project: project.project_amenities || [],
+        project: project.amenities || [],
         buildings: project.buildings?.flatMap((b: any) => b.building_amenities || []) || []
       };
 
       return {
         ...project,
-        photos: project.project_images || [],
+        latitude: project.gps_latitude,
+        longitude: project.gps_longitude,
+        hero_image: project.photo_gallery_urls?.[0] || photoGallery[0],
+        photos: photoGallery,
         photos_categorized,
         availableUnits,
         priceRange,
         bedroomTypes,
         amenitiesHierarchy,
         units_available: availableUnits.length,
-        slug: project.url_slug
+        slug: project.url_slug,
+        living_area_from: project.square_meters_min,
+        living_area_to: project.square_meters_max,
+        energy_rating: project.energy_efficiency_class,
+        payment_plan_details: project.payment_plans,
+        finance_available: project.financing_available,
+        project_highlights: project.unique_selling_points || []
       } as ProjectData;
     },
     enabled: !!slug,
