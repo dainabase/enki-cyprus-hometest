@@ -35,9 +35,9 @@ export default function HeroSection({ project }: HeroSectionProps) {
 
   const quickStats = [
     {
-      icon: <Calendar className="w-6 h-6" />,
-      label: 'Completion',
-      value: project.completion_date || project.expected_completion || 'To be announced',
+      icon: <Euro className="w-6 h-6" />,
+      label: 'Price From',
+      value: project.price_from ? formatPrice(project.price_from) : 'On Request',
     },
     {
       icon: <Home className="w-6 h-6" />,
@@ -45,16 +45,16 @@ export default function HeroSection({ project }: HeroSectionProps) {
       value: `${project.total_units || 'Multiple'} units`,
     },
     {
+      icon: <Calendar className="w-6 h-6" />,
+      label: 'Completion',
+      value: project.completion_date || project.expected_completion || 'To be announced',
+    },
+    {
       icon: <Ruler className="w-6 h-6" />,
       label: 'Size Range',
       value: project.square_meters_min && project.square_meters_max
         ? `${formatArea(project.square_meters_min)} - ${formatArea(project.square_meters_max)}`
         : 'Various sizes',
-    },
-    {
-      icon: <Euro className="w-6 h-6" />,
-      label: 'Price From',
-      value: project.price_from ? formatPrice(project.price_from) : 'On Request',
     },
   ];
 
