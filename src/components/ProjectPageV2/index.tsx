@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
-import { enrichProjectData } from '../../../utils/mockProjectEnrichment';
 import { HeroPrestige } from './sections/HeroPrestige';
 import { LocationInteractive } from './sections/LocationInteractive';
 // import { Section5TypologiesReal } from './sections/Section5TypologiesReal';
@@ -44,13 +43,9 @@ export function ProjectPageV2() {
 
       console.log('[ProjectPageV2] Base project loaded:', baseProject.title);
 
-      const enriched = enrichProjectData(baseProject);
-      setEnrichedProject(enriched);
-      console.log('[ProjectPageV2] Data enriched successfully');
-
-      if (enriched.meta?.mockDataSections) {
-        console.log('[ProjectPageV2] Mock data sections:', enriched.meta.mockDataSections);
-      }
+      // Use real data from database instead of mock enrichment
+      setEnrichedProject(baseProject);
+      console.log('[ProjectPageV2] Real data loaded successfully');
     } catch (error) {
       console.error('[ProjectPageV2] Error loading project:', error);
       setEnrichedProject(null);
