@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Building2, Chrome as Home, TreePine, Calendar, Ruler, CircleCheck as CheckCircle, Layers } from 'lucide-react';
+import { buildGalleryFromProject } from '@/utils/gallery';
 
 interface OverviewProps {
   project: any;
@@ -13,10 +14,10 @@ export default function Overview({ project }: OverviewProps) {
   const developerVision = project.developer_vision || '';
   const architecturalConcept = project.architectural_concept || '';
 
-  // Get overview image from categorized_photos
-  const overviewImage = project.categorized_photos?.overview?.[0] ||
-                       project.categorized_photos?.exterior?.[0] ||
-                       project.photos?.[0];
+  // Get panoramic view image from gallery
+  const gallery = buildGalleryFromProject(project);
+  const overviewImage = gallery.find(img => img.category === 'panoramic_view')?.url || 
+                       gallery[0]?.url;
 
   const uspPoints = Array.isArray(project.unique_selling_points)
     ? project.unique_selling_points
