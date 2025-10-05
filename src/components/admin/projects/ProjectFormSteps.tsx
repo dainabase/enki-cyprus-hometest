@@ -2675,41 +2675,20 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             <CardTitle>Photos du projet</CardTitle>
           </CardHeader>
           <CardContent className="p-6">
-            {/* Vérification de sécurité */}
-            {(() => {
-              const photos = form.watch('photos');
-              console.log('📸 Current photos state:', photos);
-              
-              // S'assurer que photos est un objet valide
-              if (!photos || typeof photos !== 'object') {
-                form.setValue('photos', []);
-              }
-              
-              return null;
-            })()}
-            
             <FormField
               control={form.control}
               name="photos"
               render={({ field }) => {
-                // DEBUG: Log photos field state
-                console.log('📸 ProjectFormSteps photos field:', {
-                  value: field.value,
-                  valueLength: Array.isArray(field.value) ? field.value.length : 0,
-                  firstPhoto: Array.isArray(field.value) ? field.value[0] : null
-                });
+                // Ensure photos is always an array
+                const photosValue = Array.isArray(field.value) ? field.value : [];
                 
                 return (
                   <FormItem>
                     <FormControl>
                       <CategorizedMediaUploader
                         field={{
-                          value: (field.value as any) || [],
+                          value: photosValue,
                           onChange: (newValue) => {
-                            console.log('📸 CategorizedMediaUploader onChange called:', {
-                              newValue,
-                              newValueLength: newValue?.length
-                            });
                             field.onChange(newValue);
                           }
                         }}
@@ -2823,7 +2802,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
             <FormField
               control={form.control}
-              name="brochure_url"
+              name="price_list"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
@@ -2886,12 +2865,12 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
             <FormField
               control={form.control}
-              name="model_3d_urls"
+              name="site_plan_url"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
                     <MapIcon className="w-4 h-4" />
-                    Modèles 3D
+                    Plans d'étages
                   </FormLabel>
                   <FormControl>
                     <Input 
