@@ -23,7 +23,7 @@ export function useProjectFinancing(projectId: string) {
 
       if (error) throw error;
 
-      return data as ProjectFinancing | null;
+      return data as any;
     },
     enabled: !!projectId,
     staleTime: 5 * 60 * 1000,
