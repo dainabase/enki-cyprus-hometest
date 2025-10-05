@@ -13,6 +13,11 @@ export default function Overview({ project }: OverviewProps) {
   const developerVision = project.developer_vision || '';
   const architecturalConcept = project.architectural_concept || '';
 
+  // Get overview image from categorized_photos
+  const overviewImage = project.categorized_photos?.overview?.[0] ||
+                       project.categorized_photos?.exterior?.[0] ||
+                       project.photos?.[0];
+
   const uspPoints = Array.isArray(project.unique_selling_points)
     ? project.unique_selling_points
     : (project.unique_selling_points ? JSON.parse(project.unique_selling_points) : []);
@@ -76,7 +81,7 @@ export default function Overview({ project }: OverviewProps) {
         {/* Main Content Grid */}
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 mb-20">
 
-          {/* Left Column - Description */}
+          {/* Left Column - Image + Description */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -84,6 +89,23 @@ export default function Overview({ project }: OverviewProps) {
             transition={{ duration: 0.7, delay: 0.1 }}
             className="lg:col-span-7 space-y-8"
           >
+            {/* Overview Image */}
+            {overviewImage && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="w-full overflow-hidden rounded-sm shadow-sm"
+              >
+                <img
+                  src={overviewImage}
+                  alt={`${project.title} - Vue d'ensemble`}
+                  className="w-full h-full object-cover"
+                />
+              </motion.div>
+            )}
+
             {/* Main Description */}
             <div className="prose prose-lg max-w-none">
               <p className="text-lg md:text-xl text-black/80 font-light leading-relaxed">
