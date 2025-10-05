@@ -97,7 +97,7 @@ export default function Overview({ project }: OverviewProps) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
-                className="w-full overflow-hidden rounded-sm shadow-sm"
+                className="w-full h-[600px] overflow-hidden shadow-sm"
               >
                 <img
                   src={overviewImage}
