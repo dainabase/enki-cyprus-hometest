@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Building2, Chrome as Home, TreePine, Calendar, Ruler, CircleCheck as CheckCircle, Layers } from 'lucide-react';
 import { buildGalleryFromProject } from '@/utils/gallery';
 
@@ -62,6 +62,7 @@ export default function Overview({ project }: OverviewProps) {
   ];
 
   return (
+    <>
     <section className="w-full bg-neutral-50 py-20 lg:py-32">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
 
@@ -179,51 +180,74 @@ export default function Overview({ project }: OverviewProps) {
           </motion.div>
         </div>
 
-        {/* Unique Selling Points */}
-        {uspPoints.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-            className="border-t border-black/10 pt-16"
-          >
-            <h3 className="text-2xl md:text-3xl lg:text-4xl font-light text-black mb-10">
-              Ce qui rend ce projet unique
-            </h3>
+      </div>
+    </section>
 
-            {/* USP Grid - Full Width Responsive */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {uspPoints.map((point: string, index: number) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: 0.4,
-                    delay: 0.4 + index * 0.08,
-                    ease: [0.22, 1, 0.36, 1]
-                  }}
-                  whileHover={{
-                    scale: 1.02,
-                    transition: { duration: 0.2 }
-                  }}
-                  className="bg-white p-6 shadow-sm hover:shadow-md transition-shadow duration-300 group"
-                >
-                  <div className="flex items-start gap-4">
-                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5 transition-transform group-hover:scale-110 duration-300" />
-                    <span className="text-sm md:text-base text-black/80 font-light leading-relaxed">
-                      {point}
-                    </span>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        )}
+    {/* Unique Selling Points - Horizontal Scroll Carousel */}
+    {uspPoints.length > 0 && <USPCarousel uspPoints={uspPoints} />}
+    </>
+  );
+}
 
+// Horizontal Scroll Carousel Component for USP
+interface USPCarouselProps {
+  uspPoints: string[];
+}
+
+const USPCarousel: React.FC<USPCarouselProps> = ({ uspPoints }) => {
+  const targetRef = useRef<HTMLDivElement | null>(null);
+  const { scrollYProgress } = useScroll({
+    target: targetRef,
+  });
+
+  const x = useTransform(scrollYProgress, [0, 1], ["1%", "-95%"]);
+
+  return (
+    <section ref={targetRef} className="relative h-[300vh] bg-black">
+      <div className="sticky top-0 flex h-screen items-center overflow-hidden">
+        <motion.div style={{ x }} className="flex gap-8 px-8">
+          {uspPoints.map((point: string, index: number) => (
+            <USPCard key={index} point={point} index={index} />
+          ))}
+        </motion.div>
       </div>
     </section>
   );
+};
+
+// Individual USP Card Component
+interface USPCardProps {
+  point: string;
+  index: number;
 }
+
+const USPCard: React.FC<USPCardProps> = ({ point, index }) => {
+  return (
+    <div className="group relative h-[500px] w-[500px] flex-shrink-0 overflow-hidden bg-neutral-900 border border-neutral-800">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 bg-gradient-to-br from-neutral-900 via-neutral-900 to-black" />
+
+      {/* Number Badge */}
+      <div className="absolute top-8 left-8 z-20">
+        <div className="flex items-center justify-center w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
+          <span className="text-2xl font-light text-white">
+            {String(index + 1).padStart(2, '0')}
+          </span>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="absolute inset-0 z-10 flex items-center justify-center p-12">
+        <div className="text-center">
+          <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-6 transition-transform duration-300 group-hover:scale-110" />
+          <p className="text-xl md:text-2xl font-light text-white leading-relaxed">
+            {point}
+          </p>
+        </div>
+      </div>
+
+      {/* Hover Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-green-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+    </div>
+  );
+};
