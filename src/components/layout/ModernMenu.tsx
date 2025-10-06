@@ -34,43 +34,30 @@ const ModernMenu = () => {
     setActive(false);
   }, [location.pathname]);
 
-  // 🔒 SCROLL LOCK OPTIMISÉ - Compensation scrollbar SANS décalage
+  // 🔒 SCROLL LOCK - Garde la scrollbar visible pour éviter le décalage
   useEffect(() => {
     if (active) {
-      // Calculer la largeur de la scrollbar AVANT de la masquer
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
       const scrollY = window.scrollY;
       
-      // Bloquer le scroll
-      document.body.style.overflow = 'hidden';
-      
-      // ✅ COMPENSATION SCROLLBAR sur le body
-      if (scrollbarWidth > 0) {
-        document.body.style.paddingRight = `${scrollbarWidth}px`;
-      }
-      
-      // ✅ COMPENSATION SCROLLBAR - Utilise transform pour éviter conflit avec Framer Motion
-      const fixedElements = document.querySelectorAll('[data-compensate-scrollbar]');
-      fixedElements.forEach((el) => {
-        const element = el as HTMLElement;
-        
-        // Compenser avec transform (n'interfère pas avec right de Tailwind/Motion)
-        if (scrollbarWidth > 0) {
-          element.style.transform = `translateX(-${scrollbarWidth}px)`;
-        }
-      });
+      // ✅ SOLUTION : overflow-y: scroll au lieu de hidden
+      // La scrollbar reste visible mais le scroll est bloqué
+      // = PAS de décalage du viewport, PAS de décalage des éléments fixed
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.overflowY = 'scroll';  // Force la scrollbar visible
       
       return () => {
-        // Restaurer tout à l'état initial
-        document.body.style.overflow = '';
-        document.body.style.paddingRight = '';
-
-        // Restaurer les éléments compensés
-        const compensatedElements = document.querySelectorAll('[data-compensate-scrollbar]');
-        compensatedElements.forEach((el) => {
-          const element = el as HTMLElement;
-          element.style.transform = '';  // Réinitialiser le transform
-        });
+        // Restaurer la position
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.left = '';
+        document.body.style.right = '';
+        document.body.style.overflowY = '';
+        
+        // Restaurer le scroll
+        window.scrollTo(0, scrollY);
       };
     }
   }, [active]);
@@ -114,16 +101,16 @@ const ModernMenu = () => {
       width: "calc(100vw - 32px)",
       height: "calc(100vh - 32px)",
       transition: {
-        duration: ANIMATION_DURATION / 1000,  // Utilise la constante (300ms → 0.3s)
-        ease: [0.32, 0.72, 0, 1]  // easeOutExpo - animation plus douce
+        duration: ANIMATION_DURATION / 1000,
+        ease: [0.32, 0.72, 0, 1]
       },
     },
     closed: {
       width: "48px",
       height: "48px",
       transition: {
-        duration: ANIMATION_DURATION / 1000,  // Utilise la constante (300ms → 0.3s)
-        ease: [0.32, 0.72, 0, 1]  // easeOutExpo - animation plus douce
+        duration: ANIMATION_DURATION / 1000,
+        ease: [0.32, 0.72, 0, 1]
       },
     },
   };
@@ -142,7 +129,7 @@ const ModernMenu = () => {
             style={{
               top: 16,
               right: 16,
-              transformOrigin: "top right"  // L'underlay grandit depuis son coin supérieur droit
+              transformOrigin: "top right"
             }}
             className="fixed z-30 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg"
           />
@@ -155,9 +142,8 @@ const ModernMenu = () => {
         animate={active ? "open" : "closed"}
         onClick={toggleMenu}
         disabled={isAnimating}
-        data-compensate-scrollbar
-        whileTap={{ scale: 0.95 }}  // Feedback tactile au clic
-        transition={{ duration: 0.15 }}  // Transition rapide du scale
+        whileTap={{ scale: 0.95 }}
+        transition={{ duration: 0.15 }}
         className={`group fixed right-4 top-4 z-50 h-12 w-12 bg-white hover:bg-white/90 transition-all rounded-[2px] shadow-lg ${
           active ? "rounded-bl-[2px] rounded-tr-[2px]" : "rounded-[2px]"
         }`}
@@ -191,7 +177,7 @@ const ModernMenu = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{
-              duration: ANIMATION_DURATION / 1000,  // Utilise la constante
+              duration: ANIMATION_DURATION / 1000,
               ease: [0.25, 0.46, 0.45, 0.94]
             }}
             className="fixed inset-0 z-40 bg-gradient-to-br from-primary/95 via-primary/90 to-background/95 backdrop-blur-2xl"
