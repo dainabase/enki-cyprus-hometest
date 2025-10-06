@@ -15,13 +15,23 @@ import { MapPin, Calendar, Chrome as Home, Ruler, Euro } from 'lucide-react';
 
 interface HeroSectionProps {
   project: any;
+  imagePreloaded?: boolean;
 }
 
-export default function HeroSection({ project }: HeroSectionProps) {
+export default function HeroSection({ project, imagePreloaded = false }: HeroSectionProps) {
   const [videoError, setVideoError] = useState(false);
   const [imageFallback, setImageFallback] = useState<string | null>(null);
-  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(imagePreloaded);
   const shouldReduceMotion = useReducedMotion();
+
+  // Debug logs
+  useEffect(() => {
+    console.log('🎨 HeroSection state:', {
+      imagePreloaded,
+      imageLoaded,
+      heroImage: heroImage?.substring(0, 50) + '...'
+    });
+  }, [imagePreloaded, imageLoaded, heroImage]);
 
   // Extract hero image URL with simplified fallback chain - memoized to avoid multiple calls
   const heroImage = useMemo(() => {
@@ -40,40 +50,50 @@ export default function HeroSection({ project }: HeroSectionProps) {
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
   }, []);
 
-  // Preload hero image
+  // Sync imageLoaded state when imagePreloaded prop changes
   useEffect(() => {
+    if (imagePreloaded && !imageLoaded) {
+      console.log('🎨 Hero: Image was preloaded, skipping local preload');
+      setImageLoaded(true);
+    }
+  }, [imagePreloaded, imageLoaded]);
+
+  // Preload hero image (only if not already preloaded by parent)
+  useEffect(() => {
+    // Skip if already preloaded by parent component
+    if (imagePreloaded) {
+      console.log('⏭️ Hero: Skipping local preload (already done by parent)');
+      return;
+    }
+
+    console.log('🔄 Hero: Starting local image preload...');
+
     const img = new Image();
 
-    // Handle both sync (cached) and async loading
     const handleLoad = () => {
-      // Small delay to ensure smooth transition even with cached images
-      requestAnimationFrame(() => {
-        setImageLoaded(true);
-      });
+      console.log('✅ Hero: Local preload complete');
+      setImageLoaded(true);
     };
 
     const handleError = () => {
+      console.warn('⚠️ Hero: Local preload failed, using fallback');
       setImageFallback('/og-image.jpg');
-      requestAnimationFrame(() => {
-        setImageLoaded(true);
-      });
+      setImageLoaded(true);
     };
 
     img.onload = handleLoad;
     img.onerror = handleError;
     img.src = heroImage;
 
-    // If image is already complete (cached), trigger load immediately
     if (img.complete) {
       handleLoad();
     }
 
-    // Cleanup
     return () => {
       img.onload = null;
       img.onerror = null;
     };
-  }, [heroImage]);
+  }, [heroImage, imagePreloaded]);
 
   const videoUrl = project.video_url || project.drone_footage_urls?.[0];
 
