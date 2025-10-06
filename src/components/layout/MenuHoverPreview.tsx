@@ -13,69 +13,73 @@ interface MenuHoverPreviewProps {
 
 export const MenuHoverPreview = ({ hoveredItem }: MenuHoverPreviewProps) => {
   return (
-    <div className="fixed right-16 top-1/2 -translate-y-1/2 w-[420px] pointer-events-none hidden xl:block z-40">
-      <AnimatePresence mode="wait">
-        {hoveredItem && (
-          <motion.div
-            key={hoveredItem.href}
-            initial={{ opacity: 0, scale: 0.92, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.92, y: 20 }}
-            transition={{
-              duration: 0.5,
-              ease: [0.22, 1, 0.36, 1]
-            }}
-            className="relative"
-          >
-            <div className="relative w-full aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl">
+    <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none hidden xl:block z-40">
+
+      <div className="relative w-[500px] h-[600px]">
+
+        <div className="absolute inset-0 border-2 border-white/20 bg-black/20 backdrop-blur-sm" />
+
+        <div className="absolute inset-0 overflow-hidden">
+          <AnimatePresence mode="wait">
+            {hoveredItem && (
               <motion.div
-                animate={{
-                  scale: [1, 1.08],
-                }}
+                key={hoveredItem.href}
+                initial={{ y: '100%' }}
+                animate={{ y: 0 }}
+                exit={{ y: '-100%' }}
                 transition={{
-                  duration: 12,
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                  ease: "easeInOut"
+                  duration: 0.6,
+                  ease: [0.22, 1, 0.36, 1]
                 }}
                 className="absolute inset-0"
               >
-                <img
-                  src={hoveredItem.image}
-                  alt={hoveredItem.label}
-                  className="w-full h-full object-cover"
-                />
+                <motion.div
+                  animate={{
+                    scale: [1, 1.05],
+                  }}
+                  transition={{
+                    duration: 10,
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                    ease: "easeInOut"
+                  }}
+                  className="w-full h-full"
+                >
+                  <img
+                    src={hoveredItem.image}
+                    alt={hoveredItem.label}
+                    className="w-full h-full object-cover"
+                  />
+                </motion.div>
               </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+        <AnimatePresence mode="wait">
+          {hoveredItem && (
+            <motion.div
+              key={`text-${hoveredItem.href}`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{
+                duration: 0.4,
+                delay: 0.2
+              }}
+              className="absolute top-full mt-6 left-0 right-0 text-center"
+            >
+              <h3 className="text-white text-2xl font-semibold mb-3">
+                {hoveredItem.label}
+              </h3>
 
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.15 }}
-                className="absolute top-6 left-6 right-6"
-              >
-                <div className="inline-block px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
-                  <span className="text-white text-sm font-medium">
-                    {hoveredItem.label}
-                  </span>
-                </div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.25 }}
-                className="absolute bottom-0 left-0 right-0 p-8"
-              >
-                <p className="text-white/90 text-base leading-relaxed">
-                  {hoveredItem.description}
-                </p>
-              </motion.div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              <p className="text-white/70 text-sm leading-relaxed px-4">
+                {hoveredItem.description}
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 };
