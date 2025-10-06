@@ -120,6 +120,7 @@ export default function ProjectPage() {
           images?.find((i: any) => i.is_primary)?.url ||
           images?.[0]?.url ||
           projectData.photo_gallery_urls?.[0] ||
+          projectData.main_image_url ||
           'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200';
 
         // Preload hero image before setting state

@@ -235,12 +235,14 @@ export default function HeroSection({ project, imagePreloaded = false }: HeroSec
         {/* Title with clip path reveal and fallback */}
         <motion.div
           className="overflow-hidden mb-8 max-w-7xl"
-          initial={{ clipPath: "inset(0 100% 0 0)", opacity: 0 }}
+          initial={{ clipPath: "inset(0 100% 0 0)", WebkitClipPath: "inset(0 100% 0 0)", opacity: 0 }}
           animate={imageLoaded ? {
             clipPath: "inset(0 0% 0 0)",
+            WebkitClipPath: "inset(0 0% 0 0)",
             opacity: 1
           } : {
             clipPath: "inset(0 100% 0 0)",
+            WebkitClipPath: "inset(0 100% 0 0)",
             opacity: 0
           }}
           transition={{

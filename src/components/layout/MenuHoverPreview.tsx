@@ -66,20 +66,7 @@ export const MenuHoverPreview = ({ hoveredItem, allItems }: MenuHoverPreviewProp
         ))}
       </div>
 
-      {/* 
-        ✅ ALIGNEMENT PHOTO - CALCUL PRÉCIS
-        
-        Structure du menu:
-        - 7 items centrés verticalement à 50vh
-        - Chaque item: py-4 (1rem top + 1rem bottom) + text-4xl (line-height 2.5rem)
-        - Hauteur par item: 4.5rem
-        - Hauteur totale: 31.5rem
-        - Premier item (Accueil) commence à: 50vh - 15.75rem
-        - HAUT du texte "Accueil" (après padding-top): 50vh - 14.75rem
-        
-        Position photo: calc(50vh - 15rem) aligne le HAUT de la photo avec le HAUT du texte "Accueil"
-      */}
-      <div className="fixed left-1/2 -translate-x-1/2 top-[calc(50vh-15rem)] pointer-events-none hidden xl:block z-40">
+      <div className="fixed right-[10%] top-[50%] -translate-y-1/2 pointer-events-none hidden xl:block z-40">
         <AnimatePresence mode="wait">
           {hoveredItem && imagesLoaded && (
             <motion.div
@@ -87,9 +74,9 @@ export const MenuHoverPreview = ({ hoveredItem, allItems }: MenuHoverPreviewProp
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.2 }}
             >
-              <div className="relative w-[640px] h-[360px] overflow-hidden rounded-[1px] shadow-2xl">
+              <div className="relative w-[640px] h-[360px] overflow-hidden">
                 <AnimatePresence initial={false} mode="popLayout">
                   <motion.div
                     key={hoveredItem.href}
@@ -97,8 +84,8 @@ export const MenuHoverPreview = ({ hoveredItem, allItems }: MenuHoverPreviewProp
                     animate={{ y: '0%' }}
                     exit={{ y: '-100%' }}
                     transition={{
-                      duration: 0.8,
-                      ease: [0.16, 1, 0.3, 1]
+                      duration: 0.5,
+                      ease: [0.22, 1, 0.36, 1]
                     }}
                     className="absolute inset-0 bg-black"
                   >
@@ -110,7 +97,7 @@ export const MenuHoverPreview = ({ hoveredItem, allItems }: MenuHoverPreviewProp
                         scale: [1, 1.05],
                       }}
                       transition={{
-                        duration: 12,
+                        duration: 10,
                         repeat: Infinity,
                         repeatType: "reverse",
                         ease: "easeInOut"
@@ -128,8 +115,7 @@ export const MenuHoverPreview = ({ hoveredItem, allItems }: MenuHoverPreviewProp
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{
-                      duration: 0.5,
-                      ease: [0.16, 1, 0.3, 1]
+                      duration: 0.3
                     }}
                   >
                     <p className="text-black/70 text-base leading-tight line-clamp-2 w-full px-0">
