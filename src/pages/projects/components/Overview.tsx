@@ -224,12 +224,12 @@ const USPCarousel: React.FC<USPCarouselProps> = ({ uspPoints }) => {
 
   const x = useTransform(
     scrollYProgress,
-    [0, 0.9],
+    [0, 0.75],
     [0, -(totalWidth - cardWidth * 2.5)]
   );
 
   return (
-    <section ref={targetRef} className="relative h-[300vh] bg-neutral-50">
+    <section ref={targetRef} className="relative h-[180vh] bg-neutral-50">
       <div className="sticky top-0 flex h-screen flex-col justify-start pt-12 lg:pt-16 overflow-hidden">
         {/* Section Header */}
         <div className="max-w-[1400px] mx-auto w-full px-6 lg:px-12 mb-12 lg:mb-16">
