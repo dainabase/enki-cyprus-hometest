@@ -22,6 +22,8 @@ export default function HeroSection({ project, imagePreloaded = false }: HeroSec
   const [videoError, setVideoError] = useState(false);
   const [imageFallback, setImageFallback] = useState<string | null>(null);
   const [imageLoaded, setImageLoaded] = useState(imagePreloaded);
+  const [showBackground, setShowBackground] = useState(false);
+  const [hideOverlay, setHideOverlay] = useState(false);
   const shouldReduceMotion = useReducedMotion();
 
   // Debug logs
@@ -95,6 +97,25 @@ export default function HeroSection({ project, imagePreloaded = false }: HeroSec
     };
   }, [heroImage, imagePreloaded]);
 
+  // Sequential transition: Background fade in → Then overlay fade out
+  useEffect(() => {
+    if (!imageLoaded) return;
+
+    console.log('🎬 Starting sequential transition...');
+
+    // Step 1: Show background image (0.6s)
+    setShowBackground(true);
+    console.log('  → Step 1: Background fading in (0.6s)');
+
+    // Step 2: After background is visible, hide overlay (0.3s)
+    const overlayTimeout = setTimeout(() => {
+      setHideOverlay(true);
+      console.log('  → Step 2: Overlay fading out (0.3s)');
+    }, 600); // Wait for background animation to complete
+
+    return () => clearTimeout(overlayTimeout);
+  }, [imageLoaded]);
+
   const videoUrl = project.video_url || project.drone_footage_urls?.[0];
 
   const quickStats = [
@@ -124,24 +145,32 @@ export default function HeroSection({ project, imagePreloaded = false }: HeroSec
 
   return (
     <section id="hero-section" className="relative w-full h-screen bg-black flex flex-col overflow-hidden">
-      {/* Loading overlay - animated out with the image fade in */}
+      {/*
+        SEQUENTIAL TRANSITION (Fixed flash issue):
+        1. imageLoaded=true triggers useEffect (line ~98)
+        2. Background fades in: 0 → 1 (0.6s)
+        3. After 600ms, overlay fades out: 1 → 0 (0.3s)
+        4. Total transition: 0.9s (no semi-transparent overlap)
+      */}
+
+      {/* Loading overlay - fades out AFTER background is visible (sequential) */}
       <motion.div
         className="absolute inset-0 bg-black z-40"
         initial={{ opacity: 1 }}
-        animate={{ opacity: imageLoaded ? 0 : 1 }}
+        animate={{ opacity: hideOverlay ? 0 : 1 }}
         transition={{
-          opacity: { duration: 0.8, ease: "easeOut" }
+          opacity: { duration: 0.3, ease: "easeOut" }
         }}
-        style={{ pointerEvents: imageLoaded ? 'none' : 'auto' }}
+        style={{ pointerEvents: hideOverlay ? 'none' : 'auto' }}
       />
 
-      {/* Background with Ken Burns Zoom */}
+      {/* Background - fades in FIRST (sequential) */}
       <motion.div
         className="absolute inset-0"
         initial={{ opacity: 0 }}
-        animate={{ opacity: imageLoaded ? 1 : 0 }}
+        animate={{ opacity: showBackground ? 1 : 0 }}
         transition={{
-          opacity: { duration: 0.8, ease: "easeOut" }
+          opacity: { duration: 0.6, ease: "easeOut" }
         }}
       >
         <motion.div
