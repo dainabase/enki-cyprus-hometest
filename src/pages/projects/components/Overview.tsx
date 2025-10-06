@@ -217,10 +217,19 @@ const USPCarousel: React.FC<USPCarouselProps> = ({ uspPoints }) => {
     offset: ["start start", "end end"]
   });
 
-  const x = useTransform(scrollYProgress, [0, 0.95], ["1%", "-75%"]);
+  const cardCount = uspPoints.length;
+  const cardWidth = 400;
+  const gap = 32;
+  const totalWidth = cardCount * (cardWidth + gap);
+
+  const x = useTransform(
+    scrollYProgress,
+    [0, 0.9],
+    [0, -(totalWidth - cardWidth * 2.5)]
+  );
 
   return (
-    <section ref={targetRef} className="relative h-[250vh] bg-neutral-50">
+    <section ref={targetRef} className="relative h-[300vh] bg-neutral-50">
       <div className="sticky top-0 flex h-screen flex-col justify-start pt-20 lg:pt-32 overflow-hidden">
         {/* Section Header */}
         <div className="max-w-[1400px] mx-auto w-full px-6 lg:px-12 mb-12 lg:mb-16">
