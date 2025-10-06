@@ -203,7 +203,7 @@ const USPCarousel: React.FC<USPCarouselProps> = ({ uspPoints }) => {
   const x = useTransform(scrollYProgress, [0, 1], ["1%", "-95%"]);
 
   return (
-    <section ref={targetRef} className="relative h-[300vh] bg-black">
+    <section ref={targetRef} className="relative h-[300vh] bg-neutral-50">
       <div className="sticky top-0 flex h-screen items-center overflow-hidden">
         <motion.div style={{ x }} className="flex gap-8 px-8">
           {uspPoints.map((point: string, index: number) => (
@@ -223,14 +223,14 @@ interface USPCardProps {
 
 const USPCard: React.FC<USPCardProps> = ({ point, index }) => {
   return (
-    <div className="group relative h-[500px] w-[500px] flex-shrink-0 overflow-hidden bg-neutral-900 border border-neutral-800">
+    <div className="group relative h-[500px] w-[500px] flex-shrink-0 overflow-hidden bg-white shadow-sm">
       {/* Background Pattern */}
-      <div className="absolute inset-0 bg-gradient-to-br from-neutral-900 via-neutral-900 to-black" />
+      <div className="absolute inset-0 bg-white" />
 
       {/* Number Badge */}
       <div className="absolute top-8 left-8 z-20">
-        <div className="flex items-center justify-center w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
-          <span className="text-2xl font-light text-white">
+        <div className="flex items-center justify-center w-16 h-16 rounded-full bg-black/5 backdrop-blur-sm border border-black/10">
+          <span className="text-2xl font-light text-black/60">
             {String(index + 1).padStart(2, '0')}
           </span>
         </div>
@@ -239,15 +239,15 @@ const USPCard: React.FC<USPCardProps> = ({ point, index }) => {
       {/* Content */}
       <div className="absolute inset-0 z-10 flex items-center justify-center p-12">
         <div className="text-center">
-          <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-6 transition-transform duration-300 group-hover:scale-110" />
-          <p className="text-xl md:text-2xl font-light text-white leading-relaxed">
+          <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-6 transition-transform duration-300 group-hover:scale-110" />
+          <p className="text-xl md:text-2xl font-light text-black/80 leading-relaxed">
             {point}
           </p>
         </div>
       </div>
 
       {/* Hover Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-green-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <div className="absolute inset-0 bg-gradient-to-t from-green-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     </div>
   );
 };
