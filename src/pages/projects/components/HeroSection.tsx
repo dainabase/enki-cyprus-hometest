@@ -12,11 +12,24 @@ interface HeroSectionProps {
 export default function HeroSection({ project }: HeroSectionProps) {
   const [videoError, setVideoError] = useState(false);
   const [imageFallback, setImageFallback] = useState<string | null>(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
   }, []);
+
+  // Preload hero image
+  useEffect(() => {
+    const heroImageUrl = getHeroImage();
+    const img = new Image();
+    img.onload = () => setImageLoaded(true);
+    img.onerror = () => {
+      setImageFallback('/og-image.jpg');
+      setImageLoaded(true);
+    };
+    img.src = heroImageUrl;
+  }, [project]);
 
   // Extract hero image URL from various sources
   const getHeroImage = () => {
@@ -68,46 +81,52 @@ export default function HeroSection({ project }: HeroSectionProps) {
     <section id="hero-section" className="relative w-full h-screen bg-black flex flex-col overflow-hidden">
       {/* Background with Ken Burns Zoom */}
       <motion.div
-        className="absolute inset-0"
-        initial={{ scale: 1, opacity: 0 }}
-        animate={shouldReduceMotion ? { scale: 1, opacity: 1 } : { scale: 1.08, opacity: 1 }}
+        className="absolute inset-0 bg-black"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: imageLoaded ? 1 : 0 }}
         transition={{
-          opacity: { duration: 1.2, ease: "easeOut" },
-          scale: {
+          opacity: { duration: 0.8, ease: "easeOut" }
+        }}
+      >
+        <motion.div
+          className="w-full h-full"
+          initial={{ scale: 1 }}
+          animate={shouldReduceMotion || !imageLoaded ? { scale: 1 } : { scale: 1.08 }}
+          transition={{
             duration: 30,
             ease: "easeInOut",
             repeat: Infinity,
             repeatType: "reverse"
-          }
-        }}
-      >
-        {videoUrl && !videoError ? (
-          <video
-            className="w-full h-full object-cover opacity-60"
-            autoPlay
-            muted
-            loop
-            playsInline
-            poster={heroImage}
-            onError={() => setVideoError(true)}
-          >
-            <source src={videoUrl} type="video/mp4" />
-          </video>
-        ) : heroImage ? (
-          <img
-            src={imageFallback || heroImage}
-            alt={project.title}
-            className="w-full h-full object-cover opacity-60"
-            loading="eager"
-            onError={(e) => {
-              if (!imageFallback) {
-                setImageFallback('/og-image.jpg');
-              } else {
-                e.currentTarget.onerror = null;
-              }
-            }}
-          />
-        ) : null}
+          }}
+        >
+          {videoUrl && !videoError ? (
+            <video
+              className="w-full h-full object-cover opacity-60"
+              autoPlay
+              muted
+              loop
+              playsInline
+              poster={heroImage}
+              onError={() => setVideoError(true)}
+            >
+              <source src={videoUrl} type="video/mp4" />
+            </video>
+          ) : heroImage ? (
+            <img
+              src={imageFallback || heroImage}
+              alt={project.title}
+              className="w-full h-full object-cover opacity-60"
+              loading="eager"
+              onError={(e) => {
+                if (!imageFallback) {
+                  setImageFallback('/og-image.jpg');
+                } else {
+                  e.currentTarget.onerror = null;
+                }
+              }}
+            />
+          ) : null}
+        </motion.div>
       </motion.div>
 
       {/* Content */}
@@ -116,7 +135,7 @@ export default function HeroSection({ project }: HeroSectionProps) {
         <motion.div
           className="flex items-center gap-2 mb-4"
           initial={{ x: -100, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
+          animate={imageLoaded ? { x: 0, opacity: 1 } : { x: -100, opacity: 0 }}
           transition={{
             duration: 1,
             delay: 0.3,
@@ -133,7 +152,7 @@ export default function HeroSection({ project }: HeroSectionProps) {
         <motion.div
           className="overflow-hidden mb-8 max-w-7xl"
           initial={{ clipPath: "inset(0 100% 0 0)" }}
-          animate={{ clipPath: "inset(0 0% 0 0)" }}
+          animate={imageLoaded ? { clipPath: "inset(0 0% 0 0)" } : { clipPath: "inset(0 100% 0 0)" }}
           transition={{
             duration: 1.4,
             delay: 0.6,
@@ -143,7 +162,7 @@ export default function HeroSection({ project }: HeroSectionProps) {
           <motion.h1
             className="text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-light tracking-tight leading-[0.95] will-change-transform"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            animate={imageLoaded ? { opacity: 1 } : { opacity: 0 }}
             transition={{ duration: 0.8, delay: 1 }}
           >
             {project.title}
@@ -154,7 +173,7 @@ export default function HeroSection({ project }: HeroSectionProps) {
         <motion.div
           className="flex flex-col sm:flex-row gap-4 items-center"
           initial="hidden"
-          animate="visible"
+          animate={imageLoaded ? "visible" : "hidden"}
           variants={{
             hidden: {},
             visible: {
@@ -243,7 +262,7 @@ export default function HeroSection({ project }: HeroSectionProps) {
           <motion.div
             className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8"
             initial="hidden"
-            animate="visible"
+            animate={imageLoaded ? "visible" : "hidden"}
             variants={{
               hidden: {},
               visible: {
