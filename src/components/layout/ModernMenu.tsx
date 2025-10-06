@@ -6,6 +6,11 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
 
+// ✅ CONSTANTE CENTRALISÉE - Durée des animations du menu
+// Synchronise : animations Framer Motion + protection anti-spam
+// Valeur : 300ms = durée des transitions UNDERLAY + menu overlay
+const ANIMATION_DURATION = 300;
+
 const ModernMenu = () => {
   const [active, setActive] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -84,12 +89,12 @@ const ModernMenu = () => {
   // Toggle menu avec protection anti-spam
   const toggleMenu = () => {
     if (isAnimating) return;
-    
+
     setIsAnimating(true);
     setActive(!active);
-    
-    // Débloquer après l'animation (synchronisé avec la durée totale)
-    setTimeout(() => setIsAnimating(false), 400);
+
+    // Débloquer après l'animation (synchronisé avec ANIMATION_DURATION)
+    setTimeout(() => setIsAnimating(false), ANIMATION_DURATION);
   };
 
   const handleLogout = async () => {
@@ -120,7 +125,7 @@ const ModernMenu = () => {
       width: "calc(100vw - 32px)",
       height: "calc(100vh - 32px)",
       transition: {
-        duration: 0.3,
+        duration: ANIMATION_DURATION / 1000,  // Utilise la constante (300ms → 0.3s)
         ease: [0.32, 0.72, 0, 1]  // easeOutExpo - animation plus douce
       },
     },
@@ -128,7 +133,7 @@ const ModernMenu = () => {
       width: "48px",
       height: "48px",
       transition: {
-        duration: 0.3,
+        duration: ANIMATION_DURATION / 1000,  // Utilise la constante (300ms → 0.3s)
         ease: [0.32, 0.72, 0, 1]  // easeOutExpo - animation plus douce
       },
     },
@@ -191,12 +196,15 @@ const ModernMenu = () => {
       {/* ✅ MENU OVERLAY - Synchronisé 300ms */}
       <AnimatePresence mode="wait">
         {active && (
-          <motion.nav 
+          <motion.nav
             key="menu"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{
+              duration: ANIMATION_DURATION / 1000,  // Utilise la constante
+              ease: [0.25, 0.46, 0.45, 0.94]
+            }}
             className="fixed inset-0 z-40 bg-gradient-to-br from-primary/95 via-primary/90 to-background/95 backdrop-blur-2xl"
           >
             {/* Logo ENKI-REALTY */}
