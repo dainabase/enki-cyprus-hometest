@@ -109,16 +109,6 @@ const ModernMenu = () => {
     }
   }, [active]);
 
-  // ✅ PRÉCHARGEMENT DES IMAGES - Charge toutes les images dès l'ouverture du menu
-  useEffect(() => {
-    if (active) {
-      menuItemsWithPreviews.forEach(item => {
-        const img = new Image();
-        img.src = item.image;
-      });
-    }
-  }, [active]);
-
   // Toggle menu avec protection anti-spam
   const toggleMenu = () => {
     if (isAnimating) return;
@@ -386,8 +376,11 @@ const ModernMenu = () => {
               </div>
             </div>
 
-            {/* Menu Hover Preview */}
-            <MenuHoverPreview hoveredItem={hoveredMenuItem} />
+            {/* Menu Hover Preview - PASSE TOUTES LES IMAGES */}
+            <MenuHoverPreview 
+              hoveredItem={hoveredMenuItem} 
+              allItems={menuItemsWithPreviews}
+            />
 
             {/* Bottom CTA */}
             <motion.div
