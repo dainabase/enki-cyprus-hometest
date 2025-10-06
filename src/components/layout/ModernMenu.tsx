@@ -183,14 +183,15 @@ const ModernMenu = () => {
             {/* Logo ENKI-REALTY */}
             <motion.div
               initial={{ opacity: 0, y: -30 }}
-              animate={{ 
-                opacity: 1, 
-                y: 0, 
-                transition: { delay: 0.2, duration: 0.4 } 
+              animate={{
+                opacity: 1,
+                y: 0,
+                transition: { delay: 0.2, duration: 0.4 }
               }}
               exit={{ opacity: 0, y: -30, transition: { duration: 0.2 } }}
               className="absolute left-8 md:left-16 top-8 md:top-12"
             >
+              <div className="h-[1px] w-20 bg-black mb-6" />
               <Link
                 to="/"
                 className="text-4xl md:text-5xl font-light text-black tracking-tight hover:text-black/70 transition-colors"
