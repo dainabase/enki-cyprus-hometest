@@ -66,8 +66,20 @@ export const MenuHoverPreview = ({ hoveredItem, allItems }: MenuHoverPreviewProp
         ))}
       </div>
 
-      {/* Photo: LE HAUT aligné EXACTEMENT avec le haut du texte Accueil */}
-      <div className="fixed left-1/2 -translate-x-1/2 top-[calc(50vh-10rem)] pointer-events-none hidden xl:block z-40">
+      {/* 
+        ✅ ALIGNEMENT PHOTO - CALCUL PRÉCIS
+        
+        Structure du menu:
+        - 7 items centrés verticalement à 50vh
+        - Chaque item: py-4 (1rem top + 1rem bottom) + text-4xl (line-height 2.5rem)
+        - Hauteur par item: 4.5rem
+        - Hauteur totale: 31.5rem
+        - Premier item (Accueil) commence à: 50vh - 15.75rem
+        - HAUT du texte "Accueil" (après padding-top): 50vh - 14.75rem
+        
+        Position photo: calc(50vh - 15rem) aligne le HAUT de la photo avec le HAUT du texte "Accueil"
+      */}
+      <div className="fixed left-1/2 -translate-x-1/2 top-[calc(50vh-15rem)] pointer-events-none hidden xl:block z-40">
         <AnimatePresence mode="wait">
           {hoveredItem && imagesLoaded && (
             <motion.div
