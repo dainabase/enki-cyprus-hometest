@@ -286,8 +286,6 @@ const ModernMenu = () => {
 
                 {/* Séparateur + Réseaux sociaux */}
                 <div className="mt-8">
-                  <div className="w-full h-px bg-black/20 my-6" />
-
                   <div className="flex items-center gap-4">
                     {/* LinkedIn */}
                     <a
@@ -354,6 +352,9 @@ const ModernMenu = () => {
                       </svg>
                     </a>
                   </div>
+
+                  {/* Trait séparateur APRÈS les icônes */}
+                  <div className="w-full h-px bg-black/20 my-6" />
                 </div>
               </div>
             </div>
