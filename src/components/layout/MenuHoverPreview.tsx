@@ -14,31 +14,57 @@ interface MenuHoverPreviewProps {
 }
 
 export const MenuHoverPreview = ({ hoveredItem, allItems }: MenuHoverPreviewProps) => {
-  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
-  const [isHovering, setIsHovering] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
 
-  // ⚡ LAZY LOAD - Charge uniquement l'image hoverée
+  // Préchargement FORCÉ de toutes les images dès le mount
   useEffect(() => {
-    if (!hoveredItem || loadedImages.has(hoveredItem.image)) return;
+    const loadPromises = allItems.map((item) => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = resolve;
+        img.onerror = reject;
+        img.src = item.image;
+      });
+    });
 
-    const img = new Image();
-    img.onload = () => {
-      setLoadedImages(prev => new Set([...prev, hoveredItem.image]));
-    };
-    img.onerror = () => {
-      setLoadedImages(prev => new Set([...prev, hoveredItem.image])); // Continue même si erreur
-    };
-    img.src = hoveredItem.image;
-  }, [hoveredItem, loadedImages]);
+    Promise.all(loadPromises)
+      .then(() => setImagesLoaded(true))
+      .catch(() => setImagesLoaded(true)); // Continue même si erreur
+  }, [allItems]);
 
-  // Track hover state pour pause scale animation
-  useEffect(() => {
-    setIsHovering(!!hoveredItem);
-  }, [hoveredItem]);
-
+  // Effet typewriter - divise le texte en caractères
+  const TypewriterText = ({ text }: { text: string }) => {
+    const characters = text.split('');
+    
+    return (
+      <span className="inline-block">
+        {characters.map((char, index) => (
+          <motion.span
+            key={`${text}-${index}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{
+              duration: 0.05,
+              delay: index * 0.02, // 20ms entre chaque lettre
+              ease: 'easeOut'
+            }}
+            style={{ display: 'inline-block', whiteSpace: 'pre' }}
+          >
+            {char}
+          </motion.span>
+        ))}
+      </span>
+    );
+  };
 
   return (
     <>
+      {/* Images cachées pour préchargement */}
+      <div className="hidden">
+        {allItems.map((item) => (
+          <img key={item.href} src={item.image} alt="" />
+        ))}
+      </div>
 
       {/* 
         ✅ ALIGNEMENT PHOTO - CALCUL PRÉCIS
@@ -53,9 +79,9 @@ export const MenuHoverPreview = ({ hoveredItem, allItems }: MenuHoverPreviewProp
         
         Position photo: calc(50vh - 15rem) aligne le HAUT de la photo avec le HAUT du texte "Accueil"
       */}
-      <div className="fixed right-[10%] top-[50%] -translate-y-1/2 pointer-events-none hidden xl:block z-40">
+      <div className="fixed left-1/2 -translate-x-1/2 top-[calc(50vh-15rem)] pointer-events-none hidden xl:block z-40">
         <AnimatePresence mode="wait">
-          {hoveredItem && loadedImages.has(hoveredItem.image) && (
+          {hoveredItem && imagesLoaded && (
             <motion.div
               key="preview-wrapper"
               initial={{ opacity: 0 }}
@@ -80,11 +106,12 @@ export const MenuHoverPreview = ({ hoveredItem, allItems }: MenuHoverPreviewProp
                       src={hoveredItem.image}
                       alt={hoveredItem.label}
                       className="w-full h-full object-cover"
-                      style={{ willChange: 'transform', transform: 'translateZ(0)' }}
-                      animate={isHovering ? { scale: [1, 1.05] } : { scale: 1 }}
+                      animate={{
+                        scale: [1, 1.05],
+                      }}
                       transition={{
                         duration: 12,
-                        repeat: isHovering ? Infinity : 0,
+                        repeat: Infinity,
                         repeatType: "reverse",
                         ease: "easeInOut"
                       }}
@@ -105,14 +132,9 @@ export const MenuHoverPreview = ({ hoveredItem, allItems }: MenuHoverPreviewProp
                       ease: [0.16, 1, 0.3, 1]
                     }}
                   >
-                    <motion.p
-                      className="text-black/70 text-base leading-tight line-clamp-2 w-full px-0"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      {hoveredItem.description}
-                    </motion.p>
+                    <p className="text-black/70 text-base leading-tight line-clamp-2 w-full px-0">
+                      <TypewriterText text={hoveredItem.description} />
+                    </p>
                   </motion.div>
                 </AnimatePresence>
               </div>
