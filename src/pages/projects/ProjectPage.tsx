@@ -26,10 +26,41 @@ export default function ProjectPage() {
   const [project, setProject] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [heroImagePreloaded, setHeroImagePreloaded] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
   }, []);
+
+  // Utility function to preload hero image
+  const preloadHeroImage = (imageUrl: string): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      if (!imageUrl) {
+        resolve();
+        return;
+      }
+
+      const img = new Image();
+
+      img.onload = () => {
+        console.log('✅ Hero image preloaded successfully');
+        resolve();
+      };
+
+      img.onerror = () => {
+        console.warn('⚠️ Hero image preload failed, continuing anyway');
+        resolve(); // Resolve anyway to not block rendering
+      };
+
+      img.src = imageUrl;
+
+      // If image is already cached, resolve immediately
+      if (img.complete) {
+        console.log('✅ Hero image loaded from cache');
+        resolve();
+      }
+    });
+  };
 
   useEffect(() => {
     async function fetchProject() {
@@ -84,6 +115,18 @@ export default function ProjectPage() {
           .eq('project_id', projectData.id)
           .order('display_order');
 
+        // Extract hero image URL for preloading
+        const heroImageUrl =
+          images?.find((i: any) => i.is_primary)?.url ||
+          images?.[0]?.url ||
+          projectData.photo_gallery_urls?.[0] ||
+          projectData.main_image_url ||
+          'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200';
+
+        // Preload hero image before setting state
+        await preloadHeroImage(heroImageUrl);
+        setHeroImagePreloaded(true);
+
         // Combine all data
         const completeProject = {
           ...projectData,
@@ -91,6 +134,12 @@ export default function ProjectPage() {
           project_images: images || [],
           buildings: buildings || []
         };
+
+        console.log('📊 Project data ready:', {
+          hasProject: !!completeProject,
+          hasImages: images?.length || 0,
+          heroImagePreloaded: true
+        });
 
         setProject(completeProject);
       } catch (err) {
@@ -136,7 +185,7 @@ export default function ProjectPage() {
       transition={{ duration: 0.4 }}
       className="min-h-screen"
     >
-      <Hero project={project} />
+      <Hero project={project} imagePreloaded={heroImagePreloaded} />
       <Overview project={project} />
       <Location project={project} />
       <Gallery project={project} />
