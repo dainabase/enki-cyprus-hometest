@@ -131,7 +131,7 @@ const ModernMenu = () => {
               right: 16,
               transformOrigin: "top right"
             }}
-            className="fixed z-30 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg"
+            className="fixed z-30 bg-neutral-50 shadow-sm"
           />
         )}
       </AnimatePresence>
@@ -144,9 +144,7 @@ const ModernMenu = () => {
         disabled={isAnimating}
         whileTap={{ scale: 0.95 }}
         transition={{ duration: 0.15 }}
-        className={`group fixed right-4 top-4 z-50 h-12 w-12 bg-white hover:bg-white/90 transition-all rounded-[2px] shadow-lg ${
-          active ? "rounded-bl-[2px] rounded-tr-[2px]" : "rounded-[2px]"
-        }`}
+        className="group fixed right-4 top-4 z-50 h-12 w-12 bg-white hover:bg-neutral-50 transition-all shadow-sm border border-black/5"
       >
         <motion.span
           animate={active ? { rotate: 45, top: "50%" } : { rotate: 0, top: "35%" }}
@@ -180,7 +178,7 @@ const ModernMenu = () => {
               duration: ANIMATION_DURATION / 1000,
               ease: [0.25, 0.46, 0.45, 0.94]
             }}
-            className="fixed inset-0 z-40 bg-gradient-to-br from-primary/95 via-primary/90 to-background/95 backdrop-blur-2xl"
+            className="fixed inset-0 z-40 bg-neutral-50"
           >
             {/* Logo ENKI-REALTY */}
             <motion.div
@@ -193,9 +191,9 @@ const ModernMenu = () => {
               exit={{ opacity: 0, y: -30, transition: { duration: 0.2 } }}
               className="absolute left-8 md:left-16 top-8 md:top-12"
             >
-              <Link 
-                to="/" 
-                className="swaarg-large-title text-white hover:text-white/80 transition-colors"
+              <Link
+                to="/"
+                className="text-4xl md:text-5xl font-light text-black tracking-tight hover:text-black/70 transition-colors"
               >
                 ΣNKI<span className="mx-1">-</span>REALTY
               </Link>
@@ -227,9 +225,8 @@ const ModernMenu = () => {
                       to={link.href}
                       className="block group"
                     >
-                      <span className="swaarg-large-title text-white/70 hover:text-white transition-all duration-300 whitespace-nowrap">
+                      <span className="text-2xl md:text-3xl font-light text-black/60 hover:text-black transition-all duration-300 whitespace-nowrap">
                         {link.title}
-                        <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity">.</span>
                       </span>
                     </Link>
                   </motion.div>
@@ -260,9 +257,8 @@ const ModernMenu = () => {
                           to="/admin"
                           className="block group"
                         >
-                          <span className="swaarg-card-title text-white/70 hover:text-white transition-all duration-300">
+                          <span className="text-xl md:text-2xl font-light text-black/60 hover:text-black transition-all duration-300">
                             Admin
-                            <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity">.</span>
                           </span>
                         </Link>
                       </motion.div>
@@ -286,9 +282,8 @@ const ModernMenu = () => {
                       }}
                       className="block group"
                     >
-                      <span className="swaarg-card-title text-white/70 hover:text-white transition-all duration-300">
+                      <span className="text-xl md:text-2xl font-light text-black/60 hover:text-black transition-all duration-300">
                         Déconnexion
-                        <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity">.</span>
                       </span>
                     </motion.button>
                   </>
@@ -314,9 +309,8 @@ const ModernMenu = () => {
                       to="/login"
                       className="block group"
                     >
-                      <span className="swaarg-card-title text-white/70 hover:text-white transition-all duration-300">
+                      <span className="text-xl md:text-2xl font-light text-black/60 hover:text-black transition-all duration-300">
                         Connexion
-                        <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity">.</span>
                       </span>
                     </Link>
                   </motion.div>
@@ -336,11 +330,11 @@ const ModernMenu = () => {
               className="absolute bottom-8 right-8 md:bottom-12 md:right-16"
             >
               <Link to="/contact">
-                <button className="group flex items-center gap-3 bg-white text-primary px-6 md:px-8 py-3 md:py-4 rounded-lg hover:bg-white/90 transition-all">
-                  <span className="swaarg-button">
+                <button className="group flex items-center gap-3 bg-black text-white px-6 md:px-8 py-3 md:py-4 hover:bg-black/80 transition-all border border-black/10">
+                  <span className="text-sm font-light tracking-wide">
                     Commencer votre projet
                   </span>
-                  <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </button>
               </Link>
             </motion.div>
@@ -355,7 +349,7 @@ const ModernMenu = () => {
               exit={{ opacity: 0, transition: { duration: 0.2 } }}
               className="absolute bottom-8 left-8 md:bottom-12 md:left-16"
             >
-              <p className="swaarg-body text-white/50">
+              <p className="text-sm font-light text-black/40">
                 +357 99 123 456<br />
                 info@enki-realty.com
               </p>
