@@ -22,11 +22,11 @@ export const MenuHoverPreview = ({ hoveredItem }: MenuHoverPreviewProps) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.2 }}
           >
-            <div className="relative w-[500px] h-[600px] overflow-hidden bg-black">
+            <div className="relative w-[500px] h-[600px] overflow-hidden">
 
-              <AnimatePresence initial={false} mode="wait">
+              <AnimatePresence initial={false} mode="popLayout">
                 <motion.div
                   key={hoveredItem.href}
                   initial={{ y: '100%' }}
@@ -36,7 +36,7 @@ export const MenuHoverPreview = ({ hoveredItem }: MenuHoverPreviewProps) => {
                     duration: 0.5,
                     ease: [0.22, 1, 0.36, 1]
                   }}
-                  className="absolute inset-0"
+                  className="absolute inset-0 bg-black"
                 >
                   <motion.img
                     src={hoveredItem.image}
@@ -60,19 +60,15 @@ export const MenuHoverPreview = ({ hoveredItem }: MenuHoverPreviewProps) => {
               <AnimatePresence mode="wait">
                 <motion.div
                   key={`text-${hoveredItem.href}`}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
+                  initial={{ opacity: 0, x: -30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 30 }}
                   transition={{
                     duration: 0.5,
                     ease: [0.22, 1, 0.36, 1]
                   }}
                   className="text-center"
                 >
-                  <h3 className="text-black text-3xl font-bold mb-4">
-                    {hoveredItem.label}
-                  </h3>
-
                   <p className="text-black/70 text-base leading-relaxed max-w-md mx-auto px-4">
                     {hoveredItem.description}
                   </p>
