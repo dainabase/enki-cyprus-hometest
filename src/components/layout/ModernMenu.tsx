@@ -5,15 +5,62 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
+import { MenuHoverPreview, MenuItemPreview } from './MenuHoverPreview';
 
 // ✅ CONSTANTE CENTRALISÉE - Durée des animations du menu
 // Synchronise : animations Framer Motion + protection anti-spam
 // Valeur : 300ms = durée des transitions UNDERLAY + menu overlay
 const ANIMATION_DURATION = 300;
 
+const menuItemsWithPreviews: MenuItemPreview[] = [
+  {
+    label: 'Accueil',
+    href: '/',
+    image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=1200&fit=crop',
+    description: 'Découvrez Enki Reality, votre partenaire immobilier premium à Chypre pour une expérience d\'investissement exceptionnelle.'
+  },
+  {
+    label: 'Projets',
+    href: '/projects',
+    image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=1200&fit=crop',
+    description: 'Découvrez notre portfolio de programmes immobiliers premium à Chypre avec vue mer et montagne.'
+  },
+  {
+    label: 'Recherche IA',
+    href: '/search',
+    image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=1200&fit=crop',
+    description: 'Utilisez notre moteur de recherche IA avancé pour trouver le bien immobilier parfait selon vos critères précis.'
+  },
+  {
+    label: 'Conseil Fiscal IA',
+    href: '/lexaia',
+    image: 'https://images.unsplash.com/photo-1554224311-beee415c201f?w=800&h=1200&fit=crop',
+    description: 'Investissez €300k+ et obtenez votre résidence permanente européenne avec tous les avantages fiscaux.'
+  },
+  {
+    label: 'Blog',
+    href: '/blog',
+    image: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&h=1200&fit=crop',
+    description: 'Actualités immobilières, guides d\'investissement et conseils d\'experts pour réussir à Chypre.'
+  },
+  {
+    label: 'À propos',
+    href: '/about',
+    image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=1200&fit=crop',
+    description: 'Enki Reality, votre partenaire immobilier de confiance à Chypre depuis 2020. Excellence et transparence.'
+  },
+  {
+    label: 'Contact',
+    href: '/contact',
+    image: 'https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=800&h=1200&fit=crop',
+    description: 'Parlons de votre projet immobilier à Chypre. Notre équipe multilingue vous répond sous 24h.'
+  },
+];
+
 const ModernMenu = () => {
   const [active, setActive] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [hoveredMenuItem, setHoveredMenuItem] = useState<MenuItemPreview | null>(null);
   const { isAuthenticated, isAdmin, signOut } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -203,9 +250,9 @@ const ModernMenu = () => {
             {/* Links Container */}
             <div className="flex h-full items-center justify-start px-8 md:px-16">
               <div className="space-y-4 md:space-y-6 w-full max-w-md">
-                {LINKS.map((link, idx) => (
+                {menuItemsWithPreviews.map((item, idx) => (
                   <motion.div
-                    key={link.title}
+                    key={item.href}
                     initial={{ opacity: 0, x: -60 }}
                     animate={{
                       opacity: 1,
@@ -216,18 +263,21 @@ const ModernMenu = () => {
                         ease: [0.25, 0.46, 0.45, 0.94],
                       },
                     }}
-                    exit={{ 
-                      opacity: 0, 
+                    exit={{
+                      opacity: 0,
                       x: -60,
                       transition: { duration: 0.2 }
                     }}
+                    onMouseEnter={() => setHoveredMenuItem(item)}
+                    onMouseLeave={() => setHoveredMenuItem(null)}
                   >
                     <Link
-                      to={link.href}
+                      to={item.href}
                       className="block group"
+                      onClick={() => setActive(false)}
                     >
                       <span className="text-2xl md:text-3xl font-light text-black/60 hover:text-black transition-all duration-300 whitespace-nowrap">
-                        {link.title}
+                        {item.label}
                       </span>
                     </Link>
                   </motion.div>
@@ -318,6 +368,9 @@ const ModernMenu = () => {
                 )}
               </div>
             </div>
+
+            {/* Menu Hover Preview */}
+            <MenuHoverPreview hoveredItem={hoveredMenuItem} />
 
             {/* Bottom CTA */}
             <motion.div
