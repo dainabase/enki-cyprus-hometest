@@ -130,10 +130,10 @@ export default function ProjectPage() {
     >
       <Hero project={project} />
       <Overview project={project} />
+      <Location project={project} />
       <Gallery project={project} />
       <FloorPlans project={project} />
       <Features project={project} />
-      <Location project={project} />
       <Investment project={project} />
       <Developer project={project} />
       <ContactForm project={project} />
