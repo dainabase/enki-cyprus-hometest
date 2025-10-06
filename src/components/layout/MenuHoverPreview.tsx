@@ -69,11 +69,11 @@ export const MenuHoverPreview = ({ hoveredItem }: MenuHoverPreviewProps) => {
                   }}
                   className="text-center"
                 >
-                  <h3 className="text-white text-3xl font-bold mb-4">
+                  <h3 className="text-black text-3xl font-bold mb-4">
                     {hoveredItem.label}
                   </h3>
 
-                  <p className="text-white/80 text-base leading-relaxed max-w-md mx-auto px-4">
+                  <p className="text-black/70 text-base leading-relaxed max-w-md mx-auto px-4">
                     {hoveredItem.description}
                   </p>
                 </motion.div>
