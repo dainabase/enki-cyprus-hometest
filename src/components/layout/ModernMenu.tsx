@@ -249,7 +249,7 @@ const ModernMenu = () => {
 
             {/* Links Container */}
             <div className="flex h-full items-center justify-start px-8 md:px-16">
-              <div className="space-y-4 md:space-y-6 w-full max-w-md">
+              <div className="flex flex-col gap-0 w-full max-w-md">
                 {menuItemsWithPreviews.map((item, idx) => (
                   <motion.div
                     key={item.href}
@@ -270,6 +270,7 @@ const ModernMenu = () => {
                     }}
                     onMouseEnter={() => setHoveredMenuItem(item)}
                     onMouseLeave={() => setHoveredMenuItem(null)}
+                    className="relative py-4"
                   >
                     <Link
                       to={item.href}
