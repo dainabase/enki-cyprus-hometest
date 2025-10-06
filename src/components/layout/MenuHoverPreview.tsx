@@ -66,8 +66,8 @@ export const MenuHoverPreview = ({ hoveredItem, allItems }: MenuHoverPreviewProp
         ))}
       </div>
 
-      {/* Photo: LE HAUT aligné précisément avec Accueil + angles ultra-carrés */}
-      <div className="fixed left-1/2 -translate-x-1/2 top-[32vh] pointer-events-none hidden xl:block z-40">
+      {/* Photo: LE HAUT aligné PRÉCISÉMENT avec le début d'Accueil */}
+      <div className="fixed left-1/2 -translate-x-1/2 top-[calc(50vh-12rem)] pointer-events-none hidden xl:block z-40">
         <AnimatePresence mode="wait">
           {hoveredItem && imagesLoaded && (
             <motion.div
