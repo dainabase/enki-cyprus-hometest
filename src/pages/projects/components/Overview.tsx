@@ -2,7 +2,23 @@
 
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { Building2, Chrome as Home, TreePine, Calendar, Ruler, CircleCheck as CheckCircle, Layers } from 'lucide-react';
+import {
+  Building2,
+  Chrome as Home,
+  TreePine,
+  Calendar,
+  Ruler,
+  CircleCheck as CheckCircle,
+  Layers,
+  Waves,
+  Dumbbell,
+  Award,
+  Plane,
+  Chrome,
+  Zap,
+  Shield,
+  TrendingUp
+} from 'lucide-react';
 import { buildGalleryFromProject } from '@/utils/gallery';
 
 interface OverviewProps {
@@ -222,25 +238,51 @@ interface USPCardProps {
 }
 
 const USPCard: React.FC<USPCardProps> = ({ point, index }) => {
+  // Map of icons for different USP types - using existing Lucide icons
+  const getIcon = () => {
+    const lowerPoint = point.toLowerCase();
+
+    if (lowerPoint.includes('plage') || lowerPoint.includes('mer')) {
+      return <Waves className="w-10 h-10 text-black/70 mx-auto mb-4 transition-transform duration-300 group-hover:scale-110" />;
+    }
+    if (lowerPoint.includes('spa') || lowerPoint.includes('sauna')) {
+      return <Dumbbell className="w-10 h-10 text-black/70 mx-auto mb-4 transition-transform duration-300 group-hover:scale-110" />;
+    }
+    if (lowerPoint.includes('restaurant') || lowerPoint.includes('michelin')) {
+      return <Award className="w-10 h-10 text-black/70 mx-auto mb-4 transition-transform duration-300 group-hover:scale-110" />;
+    }
+    if (lowerPoint.includes('héliport') || lowerPoint.includes('heliport')) {
+      return <Plane className="w-10 h-10 text-black/70 mx-auto mb-4 transition-transform duration-300 group-hover:scale-110" />;
+    }
+    if (lowerPoint.includes('cave') || lowerPoint.includes('vin')) {
+      return <Chrome className="w-10 h-10 text-black/70 mx-auto mb-4 transition-transform duration-300 group-hover:scale-110" />;
+    }
+    if (lowerPoint.includes('ascenseur') || lowerPoint.includes('penthouse')) {
+      return <Building2 className="w-10 h-10 text-black/70 mx-auto mb-4 transition-transform duration-300 group-hover:scale-110" />;
+    }
+    if (lowerPoint.includes('domotique') || lowerPoint.includes('système')) {
+      return <Zap className="w-10 h-10 text-black/70 mx-auto mb-4 transition-transform duration-300 group-hover:scale-110" />;
+    }
+    if (lowerPoint.includes('certification') || lowerPoint.includes('leed') || lowerPoint.includes('gold')) {
+      return <Shield className="w-10 h-10 text-black/70 mx-auto mb-4 transition-transform duration-300 group-hover:scale-110" />;
+    }
+    if (lowerPoint.includes('roi') || lowerPoint.includes('%') || lowerPoint.includes('rendement')) {
+      return <TrendingUp className="w-10 h-10 text-black/70 mx-auto mb-4 transition-transform duration-300 group-hover:scale-110" />;
+    }
+    // Default icon
+    return <CheckCircle className="w-10 h-10 text-green-600 mx-auto mb-4 transition-transform duration-300 group-hover:scale-110" />;
+  };
+
   return (
-    <div className="group relative h-[500px] w-[500px] flex-shrink-0 overflow-hidden bg-white shadow-sm">
+    <div className="group relative h-[350px] w-[350px] flex-shrink-0 overflow-hidden bg-white shadow-sm">
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-white" />
 
-      {/* Number Badge */}
-      <div className="absolute top-8 left-8 z-20">
-        <div className="flex items-center justify-center w-16 h-16 rounded-full bg-black/5 backdrop-blur-sm border border-black/10">
-          <span className="text-2xl font-light text-black/60">
-            {String(index + 1).padStart(2, '0')}
-          </span>
-        </div>
-      </div>
-
       {/* Content */}
-      <div className="absolute inset-0 z-10 flex items-center justify-center p-12">
+      <div className="absolute inset-0 z-10 flex items-center justify-center p-8">
         <div className="text-center">
-          <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-6 transition-transform duration-300 group-hover:scale-110" />
-          <p className="text-xl md:text-2xl font-light text-black/80 leading-relaxed">
+          {getIcon()}
+          <p className="text-base md:text-lg font-light text-black/80 leading-relaxed">
             {point}
           </p>
         </div>
