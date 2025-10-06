@@ -15,22 +15,6 @@ export default function HeroSection({ project }: HeroSectionProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const shouldReduceMotion = useReducedMotion();
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
-  }, []);
-
-  // Preload hero image
-  useEffect(() => {
-    const heroImageUrl = getHeroImage();
-    const img = new Image();
-    img.onload = () => setImageLoaded(true);
-    img.onerror = () => {
-      setImageFallback('/og-image.jpg');
-      setImageLoaded(true);
-    };
-    img.src = heroImageUrl;
-  }, [project]);
-
   // Extract hero image URL from various sources
   const getHeroImage = () => {
     // Check project_images table first
@@ -48,6 +32,24 @@ export default function HeroSection({ project }: HeroSectionProps) {
     // Fallback
     return project.main_image_url || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200';
   };
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+  }, []);
+
+  // Preload hero image
+  useEffect(() => {
+    const heroImageUrl = getHeroImage();
+    const img = new Image();
+    img.onload = () => {
+      setTimeout(() => setImageLoaded(true), 100);
+    };
+    img.onerror = () => {
+      setImageFallback('/og-image.jpg');
+      setTimeout(() => setImageLoaded(true), 100);
+    };
+    img.src = heroImageUrl;
+  }, [project]);
 
   const heroImage = getHeroImage();
   const videoUrl = project.video_url || project.drone_footage_urls?.[0];
@@ -79,6 +81,10 @@ export default function HeroSection({ project }: HeroSectionProps) {
 
   return (
     <section id="hero-section" className="relative w-full h-screen bg-black flex flex-col overflow-hidden">
+      {/* Loading overlay */}
+      {!imageLoaded && (
+        <div className="absolute inset-0 bg-black z-50" />
+      )}
       {/* Background with Ken Burns Zoom */}
       <motion.div
         className="absolute inset-0 bg-black"
