@@ -286,6 +286,9 @@ const ModernMenu = () => {
 
                 {/* Séparateur + Réseaux sociaux */}
                 <div className="mt-8">
+                  {/* Trait séparateur AVANT les icônes - largeur des 5 icônes */}
+                  <div className="h-px bg-black/20 my-6" style={{ width: 'calc(5 * 1.5rem + 4 * 1rem)' }} />
+
                   <div className="flex items-center gap-4">
                     {/* LinkedIn */}
                     <a
@@ -352,9 +355,6 @@ const ModernMenu = () => {
                       </svg>
                     </a>
                   </div>
-
-                  {/* Trait séparateur APRÈS les icônes */}
-                  <div className="w-full h-px bg-black/20 my-6" />
                 </div>
               </div>
             </div>
