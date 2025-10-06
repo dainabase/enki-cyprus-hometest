@@ -219,9 +219,18 @@ const USPCarousel: React.FC<USPCarouselProps> = ({ uspPoints }) => {
   const x = useTransform(scrollYProgress, [0, 1], ["1%", "-95%"]);
 
   return (
-    <section ref={targetRef} className="relative h-[200vh] bg-neutral-50">
-      <div className="sticky top-0 flex h-screen items-center overflow-hidden">
-        <motion.div style={{ x }} className="flex gap-8 px-8">
+    <section ref={targetRef} className="relative h-[150vh] bg-neutral-50">
+      <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden">
+        {/* Section Header */}
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-12 mb-12">
+          <div className="h-[1px] w-20 bg-black mb-6" />
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-black tracking-tight">
+            Points forts exclusifs
+          </h2>
+        </div>
+
+        {/* Scrolling Cards */}
+        <motion.div style={{ x }} className="flex gap-8 px-6 lg:px-12">
           {uspPoints.map((point: string, index: number) => (
             <USPCard key={index} point={point} index={index} />
           ))}
