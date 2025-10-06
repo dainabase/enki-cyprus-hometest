@@ -359,31 +359,10 @@ const ModernMenu = () => {
             </div>
 
             {/* Menu Hover Preview - PASSE TOUTES LES IMAGES */}
-            <MenuHoverPreview 
-              hoveredItem={hoveredMenuItem} 
+            <MenuHoverPreview
+              hoveredItem={hoveredMenuItem}
               allItems={menuItemsWithPreviews}
             />
-
-            {/* Bottom CTA */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ 
-                opacity: 1, 
-                y: 0, 
-                transition: { delay: 0.5, duration: 0.4 } 
-              }}
-              exit={{ opacity: 0, y: 30, transition: { duration: 0.2 } }}
-              className="absolute bottom-8 right-8 md:bottom-12 md:right-16"
-            >
-              <Link to="/contact">
-                <button className="group flex items-center gap-3 bg-black text-white px-6 md:px-8 py-3 md:py-4 hover:bg-black/80 transition-all border border-black/10">
-                  <span className="text-sm font-light tracking-wide">
-                    Commencer votre projet
-                  </span>
-                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                </button>
-              </Link>
-            </motion.div>
 
             {/* Admin/Déconnexion - Footer gauche */}
             <motion.div
