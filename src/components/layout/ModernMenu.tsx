@@ -7,10 +7,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
 import { MenuHoverPreview, MenuItemPreview } from './MenuHoverPreview';
 
-// ✅ CONSTANTE CENTRALISÉE - Durée des animations du menu
-// Synchronise : animations Framer Motion + protection anti-spam
-// Valeur : 300ms = durée des transitions UNDERLAY + menu overlay
-const ANIMATION_DURATION = 300;
+// ✅ CONSTANTE CENTRALISÉE - Durée des animations du menu (RALENTIE pour fluidité)
+const ANIMATION_DURATION = 500; // 500ms au lieu de 300ms
 
 const menuItemsWithPreviews: MenuItemPreview[] = [
   {
@@ -86,24 +84,18 @@ const ModernMenu = () => {
     if (active) {
       const scrollY = window.scrollY;
 
-      // ✅ SOLUTION : overflow-y: scroll au lieu de hidden
-      // La scrollbar reste visible mais le scroll est bloqué
-      // = PAS de décalage du viewport, PAS de décalage des éléments fixed
       document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollY}px`;
       document.body.style.left = '0';
       document.body.style.right = '0';
-      document.body.style.overflowY = 'scroll';  // Force la scrollbar visible
+      document.body.style.overflowY = 'scroll';
 
       return () => {
-        // Restaurer la position
         document.body.style.position = '';
         document.body.style.top = '';
         document.body.style.left = '';
         document.body.style.right = '';
         document.body.style.overflowY = '';
-
-        // Restaurer le scroll
         window.scrollTo(0, scrollY);
       };
     }
@@ -116,7 +108,6 @@ const ModernMenu = () => {
     setIsAnimating(true);
     setActive(!active);
 
-    // Débloquer après l'animation (synchronisé avec ANIMATION_DURATION)
     setTimeout(() => setIsAnimating(false), ANIMATION_DURATION);
   };
 
@@ -142,14 +133,14 @@ const ModernMenu = () => {
     }
   };
 
-  // ✅ VARIANTS ANIMATIONS SYNCHRONISÉES - 300ms partout
+  // ✅ VARIANTS ANIMATIONS PLUS FLUIDES
   const UNDERLAY_VARIANTS: Variants = {
     open: {
       width: "calc(100vw - 32px)",
       height: "calc(100vh - 32px)",
       transition: {
         duration: ANIMATION_DURATION / 1000,
-        ease: [0.32, 0.72, 0, 1]
+        ease: [0.16, 1, 0.3, 1] // Easing plus doux
       },
     },
     closed: {
@@ -157,14 +148,14 @@ const ModernMenu = () => {
       height: "48px",
       transition: {
         duration: ANIMATION_DURATION / 1000,
-        ease: [0.32, 0.72, 0, 1]
+        ease: [0.16, 1, 0.3, 1]
       },
     },
   };
 
   return (
     <>
-      {/* ✅ UNDERLAY - Synchronisé avec le menu via AnimatePresence */}
+      {/* ✅ UNDERLAY */}
       <AnimatePresence mode="wait">
         {active && (
           <motion.div
@@ -190,30 +181,30 @@ const ModernMenu = () => {
         onClick={toggleMenu}
         disabled={isAnimating}
         whileTap={{ scale: 0.95 }}
-        transition={{ duration: 0.15 }}
+        transition={{ duration: 0.2 }}
         className="group fixed right-4 top-4 z-50 h-12 w-12 bg-white hover:bg-neutral-50 transition-all shadow-sm border border-black/5"
       >
         <motion.span
           animate={active ? { rotate: 45, top: "50%" } : { rotate: 0, top: "35%" }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           className="absolute block h-[1px] w-6 bg-black"
           style={{ y: "-50%", left: "50%", x: "-50%" }}
         />
         <motion.span
           animate={active ? { rotate: -45, opacity: 1 } : { rotate: 0, opacity: 1 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           className="absolute block h-[1px] w-6 bg-black"
           style={{ left: "50%", x: "-50%", top: "50%", y: "-50%" }}
         />
         <motion.span
           animate={active ? { rotate: 45, bottom: "50%", opacity: 0 } : { rotate: 0, bottom: "35%", opacity: 1 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           className="absolute block h-[1px] w-3 bg-black"
           style={{ x: "-50%", y: "50%", left: "calc(50% + 10px)" }}
         />
       </motion.button>
 
-      {/* ✅ MENU OVERLAY - Synchronisé 300ms */}
+      {/* ✅ MENU OVERLAY */}
       <AnimatePresence mode="wait">
         {active && (
           <motion.nav
@@ -223,49 +214,49 @@ const ModernMenu = () => {
             exit={{ opacity: 0 }}
             transition={{
               duration: ANIMATION_DURATION / 1000,
-              ease: [0.25, 0.46, 0.45, 0.94]
+              ease: [0.16, 1, 0.3, 1]
             }}
             className="fixed inset-0 z-40 bg-neutral-50"
           >
-            {/* Logo ENKI REALITY avec animation identique au hero */}
+            {/* Logo ENKI REALITY - CORRIGÉ : Plus gras + Majuscules + Trait centré */}
             <motion.div
               initial={{ opacity: 0, y: -30 }}
               animate={{
                 opacity: 1,
                 y: 0,
-                transition: { delay: 0.2, duration: 0.4 }
+                transition: { delay: 0.3, duration: 0.6, ease: [0.16, 1, 0.3, 1] }
               }}
-              exit={{ opacity: 0, y: -30, transition: { duration: 0.2 } }}
+              exit={{ opacity: 0, y: -30, transition: { duration: 0.3 } }}
               className="absolute left-8 md:left-16 top-8 md:top-12"
             >
-              {/* ENKI Reality */}
+              {/* ENKI REALITY - Plus gras + Majuscules */}
               <Link
                 to="/"
-                className="text-4xl md:text-5xl font-light text-black tracking-tight hover:text-black/70 transition-colors block"
+                className="text-4xl md:text-5xl font-semibold text-black tracking-tight hover:text-black/70 transition-colors block"
               >
-                ΣNKI Reality
+                ΣNKI REALITY
               </Link>
 
-              {/* Trait central ultra raffiné (copié du hero) */}
+              {/* Trait centré + moins d'espace */}
               <motion.div
-                className="relative w-32 h-[1px] mt-6"
+                className="relative w-32 h-[1px] mt-3 mx-auto"
                 initial={{ opacity: 0, scaleX: 0 }}
                 animate={{ opacity: 1, scaleX: 1 }}
-                transition={{ delay: 0.6, duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-                style={{ transformOrigin: 'left' }}
+                transition={{ delay: 0.8, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                style={{ transformOrigin: 'center' }}
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black to-transparent" />
               </motion.div>
 
               {/* Cyprus Properties */}
               <motion.p
-                className="text-xs md:text-sm text-black/60 tracking-widest uppercase mt-2"
+                className="text-xs md:text-sm text-black/60 tracking-widest uppercase mt-2 text-center"
                 initial={{ opacity: 0, letterSpacing: "0.5em" }}
                 animate={{ opacity: 1, letterSpacing: "0.2em" }}
                 transition={{
-                  delay: 1.2,
-                  duration: 0.8,
-                  ease: [0.25, 0.46, 0.45, 0.94]
+                  delay: 1.4,
+                  duration: 1,
+                  ease: [0.16, 1, 0.3, 1]
                 }}
               >
                 Cyprus Properties
@@ -283,15 +274,15 @@ const ModernMenu = () => {
                       opacity: 1,
                       x: 0,
                       transition: {
-                        delay: 0.3 + idx * 0.05,
-                        duration: 0.4,
-                        ease: [0.25, 0.46, 0.45, 0.94],
+                        delay: 0.4 + idx * 0.08,
+                        duration: 0.6,
+                        ease: [0.16, 1, 0.3, 1],
                       },
                     }}
                     exit={{
                       opacity: 0,
                       x: -60,
-                      transition: { duration: 0.2 }
+                      transition: { duration: 0.3 }
                     }}
                     onMouseEnter={() => setHoveredMenuItem(item)}
                     onMouseLeave={() => setHoveredMenuItem(null)}
@@ -302,7 +293,7 @@ const ModernMenu = () => {
                       className="block group"
                       onClick={() => setActive(false)}
                     >
-                      <span className="text-3xl md:text-4xl font-light text-black/60 hover:text-black transition-all duration-300 whitespace-nowrap">
+                      <span className="text-3xl md:text-4xl font-light text-black/60 hover:text-black transition-all duration-500 whitespace-nowrap">
                         {item.label}
                       </span>
                     </Link>
@@ -311,7 +302,6 @@ const ModernMenu = () => {
 
                 {/* Séparateur + Réseaux sociaux */}
                 <div className="mt-8">
-                  {/* Trait séparateur AVANT les icônes - largeur des 5 icônes */}
                   <div className="h-px bg-black/20 my-6" style={{ width: 'calc(5 * 1.5rem + 4 * 1rem)' }} />
 
                   <div className="flex items-center gap-4">
@@ -320,7 +310,7 @@ const ModernMenu = () => {
                       href="https://linkedin.com/company/enkirealty"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-black/60 hover:text-black transition-colors duration-200"
+                      className="text-black/60 hover:text-black transition-colors duration-300"
                       aria-label="LinkedIn"
                     >
                       <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -333,7 +323,7 @@ const ModernMenu = () => {
                       href="https://facebook.com/enkirealty"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-black/60 hover:text-black transition-colors duration-200"
+                      className="text-black/60 hover:text-black transition-colors duration-300"
                       aria-label="Facebook"
                     >
                       <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -346,7 +336,7 @@ const ModernMenu = () => {
                       href="https://youtube.com/@enkirealty"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-black/60 hover:text-black transition-colors duration-200"
+                      className="text-black/60 hover:text-black transition-colors duration-300"
                       aria-label="YouTube"
                     >
                       <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -359,7 +349,7 @@ const ModernMenu = () => {
                       href="https://instagram.com/enkirealty"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-black/60 hover:text-black transition-colors duration-200"
+                      className="text-black/60 hover:text-black transition-colors duration-300"
                       aria-label="Instagram"
                     >
                       <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -372,7 +362,7 @@ const ModernMenu = () => {
                       href="https://tiktok.com/@enkirealty"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-black/60 hover:text-black transition-colors duration-200"
+                      className="text-black/60 hover:text-black transition-colors duration-300"
                       aria-label="TikTok"
                     >
                       <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -384,7 +374,7 @@ const ModernMenu = () => {
               </div>
             </div>
 
-            {/* Menu Hover Preview - PASSE TOUTES LES IMAGES */}
+            {/* Menu Hover Preview */}
             <MenuHoverPreview
               hoveredItem={hoveredMenuItem}
               allItems={menuItemsWithPreviews}
@@ -395,9 +385,9 @@ const ModernMenu = () => {
               initial={{ opacity: 0 }}
               animate={{
                 opacity: 1,
-                transition: { delay: 0.6, duration: 0.4 }
+                transition: { delay: 0.8, duration: 0.5 }
               }}
-              exit={{ opacity: 0, transition: { duration: 0.2 } }}
+              exit={{ opacity: 0, transition: { duration: 0.3 } }}
               className="absolute bottom-8 left-8 md:bottom-12 md:left-16"
             >
               <div className="flex flex-col gap-2">
@@ -407,14 +397,14 @@ const ModernMenu = () => {
                       <Link
                         to="/admin"
                         onClick={() => setActive(false)}
-                        className="text-lg md:text-xl font-light text-black/60 hover:text-black transition-colors duration-200"
+                        className="text-lg md:text-xl font-light text-black/60 hover:text-black transition-colors duration-300"
                       >
                         Admin
                       </Link>
                     )}
                     <button
                       onClick={handleLogout}
-                      className="text-left text-lg md:text-xl font-light text-black/60 hover:text-black transition-colors duration-200"
+                      className="text-left text-lg md:text-xl font-light text-black/60 hover:text-black transition-colors duration-300"
                     >
                       Déconnexion
                     </button>
@@ -423,7 +413,7 @@ const ModernMenu = () => {
                   <Link
                     to="/login"
                     onClick={() => setActive(false)}
-                    className="text-lg md:text-xl font-light text-black/60 hover:text-black transition-colors duration-200"
+                    className="text-lg md:text-xl font-light text-black/60 hover:text-black transition-colors duration-300"
                   >
                     Connexion
                   </Link>
