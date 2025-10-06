@@ -219,7 +219,7 @@ const USPCarousel: React.FC<USPCarouselProps> = ({ uspPoints }) => {
   const x = useTransform(scrollYProgress, [0, 1], ["1%", "-95%"]);
 
   return (
-    <section ref={targetRef} className="relative h-[300vh] bg-neutral-50">
+    <section ref={targetRef} className="relative h-[200vh] bg-neutral-50">
       <div className="sticky top-0 flex h-screen items-center overflow-hidden">
         <motion.div style={{ x }} className="flex gap-8 px-8">
           {uspPoints.map((point: string, index: number) => (
