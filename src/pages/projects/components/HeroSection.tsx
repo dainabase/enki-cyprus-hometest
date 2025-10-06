@@ -263,7 +263,7 @@ export default function HeroSection({ project }: HeroSectionProps) {
       </div>
 
       {/* KPI Stats cards with 3D flip */}
-      <div className="absolute bottom-12 left-0 right-0 z-10">
+      <div className="absolute bottom-6 left-0 right-0 z-10">
         <div className="max-w-[1190px] mx-auto px-6 lg:px-12">
           <motion.div
             className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8"
