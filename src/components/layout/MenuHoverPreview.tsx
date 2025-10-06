@@ -66,7 +66,7 @@ export const MenuHoverPreview = ({ hoveredItem, allItems }: MenuHoverPreviewProp
         ))}
       </div>
 
-      <div className="fixed right-[10%] top-[50%] -translate-y-1/2 pointer-events-none hidden xl:block z-40">
+      <div className="fixed left-1/2 top-8 md:top-12 -translate-x-1/2 pointer-events-none hidden xl:block z-40">
         <AnimatePresence mode="wait">
           {hoveredItem && imagesLoaded && (
             <motion.div

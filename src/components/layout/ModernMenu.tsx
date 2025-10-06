@@ -16,43 +16,43 @@ const menuItemsWithPreviews: MenuItemPreview[] = [
   {
     label: 'Accueil',
     href: '/',
-    image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&h=1080&fit=crop&q=85',
+    image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=1200&fit=crop',
     description: 'Découvrez Enki Reality, votre partenaire immobilier premium à Chypre pour une expérience d\'investissement exceptionnelle.'
   },
   {
     label: 'Projets',
     href: '/projects',
-    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1920&h=1080&fit=crop&q=85',
+    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=1200&fit=crop',
     description: 'Découvrez notre portfolio de programmes immobiliers premium à Chypre avec vue mer et montagne.'
   },
   {
     label: 'Recherche IA',
     href: '/search',
-    image: 'https://images.unsplash.com/photo-1560184897-ae75f418493e?w=1920&h=1080&fit=crop&q=85',
+    image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=1200&fit=crop',
     description: 'Utilisez notre moteur de recherche IA avancé pour trouver le bien immobilier parfait selon vos critères précis.'
   },
   {
     label: 'Conseil Fiscal IA',
     href: '/lexaia',
-    image: 'https://images.unsplash.com/photo-1554224311-beee415c201f?w=1920&h=1080&fit=crop&q=85',
+    image: 'https://images.unsplash.com/photo-1554224311-beee415c201f?w=800&h=1200&fit=crop',
     description: 'Investissez €300k+ et obtenez votre résidence permanente européenne avec tous les avantages fiscaux.'
   },
   {
     label: 'Blog',
     href: '/blog',
-    image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1920&h=1080&fit=crop&q=85',
+    image: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&h=1200&fit=crop',
     description: 'Actualités immobilières, guides d\'investissement et conseils d\'experts pour réussir à Chypre.'
   },
   {
     label: 'À propos',
     href: '/about',
-    image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&h=1080&fit=crop&q=85',
+    image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=1200&fit=crop',
     description: 'Enki Reality, votre partenaire immobilier de confiance à Chypre depuis 2020. Excellence et transparence.'
   },
   {
     label: 'Contact',
     href: '/contact',
-    image: 'https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?w=1920&h=1080&fit=crop&q=85',
+    image: 'https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=800&h=1200&fit=crop',
     description: 'Parlons de votre projet immobilier à Chypre. Notre équipe multilingue vous répond sous 24h.'
   },
 ];
@@ -227,7 +227,7 @@ const ModernMenu = () => {
             }}
             className="fixed inset-0 z-40 bg-neutral-50"
           >
-            {/* Logo ENKI REALITY avec animation identique au hero */}
+            {/* Logo ENKI-REALTY */}
             <motion.div
               initial={{ opacity: 0, y: -30 }}
               animate={{
@@ -238,38 +238,16 @@ const ModernMenu = () => {
               exit={{ opacity: 0, y: -30, transition: { duration: 0.2 } }}
               className="absolute left-8 md:left-16 top-8 md:top-12"
             >
-              {/* ENKI Reality */}
               <Link
                 to="/"
                 className="text-4xl md:text-5xl font-light text-black tracking-tight hover:text-black/70 transition-colors block"
               >
-                ΣNKI Reality
+                ΣNKI REALTY
               </Link>
-
-              {/* Trait central ultra raffiné (copié du hero) */}
-              <motion.div
-                className="relative w-32 h-[1px] mt-6"
-                initial={{ opacity: 0, scaleX: 0 }}
-                animate={{ opacity: 1, scaleX: 1 }}
-                transition={{ delay: 0.6, duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-                style={{ transformOrigin: 'left' }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black to-transparent" />
-              </motion.div>
-
-              {/* Cyprus Properties */}
-              <motion.p
-                className="text-xs md:text-sm text-black/60 tracking-widest uppercase mt-2"
-                initial={{ opacity: 0, letterSpacing: "0.5em" }}
-                animate={{ opacity: 1, letterSpacing: "0.2em" }}
-                transition={{
-                  delay: 1.2,
-                  duration: 0.8,
-                  ease: [0.25, 0.46, 0.45, 0.94]
-                }}
-              >
-                Cyprus Properties
-              </motion.p>
+              <div className="h-[1px] w-20 bg-black mt-6" />
+              <p className="text-xs md:text-sm text-black/60 tracking-widest uppercase mt-2">
+                SITE + PROPERTIES
+              </p>
             </motion.div>
 
             {/* Links Container */}
