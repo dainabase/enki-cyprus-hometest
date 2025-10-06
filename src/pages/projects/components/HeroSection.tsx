@@ -69,13 +69,16 @@ export default function HeroSection({ project }: HeroSectionProps) {
       {/* Background with Ken Burns Zoom */}
       <motion.div
         className="absolute inset-0"
-        initial={{ scale: 1 }}
-        animate={shouldReduceMotion ? { scale: 1 } : { scale: 1.08 }}
+        initial={{ scale: 1, opacity: 0 }}
+        animate={shouldReduceMotion ? { scale: 1, opacity: 1 } : { scale: 1.08, opacity: 1 }}
         transition={{
-          duration: 25,
-          ease: "easeInOut",
-          repeat: Infinity,
-          repeatType: "reverse"
+          opacity: { duration: 1.2, ease: "easeOut" },
+          scale: {
+            duration: 30,
+            ease: "easeInOut",
+            repeat: Infinity,
+            repeatType: "reverse"
+          }
         }}
       >
         {videoUrl && !videoError ? (
@@ -95,6 +98,7 @@ export default function HeroSection({ project }: HeroSectionProps) {
             src={imageFallback || heroImage}
             alt={project.title}
             className="w-full h-full object-cover opacity-60"
+            loading="eager"
             onError={(e) => {
               if (!imageFallback) {
                 setImageFallback('/og-image.jpg');
@@ -114,7 +118,8 @@ export default function HeroSection({ project }: HeroSectionProps) {
           initial={{ x: -100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{
-            duration: 0.6,
+            duration: 1,
+            delay: 0.3,
             ease: [0.22, 1, 0.36, 1]
           }}
         >
@@ -130,8 +135,8 @@ export default function HeroSection({ project }: HeroSectionProps) {
           initial={{ clipPath: "inset(0 100% 0 0)" }}
           animate={{ clipPath: "inset(0 0% 0 0)" }}
           transition={{
-            duration: 0.9,
-            delay: 0.2,
+            duration: 1.4,
+            delay: 0.6,
             ease: [0.22, 1, 0.36, 1]
           }}
         >
@@ -139,7 +144,7 @@ export default function HeroSection({ project }: HeroSectionProps) {
             className="text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-light tracking-tight leading-[0.95] will-change-transform"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
+            transition={{ duration: 0.8, delay: 1 }}
           >
             {project.title}
           </motion.h1>
@@ -154,8 +159,8 @@ export default function HeroSection({ project }: HeroSectionProps) {
             hidden: {},
             visible: {
               transition: {
-                staggerChildren: 0.1,
-                delayChildren: 0.6
+                staggerChildren: 0.15,
+                delayChildren: 1.4
               }
             }
           }}
@@ -169,8 +174,8 @@ export default function HeroSection({ project }: HeroSectionProps) {
                 opacity: 1,
                 transition: {
                   type: "spring",
-                  stiffness: 250,
-                  damping: 18
+                  stiffness: 160,
+                  damping: 22
                 }
               }
             }}
@@ -243,8 +248,8 @@ export default function HeroSection({ project }: HeroSectionProps) {
               hidden: {},
               visible: {
                 transition: {
-                  staggerChildren: 0.08,
-                  delayChildren: 0.9
+                  staggerChildren: 0.12,
+                  delayChildren: 1.8
                 }
               }
             }}
@@ -265,8 +270,8 @@ export default function HeroSection({ project }: HeroSectionProps) {
                     y: 0,
                     transition: {
                       type: "spring",
-                      stiffness: 120,
-                      damping: 15
+                      stiffness: 100,
+                      damping: 20
                     }
                   }
                 }}
