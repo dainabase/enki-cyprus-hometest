@@ -76,7 +76,7 @@ export const MenuHoverPreview = ({ hoveredItem, allItems }: MenuHoverPreviewProp
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="relative w-[500px] h-[600px] overflow-hidden">
+              <div className="relative w-[640px] h-[360px] overflow-hidden">
                 <AnimatePresence initial={false} mode="popLayout">
                   <motion.div
                     key={hoveredItem.href}
@@ -107,7 +107,7 @@ export const MenuHoverPreview = ({ hoveredItem, allItems }: MenuHoverPreviewProp
                 </AnimatePresence>
               </div>
 
-              <div className="absolute top-full left-0 right-0 mt-8 w-[500px]">
+              <div className="absolute top-full left-0 right-0 mt-8 w-[640px]">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={`text-${hoveredItem.href}`}
