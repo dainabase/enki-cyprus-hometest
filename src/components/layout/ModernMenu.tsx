@@ -121,7 +121,7 @@ const ModernMenu = () => {
       height: "calc(100vh - 32px)",
       transition: {
         duration: 0.3,
-        ease: [0.25, 0.46, 0.45, 0.94]
+        ease: [0.32, 0.72, 0, 1]  // easeOutExpo - animation plus douce
       },
     },
     closed: {
@@ -129,7 +129,7 @@ const ModernMenu = () => {
       height: "48px",
       transition: {
         duration: 0.3,
-        ease: [0.25, 0.46, 0.45, 0.94]
+        ease: [0.32, 0.72, 0, 1]  // easeOutExpo - animation plus douce
       },
     },
   };
@@ -145,7 +145,11 @@ const ModernMenu = () => {
             animate="open"
             exit="closed"
             variants={UNDERLAY_VARIANTS}
-            style={{ top: 16, right: 16 }}
+            style={{
+              top: 16,
+              right: 16,
+              transformOrigin: "top right"  // L'underlay grandit depuis son coin supérieur droit
+            }}
             className="fixed z-30 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg"
           />
         )}
@@ -158,6 +162,8 @@ const ModernMenu = () => {
         onClick={toggleMenu}
         disabled={isAnimating}
         data-compensate-scrollbar
+        whileTap={{ scale: 0.95 }}  // Feedback tactile au clic
+        transition={{ duration: 0.15 }}  // Transition rapide du scale
         className={`group fixed right-4 top-4 z-50 h-12 w-12 bg-white hover:bg-white/90 transition-all rounded-[2px] shadow-lg ${
           active ? "rounded-bl-[2px] rounded-tr-[2px]" : "rounded-[2px]"
         }`}
