@@ -49,22 +49,14 @@ const ModernMenu = () => {
         document.body.style.paddingRight = `${scrollbarWidth}px`;
       }
       
-      // ✅ COMPENSATION SCROLLBAR - Ciblage précis des éléments à compenser
+      // ✅ COMPENSATION SCROLLBAR - Utilise transform pour éviter conflit avec Framer Motion
       const fixedElements = document.querySelectorAll('[data-compensate-scrollbar]');
       fixedElements.forEach((el) => {
         const element = el as HTMLElement;
-
-        // Récupérer la position actuelle (Tailwind ou inline style)
-        const computedStyle = window.getComputedStyle(element);
-        const currentRight = computedStyle.right;
-
-        // Stocker la valeur originale pour la restauration
-        element.dataset.originalRight = currentRight;
-
-        // Compenser le décalage
-        if (scrollbarWidth > 0 && currentRight && currentRight !== 'auto') {
-          const rightValue = parseInt(currentRight) || 0;
-          element.style.right = `${rightValue + scrollbarWidth}px`;
+        
+        // Compenser avec transform (n'interfère pas avec right de Tailwind/Motion)
+        if (scrollbarWidth > 0) {
+          element.style.transform = `translateX(-${scrollbarWidth}px)`;
         }
       });
       
@@ -77,10 +69,7 @@ const ModernMenu = () => {
         const compensatedElements = document.querySelectorAll('[data-compensate-scrollbar]');
         compensatedElements.forEach((el) => {
           const element = el as HTMLElement;
-          if (element.dataset.originalRight !== undefined) {
-            element.style.right = element.dataset.originalRight;
-            delete element.dataset.originalRight;
-          }
+          element.style.transform = '';  // Réinitialiser le transform
         });
       };
     }
