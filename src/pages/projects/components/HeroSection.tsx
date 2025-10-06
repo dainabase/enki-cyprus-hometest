@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { formatPrice, formatArea } from '@/lib/utils/formatters';
 import { MapPin, Calendar, Chrome as Home, Ruler, Euro } from 'lucide-react';
@@ -15,8 +15,8 @@ export default function HeroSection({ project }: HeroSectionProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const shouldReduceMotion = useReducedMotion();
 
-  // Extract hero image URL with simplified fallback chain
-  const getHeroImage = () => {
+  // Extract hero image URL with simplified fallback chain - memoized to avoid multiple calls
+  const heroImage = useMemo(() => {
     // Priority order: project_images (primary) > photos (primary) > photos[0] > photo_gallery_urls[0] > main_image_url > fallback
     return (
       project.project_images?.find((i: any) => i.is_primary)?.url ||
@@ -26,7 +26,7 @@ export default function HeroSection({ project }: HeroSectionProps) {
       project.main_image_url ||
       'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200'
     );
-  };
+  }, [project]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
@@ -34,25 +34,39 @@ export default function HeroSection({ project }: HeroSectionProps) {
 
   // Preload hero image
   useEffect(() => {
-    const heroImageUrl = getHeroImage();
     const img = new Image();
-    img.onload = () => {
-      setImageLoaded(true);
+
+    // Handle both sync (cached) and async loading
+    const handleLoad = () => {
+      // Small delay to ensure smooth transition even with cached images
+      requestAnimationFrame(() => {
+        setImageLoaded(true);
+      });
     };
-    img.onerror = () => {
+
+    const handleError = () => {
       setImageFallback('/og-image.jpg');
-      setImageLoaded(true);
+      requestAnimationFrame(() => {
+        setImageLoaded(true);
+      });
     };
-    img.src = heroImageUrl;
+
+    img.onload = handleLoad;
+    img.onerror = handleError;
+    img.src = heroImage;
+
+    // If image is already complete (cached), trigger load immediately
+    if (img.complete) {
+      handleLoad();
+    }
 
     // Cleanup
     return () => {
       img.onload = null;
       img.onerror = null;
     };
-  }, [project]);
+  }, [heroImage]);
 
-  const heroImage = getHeroImage();
   const videoUrl = project.video_url || project.drone_footage_urls?.[0];
 
   const quickStats = [
@@ -82,13 +96,20 @@ export default function HeroSection({ project }: HeroSectionProps) {
 
   return (
     <section id="hero-section" className="relative w-full h-screen bg-black flex flex-col overflow-hidden">
-      {/* Loading overlay */}
-      {!imageLoaded && (
-        <div className="absolute inset-0 bg-black z-50" />
-      )}
+      {/* Loading overlay - animated out with the image fade in */}
+      <motion.div
+        className="absolute inset-0 bg-black z-40"
+        initial={{ opacity: 1 }}
+        animate={{ opacity: imageLoaded ? 0 : 1 }}
+        transition={{
+          opacity: { duration: 0.8, ease: "easeOut" }
+        }}
+        style={{ pointerEvents: imageLoaded ? 'none' : 'auto' }}
+      />
+
       {/* Background with Ken Burns Zoom */}
       <motion.div
-        className="absolute inset-0 bg-black"
+        className="absolute inset-0"
         initial={{ opacity: 0 }}
         animate={{ opacity: imageLoaded ? 1 : 0 }}
         transition={{
@@ -108,7 +129,7 @@ export default function HeroSection({ project }: HeroSectionProps) {
         >
           {videoUrl && !videoError ? (
             <video
-              className="w-full h-full object-cover opacity-60"
+              className="w-full h-full object-cover"
               autoPlay
               muted
               loop
@@ -121,8 +142,8 @@ export default function HeroSection({ project }: HeroSectionProps) {
           ) : heroImage ? (
             <img
               src={imageFallback || heroImage}
-              alt={project.title}
-              className="w-full h-full object-cover opacity-60"
+              alt={project.title || 'Project hero image'}
+              className="w-full h-full object-cover"
               loading="eager"
               onError={(e) => {
                 if (!imageFallback) {
@@ -134,6 +155,9 @@ export default function HeroSection({ project }: HeroSectionProps) {
             />
           ) : null}
         </motion.div>
+
+        {/* Gradient overlay for text contrast */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
       </motion.div>
 
       {/* Content */}
@@ -145,13 +169,13 @@ export default function HeroSection({ project }: HeroSectionProps) {
           animate={imageLoaded ? { x: 0, opacity: 1 } : { x: -100, opacity: 0 }}
           transition={{
             duration: 1,
-            delay: 0.3,
+            delay: 0.9,
             ease: [0.22, 1, 0.36, 1]
           }}
         >
           <MapPin className="w-4 h-4 text-white/60" />
           <p className="text-white/60 text-sm tracking-[0.2em] uppercase font-light">
-            {project.city}{project.district && `, ${project.district}`}, Cyprus
+            {project.city || ''}{project.district ? `, ${project.district}` : ''}, Cyprus
           </p>
         </motion.div>
 
@@ -170,14 +194,14 @@ export default function HeroSection({ project }: HeroSectionProps) {
           }}
           transition={{
             duration: 1.4,
-            delay: 0.3,
+            delay: 0.9,
             ease: [0.22, 1, 0.36, 1]
           }}
         >
           <motion.h1
             className="text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-light tracking-tight leading-[0.95]"
           >
-            {project.title}
+            {project.title || 'Project'}
           </motion.h1>
         </motion.div>
 
@@ -191,13 +215,13 @@ export default function HeroSection({ project }: HeroSectionProps) {
             visible: {
               transition: {
                 staggerChildren: 0.15,
-                delayChildren: 1.4
+                delayChildren: 2.4
               }
             }
           }}
         >
           <motion.button
-            className="relative px-12 py-4 bg-white text-black text-sm tracking-wider uppercase font-medium overflow-hidden group will-change-transform"
+            className="relative px-12 py-4 bg-white text-black text-sm tracking-wider uppercase font-medium overflow-hidden group"
             variants={{
               hidden: { scale: 0, opacity: 0 },
               visible: {
@@ -232,7 +256,7 @@ export default function HeroSection({ project }: HeroSectionProps) {
           </motion.button>
 
           <motion.button
-            className="relative px-12 py-4 bg-transparent border border-white text-white text-sm tracking-wider uppercase font-medium group will-change-transform"
+            className="relative px-12 py-4 bg-transparent border border-white text-white text-sm tracking-wider uppercase font-medium group"
             variants={{
               hidden: { scale: 0, opacity: 0 },
               visible: {
@@ -280,7 +304,7 @@ export default function HeroSection({ project }: HeroSectionProps) {
               visible: {
                 transition: {
                   staggerChildren: 0.12,
-                  delayChildren: 1.8
+                  delayChildren: 2.8
                 }
               }
             }}
@@ -288,7 +312,7 @@ export default function HeroSection({ project }: HeroSectionProps) {
             {quickStats.map((stat, index) => (
               <motion.div
                 key={index}
-                className="bg-white rounded-[2px] p-4 text-center shadow-lg relative will-change-transform"
+                className="bg-white rounded-[2px] p-4 text-center shadow-lg relative"
                 variants={{
                   hidden: {
                     rotateX: -90,
