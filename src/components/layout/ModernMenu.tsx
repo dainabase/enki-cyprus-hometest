@@ -22,7 +22,7 @@ const menuItemsWithPreviews: MenuItemPreview[] = [
   {
     label: 'Projets',
     href: '/projects',
-    image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=1200&fit=crop',
+    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=1200&fit=crop',
     description: 'Découvrez notre portfolio de programmes immobiliers premium à Chypre avec vue mer et montagne.'
   },
   {
