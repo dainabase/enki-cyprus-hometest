@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from 'react';
 
 export interface MenuItemPreview {
   label: string;
@@ -9,75 +10,124 @@ export interface MenuItemPreview {
 
 interface MenuHoverPreviewProps {
   hoveredItem: MenuItemPreview | null;
+  allItems: MenuItemPreview[];
 }
 
-export const MenuHoverPreview = ({ hoveredItem }: MenuHoverPreviewProps) => {
-  return (
-    <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none hidden xl:block z-40">
+export const MenuHoverPreview = ({ hoveredItem, allItems }: MenuHoverPreviewProps) => {
+  const [imagesLoaded, setImagesLoaded] = useState(false);
 
-      <AnimatePresence mode="wait">
-        {hoveredItem && (
-          <motion.div
-            key="preview-wrapper"
+  // Préchargement FORCÉ de toutes les images dès le mount
+  useEffect(() => {
+    const loadPromises = allItems.map((item) => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = resolve;
+        img.onerror = reject;
+        img.src = item.image;
+      });
+    });
+
+    Promise.all(loadPromises)
+      .then(() => setImagesLoaded(true))
+      .catch(() => setImagesLoaded(true)); // Continue même si erreur
+  }, [allItems]);
+
+  // Effet typewriter - divise le texte en caractères
+  const TypewriterText = ({ text }: { text: string }) => {
+    const characters = text.split('');
+    
+    return (
+      <span className="inline-block">
+        {characters.map((char, index) => (
+          <motion.span
+            key={`${text}-${index}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{
+              duration: 0.05,
+              delay: index * 0.02, // 20ms entre chaque lettre
+              ease: 'easeOut'
+            }}
+            style={{ display: 'inline-block', whiteSpace: 'pre' }}
           >
-            <div className="relative w-[500px] h-[600px] overflow-hidden">
+            {char}
+          </motion.span>
+        ))}
+      </span>
+    );
+  };
 
-              <AnimatePresence initial={false} mode="popLayout">
-                <motion.div
-                  key={hoveredItem.href}
-                  initial={{ y: '100%' }}
-                  animate={{ y: '0%' }}
-                  exit={{ y: '-100%' }}
-                  transition={{
-                    duration: 0.5,
-                    ease: [0.22, 1, 0.36, 1]
-                  }}
-                  className="absolute inset-0 bg-black"
-                >
-                  <motion.img
-                    src={hoveredItem.image}
-                    alt={hoveredItem.label}
-                    className="w-full h-full object-cover"
-                    animate={{
-                      scale: [1, 1.05],
-                    }}
+  return (
+    <>
+      {/* Images cachées pour préchargement */}
+      <div className="hidden">
+        {allItems.map((item) => (
+          <img key={item.href} src={item.image} alt="" />
+        ))}
+      </div>
+
+      <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none hidden xl:block z-40">
+        <AnimatePresence mode="wait">
+          {hoveredItem && imagesLoaded && (
+            <motion.div
+              key="preview-wrapper"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <div className="relative w-[500px] h-[600px] overflow-hidden">
+                <AnimatePresence initial={false} mode="popLayout">
+                  <motion.div
+                    key={hoveredItem.href}
+                    initial={{ y: '100%' }}
+                    animate={{ y: '0%' }}
+                    exit={{ y: '-100%' }}
                     transition={{
-                      duration: 10,
-                      repeat: Infinity,
-                      repeatType: "reverse",
-                      ease: "easeInOut"
+                      duration: 0.5,
+                      ease: [0.22, 1, 0.36, 1]
                     }}
-                  />
-                </motion.div>
-              </AnimatePresence>
-            </div>
+                    className="absolute inset-0 bg-black"
+                  >
+                    <motion.img
+                      src={hoveredItem.image}
+                      alt={hoveredItem.label}
+                      className="w-full h-full object-cover"
+                      animate={{
+                        scale: [1, 1.05],
+                      }}
+                      transition={{
+                        duration: 10,
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                        ease: "easeInOut"
+                      }}
+                    />
+                  </motion.div>
+                </AnimatePresence>
+              </div>
 
-            <div className="absolute top-full left-0 right-0 mt-8">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={`text-${hoveredItem.href}`}
-                  initial={{ opacity: 0, x: -30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 30 }}
-                  transition={{
-                    duration: 0.5,
-                    ease: [0.22, 1, 0.36, 1]
-                  }}
-                  className="text-center"
-                >
-                  <p className="text-black/70 text-base leading-relaxed max-w-md mx-auto px-4">
-                    {hoveredItem.description}
-                  </p>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+              <div className="absolute top-full left-0 right-0 mt-8 w-[500px]">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={`text-${hoveredItem.href}`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{
+                      duration: 0.3
+                    }}
+                  >
+                    <p className="text-black/70 text-base leading-tight line-clamp-2 w-full px-0">
+                      <TypewriterText text={hoveredItem.description} />
+                    </p>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </>
   );
 };
