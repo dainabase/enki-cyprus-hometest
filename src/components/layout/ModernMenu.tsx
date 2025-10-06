@@ -238,13 +238,16 @@ const ModernMenu = () => {
               exit={{ opacity: 0, y: -30, transition: { duration: 0.2 } }}
               className="absolute left-8 md:left-16 top-8 md:top-12"
             >
-              <div className="h-[1px] w-20 bg-black mb-6" />
               <Link
                 to="/"
-                className="text-4xl md:text-5xl font-light text-black tracking-tight hover:text-black/70 transition-colors"
+                className="text-4xl md:text-5xl font-light text-black tracking-tight hover:text-black/70 transition-colors block"
               >
-                ΣNKI<span className="mx-1">-</span>REALTY
+                ΣNKI REALTY
               </Link>
+              <div className="h-[1px] w-20 bg-black mt-6" />
+              <p className="text-xs md:text-sm text-black/60 tracking-widest uppercase mt-2">
+                SITE + PROPERTIES
+              </p>
             </motion.div>
 
             {/* Links Container */}
@@ -277,7 +280,7 @@ const ModernMenu = () => {
                       className="block group"
                       onClick={() => setActive(false)}
                     >
-                      <span className="text-2xl md:text-3xl font-light text-black/60 hover:text-black transition-all duration-300 whitespace-nowrap">
+                      <span className="text-3xl md:text-4xl font-light text-black/60 hover:text-black transition-all duration-300 whitespace-nowrap">
                         {item.label}
                       </span>
                     </Link>
