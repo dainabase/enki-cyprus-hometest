@@ -44,17 +44,20 @@ const ModernMenu = () => {
         document.body.style.paddingRight = `${scrollbarWidth}px`;
       }
       
-      // ✅ COMPENSATION sur les éléments fixed pour éviter qu'ils ne se décalent
-      const fixedElements = document.querySelectorAll('[style*="fixed"]');
+      // ✅ COMPENSATION SCROLLBAR - Ciblage précis des éléments à compenser
+      const fixedElements = document.querySelectorAll('[data-compensate-scrollbar]');
       fixedElements.forEach((el) => {
         const element = el as HTMLElement;
-        const currentRight = element.style.right;
-        
+
+        // Récupérer la position actuelle (Tailwind ou inline style)
+        const computedStyle = window.getComputedStyle(element);
+        const currentRight = computedStyle.right;
+
         // Stocker la valeur originale pour la restauration
         element.dataset.originalRight = currentRight;
-        
+
         // Compenser le décalage
-        if (scrollbarWidth > 0 && currentRight) {
+        if (scrollbarWidth > 0 && currentRight && currentRight !== 'auto') {
           const rightValue = parseInt(currentRight) || 0;
           element.style.right = `${rightValue + scrollbarWidth}px`;
         }
@@ -64,9 +67,10 @@ const ModernMenu = () => {
         // Restaurer tout à l'état initial
         document.body.style.overflow = '';
         document.body.style.paddingRight = '';
-        
-        // Restaurer les éléments fixed
-        fixedElements.forEach((el) => {
+
+        // Restaurer les éléments compensés
+        const compensatedElements = document.querySelectorAll('[data-compensate-scrollbar]');
+        compensatedElements.forEach((el) => {
           const element = el as HTMLElement;
           if (element.dataset.originalRight !== undefined) {
             element.style.right = element.dataset.originalRight;
@@ -153,6 +157,7 @@ const ModernMenu = () => {
         animate={active ? "open" : "closed"}
         onClick={toggleMenu}
         disabled={isAnimating}
+        data-compensate-scrollbar
         className={`group fixed right-4 top-4 z-50 h-12 w-12 bg-white hover:bg-white/90 transition-all rounded-[2px] shadow-lg ${
           active ? "rounded-bl-[2px] rounded-tr-[2px]" : "rounded-[2px]"
         }`}
