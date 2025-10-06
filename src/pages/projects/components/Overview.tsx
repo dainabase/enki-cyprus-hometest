@@ -220,9 +220,9 @@ const USPCarousel: React.FC<USPCarouselProps> = ({ uspPoints }) => {
 
   return (
     <section ref={targetRef} className="relative h-[150vh] bg-neutral-50">
-      <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden">
+      <div className="sticky top-0 flex h-screen flex-col justify-start pt-20 lg:pt-32 overflow-hidden">
         {/* Section Header */}
-        <div className="max-w-[1400px] mx-auto w-full px-6 lg:px-12 mb-12">
+        <div className="max-w-[1400px] mx-auto w-full px-6 lg:px-12 mb-12 lg:mb-16">
           <div className="h-[1px] w-20 bg-black mb-6" />
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-black tracking-tight">
             Points forts exclusifs
