@@ -15,22 +15,17 @@ export default function HeroSection({ project }: HeroSectionProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const shouldReduceMotion = useReducedMotion();
 
-  // Extract hero image URL from various sources
+  // Extract hero image URL with simplified fallback chain
   const getHeroImage = () => {
-    // Check project_images table first
-    const primaryImage = project.project_images?.find((i: any) => i.is_primary);
-    if (primaryImage?.url) return primaryImage.url;
-
-    // Check photos array (objects with url property)
-    const primaryPhoto = project.photos?.find((p: any) => p.isPrimary);
-    if (primaryPhoto?.url) return primaryPhoto.url;
-    if (project.photos?.[0]?.url) return project.photos[0].url;
-
-    // Check photo_gallery_urls array (direct URLs)
-    if (project.photo_gallery_urls?.[0]) return project.photo_gallery_urls[0];
-
-    // Fallback
-    return project.main_image_url || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200';
+    // Priority order: project_images (primary) > photos (primary) > photos[0] > photo_gallery_urls[0] > main_image_url > fallback
+    return (
+      project.project_images?.find((i: any) => i.is_primary)?.url ||
+      project.photos?.find((p: any) => p.isPrimary)?.url ||
+      project.photos?.[0]?.url ||
+      project.photo_gallery_urls?.[0] ||
+      project.main_image_url ||
+      'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200'
+    );
   };
 
   useEffect(() => {
@@ -42,13 +37,19 @@ export default function HeroSection({ project }: HeroSectionProps) {
     const heroImageUrl = getHeroImage();
     const img = new Image();
     img.onload = () => {
-      setTimeout(() => setImageLoaded(true), 100);
+      setImageLoaded(true);
     };
     img.onerror = () => {
       setImageFallback('/og-image.jpg');
-      setTimeout(() => setImageLoaded(true), 100);
+      setImageLoaded(true);
     };
     img.src = heroImageUrl;
+
+    // Cleanup
+    return () => {
+      img.onload = null;
+      img.onerror = null;
+    };
   }, [project]);
 
   const heroImage = getHeroImage();
@@ -154,22 +155,27 @@ export default function HeroSection({ project }: HeroSectionProps) {
           </p>
         </motion.div>
 
-        {/* Title with clip path reveal */}
+        {/* Title with clip path reveal and fallback */}
         <motion.div
           className="overflow-hidden mb-8 max-w-7xl"
-          initial={{ clipPath: "inset(0 100% 0 0)" }}
-          animate={imageLoaded ? { clipPath: "inset(0 0% 0 0)" } : { clipPath: "inset(0 100% 0 0)" }}
+          initial={{ clipPath: "inset(0 100% 0 0)", WebkitClipPath: "inset(0 100% 0 0)", opacity: 0 }}
+          animate={imageLoaded ? {
+            clipPath: "inset(0 0% 0 0)",
+            WebkitClipPath: "inset(0 0% 0 0)",
+            opacity: 1
+          } : {
+            clipPath: "inset(0 100% 0 0)",
+            WebkitClipPath: "inset(0 100% 0 0)",
+            opacity: 0
+          }}
           transition={{
             duration: 1.4,
-            delay: 0.6,
+            delay: 0.3,
             ease: [0.22, 1, 0.36, 1]
           }}
         >
           <motion.h1
-            className="text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-light tracking-tight leading-[0.95] will-change-transform"
-            initial={{ opacity: 0 }}
-            animate={imageLoaded ? { opacity: 1 } : { opacity: 0 }}
-            transition={{ duration: 0.8, delay: 1 }}
+            className="text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-light tracking-tight leading-[0.95]"
           >
             {project.title}
           </motion.h1>
@@ -306,7 +312,7 @@ export default function HeroSection({ project }: HeroSectionProps) {
                   transition: { duration: 0.2 }
                 }}
                 style={{
-                  perspective: 1000,
+                  perspective: "1000px",
                   transformStyle: "preserve-3d"
                 }}
               >
