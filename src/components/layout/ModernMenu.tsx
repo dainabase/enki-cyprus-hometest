@@ -85,7 +85,7 @@ const ModernMenu = () => {
   useEffect(() => {
     if (active) {
       const scrollY = window.scrollY;
-      
+
       // ✅ SOLUTION : overflow-y: scroll au lieu de hidden
       // La scrollbar reste visible mais le scroll est bloqué
       // = PAS de décalage du viewport, PAS de décalage des éléments fixed
@@ -94,7 +94,7 @@ const ModernMenu = () => {
       document.body.style.left = '0';
       document.body.style.right = '0';
       document.body.style.overflowY = 'scroll';  // Force la scrollbar visible
-      
+
       return () => {
         // Restaurer la position
         document.body.style.position = '';
@@ -102,10 +102,20 @@ const ModernMenu = () => {
         document.body.style.left = '';
         document.body.style.right = '';
         document.body.style.overflowY = '';
-        
+
         // Restaurer le scroll
         window.scrollTo(0, scrollY);
       };
+    }
+  }, [active]);
+
+  // ✅ PRÉCHARGEMENT DES IMAGES - Charge toutes les images dès l'ouverture du menu
+  useEffect(() => {
+    if (active) {
+      menuItemsWithPreviews.forEach(item => {
+        const img = new Image();
+        img.src = item.image;
+      });
     }
   }, [active]);
 
