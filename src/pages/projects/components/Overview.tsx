@@ -214,12 +214,13 @@ const USPCarousel: React.FC<USPCarouselProps> = ({ uspPoints }) => {
   const targetRef = useRef<HTMLDivElement | null>(null);
   const { scrollYProgress } = useScroll({
     target: targetRef,
+    offset: ["start start", "end end"]
   });
 
-  const x = useTransform(scrollYProgress, [0, 1], ["1%", "-95%"]);
+  const x = useTransform(scrollYProgress, [0, 0.95], ["1%", "-75%"]);
 
   return (
-    <section ref={targetRef} className="relative h-[150vh] bg-neutral-50">
+    <section ref={targetRef} className="relative h-[250vh] bg-neutral-50">
       <div className="sticky top-0 flex h-screen flex-col justify-start pt-20 lg:pt-32 overflow-hidden">
         {/* Section Header */}
         <div className="max-w-[1400px] mx-auto w-full px-6 lg:px-12 mb-12 lg:mb-16">
