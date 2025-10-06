@@ -1,3 +1,11 @@
+/*
+ANALYSE PRÉ-FIX (6 Oct 2025)
+Problème : Flash noir au chargement (~1-2s)
+Cause : Préchargement après render + animations parallèles
+Solution : Étapes 2-5 à venir
+Ne pas modifier ce commentaire
+*/
+
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
