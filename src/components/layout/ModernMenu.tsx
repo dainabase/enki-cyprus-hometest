@@ -314,6 +314,7 @@ const ModernMenu = () => {
                           x: -60,
                           transition: { duration: 0.2 }
                         }}
+                        className="relative py-4"
                       >
                         <Link
                           to="/admin"
@@ -325,8 +326,7 @@ const ModernMenu = () => {
                         </Link>
                       </motion.div>
                     )}
-                    <motion.button
-                      onClick={handleLogout}
+                    <motion.div
                       initial={{ opacity: 0, x: -60 }}
                       animate={{
                         opacity: 1,
@@ -342,12 +342,17 @@ const ModernMenu = () => {
                         x: -60,
                         transition: { duration: 0.2 }
                       }}
-                      className="block group"
+                      className="relative py-4"
                     >
-                      <span className="text-xl md:text-2xl font-light text-black/60 hover:text-black transition-all duration-300">
-                        Déconnexion
-                      </span>
-                    </motion.button>
+                      <button
+                        onClick={handleLogout}
+                        className="block group w-full text-left"
+                      >
+                        <span className="text-xl md:text-2xl font-light text-black/60 hover:text-black transition-all duration-300">
+                          Déconnexion
+                        </span>
+                      </button>
+                    </motion.div>
                   </>
                 ) : (
                   <motion.div
@@ -366,6 +371,7 @@ const ModernMenu = () => {
                       x: -60,
                       transition: { duration: 0.2 }
                     }}
+                    className="relative py-4"
                   >
                     <Link
                       to="/login"
