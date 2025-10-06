@@ -79,7 +79,7 @@ export default function Overview({ project }: OverviewProps) {
 
   return (
     <>
-    <section className="w-full bg-neutral-50 py-20 lg:py-32">
+    <section className="w-full bg-neutral-50 py-12 lg:py-16">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
 
         {/* Section Header */}
@@ -97,7 +97,7 @@ export default function Overview({ project }: OverviewProps) {
         </motion.div>
 
         {/* Main Content Grid */}
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 mb-20">
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16">
 
           {/* Left Column - Image + Description */}
           <motion.div
