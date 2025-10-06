@@ -135,12 +135,6 @@ export default function ProjectPage() {
           buildings: buildings || []
         };
 
-        console.log('📊 Project data ready:', {
-          hasProject: !!completeProject,
-          hasImages: images?.length || 0,
-          heroImagePreloaded: true
-        });
-
         setProject(completeProject);
       } catch (err) {
         console.error('Error fetching project:', err);

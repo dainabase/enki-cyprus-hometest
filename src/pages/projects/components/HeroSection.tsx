@@ -1,10 +1,24 @@
-/*
-ANALYSE PRÉ-FIX (6 Oct 2025)
-Problème : Flash noir au chargement (~1-2s)
-Cause : Préchargement après render + animations parallèles
-Solution : Étapes 2-5 à venir
-Ne pas modifier ce commentaire
-*/
+/**
+ * HeroSection Component
+ *
+ * OPTIMIZATIONS APPLIED (6 Oct 2025):
+ *
+ * 1. IMAGE PRELOADING
+ *    - Image is preloaded in parent (ProjectPage) before Hero renders
+ *    - Eliminates initial black screen flash
+ *    - Falls back to local preload if parent didn't preload
+ *
+ * 2. SEQUENTIAL TRANSITION
+ *    - Background fades in first (0.6s)
+ *    - Then overlay fades out (0.3s)
+ *    - Prevents semi-transparent gray flash
+ *    - Total transition: 0.9s smooth
+ *
+ * 3. CACHE DETECTION
+ *    - Detects if image is already cached
+ *    - Skips preload on navigation back
+ *    - Instant loading on cached images
+ */
 
 'use client';
 
@@ -26,15 +40,6 @@ export default function HeroSection({ project, imagePreloaded = false }: HeroSec
   const [hideOverlay, setHideOverlay] = useState(false);
   const shouldReduceMotion = useReducedMotion();
 
-  // Debug logs
-  useEffect(() => {
-    console.log('🎨 HeroSection state:', {
-      imagePreloaded,
-      imageLoaded,
-      heroImage: heroImage?.substring(0, 50) + '...'
-    });
-  }, [imagePreloaded, imageLoaded, heroImage]);
-
   // Extract hero image URL with simplified fallback chain - memoized to avoid multiple calls
   const heroImage = useMemo(() => {
     // Priority order: project_images (primary) > photos (primary) > photos[0] > photo_gallery_urls[0] > main_image_url > fallback
@@ -55,7 +60,6 @@ export default function HeroSection({ project, imagePreloaded = false }: HeroSec
   // Sync imageLoaded state when imagePreloaded prop changes
   useEffect(() => {
     if (imagePreloaded && !imageLoaded) {
-      console.log('🎨 Hero: Image was preloaded, skipping local preload');
       setImageLoaded(true);
     }
   }, [imagePreloaded, imageLoaded]);
@@ -64,16 +68,12 @@ export default function HeroSection({ project, imagePreloaded = false }: HeroSec
   useEffect(() => {
     // Skip if already preloaded by parent component
     if (imagePreloaded) {
-      console.log('⏭️ Hero: Skipping local preload (already done by parent)');
       return;
     }
-
-    console.log('🔄 Hero: Starting local image preload...');
 
     const img = new Image();
 
     const handleLoad = () => {
-      console.log('✅ Hero: Local preload complete');
       setImageLoaded(true);
     };
 
@@ -101,16 +101,12 @@ export default function HeroSection({ project, imagePreloaded = false }: HeroSec
   useEffect(() => {
     if (!imageLoaded) return;
 
-    console.log('🎬 Starting sequential transition...');
-
     // Step 1: Show background image (0.6s)
     setShowBackground(true);
-    console.log('  → Step 1: Background fading in (0.6s)');
 
     // Step 2: After background is visible, hide overlay (0.3s)
     const overlayTimeout = setTimeout(() => {
       setHideOverlay(true);
-      console.log('  → Step 2: Overlay fading out (0.3s)');
     }, 600); // Wait for background animation to complete
 
     return () => clearTimeout(overlayTimeout);
