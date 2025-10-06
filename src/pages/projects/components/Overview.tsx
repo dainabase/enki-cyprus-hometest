@@ -222,19 +222,23 @@ const USPCarousel: React.FC<USPCarouselProps> = ({ uspPoints }) => {
     <section ref={targetRef} className="relative h-[150vh] bg-neutral-50">
       <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden">
         {/* Section Header */}
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-12 mb-12">
+        <div className="max-w-[1400px] mx-auto w-full px-6 lg:px-12 mb-12">
           <div className="h-[1px] w-20 bg-black mb-6" />
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-black tracking-tight">
             Points forts exclusifs
           </h2>
         </div>
 
-        {/* Scrolling Cards */}
-        <motion.div style={{ x }} className="flex gap-8 px-6 lg:px-12">
-          {uspPoints.map((point: string, index: number) => (
-            <USPCard key={index} point={point} index={index} />
-          ))}
-        </motion.div>
+        {/* Scrolling Cards - aligned left with title */}
+        <div className="w-full overflow-hidden">
+          <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
+            <motion.div style={{ x }} className="flex gap-8">
+              {uspPoints.map((point: string, index: number) => (
+                <USPCard key={index} point={point} index={index} />
+              ))}
+            </motion.div>
+          </div>
+        </div>
       </div>
     </section>
   );
