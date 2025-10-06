@@ -43,6 +43,7 @@ const AdminProjectForm: React.FC = () => {
       exclusive_commercialization: false,
       description: '',
       detailed_description: '',
+      unique_selling_points: [],
       
       // Location
       full_address: '',

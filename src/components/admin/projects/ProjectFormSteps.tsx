@@ -24,6 +24,7 @@ import { googleMapsAgent } from '@/services/googleMapsAgent';
 import { BuildingSection } from './BuildingSection';
 import { ModernDistancesSection } from './ModernDistancesSection';
 import { ProjectFormData } from '@/schemas/projectSchema';
+import { UniqueSellingPointsEditor } from './UniqueSellingPointsEditor';
 import { ProjectBuilding } from '@/types/building.project';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -429,6 +430,9 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
                 </FormItem>
               )}
             />
+
+            {/* Unique Selling Points Editor */}
+            <UniqueSellingPointsEditor form={form} />
 
             <FormField
               control={form.control}
