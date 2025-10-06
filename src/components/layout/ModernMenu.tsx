@@ -218,7 +218,7 @@ const ModernMenu = () => {
             }}
             className="fixed inset-0 z-40 bg-neutral-50"
           >
-            {/* Logo ENKI REALITY - CORRIGÉ : font-medium (semi-bold) */}
+            {/* Logo ENKI REALITY - Noir plus clair (text-black/80) */}
             <motion.div
               initial={{ opacity: 0, y: -30 }}
               animate={{
@@ -229,10 +229,10 @@ const ModernMenu = () => {
               exit={{ opacity: 0, y: -30, transition: { duration: 0.3 } }}
               className="absolute left-8 md:left-16 top-8 md:top-12"
             >
-              {/* ENKI REALITY - Semi-bold (font-medium) + Majuscules */}
+              {/* ENKI REALITY - Semi-bold (font-medium) + Noir plus clair */}
               <Link
                 to="/"
-                className="text-4xl md:text-5xl font-medium text-black tracking-tight hover:text-black/70 transition-colors block"
+                className="text-4xl md:text-5xl font-medium text-black/80 tracking-tight hover:text-black/60 transition-colors block"
               >
                 ΣNKI REALITY
               </Link>
@@ -245,7 +245,7 @@ const ModernMenu = () => {
                 transition={{ delay: 0.8, duration: 1, ease: [0.16, 1, 0.3, 1] }}
                 style={{ transformOrigin: 'center' }}
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/80 to-transparent" />
               </motion.div>
 
               {/* Cyprus Properties */}
