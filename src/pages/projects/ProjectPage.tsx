@@ -134,7 +134,6 @@ export default function ProjectPage() {
       <Gallery project={project} />
       <FloorPlans project={project} />
       <Features project={project} />
-      <Investment project={project} />
       <Developer project={project} />
       <ContactForm project={project} />
     </motion.div>
