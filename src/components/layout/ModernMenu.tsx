@@ -14,43 +14,43 @@ const menuItemsWithPreviews: MenuItemPreview[] = [
   {
     label: 'Accueil',
     href: '/',
-    image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&h=1080&fit=crop&q=85',
+    image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1920&h=1080&fit=crop&q=90',
     description: 'Découvrez Enki Reality, votre partenaire immobilier premium à Chypre pour une expérience d\'investissement exceptionnelle.'
   },
   {
     label: 'Projets',
     href: '/projects',
-    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1920&h=1080&fit=crop&q=85',
+    image: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1920&h=1080&fit=crop&q=90',
     description: 'Découvrez notre portfolio de programmes immobiliers premium à Chypre avec vue mer et montagne.'
   },
   {
     label: 'Recherche IA',
     href: '/search',
-    image: 'https://images.unsplash.com/photo-1560184897-ae75f418493e?w=1920&h=1080&fit=crop&q=85',
+    image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1920&h=1080&fit=crop&q=90',
     description: 'Utilisez notre moteur de recherche IA avancé pour trouver le bien immobilier parfait selon vos critères précis.'
   },
   {
     label: 'Conseil Fiscal IA',
     href: '/lexaia',
-    image: 'https://images.unsplash.com/photo-1554224311-beee415c201f?w=1920&h=1080&fit=crop&q=85',
+    image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1920&h=1080&fit=crop&q=90',
     description: 'Investissez €300k+ et obtenez votre résidence permanente européenne avec tous les avantages fiscaux.'
   },
   {
     label: 'Blog',
     href: '/blog',
-    image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1920&h=1080&fit=crop&q=85',
+    image: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1920&h=1080&fit=crop&q=90',
     description: 'Actualités immobilières, guides d\'investissement et conseils d\'experts pour réussir à Chypre.'
   },
   {
     label: 'À propos',
     href: '/about',
-    image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&h=1080&fit=crop&q=85',
+    image: 'https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?w=1920&h=1080&fit=crop&q=90',
     description: 'Enki Reality, votre partenaire immobilier de confiance à Chypre depuis 2020. Excellence et transparence.'
   },
   {
     label: 'Contact',
     href: '/contact',
-    image: 'https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?w=1920&h=1080&fit=crop&q=85',
+    image: 'https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1920&h=1080&fit=crop&q=90',
     description: 'Parlons de votre projet immobilier à Chypre. Notre équipe multilingue vous répond sous 24h.'
   },
 ];
@@ -218,7 +218,7 @@ const ModernMenu = () => {
             }}
             className="fixed inset-0 z-40 bg-neutral-50"
           >
-            {/* Logo ENKI REALITY - CORRIGÉ : Plus gras + Majuscules + Trait centré */}
+            {/* Logo ENKI REALITY - CORRIGÉ : font-medium (semi-bold) */}
             <motion.div
               initial={{ opacity: 0, y: -30 }}
               animate={{
@@ -229,10 +229,10 @@ const ModernMenu = () => {
               exit={{ opacity: 0, y: -30, transition: { duration: 0.3 } }}
               className="absolute left-8 md:left-16 top-8 md:top-12"
             >
-              {/* ENKI REALITY - Plus gras + Majuscules */}
+              {/* ENKI REALITY - Semi-bold (font-medium) + Majuscules */}
               <Link
                 to="/"
-                className="text-4xl md:text-5xl font-semibold text-black tracking-tight hover:text-black/70 transition-colors block"
+                className="text-4xl md:text-5xl font-medium text-black tracking-tight hover:text-black/70 transition-colors block"
               >
                 ΣNKI REALITY
               </Link>
