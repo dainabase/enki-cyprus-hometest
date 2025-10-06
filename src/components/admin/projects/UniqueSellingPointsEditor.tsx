@@ -7,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { Plus, Trash2, GripVertical } from 'lucide-react';
 import { ProjectFormData } from '@/schemas/projectSchema';
+import { IconPicker } from './IconPicker';
 
 interface UniqueSellingPointsEditorProps {
   form: UseFormReturn<ProjectFormData>;
@@ -19,7 +20,7 @@ export const UniqueSellingPointsEditor: React.FC<UniqueSellingPointsEditorProps>
     const current = Array.isArray(uspItems) ? uspItems : [];
     form.setValue('unique_selling_points', [
       ...current,
-      { title: '', description: '', icon: '✨' }
+      { title: '', description: '', icon: 'Star' }
     ]);
   };
 
@@ -68,18 +69,15 @@ export const UniqueSellingPointsEditor: React.FC<UniqueSellingPointsEditorProps>
                   
                   <div className="flex-1 space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                      <div className="md:col-span-2">
+                      <div className="md:col-span-3">
                         <FormLabel className="text-sm">Icône</FormLabel>
-                        <Input
-                          value={usp.icon || ''}
-                          onChange={(e) => updateUSP(index, 'icon', e.target.value)}
-                          placeholder="✨"
-                          maxLength={2}
-                          className="text-center text-2xl"
+                        <IconPicker
+                          value={usp.icon || 'Star'}
+                          onChange={(iconName) => updateUSP(index, 'icon', iconName)}
                         />
                       </div>
                       
-                      <div className="md:col-span-10">
+                      <div className="md:col-span-9">
                         <FormLabel className="text-sm">Titre *</FormLabel>
                         <Input
                           value={usp.title || ''}
