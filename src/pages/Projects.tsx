@@ -9,6 +9,11 @@ import { Building2, TrendingUp, Award, MapPin, Euro, Calendar } from 'lucide-rea
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
+// Helper function pour Golden Visa
+const isGoldenVisaEligible = (price: number): boolean => {
+  return Number(price) >= 300000;
+};
+
 interface Project {
   id: string;
   title: string;
@@ -59,6 +64,7 @@ const Projects = () => {
     const minPrice = projects.length > 0
       ? Math.min(...projects.map((p: Project) => Number(p.price) || Infinity).filter(isFinite))
       : 250000;
+    const yearsOfExperience = new Date().getFullYear() - 2010;
 
     return [
       {
@@ -79,7 +85,7 @@ const Projects = () => {
       {
         icon: Award,
         label: "Années d'Expérience",
-        value: '15+'
+        value: `${yearsOfExperience}+`
       },
     ];
   }, [projects]);
@@ -185,8 +191,23 @@ const Projects = () => {
 
       <div className="min-h-screen bg-white">
         {/* ===== SECTION 1: HERO ===== */}
-        <section className="relative bg-black text-white min-h-[90vh] flex items-center justify-center">
-          <div className="max-w-7xl mx-auto px-6 text-center">
+        <section className="relative bg-black text-white min-h-[90vh] flex items-center justify-center overflow-hidden">
+          {/* Video Background */}
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover opacity-30"
+          >
+            <source src="https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-luxurious-beach-resort-49737-large.mp4" type="video/mp4" />
+          </video>
+
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-black/40" />
+
+          {/* Content */}
+          <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
             {/* Title */}
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
@@ -283,7 +304,9 @@ const Projects = () => {
                 { id: 'featured', label: 'Projets Vedette', count: 0 },
                 { id: 'villas', label: 'Villas de Prestige', count: projects.filter(p => p.type?.toLowerCase().includes('villa')).length },
                 { id: 'apartments', label: 'Appartements', count: projects.filter(p => p.type?.toLowerCase().includes('apartment')).length },
-              ].map((category) => (
+              ]
+                .filter(category => category.id === 'all' || category.count > 0)
+                .map((category) => (
                 <button
                   key={category.id}
                   onClick={() => setActiveCategory(category.id)}
@@ -320,23 +343,28 @@ const Projects = () => {
               {/* Afficher le premier projet en format premium */}
               <div className="grid md:grid-cols-2 gap-12 items-center">
                 {/* Image */}
-                <div className="relative aspect-[4/3] bg-black/5 overflow-hidden">
+                <div className="relative aspect-[4/3] bg-black/5 overflow-hidden group">
                   {projects[0].photos?.[0] ? (
                     <img
                       src={projects[0].photos[0]}
-                      alt={projects[0].title}
+                      alt={`Vue extérieure du projet ${projects[0].title} à ${projects[0].location?.city || 'Chypre'}`}
                       loading="lazy"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Building2 className="w-24 h-24 text-black/20" />
+                    <div className="w-full h-full flex items-center justify-center" aria-label="Image non disponible">
+                      <Building2 className="w-24 h-24 text-black/20" aria-hidden="true" />
                     </div>
                   )}
-                  <div className="absolute top-6 left-6">
+                  <div className="absolute top-6 left-6 flex gap-2">
                     <Badge className="bg-black text-white border-0 text-xs px-4 py-2">
                       Projet Vedette
                     </Badge>
+                    {isGoldenVisaEligible(projects[0].price) && (
+                      <Badge className="bg-yellow-500 text-black border-0 text-xs px-4 py-2 font-medium">
+                        Golden Visa
+                      </Badge>
+                    )}
                   </div>
                 </div>
 
@@ -421,25 +449,30 @@ const Projects = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6 }}
-                    className="group bg-white border border-black/10 overflow-hidden hover:border-black/30 transition-all duration-300"
+                    className="group bg-white border border-black/10 overflow-hidden hover:border-black/30 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
                   >
                     {/* Project Image */}
                     <div className="relative h-64 bg-black/5 overflow-hidden">
                       {project.photos?.[0] ? (
                         <img
                           src={project.photos[0]}
-                          alt={project.title}
+                          alt={`Résidence ${project.title} - Programme immobilier à ${project.location?.city || 'Chypre'}`}
                           loading="lazy"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Building2 className="w-16 h-16 text-black/20" />
+                        <div className="w-full h-full flex items-center justify-center" aria-label="Image non disponible">
+                          <Building2 className="w-16 h-16 text-black/20" aria-hidden="true" />
                         </div>
                       )}
 
-                      {/* Type Badge */}
-                      <div className="absolute top-4 left-4">
+                      {/* Badges */}
+                      <div className="absolute top-4 left-4 flex flex-col gap-2">
+                        {isGoldenVisaEligible(project.price) && (
+                          <Badge className="bg-yellow-500 text-black border-0 text-xs px-3 py-1 font-medium">
+                            Golden Visa
+                          </Badge>
+                        )}
                         <Badge className="bg-black text-white border-0">
                           {project.type}
                         </Badge>
@@ -819,7 +852,7 @@ const Projects = () => {
                     <a
                       key={i}
                       href="#"
-                      className="w-10 h-10 bg-white/10 hover:bg-white hover:text-black flex items-center justify-center transition-all text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                      className="w-11 h-11 bg-white/10 hover:bg-white hover:text-black flex items-center justify-center transition-all text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                     >
                       {social}
                     </a>
