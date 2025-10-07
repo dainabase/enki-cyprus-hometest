@@ -1,76 +1,272 @@
-import { useState, useEffect, useMemo, lazy, Suspense } from 'react';
+/**
+ * REFONTE PAGE PROJECTS - ENKI REALITY CYPRUS
+ *
+ * 8 Sections:
+ * 1. Hero avec statistiques
+ * 2. Navigation par catégories (sticky)
+ * 3. Projets Vedette (2-3 projets premium)
+ * 4. Grille principale avec filtres et pagination
+ * 5. Pourquoi Investir à Chypre (6 bénéfices)
+ * 6. Témoignages clients (carousel)
+ * 7. CTA Finale
+ * 8. Footer enrichi
+ */
+
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { MapPin, ArrowRight, Star, Building2, Waves, Mountain, Users, Map } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import { SEOHead } from '@/components/SEOHead';
 import { trackPageView } from '@/lib/analytics';
-import { getHeroImage } from '@/utils/gallery';
 
-const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
+// Icons
+import {
+  Download,
+  Calendar,
+  TrendingUp,
+  Building2,
+  Users,
+  Plane,
+  Home,
+  ShieldCheck,
+  Sun,
+  MapPin,
+  Heart,
+  Star,
+  ChevronLeft,
+  ChevronRight,
+  Award,
+  Banknote,
+  GraduationCap,
+  TrendingDown
+} from 'lucide-react';
+
+// Components
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { ProjectCard } from '@/components/projects/ProjectCard';
+import { FeaturedProjectCard } from '@/components/projects/FeaturedProjectCard';
+import { CategoryNav, CategoryType } from '@/components/projects/CategoryNav';
+import { TestimonialCard } from '@/components/projects/TestimonialCard';
+
+// Types
+interface Project {
+  id: string;
+  title: string;
+  url_slug: string;
+  price_from: number;
+  city: string;
+  district?: string;
+  created_at: string;
+  featured?: boolean;
+  total_units?: number;
+  units_sold?: number;
+  expected_completion?: string;
+  property_type?: string;
+  [key: string]: any;
+}
 
 const Projects = () => {
-  const [selectedDistrict, setSelectedDistrict] = useState<string>('all');
+  const [activeCategory, setActiveCategory] = useState<CategoryType>('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [favorites, setFavorites] = useState<string[]>([]);
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
+  const PROJECTS_PER_PAGE = 12;
+
+  // Fetch projects from Supabase
   const { data: projects = [], isLoading } = useQuery({
-    queryKey: ['projects'],
+    queryKey: ['projects-all'],
     queryFn: async () => {
-      console.log('Fetching projects...');
       const { data, error } = await supabase
         .from('projects')
-        .select('*')
+        .select(`
+          *,
+          developer:developers(name, logo),
+          buildings(count)
+        `)
+        .eq('status', 'active')
+        .order('featured', { ascending: false })
         .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Error fetching projects:', error);
-        throw error;
-      }
-      console.log('Projects fetched:', data?.length, 'projects');
+      if (error) throw error;
       return data || [];
     },
   });
 
+  // Load favorites from localStorage
   useEffect(() => {
-    trackPageView('/projects', 'Projets - ENKI-REALTY Immobilier Premium Chypre');
+    const savedFavorites = localStorage.getItem('project_favorites');
+    if (savedFavorites) {
+      setFavorites(JSON.parse(savedFavorites));
+    }
   }, []);
 
-  const featuredProjects = useMemo(() => {
-    const featured = projects.filter((p: any) => p.featured);
-    // Si aucun projet featured, prendre les 3 premiers
-    return featured.length > 0 ? featured.slice(0, 3) : projects.slice(0, 3);
-  }, [projects]);
-
+  // Track page view
   useEffect(() => {
-    console.log('Projects state:', projects.length, 'projects');
-    console.log('Featured projects:', featuredProjects.length);
-  }, [projects, featuredProjects]);
+    trackPageView('/projects', 'Projets Immobiliers - ENKI Reality Cyprus');
+  }, []);
 
-  const districts = useMemo(() => {
-    const locs = projects.map((p: any) => {
-      if (typeof p.location === 'string') return p.location;
-      return p.location?.city || p.location?.district || 'Autre';
-    });
-    return Array.from(new Set(locs));
+  // Featured projects (2-3)
+  const featuredProjects = useMemo(() => {
+    return projects.filter((p: Project) => p.featured).slice(0, 3);
   }, [projects]);
 
+  // Filter projects by category
   const filteredProjects = useMemo(() => {
-    if (selectedDistrict === 'all') return projects;
-    return projects.filter((p: any) => {
-      const loc = typeof p.location === 'string' ? p.location : (p.location?.city || p.location?.district || '');
-      return loc.includes(selectedDistrict);
-    });
-  }, [projects, selectedDistrict]);
+    let filtered = projects;
+
+    switch (activeCategory) {
+      case 'featured':
+        filtered = projects.filter((p: Project) => p.featured);
+        break;
+      case 'residence':
+        filtered = projects.filter((p: Project) => p.price_from >= 300000);
+        break;
+      case 'villas':
+        filtered = projects.filter((p: Project) =>
+          p.property_type?.toLowerCase().includes('villa')
+        );
+        break;
+      case 'apartments':
+        filtered = projects.filter((p: Project) =>
+          p.property_type?.toLowerCase().includes('apartment') ||
+          p.property_type?.toLowerCase().includes('penthouse')
+        );
+        break;
+      case 'new':
+        const sixtyDaysAgo = new Date();
+        sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
+        filtered = projects.filter((p: Project) =>
+          new Date(p.created_at) > sixtyDaysAgo
+        );
+        break;
+      case 'ready':
+        const currentYear = new Date().getFullYear();
+        filtered = projects.filter((p: Project) => {
+          const completionYear = p.expected_completion?.match(/\d{4}/)?.[0];
+          return completionYear && parseInt(completionYear) <= currentYear + 2;
+        });
+        break;
+      default:
+        filtered = projects;
+    }
+
+    return filtered;
+  }, [projects, activeCategory]);
+
+  // Pagination
+  const paginatedProjects = useMemo(() => {
+    const startIndex = (currentPage - 1) * PROJECTS_PER_PAGE;
+    const endIndex = startIndex + PROJECTS_PER_PAGE;
+    return filteredProjects.slice(startIndex, endIndex);
+  }, [filteredProjects, currentPage]);
+
+  const totalPages = Math.ceil(filteredProjects.length / PROJECTS_PER_PAGE);
+  const hasMore = currentPage < totalPages;
+
+  // Categories for navigation
+  const categories = useMemo(() => {
+    const isNew = (p: Project) => {
+      const sixtyDaysAgo = new Date();
+      sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
+      return new Date(p.created_at) > sixtyDaysAgo;
+    };
+
+    const isReady = (p: Project) => {
+      const currentYear = new Date().getFullYear();
+      const completionYear = p.expected_completion?.match(/\d{4}/)?.[0];
+      return completionYear && parseInt(completionYear) <= currentYear + 2;
+    };
+
+    return [
+      { id: 'all' as CategoryType, label: 'Tous les Projets', count: projects.length },
+      { id: 'featured' as CategoryType, label: 'Projets Vedette', count: projects.filter((p: Project) => p.featured).length },
+      { id: 'residence' as CategoryType, label: 'Éligibles Résidence', count: projects.filter((p: Project) => p.price_from >= 300000).length },
+      { id: 'villas' as CategoryType, label: 'Villas de Prestige', count: projects.filter((p: Project) => p.property_type?.toLowerCase().includes('villa')).length },
+      { id: 'apartments' as CategoryType, label: 'Appartements & Penthouses', count: projects.filter((p: Project) => p.property_type?.toLowerCase().includes('apartment') || p.property_type?.toLowerCase().includes('penthouse')).length },
+      { id: 'new' as CategoryType, label: 'Nouveautés', count: projects.filter(isNew).length },
+      { id: 'ready' as CategoryType, label: 'Livraison Immédiate', count: projects.filter(isReady).length },
+    ];
+  }, [projects]);
+
+  // Statistics for hero
+  const statistics = useMemo(() => {
+    const avgROI = projects.reduce((acc: number, p: any) => acc + (p.roi_annual || 0), 0) / projects.length || 6.5;
+    const minPrice = Math.min(...projects.map((p: Project) => p.price_from || 0).filter(Boolean)) || 250000;
+
+    return [
+      { icon: Building2, label: 'Projets Actifs', value: projects.length.toString() },
+      { icon: TrendingUp, label: 'Prix d\'entrée', value: `€${(minPrice / 1000).toFixed(0)}K` },
+      { icon: TrendingUp, label: 'Rendement Moyen', value: `${avgROI.toFixed(1)}%` },
+      { icon: Award, label: 'Années d\'Expérience', value: '15+' },
+    ];
+  }, [projects]);
+
+  // Testimonials
+  const testimonials = [
+    {
+      id: '1',
+      name: 'Marie & Pierre Dubois',
+      nationality: 'France',
+      propertyType: 'Villa 3 chambres',
+      rating: 5,
+      quote: 'L\'équipe d\'ENKI Reality nous a accompagnés à chaque étape. Leur professionnalisme et leur connaissance du marché chypriote sont exceptionnels. Nous sommes ravis de notre investissement.',
+    },
+    {
+      id: '2',
+      name: 'Sophie Laurent',
+      nationality: 'Belgique',
+      propertyType: 'Penthouse 2 chambres',
+      rating: 5,
+      quote: 'Investir à Chypre était un rêve. Grâce à ENKI Reality, ce rêve est devenu réalité. Le processus était transparent et le suivi impeccable. Je recommande vivement.',
+    },
+    {
+      id: '3',
+      name: 'Thomas Müller',
+      nationality: 'Allemagne',
+      propertyType: 'Appartement vue mer',
+      rating: 5,
+      quote: 'Excellente expérience du début à la fin. L\'équipe parle plusieurs langues et comprend parfaitement les besoins des investisseurs internationaux. Mon rendement locatif dépasse mes attentes.',
+    },
+  ];
+
+  // Toggle favorite
+  const handleToggleFavorite = (projectId: string) => {
+    const newFavorites = favorites.includes(projectId)
+      ? favorites.filter(id => id !== projectId)
+      : [...favorites, projectId];
+
+    setFavorites(newFavorites);
+    localStorage.setItem('project_favorites', JSON.stringify(newFavorites));
+  };
+
+  // Load more projects
+  const handleLoadMore = () => {
+    setCurrentPage(prev => prev + 1);
+  };
+
+  // Testimonial navigation
+  const nextTestimonial = () => {
+    setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
+  };
+
+  const prevTestimonial = () => {
+    setCurrentTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+  };
 
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Chargement des projets...</p>
-        </div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center"
+        >
+          <div className="w-16 h-16 border-4 border-black/10 border-t-black rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-lg font-light text-black/60">Chargement des projets...</p>
+        </motion.div>
       </div>
     );
   }
@@ -78,328 +274,509 @@ const Projects = () => {
   return (
     <>
       <SEOHead
-        title="Projets Immobiliers à Chypre | ENKI-REALTY"
-        description="Découvrez notre sélection exclusive de projets immobiliers premium à Chypre. Résidences de luxe, villas et appartements dans les meilleurs emplacements."
-        keywords="projets immobiliers Chypre, résidences premium, investissements Chypre, villas Limassol, appartements Paphos"
-        url="https://enki-realty.com/projects"
-        canonical="https://enki-realty.com/projects"
-        image="/og-projects.jpg"
+        title="Projets Immobiliers à Chypre | ENKI Reality"
+        description="Découvrez notre sélection exclusive de programmes immobiliers premium à Chypre. Résidences de luxe, villas et appartements dans les meilleurs emplacements."
+        keywords="projets immobiliers Chypre, résidences premium, investissements Chypre, villas Limassol, appartements Paphos, résidence européenne"
+        url="https://enki-reality.com/projects"
+        canonical="https://enki-reality.com/projects"
       />
 
       <div className="min-h-screen bg-white">
-        {/* HERO SECTION */}
-        <section className="relative min-h-screen w-full flex items-center justify-center overflow-hidden">
+        {/* ===== SECTION 1: HERO ===== */}
+        <section className="relative w-full h-[90vh] flex items-center justify-center overflow-hidden bg-black">
+          {/* Background Image */}
           <div className="absolute inset-0">
-            <div
-              className="absolute inset-0 w-full h-full object-cover scale-125"
-              style={{
-                backgroundImage: `url(/lovable-uploads/7a1f4c1e-ed5d-401e-98a7-e7d380bb9d99.png)`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat'
-              }}
+            <motion.img
+              initial={{ scale: 1.1 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+              src="/lovable-uploads/7a1f4c1e-ed5d-401e-98a7-e7d380bb9d99.png"
+              alt="Cyprus Lifestyle"
+              className="w-full h-full object-cover"
             />
-            <div
-              className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-60 scale-125"
-              style={{
-                backgroundImage: `url(/lovable-uploads/7a1f4c1e-ed5d-401e-98a7-e7d380bb9d99.png)`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat'
-              }}
-            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/60" />
           </div>
 
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-black/45" />
-
-          <div className="relative z-10 text-center px-4">
+          {/* Content */}
+          <div className="relative z-10 max-w-[1400px] mx-auto px-6 lg:px-12 text-center">
             <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="swaarg-hero-title text-white mb-6"
+              initial={{ opacity: 0, clipPath: "inset(0 100% 0 0)" }}
+              animate={{ opacity: 1, clipPath: "inset(0 0% 0 0)" }}
+              transition={{ duration: 1.2, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-light text-white mb-6 tracking-tight leading-[0.95]"
             >
-              Découvrez nos Programmes<br />Immobiliers à Chypre
+              Découvrez Notre Sélection de<br />Programmes Immobiliers à Chypre
             </motion.h1>
+
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="swaarg-subtitle text-white/90 mb-12 max-w-3xl mx-auto"
-            >
-              Une sélection de programmes premium conçus pour un art de vivre d'exception
-            </motion.p>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
+              className="text-lg md:text-xl text-white/80 font-light max-w-3xl mx-auto mb-12 leading-relaxed"
             >
-              <Button
-                size="lg"
-                className="bg-primary hover:bg-primary-hover text-white"
-                onClick={() => document.getElementById('featured')?.scrollIntoView({ behavior: 'smooth' })}
+              Des programmes neufs d'exception, conçus pour l'investissement et le prestige.
+              Qualité architecturale, emplacements privilégiés et rentabilité assurée.
+            </motion.p>
+
+            {/* CTA Buttons */}
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: {},
+                visible: {
+                  transition: { staggerChildren: 0.15, delayChildren: 0.9 }
+                }
+              }}
+              className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
+            >
+              <motion.div
+                variants={{
+                  hidden: { scale: 0, opacity: 0 },
+                  visible: {
+                    scale: 1,
+                    opacity: 1,
+                    transition: { type: "spring", stiffness: 160, damping: 22 }
+                  }
+                }}
               >
-                Découvrir les projets
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
+                <Button
+                  size="lg"
+                  className="px-12 py-6 bg-white text-black hover:bg-white/90 text-sm uppercase tracking-wider font-medium"
+                  onClick={() => document.getElementById('featured')?.scrollIntoView({ behavior: 'smooth' })}
+                >
+                  Explorer les Projets
+                </Button>
+              </motion.div>
+
+              <motion.div
+                variants={{
+                  hidden: { scale: 0, opacity: 0 },
+                  visible: {
+                    scale: 1,
+                    opacity: 1,
+                    transition: { type: "spring", stiffness: 160, damping: 22 }
+                  }
+                }}
+              >
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="px-12 py-6 border-2 border-white text-white hover:bg-white hover:text-black text-sm uppercase tracking-wider font-medium"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Télécharger le Catalogue
+                </Button>
+              </motion.div>
+            </motion.div>
+
+            {/* Statistics Badges */}
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: {},
+                visible: {
+                  transition: { staggerChildren: 0.12, delayChildren: 1.2 }
+                }
+              }}
+              className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto"
+            >
+              {statistics.map((stat, index) => (
+                <motion.div
+                  key={index}
+                  variants={{
+                    hidden: { rotateX: -90, opacity: 0, y: 40 },
+                    visible: {
+                      rotateX: 0,
+                      opacity: 1,
+                      y: 0,
+                      transition: { type: "spring", stiffness: 100, damping: 20 }
+                    }
+                  }}
+                  whileHover={{ y: -6, boxShadow: "0 15px 35px rgba(0,0,0,0.18)" }}
+                  className="bg-white p-6 shadow-lg"
+                  style={{ perspective: "1000px", transformStyle: "preserve-3d" }}
+                >
+                  <stat.icon className="w-8 h-8 text-black/40 mx-auto mb-3" />
+                  <p className="text-xs uppercase tracking-wider text-black/40 mb-2 font-medium">
+                    {stat.label}
+                  </p>
+                  <p className="text-2xl font-light text-black">{stat.value}</p>
+                </motion.div>
+              ))}
             </motion.div>
           </div>
         </section>
 
-        {/* TOP 3 FEATURED PROJECTS */}
-        {featuredProjects.length > 0 ? (
-          <section id="featured" className="py-24 md:py-32 bg-white">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-16"
-            >
-              <h2 className="swaarg-large-title text-primary mb-4">
-                Projets en Vedette
-              </h2>
-              <p className="swaarg-subtitle text-muted-foreground max-w-2xl mx-auto">
-                Découvrez notre sélection exclusive des meilleurs programmes immobiliers
-              </p>
-            </motion.div>
+        {/* ===== SECTION 2: CATEGORY NAVIGATION (STICKY) ===== */}
+        <CategoryNav
+          categories={categories}
+          activeCategory={activeCategory}
+          onCategoryChange={(category) => {
+            setActiveCategory(category);
+            setCurrentPage(1); // Reset pagination
+          }}
+        />
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {featuredProjects.map((project: any, index: number) => {
-                const projectSlug = project.url_slug || project.id;
-                return (
-                  <motion.div
+        {/* ===== SECTION 3: FEATURED PROJECTS ===== */}
+        {featuredProjects.length > 0 && (
+          <section id="featured" className="py-24 lg:py-32 bg-neutral-50">
+            <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7 }}
+                className="mb-20"
+              >
+                <div className="h-[1px] w-20 bg-black mb-6" />
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-black tracking-tight mb-4">
+                  Projets Vedette
+                </h2>
+                <p className="text-lg md:text-xl text-black/60 font-light max-w-3xl">
+                  Notre sélection exclusive des programmes les plus exceptionnels
+                </p>
+              </motion.div>
+
+              <div className="space-y-12">
+                {featuredProjects.map((project: any, index: number) => (
+                  <FeaturedProjectCard
                     key={project.id}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                    whileHover={{ y: -8 }}
-                    className="group relative"
-                  >
-                    <div className="relative h-[500px] rounded-2xl overflow-hidden">
-                      <Link to={`/projects/${projectSlug}`}>
-                        <img
-                          src={getHeroImage(project) || 'https://picsum.photos/800/600'}
-                          alt={project.title}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                      </Link>
-
-                      <div className="absolute top-4 right-4 flex gap-2">
-                        <Badge className="bg-yellow-500 text-black">
-                          <Star className="w-3 h-3 mr-1 fill-current" />
-                          Vedette
-                        </Badge>
-                      </div>
-
-                      <div className="absolute bottom-0 left-0 right-0 p-6">
-                        <Link to={`/projects/${projectSlug}`}>
-                          <h3 className="swaarg-card-title text-white mb-2 hover:text-orange-400 transition-colors">
-                            {project.title}
-                          </h3>
-                        </Link>
-                        <div className="flex items-center text-white/80 mb-3">
-                          <MapPin className="w-4 h-4 mr-1" />
-                          <span className="swaarg-body">{typeof project.location === 'string' ? project.location : project.location?.city || 'Chypre'}</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="swaarg-card-title text-white">
-                            À partir de €{Number(project.price_from || project.price || 0).toLocaleString()}
-                          </span>
-                          <Link to={`/projects/${projectSlug}`}>
-                            <ArrowRight className="w-5 h-5 text-white group-hover:translate-x-2 transition-transform" />
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-            </div>
-          </section>
-        ) : (
-          <section className="py-24 md:py-32 bg-white">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-              <h2 className="swaarg-large-title text-primary mb-4">
-                Aucun projet disponible
-              </h2>
-              <p className="swaarg-subtitle text-muted-foreground">
-                Les projets seront bientôt disponibles. Revenez plus tard.
-              </p>
-              <p className="text-sm text-muted-foreground mt-4">
-                Debug: {projects.length} projets trouvés dans la base de données
-              </p>
+                    project={project}
+                    index={index}
+                  />
+                ))}
+              </div>
             </div>
           </section>
         )}
 
-      {/* CYPRUS LIFESTYLE SECTION - Full Width */}
-      <section className="w-full py-24 bg-white">
-        <div className="px-4 md:px-8 lg:px-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="swaarg-large-title text-primary mb-4">
-              L'Art de Vivre à Chypre
-            </h2>
-            <p className="swaarg-subtitle text-muted-foreground max-w-3xl mx-auto">
-              Plus de 300 jours de soleil par an, entre mer Méditerranée et montagnes majestueuses
-            </p>
-          </motion.div>
+        {/* ===== SECTION 4: MAIN PROJECTS GRID ===== */}
+        <section className="py-24 lg:py-32 bg-white">
+          <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
+            {/* Section Header */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+              className="mb-16"
+            >
+              <div className="h-[1px] w-20 bg-black mb-6" />
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-black tracking-tight mb-4">
+                {categories.find(c => c.id === activeCategory)?.label}
+              </h2>
+              <p className="text-lg text-black/40 font-light">
+                Affichage {paginatedProjects.length > 0 ? `1-${Math.min(currentPage * PROJECTS_PER_PAGE, filteredProjects.length)}` : '0'} sur {filteredProjects.length} projets
+              </p>
+            </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { icon: Waves, title: 'Bord de Mer', desc: 'Plages de sable fin et eaux cristallines' },
-              { icon: Mountain, title: 'Nature', desc: 'Montagnes et paysages préservés' },
-              { icon: Building2, title: 'Urbanisme', desc: 'Villes modernes et infrastructure de qualité' },
-              { icon: Users, title: 'Communauté', desc: 'Accueil chaleureux et qualité de vie' }
-            ].map((item, index) => (
+            {/* Projects Grid */}
+            {paginatedProjects.length > 0 ? (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {paginatedProjects.map((project: any, index: number) => (
+                    <ProjectCard
+                      key={project.id}
+                      project={project}
+                      index={index}
+                      onToggleFavorite={handleToggleFavorite}
+                      isFavorite={favorites.includes(project.id)}
+                    />
+                  ))}
+                </div>
+
+                {/* Load More Button */}
+                {hasMore && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                    className="text-center mt-16"
+                  >
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      onClick={handleLoadMore}
+                      className="px-12 py-6 border-2 border-black text-black hover:bg-black hover:text-white text-sm uppercase tracking-wider font-medium"
+                    >
+                      Charger 12 Projets Supplémentaires
+                    </Button>
+                  </motion.div>
+                )}
+              </>
+            ) : (
               <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ y: -4 }}
-                className="p-6 rounded-xl bg-gradient-to-br from-secondary/50 to-secondary/20 border border-border/50"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-center py-24"
               >
-                <item.icon className="w-12 h-12 text-primary mb-4" />
-                <h3 className="swaarg-card-title mb-2">{item.title}</h3>
-                <p className="swaarg-body text-muted-foreground">{item.desc}</p>
+                <Building2 className="w-16 h-16 text-black/20 mx-auto mb-6" />
+                <h3 className="text-2xl font-light text-black mb-3">Aucun projet dans cette catégorie</h3>
+                <p className="text-lg text-black/60 font-light">
+                  Essayez de sélectionner une autre catégorie ou consultez tous nos projets.
+                </p>
               </motion.div>
-            ))}
+            )}
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ALL PROJECTS BY DISTRICT - Full Width */}
-      <section className="w-full py-24 bg-secondary/10">
-        <div className="px-4 md:px-8 lg:px-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="swaarg-large-title text-primary mb-4">
-              Tous nos Programmes
-            </h2>
-            <p className="swaarg-subtitle text-muted-foreground mb-8">
-              Explorez l'ensemble de nos projets par localisation
-            </p>
+        {/* ===== SECTION 5: POURQUOI INVESTIR À CHYPRE ===== */}
+        <section className="py-24 lg:py-32 bg-neutral-50">
+          <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+              className="text-center mb-20"
+            >
+              <div className="h-[1px] w-20 bg-black mb-6 mx-auto" />
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-black tracking-tight mb-6">
+                Pourquoi Investir à Chypre ?
+              </h2>
+              <p className="text-lg md:text-xl text-black/60 font-light max-w-3xl mx-auto leading-relaxed">
+                Un cadre fiscal avantageux, une qualité de vie exceptionnelle et des rendements attractifs
+              </p>
+            </motion.div>
 
-            {/* District Filter */}
-            <div className="flex flex-wrap justify-center gap-3">
-              <Button
-                variant={selectedDistrict === 'all' ? 'default' : 'outline'}
-                onClick={() => setSelectedDistrict('all')}
-              >
-                Tous
-              </Button>
-              {districts.map((district: string) => (
-                <Button
-                  key={district}
-                  variant={selectedDistrict === district ? 'default' : 'outline'}
-                  onClick={() => setSelectedDistrict(district)}
-                >
-                  {district}
-                </Button>
-              ))}
-            </div>
-          </motion.div>
-
-          {isLoading ? (
-            <div className="text-center py-12">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredProjects.map((project: any, index: number) => (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
+              {[
+                {
+                  icon: ShieldCheck,
+                  title: 'Résidence Européenne',
+                  description: 'Possibilité d\'obtenir une résidence permanente dans l\'UE avec un investissement à partir de €300 000. Accès facilité à l\'espace Schengen.',
+                  highlight: 'Seuil: €300K'
+                },
+                {
+                  icon: TrendingUp,
+                  title: 'Rendements Attractifs',
+                  description: 'Rendement locatif moyen de 5-7% annuel, combiné à une appréciation du capital de +8% par an. Marché en forte croissance.',
+                  highlight: '5-7% rendement'
+                },
+                {
+                  icon: TrendingDown,
+                  title: 'Fiscalité Avantageuse',
+                  description: '0% de taxe sur les successions, 12,5% d\'impôt sur les sociétés (le plus bas de l\'UE). Nombreuses conventions fiscales.',
+                  highlight: '12,5% IS'
+                },
+                {
+                  icon: Sun,
+                  title: 'Qualité de Vie',
+                  description: '340 jours de soleil par an, climat méditerranéen idéal. Sécurité exceptionnelle et infrastructure moderne.',
+                  highlight: '340 jours de soleil'
+                },
+                {
+                  icon: Plane,
+                  title: 'Position Stratégique',
+                  description: 'Carrefour entre Europe, Asie et Afrique. Hub international pour les affaires et le commerce. Connectivité aérienne excellente.',
+                  highlight: 'Hub international'
+                },
+                {
+                  icon: GraduationCap,
+                  title: 'Infrastructure',
+                  description: 'Écoles internationales de qualité, système de santé aux standards européens. Communauté expatriée dynamique.',
+                  highlight: 'Standards UE'
+                },
+              ].map((benefit, index) => (
                 <motion.div
-                  key={project.id}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
+                  key={index}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: index * 0.05 }}
-                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  whileHover={{ y: -6 }}
+                  className="bg-white p-8 shadow-sm hover:shadow-md transition-all duration-300"
                 >
-                  <div className="bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
-                    <Link to={`/projects/${project.url_slug || project.id}`}>
-                      <div className="relative h-64">
-                        <img
-                          src={getHeroImage(project) || 'https://picsum.photos/600/400'}
-                          alt={project.title}
-                          className="w-full h-full object-cover"
-                        />
-                        {project.featured && (
-                          <Badge className="absolute top-3 right-3 bg-yellow-500 text-black">
-                            <Star className="w-3 h-3 mr-1 fill-current" />
-                            Vedette
-                          </Badge>
-                        )}
-                      </div>
-                    </Link>
-                    <div className="p-5">
-                      <Link to={`/projects/${project.url_slug || project.id}`}>
-                        <h3 className="swaarg-card-title mb-2 line-clamp-1 hover:text-primary transition-colors">{project.title}</h3>
-                      </Link>
-                      <div className="flex items-center text-muted-foreground mb-3">
-                        <MapPin className="w-4 h-4 mr-1" />
-                        <span className="swaarg-body text-sm">{typeof project.location === 'string' ? project.location : project.location?.city || 'Chypre'}</span>
-                      </div>
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="swaarg-card-title text-primary">
-                          €{Number(project.price_from || project.price || 0).toLocaleString()}+
-                        </span>
-                      </div>
-                      <Link to={`/projects/${project.url_slug || project.id}`} className="block">
-                        <Button variant="default" className="w-full">
-                          Voir le projet
-                        </Button>
-                      </Link>
-                    </div>
+                  <benefit.icon className="w-12 h-12 text-black/40 mb-6" />
+                  <h3 className="text-2xl font-light text-black mb-4 tracking-tight">
+                    {benefit.title}
+                  </h3>
+                  <p className="text-base text-black/60 font-light leading-relaxed mb-4">
+                    {benefit.description}
+                  </p>
+                  <div className="pt-4 border-t border-black/5">
+                    <Badge variant="outline" className="bg-black/5 text-black border-0 px-3 py-1">
+                      {benefit.highlight}
+                    </Badge>
                   </div>
                 </motion.div>
               ))}
             </div>
-          )}
-        </div>
-      </section>
+          </div>
+        </section>
 
-      {/* CTA SECTION - Full Width */}
-      <section className="w-full py-24 bg-gradient-to-br from-primary to-primary/80 text-white">
-        <div className="px-4 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="swaarg-large-title mb-6">
-              Prêt à Découvrir Votre Futur Chez Vous ?
-            </h2>
-            <p className="swaarg-subtitle mb-12 max-w-2xl mx-auto opacity-90">
-              Contactez notre équipe d'experts pour trouver le programme immobilier parfait
-            </p>
-            <Button
-              size="lg"
-              variant="secondary"
-              asChild
-              className="group"
+        {/* ===== SECTION 6: TESTIMONIALS ===== */}
+        <section className="py-24 lg:py-32 bg-white">
+          <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+              className="text-center mb-16"
             >
-              <Link to="/contact">
-                Contactez-nous
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </Button>
-          </motion.div>
-        </div>
-      </section>
+              <div className="h-[1px] w-20 bg-black mb-6 mx-auto" />
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-black tracking-tight mb-6">
+                Ils Nous Font Confiance
+              </h2>
+              <p className="text-lg md:text-xl text-black/60 font-light">
+                Plus de 2 500 familles accompagnées dans leur projet immobilier
+              </p>
+            </motion.div>
+
+            {/* Desktop: 3 Testimonials */}
+            <div className="hidden lg:grid lg:grid-cols-3 gap-8 mb-12">
+              {testimonials.map((testimonial, index) => (
+                <TestimonialCard
+                  key={testimonial.id}
+                  testimonial={testimonial}
+                  index={index}
+                />
+              ))}
+            </div>
+
+            {/* Mobile: Carousel */}
+            <div className="lg:hidden relative mb-12">
+              <TestimonialCard
+                testimonial={testimonials[currentTestimonial]}
+                index={0}
+              />
+
+              {/* Navigation Arrows */}
+              <div className="flex justify-center gap-4 mt-8">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={prevTestimonial}
+                  className="w-12 h-12 bg-black text-white flex items-center justify-center hover:bg-black/80 transition-colors"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={nextTestimonial}
+                  className="w-12 h-12 bg-black text-white flex items-center justify-center hover:bg-black/80 transition-colors"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </motion.button>
+              </div>
+            </div>
+
+            {/* Statistics */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center"
+            >
+              {[
+                { label: 'Satisfaction Moyenne', value: '4.9/5', icon: Star },
+                { label: 'Taux de Recommandation', value: '98%', icon: TrendingUp },
+                { label: 'Familles Accompagnées', value: '2,500+', icon: Users },
+              ].map((stat, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  className="p-6 bg-neutral-50"
+                >
+                  <stat.icon className="w-8 h-8 text-black/40 mx-auto mb-3" />
+                  <p className="text-3xl font-light text-black mb-2">{stat.value}</p>
+                  <p className="text-sm uppercase tracking-wider text-black/40 font-medium">
+                    {stat.label}
+                  </p>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ===== SECTION 7: CTA FINALE ===== */}
+        <section className="relative py-32 lg:py-48 overflow-hidden">
+          {/* Background Image */}
+          <div className="absolute inset-0">
+            <img
+              src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920"
+              alt="Family on terrace with sea view"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/60 to-black/70" />
+          </div>
+
+          {/* Content */}
+          <div className="relative z-10 max-w-[1200px] mx-auto px-6 lg:px-12 text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-white mb-6 tracking-tight">
+                Votre Résidence Méditerranéenne<br />Vous Attend
+              </h2>
+              <p className="text-lg md:text-xl text-white/80 font-light max-w-2xl mx-auto mb-12 leading-relaxed">
+                Explorez nos projets avec un conseiller dédié et trouvez la propriété qui correspond à vos aspirations
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                  <Button
+                    size="lg"
+                    asChild
+                    className="px-12 py-6 bg-white text-black hover:bg-white/90 text-sm uppercase tracking-wider font-medium"
+                  >
+                    <Link to="/contact">
+                      <Calendar className="w-4 h-4 mr-2" />
+                      Réserver une Consultation
+                    </Link>
+                  </Button>
+                </motion.div>
+
+                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="px-12 py-6 border-2 border-white text-white hover:bg-white hover:text-black text-sm uppercase tracking-wider font-medium"
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    Télécharger le Guide Investisseur
+                  </Button>
+                </motion.div>
+              </div>
+
+              {/* Reassurance Badges */}
+              <div className="flex flex-wrap justify-center gap-6 text-white/80">
+                {[
+                  { icon: Users, text: 'Conseiller francophone dédié' },
+                  { icon: Calendar, text: 'Réponse sous 2h' },
+                  { icon: ShieldCheck, text: 'Sans engagement' },
+                ].map((badge, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: index * 0.1 }}
+                    className="flex items-center gap-2 text-sm font-light"
+                  >
+                    <badge.icon className="w-4 h-4" />
+                    <span>{badge.text}</span>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ===== SECTION 8: FOOTER (Enhanced) - Using existing Footer component ===== */}
+        {/* Note: Footer sera géré dans le Layout principal */}
       </div>
     </>
   );
