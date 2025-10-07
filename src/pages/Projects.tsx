@@ -13,12 +13,13 @@
  */
 
 import { useState, useEffect, useMemo } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import { SEOHead } from '@/components/SEOHead';
 import { trackPageView } from '@/lib/analytics';
+import { cn } from '@/lib/utils';
 
 // Icons
 import { Download, Calendar, TrendingUp, Building2, Users, Plane, Home, ShieldCheck, Sun, MapPin, Heart, Star, ChevronLeft, ChevronRight, Award, Banknote, GraduationCap, TrendingDown, Phone, Mail } from 'lucide-react';
@@ -293,6 +294,14 @@ const Projects = () => {
   const prevTestimonial = () => {
     setCurrentTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
+
+  // Auto-play testimonials
+  useEffect(() => {
+    const timer = setInterval(() => {
+      nextTestimonial();
+    }, 8000);
+    return () => clearInterval(timer);
+  }, [currentTestimonial]);
 
   if (isLoading) {
     return (
@@ -749,33 +758,55 @@ const Projects = () => {
               ))}
             </div>
 
-            {/* Mobile: Carousel */}
-            <div className="lg:hidden relative mb-12">
-              <TestimonialCard
-                testimonial={testimonials[currentTestimonial]}
-                index={0}
-              />
+            {/* Mobile: Carousel avec swipe */}
+            <div className="lg:hidden relative mb-12 overflow-hidden">
+              <motion.div
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.1}
+                onDragEnd={(e, { offset, velocity }) => {
+                  const swipeThreshold = 50;
+                  const swipeVelocityThreshold = 500;
+                  
+                  if (offset.x < -swipeThreshold || velocity.x < -swipeVelocityThreshold) {
+                    nextTestimonial();
+                  } else if (offset.x > swipeThreshold || velocity.x > swipeVelocityThreshold) {
+                    prevTestimonial();
+                  }
+                }}
+                className="cursor-grab active:cursor-grabbing"
+              >
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentTestimonial}
+                    initial={{ opacity: 0, x: 300 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -300 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  >
+                    <TestimonialCard
+                      testimonial={testimonials[currentTestimonial]}
+                      index={0}
+                    />
+                  </motion.div>
+                </AnimatePresence>
+              </motion.div>
 
-              {/* Navigation Arrows */}
-              <div className="flex justify-center gap-4 mt-8" role="group" aria-label="Navigation du carrousel de témoignages">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={prevTestimonial}
-                  aria-label="Témoignage précédent"
-                  className="w-12 h-12 bg-black text-white flex items-center justify-center hover:bg-black/80 transition-colors"
-                >
-                  <ChevronLeft className="w-6 h-6" aria-hidden="true" />
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={nextTestimonial}
-                  aria-label="Témoignage suivant"
-                  className="w-12 h-12 bg-black text-white flex items-center justify-center hover:bg-black/80 transition-colors"
-                >
-                  <ChevronRight className="w-6 h-6" aria-hidden="true" />
-                </motion.button>
+              {/* Dots Navigation */}
+              <div className="flex justify-center gap-2 mt-6">
+                {testimonials.map((_, i) => (
+                  <motion.button
+                    key={i}
+                    onClick={() => setCurrentTestimonial(i)}
+                    className={cn(
+                      "h-2 rounded-full transition-all duration-300",
+                      i === currentTestimonial ? "w-8 bg-black" : "w-2 bg-black/20"
+                    )}
+                    whileHover={{ scale: 1.2 }}
+                    whileTap={{ scale: 0.9 }}
+                    aria-label={`Aller au témoignage ${i + 1}`}
+                  />
+                ))}
               </div>
             </div>
 
