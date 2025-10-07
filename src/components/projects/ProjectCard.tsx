@@ -82,7 +82,7 @@ export function ProjectCard({ project, index = 0, onToggleFavorite, isFavorite =
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
             >
-              <Badge className="bg-black text-white border-0">
+              <Badge className="bg-black text-white border-0 font-medium">
                 Nouveauté
               </Badge>
             </motion.div>
@@ -93,7 +93,7 @@ export function ProjectCard({ project, index = 0, onToggleFavorite, isFavorite =
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 200, delay: 0.3 }}
             >
-              <Badge className="bg-red-600 text-white border-0">
+              <Badge className="bg-red-600 text-white border-0 font-medium">
                 Dernières Unités
               </Badge>
             </motion.div>
@@ -104,7 +104,7 @@ export function ProjectCard({ project, index = 0, onToggleFavorite, isFavorite =
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 200, delay: 0.4 }}
             >
-              <Badge variant="outline" className="bg-white/90 backdrop-blur-sm text-black border-0 text-xs">
+              <Badge variant="outline" className="bg-white/90 backdrop-blur-sm text-black border-0 text-xs font-medium">
                 Éligible résidence
               </Badge>
             </motion.div>
