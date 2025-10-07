@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { MapPin, ArrowRight, Star, TrendingUp, Waves, Building2, Award, CheckCircle } from 'lucide-react';
+import { MapPin, ArrowRight, Star, TrendingUp, Waves, Building2, Award, CircleCheck as CheckCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 

@@ -21,26 +21,7 @@ import { SEOHead } from '@/components/SEOHead';
 import { trackPageView } from '@/lib/analytics';
 
 // Icons
-import {
-  Download,
-  Calendar,
-  TrendingUp,
-  Building2,
-  Users,
-  Plane,
-  Home,
-  ShieldCheck,
-  Sun,
-  MapPin,
-  Heart,
-  Star,
-  ChevronLeft,
-  ChevronRight,
-  Award,
-  Banknote,
-  GraduationCap,
-  TrendingDown
-} from 'lucide-react';
+import { Download, Calendar, TrendingUp, Building2, Users, Plane, Chrome as Home, ShieldCheck, Sun, MapPin, Heart, Star, ChevronLeft, ChevronRight, Award, Banknote, GraduationCap, TrendingDown } from 'lucide-react';
 
 // Components
 import { Button } from '@/components/ui/button';
