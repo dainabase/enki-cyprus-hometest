@@ -40,7 +40,7 @@ const Projects = () => {
   }, []);
 
   // Fetch projects from Supabase - adapted to real DB structure
-  const { data: projects = [], isLoading } = useQuery({
+  const { data: projects = [], isLoading, error } = useQuery({
     queryKey: ['projects-all'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -57,7 +57,7 @@ const Projects = () => {
   const statistics = useMemo(() => {
     const projectCount = projects.length;
     const minPrice = projects.length > 0
-      ? Math.min(...projects.map((p: Project) => Number(p.price) || 0).filter(Boolean))
+      ? Math.min(...projects.map((p: Project) => Number(p.price) || Infinity).filter(isFinite))
       : 250000;
 
     return [
@@ -99,18 +99,76 @@ const Projects = () => {
     return projects;
   }, [projects, activeCategory]);
 
+  // Error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="max-w-lg mx-auto px-6 text-center">
+          <div className="w-20 h-20 bg-black/5 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Building2 className="w-10 h-10 text-black/20" />
+          </div>
+
+          <h2 className="text-3xl font-light text-black mb-4 tracking-tight">
+            Impossible de charger les projets
+          </h2>
+
+          <p className="text-lg text-black/60 font-light mb-8">
+            Une erreur est survenue lors du chargement des données. Veuillez réessayer.
+          </p>
+
+          <Button
+            onClick={() => window.location.reload()}
+            className="bg-black text-white hover:bg-black/90 px-8 py-6 text-sm uppercase tracking-wider focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+          >
+            Réessayer
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center"
-        >
-          <div className="w-16 h-16 border-4 border-black/10 border-t-black rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-lg font-light text-black/60">Chargement des projets...</p>
-        </motion.div>
+      <div className="min-h-screen bg-white">
+        <SEOHead
+          title="Projets Immobiliers Premium à Chypre | ENKI Reality"
+          description="Découvrez notre sélection de projets immobiliers d'exception à Chypre"
+          canonical="https://enki-reality.com/projects"
+        />
+
+        {/* Hero Skeleton */}
+        <section className="relative bg-black text-white min-h-[90vh] flex items-center justify-center">
+          <div className="max-w-7xl mx-auto px-6 text-center">
+            <div className="h-16 bg-white/10 rounded w-3/4 mx-auto mb-6 animate-pulse" />
+            <div className="h-8 bg-white/10 rounded w-1/2 mx-auto mb-12 animate-pulse" />
+          </div>
+        </section>
+
+        {/* Projects Grid Skeleton */}
+        <section className="py-24 bg-white">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="h-8 bg-black/5 rounded w-64 mx-auto mb-16 animate-pulse" />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="border border-black/10 animate-pulse">
+                  {/* Image skeleton */}
+                  <div className="h-64 bg-black/5" />
+
+                  {/* Content skeleton */}
+                  <div className="p-6 space-y-4">
+                    <div className="h-6 bg-black/5 rounded w-3/4" />
+                    <div className="h-4 bg-black/5 rounded w-1/2" />
+                    <div className="h-4 bg-black/5 rounded w-full" />
+                    <div className="h-4 bg-black/5 rounded w-2/3" />
+                    <div className="h-8 bg-black/5 rounded w-32 mt-6" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
       </div>
     );
   }
@@ -160,7 +218,7 @@ const Projects = () => {
             >
               <Button
                 size="lg"
-                className="bg-white text-black hover:bg-white/90 px-8 py-6 text-sm uppercase tracking-wider font-medium"
+                className="bg-white text-black hover:bg-white/90 px-8 py-6 text-sm uppercase tracking-wider font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                 onClick={() => document.getElementById('projects-grid')?.scrollIntoView({ behavior: 'smooth' })}
               >
                 Explorer les Projets
@@ -168,7 +226,7 @@ const Projects = () => {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-2 border-white text-white hover:bg-white hover:text-black px-8 py-6 text-sm uppercase tracking-wider font-medium"
+                className="border-2 border-white text-white hover:bg-white hover:text-black px-8 py-6 text-sm uppercase tracking-wider font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
               >
                 Télécharger le Catalogue
               </Button>
@@ -231,6 +289,7 @@ const Projects = () => {
                   onClick={() => setActiveCategory(category.id)}
                   className={`
                     px-6 py-3 text-sm font-medium whitespace-nowrap transition-all
+                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2
                     ${activeCategory === category.id
                       ? 'bg-black text-white'
                       : 'bg-white text-black border border-black/20 hover:border-black'
@@ -262,10 +321,11 @@ const Projects = () => {
               <div className="grid md:grid-cols-2 gap-12 items-center">
                 {/* Image */}
                 <div className="relative aspect-[4/3] bg-black/5 overflow-hidden">
-                  {projects[0].photos && projects[0].photos[0] ? (
+                  {projects[0].photos?.[0] ? (
                     <img
                       src={projects[0].photos[0]}
                       alt={projects[0].title}
+                      loading="lazy"
                       className="w-full h-full object-cover"
                     />
                   ) : (
@@ -325,7 +385,7 @@ const Projects = () => {
                   <Link to={`/projects/${projects[0].url_slug || projects[0].id}`}>
                     <Button
                       size="lg"
-                      className="bg-black text-white hover:bg-black/90 px-8 py-6 text-sm uppercase tracking-wider"
+                      className="bg-black text-white hover:bg-black/90 px-8 py-6 text-sm uppercase tracking-wider focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
                     >
                       Découvrir ce Projet
                     </Button>
@@ -365,10 +425,11 @@ const Projects = () => {
                   >
                     {/* Project Image */}
                     <div className="relative h-64 bg-black/5 overflow-hidden">
-                      {project.photos && project.photos.length > 0 ? (
+                      {project.photos?.[0] ? (
                         <img
                           src={project.photos[0]}
                           alt={project.title}
+                          loading="lazy"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       ) : (
@@ -625,7 +686,7 @@ const Projects = () => {
                 <Link to="/contact">
                   <Button
                     size="lg"
-                    className="bg-white text-black hover:bg-white/90 px-8 py-6 text-sm uppercase tracking-wider"
+                    className="bg-white text-black hover:bg-white/90 px-8 py-6 text-sm uppercase tracking-wider focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                   >
                     <Calendar className="w-4 h-4 mr-2" />
                     Réserver une Consultation
@@ -635,7 +696,7 @@ const Projects = () => {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-2 border-white text-white hover:bg-white hover:text-black px-8 py-6 text-sm uppercase tracking-wider"
+                  className="border-2 border-white text-white hover:bg-white hover:text-black px-8 py-6 text-sm uppercase tracking-wider focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                 >
                   Télécharger le Guide Investisseur
                 </Button>
