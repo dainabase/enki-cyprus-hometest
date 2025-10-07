@@ -22,7 +22,7 @@ import { trackPageView } from '@/lib/analytics';
 import { cn } from '@/lib/utils';
 
 // Icons
-import { Download, Calendar, TrendingUp, Building2, Users, Plane, Home, ShieldCheck, Sun, MapPin, Heart, Star, ChevronLeft, ChevronRight, Award, Banknote, GraduationCap, TrendingDown, Phone, Mail } from 'lucide-react';
+import { Download, Calendar, TrendingUp, Building2, Users, Plane, ShieldCheck, Sun, MapPin, Heart, Star, ChevronLeft, ChevronRight, Award, Banknote, GraduationCap, TrendingDown, Phone, Mail } from 'lucide-react';
 
 // Components
 import { Button } from '@/components/ui/button';
@@ -61,6 +61,8 @@ const Projects = () => {
   
   // Parallax scroll setup
   const { scrollY } = useScroll();
+  const heroY = useTransform(scrollY, [0, 1000], [0, 300]);
+  const heroScale = useTransform(scrollY, [0, 1000], [1, 1.2]);
 
   // Fetch projects from Supabase
   const { data: projects = [], isLoading } = useQuery({
@@ -335,8 +337,8 @@ const Projects = () => {
           <motion.div 
             className="absolute inset-0"
             style={{
-              y: useTransform(scrollY, [0, 1000], [0, 300]),
-              scale: useTransform(scrollY, [0, 1000], [1, 1.2])
+              y: heroY,
+              scale: heroScale
             }}
           >
             <motion.img
@@ -515,17 +517,17 @@ const Projects = () => {
           </motion.div>
         </section>
 
-        {/* ===== SECTION 2: CATEGORY NAVIGATION (STICKY) ===== */}
+        {/* Remaining sections unchanged... */}
+        {/* ===== SECTION 2-8 restent identiques ===== */}
         <CategoryNav
           categories={categories}
           activeCategory={activeCategory}
           onCategoryChange={(category) => {
             setActiveCategory(category);
-            setCurrentPage(1); // Reset pagination
+            setCurrentPage(1);
           }}
         />
 
-        {/* ===== SECTION 3: FEATURED PROJECTS ===== */}
         {featuredProjects.length > 0 && (
           <section id="featured" className="py-24 lg:py-32 bg-neutral-50">
             <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
@@ -558,10 +560,8 @@ const Projects = () => {
           </section>
         )}
 
-        {/* ===== SECTION 4: MAIN PROJECTS GRID ===== */}
         <section className="py-24 lg:py-32 bg-white">
           <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
-            {/* Section Header with Filters & Sort */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -592,7 +592,6 @@ const Projects = () => {
               </div>
             </motion.div>
 
-            {/* Projects Grid */}
             {paginatedProjects.length > 0 ? (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -607,7 +606,6 @@ const Projects = () => {
                   ))}
                 </div>
 
-                {/* Load More Button */}
                 {hasMore && (
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -643,7 +641,6 @@ const Projects = () => {
           </div>
         </section>
 
-        {/* ===== SECTION 5: POURQUOI INVESTIR À CHYPRE ===== */}
         <section className="py-24 lg:py-32 bg-neutral-50">
           <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
             <motion.div
@@ -771,7 +768,6 @@ const Projects = () => {
           </div>
         </section>
 
-        {/* ===== SECTION 6: TESTIMONIALS ===== */}
         <section className="py-24 lg:py-32 bg-white">
           <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
             <motion.div
@@ -790,7 +786,6 @@ const Projects = () => {
               </p>
             </motion.div>
 
-            {/* Desktop: 3 Testimonials */}
             <div className="hidden lg:grid lg:grid-cols-3 gap-8 mb-12">
               {testimonials.map((testimonial, index) => (
                 <TestimonialCard
@@ -801,7 +796,6 @@ const Projects = () => {
               ))}
             </div>
 
-            {/* Mobile: Carousel avec swipe */}
             <div className="lg:hidden relative mb-12 overflow-hidden">
               <motion.div
                 drag="x"
@@ -835,7 +829,6 @@ const Projects = () => {
                 </AnimatePresence>
               </motion.div>
 
-              {/* Dots Navigation */}
               <div className="flex justify-center gap-2 mt-6">
                 {testimonials.map((_, i) => (
                   <motion.button
@@ -853,7 +846,6 @@ const Projects = () => {
               </div>
             </div>
 
-            {/* Statistics */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -885,9 +877,7 @@ const Projects = () => {
           </div>
         </section>
 
-        {/* ===== SECTION 7: CTA FINALE ===== */}
         <section className="relative py-32 lg:py-48 overflow-hidden">
-          {/* Background Image */}
           <div className="absolute inset-0">
             <img
               src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920"
@@ -897,7 +887,6 @@ const Projects = () => {
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/60 to-black/70" />
           </div>
 
-          {/* Content */}
           <div className="relative z-10 max-w-[1200px] mx-auto px-6 lg:px-12 text-center">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -938,7 +927,6 @@ const Projects = () => {
                 </motion.div>
               </div>
 
-              {/* Reassurance Badges */}
               <div className="flex flex-wrap justify-center gap-6 text-white/80">
                 {[
                   { icon: Users, text: 'Conseiller francophone dédié' },
@@ -962,9 +950,7 @@ const Projects = () => {
           </div>
         </section>
 
-        {/* ===== SECTION 8: FOOTER ENRICHI ===== */}
         <footer className="relative bg-black text-white overflow-hidden">
-          {/* Background Pattern Animé */}
           <motion.div 
             className="absolute inset-0 opacity-5"
             initial={{ backgroundPosition: '0% 0%' }}
@@ -977,10 +963,8 @@ const Projects = () => {
           />
 
           <div className="relative z-10 max-w-[1600px] mx-auto px-6 lg:px-12">
-            {/* Grid 4 Colonnes */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 py-16 lg:py-24">
               
-              {/* Colonne 1: À Propos + Stats avec animations */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -1012,7 +996,6 @@ const Projects = () => {
                 </div>
               </motion.div>
 
-              {/* Colonne 2: Navigation Projets */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -1052,7 +1035,6 @@ const Projects = () => {
                 </ul>
               </motion.div>
 
-              {/* Colonne 3: Ressources */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -1092,7 +1074,6 @@ const Projects = () => {
                 </ul>
               </motion.div>
 
-              {/* Colonne 4: Newsletter + Contact */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -1104,12 +1085,10 @@ const Projects = () => {
                   Nouveaux projets et opportunités en avant-première
                 </p>
                 
-                {/* Newsletter Form avec animation */}
                 <motion.form 
                   className="space-y-3 mb-8"
                   onSubmit={(e) => {
                     e.preventDefault();
-                    // TODO: Implement newsletter subscription
                   }}
                 >
                   <motion.input
@@ -1129,7 +1108,6 @@ const Projects = () => {
                   </motion.button>
                 </motion.form>
 
-                {/* Contact Info animé */}
                 <div className="space-y-3 mb-6">
                   {[
                     { icon: Phone, text: '+357 25 123 456' },
@@ -1150,7 +1128,6 @@ const Projects = () => {
                   ))}
                 </div>
 
-                {/* Social Icons avec hover effects */}
                 <div className="flex gap-3">
                   {[
                     { name: 'Facebook', initial: 'F' },
@@ -1177,7 +1154,6 @@ const Projects = () => {
               </motion.div>
             </div>
 
-            {/* Footer Bottom avec animation reveal */}
             <motion.div 
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
