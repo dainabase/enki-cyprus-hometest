@@ -13,7 +13,7 @@
  */
 
 import { useState, useEffect, useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
@@ -57,6 +57,9 @@ const Projects = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [filters, setFilters] = useState<ProjectFilters>({});
   const [sortBy, setSortBy] = useState<SortOption>('date');
+  
+  // Parallax scroll setup
+  const { scrollY } = useScroll();
 
   // Fetch projects from Supabase
   const { data: projects = [], isLoading } = useQuery({
@@ -317,131 +320,190 @@ const Projects = () => {
       />
 
       <div className="min-h-screen bg-white">
-        {/* ===== SECTION 1: HERO ===== */}
+        {/* ===== SECTION 1: HERO AVEC PARALLAX ===== */}
         <section className="relative w-full h-[90vh] flex items-center justify-center overflow-hidden bg-black">
-          {/* Background Image */}
-          <div className="absolute inset-0">
+          {/* Parallax Background */}
+          <motion.div 
+            className="absolute inset-0"
+            style={{
+              y: useTransform(scrollY, [0, 1000], [0, 300]),
+              scale: useTransform(scrollY, [0, 1000], [1, 1.2])
+            }}
+          >
             <motion.img
-              initial={{ scale: 1.1 }}
-              animate={{ scale: 1 }}
+              initial={{ scale: 1.2, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
               src="/lovable-uploads/7a1f4c1e-ed5d-401e-98a7-e7d380bb9d99.png"
               alt="Cyprus Lifestyle"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/60" />
-          </div>
+            <motion.div 
+              className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/70"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 2 }}
+            />
+          </motion.div>
 
-          {/* Content */}
+          {/* Content avec animations échelonnées */}
           <div className="relative z-10 max-w-[1400px] mx-auto px-6 lg:px-12 text-center">
-            <motion.h1
-              initial={{ opacity: 0, clipPath: "inset(0 100% 0 0)" }}
-              animate={{ opacity: 1, clipPath: "inset(0 0% 0 0)" }}
-              transition={{ duration: 1.2, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-light text-white mb-6 tracking-tight leading-[0.95]"
-            >
-              Découvrez Notre Sélection de<br />Programmes Immobiliers à Chypre
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-              className="text-lg md:text-xl text-white/80 font-light max-w-3xl mx-auto mb-12 leading-relaxed"
-            >
-              Des programmes neufs d'exception, conçus pour l'investissement et le prestige.
-              Qualité architecturale, emplacements privilégiés et rentabilité assurée.
-            </motion.p>
-
-            {/* CTA Buttons */}
             <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={{
-                hidden: {},
-                visible: {
-                  transition: { staggerChildren: 0.15, delayChildren: 0.9 }
-                }
-              }}
-              className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 0.2 }}
             >
-              <motion.div
-                variants={{
-                  hidden: { scale: 0, opacity: 0 },
-                  visible: {
-                    scale: 1,
-                    opacity: 1,
-                    transition: { type: "spring", stiffness: 160, damping: 22 }
-                  }
-                }}
+              {/* Title avec clip-path reveal progressif */}
+              <motion.h1
+                initial={{ clipPath: "inset(0 100% 0 0)" }}
+                animate={{ clipPath: "inset(0 0% 0 0)" }}
+                transition={{ duration: 1.2, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-light text-white mb-6 tracking-tight leading-[0.95]"
               >
-                <Button
-                  size="lg"
-                  className="px-12 py-6 bg-white text-black hover:bg-white/90 text-sm uppercase tracking-wider font-medium"
-                  onClick={() => document.getElementById('featured')?.scrollIntoView({ behavior: 'smooth' })}
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.8, delay: 0.8 }}
                 >
-                  Explorer les Projets
-                </Button>
+                  Découvrez Notre Sélection de<br />
+                </motion.span>
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.8, delay: 1.2 }}
+                  className="inline-block"
+                >
+                  Programmes Immobiliers à Chypre
+                </motion.span>
+              </motion.h1>
+
+              {/* Subtitle avec fade-in et slide-up */}
+              <motion.p
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 1.6 }}
+                className="text-lg md:text-xl text-white/80 font-light max-w-3xl mx-auto mb-12 leading-relaxed"
+              >
+                Des programmes neufs d'exception, conçus pour l'investissement et le prestige.
+                Qualité architecturale, emplacements privilégiés et rentabilité assurée.
+              </motion.p>
+
+              {/* CTAs avec spring animations */}
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  hidden: {},
+                  visible: { transition: { staggerChildren: 0.2, delayChildren: 2 } }
+                }}
+                className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
+              >
+                {[
+                  { label: 'Explorer les Projets', primary: true },
+                  { label: 'Télécharger le Catalogue', primary: false, icon: Download }
+                ].map((button, i) => (
+                  <motion.div
+                    key={i}
+                    variants={{
+                      hidden: { scale: 0, opacity: 0, rotate: -180 },
+                      visible: {
+                        scale: 1,
+                        opacity: 1,
+                        rotate: 0,
+                        transition: { type: "spring", stiffness: 200, damping: 20 }
+                      }
+                    }}
+                  >
+                    <Button
+                      size="lg"
+                      variant={button.primary ? "default" : "outline"}
+                      className={
+                        button.primary 
+                          ? "px-12 py-6 bg-white text-black hover:bg-white/90 text-sm uppercase tracking-wider font-medium" 
+                          : "px-12 py-6 border-2 border-white text-white hover:bg-white hover:text-black text-sm uppercase tracking-wider font-medium"
+                      }
+                      onClick={() => button.primary && document.getElementById('featured')?.scrollIntoView({ behavior: 'smooth' })}
+                    >
+                      {button.icon && <button.icon className="w-4 h-4 mr-2" />}
+                      {button.label}
+                    </Button>
+                  </motion.div>
+                ))}
               </motion.div>
 
+              {/* Statistics avec 3D flip effect */}
               <motion.div
+                initial="hidden"
+                animate="visible"
                 variants={{
-                  hidden: { scale: 0, opacity: 0 },
-                  visible: {
-                    scale: 1,
-                    opacity: 1,
-                    transition: { type: "spring", stiffness: 160, damping: 22 }
-                  }
+                  hidden: {},
+                  visible: { transition: { staggerChildren: 0.15, delayChildren: 2.5 } }
                 }}
+                className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto"
+                style={{ perspective: "1000px" }}
               >
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="px-12 py-6 border-2 border-white text-white hover:bg-white hover:text-black text-sm uppercase tracking-wider font-medium"
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  Télécharger le Catalogue
-                </Button>
+                {statistics.map((stat, index) => (
+                  <motion.div
+                    key={index}
+                    variants={{
+                      hidden: { rotateX: -90, opacity: 0, y: 50 },
+                      visible: {
+                        rotateX: 0,
+                        opacity: 1,
+                        y: 0,
+                        transition: { type: "spring", stiffness: 100, damping: 15 }
+                      }
+                    }}
+                    whileHover={{ 
+                      y: -10, 
+                      rotateY: 5,
+                      boxShadow: "0 20px 40px rgba(0,0,0,0.2)",
+                      transition: { type: "spring", stiffness: 300 }
+                    }}
+                    className="bg-white p-6 shadow-lg"
+                    style={{ 
+                      transformStyle: "preserve-3d",
+                      backfaceVisibility: "hidden"
+                    }}
+                  >
+                    <motion.div
+                      whileHover={{ scale: 1.2, rotate: 360 }}
+                      transition={{ duration: 0.6 }}
+                    >
+                      <stat.icon className="w-8 h-8 text-black/40 mx-auto mb-3" />
+                    </motion.div>
+                    <p className="text-xs uppercase tracking-wider text-black/40 mb-2 font-medium">
+                      {stat.label}
+                    </p>
+                    <motion.p 
+                      className="text-2xl font-light text-black"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 3 + index * 0.1, type: "spring", stiffness: 200 }}
+                    >
+                      {stat.value}
+                    </motion.p>
+                  </motion.div>
+                ))}
               </motion.div>
-            </motion.div>
-
-            {/* Statistics Badges */}
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={{
-                hidden: {},
-                visible: {
-                  transition: { staggerChildren: 0.12, delayChildren: 1.2 }
-                }
-              }}
-              className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto"
-            >
-              {statistics.map((stat, index) => (
-                <motion.div
-                  key={index}
-                  variants={{
-                    hidden: { rotateX: -90, opacity: 0, y: 40 },
-                    visible: {
-                      rotateX: 0,
-                      opacity: 1,
-                      y: 0,
-                      transition: { type: "spring", stiffness: 100, damping: 20 }
-                    }
-                  }}
-                  whileHover={{ y: -6, boxShadow: "0 15px 35px rgba(0,0,0,0.18)" }}
-                  className="bg-white p-6 shadow-lg"
-                  style={{ perspective: "1000px", transformStyle: "preserve-3d" }}
-                >
-                  <stat.icon className="w-8 h-8 text-black/40 mx-auto mb-3" />
-                  <p className="text-xs uppercase tracking-wider text-black/40 mb-2 font-medium">
-                    {stat.label}
-                  </p>
-                  <p className="text-2xl font-light text-black">{stat.value}</p>
-                </motion.div>
-              ))}
             </motion.div>
           </div>
+
+          {/* Scroll indicator animé */}
+          <motion.div
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 3, repeat: Infinity, repeatType: "reverse" }}
+          >
+            <div className="w-6 h-10 border-2 border-white/40 rounded-full flex items-start justify-center p-2">
+              <motion.div
+                className="w-1 h-2 bg-white/60 rounded-full"
+                animate={{ y: [0, 12, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+              />
+            </div>
+          </motion.div>
         </section>
 
         {/* ===== SECTION 2: CATEGORY NAVIGATION (STICKY) ===== */}
