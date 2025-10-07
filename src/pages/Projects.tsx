@@ -703,25 +703,68 @@ const Projects = () => {
               ].map((benefit, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  whileHover={{ y: -6 }}
-                  className="bg-white p-8 shadow-sm hover:shadow-md transition-all duration-300"
+                  initial={{ opacity: 0, y: 50, rotateX: -30 }}
+                  whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{
+                    duration: 0.6,
+                    delay: index * 0.15,
+                    ease: [0.22, 1, 0.36, 1]
+                  }}
+                  whileHover={{
+                    y: -10,
+                    rotateY: 5,
+                    boxShadow: "0 20px 40px rgba(0,0,0,0.12)",
+                    transition: { duration: 0.3 }
+                  }}
+                  className="bg-white p-8 shadow-sm"
+                  style={{ 
+                    perspective: "1000px",
+                    transformStyle: "preserve-3d"
+                  }}
                 >
-                  <benefit.icon className="w-12 h-12 text-black/40 mb-6" />
+                  <motion.div
+                    initial={{ scale: 0, rotate: -180 }}
+                    whileInView={{ scale: 1, rotate: 0 }}
+                    viewport={{ once: true }}
+                    transition={{
+                      duration: 0.6,
+                      delay: index * 0.15 + 0.2,
+                      type: "spring",
+                      stiffness: 200
+                    }}
+                    whileHover={{ scale: 1.2, rotate: 360 }}
+                    className="inline-block"
+                  >
+                    <benefit.icon className="w-12 h-12 text-black/40 mb-6" />
+                  </motion.div>
+                  
                   <h3 className="text-2xl font-light text-black mb-4 tracking-tight">
                     {benefit.title}
                   </h3>
-                  <p className="text-base text-black/60 font-light leading-relaxed mb-4">
+                  
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.15 + 0.4 }}
+                    className="text-base text-black/60 font-light leading-relaxed mb-4"
+                  >
                     {benefit.description}
-                  </p>
-                  <div className="pt-4 border-t border-black/5">
+                  </motion.p>
+                  
+                  <motion.div
+                    initial={{ scaleX: 0 }}
+                    whileInView={{ scaleX: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.15 + 0.6, duration: 0.6 }}
+                    className="pt-4 border-t border-black/5"
+                    style={{ transformOrigin: "left" }}
+                  >
                     <Badge variant="outline" className="bg-black/5 text-black border-0 px-3 py-1">
                       {benefit.highlight}
                     </Badge>
-                  </div>
+                  </motion.div>
                 </motion.div>
               ))}
             </div>
