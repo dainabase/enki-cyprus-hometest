@@ -5,11 +5,7 @@ import { Link } from 'react-router-dom';
 import { MapPin, ArrowRight, Star, TrendingUp, Waves, Building2, Award, CircleCheck as CheckCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-
-interface FeaturedProjectCardProps {
-  project: any;
-  index?: number;
-}
+import type { FeaturedProjectCardProps } from '@/types/project.types';
 
 export function FeaturedProjectCard({ project, index = 0 }: FeaturedProjectCardProps) {
   const heroImage = project.project_images?.find((i: any) => i.is_primary)?.url ||

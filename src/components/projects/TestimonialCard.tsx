@@ -2,19 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Star, Quote } from 'lucide-react';
-
-interface TestimonialCardProps {
-  testimonial: {
-    id: string;
-    name: string;
-    nationality: string;
-    propertyType: string;
-    rating: number;
-    quote: string;
-    avatar?: string;
-  };
-  index?: number;
-}
+import type { TestimonialCardProps } from '@/types/project.types';
 
 export function TestimonialCard({ testimonial, index = 0 }: TestimonialCardProps) {
   return (

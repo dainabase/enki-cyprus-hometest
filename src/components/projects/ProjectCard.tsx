@@ -7,13 +7,7 @@ import { Heart, MapPin, Chrome as Home, Calendar, Waves, Eye, GitCompare } from 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-
-interface ProjectCardProps {
-  project: any;
-  index?: number;
-  onToggleFavorite?: (id: string) => void;
-  isFavorite?: boolean;
-}
+import type { ProjectCardProps } from '@/types/project.types';
 
 export function ProjectCard({ project, index = 0, onToggleFavorite, isFavorite = false }: ProjectCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -85,9 +79,11 @@ export function ProjectCard({ project, index = 0, onToggleFavorite, isFavorite =
             e.preventDefault();
             onToggleFavorite?.(project.id);
           }}
+          aria-label={isFavorite ? `Retirer ${project.title} des favoris` : `Ajouter ${project.title} aux favoris`}
+          aria-pressed={isFavorite}
           className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm flex items-center justify-center transition-colors hover:bg-white z-10"
         >
-          <Heart className={cn("w-5 h-5", isFavorite ? "fill-red-500 text-red-500" : "text-black")} />
+          <Heart className={cn("w-5 h-5", isFavorite ? "fill-red-500 text-red-500" : "text-black")} aria-hidden="true" />
         </motion.button>
       </Link>
 
@@ -189,8 +185,9 @@ export function ProjectCard({ project, index = 0, onToggleFavorite, isFavorite =
               e.preventDefault();
               // TODO: Implement virtual tour
             }}
+            aria-label={`Voir la visite virtuelle de ${project.title}`}
           >
-            <Eye className="w-3 h-3 mr-1" />
+            <Eye className="w-3 h-3 mr-1" aria-hidden="true" />
             Visite Virtuelle
           </Button>
           <Button
@@ -201,8 +198,9 @@ export function ProjectCard({ project, index = 0, onToggleFavorite, isFavorite =
               e.preventDefault();
               // TODO: Implement comparison
             }}
+            aria-label={`Comparer ${project.title} avec d'autres projets`}
           >
-            <GitCompare className="w-3 h-3 mr-1" />
+            <GitCompare className="w-3 h-3 mr-1" aria-hidden="true" />
             Comparer
           </Button>
         </div>

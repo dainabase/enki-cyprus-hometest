@@ -3,27 +3,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-
-export type CategoryType =
-  | 'all'
-  | 'featured'
-  | 'residence'
-  | 'villas'
-  | 'apartments'
-  | 'new'
-  | 'ready';
-
-interface Category {
-  id: CategoryType;
-  label: string;
-  count?: number;
-}
-
-interface CategoryNavProps {
-  categories: Category[];
-  activeCategory: CategoryType;
-  onCategoryChange: (category: CategoryType) => void;
-}
+import type { CategoryNavProps, CategoryType } from '@/types/project.types';
 
 export function CategoryNav({ categories, activeCategory, onCategoryChange }: CategoryNavProps) {
   const [isSticky, setIsSticky] = useState(false);

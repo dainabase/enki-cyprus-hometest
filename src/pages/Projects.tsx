@@ -28,31 +28,29 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ProjectCard } from '@/components/projects/ProjectCard';
 import { FeaturedProjectCard } from '@/components/projects/FeaturedProjectCard';
-import { CategoryNav, CategoryType } from '@/components/projects/CategoryNav';
+import { CategoryNav } from '@/components/projects/CategoryNav';
 import { TestimonialCard } from '@/components/projects/TestimonialCard';
+import { AdvancedFilters } from '@/components/projects/AdvancedFilters';
+import { SortSelector } from '@/components/projects/SortSelector';
 
 // Types
-interface Project {
-  id: string;
-  title: string;
-  url_slug: string;
-  price_from: number;
-  city: string;
-  district?: string;
-  created_at: string;
-  featured?: boolean;
-  total_units?: number;
-  units_sold?: number;
-  expected_completion?: string;
-  property_type?: string;
-  [key: string]: any;
-}
+import type {
+  Project,
+  CategoryType,
+  Category,
+  Testimonial,
+  Statistic,
+  ProjectFilters,
+  SortOption
+} from '@/types/project.types';
 
 const Projects = () => {
   const [activeCategory, setActiveCategory] = useState<CategoryType>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const [filters, setFilters] = useState<ProjectFilters>({});
+  const [sortBy, setSortBy] = useState<SortOption>('date');
 
   const PROJECTS_PER_PAGE = 12;
 
@@ -94,24 +92,25 @@ const Projects = () => {
     return projects.filter((p: Project) => p.featured).slice(0, 3);
   }, [projects]);
 
-  // Filter projects by category
+  // Filter projects by category and advanced filters
   const filteredProjects = useMemo(() => {
     let filtered = projects;
 
+    // Category filter
     switch (activeCategory) {
       case 'featured':
-        filtered = projects.filter((p: Project) => p.featured);
+        filtered = filtered.filter((p: Project) => p.featured);
         break;
       case 'residence':
-        filtered = projects.filter((p: Project) => p.price_from >= 300000);
+        filtered = filtered.filter((p: Project) => p.price_from && p.price_from >= 300000);
         break;
       case 'villas':
-        filtered = projects.filter((p: Project) =>
+        filtered = filtered.filter((p: Project) =>
           p.property_type?.toLowerCase().includes('villa')
         );
         break;
       case 'apartments':
-        filtered = projects.filter((p: Project) =>
+        filtered = filtered.filter((p: Project) =>
           p.property_type?.toLowerCase().includes('apartment') ||
           p.property_type?.toLowerCase().includes('penthouse')
         );
@@ -119,32 +118,74 @@ const Projects = () => {
       case 'new':
         const sixtyDaysAgo = new Date();
         sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
-        filtered = projects.filter((p: Project) =>
-          new Date(p.created_at) > sixtyDaysAgo
+        filtered = filtered.filter((p: Project) =>
+          new Date(p.created_at || '') > sixtyDaysAgo
         );
         break;
       case 'ready':
         const currentYear = new Date().getFullYear();
-        filtered = projects.filter((p: Project) => {
+        filtered = filtered.filter((p: Project) => {
           const completionYear = p.expected_completion?.match(/\d{4}/)?.[0];
           return completionYear && parseInt(completionYear) <= currentYear + 2;
         });
         break;
-      default:
-        filtered = projects;
+    }
+
+    // Advanced filters
+    if (filters.priceMin !== undefined) {
+      filtered = filtered.filter(p => (p.price_from || 0) >= filters.priceMin!);
+    }
+    if (filters.priceMax !== undefined) {
+      filtered = filtered.filter(p => (p.price_from || 0) <= filters.priceMax!);
+    }
+    if (filters.propertyTypes && filters.propertyTypes.length > 0) {
+      filtered = filtered.filter(p =>
+        filters.propertyTypes!.some(type =>
+          p.property_type?.toLowerCase().includes(type.toLowerCase())
+        )
+      );
+    }
+    if (filters.distanceToBeach !== undefined) {
+      filtered = filtered.filter(p =>
+        !p.proximity_sea_km || p.proximity_sea_km <= filters.distanceToBeach!
+      );
+    }
+    if (filters.goldenVisaEligible) {
+      filtered = filtered.filter(p => p.price_from && p.price_from >= 300000);
     }
 
     return filtered;
-  }, [projects, activeCategory]);
+  }, [projects, activeCategory, filters]);
+
+  // Sort projects
+  const sortedProjects = useMemo(() => {
+    return [...filteredProjects].sort((a, b) => {
+      switch (sortBy) {
+        case 'price-asc':
+          return (a.price_from || 0) - (b.price_from || 0);
+        case 'price-desc':
+          return (b.price_from || 0) - (a.price_from || 0);
+        case 'popularity':
+          return (b.views || 0) - (a.views || 0);
+        case 'distance':
+          return (a.proximity_sea_km || 999) - (b.proximity_sea_km || 999);
+        case 'roi':
+          return (b.roi_annual || 0) - (a.roi_annual || 0);
+        case 'date':
+        default:
+          return new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime();
+      }
+    });
+  }, [filteredProjects, sortBy]);
 
   // Pagination
   const paginatedProjects = useMemo(() => {
     const startIndex = (currentPage - 1) * PROJECTS_PER_PAGE;
     const endIndex = startIndex + PROJECTS_PER_PAGE;
-    return filteredProjects.slice(startIndex, endIndex);
-  }, [filteredProjects, currentPage]);
+    return sortedProjects.slice(startIndex, endIndex);
+  }, [sortedProjects, currentPage]);
 
-  const totalPages = Math.ceil(filteredProjects.length / PROJECTS_PER_PAGE);
+  const totalPages = Math.ceil(sortedProjects.length / PROJECTS_PER_PAGE);
   const hasMore = currentPage < totalPages;
 
   // Categories for navigation
@@ -173,8 +214,8 @@ const Projects = () => {
   }, [projects]);
 
   // Statistics for hero
-  const statistics = useMemo(() => {
-    const avgROI = projects.reduce((acc: number, p: any) => acc + (p.roi_annual || 0), 0) / projects.length || 6.5;
+  const statistics = useMemo((): Statistic[] => {
+    const avgROI = projects.reduce((acc: number, p: Project) => acc + (p.roi_annual || 0), 0) / projects.length || 6.5;
     const minPrice = Math.min(...projects.map((p: Project) => p.price_from || 0).filter(Boolean)) || 250000;
 
     return [
@@ -186,7 +227,7 @@ const Projects = () => {
   }, [projects]);
 
   // Testimonials
-  const testimonials = [
+  const testimonials: Testimonial[] = [
     {
       id: '1',
       name: 'Marie & Pierre Dubois',
@@ -436,7 +477,7 @@ const Projects = () => {
         {/* ===== SECTION 4: MAIN PROJECTS GRID ===== */}
         <section className="py-24 lg:py-32 bg-white">
           <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
-            {/* Section Header */}
+            {/* Section Header with Filters & Sort */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -445,12 +486,26 @@ const Projects = () => {
               className="mb-16"
             >
               <div className="h-[1px] w-20 bg-black mb-6" />
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-black tracking-tight mb-4">
-                {categories.find(c => c.id === activeCategory)?.label}
-              </h2>
-              <p className="text-lg text-black/40 font-light">
-                Affichage {paginatedProjects.length > 0 ? `1-${Math.min(currentPage * PROJECTS_PER_PAGE, filteredProjects.length)}` : '0'} sur {filteredProjects.length} projets
-              </p>
+              <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-6">
+                <div>
+                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-black tracking-tight mb-4">
+                    {categories.find(c => c.id === activeCategory)?.label}
+                  </h2>
+                  <p className="text-lg text-black/40 font-light">
+                    Affichage {paginatedProjects.length > 0 ? `1-${Math.min(currentPage * PROJECTS_PER_PAGE, sortedProjects.length)}` : '0'} sur {sortedProjects.length} projets
+                  </p>
+                </div>
+                <div className="flex gap-3 w-full lg:w-auto">
+                  <SortSelector sortBy={sortBy} onSortChange={setSortBy} />
+                  <AdvancedFilters
+                    filters={filters}
+                    onFiltersChange={(newFilters) => {
+                      setFilters(newFilters);
+                      setCurrentPage(1);
+                    }}
+                  />
+                </div>
+              </div>
             </motion.div>
 
             {/* Projects Grid */}
@@ -627,22 +682,24 @@ const Projects = () => {
               />
 
               {/* Navigation Arrows */}
-              <div className="flex justify-center gap-4 mt-8">
+              <div className="flex justify-center gap-4 mt-8" role="group" aria-label="Navigation du carrousel de témoignages">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={prevTestimonial}
+                  aria-label="Témoignage précédent"
                   className="w-12 h-12 bg-black text-white flex items-center justify-center hover:bg-black/80 transition-colors"
                 >
-                  <ChevronLeft className="w-6 h-6" />
+                  <ChevronLeft className="w-6 h-6" aria-hidden="true" />
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={nextTestimonial}
+                  aria-label="Témoignage suivant"
                   className="w-12 h-12 bg-black text-white flex items-center justify-center hover:bg-black/80 transition-colors"
                 >
-                  <ChevronRight className="w-6 h-6" />
+                  <ChevronRight className="w-6 h-6" aria-hidden="true" />
                 </motion.button>
               </div>
             </div>
