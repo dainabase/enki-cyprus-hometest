@@ -826,8 +826,253 @@ const Projects = () => {
           </div>
         </section>
 
-        {/* ===== SECTION 8: FOOTER (Enhanced) - Using existing Footer component ===== */}
-        {/* Note: Footer sera géré dans le Layout principal */}
+        {/* ===== SECTION 8: FOOTER ENRICHI ===== */}
+        <footer className="relative bg-black text-white overflow-hidden">
+          {/* Background Pattern Animé */}
+          <motion.div 
+            className="absolute inset-0 opacity-5"
+            initial={{ backgroundPosition: '0% 0%' }}
+            animate={{ backgroundPosition: '100% 100%' }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            style={{
+              backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+              backgroundSize: '60px 60px'
+            }}
+          />
+
+          <div className="relative z-10 max-w-[1600px] mx-auto px-6 lg:px-12">
+            {/* Grid 4 Colonnes */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 py-16 lg:py-24">
+              
+              {/* Colonne 1: À Propos + Stats avec animations */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+              >
+                <h3 className="text-xl font-light mb-6 tracking-tight">À Propos d'ENKI Reality</h3>
+                <p className="text-white/60 font-light mb-6 leading-relaxed text-sm">
+                  Expert de l'immobilier de prestige à Chypre depuis 15 ans. Nous accompagnons les investisseurs internationaux avec excellence et transparence.
+                </p>
+                <div className="space-y-3">
+                  {[
+                    { label: 'Volume livré', value: '€2,5Mds' },
+                    { label: 'Familles accompagnées', value: '2,500+' },
+                    { label: 'Projets actifs', value: projects.length.toString() }
+                  ].map((stat, i) => (
+                    <motion.div 
+                      key={i}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.4, delay: i * 0.1 }}
+                      className="flex justify-between items-center text-sm border-b border-white/10 pb-2"
+                    >
+                      <span className="text-white/40">{stat.label}</span>
+                      <span className="text-white font-medium">{stat.value}</span>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+
+              {/* Colonne 2: Navigation Projets */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+              >
+                <h3 className="text-xl font-light mb-6 tracking-tight">Découvrir</h3>
+                <ul className="space-y-3">
+                  {[
+                    { label: 'Tous les Projets', href: '/projects' },
+                    { label: 'Projets Vedette', href: '/projects?category=featured' },
+                    { label: 'Villas de Prestige', href: '/projects?category=villas' },
+                    { label: 'Limassol', href: '/projects?location=limassol' },
+                    { label: 'Paphos', href: '/projects?location=paphos' },
+                    { label: 'Larnaca', href: '/projects?location=larnaca' }
+                  ].map((link, i) => (
+                    <motion.li 
+                      key={i}
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.3, delay: i * 0.05 }}
+                    >
+                      <Link 
+                        to={link.href} 
+                        className="text-sm font-light text-white/60 hover:text-white transition-colors duration-300 flex items-center gap-2 group"
+                      >
+                        <motion.span
+                          initial={{ width: 0 }}
+                          whileHover={{ width: 12 }}
+                          className="h-[1px] bg-white"
+                        />
+                        {link.label}
+                      </Link>
+                    </motion.li>
+                  ))}
+                </ul>
+              </motion.div>
+
+              {/* Colonne 3: Ressources */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <h3 className="text-xl font-light mb-6 tracking-tight">Ressources</h3>
+                <ul className="space-y-3">
+                  {[
+                    { label: 'Blog Investissement', href: '/blog' },
+                    { label: 'Guide Résidence UE', href: '/residence-guide' },
+                    { label: 'Rapports de Marché', href: '/market-reports' },
+                    { label: 'Calculateur ROI', href: '/calculator' },
+                    { label: 'FAQ', href: '/faq' },
+                    { label: 'Contact', href: '/contact' }
+                  ].map((link, i) => (
+                    <motion.li 
+                      key={i}
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.3, delay: i * 0.05 }}
+                    >
+                      <Link 
+                        to={link.href} 
+                        className="text-sm font-light text-white/60 hover:text-white transition-colors duration-300 flex items-center gap-2 group"
+                      >
+                        <motion.span
+                          initial={{ width: 0 }}
+                          whileHover={{ width: 12 }}
+                          className="h-[1px] bg-white"
+                        />
+                        {link.label}
+                      </Link>
+                    </motion.li>
+                  ))}
+                </ul>
+              </motion.div>
+
+              {/* Colonne 4: Newsletter + Contact */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
+                <h3 className="text-xl font-light mb-6 tracking-tight">Restez Informé</h3>
+                <p className="text-sm text-white/60 font-light mb-4">
+                  Nouveaux projets et opportunités en avant-première
+                </p>
+                
+                {/* Newsletter Form avec animation */}
+                <motion.form 
+                  className="space-y-3 mb-8"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    // TODO: Implement newsletter subscription
+                  }}
+                >
+                  <motion.input
+                    whileFocus={{ scale: 1.02 }}
+                    type="email"
+                    placeholder="Votre email"
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 text-white placeholder:text-white/40 focus:outline-none focus:border-white/60 transition-all duration-300 text-sm font-light"
+                    required
+                  />
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="submit"
+                    className="w-full px-4 py-3 bg-white text-black hover:bg-white/90 transition-all duration-300 text-sm font-medium uppercase tracking-wider"
+                  >
+                    S'inscrire
+                  </motion.button>
+                </motion.form>
+
+                {/* Contact Info animé */}
+                <div className="space-y-3 mb-6">
+                  {[
+                    { icon: Phone, text: '+357 25 123 456' },
+                    { icon: Mail, text: 'info@enki-reality.cy' },
+                    { icon: MapPin, text: 'Limassol Marina, Cyprus' }
+                  ].map((item, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.4, delay: i * 0.1 }}
+                      className="flex items-center gap-3 text-sm text-white/60 hover:text-white transition-colors duration-300 cursor-pointer"
+                    >
+                      <item.icon className="w-4 h-4" />
+                      <span className="font-light">{item.text}</span>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* Social Icons avec hover effects */}
+                <div className="flex gap-3">
+                  {[
+                    { name: 'Facebook', initial: 'F' },
+                    { name: 'Instagram', initial: 'I' },
+                    { name: 'LinkedIn', initial: 'L' },
+                    { name: 'YouTube', initial: 'Y' }
+                  ].map((social, i) => (
+                    <motion.a
+                      key={social.name}
+                      href={`#${social.name.toLowerCase()}`}
+                      initial={{ opacity: 0, scale: 0 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.3, delay: i * 0.1 }}
+                      whileHover={{ scale: 1.2, rotate: 360 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="w-10 h-10 bg-white/10 hover:bg-white hover:text-black flex items-center justify-center transition-all duration-300"
+                      aria-label={social.name}
+                    >
+                      <span className="text-xs font-medium">{social.initial}</span>
+                    </motion.a>
+                  ))}
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Footer Bottom avec animation reveal */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="pt-8 pb-8 border-t border-white/10"
+            >
+              <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/40 font-light">
+                <p>© 2025 ENKI Reality Cyprus. Tous droits réservés.</p>
+                <div className="flex gap-6">
+                  {['Politique de Confidentialité', 'CGV', 'Mentions Légales'].map((link, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 10 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.3, delay: i * 0.1 }}
+                    >
+                      <Link 
+                        to={`/${link.toLowerCase().replace(/\s+/g, '-')}`}
+                        className="hover:text-white transition-colors duration-300"
+                      >
+                        {link}
+                      </Link>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </footer>
       </div>
     </>
   );
