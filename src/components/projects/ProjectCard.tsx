@@ -9,21 +9,26 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { ProjectCardProps } from '@/types/project.types';
 
+// Constants
+const DEFAULT_PROJECT_IMAGE = 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800';
+const GOLDEN_VISA_THRESHOLD = 300000;
+const NEW_PROJECT_DAYS = 60;
+
 export function ProjectCard({ project, index = 0, onToggleFavorite, isFavorite = false }: ProjectCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   const heroImage = project.project_images?.find((i: any) => i.is_primary)?.url ||
     project.photos?.[0]?.url ||
     project.photo_gallery_urls?.[0] ||
-    'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800';
+    DEFAULT_PROJECT_IMAGE;
 
   const isNew = project.created_at &&
-    (new Date().getTime() - new Date(project.created_at).getTime()) < 60 * 24 * 60 * 60 * 1000;
+    (new Date().getTime() - new Date(project.created_at).getTime()) < NEW_PROJECT_DAYS * 24 * 60 * 60 * 1000;
 
   const isLowStock = project.total_units && project.units_sold &&
     ((project.total_units - project.units_sold) / project.total_units) < 0.2;
 
-  const isResidenceEligible = project.price_from >= 300000;
+  const isResidenceEligible = project.price_from && project.price_from >= GOLDEN_VISA_THRESHOLD;
 
   const distanceToBeach = project.proximity_sea_km;
 
@@ -93,7 +98,7 @@ export function ProjectCard({ project, index = 0, onToggleFavorite, isFavorite =
         <div className="flex items-baseline justify-between">
           <div>
             <p className="text-2xl font-light text-black tracking-tight">
-              €{Number(project.price_from || project.price || 0).toLocaleString()}
+              €{Number(project.price_from || 0).toLocaleString()}
             </p>
             <p className="text-xs text-black/40 font-light">+ TVA</p>
           </div>
@@ -139,14 +144,21 @@ export function ProjectCard({ project, index = 0, onToggleFavorite, isFavorite =
         {/* Highlights */}
         {project.unique_selling_points && (
           <div className="flex flex-wrap gap-2">
-            {(Array.isArray(project.unique_selling_points)
-              ? project.unique_selling_points
-              : JSON.parse(project.unique_selling_points || '[]')
-            ).slice(0, 4).map((point: string, i: number) => (
-              <span key={i} className="text-xs px-2 py-1 bg-neutral-50 text-black/60 font-light">
-                {point.slice(0, 30)}{point.length > 30 ? '...' : ''}
-              </span>
-            ))}
+            {(() => {
+              try {
+                const points = Array.isArray(project.unique_selling_points)
+                  ? project.unique_selling_points
+                  : JSON.parse(project.unique_selling_points || '[]');
+                return points.slice(0, 4).map((point: string, i: number) => (
+                  <span key={i} className="text-xs px-2 py-1 bg-neutral-50 text-black/60 font-light">
+                    {point.slice(0, 30)}{point.length > 30 ? '...' : ''}
+                  </span>
+                ));
+              } catch (error) {
+                console.error('Error parsing unique_selling_points:', error);
+                return null;
+              }
+            })()}
           </div>
         )}
 

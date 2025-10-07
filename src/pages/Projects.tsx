@@ -21,7 +21,7 @@ import { SEOHead } from '@/components/SEOHead';
 import { trackPageView } from '@/lib/analytics';
 
 // Icons
-import { Download, Calendar, TrendingUp, Building2, Users, Plane, Chrome as Home, ShieldCheck, Sun, MapPin, Heart, Star, ChevronLeft, ChevronRight, Award, Banknote, GraduationCap, TrendingDown } from 'lucide-react';
+import { Download, Calendar, TrendingUp, Building2, Users, Plane, Home, ShieldCheck, Sun, MapPin, Heart, Star, ChevronLeft, ChevronRight, Award, Banknote, GraduationCap, TrendingDown, Phone, Mail } from 'lucide-react';
 
 // Components
 import { Button } from '@/components/ui/button';
@@ -44,6 +44,12 @@ import type {
   SortOption
 } from '@/types/project.types';
 
+// Constants
+const PROJECTS_PER_PAGE = 12;
+const GOLDEN_VISA_THRESHOLD = 300000;
+const NEW_PROJECT_DAYS = 60;
+const READY_PROJECT_YEARS = 2;
+
 const Projects = () => {
   const [activeCategory, setActiveCategory] = useState<CategoryType>('all');
   const [currentPage, setCurrentPage] = useState(1);
@@ -51,8 +57,6 @@ const Projects = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [filters, setFilters] = useState<ProjectFilters>({});
   const [sortBy, setSortBy] = useState<SortOption>('date');
-
-  const PROJECTS_PER_PAGE = 12;
 
   // Fetch projects from Supabase
   const { data: projects = [], isLoading } = useQuery({
@@ -76,9 +80,17 @@ const Projects = () => {
 
   // Load favorites from localStorage
   useEffect(() => {
-    const savedFavorites = localStorage.getItem('project_favorites');
-    if (savedFavorites) {
-      setFavorites(JSON.parse(savedFavorites));
+    try {
+      const savedFavorites = localStorage.getItem('project_favorites');
+      if (savedFavorites) {
+        const parsed = JSON.parse(savedFavorites);
+        if (Array.isArray(parsed)) {
+          setFavorites(parsed);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading favorites:', error);
+      localStorage.removeItem('project_favorites');
     }
   }, []);
 
@@ -102,7 +114,7 @@ const Projects = () => {
         filtered = filtered.filter((p: Project) => p.featured);
         break;
       case 'residence':
-        filtered = filtered.filter((p: Project) => p.price_from && p.price_from >= 300000);
+        filtered = filtered.filter((p: Project) => p.price_from && p.price_from >= GOLDEN_VISA_THRESHOLD);
         break;
       case 'villas':
         filtered = filtered.filter((p: Project) =>
@@ -116,17 +128,17 @@ const Projects = () => {
         );
         break;
       case 'new':
-        const sixtyDaysAgo = new Date();
-        sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
+        const newProjectCutoff = new Date();
+        newProjectCutoff.setDate(newProjectCutoff.getDate() - NEW_PROJECT_DAYS);
         filtered = filtered.filter((p: Project) =>
-          new Date(p.created_at || '') > sixtyDaysAgo
+          p.created_at && new Date(p.created_at) > newProjectCutoff
         );
         break;
       case 'ready':
         const currentYear = new Date().getFullYear();
         filtered = filtered.filter((p: Project) => {
           const completionYear = p.expected_completion?.match(/\d{4}/)?.[0];
-          return completionYear && parseInt(completionYear) <= currentYear + 2;
+          return completionYear && parseInt(completionYear) <= currentYear + READY_PROJECT_YEARS;
         });
         break;
     }
@@ -151,7 +163,7 @@ const Projects = () => {
       );
     }
     if (filters.goldenVisaEligible) {
-      filtered = filtered.filter(p => p.price_from && p.price_from >= 300000);
+      filtered = filtered.filter(p => p.price_from && p.price_from >= GOLDEN_VISA_THRESHOLD);
     }
 
     return filtered;
@@ -191,21 +203,22 @@ const Projects = () => {
   // Categories for navigation
   const categories = useMemo(() => {
     const isNew = (p: Project) => {
-      const sixtyDaysAgo = new Date();
-      sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
-      return new Date(p.created_at) > sixtyDaysAgo;
+      if (!p.created_at) return false;
+      const newProjectCutoff = new Date();
+      newProjectCutoff.setDate(newProjectCutoff.getDate() - NEW_PROJECT_DAYS);
+      return new Date(p.created_at) > newProjectCutoff;
     };
 
     const isReady = (p: Project) => {
       const currentYear = new Date().getFullYear();
       const completionYear = p.expected_completion?.match(/\d{4}/)?.[0];
-      return completionYear && parseInt(completionYear) <= currentYear + 2;
+      return completionYear && parseInt(completionYear) <= currentYear + READY_PROJECT_YEARS;
     };
 
     return [
       { id: 'all' as CategoryType, label: 'Tous les Projets', count: projects.length },
       { id: 'featured' as CategoryType, label: 'Projets Vedette', count: projects.filter((p: Project) => p.featured).length },
-      { id: 'residence' as CategoryType, label: 'Éligibles Résidence', count: projects.filter((p: Project) => p.price_from >= 300000).length },
+      { id: 'residence' as CategoryType, label: 'Éligibles Résidence', count: projects.filter((p: Project) => p.price_from && p.price_from >= GOLDEN_VISA_THRESHOLD).length },
       { id: 'villas' as CategoryType, label: 'Villas de Prestige', count: projects.filter((p: Project) => p.property_type?.toLowerCase().includes('villa')).length },
       { id: 'apartments' as CategoryType, label: 'Appartements & Penthouses', count: projects.filter((p: Project) => p.property_type?.toLowerCase().includes('apartment') || p.property_type?.toLowerCase().includes('penthouse')).length },
       { id: 'new' as CategoryType, label: 'Nouveautés', count: projects.filter(isNew).length },
