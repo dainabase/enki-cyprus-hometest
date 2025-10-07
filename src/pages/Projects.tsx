@@ -40,6 +40,10 @@ const Projects = () => {
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const { scrollY } = useScroll();
 
+  // Create transforms at top level (not conditionally in JSX)
+  const heroParallaxY = useTransform(scrollY, [0, 500], [0, 150]);
+  const heroOpacity = useTransform(scrollY, [0, 300], [1, 0]);
+
   // Track page view
   useEffect(() => {
     trackPageView('/projects', 'Projets Immobiliers - ENKI Reality Cyprus');
@@ -196,7 +200,7 @@ const Projects = () => {
           {/* Parallax Background */}
           <motion.div
             style={{
-              y: useTransform(scrollY, [0, 500], [0, 150])
+              y: heroParallaxY
             }}
             className="absolute inset-0 w-full h-full"
           >
@@ -223,7 +227,7 @@ const Projects = () => {
           {/* Content */}
           <motion.div
             style={{
-              opacity: useTransform(scrollY, [0, 300], [1, 0])
+              opacity: heroOpacity
             }}
             className="relative z-10 h-full flex flex-col items-center justify-center px-4 text-center"
           >
