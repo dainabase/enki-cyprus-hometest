@@ -14,6 +14,13 @@ const isGoldenVisaEligible = (price: number): boolean => {
   return Number(price) >= 300000;
 };
 
+interface ProjectImage {
+  url: string;
+  is_primary: boolean;
+  display_order: number;
+  caption?: string;
+}
+
 interface Project {
   id: string;
   title: string;
@@ -34,6 +41,7 @@ interface Project {
   created_at: string;
   updated_at?: string;
   url_slug?: string;
+  project_images?: ProjectImage[];
 }
 
 const Projects = () => {
@@ -49,18 +57,36 @@ const Projects = () => {
     trackPageView('/projects', 'Projets Immobiliers - ENKI Reality Cyprus');
   }, []);
 
-  // Fetch projects from Supabase - adapted to real DB structure
+  // ✅ PHASE 1: Fetch projects avec jointure project_images
   const { data: projects = [], isLoading, error } = useQuery({
     queryKey: ['projects-all'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('projects')
-        .select('*')
+        .select(`
+          *,
+          project_images(url, is_primary, display_order, caption)
+        `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data || [];
+      
+      // Mapper project_images vers photos[] pour compatibilité
+      return (data || []).map(project => ({
+        ...project,
+        photos: project.project_images
+          ?.sort((a, b) => {
+            // Trier : primary d'abord, puis par display_order
+            if (a.is_primary && !b.is_primary) return -1;
+            if (!a.is_primary && b.is_primary) return 1;
+            return (a.display_order || 0) - (b.display_order || 0);
+          })
+          .map(img => img.url) || []
+      }));
     },
+    // ✅ PHASE 3: Cache optimisé
+    staleTime: 5 * 60 * 1000,  // 5 minutes
+    cacheTime: 30 * 60 * 1000, // 30 minutes
   });
 
   // Calculate statistics from real data
@@ -95,7 +121,7 @@ const Projects = () => {
     ];
   }, [projects]);
 
-  // Filter projects based on active category
+  // Filter projects based on active category (memoized)
   const filteredProjects = useMemo(() => {
     if (activeCategory === 'all') return projects;
     if (activeCategory === 'villas') {
@@ -218,7 +244,8 @@ const Projects = () => {
               </>
             ) : (
               <>
-                <div className="absolute inset-0 w-full h-full bg-black" />
+                {/* ✅ PHASE 3: Placeholder amélioré avec gradient */}
+                <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-black/90 via-black/70 to-black/90" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/50" />
               </>
             )}
@@ -390,12 +417,15 @@ const Projects = () => {
                     <img
                       src={projects[0].photos[0]}
                       alt={`Vue extérieure du projet ${projects[0].title} à ${projects[0].location?.city || 'Chypre'}`}
-                      loading="lazy"
+                      loading="eager"
+                      fetchPriority="high"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center" aria-label="Image non disponible">
-                      <Building2 className="w-24 h-24 text-black/20" aria-hidden="true" />
+                    <div className="w-full h-full bg-gradient-to-br from-black/5 to-black/10 flex items-center justify-center" aria-label="Image non disponible">
+                      <div className="animate-pulse">
+                        <Building2 className="w-24 h-24 text-black/20" aria-hidden="true" />
+                      </div>
                     </div>
                   )}
                   <div className="absolute top-6 left-6 flex gap-2">
@@ -503,8 +533,10 @@ const Projects = () => {
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center" aria-label="Image non disponible">
-                          <Building2 className="w-16 h-16 text-black/20" aria-hidden="true" />
+                        <div className="w-full h-full bg-gradient-to-br from-black/5 to-black/10 flex items-center justify-center" aria-label="Image non disponible">
+                          <div className="animate-pulse">
+                            <Building2 className="w-16 h-16 text-black/20" aria-hidden="true" />
+                          </div>
                         </div>
                       )}
 
