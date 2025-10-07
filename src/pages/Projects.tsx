@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
@@ -38,6 +38,7 @@ interface Project {
 
 const Projects = () => {
   const [activeCategory, setActiveCategory] = useState<string>('all');
+  const { scrollY } = useScroll();
 
   // Track page view
   useEffect(() => {
@@ -190,52 +191,81 @@ const Projects = () => {
       />
 
       <div className="min-h-screen bg-white">
-        {/* ===== SECTION 1: HERO ===== */}
-        <section className="relative bg-black text-white min-h-[90vh] flex items-center justify-center overflow-hidden">
-          {/* Video Background */}
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover opacity-30"
+        {/* ===== SECTION 1: HERO PREMIUM ===== */}
+        <section className="relative h-screen overflow-hidden">
+          {/* Parallax Background */}
+          <motion.div
+            style={{
+              y: useTransform(scrollY, [0, 500], [0, 150])
+            }}
+            className="absolute inset-0 w-full h-full"
           >
-            <source src="https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-luxurious-beach-resort-49737-large.mp4" type="video/mp4" />
-          </video>
-
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-black/40" />
+            {projects.length > 0 && projects[0].photos?.[0] ? (
+              <>
+                <div
+                  className="absolute inset-0 w-full h-full bg-cover bg-center scale-110"
+                  style={{
+                    backgroundImage: `url(${projects[0].photos[0]})`,
+                    backgroundPosition: 'center',
+                    backgroundSize: 'cover'
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/50" />
+              </>
+            ) : (
+              <>
+                <div className="absolute inset-0 w-full h-full bg-black" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/50" />
+              </>
+            )}
+          </motion.div>
 
           {/* Content */}
-          <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
+          <motion.div
+            style={{
+              opacity: useTransform(scrollY, [0, 300], [1, 0])
+            }}
+            className="relative z-10 h-full flex flex-col items-center justify-center px-4 text-center"
+          >
+            {/* Location Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="inline-flex items-center gap-2 backdrop-blur-md bg-white/10 border border-white/20 rounded-full px-6 py-2 mb-6"
+            >
+              <MapPin className="w-4 h-4 text-white" />
+              <span className="text-white font-medium">Chypre, Méditerranée</span>
+            </motion.div>
+
             {/* Title */}
             <motion.h1
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-5xl md:text-6xl lg:text-7xl font-light mb-6 tracking-tight leading-tight"
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-5xl md:text-6xl lg:text-7xl font-light text-white mb-6 max-w-4xl tracking-tight leading-tight"
             >
               Découvrez Notre Sélection de<br />
               Programmes Immobiliers à Chypre
             </motion.h1>
 
-            {/* Subtitle */}
+            {/* Description */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-xl md:text-2xl text-white/80 font-light max-w-3xl mx-auto mb-12 leading-relaxed"
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl font-light leading-relaxed"
             >
               Des programmes neufs d'exception, conçus pour l'investissement et le prestige.
               Qualité architecturale, emplacements privilégiés et rentabilité assurée.
             </motion.p>
 
-            {/* CTA Buttons */}
+            {/* CTAs */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="flex flex-wrap gap-4 justify-center"
             >
               <Button
                 size="lg"
@@ -247,51 +277,59 @@ const Projects = () => {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-2 border-white text-white hover:bg-white hover:text-black px-8 py-6 text-sm uppercase tracking-wider font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                className="border-2 border-white text-white hover:bg-white hover:text-black backdrop-blur-md bg-white/10 px-8 py-6 text-sm uppercase tracking-wider font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
               >
                 Télécharger le Catalogue
               </Button>
             </motion.div>
+          </motion.div>
 
-            {/* Statistics */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto"
-            >
-              {statistics.map((stat, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.4, delay: 0.8 + index * 0.1 }}
-                  className="bg-white/10 backdrop-blur p-6"
-                >
-                  <stat.icon className="w-8 h-8 mx-auto mb-3 text-white/60" />
-                  <p className="text-2xl font-light mb-1">{stat.value}</p>
-                  <p className="text-xs uppercase tracking-wider text-white/60">
-                    {stat.label}
-                  </p>
-                </motion.div>
-              ))}
-            </motion.div>
+          {/* KPI Cards - Fixed Bottom */}
+          <div className="absolute bottom-8 left-0 right-0 z-20 px-4">
+            <div className="max-w-7xl mx-auto">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.8 }}
+                className="grid grid-cols-2 md:grid-cols-4 gap-4"
+              >
+                {statistics.map((stat, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.4, delay: 0.8 + index * 0.1 }}
+                    className="backdrop-blur-md bg-white/10 border border-white/20 p-6 rounded-lg"
+                  >
+                    <stat.icon className="w-8 h-8 mx-auto mb-3 text-white/80" />
+                    <p className="text-2xl font-light text-white mb-1">{stat.value}</p>
+                    <p className="text-xs uppercase tracking-wider text-white/60">
+                      {stat.label}
+                    </p>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
           </div>
 
-          {/* Scroll indicator */}
+          {/* Scroll Indicator */}
           <motion.div
-            className="absolute bottom-8 left-1/2 -translate-x-1/2"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 1, repeat: Infinity, repeatType: "reverse" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 1.5 }}
+            className="absolute bottom-32 left-1/2 -translate-x-1/2 z-10"
           >
-            <div className="w-6 h-10 border-2 border-white/40 rounded-full flex items-start justify-center p-2">
+            <motion.div
+              animate={{ y: [0, 10, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="w-6 h-10 border-2 border-white/50 rounded-full flex items-start justify-center p-2"
+            >
               <motion.div
-                className="w-1 h-2 bg-white/60 rounded-full"
                 animate={{ y: [0, 12, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="w-1 h-2 bg-white rounded-full"
               />
-            </div>
+            </motion.div>
           </motion.div>
         </section>
 
