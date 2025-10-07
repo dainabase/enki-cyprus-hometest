@@ -436,6 +436,354 @@ const Projects = () => {
             )}
           </div>
         </section>
+
+        {/* ===== SECTION 5: POURQUOI INVESTIR À CHYPRE ===== */}
+        <section className="py-24 bg-neutral-50">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="text-center mb-20">
+              <div className="h-[1px] w-20 bg-black mb-6 mx-auto" />
+              <h2 className="text-4xl md:text-5xl font-light text-black tracking-tight mb-6">
+                Pourquoi Investir à Chypre ?
+              </h2>
+              <p className="text-lg text-black/60 font-light max-w-3xl mx-auto">
+                Un cadre fiscal avantageux, une qualité de vie exceptionnelle et des rendements attractifs
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
+              {[
+                {
+                  icon: '🏛️',
+                  title: 'Résidence Européenne',
+                  description: 'Possibilité d\'obtenir une résidence permanente dans l\'UE avec un investissement à partir de €300 000. Accès facilité à l\'espace Schengen.',
+                  highlight: 'Seuil: €300K'
+                },
+                {
+                  icon: '📈',
+                  title: 'Rendements Attractifs',
+                  description: 'Rendement locatif moyen de 5-7% annuel, combiné à une appréciation du capital de +8% par an. Marché en forte croissance.',
+                  highlight: '5-7% rendement'
+                },
+                {
+                  icon: '💰',
+                  title: 'Fiscalité Avantageuse',
+                  description: '0% de taxe sur les successions, 12,5% d\'impôt sur les sociétés (le plus bas de l\'UE). Nombreuses conventions fiscales.',
+                  highlight: '12,5% IS'
+                },
+                {
+                  icon: '☀️',
+                  title: 'Qualité de Vie',
+                  description: '340 jours de soleil par an, climat méditerranéen idéal. Sécurité exceptionnelle et infrastructure moderne.',
+                  highlight: '340 jours de soleil'
+                },
+                {
+                  icon: '✈️',
+                  title: 'Position Stratégique',
+                  description: 'Carrefour entre Europe, Asie et Afrique. Hub international pour les affaires et le commerce. Connectivité aérienne excellente.',
+                  highlight: 'Hub international'
+                },
+                {
+                  icon: '🎓',
+                  title: 'Infrastructure',
+                  description: 'Écoles internationales de qualité, système de santé aux standards européens. Communauté expatriée dynamique.',
+                  highlight: 'Standards UE'
+                },
+              ].map((benefit, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  className="bg-white p-8 border border-black/10"
+                >
+                  <div className="text-4xl mb-4">{benefit.icon}</div>
+                  <h3 className="text-2xl font-light text-black mb-4 tracking-tight">
+                    {benefit.title}
+                  </h3>
+                  <p className="text-base text-black/60 font-light leading-relaxed mb-4">
+                    {benefit.description}
+                  </p>
+                  <div className="pt-4 border-t border-black/10">
+                    <Badge variant="outline" className="bg-black/5 text-black border-0 px-3 py-1 text-xs">
+                      {benefit.highlight}
+                    </Badge>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ===== SECTION 6: TÉMOIGNAGES ===== */}
+        <section className="py-24 bg-white">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="text-center mb-16">
+              <div className="h-[1px] w-20 bg-black mb-6 mx-auto" />
+              <h2 className="text-4xl md:text-5xl font-light text-black tracking-tight mb-6">
+                Ils Nous Font Confiance
+              </h2>
+              <p className="text-lg text-black/60 font-light">
+                Plus de 2 500 familles accompagnées dans leur projet immobilier
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8 mb-12">
+              {[
+                {
+                  name: 'Marie & Pierre Dubois',
+                  nationality: 'France',
+                  propertyType: 'Villa 3 chambres',
+                  rating: 5,
+                  quote: 'L\'équipe d\'ENKI Reality nous a accompagnés à chaque étape. Leur professionnalisme et leur connaissance du marché chypriote sont exceptionnels.',
+                },
+                {
+                  name: 'Sophie Laurent',
+                  nationality: 'Belgique',
+                  propertyType: 'Penthouse 2 chambres',
+                  rating: 5,
+                  quote: 'Investir à Chypre était un rêve. Grâce à ENKI Reality, ce rêve est devenu réalité. Le processus était transparent et le suivi impeccable.',
+                },
+                {
+                  name: 'Thomas Müller',
+                  nationality: 'Allemagne',
+                  propertyType: 'Appartement vue mer',
+                  rating: 5,
+                  quote: 'Excellente expérience du début à la fin. L\'équipe parle plusieurs langues et comprend parfaitement les besoins des investisseurs internationaux.',
+                },
+              ].map((testimonial, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  className="bg-neutral-50 p-8 border border-black/10"
+                >
+                  {/* Stars */}
+                  <div className="flex gap-1 mb-4">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <span key={i} className="text-black text-lg">★</span>
+                    ))}
+                  </div>
+
+                  {/* Quote */}
+                  <p className="text-base text-black/70 font-light leading-relaxed mb-6 italic">
+                    "{testimonial.quote}"
+                  </p>
+
+                  {/* Author */}
+                  <div className="pt-6 border-t border-black/10">
+                    <p className="text-sm font-medium text-black mb-1">
+                      {testimonial.name}
+                    </p>
+                    <p className="text-xs text-black/40 uppercase tracking-wider">
+                      {testimonial.nationality} · {testimonial.propertyType}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+              {[
+                { label: 'Satisfaction Moyenne', value: '4.9/5' },
+                { label: 'Taux de Recommandation', value: '98%' },
+                { label: 'Familles Accompagnées', value: '2,500+' },
+              ].map((stat, index) => (
+                <div key={index} className="p-6 bg-neutral-50">
+                  <p className="text-3xl font-light text-black mb-2">{stat.value}</p>
+                  <p className="text-sm uppercase tracking-wider text-black/40 font-medium">
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ===== SECTION 7: CTA FINALE ===== */}
+        <section className="relative py-32 bg-black text-white overflow-hidden">
+          <div className="absolute inset-0 bg-black" />
+
+          <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              <h2 className="text-4xl md:text-5xl font-light mb-6 tracking-tight">
+                Votre Résidence Méditerranéenne<br />Vous Attend
+              </h2>
+              <p className="text-lg text-white/80 font-light max-w-2xl mx-auto mb-12">
+                Explorez nos projets avec un conseiller dédié et trouvez la propriété qui correspond à vos aspirations
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                <Link to="/contact">
+                  <Button
+                    size="lg"
+                    className="bg-white text-black hover:bg-white/90 px-8 py-6 text-sm uppercase tracking-wider"
+                  >
+                    <Calendar className="w-4 h-4 mr-2" />
+                    Réserver une Consultation
+                  </Button>
+                </Link>
+
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-2 border-white text-white hover:bg-white hover:text-black px-8 py-6 text-sm uppercase tracking-wider"
+                >
+                  Télécharger le Guide Investisseur
+                </Button>
+              </div>
+
+              {/* Reassurance */}
+              <div className="flex flex-wrap justify-center gap-6 text-white/80 text-sm">
+                {[
+                  'Conseiller francophone dédié',
+                  'Réponse sous 2h',
+                  'Sans engagement',
+                ].map((badge, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-white/60" />
+                    <span className="font-light">{badge}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ===== SECTION 8: FOOTER ENRICHI ===== */}
+        <footer className="bg-black text-white py-20">
+          <div className="max-w-7xl mx-auto px-6">
+            {/* 4 Colonnes */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+
+              {/* Colonne 1: À Propos */}
+              <div>
+                <h3 className="text-xl font-light mb-6 tracking-tight">À Propos d'ENKI Reality</h3>
+                <p className="text-white/60 font-light mb-6 leading-relaxed text-sm">
+                  Expert de l'immobilier de prestige à Chypre depuis 15 ans. Nous accompagnons les investisseurs internationaux avec excellence et transparence.
+                </p>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between border-b border-white/10 pb-2">
+                    <span className="text-white/40">Volume livré</span>
+                    <span className="text-white font-medium">€2,5Mds</span>
+                  </div>
+                  <div className="flex justify-between border-b border-white/10 pb-2">
+                    <span className="text-white/40">Familles</span>
+                    <span className="text-white font-medium">2,500+</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/40">Projets actifs</span>
+                    <span className="text-white font-medium">{projects.length}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Colonne 2: Navigation Projets */}
+              <div>
+                <h3 className="text-xl font-light mb-6 tracking-tight">Découvrir</h3>
+                <ul className="space-y-3">
+                  {[
+                    { label: 'Tous les Projets', href: '/projects' },
+                    { label: 'Projets Vedette', href: '/projects?category=featured' },
+                    { label: 'Villas de Prestige', href: '/projects?category=villas' },
+                    { label: 'Limassol', href: '/projects?zone=limassol' },
+                    { label: 'Paphos', href: '/projects?zone=paphos' },
+                    { label: 'Larnaca', href: '/projects?zone=larnaca' },
+                  ].map((link, i) => (
+                    <li key={i}>
+                      <Link
+                        to={link.href}
+                        className="text-sm font-light text-white/60 hover:text-white transition-colors"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Colonne 3: Ressources */}
+              <div>
+                <h3 className="text-xl font-light mb-6 tracking-tight">Ressources</h3>
+                <ul className="space-y-3">
+                  {[
+                    { label: 'Blog Investissement', href: '/blog' },
+                    { label: 'Guide Résidence UE', href: '/residence-guide' },
+                    { label: 'Rapports de Marché', href: '/market-reports' },
+                    { label: 'Calculateur ROI', href: '/calculator' },
+                    { label: 'FAQ', href: '/faq' },
+                    { label: 'Contact', href: '/contact' },
+                  ].map((link, i) => (
+                    <li key={i}>
+                      <Link
+                        to={link.href}
+                        className="text-sm font-light text-white/60 hover:text-white transition-colors"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Colonne 4: Contact */}
+              <div>
+                <h3 className="text-xl font-light mb-6 tracking-tight">Contact</h3>
+                <div className="space-y-4 text-sm text-white/60 font-light">
+                  <div>
+                    <p className="text-white/40 uppercase tracking-wider text-xs mb-1">Téléphone</p>
+                    <p>+357 25 123 456</p>
+                  </div>
+                  <div>
+                    <p className="text-white/40 uppercase tracking-wider text-xs mb-1">Email</p>
+                    <p>info@enki-reality.cy</p>
+                  </div>
+                  <div>
+                    <p className="text-white/40 uppercase tracking-wider text-xs mb-1">Bureau</p>
+                    <p>Limassol Marina, Cyprus</p>
+                  </div>
+                </div>
+
+                {/* Social */}
+                <div className="flex gap-3 mt-6">
+                  {['F', 'I', 'L', 'Y'].map((social, i) => (
+                    <a
+                      key={i}
+                      href="#"
+                      className="w-10 h-10 bg-white/10 hover:bg-white hover:text-black flex items-center justify-center transition-all text-xs font-medium"
+                    >
+                      {social}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Footer Bottom */}
+            <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/40 font-light">
+              <p>© 2025 ENKI Reality Cyprus. Tous droits réservés.</p>
+              <div className="flex gap-6">
+                <Link to="/privacy" className="hover:text-white transition-colors">
+                  Politique de Confidentialité
+                </Link>
+                <Link to="/terms" className="hover:text-white transition-colors">
+                  CGV
+                </Link>
+                <Link to="/legal" className="hover:text-white transition-colors">
+                  Mentions Légales
+                </Link>
+              </div>
+            </div>
+          </div>
+        </footer>
       </div>
     </>
   );
