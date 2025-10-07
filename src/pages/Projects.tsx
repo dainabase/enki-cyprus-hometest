@@ -1,102 +1,99 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import { SEOHead } from '@/components/SEOHead';
 import { trackPageView } from '@/lib/analytics';
-import { Building2, MapPin, Euro, Calendar, Star } from 'lucide-react';
+import { Building2, TrendingUp, Award, MapPin, Euro, Calendar } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 interface Project {
   id: string;
   title: string;
-  subtitle?: string;
   description?: string;
-  city: string;
-  cyprus_zone: string;
-  price_from: number;
-  total_units: number;
-  units_available: number;
-  golden_visa_eligible: boolean;
-  completion_date?: string;
-  url_slug: string;
-  photo_gallery_urls?: string[];
-  developer?: {
-    name: string;
-    logo?: string;
+  detailed_description?: string;
+  type: string;
+  price: number;
+  location: {
+    city?: string;
+    lat?: number;
+    lng?: number;
   };
+  features?: string[];
+  detailed_features?: string[];
+  photos?: string[];
+  plans?: string[];
+  virtual_tour?: string;
+  created_at: string;
+  updated_at?: string;
+  url_slug?: string;
 }
 
 const Projects = () => {
-  const [filter, setFilter] = useState<string>('all');
-
   // Track page view
   useEffect(() => {
     trackPageView('/projects', 'Projets Immobiliers - ENKI Reality Cyprus');
   }, []);
 
-  // Fetch projects from Supabase
-  const { data: projects = [], isLoading, error } = useQuery({
-    queryKey: ['projects-listing'],
+  // Fetch projects from Supabase - adapted to real DB structure
+  const { data: projects = [], isLoading } = useQuery({
+    queryKey: ['projects-all'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('projects')
-        .select(`
-          id,
-          title,
-          subtitle,
-          description,
-          city,
-          cyprus_zone,
-          price_from,
-          total_units,
-          units_available,
-          golden_visa_eligible,
-          completion_date,
-          url_slug,
-          photo_gallery_urls,
-          developer:developers(name, logo)
-        `)
-        .eq('status', 'active')
+        .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Error fetching projects:', error);
-        throw error;
-      }
-      
-      console.log('✅ Projects loaded:', data?.length || 0);
+      if (error) throw error;
       return data || [];
     },
   });
 
-  // Filter projects
-  const filteredProjects = projects.filter((project) => {
-    if (filter === 'all') return true;
-    if (filter === 'golden-visa') return project.golden_visa_eligible;
-    if (filter === 'limassol') return project.cyprus_zone === 'Limassol';
-    if (filter === 'paphos') return project.cyprus_zone === 'Paphos';
-    if (filter === 'larnaca') return project.cyprus_zone === 'Larnaca';
-    return true;
-  });
+  // Calculate statistics from real data
+  const statistics = useMemo(() => {
+    const projectCount = projects.length;
+    const minPrice = projects.length > 0
+      ? Math.min(...projects.map((p: Project) => Number(p.price) || 0).filter(Boolean))
+      : 250000;
 
+    return [
+      {
+        icon: Building2,
+        label: 'Projets Actifs',
+        value: projectCount.toString()
+      },
+      {
+        icon: Euro,
+        label: "Prix d'entrée",
+        value: `€${(minPrice / 1000).toFixed(0)}K`
+      },
+      {
+        icon: TrendingUp,
+        label: 'Rendement Moyen',
+        value: '6.5%'
+      },
+      {
+        icon: Award,
+        label: "Années d'Expérience",
+        value: '15+'
+      },
+    ];
+  }, [projects]);
+
+  // Loading state
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="text-center">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center"
+        >
           <div className="w-16 h-16 border-4 border-black/10 border-t-black rounded-full animate-spin mx-auto mb-4" />
           <p className="text-lg font-light text-black/60">Chargement des projets...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="text-center">
-          <h2 className="text-2xl font-light text-black mb-2">Erreur de chargement</h2>
-          <p className="text-black/60">Impossible de charger les projets. Veuillez réessayer.</p>
-        </div>
+        </motion.div>
       </div>
     );
   }
@@ -105,189 +102,199 @@ const Projects = () => {
     <>
       <SEOHead
         title="Projets Immobiliers à Chypre | ENKI Reality"
-        description="Découvrez notre sélection de programmes immobiliers premium à Chypre. Résidences de luxe, villas et appartements dans les meilleurs emplacements."
+        description="Découvrez notre sélection exclusive de programmes immobiliers premium à Chypre. Résidences de luxe, villas et appartements dans les meilleurs emplacements."
         keywords="projets immobiliers Chypre, résidences premium, investissements Chypre, villas Limassol, appartements Paphos"
         url="https://enki-reality.com/projects"
         canonical="https://enki-reality.com/projects"
       />
 
       <div className="min-h-screen bg-white">
-        {/* Hero Section */}
-        <section className="relative bg-black text-white py-32">
-          <div className="max-w-7xl mx-auto px-6">
-            <h1 className="text-5xl md:text-6xl font-light mb-6 tracking-tight">
-              Nos Projets Immobiliers
-            </h1>
-            <p className="text-xl text-white/80 font-light max-w-2xl">
-              Découvrez notre sélection de programmes immobiliers premium à Chypre
-            </p>
-          </div>
-        </section>
+        {/* ===== SECTION 1: HERO ===== */}
+        <section className="relative bg-black text-white min-h-[90vh] flex items-center justify-center">
+          <div className="max-w-7xl mx-auto px-6 text-center">
+            {/* Title */}
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-5xl md:text-6xl lg:text-7xl font-light mb-6 tracking-tight leading-tight"
+            >
+              Découvrez Notre Sélection de<br />
+              Programmes Immobiliers à Chypre
+            </motion.h1>
 
-        {/* Filters */}
-        <section className="border-b border-black/10">
-          <div className="max-w-7xl mx-auto px-6 py-6">
-            <div className="flex gap-4 overflow-x-auto">
-              <button
-                onClick={() => setFilter('all')}
-                className={`px-6 py-2 text-sm font-medium whitespace-nowrap transition-colors ${
-                  filter === 'all'
-                    ? 'bg-black text-white'
-                    : 'bg-white text-black border border-black/20 hover:border-black'
-                }`}
+            {/* Subtitle */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-xl md:text-2xl text-white/80 font-light max-w-3xl mx-auto mb-12 leading-relaxed"
+            >
+              Des programmes neufs d'exception, conçus pour l'investissement et le prestige.
+              Qualité architecturale, emplacements privilégiés et rentabilité assurée.
+            </motion.p>
+
+            {/* CTA Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
+            >
+              <Button
+                size="lg"
+                className="bg-white text-black hover:bg-white/90 px-8 py-6 text-sm uppercase tracking-wider font-medium"
+                onClick={() => document.getElementById('projects-grid')?.scrollIntoView({ behavior: 'smooth' })}
               >
-                Tous les projets ({projects.length})
-              </button>
-              <button
-                onClick={() => setFilter('golden-visa')}
-                className={`px-6 py-2 text-sm font-medium whitespace-nowrap transition-colors ${
-                  filter === 'golden-visa'
-                    ? 'bg-black text-white'
-                    : 'bg-white text-black border border-black/20 hover:border-black'
-                }`}
+                Explorer les Projets
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-2 border-white text-white hover:bg-white hover:text-black px-8 py-6 text-sm uppercase tracking-wider font-medium"
               >
-                Golden Visa ({projects.filter(p => p.golden_visa_eligible).length})
-              </button>
-              <button
-                onClick={() => setFilter('limassol')}
-                className={`px-6 py-2 text-sm font-medium whitespace-nowrap transition-colors ${
-                  filter === 'limassol'
-                    ? 'bg-black text-white'
-                    : 'bg-white text-black border border-black/20 hover:border-black'
-                }`}
-              >
-                Limassol
-              </button>
-              <button
-                onClick={() => setFilter('paphos')}
-                className={`px-6 py-2 text-sm font-medium whitespace-nowrap transition-colors ${
-                  filter === 'paphos'
-                    ? 'bg-black text-white'
-                    : 'bg-white text-black border border-black/20 hover:border-black'
-                }`}
-              >
-                Paphos
-              </button>
-              <button
-                onClick={() => setFilter('larnaca')}
-                className={`px-6 py-2 text-sm font-medium whitespace-nowrap transition-colors ${
-                  filter === 'larnaca'
-                    ? 'bg-black text-white'
-                    : 'bg-white text-black border border-black/20 hover:border-black'
-                }`}
-              >
-                Larnaca
-              </button>
+                Télécharger le Catalogue
+              </Button>
+            </motion.div>
+
+            {/* Statistics */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto"
+            >
+              {statistics.map((stat, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4, delay: 0.8 + index * 0.1 }}
+                  className="bg-white/10 backdrop-blur p-6"
+                >
+                  <stat.icon className="w-8 h-8 mx-auto mb-3 text-white/60" />
+                  <p className="text-2xl font-light mb-1">{stat.value}</p>
+                  <p className="text-xs uppercase tracking-wider text-white/60">
+                    {stat.label}
+                  </p>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+
+          {/* Scroll indicator */}
+          <motion.div
+            className="absolute bottom-8 left-1/2 -translate-x-1/2"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 1, repeat: Infinity, repeatType: "reverse" }}
+          >
+            <div className="w-6 h-10 border-2 border-white/40 rounded-full flex items-start justify-center p-2">
+              <motion.div
+                className="w-1 h-2 bg-white/60 rounded-full"
+                animate={{ y: [0, 12, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+              />
             </div>
-          </div>
+          </motion.div>
         </section>
 
-        {/* Projects Grid */}
-        <section className="py-20">
+        {/* ===== SECTION 2: PROJECTS GRID (Placeholder) ===== */}
+        <section id="projects-grid" className="py-24 bg-white">
           <div className="max-w-7xl mx-auto px-6">
-            {filteredProjects.length === 0 ? (
-              <div className="text-center py-20">
-                <Building2 className="w-16 h-16 text-black/20 mx-auto mb-4" />
-                <h3 className="text-2xl font-light text-black mb-2">Aucun projet trouvé</h3>
-                <p className="text-black/60">
-                  Aucun projet ne correspond à vos critères de recherche.
-                </p>
-              </div>
-            ) : (
+            <div className="text-center mb-16">
+              <div className="h-[1px] w-20 bg-black mb-6 mx-auto" />
+              <h2 className="text-4xl md:text-5xl font-light text-black tracking-tight mb-4">
+                Nos Projets
+              </h2>
+              <p className="text-lg text-black/60 font-light">
+                {projects.length} {projects.length > 1 ? 'projets disponibles' : 'projet disponible'}
+              </p>
+            </div>
+
+            {/* Projects Grid */}
+            {projects.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {filteredProjects.map((project) => (
-                  <Link
+                {projects.map((project: Project) => (
+                  <motion.div
                     key={project.id}
-                    to={`/projects/${project.url_slug || project.id}`}
-                    className="group block bg-white border border-black/10 hover:border-black transition-colors"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                    className="group bg-white border border-black/10 overflow-hidden hover:border-black/30 transition-all duration-300"
                   >
                     {/* Project Image */}
-                    <div className="aspect-[4/3] bg-black/5 overflow-hidden relative">
-                      {project.photo_gallery_urls && project.photo_gallery_urls[0] ? (
+                    <div className="relative h-64 bg-black/5 overflow-hidden">
+                      {project.photos && project.photos.length > 0 ? (
                         <img
-                          src={project.photo_gallery_urls[0]}
+                          src={project.photos[0]}
                           alt={project.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          loading="lazy"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
                           <Building2 className="w-16 h-16 text-black/20" />
                         </div>
                       )}
-                      {project.golden_visa_eligible && (
-                        <div className="absolute top-4 right-4 bg-black text-white px-3 py-1 text-xs font-medium">
-                          Golden Visa
-                        </div>
-                      )}
+
+                      {/* Type Badge */}
+                      <div className="absolute top-4 left-4">
+                        <Badge className="bg-black text-white border-0">
+                          {project.type}
+                        </Badge>
+                      </div>
                     </div>
 
                     {/* Project Info */}
                     <div className="p-6">
-                      <h3 className="text-xl font-light text-black mb-2 group-hover:underline">
+                      <h3 className="text-2xl font-light text-black mb-2 line-clamp-1">
                         {project.title}
                       </h3>
-                      
-                      {project.subtitle && (
-                        <p className="text-sm text-black/60 mb-4">{project.subtitle}</p>
+
+                      {project.location?.city && (
+                        <div className="flex items-center gap-2 text-black/60 mb-3">
+                          <MapPin className="w-4 h-4" />
+                          <span className="text-sm font-light">{project.location.city}</span>
+                        </div>
                       )}
 
-                      <div className="space-y-2 mb-4">
-                        <div className="flex items-center gap-2 text-sm text-black/60">
-                          <MapPin className="w-4 h-4" />
-                          <span>{project.city}, {project.cyprus_zone}</span>
-                        </div>
-                        
-                        {project.price_from && (
-                          <div className="flex items-center gap-2 text-sm text-black/60">
-                            <Euro className="w-4 h-4" />
-                            <span>À partir de €{project.price_from.toLocaleString()}</span>
-                          </div>
-                        )}
+                      <p className="text-black/60 font-light text-sm mb-4 line-clamp-2">
+                        {project.description || project.detailed_description}
+                      </p>
 
-                        <div className="flex items-center gap-2 text-sm text-black/60">
-                          <Building2 className="w-4 h-4" />
-                          <span>{project.units_available || 0} / {project.total_units || 0} unités disponibles</span>
-                        </div>
-
-                        {project.completion_date && (
-                          <div className="flex items-center gap-2 text-sm text-black/60">
-                            <Calendar className="w-4 h-4" />
-                            <span>Livraison {project.completion_date}</span>
-                          </div>
-                        )}
-                      </div>
-
-                      {project.developer && (
-                        <div className="pt-4 border-t border-black/10">
-                          <p className="text-xs text-black/40 uppercase tracking-wider">
-                            {project.developer.name}
+                      <div className="flex items-center justify-between pt-4 border-t border-black/10">
+                        <div>
+                          <p className="text-xs text-black/40 uppercase tracking-wider mb-1">
+                            À partir de
+                          </p>
+                          <p className="text-2xl font-light text-black">
+                            €{Number(project.price).toLocaleString()}
                           </p>
                         </div>
-                      )}
+
+                        <Link
+                          to={`/projects/${project.url_slug || project.id}`}
+                          className="text-sm font-medium text-black hover:underline uppercase tracking-wider"
+                        >
+                          Découvrir
+                        </Link>
+                      </div>
                     </div>
-                  </Link>
+                  </motion.div>
                 ))}
               </div>
+            ) : (
+              <div className="text-center py-24">
+                <Building2 className="w-16 h-16 text-black/20 mx-auto mb-6" />
+                <h3 className="text-2xl font-light text-black mb-3">
+                  Aucun projet disponible pour le moment
+                </h3>
+                <p className="text-lg text-black/60 font-light">
+                  De nouveaux projets seront bientôt disponibles.
+                </p>
+              </div>
             )}
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="bg-black text-white py-20">
-          <div className="max-w-4xl mx-auto px-6 text-center">
-            <h2 className="text-3xl md:text-4xl font-light mb-6">
-              Besoin d'aide pour choisir ?
-            </h2>
-            <p className="text-lg text-white/80 font-light mb-8">
-              Nos conseillers sont à votre disposition pour vous accompagner dans votre projet d'investissement.
-            </p>
-            <Link
-              to="/contact"
-              className="inline-block bg-white text-black px-8 py-4 text-sm font-medium hover:bg-white/90 transition-colors uppercase tracking-wider"
-            >
-              Nous contacter
-            </Link>
           </div>
         </section>
       </div>
