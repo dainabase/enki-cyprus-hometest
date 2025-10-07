@@ -7,11 +7,14 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import type { FeaturedProjectCardProps } from '@/types/project.types';
 
+// Constants
+const DEFAULT_FEATURED_IMAGE = 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200';
+
 export function FeaturedProjectCard({ project, index = 0 }: FeaturedProjectCardProps) {
   const heroImage = project.project_images?.find((i: any) => i.is_primary)?.url ||
     project.photos?.[0]?.url ||
     project.photo_gallery_urls?.[0] ||
-    'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200';
+    DEFAULT_FEATURED_IMAGE;
 
   const isResidenceEligible = project.price_from >= 300000;
 
@@ -107,7 +110,7 @@ export function FeaturedProjectCard({ project, index = 0 }: FeaturedProjectCardP
               À partir de
             </p>
             <p className="text-3xl font-light text-black tracking-tight">
-              €{Number(project.price_from || project.price || 0).toLocaleString()}
+              €{Number(project.price_from || 0).toLocaleString()}
             </p>
           </div>
 

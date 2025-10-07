@@ -9,21 +9,26 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { ProjectCardProps } from '@/types/project.types';
 
+// Constants
+const DEFAULT_PROJECT_IMAGE = 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800';
+const GOLDEN_VISA_THRESHOLD = 300000;
+const NEW_PROJECT_DAYS = 60;
+
 export function ProjectCard({ project, index = 0, onToggleFavorite, isFavorite = false }: ProjectCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   const heroImage = project.project_images?.find((i: any) => i.is_primary)?.url ||
     project.photos?.[0]?.url ||
     project.photo_gallery_urls?.[0] ||
-    'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800';
+    DEFAULT_PROJECT_IMAGE;
 
   const isNew = project.created_at &&
-    (new Date().getTime() - new Date(project.created_at).getTime()) < 60 * 24 * 60 * 60 * 1000;
+    (new Date().getTime() - new Date(project.created_at).getTime()) < NEW_PROJECT_DAYS * 24 * 60 * 60 * 1000;
 
   const isLowStock = project.total_units && project.units_sold &&
     ((project.total_units - project.units_sold) / project.total_units) < 0.2;
 
-  const isResidenceEligible = project.price_from >= 300000;
+  const isResidenceEligible = project.price_from && project.price_from >= GOLDEN_VISA_THRESHOLD;
 
   const distanceToBeach = project.proximity_sea_km;
 
@@ -31,43 +36,78 @@ export function ProjectCard({ project, index = 0, onToggleFavorite, isFavorite =
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
+      viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.6, delay: index * 0.05 }}
-      className="group relative bg-white shadow-sm hover:shadow-xl transition-all duration-300"
+      whileHover={{ y: -12, transition: { duration: 0.3 } }}
+      className="group relative bg-white shadow-sm hover:shadow-2xl transition-shadow duration-500"
+      style={{
+        transformStyle: "preserve-3d",
+      }}
     >
-      {/* Image Container */}
+      {/* Image Container avec zoom et overlay reveal */}
       <Link to={`/projects/${project.url_slug || project.id}`} className="block relative h-[280px] overflow-hidden">
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 z-10 flex items-end p-6"
+          transition={{ duration: 0.4 }}
+        >
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileHover={{ opacity: 1, y: 0 }}
+            className="text-white text-sm font-light"
+          >
+            Cliquez pour découvrir ce projet
+          </motion.p>
+        </motion.div>
+        
         <motion.img
           src={heroImage}
           alt={project.title}
           loading="lazy"
           onLoad={() => setImageLoaded(true)}
           className={cn(
-            "w-full h-full object-cover transition-transform duration-700",
-            "group-hover:scale-110",
+            "w-full h-full object-cover transition-all duration-700",
+            "group-hover:scale-110 group-hover:brightness-110",
             !imageLoaded && "opacity-0"
           )}
+          initial={{ scale: 1.1 }}
+          whileInView={{ scale: 1 }}
+          transition={{ duration: 0.8 }}
         />
 
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-
-        {/* Badges Overlay */}
+        {/* Badges Overlay avec animations */}
         <div className="absolute top-4 left-4 flex flex-wrap gap-2">
           {isNew && (
-            <Badge className="bg-green-600 text-white border-0">
-              Nouveauté
-            </Badge>
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
+            >
+              <Badge className="bg-black text-white border-0 font-medium">
+                Nouveauté
+              </Badge>
+            </motion.div>
           )}
           {isLowStock && (
-            <Badge className="bg-orange-600 text-white border-0">
-              Dernières Unités
-            </Badge>
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, delay: 0.3 }}
+            >
+              <Badge className="bg-red-600 text-white border-0 font-medium">
+                Dernières Unités
+              </Badge>
+            </motion.div>
           )}
           {isResidenceEligible && (
-            <Badge variant="outline" className="bg-white/90 backdrop-blur-sm text-black border-0 text-xs">
-              Éligible résidence
-            </Badge>
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, delay: 0.4 }}
+            >
+              <Badge variant="outline" className="bg-white/90 backdrop-blur-sm text-black border-0 text-xs font-medium">
+                Éligible résidence
+              </Badge>
+            </motion.div>
           )}
         </div>
 
@@ -93,7 +133,7 @@ export function ProjectCard({ project, index = 0, onToggleFavorite, isFavorite =
         <div className="flex items-baseline justify-between">
           <div>
             <p className="text-2xl font-light text-black tracking-tight">
-              €{Number(project.price_from || project.price || 0).toLocaleString()}
+              €{Number(project.price_from || 0).toLocaleString()}
             </p>
             <p className="text-xs text-black/40 font-light">+ TVA</p>
           </div>
@@ -139,14 +179,21 @@ export function ProjectCard({ project, index = 0, onToggleFavorite, isFavorite =
         {/* Highlights */}
         {project.unique_selling_points && (
           <div className="flex flex-wrap gap-2">
-            {(Array.isArray(project.unique_selling_points)
-              ? project.unique_selling_points
-              : JSON.parse(project.unique_selling_points || '[]')
-            ).slice(0, 4).map((point: string, i: number) => (
-              <span key={i} className="text-xs px-2 py-1 bg-neutral-50 text-black/60 font-light">
-                {point.slice(0, 30)}{point.length > 30 ? '...' : ''}
-              </span>
-            ))}
+            {(() => {
+              try {
+                const points = Array.isArray(project.unique_selling_points)
+                  ? project.unique_selling_points
+                  : JSON.parse(project.unique_selling_points || '[]');
+                return points.slice(0, 4).map((point: string, i: number) => (
+                  <span key={i} className="text-xs px-2 py-1 bg-neutral-50 text-black/60 font-light">
+                    {point.slice(0, 30)}{point.length > 30 ? '...' : ''}
+                  </span>
+                ));
+              } catch (error) {
+                console.error('Error parsing unique_selling_points:', error);
+                return null;
+              }
+            })()}
           </div>
         )}
 
@@ -166,12 +213,21 @@ export function ProjectCard({ project, index = 0, onToggleFavorite, isFavorite =
           </div>
         )}
 
-        {/* Action Buttons */}
+        {/* Action Buttons avec ripple effect */}
         <div className="flex gap-2 pt-2">
           <Link to={`/projects/${project.url_slug || project.id}`} className="flex-1">
-            <Button className="w-full bg-black text-white hover:bg-black/90 font-light">
-              Découvrir le Projet
-            </Button>
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Button className="relative overflow-hidden w-full bg-black text-white hover:bg-black/90 font-light group">
+                <motion.span
+                  className="absolute inset-0 bg-white/20"
+                  initial={{ scale: 0, opacity: 1 }}
+                  whileTap={{ scale: 2, opacity: 0 }}
+                  transition={{ duration: 0.4 }}
+                  style={{ transformOrigin: "center" }}
+                />
+                <span className="relative">Découvrir le Projet</span>
+              </Button>
+            </motion.div>
           </Link>
         </div>
 
