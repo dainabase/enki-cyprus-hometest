@@ -32,6 +32,8 @@ interface Project {
 }
 
 const Projects = () => {
+  const [activeCategory, setActiveCategory] = useState<string>('all');
+
   // Track page view
   useEffect(() => {
     trackPageView('/projects', 'Projets Immobiliers - ENKI Reality Cyprus');
@@ -81,6 +83,21 @@ const Projects = () => {
       },
     ];
   }, [projects]);
+
+  // Filter projects based on active category
+  const filteredProjects = useMemo(() => {
+    if (activeCategory === 'all') return projects;
+    if (activeCategory === 'villas') {
+      return projects.filter(p => p.type?.toLowerCase().includes('villa'));
+    }
+    if (activeCategory === 'apartments') {
+      return projects.filter(p =>
+        p.type?.toLowerCase().includes('apartment') ||
+        p.type?.toLowerCase().includes('penthouse')
+      );
+    }
+    return projects;
+  }, [projects, activeCategory]);
 
   // Loading state
   if (isLoading) {
@@ -199,23 +216,145 @@ const Projects = () => {
           </motion.div>
         </section>
 
-        {/* ===== SECTION 2: PROJECTS GRID (Placeholder) ===== */}
+        {/* ===== SECTION 2: CATEGORY NAVIGATION (STICKY) ===== */}
+        <section className="sticky top-0 z-40 bg-white border-b border-black/10 shadow-sm">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="flex gap-2 overflow-x-auto py-4 scrollbar-hide">
+              {[
+                { id: 'all', label: 'Tous les Projets', count: projects.length },
+                { id: 'featured', label: 'Projets Vedette', count: 0 },
+                { id: 'villas', label: 'Villas de Prestige', count: projects.filter(p => p.type?.toLowerCase().includes('villa')).length },
+                { id: 'apartments', label: 'Appartements', count: projects.filter(p => p.type?.toLowerCase().includes('apartment')).length },
+              ].map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => setActiveCategory(category.id)}
+                  className={`
+                    px-6 py-3 text-sm font-medium whitespace-nowrap transition-all
+                    ${activeCategory === category.id
+                      ? 'bg-black text-white'
+                      : 'bg-white text-black border border-black/20 hover:border-black'
+                    }
+                  `}
+                >
+                  {category.label} ({category.count})
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ===== SECTION 3: FEATURED PROJECTS ===== */}
+        {activeCategory === 'all' && projects.length > 0 && (
+          <section className="py-24 bg-neutral-50">
+            <div className="max-w-7xl mx-auto px-6">
+              <div className="mb-16">
+                <div className="h-[1px] w-20 bg-black mb-6" />
+                <h2 className="text-4xl md:text-5xl font-light text-black tracking-tight mb-4">
+                  Projets Vedette
+                </h2>
+                <p className="text-lg text-black/60 font-light max-w-2xl">
+                  Notre sélection exclusive des programmes les plus exceptionnels
+                </p>
+              </div>
+
+              {/* Afficher le premier projet en format premium */}
+              <div className="grid md:grid-cols-2 gap-12 items-center">
+                {/* Image */}
+                <div className="relative aspect-[4/3] bg-black/5 overflow-hidden">
+                  {projects[0].photos && projects[0].photos[0] ? (
+                    <img
+                      src={projects[0].photos[0]}
+                      alt={projects[0].title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Building2 className="w-24 h-24 text-black/20" />
+                    </div>
+                  )}
+                  <div className="absolute top-6 left-6">
+                    <Badge className="bg-black text-white border-0 text-xs px-4 py-2">
+                      Projet Vedette
+                    </Badge>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div>
+                  <h3 className="text-3xl md:text-4xl font-light text-black mb-4 tracking-tight">
+                    {projects[0].title}
+                  </h3>
+
+                  <div className="flex items-center gap-2 text-black/60 mb-6">
+                    <MapPin className="w-5 h-5" />
+                    <span className="text-base font-light">
+                      {projects[0].location?.city || 'Chypre'}
+                    </span>
+                  </div>
+
+                  <p className="text-lg text-black/70 font-light mb-8 leading-relaxed">
+                    {projects[0].description || projects[0].detailed_description}
+                  </p>
+
+                  {/* Features (si disponibles) */}
+                  {projects[0].features && projects[0].features.length > 0 && (
+                    <div className="grid grid-cols-2 gap-4 mb-8">
+                      {projects[0].features.slice(0, 4).map((feature, i) => (
+                        <div key={i} className="flex items-start gap-3">
+                          <div className="w-5 h-5 rounded-full bg-black/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <div className="w-2 h-2 rounded-full bg-black" />
+                          </div>
+                          <span className="text-sm text-black/70 font-light">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Price */}
+                  <div className="mb-8">
+                    <p className="text-sm text-black/40 uppercase tracking-wider mb-2">
+                      À partir de
+                    </p>
+                    <p className="text-4xl font-light text-black">
+                      €{Number(projects[0].price).toLocaleString()}
+                    </p>
+                  </div>
+
+                  {/* CTA */}
+                  <Link to={`/projects/${projects[0].url_slug || projects[0].id}`}>
+                    <Button
+                      size="lg"
+                      className="bg-black text-white hover:bg-black/90 px-8 py-6 text-sm uppercase tracking-wider"
+                    >
+                      Découvrir ce Projet
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ===== SECTION 4: PROJECTS GRID ===== */}
         <section id="projects-grid" className="py-24 bg-white">
           <div className="max-w-7xl mx-auto px-6">
             <div className="text-center mb-16">
               <div className="h-[1px] w-20 bg-black mb-6 mx-auto" />
               <h2 className="text-4xl md:text-5xl font-light text-black tracking-tight mb-4">
-                Nos Projets
+                {activeCategory === 'all' ? 'Tous les Projets' :
+                 activeCategory === 'villas' ? 'Villas de Prestige' :
+                 activeCategory === 'apartments' ? 'Appartements' : 'Nos Projets'}
               </h2>
               <p className="text-lg text-black/60 font-light">
-                {projects.length} {projects.length > 1 ? 'projets disponibles' : 'projet disponible'}
+                {filteredProjects.length} {filteredProjects.length > 1 ? 'projets disponibles' : 'projet disponible'}
               </p>
             </div>
 
             {/* Projects Grid */}
-            {projects.length > 0 ? (
+            {filteredProjects.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {projects.map((project: Project) => (
+                {filteredProjects.map((project: Project) => (
                   <motion.div
                     key={project.id}
                     initial={{ opacity: 0, y: 20 }}
@@ -288,10 +427,10 @@ const Projects = () => {
               <div className="text-center py-24">
                 <Building2 className="w-16 h-16 text-black/20 mx-auto mb-6" />
                 <h3 className="text-2xl font-light text-black mb-3">
-                  Aucun projet disponible pour le moment
+                  Aucun projet dans cette catégorie
                 </h3>
                 <p className="text-lg text-black/60 font-light">
-                  De nouveaux projets seront bientôt disponibles.
+                  Essayez une autre catégorie ou consultez tous nos projets.
                 </p>
               </div>
             )}
