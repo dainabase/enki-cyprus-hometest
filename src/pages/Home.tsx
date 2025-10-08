@@ -82,16 +82,16 @@ const Home = () => {
   }, []);
 
   // Détecter la fin de l'analyse pour faire disparaître la TrustBar
+  const wasAnalyzingRef = useRef(false);
+  
   useEffect(() => {
-    const wasAnalyzing = useRef(false);
-    
     if (searchAnalysis.chatMessages.isAnalyzing) {
-      wasAnalyzing.current = true;
+      wasAnalyzingRef.current = true;
       setAnalysisComplete(false);
-    } else if (wasAnalyzing.current && !searchAnalysis.chatMessages.isAnalyzing) {
+    } else if (wasAnalyzingRef.current && !searchAnalysis.chatMessages.isAnalyzing) {
       // L'analyse vient de se terminer
       setAnalysisComplete(true);
-      wasAnalyzing.current = false;
+      wasAnalyzingRef.current = false;
     }
   }, [searchAnalysis.chatMessages.isAnalyzing]);
 
