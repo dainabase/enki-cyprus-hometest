@@ -48,25 +48,20 @@ const SmartTrustBar = ({ isVisible, targetRef }: SmartTrustBarProps) => {
   return (
     <motion.div
       ref={trustBarRef}
-      initial={{ opacity: 0, y: -20 }}
+      initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
+      exit={{ opacity: 0, y: -10 }}
       transition={{
         duration: 0.8,
         ease: [0.16, 1, 0.3, 1]
       }}
       className={`
-        ${isSticky ? 'fixed' : 'relative'}
+        ${isSticky ? 'fixed' : 'absolute'}
         top-0 left-0 right-0 z-40
-        py-4 px-6
-        transition-all duration-300
+        py-3
       `}
-      style={{
-        background: 'rgba(255, 255, 255, 0.95)',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-      }}
     >
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto px-4">
         <div className="
           grid grid-cols-2 gap-x-4 gap-y-2
           md:hidden
