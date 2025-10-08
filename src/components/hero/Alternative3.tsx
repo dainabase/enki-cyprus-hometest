@@ -59,6 +59,10 @@ const Alternative3 = () => {
 
     console.log('[Hero] handleSendMessage triggered via', { value });
 
+    // Marquer que la recherche a été cliquée
+    localStorage.setItem('search-clicked', 'true');
+    window.dispatchEvent(new CustomEvent('search-clicked'));
+
     // Sauvegarder le texte pour transfert
     localStorage.setItem('pending-search', value);
 

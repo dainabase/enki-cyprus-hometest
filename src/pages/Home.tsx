@@ -1,4 +1,4 @@
-import { useState, lazy, useEffect, useMemo, useCallback } from 'react';
+import { useState, lazy, useEffect, useMemo, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Property } from '@/lib/supabase';
 import { useSupabaseProperties } from '@/hooks/useSupabaseProperties';
@@ -19,11 +19,14 @@ import { ProjectInterest } from '@/types/project.types';
 import { ChatContainer } from '@/components/chat/ChatContainer';
 import { ResultsPanel } from '@/components/search/ResultsPanel';
 import { useSearchAnalysis } from '@/hooks/useSearchAnalysis';
+import SmartTrustBar from '@/components/hero/SmartTrustBar';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 
 const Home = () => {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showTrustBar, setShowTrustBar] = useState(false);
+  const assistantTitleRef = useRef<HTMLHeadingElement>(null);
 
   const searchAnalysis = useSearchAnalysis();
   const { isAuthenticated } = useAuth();
@@ -63,6 +66,20 @@ const Home = () => {
     trackCustomEvent('home_viewed', { user_authenticated: !!isAuthenticated });
   }, [isAuthenticated]);
 
+  useEffect(() => {
+    const searchClicked = localStorage.getItem('search-clicked') === 'true';
+    if (searchClicked) {
+      setShowTrustBar(true);
+    }
+
+    const handleSearchClicked = () => {
+      setShowTrustBar(true);
+    };
+
+    window.addEventListener('search-clicked', handleSearchClicked);
+    return () => window.removeEventListener('search-clicked', handleSearchClicked);
+  }, []);
+
   const handlePropertyClick = useCallback((property: any) => {
     setSelectedProperty(property);
     setIsModalOpen(true);
@@ -82,10 +99,19 @@ const Home = () => {
         <div className="space-y-0">
           <Alternative3 />
         </div>
+
+        <SmartTrustBar
+          isVisible={showTrustBar}
+          targetRef={assistantTitleRef}
+        />
+
         {/* Interface Split-View : Chat + Panneau Résultats */}
         <section id="start-experience" className="py-24 md:py-32 px-4 min-h-screen bg-white">
           <div className="container mx-auto max-w-7xl">
-            <h2 className="swaarg-large-title text-center mb-8 text-primary">
+            <h2
+              ref={assistantTitleRef}
+              className="swaarg-large-title text-center mb-8 text-primary"
+            >
               Votre Assistant IA Immobilier
             </h2>
 
