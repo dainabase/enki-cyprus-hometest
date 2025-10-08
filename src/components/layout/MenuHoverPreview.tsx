@@ -67,7 +67,10 @@ export const MenuHoverPreview = ({ hoveredItem, allItems }: MenuHoverPreviewProp
       </div>
 
       {/* 
-        ✅ ALIGNEMENT PHOTO - CALCUL PRÉCIS
+        ✅ PHOTOS AGRANDIES x2 - IMPACT VISUEL MAXIMUM
+        
+        Taille AVANT: 640px × 360px
+        Taille APRÈS: 1280px × 720px (x2)
         
         Structure du menu:
         - 7 items centrés verticalement à 50vh
@@ -77,19 +80,20 @@ export const MenuHoverPreview = ({ hoveredItem, allItems }: MenuHoverPreviewProp
         - Premier item (Accueil) commence à: 50vh - 15.75rem
         - HAUT du texte "Accueil" (après padding-top): 50vh - 14.75rem
         
-        Position photo: calc(50vh - 15rem) aligne le HAUT de la photo avec le HAUT du texte "Accueil"
+        Position photo ajustée: calc(50vh - 30rem) pour centrer la photo plus grande
       */}
-      <div className="fixed left-1/2 -translate-x-1/2 top-[calc(50vh-15rem)] pointer-events-none hidden xl:block z-40">
+      <div className="fixed left-1/2 -translate-x-1/2 top-[calc(50vh-30rem)] pointer-events-none hidden xl:block z-40">
         <AnimatePresence mode="wait">
           {hoveredItem && imagesLoaded && (
             <motion.div
               key="preview-wrapper"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             >
-              <div className="relative w-[640px] h-[360px] overflow-hidden rounded-[1px] shadow-2xl">
+              {/* ✅ TAILLE DOUBLÉE: 1280px × 720px */}
+              <div className="relative w-[1280px] h-[720px] overflow-hidden rounded-sm shadow-2xl">
                 <AnimatePresence initial={false} mode="popLayout">
                   <motion.div
                     key={hoveredItem.href}
@@ -116,23 +120,28 @@ export const MenuHoverPreview = ({ hoveredItem, allItems }: MenuHoverPreviewProp
                         ease: "easeInOut"
                       }}
                     />
+                    
+                    {/* Overlay gradient subtle pour meilleure lisibilité du texte */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/20" />
                   </motion.div>
                 </AnimatePresence>
               </div>
 
-              <div className="absolute top-full left-0 right-0 mt-8 w-[640px]">
+              {/* Description sous la photo - largeur ajustée */}
+              <div className="absolute top-full left-0 right-0 mt-10 w-[1280px]">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={`text-${hoveredItem.href}`}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
                     transition={{
                       duration: 0.5,
                       ease: [0.16, 1, 0.3, 1]
                     }}
                   >
-                    <p className="text-black/70 text-base leading-tight line-clamp-2 w-full px-0">
+                    {/* Texte plus grand pour correspondre à la photo agrandie */}
+                    <p className="text-black/70 text-lg leading-relaxed line-clamp-2 w-full px-0">
                       <TypewriterText text={hoveredItem.description} />
                     </p>
                   </motion.div>
