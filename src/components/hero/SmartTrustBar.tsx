@@ -4,9 +4,10 @@ import { useEffect, useState, useRef } from 'react';
 interface SmartTrustBarProps {
   isVisible: boolean;
   targetRef: React.RefObject<HTMLElement>;
+  onAnalysisComplete?: boolean;
 }
 
-const SmartTrustBar = ({ isVisible, targetRef }: SmartTrustBarProps) => {
+const SmartTrustBar = ({ isVisible, targetRef, onAnalysisComplete }: SmartTrustBarProps) => {
   const [isSticky, setIsSticky] = useState(false);
   const trustBarRef = useRef<HTMLDivElement>(null);
   const placeholderRef = useRef<HTMLDivElement>(null);
