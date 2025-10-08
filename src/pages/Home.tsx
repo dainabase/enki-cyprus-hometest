@@ -25,7 +25,7 @@ const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 const Home = () => {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [showTrustBar, setShowTrustBar] = useState(true);
+  const [showTrustBar, setShowTrustBar] = useState(false);
   const assistantTitleRef = useRef<HTMLHeadingElement>(null);
 
   const searchAnalysis = useSearchAnalysis();
