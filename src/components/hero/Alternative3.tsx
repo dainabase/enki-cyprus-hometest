@@ -59,10 +59,6 @@ const Alternative3 = () => {
 
     console.log('[Hero] handleSendMessage triggered via', { value });
 
-    // Marquer que la recherche a été cliquée
-    localStorage.setItem('search-clicked', 'true');
-    window.dispatchEvent(new CustomEvent('search-clicked'));
-
     // Sauvegarder le texte pour transfert
     localStorage.setItem('pending-search', value);
 
@@ -86,10 +82,23 @@ const Alternative3 = () => {
           window.location.hash = '#start-experience';
         }
         dispatchTransfer();
+        
+        // DÉCLENCHER LA TRUSTBAR APRÈS L'ARRIVÉE SUR LA SECTION
+        setTimeout(() => {
+          localStorage.setItem('search-clicked', 'true');
+          window.dispatchEvent(new CustomEvent('search-clicked'));
+        }, 300);
       }, 900);
     } else {
       window.location.hash = '#start-experience';
-      setTimeout(dispatchTransfer, 500);
+      setTimeout(() => {
+        dispatchTransfer();
+        // DÉCLENCHER LA TRUSTBAR APRÈS L'ARRIVÉE
+        setTimeout(() => {
+          localStorage.setItem('search-clicked', 'true');
+          window.dispatchEvent(new CustomEvent('search-clicked'));
+        }, 300);
+      }, 500);
     }
 
     setInputValue('');
