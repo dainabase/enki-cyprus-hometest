@@ -847,7 +847,7 @@ const Projects = () => {
         </section>
 
         {/* ===== SECTION 8: FOOTER ENRICHI ===== */}
-        <footer className="bg-black text-white py-20">
+        <footer className="bg-black text-white py-20 mt-20">
           <div className="max-w-7xl mx-auto px-6">
             {/* 4 Colonnes */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
