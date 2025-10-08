@@ -24,6 +24,8 @@ export interface Project {
   price_from?: number;
   price_to?: number;
   currency?: string;
+  price?: number; // Legacy field for backward compatibility
+  detailed_description?: string; // Legacy field for backward compatibility
 
   // Status & Dates
   status?: 'planning' | 'construction' | 'completed' | 'delivered' | 'active' | 'inactive' | 'sold_out' | 'coming_soon';

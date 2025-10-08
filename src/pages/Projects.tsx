@@ -14,34 +14,13 @@ const isGoldenVisaEligible = (price: number): boolean => {
   return Number(price) >= 300000;
 };
 
+import type { Project } from '@/types/project.types';
+
 interface ProjectImage {
   url: string;
   is_primary: boolean;
   display_order: number;
   caption?: string;
-}
-
-interface Project {
-  id: string;
-  title: string;
-  description?: string;
-  detailed_description?: string;
-  type: string;
-  price: number;
-  location: {
-    city?: string;
-    lat?: number;
-    lng?: number;
-  };
-  features?: string[];
-  detailed_features?: string[];
-  photos?: string[];
-  plans?: string[];
-  virtual_tour?: string;
-  created_at: string;
-  updated_at?: string;
-  url_slug?: string;
-  project_images?: ProjectImage[];
 }
 
 const Projects = () => {
@@ -88,7 +67,7 @@ const Projects = () => {
   };
 
   // ✅ PHASE 1: Fetch projects avec jointure project_images
-  const { data: projects = [], isLoading, error } = useQuery({
+  const { data: projects = [], isLoading, error } = useQuery<Project[]>({
     queryKey: ['projects-all'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -104,26 +83,27 @@ const Projects = () => {
       // Mapper project_images vers photos[] pour compatibilité
       return (data || []).map(project => ({
         ...project,
-        photos: project.project_images
-          ?.sort((a, b) => {
+        photos: Array.isArray(project.project_images)
+          ? project.project_images.sort((a: any, b: any) => {
             // Trier : primary d'abord, puis par display_order
             if (a.is_primary && !b.is_primary) return -1;
             if (!a.is_primary && b.is_primary) return 1;
             return (a.display_order || 0) - (b.display_order || 0);
-          })
-          .map(img => img.url) || []
-      }));
+          }).map((img: any) => ({ url: img.url }))
+          : []
+      })) as unknown as Project[];
     },
     // ✅ PHASE 3: Cache optimisé
     staleTime: 5 * 60 * 1000,  // 5 minutes
-    cacheTime: 30 * 60 * 1000, // 30 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes
   });
 
   // Calculate statistics from real data
   const statistics = useMemo(() => {
-    const projectCount = projects.length;
-    const minPrice = projects.length > 0
-      ? Math.min(...projects.map((p: Project) => Number(p.price) || Infinity).filter(isFinite))
+    const projectsArray = Array.isArray(projects) ? projects : [];
+    const projectCount = projectsArray.length;
+    const minPrice = projectsArray.length > 0
+      ? Math.min(...projectsArray.map((p: Project) => Number(p.price_from) || Infinity).filter(isFinite))
       : 250000;
     const yearsOfExperience = new Date().getFullYear() - 2010;
 
@@ -449,8 +429,8 @@ const Projects = () => {
                 >
                   {projects[0].photos?.[0] ? (
                     <img
-                      src={projects[0].photos[0]}
-                      alt={`Vue extérieure du projet ${projects[0].title} à ${projects[0].location?.city || 'Chypre'}`}
+                      src={typeof projects[0].photos[0] === 'string' ? projects[0].photos[0] : projects[0].photos[0].url}
+                      alt={`Vue extérieure du projet ${projects[0].title} à ${typeof projects[0].location === 'string' ? projects[0].location : projects[0].location?.city || 'Chypre'}`}
                       loading="eager"
                       fetchPriority="high"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -466,7 +446,7 @@ const Projects = () => {
                     <Badge className="bg-black text-white border-0 text-xs px-4 py-2">
                       Projet Vedette
                     </Badge>
-                    {isGoldenVisaEligible(projects[0].price) && (
+                    {isGoldenVisaEligible(projects[0].price_from || 0) && (
                       <Badge className="bg-yellow-500 text-black border-0 text-xs px-4 py-2 font-medium">
                         Golden Visa
                       </Badge>
@@ -483,7 +463,7 @@ const Projects = () => {
                   <div className="flex items-center gap-2 text-black/60 mb-6">
                     <MapPin className="w-5 h-5" />
                     <span className="text-base font-light">
-                      {projects[0].location?.city || 'Chypre'}
+                      {typeof projects[0].location === 'object' ? projects[0].location?.city || 'Chypre' : projects[0].location || 'Chypre'}
                     </span>
                   </div>
 
@@ -566,8 +546,8 @@ const Projects = () => {
                       <div className="relative h-64 bg-black/5 overflow-hidden">
                         {project.photos?.[0] ? (
                           <img
-                            src={project.photos[0]}
-                            alt={`Résidence ${project.title} - Programme immobilier à ${project.location?.city || 'Chypre'}`}
+                            src={typeof project.photos[0] === 'string' ? project.photos[0] : project.photos[0].url}
+                            alt={`Résidence ${project.title} - Programme immobilier à ${typeof project.location === 'object' ? project.location?.city || 'Chypre' : project.location || 'Chypre'}`}
                             loading="lazy"
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           />
@@ -599,10 +579,10 @@ const Projects = () => {
                         {project.title}
                       </h3>
 
-                      {project.location?.city && (
+                      {project.location && (
                         <div className="flex items-center gap-2 text-black/60 mb-3">
                           <MapPin className="w-4 h-4" />
-                          <span className="text-sm font-light">{project.location.city}</span>
+                          <span className="text-sm font-light">{typeof project.location === 'object' ? project.location.city : project.location}</span>
                         </div>
                       )}
 

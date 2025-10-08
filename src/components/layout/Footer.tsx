@@ -29,7 +29,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="w-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
+    <footer className="w-full bg-black text-white">
       {/* Main Footer Content */}
       <div className="w-full py-16 px-4 md:px-8 lg:px-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">

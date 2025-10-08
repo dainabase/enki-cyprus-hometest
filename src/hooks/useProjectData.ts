@@ -105,15 +105,15 @@ export function useProjectData(slug: string) {
       if (!project) throw new Error('Project not found');
 
       // Mapper project_images vers photos[] avec tri intelligent (is_primary first)
-      const photosFromProjectImages = project.project_images
-        ?.sort((a: any, b: any) => {
+      const photosFromProjectImages = Array.isArray(project.project_images)
+        ? project.project_images.sort((a: any, b: any) => {
           // Primary images en premier
           if (a.is_primary && !b.is_primary) return -1;
           if (!a.is_primary && b.is_primary) return 1;
           // Sinon tri par display_order
           return (a.display_order || 0) - (b.display_order || 0);
-        })
-        .map((img: any) => img.url) || [];
+        }).map((img: any) => img.url)
+        : [];
 
       // Fallback vers les anciens champs JSONB pour compatibilité
       const photoGallery = photosFromProjectImages.length > 0
