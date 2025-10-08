@@ -56,13 +56,14 @@ const SmartTrustBar = ({ isVisible, targetRef }: SmartTrustBarProps) => {
         ease: [0.16, 1, 0.3, 1]
       }}
       className={`
-        ${isSticky ? 'fixed' : 'absolute'}
+        ${isSticky ? 'fixed' : 'relative'}
         top-0 left-0 right-0 z-40
         py-4 px-6
         transition-all duration-300
       `}
       style={{
-        background: 'transparent',
+        background: 'rgba(255, 255, 255, 0.95)',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
       }}
     >
       <div className="max-w-7xl mx-auto">
