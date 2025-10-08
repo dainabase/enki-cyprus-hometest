@@ -73,21 +73,22 @@ export const MenuHoverPreview = ({ hoveredItem, allItems }: MenuHoverPreviewProp
         - HAUT de la photo = HAUT du texte "Accueil" (premier item)
         - BAS de la photo = BAS des icônes réseaux sociaux
         
-        Calcul hauteur totale du menu :
-        - 7 items × py-4 (2rem padding) = 14rem
-        - 7 items × text-4xl (~2.5rem line-height) = 17.5rem  
-        - mt-8 après items = 2rem
-        - Séparateur my-6 = 3rem
-        - Icônes h-6 = 1.5rem
-        - TOTAL = 38rem
+        Ajustements finaux (v2) :
+        - Hauteur réduite à 36rem (au lieu de 38rem) pour éviter débordement haut
+        - Top ajusté à calc(50vh - 18rem) pour maintenir centrage
+        - Position horizontale décalée à left: 54% pour meilleur équilibre visuel
         
-        Le conteneur du menu est centré avec items-center dans un flex h-full,
-        donc on part de calc(50vh - 19rem) et on monte jusqu'à calc(50vh + 19rem)
+        Calcul hauteur menu : ~36rem
+        - 7 items navigation avec espacements
+        - Séparateur
+        - Icônes réseaux sociaux
       */}
-      <div className="fixed left-1/2 -translate-x-1/2 pointer-events-none hidden xl:block z-40"
+      <div className="fixed pointer-events-none hidden xl:block z-40"
            style={{
-             top: 'calc(50vh - 19rem)',
-             height: '38rem'
+             left: '54%',
+             transform: 'translateX(-50%)',
+             top: 'calc(50vh - 18rem)',
+             height: '36rem'
            }}>
         <AnimatePresence mode="wait">
           {hoveredItem && imagesLoaded && (
