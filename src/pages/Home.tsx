@@ -27,7 +27,7 @@ const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showTrustBar, setShowTrustBar] = useState(false);
   const [analysisComplete, setAnalysisComplete] = useState(false);
-  const assistantTitleRef = useRef<HTMLHeadingElement>(null);
+  const assistantTitleRef = useRef<HTMLDivElement>(null);
 
   const searchAnalysis = useSearchAnalysis();
   const { isAuthenticated } = useAuth();
@@ -124,15 +124,11 @@ const Home = () => {
         {/* Interface Split-View : Chat + Panneau Résultats */}
         <section id="start-experience" className="py-24 md:py-32 px-4 min-h-screen bg-white">
           <div className="container mx-auto max-w-7xl">
-            <h2
-              ref={assistantTitleRef}
-              className="swaarg-large-title text-center mb-8 text-primary"
-            >
-              Votre Assistant IA Immobilier
-            </h2>
-
             {/* Container principal avec split view */}
-            <div className="relative flex gap-0 h-[800px] border rounded-xl overflow-hidden bg-background shadow-xl">
+            <div 
+              ref={assistantTitleRef}
+              className="relative flex gap-0 h-[800px] border rounded-xl overflow-hidden bg-background shadow-xl"
+            >
               <ChatContainer
                 messages={searchAnalysis.chatMessages.messages}
                 agenticQuery={searchAnalysis.agenticQuery}
