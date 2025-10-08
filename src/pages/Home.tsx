@@ -26,6 +26,7 @@ const Home = () => {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showTrustBar, setShowTrustBar] = useState(false);
+  const [analysisComplete, setAnalysisComplete] = useState(false);
   const assistantTitleRef = useRef<HTMLHeadingElement>(null);
 
   const searchAnalysis = useSearchAnalysis();
@@ -80,6 +81,20 @@ const Home = () => {
     return () => window.removeEventListener('search-clicked', handleSearchClicked);
   }, []);
 
+  // Détecter la fin de l'analyse pour faire disparaître la TrustBar
+  useEffect(() => {
+    const wasAnalyzing = useRef(false);
+    
+    if (searchAnalysis.chatMessages.isAnalyzing) {
+      wasAnalyzing.current = true;
+      setAnalysisComplete(false);
+    } else if (wasAnalyzing.current && !searchAnalysis.chatMessages.isAnalyzing) {
+      // L'analyse vient de se terminer
+      setAnalysisComplete(true);
+      wasAnalyzing.current = false;
+    }
+  }, [searchAnalysis.chatMessages.isAnalyzing]);
+
   const handlePropertyClick = useCallback((property: any) => {
     setSelectedProperty(property);
     setIsModalOpen(true);
@@ -103,6 +118,7 @@ const Home = () => {
         <SmartTrustBar
           isVisible={showTrustBar}
           targetRef={assistantTitleRef}
+          onAnalysisComplete={analysisComplete}
         />
 
         {/* Interface Split-View : Chat + Panneau Résultats */}
