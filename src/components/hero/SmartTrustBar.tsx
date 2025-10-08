@@ -52,7 +52,7 @@ const SmartTrustBar = ({ isVisible, targetRef }: SmartTrustBarProps) => {
       {/* Placeholder pour maintenir l'espace dans le flux */}
       <div 
         ref={placeholderRef} 
-        className={`w-full ${isSticky ? 'h-[60px]' : 'h-0'}`}
+        className={`w-full ${isSticky ? 'h-16' : 'h-0'}`}
         aria-hidden="true"
       />
 
@@ -68,13 +68,12 @@ const SmartTrustBar = ({ isVisible, targetRef }: SmartTrustBarProps) => {
         className={`
           ${isSticky ? 'fixed top-0' : 'relative'}
           left-0 right-0 z-40
-          py-3
           transition-all duration-300
         `}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-end items-center h-10">
-            {/* Mobile: Grid 2 colonnes - aligné à droite */}
+          <div className="flex justify-center items-center h-16">
+            {/* Mobile: Grid 2 colonnes - centré */}
             <div className="
               grid grid-cols-2 gap-x-4 gap-y-2
               md:hidden
@@ -97,7 +96,7 @@ const SmartTrustBar = ({ isVisible, targetRef }: SmartTrustBarProps) => {
               ))}
             </div>
 
-            {/* Desktop: Ligne horizontale - aligné à droite */}
+            {/* Desktop: Ligne horizontale - centré */}
             <div className="
               hidden md:flex
               items-center
