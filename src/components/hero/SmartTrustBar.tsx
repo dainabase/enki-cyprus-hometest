@@ -4,10 +4,9 @@ import { useEffect, useState, useRef } from 'react';
 interface SmartTrustBarProps {
   isVisible: boolean;
   targetRef: React.RefObject<HTMLElement>;
-  onAnalysisComplete?: boolean;
 }
 
-const SmartTrustBar = ({ isVisible, targetRef, onAnalysisComplete }: SmartTrustBarProps) => {
+const SmartTrustBar = ({ isVisible, targetRef }: SmartTrustBarProps) => {
   const [isSticky, setIsSticky] = useState(false);
   const trustBarRef = useRef<HTMLDivElement>(null);
   const placeholderRef = useRef<HTMLDivElement>(null);
@@ -73,7 +72,7 @@ const SmartTrustBar = ({ isVisible, targetRef, onAnalysisComplete }: SmartTrustB
           transition-all duration-300
         `}
       >
-        <div className="max-w-7xl mx-auto px-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Mobile: Grid 2 colonnes */}
           <div className="
             grid grid-cols-2 gap-x-4 gap-y-2
