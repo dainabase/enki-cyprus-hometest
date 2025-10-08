@@ -67,22 +67,28 @@ export const MenuHoverPreview = ({ hoveredItem, allItems }: MenuHoverPreviewProp
       </div>
 
       {/* 
-        ✅ PHOTOS AGRANDIES x2 - IMPACT VISUEL MAXIMUM
+        ✅ PHOTO ALIGNÉE AVEC LE MENU - HARMONIE PARFAITE
         
-        Taille AVANT: 640px × 360px
-        Taille APRÈS: 1280px × 720px (x2)
+        Alignement vertical :
+        - HAUT de la photo = HAUT du texte "Accueil" (premier item)
+        - BAS de la photo = BAS des icônes réseaux sociaux
         
-        Structure du menu:
-        - 7 items centrés verticalement à 50vh
-        - Chaque item: py-4 (1rem top + 1rem bottom) + text-4xl (line-height 2.5rem)
-        - Hauteur par item: 4.5rem
-        - Hauteur totale: 31.5rem
-        - Premier item (Accueil) commence à: 50vh - 15.75rem
-        - HAUT du texte "Accueil" (après padding-top): 50vh - 14.75rem
+        Calcul hauteur totale du menu :
+        - 7 items × py-4 (2rem padding) = 14rem
+        - 7 items × text-4xl (~2.5rem line-height) = 17.5rem  
+        - mt-8 après items = 2rem
+        - Séparateur my-6 = 3rem
+        - Icônes h-6 = 1.5rem
+        - TOTAL = 38rem
         
-        Position photo ajustée: calc(50vh - 30rem) pour centrer la photo plus grande
+        Le conteneur du menu est centré avec items-center dans un flex h-full,
+        donc on part de calc(50vh - 19rem) et on monte jusqu'à calc(50vh + 19rem)
       */}
-      <div className="fixed left-1/2 -translate-x-1/2 top-[calc(50vh-30rem)] pointer-events-none hidden xl:block z-40">
+      <div className="fixed left-1/2 -translate-x-1/2 pointer-events-none hidden xl:block z-40"
+           style={{
+             top: 'calc(50vh - 19rem)',
+             height: '38rem'
+           }}>
         <AnimatePresence mode="wait">
           {hoveredItem && imagesLoaded && (
             <motion.div
@@ -91,9 +97,11 @@ export const MenuHoverPreview = ({ hoveredItem, allItems }: MenuHoverPreviewProp
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              className="h-full"
             >
-              {/* ✅ TAILLE DOUBLÉE: 1280px × 720px */}
-              <div className="relative w-[1280px] h-[720px] overflow-hidden rounded-sm shadow-2xl">
+              {/* ✅ PHOTO AVEC RATIO 16:9 ET HAUTEUR FIXÉE PAR LE CONTENEUR */}
+              <div className="relative h-full overflow-hidden rounded-sm shadow-2xl"
+                   style={{ aspectRatio: '16 / 9', width: 'auto' }}>
                 <AnimatePresence initial={false} mode="popLayout">
                   <motion.div
                     key={hoveredItem.href}
@@ -127,8 +135,8 @@ export const MenuHoverPreview = ({ hoveredItem, allItems }: MenuHoverPreviewProp
                 </AnimatePresence>
               </div>
 
-              {/* Description sous la photo - largeur ajustée */}
-              <div className="absolute top-full left-0 right-0 mt-10 w-[1280px]">
+              {/* Description sous la photo - largeur adaptée à la photo */}
+              <div className="absolute top-full left-0 right-0 mt-6">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={`text-${hoveredItem.href}`}
@@ -140,8 +148,8 @@ export const MenuHoverPreview = ({ hoveredItem, allItems }: MenuHoverPreviewProp
                       ease: [0.16, 1, 0.3, 1]
                     }}
                   >
-                    {/* Texte plus grand pour correspondre à la photo agrandie */}
-                    <p className="text-black/70 text-lg leading-relaxed line-clamp-2 w-full px-0">
+                    {/* Texte proportionnel */}
+                    <p className="text-black/70 text-base leading-relaxed line-clamp-2">
                       <TypewriterText text={hoveredItem.description} />
                     </p>
                   </motion.div>
