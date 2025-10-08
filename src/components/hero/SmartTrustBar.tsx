@@ -4,10 +4,12 @@ import { useEffect, useState, useRef } from 'react';
 interface SmartTrustBarProps {
   isVisible: boolean;
   targetRef: React.RefObject<HTMLElement>;
+  onAnalysisComplete?: boolean;
 }
 
-const SmartTrustBar = ({ isVisible, targetRef }: SmartTrustBarProps) => {
+const SmartTrustBar = ({ isVisible, targetRef, onAnalysisComplete = false }: SmartTrustBarProps) => {
   const [isSticky, setIsSticky] = useState(true);
+  const [shouldFadeOut, setShouldFadeOut] = useState(false);
   const trustBarRef = useRef<HTMLDivElement>(null);
 
   const items = [
@@ -16,6 +18,17 @@ const SmartTrustBar = ({ isVisible, targetRef }: SmartTrustBarProps) => {
     "Multilingue (8 langues)",
     "Accompagnement Personnalisé"
   ];
+
+  // Gérer la disparition après analyse
+  useEffect(() => {
+    if (onAnalysisComplete && isVisible) {
+      // Attendre 2 secondes après la fin de l'analyse, puis disparaître
+      const timer = setTimeout(() => {
+        setShouldFadeOut(true);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [onAnalysisComplete, isVisible]);
 
   useEffect(() => {
     if (!isVisible || !targetRef.current) return;
@@ -43,7 +56,7 @@ const SmartTrustBar = ({ isVisible, targetRef }: SmartTrustBarProps) => {
     };
   }, [isVisible, targetRef]);
 
-  if (!isVisible) return null;
+  if (!isVisible || shouldFadeOut) return null;
 
   return (
     <motion.div
@@ -62,6 +75,7 @@ const SmartTrustBar = ({ isVisible, targetRef }: SmartTrustBarProps) => {
       `}
     >
       <div className="max-w-7xl mx-auto px-4">
+        {/* Mobile: Grid 2 colonnes */}
         <div className="
           grid grid-cols-2 gap-x-4 gap-y-2
           md:hidden
@@ -74,11 +88,10 @@ const SmartTrustBar = ({ isVisible, targetRef }: SmartTrustBarProps) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
               className="
-                text-gray-900 text-xs font-light tracking-wide
+                bg-black
+                text-white text-xs font-light tracking-wide
                 px-3 py-1.5
-                bg-white/90 backdrop-blur-sm
-                rounded-full
-                border border-gray-200/50
+                rounded-sm
               "
             >
               {item}
@@ -86,6 +99,7 @@ const SmartTrustBar = ({ isVisible, targetRef }: SmartTrustBarProps) => {
           ))}
         </div>
 
+        {/* Desktop: Ligne horizontale */}
         <div className="
           hidden md:flex
           items-center justify-center
@@ -100,16 +114,15 @@ const SmartTrustBar = ({ isVisible, targetRef }: SmartTrustBarProps) => {
               transition={{ delay: i * 0.1 }}
             >
               <span className="
-                text-gray-900 text-sm font-light tracking-wide whitespace-nowrap
+                bg-black
+                text-white text-sm font-light tracking-wide whitespace-nowrap
                 px-4 py-2
-                bg-white/90 backdrop-blur-sm
-                rounded-full
-                border border-gray-200/50
+                rounded-sm
               ">
                 {item}
               </span>
               {i < items.length - 1 && (
-                <div className="w-px h-4 bg-gray-300" />
+                <div className="w-px h-4 bg-gray-400" />
               )}
             </motion.div>
           ))}
