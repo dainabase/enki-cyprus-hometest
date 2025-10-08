@@ -73,57 +73,58 @@ const SmartTrustBar = ({ isVisible, targetRef }: SmartTrustBarProps) => {
         `}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Mobile: Grid 2 colonnes */}
-          <div className="
-            grid grid-cols-2 gap-x-4 gap-y-2
-            md:hidden
-            text-center
-          ">
-            {items.map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                className="
-                  bg-black
-                  text-white text-xs font-light tracking-wide
-                  px-3 py-1.5
-                  rounded-none
-                "
-              >
-                {item}
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Desktop: Ligne horizontale */}
-          <div className="
-            hidden md:flex
-            items-center justify-center
-            gap-8
-          ">
-            {items.map((item, i) => (
-              <motion.div
-                key={i}
-                className="flex items-center gap-8"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-              >
-                <span className="
-                  bg-black
-                  text-white text-sm font-light tracking-wide whitespace-nowrap
-                  px-4 py-2
-                  rounded-none
-                ">
+          <div className="flex justify-end items-center h-10">
+            {/* Mobile: Grid 2 colonnes - aligné à droite */}
+            <div className="
+              grid grid-cols-2 gap-x-4 gap-y-2
+              md:hidden
+            ">
+              {items.map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                  className="
+                    bg-black
+                    text-white text-xs font-light tracking-wide text-center
+                    px-3 py-1.5
+                    rounded-none
+                  "
+                >
                   {item}
-                </span>
-                {i < items.length - 1 && (
-                  <div className="w-px h-4 bg-gray-400" />
-                )}
-              </motion.div>
-            ))}
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Desktop: Ligne horizontale - aligné à droite */}
+            <div className="
+              hidden md:flex
+              items-center
+              gap-8
+            ">
+              {items.map((item, i) => (
+                <motion.div
+                  key={i}
+                  className="flex items-center gap-8"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                >
+                  <span className="
+                    bg-black
+                    text-white text-sm font-light tracking-wide whitespace-nowrap
+                    px-4 py-2
+                    rounded-none
+                  ">
+                    {item}
+                  </span>
+                  {i < items.length - 1 && (
+                    <div className="w-px h-4 bg-gray-400" />
+                  )}
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </motion.div>
