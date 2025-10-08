@@ -17,18 +17,17 @@ export function ProjectHero({ project }: ProjectHeroProps) {
 
   return (
     <section className="relative h-screen overflow-hidden">
-      {/* Parallax Background */}
+      {/* Parallax Background - Optimisé avec <img> au lieu de background CSS */}
       <motion.div
         style={{ y }}
         className="absolute inset-0 w-full h-full"
       >
-        <div
-          className="absolute inset-0 w-full h-full bg-cover bg-center scale-110"
-          style={{
-            backgroundImage: `url(${heroImage})`,
-            backgroundPosition: 'center',
-            backgroundSize: 'cover'
-          }}
+        <img
+          src={heroImage}
+          alt={project.title}
+          loading="eager"
+          fetchPriority="high"
+          className="absolute inset-0 w-full h-full object-cover scale-110"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/50" />
       </motion.div>

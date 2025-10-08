@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { SEOHead } from '@/components/SEOHead';
 import { trackPageView } from '@/lib/analytics';
 import { Building2, TrendingUp, Award, MapPin, Euro, Calendar } from 'lucide-react';
@@ -47,6 +47,7 @@ interface Project {
 const Projects = () => {
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const { scrollY } = useScroll();
+  const queryClient = useQueryClient();
 
   // Create transforms at top level (not conditionally in JSX)
   const heroParallaxY = useTransform(scrollY, [0, 500], [0, 150]);
@@ -56,6 +57,35 @@ const Projects = () => {
   useEffect(() => {
     trackPageView('/projects', 'Projets Immobiliers - ENKI Reality Cyprus');
   }, []);
+
+  // ✅ Prefetch function pour charger un projet au hover
+  const prefetchProject = (slug: string) => {
+    queryClient.prefetchQuery({
+      queryKey: ['project', slug],
+      queryFn: async () => {
+        const { data: project, error } = await supabase
+          .from('projects')
+          .select(`
+            *,
+            project_images(url, is_primary, display_order, caption),
+            developer:developers(id, name, logo, rating_score),
+            buildings:buildings(id, building_name),
+            properties:properties(
+              id, property_type, property_sub_type, bedrooms_count,
+              bathrooms_count, internal_area, total_covered_area,
+              price_excluding_vat, price_including_vat, sale_status,
+              floor_number, has_sea_view
+            )
+          `)
+          .eq('url_slug', slug)
+          .maybeSingle();
+
+        if (error) throw error;
+        return project;
+      },
+      staleTime: 5 * 60 * 1000,
+    });
+  };
 
   // ✅ PHASE 1: Fetch projects avec jointure project_images
   const { data: projects = [], isLoading, error } = useQuery({
@@ -409,10 +439,14 @@ const Projects = () => {
                 </p>
               </div>
 
-              {/* Afficher le premier projet en format premium */}
+              {/* Afficher le premier projet en format premium avec prefetch */}
               <div className="grid md:grid-cols-2 gap-12 items-center">
                 {/* Image */}
-                <div className="relative aspect-[4/3] bg-black/5 overflow-hidden group">
+                <Link
+                  to={`/projects/${projects[0].url_slug || projects[0].id}`}
+                  onMouseEnter={() => prefetchProject(projects[0].url_slug || projects[0].id)}
+                  className="relative aspect-[4/3] bg-black/5 overflow-hidden group"
+                >
                   {projects[0].photos?.[0] ? (
                     <img
                       src={projects[0].photos[0]}
@@ -438,7 +472,7 @@ const Projects = () => {
                       </Badge>
                     )}
                   </div>
-                </div>
+                </Link>
 
                 {/* Content */}
                 <div>
@@ -482,7 +516,10 @@ const Projects = () => {
                   </div>
 
                   {/* CTA */}
-                  <Link to={`/projects/${projects[0].url_slug || projects[0].id}`}>
+                  <Link
+                    to={`/projects/${projects[0].url_slug || projects[0].id}`}
+                    onMouseEnter={() => prefetchProject(projects[0].url_slug || projects[0].id)}
+                  >
                     <Button
                       size="lg"
                       className="bg-black text-white hover:bg-black/90 px-8 py-6 text-sm uppercase tracking-wider focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
@@ -511,7 +548,7 @@ const Projects = () => {
               </p>
             </div>
 
-            {/* Projects Grid */}
+            {/* Projects Grid avec prefetch */}
             {filteredProjects.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredProjects.map((project: Project) => (
@@ -522,36 +559,39 @@ const Projects = () => {
                     viewport={{ once: true }}
                     transition={{ duration: 0.6 }}
                     className="group bg-white border border-black/10 overflow-hidden hover:border-black/30 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+                    onMouseEnter={() => prefetchProject(project.url_slug || project.id)}
                   >
                     {/* Project Image */}
-                    <div className="relative h-64 bg-black/5 overflow-hidden">
-                      {project.photos?.[0] ? (
-                        <img
-                          src={project.photos[0]}
-                          alt={`Résidence ${project.title} - Programme immobilier à ${project.location?.city || 'Chypre'}`}
-                          loading="lazy"
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-black/5 to-black/10 flex items-center justify-center" aria-label="Image non disponible">
-                          <div className="animate-pulse">
-                            <Building2 className="w-16 h-16 text-black/20" aria-hidden="true" />
+                    <Link to={`/projects/${project.url_slug || project.id}`}>
+                      <div className="relative h-64 bg-black/5 overflow-hidden">
+                        {project.photos?.[0] ? (
+                          <img
+                            src={project.photos[0]}
+                            alt={`Résidence ${project.title} - Programme immobilier à ${project.location?.city || 'Chypre'}`}
+                            loading="lazy"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-black/5 to-black/10 flex items-center justify-center" aria-label="Image non disponible">
+                            <div className="animate-pulse">
+                              <Building2 className="w-16 h-16 text-black/20" aria-hidden="true" />
+                            </div>
                           </div>
-                        </div>
-                      )}
-
-                      {/* Badges */}
-                      <div className="absolute top-4 left-4 flex flex-col gap-2">
-                        {isGoldenVisaEligible(project.price) && (
-                          <Badge className="bg-yellow-500 text-black border-0 text-xs px-3 py-1 font-medium">
-                            Golden Visa
-                          </Badge>
                         )}
-                        <Badge className="bg-black text-white border-0">
-                          {project.type}
-                        </Badge>
+
+                        {/* Badges */}
+                        <div className="absolute top-4 left-4 flex flex-col gap-2">
+                          {isGoldenVisaEligible(project.price) && (
+                            <Badge className="bg-yellow-500 text-black border-0 text-xs px-3 py-1 font-medium">
+                              Golden Visa
+                            </Badge>
+                          )}
+                          <Badge className="bg-black text-white border-0">
+                            {project.type}
+                          </Badge>
+                        </div>
                       </div>
-                    </div>
+                    </Link>
 
                     {/* Project Info */}
                     <div className="p-6">

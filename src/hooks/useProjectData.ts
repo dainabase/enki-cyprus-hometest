@@ -72,6 +72,7 @@ export function useProjectData(slug: string) {
         .from('projects')
         .select(`
           *,
+          project_images(url, is_primary, display_order, caption),
           developer:developers(
             id,
             name,
@@ -103,6 +104,24 @@ export function useProjectData(slug: string) {
       if (error) throw error;
       if (!project) throw new Error('Project not found');
 
+      // Mapper project_images vers photos[] avec tri intelligent (is_primary first)
+      const photosFromProjectImages = project.project_images
+        ?.sort((a: any, b: any) => {
+          // Primary images en premier
+          if (a.is_primary && !b.is_primary) return -1;
+          if (!a.is_primary && b.is_primary) return 1;
+          // Sinon tri par display_order
+          return (a.display_order || 0) - (b.display_order || 0);
+        })
+        .map((img: any) => img.url) || [];
+
+      // Fallback vers les anciens champs JSONB pour compatibilité
+      const photoGallery = photosFromProjectImages.length > 0
+        ? photosFromProjectImages
+        : (Array.isArray(project.photo_gallery_urls) 
+            ? project.photo_gallery_urls 
+            : (project.photos ? (Array.isArray(project.photos) ? project.photos : []) : []));
+
       const availableUnits = project.properties?.filter(
         (p: any) => p.sale_status === 'available'
       ) || [];
@@ -118,10 +137,6 @@ export function useProjectData(slug: string) {
           project.properties?.map((p: any) => p.bedrooms_count).filter(Boolean) || []
         )
       ].sort((a, b) => a - b);
-
-      const photoGallery = Array.isArray(project.photo_gallery_urls) 
-        ? project.photo_gallery_urls 
-        : (project.photos ? (Array.isArray(project.photos) ? project.photos : []) : []);
 
       const photos_categorized = {
         exterior: photoGallery.filter((img: any) => img.category === 'exterior' || img.type === 'exterior') || [],
@@ -139,7 +154,7 @@ export function useProjectData(slug: string) {
         ...project,
         latitude: project.gps_latitude,
         longitude: project.gps_longitude,
-        hero_image: project.photo_gallery_urls?.[0] || photoGallery[0],
+        hero_image: photoGallery[0] || '/placeholder.svg',
         photos: photoGallery,
         photos_categorized,
         availableUnits,
@@ -157,6 +172,7 @@ export function useProjectData(slug: string) {
       } as ProjectData;
     },
     enabled: !!slug,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,  // 5 minutes - données considérées fraîches
+    gcTime: 30 * 60 * 1000,    // 30 minutes - garde en cache mémoire
   });
 }
