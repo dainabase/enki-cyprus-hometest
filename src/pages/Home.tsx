@@ -26,7 +26,6 @@ const Home = () => {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showTrustBar, setShowTrustBar] = useState(false);
-  const [analysisComplete, setAnalysisComplete] = useState(false);
   const assistantTitleRef = useRef<HTMLDivElement>(null);
 
   const searchAnalysis = useSearchAnalysis();
@@ -81,24 +80,11 @@ const Home = () => {
     return () => window.removeEventListener('search-clicked', handleSearchClicked);
   }, []);
 
-  // Détecter la fin de l'analyse pour faire disparaître la TrustBar
-  const wasAnalyzingRef = useRef(false);
-  
-  useEffect(() => {
-    if (searchAnalysis.chatMessages.isAnalyzing) {
-      wasAnalyzingRef.current = true;
-      setAnalysisComplete(false);
-    } else if (wasAnalyzingRef.current && !searchAnalysis.chatMessages.isAnalyzing) {
-      // L'analyse vient de se terminer
-      setAnalysisComplete(true);
-      wasAnalyzingRef.current = false;
-    }
-  }, [searchAnalysis.chatMessages.isAnalyzing]);
-
   const handlePropertyClick = useCallback((property: any) => {
     setSelectedProperty(property);
     setIsModalOpen(true);
   }, []);
+  
   return (
     <>
       <SEOHead
@@ -118,7 +104,6 @@ const Home = () => {
         <SmartTrustBar
           isVisible={showTrustBar}
           targetRef={assistantTitleRef}
-          onAnalysisComplete={analysisComplete}
         />
 
         {/* Interface Split-View : Chat + Panneau Résultats */}
@@ -224,6 +209,7 @@ const Home = () => {
             <TabsFeaturesAlt5Accordion />
           </div>
         </section>
+        
         {/* Projets Vedette */}
         <section id="featured-projects" className="py-24 md:py-32 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
