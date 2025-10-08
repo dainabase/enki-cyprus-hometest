@@ -91,7 +91,7 @@ const SmartTrustBar = ({ isVisible, targetRef, onAnalysisComplete = false }: Sma
                 bg-black
                 text-white text-xs font-light tracking-wide
                 px-3 py-1.5
-                rounded-sm
+                rounded-none
               "
             >
               {item}
@@ -117,7 +117,7 @@ const SmartTrustBar = ({ isVisible, targetRef, onAnalysisComplete = false }: Sma
                 bg-black
                 text-white text-sm font-light tracking-wide whitespace-nowrap
                 px-4 py-2
-                rounded-sm
+                rounded-none
               ">
                 {item}
               </span>
