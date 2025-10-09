@@ -4,6 +4,8 @@ import { Image, FileText, MapIcon, TrendingDown } from 'lucide-react';
 import type { PropertyData } from '@/types/expansion.types';
 import { TabPhotos } from './TabPhotos';
 import { TabDetails } from './TabDetails';
+import { TabMap } from './TabMap';
+import { TabFiscal } from './TabFiscal';
 
 type TabType = 'photos' | 'details' | 'map' | 'fiscal';
 
@@ -17,8 +19,8 @@ export const PropertyTabs = ({ property }: PropertyTabsProps) => {
   const tabs = [
     { id: 'photos' as TabType, label: 'Photos', icon: Image },
     { id: 'details' as TabType, label: 'Details', icon: FileText },
-    { id: 'map' as TabType, label: 'Location', icon: MapIcon, disabled: true },
-    { id: 'fiscal' as TabType, label: 'Fiscal', icon: TrendingDown, disabled: true },
+    { id: 'map' as TabType, label: 'Location', icon: MapIcon },
+    { id: 'fiscal' as TabType, label: 'Fiscal', icon: TrendingDown },
   ];
 
   return (
@@ -32,13 +34,10 @@ export const PropertyTabs = ({ property }: PropertyTabsProps) => {
             return (
               <button
                 key={tab.id}
-                onClick={() => !tab.disabled && setActiveTab(tab.id)}
-                disabled={tab.disabled}
+                onClick={() => setActiveTab(tab.id)}
                 className={`relative flex items-center gap-2 px-6 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
                   isActive
                     ? 'text-black'
-                    : tab.disabled
-                    ? 'text-black/30 cursor-not-allowed'
                     : 'text-black/60 hover:text-black'
                 }`}
               >
@@ -70,17 +69,9 @@ export const PropertyTabs = ({ property }: PropertyTabsProps) => {
 
         {activeTab === 'details' && <TabDetails property={property} />}
 
-        {activeTab === 'map' && (
-          <div className="text-center py-12 text-black/60 font-light">
-            Map view coming in next step...
-          </div>
-        )}
+        {activeTab === 'map' && <TabMap property={property} />}
 
-        {activeTab === 'fiscal' && (
-          <div className="text-center py-12 text-black/60 font-light">
-            Fiscal analysis coming in next step...
-          </div>
-        )}
+        {activeTab === 'fiscal' && <TabFiscal property={property} />}
       </motion.div>
     </div>
   );
