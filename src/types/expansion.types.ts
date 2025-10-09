@@ -21,9 +21,12 @@ export interface PropertyData {
   };
 }
 
+export type ChatWidth = 'full' | 'mini' | 'collapsed';
+
 export interface ExpansionState {
   phase: ExpansionPhase;
   expandedPropertyId: string | null;
   showLexaia: boolean;
   selectedPropertyForLexaia: string | null;
+  chatWidth: ChatWidth;
 }

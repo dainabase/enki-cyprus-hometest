@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import type { ExpansionState, ExpansionPhase } from '@/types/expansion.types';
+import type { ExpansionState, ExpansionPhase, ChatWidth } from '@/types/expansion.types';
 
 export const usePropertyExpansion = () => {
   const [state, setState] = useState<ExpansionState>({
@@ -7,6 +7,7 @@ export const usePropertyExpansion = () => {
     expandedPropertyId: null,
     showLexaia: false,
     selectedPropertyForLexaia: null,
+    chatWidth: 'full',
   });
 
   const setPhase = useCallback((phase: ExpansionPhase) => {
@@ -19,6 +20,7 @@ export const usePropertyExpansion = () => {
       expandedPropertyId: propertyId,
       showLexaia: false,
       selectedPropertyForLexaia: null,
+      chatWidth: 'mini',
     });
   }, []);
 
@@ -27,6 +29,7 @@ export const usePropertyExpansion = () => {
       ...prev,
       phase: 'grid',
       expandedPropertyId: null,
+      chatWidth: 'full',
     }));
   }, []);
 
@@ -36,6 +39,7 @@ export const usePropertyExpansion = () => {
       expandedPropertyId: null,
       showLexaia: true,
       selectedPropertyForLexaia: propertyId,
+      chatWidth: 'collapsed',
     });
   }, []);
 
@@ -45,6 +49,7 @@ export const usePropertyExpansion = () => {
       phase: 'grid',
       showLexaia: false,
       selectedPropertyForLexaia: null,
+      chatWidth: 'full',
     }));
   }, []);
 
@@ -54,7 +59,19 @@ export const usePropertyExpansion = () => {
       expandedPropertyId: null,
       showLexaia: false,
       selectedPropertyForLexaia: null,
+      chatWidth: 'full',
     });
+  }, []);
+
+  const setChatWidth = useCallback((width: ChatWidth) => {
+    setState(prev => ({ ...prev, chatWidth: width }));
+  }, []);
+
+  const toggleChatWidth = useCallback(() => {
+    setState(prev => ({
+      ...prev,
+      chatWidth: prev.chatWidth === 'full' ? 'mini' : 'full',
+    }));
   }, []);
 
   return {
@@ -65,5 +82,7 @@ export const usePropertyExpansion = () => {
     openLexaia,
     closeLexaia,
     showGrid,
+    setChatWidth,
+    toggleChatWidth,
   };
 };
