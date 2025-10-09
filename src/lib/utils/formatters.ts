@@ -26,6 +26,13 @@ export const formatPercentage = (percentage: number) => {
   return `${percentage}%`;
 };
 
+export const formatSavings = (savings: number): string => {
+  if (savings >= 1000) {
+    return `${(savings / 1000).toFixed(1)}k`;
+  }
+  return savings.toString();
+};
+
 export const formatDate = (date: string | Date) => {
   const d = new Date(date);
   return d.toLocaleDateString('fr-FR', {
