@@ -20,6 +20,7 @@ import { ChatContainer } from '@/components/chat/ChatContainer';
 import { ResultsPanel } from '@/components/search/ResultsPanel';
 import { useSearchAnalysis } from '@/hooks/useSearchAnalysis';
 import SmartTrustBar from '@/components/hero/SmartTrustBar';
+import { ExpansionContainer } from '@/components/expansion/ExpansionContainer';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 
 const Home = () => {
@@ -135,6 +136,9 @@ const Home = () => {
             </div>
           </div>
         </section>
+
+        {/* NOUVELLE SECTION : Property Cards Enhanced */}
+        <ExpansionContainer />
 
         {/* KPIs Marché Immobilier */}
         <CountUpStats />

@@ -3,7 +3,7 @@ import type { ExpansionState, ExpansionPhase } from '@/types/expansion.types';
 
 export const usePropertyExpansion = () => {
   const [state, setState] = useState<ExpansionState>({
-    phase: 'idle',
+    phase: 'grid',
     expandedPropertyId: null,
     showLexaia: false,
     selectedPropertyForLexaia: null,
