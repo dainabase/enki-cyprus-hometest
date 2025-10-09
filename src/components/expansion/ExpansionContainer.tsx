@@ -13,19 +13,19 @@ export const ExpansionContainer = () => {
 
   return (
     <motion.section
-      className="w-full bg-gray-50 min-h-screen"
+      className="w-full bg-neutral-50 py-24 md:py-32"
       initial={PANEL_ANIMATIONS.initial}
       animate={PANEL_ANIMATIONS.animate}
       exit={PANEL_ANIMATIONS.exit}
       transition={PANEL_ANIMATIONS.transition}
     >
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-6">
-          <h2 className="text-3xl font-bold text-foreground mb-2">
+      <div className="container mx-auto px-4">
+        <div className="mb-12">
+          <h2 className="swaarg-section-title text-black mb-4">
             Properties Matching Your Criteria
           </h2>
-          <p className="text-muted-foreground">
-            {mockProperties.length} properties found - Phase: {state.phase}
+          <p className="swaarg-subtitle text-black/60">
+            {mockProperties.length} properties found
           </p>
         </div>
 

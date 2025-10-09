@@ -11,13 +11,13 @@ export const FiscalPreviewBadge = ({
   originCountry,
 }: FiscalPreviewBadgeProps) => {
   return (
-    <div className="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2">
-      <TrendingDown className="w-4 h-4 text-blue-600" />
+    <div className="flex items-center gap-2 bg-black/5 border border-black/10 px-3 py-2">
+      <TrendingDown className="w-4 h-4 text-black/60" />
       <div className="flex flex-col">
-        <span className="text-xs text-blue-600 font-medium">
+        <span className="text-xs text-black/60 font-light">
           {originCountry} → Cyprus
         </span>
-        <span className="text-sm font-semibold text-blue-700">
+        <span className="text-sm font-medium text-black">
           Save €{formatSavings(annualSavings)}/year
         </span>
       </div>

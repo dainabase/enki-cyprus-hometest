@@ -11,9 +11,9 @@ export const GoldenVisaBadge = ({ show }: GoldenVisaBadgeProps) => {
     <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="absolute top-3 right-3 z-10"
+      className="absolute top-4 left-4 z-10"
     >
-      <div className="bg-gradient-to-r from-amber-500 to-yellow-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-lg">
+      <div className="bg-yellow-500 text-black border-0 text-xs px-3 py-1 font-medium">
         Golden Visa
       </div>
     </motion.div>
