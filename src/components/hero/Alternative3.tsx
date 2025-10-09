@@ -57,8 +57,6 @@ const Alternative3 = () => {
     const value = inputValue.trim();
     if (!value) return;
 
-    console.log('[Hero] handleSendMessage triggered via', { value });
-
     // Sauvegarder le texte pour transfert
     localStorage.setItem('pending-search', value);
 
@@ -69,7 +67,6 @@ const Alternative3 = () => {
     const chatSection = document.getElementById('start-experience');
 
     const dispatchTransfer = () => {
-      console.log('[Hero] dispatch hero-search-transferred');
       window.dispatchEvent(new CustomEvent('hero-search-transferred'));
     };
 
@@ -235,7 +232,6 @@ const Alternative3 = () => {
 <button
   type="button"
   onClick={handleSendMessage}
-  onPointerDown={() => { console.log('[Hero] pointerDown on search icon'); }}
   onTouchEnd={(e) => { e.preventDefault(); handleSendMessage(); }}
   className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 bg-transparent text-muted-foreground hover:text-foreground flex items-center justify-center transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed z-50 pointer-events-auto"
   disabled={!inputValue.trim()}
