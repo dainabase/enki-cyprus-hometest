@@ -27,7 +27,11 @@ const categoryColors: Record<string, string> = {
 export const TabMap = ({ property }: TabMapProps) => {
   const pointsOfInterest = getPointsOfInterest(property.location);
 
-  const mapEmbedUrl = `https://www.google.com/maps/embed/v1/place?key=&q=${encodeURIComponent(
+  // Récupération de la clé API depuis les variables d'environnement
+  const GOOGLE_MAPS_KEY = import.meta.env.VITE_GOOGLE_MAPS_KEY;
+
+  // Construction de l'URL avec la clé API
+  const mapEmbedUrl = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_KEY || ''}&q=${encodeURIComponent(
     property.location + ', Cyprus'
   )}`;
 
