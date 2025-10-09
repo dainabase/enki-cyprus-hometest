@@ -65,6 +65,7 @@ const Alternative3 = () => {
     // Blur pour assurer le scroll (mobile/clavier)
     inputRef.current?.blur();
 
+    const expansionSection = document.getElementById('expansion-container');
     const chatSection = document.getElementById('start-experience');
 
     const dispatchTransfer = () => {
@@ -73,8 +74,10 @@ const Alternative3 = () => {
     };
 
     const startY = window.scrollY;
-    if (chatSection) {
-      const y = chatSection.getBoundingClientRect().top + window.pageYOffset;
+    const targetSection = expansionSection || chatSection;
+    if (targetSection) {
+      const navbarOffset = 80;
+      const y = targetSection.getBoundingClientRect().top + window.pageYOffset - navbarOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
       setTimeout(() => {
         const moved = Math.abs(window.scrollY - startY) > 20;

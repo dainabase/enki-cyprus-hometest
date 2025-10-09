@@ -21,6 +21,7 @@ import { ResultsPanel } from '@/components/search/ResultsPanel';
 import { useSearchAnalysis } from '@/hooks/useSearchAnalysis';
 import SmartTrustBar from '@/components/hero/SmartTrustBar';
 import { ExpansionContainer } from '@/components/expansion/ExpansionContainer';
+import { usePropertyExpansion } from '@/hooks/usePropertyExpansion';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 
 const Home = () => {
@@ -28,6 +29,9 @@ const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showTrustBar, setShowTrustBar] = useState(false);
   const assistantTitleRef = useRef<HTMLDivElement>(null);
+  const expansionRef = useRef<HTMLDivElement>(null);
+
+  const { state: expansionState, setPhase } = usePropertyExpansion();
 
   const searchAnalysis = useSearchAnalysis();
   const { isAuthenticated } = useAuth();
@@ -75,11 +79,20 @@ const Home = () => {
 
     const handleSearchClicked = () => {
       setShowTrustBar(true);
+      setPhase('grid');
+
+      setTimeout(() => {
+        if (expansionRef.current) {
+          const navbarHeight = 80;
+          const y = expansionRef.current.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      }, 100);
     };
 
     window.addEventListener('search-clicked', handleSearchClicked);
     return () => window.removeEventListener('search-clicked', handleSearchClicked);
-  }, []);
+  }, [setPhase]);
 
   const handlePropertyClick = useCallback((property: any) => {
     setSelectedProperty(property);
@@ -138,7 +151,15 @@ const Home = () => {
         </section>
 
         {/* NOUVELLE SECTION : Property Cards Enhanced */}
-        <ExpansionContainer />
+        {expansionState.phase !== 'idle' && (
+          <div
+            id="expansion-container"
+            ref={expansionRef}
+            className="scroll-mt-20"
+          >
+            <ExpansionContainer />
+          </div>
+        )}
 
         {/* KPIs Marché Immobilier */}
         <CountUpStats />
