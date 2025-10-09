@@ -1,6 +1,5 @@
 import { ArrowRight } from 'lucide-react';
 import type { PropertyData } from '@/types/expansion.types';
-import { usePropertyExpansion } from '@/hooks/usePropertyExpansion';
 import { FiscalCalculatorPreview } from './FiscalCalculatorPreview';
 import { FiscalComparison } from './FiscalComparison';
 import { TaxSavingsChart } from './TaxSavingsChart';
@@ -11,7 +10,6 @@ interface TabFiscalProps {
 
 export const TabFiscal = ({ property }: TabFiscalProps) => {
   const { fiscalPreview } = property;
-  const { openLexaia } = usePropertyExpansion();
 
   return (
     <div className="space-y-8">
@@ -62,10 +60,7 @@ export const TabFiscal = ({ property }: TabFiscalProps) => {
           Get a detailed tax optimization report tailored to your specific situation
           with Lexaia, our advanced fiscal analysis tool.
         </p>
-        <button
-          onClick={() => openLexaia(property.id)}
-          className="inline-flex items-center gap-2 bg-black hover:bg-black/90 text-white px-6 py-3 font-medium transition-colors"
-        >
+        <button className="inline-flex items-center gap-2 bg-black hover:bg-black/90 text-white px-6 py-3 font-medium transition-colors">
           Open Complete Lexaia Analysis
           <ArrowRight className="w-5 h-5" />
         </button>
