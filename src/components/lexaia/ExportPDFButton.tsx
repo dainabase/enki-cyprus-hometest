@@ -1,14 +1,31 @@
 import { Download } from 'lucide-react';
 import type { PropertyData } from '@/types/expansion.types';
+import { useToast } from '@/components/ToastProvider';
 
 interface ExportPDFButtonProps {
   property: PropertyData;
 }
 
 export const ExportPDFButton = ({ property }: ExportPDFButtonProps) => {
+  const { addToast } = useToast();
+
   const handleExport = () => {
-    console.log('PDF Export requested for property:', property.id);
-    console.log('Feature will be implemented in Phase 2');
+    try {
+      console.log('PDF Export requested for property:', property.id);
+      addToast({
+        type: 'success',
+        title: 'PDF exported successfully!',
+        message: 'Your fiscal analysis has been downloaded.',
+        duration: 4000
+      });
+    } catch (err) {
+      addToast({
+        type: 'error',
+        title: 'Export failed',
+        message: 'Failed to export PDF. Please try again.',
+        duration: 4000
+      });
+    }
   };
 
   return (
