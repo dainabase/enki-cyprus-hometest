@@ -1,15 +1,20 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { usePropertyExpansion } from '@/hooks/usePropertyExpansion';
 import { PANEL_ANIMATIONS } from '@/constants/expansion.animations';
 import { PropertyCardEnhanced } from './PropertyCardEnhanced';
+import { PropertyExpanded } from './PropertyExpanded';
 import { mockProperties } from '@/data/mockProperties';
 
 export const ExpansionContainer = () => {
-  const { state, expandProperty } = usePropertyExpansion();
+  const { state, expandProperty, collapseProperty } = usePropertyExpansion();
 
   if (state.phase === 'idle') {
     return null;
   }
+
+  const expandedProperty = mockProperties.find(
+    (p) => p.id === state.expandedPropertyId
+  );
 
   return (
     <motion.section
@@ -28,6 +33,15 @@ export const ExpansionContainer = () => {
             {mockProperties.length} properties found
           </p>
         </div>
+
+        <AnimatePresence>
+          {state.phase === 'expanded' && expandedProperty && (
+            <PropertyExpanded
+              property={expandedProperty}
+              onCollapse={collapseProperty}
+            />
+          )}
+        </AnimatePresence>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {mockProperties.map((property) => (
