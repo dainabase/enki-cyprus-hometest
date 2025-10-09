@@ -34,11 +34,11 @@ export const PropertyCardEnhanced = ({
       whileTap={CARD_ANIMATIONS.tap}
       transition={CARD_ANIMATIONS.transition}
       onClick={() => onExpand(id)}
-      className="group bg-white border border-black/10 overflow-hidden hover:border-black/30 transition-all duration-300 cursor-pointer"
+      className="group bg-white border border-black/10 overflow-hidden hover:border-black/30 transition-all duration-300 cursor-pointer w-full sm:w-auto"
     >
       <GoldenVisaBadge show={goldenVisaEligible} />
 
-      <div className="relative h-64 bg-black/5 overflow-hidden">
+      <div className="relative h-48 sm:h-64 bg-black/5 overflow-hidden">
         <img
           src={images[0]}
           alt={title}
@@ -49,9 +49,9 @@ export const PropertyCardEnhanced = ({
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
 
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         <div>
-          <h3 className="text-2xl font-light text-black mb-2 line-clamp-1">
+          <h3 className="text-xl sm:text-2xl font-light text-black mb-2 line-clamp-1">
             {title}
           </h3>
           <div className="flex items-center gap-2 text-black/60 mb-3">
@@ -60,7 +60,7 @@ export const PropertyCardEnhanced = ({
           </div>
         </div>
 
-        <div className="flex items-center gap-4 text-sm text-black/60 font-light mb-4">
+        <div className="flex items-center gap-3 sm:gap-4 text-sm text-black/60 font-light mb-4">
           <div className="flex items-center gap-1.5">
             <Bed className="w-4 h-4" />
             <span>{bedrooms} Bed</span>
@@ -85,11 +85,11 @@ export const PropertyCardEnhanced = ({
             <p className="text-xs text-black/40 uppercase tracking-wider mb-1">
               À partir de
             </p>
-            <p className="text-2xl font-light text-black">
+            <p className="text-xl sm:text-2xl font-light text-black">
               {formatPrice(price)}
             </p>
           </div>
-          <span className="text-sm font-medium text-black hover:underline uppercase tracking-wider">
+          <span className="text-xs sm:text-sm font-medium text-black hover:underline uppercase tracking-wider">
             Découvrir
           </span>
         </div>

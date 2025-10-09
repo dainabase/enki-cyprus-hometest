@@ -17,16 +17,16 @@ export const Breadcrumb = ({ currentStep }: BreadcrumbProps) => {
   const currentIndex = steps.findIndex(s => s.id === currentStep);
 
   return (
-    <div className="flex items-center gap-2 overflow-x-auto pb-2">
+    <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto pb-2 px-2 sm:px-0 scrollbar-hide">
       {steps.map((step, index) => {
         const Icon = step.icon;
         const isActive = index <= currentIndex;
         const isCurrent = step.id === currentStep;
 
         return (
-          <div key={step.id} className="flex items-center gap-2">
+          <div key={step.id} className="flex items-center gap-1 sm:gap-2">
             <div
-              className={`flex items-center gap-2 px-3 py-1.5 transition-colors ${
+              className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 min-w-fit transition-colors ${
                 isCurrent
                   ? 'bg-black text-white'
                   : isActive
@@ -34,8 +34,8 @@ export const Breadcrumb = ({ currentStep }: BreadcrumbProps) => {
                   : 'bg-black/5 text-black/40'
               }`}
             >
-              <Icon className="w-3.5 h-3.5" />
-              <span className="text-xs font-medium whitespace-nowrap">
+              <Icon className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+              <span className="text-xs font-medium whitespace-nowrap hidden sm:inline">
                 {step.label}
               </span>
             </div>

@@ -34,7 +34,7 @@ export const SavingsProjection = ({ property }: SavingsProjectionProps) => {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-2xl font-medium text-black mb-2">
+        <h3 className="text-xl sm:text-2xl font-medium text-black mb-2">
           Long-Term Savings Projection
         </h3>
         <p className="text-black/70 font-light">
@@ -42,8 +42,8 @@ export const SavingsProjection = ({ property }: SavingsProjectionProps) => {
         </p>
       </div>
 
-      <div className="bg-white border border-black/10 p-6">
-        <div className="h-[400px]">
+      <div className="bg-white border border-black/10 p-4 sm:p-6">
+        <div className="h-[250px] sm:h-[300px] lg:h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={data}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
