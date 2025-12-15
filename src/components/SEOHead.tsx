@@ -68,7 +68,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
           "logo": "https://enki-realty.com/logo.png",
           "contactPoint": {
             "@type": "ContactPoint",
-            "telephone": "+357-XX-XXXXXX",
+            "telephone": "+357-25-000000",
             "contactType": "Customer Service",
             "availableLanguage": ["French", "English", "Greek"]
           },

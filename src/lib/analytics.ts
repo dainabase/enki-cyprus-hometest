@@ -3,10 +3,12 @@ import { supabase } from '@/integrations/supabase/client';
 
 // Initialize Google Analytics
 export const initGA = () => {
-  const GA4_ID = 'G-4V9HXQE8CY'; // ENKI Realty GA4 ID
+  const GA4_ID = import.meta.env.VITE_GA4_ID || '';
   if (GA4_ID) {
     ReactGA.initialize(GA4_ID);
-    console.log('📊 Google Analytics initialized');
+    if (import.meta.env.DEV) {
+      console.log('📊 Google Analytics initialized');
+    }
   }
 };
 
