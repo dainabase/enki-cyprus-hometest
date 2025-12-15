@@ -563,8 +563,37 @@
       }
     },
     "buildings": {
+      "title": "Buildings",
+      "edit": "Edit Building",
+      "create": "New Building",
+      "units": "Units",
+      "totalUnits": "Total Units",
+      "availableUnits": "Available Units",
       "soldOut": "SOLD OUT",
       "outOf": "of {{total}} ({{rate}}% occupied)"
+    },
+    "properties": {
+      "title": "Properties",
+      "status": {
+        "available": "Available",
+        "reserved": "Reserved",
+        "sold": "Sold"
+      }
     }
+  },
+  "filters": {
+    "title": "Filters",
+    "propertyType": {
+      "all": "All Types",
+      "villa": "Villa",
+      "apartment": "Apartment",
+      "penthouse": "Penthouse",
+      "commercial": "Commercial"
+    },
+    "priceRange": "Price Range",
+    "location": "Location",
+    "bedrooms": "Bedrooms",
+    "bathrooms": "Bathrooms",
+    "clearAll": "Clear All"
   }
 }

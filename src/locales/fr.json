@@ -534,8 +534,37 @@
       }
     },
     "buildings": {
+      "title": "Bâtiments",
+      "edit": "Modifier le bâtiment",
+      "create": "Nouveau bâtiment",
+      "units": "Unités",
+      "totalUnits": "Total unités",
+      "availableUnits": "Unités disponibles",
       "soldOut": "SOLD OUT",
       "outOf": "sur {{total}} ({{rate}}% occupé)"
+    },
+    "properties": {
+      "title": "Propriétés",
+      "status": {
+        "available": "Disponible",
+        "reserved": "Réservé",
+        "sold": "Vendu"
+      }
     }
+  },
+  "filters": {
+    "title": "Filtres",
+    "propertyType": {
+      "all": "Tous types",
+      "villa": "Villa",
+      "apartment": "Appartement",
+      "penthouse": "Penthouse",
+      "commercial": "Commercial"
+    },
+    "priceRange": "Fourchette de prix",
+    "location": "Localisation",
+    "bedrooms": "Chambres",
+    "bathrooms": "Salles de bain",
+    "clearAll": "Tout effacer"
   }
 }
