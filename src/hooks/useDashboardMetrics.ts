@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { calculateKPIs, type DashboardKPIs } from '@/lib/dashboard/calculations';
+import { logger } from '@/lib/logger';
 
 interface UseMetricsOptions {
   period?: 'day' | 'week' | 'month' | 'year';
@@ -36,7 +37,7 @@ const fetchDashboardMetrics = async (options: UseMetricsOptions = {}): Promise<D
   }
   
   try {
-    console.log('🔍 Fetching dashboard metrics with options:', options);
+    logger.debug('Fetching dashboard metrics with options:', options);
     
     // Fetch all data in parallel - CORRECTING FIELD NAMES
     const [propertiesResult, leadsResult, commissionsResult] = await Promise.all([
@@ -78,22 +79,22 @@ const fetchDashboardMetrics = async (options: UseMetricsOptions = {}): Promise<D
         .gte('created_at', startDate.toISOString())
     ]);
     
-    console.log('📊 Raw data fetched:', { 
-      properties: propertiesResult.data?.length || 0, 
-      leads: leadsResult.data?.length || 0, 
-      commissions: commissionsResult.data?.length || 0 
+    logger.debug('Raw data fetched:', {
+      properties: propertiesResult.data?.length || 0,
+      leads: leadsResult.data?.length || 0,
+      commissions: commissionsResult.data?.length || 0
     });
     
     if (propertiesResult.error) {
-      console.error('Properties error:', propertiesResult.error);
+      logger.error('Properties error', propertiesResult.error, { component: 'useDashboardMetrics' });
       throw propertiesResult.error;
     }
     if (leadsResult.error) {
-      console.error('Leads error:', leadsResult.error);
+      logger.error('Leads error', leadsResult.error, { component: 'useDashboardMetrics' });
       throw leadsResult.error;
     }
     if (commissionsResult.error) {
-      console.error('Commissions error:', commissionsResult.error);
+      logger.error('Commissions error', commissionsResult.error, { component: 'useDashboardMetrics' });
       throw commissionsResult.error;
     }
     
@@ -111,12 +112,12 @@ const fetchDashboardMetrics = async (options: UseMetricsOptions = {}): Promise<D
       commissionsResult.data || []
     );
     
-    console.log('📈 Calculated metrics:', calculatedMetrics);
-    
+    logger.debug('Calculated metrics:', calculatedMetrics);
+
     return calculatedMetrics;
     
   } catch (error) {
-    console.error('Error fetching dashboard metrics:', error);
+    logger.error('Error fetching dashboard metrics', error, { component: 'useDashboardMetrics' });
     // Return default metrics to prevent crashes
     return {
       totalProperties: 0,

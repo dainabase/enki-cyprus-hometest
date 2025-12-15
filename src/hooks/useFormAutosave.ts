@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useDebounceCallback } from '@/hooks/useDebounceCallback';
 import { toast } from 'sonner';
+import { logger } from '@/lib/logger';
 
 interface AutosaveConfig {
   table: 'project_drafts' | 'developer_drafts' | 'building_drafts' | 'contact_drafts' | 'registration_drafts' | 'lexaia_drafts' | 'search_drafts';
@@ -80,7 +81,7 @@ export const useFormAutosave = ({
         });
 
       if (error) {
-        console.error(`Error saving ${table} draft:`, error);
+        logger.error(`Error saving ${table} draft`, error, { component: 'useFormAutosave', table });
         throw error;
       }
     },
@@ -92,7 +93,7 @@ export const useFormAutosave = ({
     },
     onError: (error) => {
       setIsAutoSaving(false);
-      console.error(`Error in ${table} auto-save:`, error);
+      logger.error(`Error in ${table} auto-save`, error, { component: 'useFormAutosave', table });
       if (showToasts) {
         toast.error('Erreur lors de la sauvegarde automatique');
       }
@@ -135,13 +136,13 @@ export const useFormAutosave = ({
         .maybeSingle();
       
       if (error) {
-        console.error(`Error loading ${table} draft:`, error);
+        logger.error(`Error loading ${table} draft`, error, { component: 'useFormAutosave', table });
         return null;
       }
 
       return data;
     } catch (error) {
-      console.error(`Error in load${table}Draft:`, error);
+      logger.error(`Error in load${table}Draft`, error, { component: 'useFormAutosave', table });
       return null;
     }
   };
@@ -154,7 +155,7 @@ export const useFormAutosave = ({
         .delete()
         .eq('session_id', sessionId);
     } catch (error) {
-      console.error(`Error clearing ${table} draft:`, error);
+      logger.error(`Error clearing ${table} draft`, error, { component: 'useFormAutosave', table });
     }
   };
 

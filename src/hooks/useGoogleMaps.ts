@@ -1,5 +1,6 @@
 import { useJsApiLoader } from '@react-google-maps/api';
 import type { Libraries } from '@react-google-maps/api';
+import { logger } from '@/lib/logger';
 
 // Static libraries to avoid reload warnings - NEVER change this array
 const libraries: Libraries = ['places', 'marker'];
@@ -11,7 +12,7 @@ const getGoogleMapsApiKey = () => {
   const apiKey = envKey && envKey.length > 0 ? envKey : devFallbackKey;
   
   if (!envKey) {
-    console.warn('⚠️ Using provided dev Google Maps API key. Configure VITE_GOOGLE_MAPS_API_KEY in .env.local for production.');
+    logger.warn('Using provided dev Google Maps API key. Configure VITE_GOOGLE_MAPS_API_KEY in .env.local for production.');
   }
   
   return apiKey;
@@ -28,7 +29,7 @@ export const useGoogleMapsGlobal = () => {
   });
 
   if (!apiKey) {
-    console.error('❌ No Google Maps API key available');
+    logger.error('No Google Maps API key available', undefined, { component: 'useGoogleMaps' });
   }
 
   return { isLoaded, loadError, apiKey };

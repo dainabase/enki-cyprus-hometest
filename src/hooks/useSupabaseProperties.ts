@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { supabase, DatabaseProperty, Property, transformDatabaseProperty } from '@/lib/supabase';
+import { logger } from '@/lib/logger';
 
 interface UsePropertiesOptions {
   propertyType?: string;
@@ -27,7 +28,7 @@ export const useSupabaseProperties = (options: UsePropertiesOptions = {}) => {
       let query = supabase.from('projects').select('*');
 
       // Filtrage par type avec log pour debug
-      console.log('🔍 Filter options:', options);
+      logger.debug('Filter options:', options);
       if (options.propertyType && options.propertyType !== 'Tous') {
         const typeMapping: { [key: string]: string[] } = {
           'Villas': ['villa'],
@@ -38,7 +39,7 @@ export const useSupabaseProperties = (options: UsePropertiesOptions = {}) => {
         };
         
         const validTypes = typeMapping[options.propertyType] || [options.propertyType.toLowerCase()];
-        console.log('🎯 Filtering by types:', validTypes);
+        logger.debug('Filtering by types:', validTypes);
         query = query.contains('property_sub_type', validTypes);
       }
 
@@ -61,12 +62,12 @@ export const useSupabaseProperties = (options: UsePropertiesOptions = {}) => {
         throw supabaseError;
       }
 
-      console.log('📊 Raw data from Supabase:', data?.length, 'properties');
+      logger.debug('Raw data from Supabase:', data?.length, 'properties');
       const transformedProperties = (data as unknown as DatabaseProperty[]).map(transformDatabaseProperty);
-      console.log('✨ Transformed properties:', transformedProperties.length);
+      logger.debug('Transformed properties:', transformedProperties.length);
       setProperties(transformedProperties);
     } catch (err) {
-      console.error('❌ Erreur lors du chargement des propriétés:', err);
+      logger.error('Erreur lors du chargement des propriétés', err, { component: 'useSupabaseProperties' });
       setError(err instanceof Error ? err.message : 'Erreur inconnue');
     } finally {
       setLoading(false);
@@ -112,7 +113,7 @@ export const useSupabaseProperty = (id: string | undefined) => {
           setProperty(null);
         }
       } catch (err) {
-        console.error('Erreur lors du chargement de la propriété:', err);
+        logger.error('Erreur lors du chargement de la propriété', err, { component: 'useSupabaseProperty' });
         setError(err instanceof Error ? err.message : 'Propriété non trouvée');
         setProperty(null);
       } finally {

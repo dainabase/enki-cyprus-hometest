@@ -1,3 +1,5 @@
+import type React from 'react';
+
 export interface Project {
   // Identification
   id: string;
@@ -198,14 +200,14 @@ export interface Testimonial {
 
 // Statistic
 export interface Statistic {
-  icon: any;
+  icon: React.ElementType;
   label: string;
   value: string;
 }
 
 // Benefit
 export interface Benefit {
-  icon: any;
+  icon: React.ElementType;
   title: string;
   description: string;
   highlight: string;

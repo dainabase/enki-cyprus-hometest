@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 interface ABTest {
   id: string;
@@ -33,7 +34,7 @@ export const useABTest = (testName: string) => {
           .single();
 
         if (testError || !test) {
-          console.log(`A/B test '${testName}' not found or inactive`);
+          logger.debug(`A/B test '${testName}' not found or inactive`);
           setLoading(false);
           return;
         }
@@ -62,9 +63,9 @@ export const useABTest = (testName: string) => {
         });
 
         setVariant(randomVariant);
-        console.log(`🧪 A/B Test '${testName}': Assigned variant ${randomVariant}`);
+        logger.debug(`A/B Test '${testName}': Assigned variant ${randomVariant}`);
       } catch (error) {
-        console.error('Error in A/B test assignment:', error);
+        logger.error('Error in A/B test assignment', error, { component: 'useABTest', testName });
       } finally {
         setLoading(false);
       }

@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { PropertyPDFGenerator } from '@/lib/pdf/propertyPdfGenerator';
 import { toast } from 'sonner';
+import { logger } from '@/lib/logger';
 
 export const usePropertyPDF = () => {
   const generatePDF = useCallback(async (propertyId: string) => {
@@ -38,7 +39,7 @@ export const usePropertyPDF = () => {
       toast.success('PDF generated successfully!', { id: 'pdf-generation' });
       
     } catch (error) {
-      console.error('Error generating PDF:', error);
+      logger.error('Error generating PDF', error, { component: 'usePropertyPDF' });
       toast.error('Failed to generate PDF', { id: 'pdf-generation' });
     }
   }, []);
@@ -63,7 +64,7 @@ export const usePropertyPDF = () => {
           .single();
 
         if (error) {
-          console.error(`Error fetching property ${propertyId}:`, error);
+          logger.error(`Error fetching property ${propertyId}`, error, { component: 'usePropertyPDF' });
           continue;
         }
 
@@ -89,7 +90,7 @@ export const usePropertyPDF = () => {
       toast.success(`Generated ${propertyIds.length} PDFs successfully!`, { id: 'batch-pdf' });
       
     } catch (error) {
-      console.error('Error generating batch PDFs:', error);
+      logger.error('Error generating batch PDFs', error, { component: 'usePropertyPDF' });
       toast.error('Failed to generate PDFs', { id: 'batch-pdf' });
     }
   }, []);

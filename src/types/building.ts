@@ -75,13 +75,13 @@ export interface Building {
   building_brochure_url?: string;
 
   // JSONB fields
-  floor_plans?: any;
-  building_amenities?: any;
-  common_areas?: any;
-  security_features?: any;
-  wellness_facilities?: any;
-  infrastructure?: any;
-  outdoor_facilities?: any;
+  floor_plans?: Record<string, unknown>;
+  building_amenities?: Record<string, unknown>;
+  common_areas?: Record<string, unknown>;
+  security_features?: Record<string, unknown>;
+  wellness_facilities?: Record<string, unknown>;
+  infrastructure?: Record<string, unknown>;
+  outdoor_facilities?: Record<string, unknown>;
 
   // === NOUVEAUX CHAMPS CRITIQUES ===
   
@@ -140,7 +140,7 @@ export interface Building {
   nombre_lots?: number;
 
   // Relations
-  project?: any;
+  project?: Record<string, unknown>;
   created_at?: string;
   updated_at?: string;
   created_by?: string;
@@ -233,13 +233,13 @@ export interface BuildingFormData {
   building_brochure_url?: string;
 
   // Section avancée (JSONB)
-  building_amenities: any;
-  common_areas: any;
-  security_features: any;
-  wellness_facilities: any;
-  infrastructure: any;
-  outdoor_facilities: any;
-  floor_plans: any;
+  building_amenities: Record<string, unknown>;
+  common_areas: Record<string, unknown>;
+  security_features: Record<string, unknown>;
+  wellness_facilities: Record<string, unknown>;
+  infrastructure: Record<string, unknown>;
+  outdoor_facilities: Record<string, unknown>;
+  floor_plans: Record<string, unknown>;
 
   // === NOUVEAUX CHAMPS CRITIQUES ===
   

@@ -15,19 +15,33 @@ export function useSupabaseQuery<TData = any, TError = Error>(
   });
 }
 
-export function useSupabaseMutation<TData = any, TError = Error, TVariables = void>(
+interface MutationOptions<TData, TError, TVariables> {
+  queryKeysToInvalidate?: (string | (string | number | object)[])[];
+  onSuccess?: (data: TData, variables: TVariables) => void;
+  onError?: (error: TError, variables: TVariables) => void;
+}
+
+export function useSupabaseMutation<TData = unknown, TError = Error, TVariables = void>(
   mutationFn: (variables: TVariables) => Promise<TData>,
-  options?: any
+  options?: MutationOptions<TData, TError, TVariables>
 ) {
   const queryClient = useQueryClient();
-  
+  const { queryKeysToInvalidate, ...restOptions } = options || {};
+
   return useMutation({
     mutationFn,
-    onSuccess: () => {
-      // Invalidate and refetch relevant queries
-      queryClient.invalidateQueries();
+    onSuccess: (data, variables) => {
+      // Invalidate specific queries if provided
+      if (queryKeysToInvalidate && queryKeysToInvalidate.length > 0) {
+        queryKeysToInvalidate.forEach(key => {
+          const queryKey = Array.isArray(key) ? key : [key];
+          queryClient.invalidateQueries({ queryKey });
+        });
+      }
+      // Call custom onSuccess if provided
+      restOptions.onSuccess?.(data, variables);
     },
-    ...options
+    ...restOptions
   });
 }
 

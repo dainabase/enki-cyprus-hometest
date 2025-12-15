@@ -1,6 +1,7 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { logAdminAction } from '@/lib/security';
 import { useCallback } from 'react';
+import { logger } from '@/lib/logger';
 
 export const useSecureAdmin = () => {
   const { isAdmin, user } = useAuth();
@@ -12,7 +13,7 @@ export const useSecureAdmin = () => {
     details: Record<string, any> = {}
   ) => {
     if (!isAdmin || !user) {
-      console.warn('Attempted admin action without proper authorization');
+      logger.warn('Attempted admin action without proper authorization');
       return;
     }
 

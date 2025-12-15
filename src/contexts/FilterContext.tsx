@@ -2,6 +2,7 @@ import React, { createContext, useContext, useReducer, useEffect, ReactNode } fr
 import { debounce } from 'lodash';
 import { Property } from '@/lib/supabase';
 import { useSupabaseProperties } from '@/hooks/useSupabaseProperties';
+import { logger } from '@/lib/logger';
 
 // Types pour les filtres
 export interface SearchFilters {
@@ -116,7 +117,7 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
   // Les filtres sont maintenant appliqués directement via le hook useSupabaseProperties
   const applyFilters = () => {
     // Le filtrage est automatique via le hook
-    console.log('Filters applied via Supabase hook:', state.filters);
+    logger.debug('Filters applied via Supabase hook:', state.filters);
   };
 
   const resetFilters = () => {
@@ -125,13 +126,13 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
 
   // Mettre à jour les propriétés quand elles changent depuis Supabase
   useEffect(() => {
-    console.log('FilterContext: properties update', properties.length, 'loading:', loading, 'error:', error);
+    logger.debug('FilterContext: properties update', properties.length, 'loading:', loading, 'error:', error);
     dispatch({ type: 'SET_LOADING', payload: loading });
     if (properties.length >= 0) { // Change > 0 to >= 0 pour accepter un tableau vide
       dispatch({ type: 'SET_ALL_PROPERTIES', payload: properties });
     }
     if (error) {
-      console.error('Erreur Supabase:', error);
+      logger.error('Erreur Supabase', error, { component: 'FilterContext' });
     }
   }, [properties, loading, error]);
 

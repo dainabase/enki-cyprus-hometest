@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
 import { debounce } from 'lodash';
 import { Property } from '@/data/mockData';
+import { logger } from '@/lib/logger';
 
 export type PropertyType = 'all' | 'appartement' | 'maison' | 'villa' | 'commercial' | 'penthouse';
 
@@ -142,7 +143,7 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children, allPro
 
   // Debounced filter function
   const debouncedFilter = debounce((properties: Property[], filters: SearchFilters) => {
-    console.log('Filtering properties with filters:', filters);
+    logger.debug('Filtering properties with filters:', filters);
     dispatch({ type: 'SET_LOADING', payload: true });
 
     let filtered = [...properties];
@@ -191,7 +192,7 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children, allPro
       );
     }
 
-    console.log(`Filtered results: ${filtered.length} properties out of ${properties.length}`);
+    logger.debug(`Filtered results: ${filtered.length} properties out of ${properties.length}`);
     dispatch({ type: 'SET_FILTERED_PROPERTIES', payload: filtered });
   }, 300);
 

@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session, AuthError } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 interface Profile {
   id: string;
@@ -53,7 +54,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         .single();
 
       if (profileError) {
-        console.error('Profile fetch error:', profileError);
+        logger.error('Profile fetch error', profileError, { component: 'AuthContext' });
         setProfile(null);
         setLoading(false);
         return;
@@ -66,17 +67,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         .eq('user_id', userId);
 
       if (rolesError) {
-        console.error('Roles fetch error:', rolesError);
+        logger.error('Roles fetch error', rolesError, { component: 'AuthContext' });
       }
 
-      console.log('🔑 User roles fetched:', { userId, rolesData });
+      logger.debug('User roles fetched:', { userId, rolesData });
 
       // Determine role from user_roles table (more secure)
       const roles = rolesData?.map(r => r.role) || [];
       const isAdmin = roles.includes('admin');
       const role = isAdmin ? 'admin' : 'user';
-      
-      console.log('👤 User role determined:', { userId, roles, isAdmin, role });
+
+      logger.debug('User role determined:', { userId, roles, isAdmin, role });
 
       if (profileData) {
         setProfile({
@@ -86,7 +87,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         });
       }
     } catch (error) {
-      console.error('Error fetching profile:', error);
+      logger.error('Error fetching profile', error, { component: 'AuthContext' });
       setProfile(null);
     } finally {
       setLoading(false);
@@ -97,12 +98,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     let mounted = true;
     let initialLoadComplete = false;
-    
-    console.log('🔐 AuthContext: Initializing authentication...');
+
+    logger.debug('AuthContext: Initializing authentication...');
     
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, nextSession) => {
-      console.log('🔐 Auth state changed:', event, nextSession?.user?.email);
+      logger.debug('Auth state changed:', event, nextSession?.user?.email);
 
       if (!mounted) return;
 
@@ -130,18 +131,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // THEN check for existing session
     const getInitialSession = async () => {
       try {
-        console.log('🔐 AuthContext: Getting initial session...');
+        logger.debug('AuthContext: Getting initial session...');
         const { data: { session }, error } = await supabase.auth.getSession();
         
         if (!mounted) return;
         
         if (error) {
-          console.error('❌ AuthContext: Error getting session:', error);
+          logger.error('AuthContext: Error getting session', error, { component: 'AuthContext' });
           setLoading(false);
           return;
         }
 
-        console.log('🔐 AuthContext: Initial session found:', !!session?.user);
+        logger.debug('AuthContext: Initial session found:', !!session?.user);
         
         setSession(session);
         setUser(session?.user ?? null);
@@ -154,7 +155,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setLoading(false);
         }
       } catch (error) {
-        console.error('❌ AuthContext: Error in getInitialSession:', error);
+        logger.error('AuthContext: Error in getInitialSession', error, { component: 'AuthContext' });
         if (mounted) {
           setLoading(false);
         }
@@ -164,7 +165,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     getInitialSession();
 
     return () => {
-      console.log('🔐 AuthContext: Cleanup');
+      logger.debug('AuthContext: Cleanup');
       mounted = false;
       subscription.unsubscribe();
     };
@@ -255,11 +256,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const isAdmin = profile?.role === 'admin';
   const isAuthenticated = !!user && !!session;
 
-  console.log('🎭 Auth state:', { 
-    isAdmin, 
-    isAuthenticated, 
+  logger.debug('Auth state:', {
+    isAdmin,
+    isAuthenticated,
     profileRole: profile?.role,
-    userEmail: user?.email 
+    userEmail: user?.email
   });
 
   const contextValue: AuthContextType = {
