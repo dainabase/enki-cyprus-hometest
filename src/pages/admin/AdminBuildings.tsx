@@ -11,6 +11,9 @@ import { fetchAllBuildings, deleteBuilding } from '@/lib/api/buildings';
 import { toast } from 'sonner';
 import BuildingsTable from '@/components/admin/buildings/BuildingsTable';
 
+// TODO: Add server-side pagination for better performance with large datasets
+// Currently uses fetchAllBuildings() which loads all buildings at once
+// Should implement .range() pagination like AdminProjects.tsx
 const AdminBuildings = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();

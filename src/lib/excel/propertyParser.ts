@@ -1,5 +1,5 @@
 import Papa from 'papaparse';
-import * as XLSX from 'xlsx';
+// XLSX is lazy-loaded to reduce initial bundle size
 
 export interface ParsedProperty {
   unit_number: string;
@@ -34,21 +34,23 @@ export async function parseExcelFile(file: File): Promise<{
   data: ParsedProperty[];
   errors: string[];
 }> {
+  // Lazy load xlsx for better bundle splitting
+  const XLSX = await import('xlsx');
+
   return new Promise((resolve) => {
     const reader = new FileReader();
-    
+
     reader.onload = (e) => {
       try {
         const data = new Uint8Array(e.target?.result as ArrayBuffer);
         const workbook = XLSX.read(data, { type: 'array' });
-        
+
         // Prendre la première feuille
         const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
-        
+
         // Convertir en CSV pour parser avec PapaParse
         const csv = XLSX.utils.sheet_to_csv(firstSheet);
-        
+
         Papa.parse(csv, {
           header: true,
           skipEmptyLines: true,
@@ -69,7 +71,7 @@ export async function parseExcelFile(file: File): Promise<{
         });
       }
     };
-    
+
     reader.readAsArrayBuffer(file);
   });
 }

@@ -3319,11 +3319,20 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     case 'marketing':
       return renderMarketingStep();
     case 'project-amenities':
-      return <div>Project Amenities Step (TODO)</div>;
+      // TODO: Implement project amenities step
+      // Should include: swimming pool, gym, spa, concierge, security, parking details
+      // Could reuse data from 'amenities' step or extend with project-specific amenities
+      return <div className="p-4 text-muted-foreground">Project Amenities - Coming Soon</div>;
     case 'legal-compliance':
-      return <div>Legal Compliance Step (TODO)</div>;
+      // TODO: Implement legal compliance step
+      // Should include: building permits, zoning compliance, environmental clearances
+      // Title deed status, developer licenses, insurance certificates
+      return <div className="p-4 text-muted-foreground">Legal Compliance - Coming Soon</div>;
     case 'utilities-services':
-      return <div>Utilities Services Step (TODO)</div>;
+      // TODO: Implement utilities services step
+      // Should include: electricity provider, water supply, internet/fiber availability
+      // Gas connection, waste management, maintenance contracts
+      return <div className="p-4 text-muted-foreground">Utilities & Services - Coming Soon</div>;
     case 'summary':
       return renderSummaryStep();
     default:

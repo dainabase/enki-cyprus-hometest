@@ -1,4 +1,4 @@
-import * as XLSX from 'xlsx';
+// XLSX is lazy-loaded to reduce initial bundle size
 
 export interface PropertyTemplateRow {
   unit_number: string;
@@ -44,10 +44,13 @@ export const TEMPLATE_COLUMNS = [
   { key: 'is_furnished', label: 'Meublé (oui/non)', required: false, example: 'non' },
 ];
 
-export function generateExcelTemplate(): Blob {
+export async function generateExcelTemplate(): Promise<Blob> {
+  // Lazy load xlsx for better bundle splitting
+  const XLSX = await import('xlsx');
+
   // Créer le workbook
   const wb = XLSX.utils.book_new();
-  
+
   // Créer les données avec headers et exemples
   const headers = TEMPLATE_COLUMNS.map(col => col.label);
   const examples = [
@@ -58,17 +61,17 @@ export function generateExcelTemplate(): Blob {
     ['A201', '2', '1bed', '1', '1', '55', '195000', 'available', 'Garden', 'E', '8', '0', '1', '0', 'non', 'non', 'non', 'non', 'non'],
     ['A301', '3', 'penthouse', '4', '3', '180', '750000', 'available', 'Sea', 'S', '45', '25', '3', '2', 'oui', 'oui', 'oui', 'oui', 'oui'],
   ];
-  
+
   const ws_data = [headers, ...examples];
   const ws = XLSX.utils.aoa_to_sheet(ws_data);
-  
+
   // Styling des colonnes (largeur)
   const colWidths = TEMPLATE_COLUMNS.map(col => ({ wch: Math.max(col.label.length, 15) }));
   ws['!cols'] = colWidths;
-  
+
   // Ajouter le worksheet au workbook
   XLSX.utils.book_append_sheet(wb, ws, 'Properties Template');
-  
+
   // Créer un second sheet avec instructions
   const instructions = [
     ['INSTRUCTIONS D\'UTILISATION'],
@@ -83,17 +86,17 @@ export function generateExcelTemplate(): Blob {
     [''],
     ['GOLDEN VISA : Les propriétés ≥ 300,000€ seront automatiquement marquées Golden Visa'],
   ];
-  
+
   const ws_instructions = XLSX.utils.aoa_to_sheet(instructions);
   XLSX.utils.book_append_sheet(wb, ws_instructions, 'Instructions');
-  
+
   // Générer le fichier
   const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
   return new Blob([wbout], { type: 'application/octet-stream' });
 }
 
-export function downloadTemplate() {
-  const blob = generateExcelTemplate();
+export async function downloadTemplate() {
+  const blob = await generateExcelTemplate();
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
