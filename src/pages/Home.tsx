@@ -1,4 +1,4 @@
-import { useState, lazy, useEffect, useMemo, useCallback } from 'react';
+import { useState, lazy, useEffect, useMemo, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Property } from '@/lib/supabase';
 import { useSupabaseProperties } from '@/hooks/useSupabaseProperties';
@@ -19,11 +19,19 @@ import { ProjectInterest } from '@/types/project.types';
 import { ChatContainer } from '@/components/chat/ChatContainer';
 import { ResultsPanel } from '@/components/search/ResultsPanel';
 import { useSearchAnalysis } from '@/hooks/useSearchAnalysis';
+import SmartTrustBar from '@/components/hero/SmartTrustBar';
+import { ExpansionContainer } from '@/components/expansion/ExpansionContainer';
+import { usePropertyExpansion } from '@/hooks/usePropertyExpansion';
 const GoogleMapComponent = lazy(() => import('@/components/GoogleMap'));
 
 const Home = () => {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showTrustBar, setShowTrustBar] = useState(false);
+  const assistantTitleRef = useRef<HTMLDivElement>(null);
+  const expansionRef = useRef<HTMLDivElement>(null);
+
+  const { state: expansionState, setPhase } = usePropertyExpansion();
 
   const searchAnalysis = useSearchAnalysis();
   const { isAuthenticated } = useAuth();
@@ -63,10 +71,34 @@ const Home = () => {
     trackCustomEvent('home_viewed', { user_authenticated: !!isAuthenticated });
   }, [isAuthenticated]);
 
+  useEffect(() => {
+    const searchClicked = localStorage.getItem('search-clicked') === 'true';
+    if (searchClicked) {
+      setShowTrustBar(true);
+    }
+
+    const handleSearchClicked = () => {
+      setShowTrustBar(true);
+      setPhase('grid');
+
+      setTimeout(() => {
+        if (expansionRef.current) {
+          const navbarHeight = 80;
+          const y = expansionRef.current.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      }, 100);
+    };
+
+    window.addEventListener('search-clicked', handleSearchClicked);
+    return () => window.removeEventListener('search-clicked', handleSearchClicked);
+  }, [setPhase]);
+
   const handlePropertyClick = useCallback((property: any) => {
     setSelectedProperty(property);
     setIsModalOpen(true);
   }, []);
+  
   return (
     <>
       <SEOHead
@@ -82,15 +114,20 @@ const Home = () => {
         <div className="space-y-0">
           <Alternative3 />
         </div>
+
+        <SmartTrustBar
+          isVisible={showTrustBar}
+          targetRef={assistantTitleRef}
+        />
+
         {/* Interface Split-View : Chat + Panneau Résultats */}
         <section id="start-experience" className="py-24 md:py-32 px-4 min-h-screen bg-white">
           <div className="container mx-auto max-w-7xl">
-            <h2 className="swaarg-large-title text-center mb-8 text-primary">
-              Votre Assistant IA Immobilier
-            </h2>
-
             {/* Container principal avec split view */}
-            <div className="relative flex gap-0 h-[800px] border rounded-xl overflow-hidden bg-background shadow-xl">
+            <div 
+              ref={assistantTitleRef}
+              className="relative flex gap-0 h-[800px] border rounded-xl overflow-hidden bg-background shadow-xl"
+            >
               <ChatContainer
                 messages={searchAnalysis.chatMessages.messages}
                 agenticQuery={searchAnalysis.agenticQuery}
@@ -112,6 +149,17 @@ const Home = () => {
             </div>
           </div>
         </section>
+
+        {/* NOUVELLE SECTION : Property Cards Enhanced */}
+        {expansionState.phase !== 'idle' && (
+          <div
+            id="expansion-container"
+            ref={expansionRef}
+            className="scroll-mt-20"
+          >
+            <ExpansionContainer />
+          </div>
+        )}
 
         {/* KPIs Marché Immobilier */}
         <CountUpStats />
@@ -186,6 +234,7 @@ const Home = () => {
             <TabsFeaturesAlt5Accordion />
           </div>
         </section>
+        
         {/* Projets Vedette */}
         <section id="featured-projects" className="py-24 md:py-32 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

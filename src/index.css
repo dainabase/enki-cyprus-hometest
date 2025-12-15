@@ -61,11 +61,17 @@ All colors MUST be HSL.
     --cyprus-terra: 25 35% 55%;
     --cyprus-terra-foreground: 0 0% 100%;
     
+    /* Golden Visa Badge - Premium gold */
+    --golden-visa: 45 93% 47%;
+    --golden-visa-foreground: 0 0% 0%;
+    
     /* Status colors */
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
     --success: 142 71% 45%;
     --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 0%;
     
     /* Borders and inputs - Very light */
     --border: 30 30% 92%;
@@ -197,7 +203,7 @@ All colors MUST be HSL.
 }
 
 @layer components {
-  /* Swaarg-inspired Typography System */
+  /* ENKI REALTY Typography System - Swaarg Inspired */
   .swaarg-hero-title {
     @apply font-inter text-6xl md:text-7xl lg:text-8xl font-extralight tracking-tighter leading-none;
     letter-spacing: -0.05em;
@@ -239,6 +245,11 @@ All colors MUST be HSL.
   
   .swaarg-nav {
     @apply font-inter text-base font-medium;
+  }
+  
+  .swaarg-subtitle {
+    @apply font-inter text-xl md:text-2xl font-light leading-relaxed text-muted-foreground;
+    letter-spacing: -0.02em;
   }
 
 /* OneArc Design System Additions */

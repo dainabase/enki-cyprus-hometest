@@ -2,11 +2,11 @@ import { useParams } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
 import { useProjectData } from '@/hooks/useProjectData';
 import { ProjectHero } from '@/components/project-page/ProjectHero';
+import { ProjectHeroSkeleton } from '@/components/project-page/ProjectHeroSkeleton';
 import { ProjectHighlights } from '@/components/project-page/ProjectHighlights';
 import { ProjectAbout } from '@/components/project-page/ProjectAbout';
 import { ProjectLocation } from '@/components/project-page/ProjectLocation';
 import { ProjectUnits } from '@/components/project-page/ProjectUnits';
-import LoadingSpinner from '@/components/LoadingSpinner';
 import { useEffect } from 'react';
 import { trackPageView } from '@/lib/analytics';
 
@@ -21,11 +21,7 @@ export default function ProjectDetail() {
   }, [project, slug]);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <LoadingSpinner />
-      </div>
-    );
+    return <ProjectHeroSkeleton />;
   }
 
   if (error || !project) {

@@ -57,24 +57,24 @@ const Alternative3 = () => {
     const value = inputValue.trim();
     if (!value) return;
 
-    console.log('[Hero] handleSendMessage triggered via', { value });
-
     // Sauvegarder le texte pour transfert
     localStorage.setItem('pending-search', value);
 
     // Blur pour assurer le scroll (mobile/clavier)
     inputRef.current?.blur();
 
+    const expansionSection = document.getElementById('expansion-container');
     const chatSection = document.getElementById('start-experience');
 
     const dispatchTransfer = () => {
-      console.log('[Hero] dispatch hero-search-transferred');
       window.dispatchEvent(new CustomEvent('hero-search-transferred'));
     };
 
     const startY = window.scrollY;
-    if (chatSection) {
-      const y = chatSection.getBoundingClientRect().top + window.pageYOffset;
+    const targetSection = expansionSection || chatSection;
+    if (targetSection) {
+      const navbarOffset = 80;
+      const y = targetSection.getBoundingClientRect().top + window.pageYOffset - navbarOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
       setTimeout(() => {
         const moved = Math.abs(window.scrollY - startY) > 20;
@@ -82,10 +82,23 @@ const Alternative3 = () => {
           window.location.hash = '#start-experience';
         }
         dispatchTransfer();
+        
+        // DÉCLENCHER LA TRUSTBAR APRÈS L'ARRIVÉE SUR LA SECTION
+        setTimeout(() => {
+          localStorage.setItem('search-clicked', 'true');
+          window.dispatchEvent(new CustomEvent('search-clicked'));
+        }, 300);
       }, 900);
     } else {
       window.location.hash = '#start-experience';
-      setTimeout(dispatchTransfer, 500);
+      setTimeout(() => {
+        dispatchTransfer();
+        // DÉCLENCHER LA TRUSTBAR APRÈS L'ARRIVÉE
+        setTimeout(() => {
+          localStorage.setItem('search-clicked', 'true');
+          window.dispatchEvent(new CustomEvent('search-clicked'));
+        }, 300);
+      }, 500);
     }
 
     setInputValue('');
@@ -219,7 +232,6 @@ const Alternative3 = () => {
 <button
   type="button"
   onClick={handleSendMessage}
-  onPointerDown={() => { console.log('[Hero] pointerDown on search icon'); }}
   onTouchEnd={(e) => { e.preventDefault(); handleSendMessage(); }}
   className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 bg-transparent text-muted-foreground hover:text-foreground flex items-center justify-center transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed z-50 pointer-events-auto"
   disabled={!inputValue.trim()}

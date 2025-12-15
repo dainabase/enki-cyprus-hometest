@@ -63,6 +63,14 @@ export default {
 				'cyprus-terra': {
 					DEFAULT: 'hsl(var(--cyprus-terra))',
 					foreground: 'hsl(var(--cyprus-terra-foreground))'
+				},
+				'golden-visa': {
+					DEFAULT: 'hsl(var(--golden-visa))',
+					foreground: 'hsl(var(--golden-visa-foreground))'
+				},
+				warning: {
+					DEFAULT: 'hsl(var(--warning))',
+					foreground: 'hsl(var(--warning-foreground))'
 				}
 			},
 			boxShadow: {

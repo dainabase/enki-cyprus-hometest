@@ -67,29 +67,42 @@ export const MenuHoverPreview = ({ hoveredItem, allItems }: MenuHoverPreviewProp
       </div>
 
       {/* 
-        ✅ ALIGNEMENT PHOTO - CALCUL PRÉCIS
+        ✅ PHOTO ALIGNÉE AVEC LE MENU - HARMONIE PARFAITE
         
-        Structure du menu:
-        - 7 items centrés verticalement à 50vh
-        - Chaque item: py-4 (1rem top + 1rem bottom) + text-4xl (line-height 2.5rem)
-        - Hauteur par item: 4.5rem
-        - Hauteur totale: 31.5rem
-        - Premier item (Accueil) commence à: 50vh - 15.75rem
-        - HAUT du texte "Accueil" (après padding-top): 50vh - 14.75rem
+        Alignement vertical :
+        - HAUT de la photo = HAUT du texte "Accueil" (premier item)
+        - BAS de la photo = BAS des icônes réseaux sociaux
         
-        Position photo: calc(50vh - 15rem) aligne le HAUT de la photo avec le HAUT du texte "Accueil"
+        Ajustements finaux (v2) :
+        - Hauteur réduite à 36rem (au lieu de 38rem) pour éviter débordement haut
+        - Top ajusté à calc(50vh - 18rem) pour maintenir centrage
+        - Position horizontale décalée à left: 54% pour meilleur équilibre visuel
+        
+        Calcul hauteur menu : ~36rem
+        - 7 items navigation avec espacements
+        - Séparateur
+        - Icônes réseaux sociaux
       */}
-      <div className="fixed left-1/2 -translate-x-1/2 top-[calc(50vh-15rem)] pointer-events-none hidden xl:block z-40">
+      <div className="fixed pointer-events-none hidden xl:block z-40"
+           style={{
+             left: '54%',
+             transform: 'translateX(-50%)',
+             top: 'calc(50vh - 18rem)',
+             height: '36rem'
+           }}>
         <AnimatePresence mode="wait">
           {hoveredItem && imagesLoaded && (
             <motion.div
               key="preview-wrapper"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              className="h-full"
             >
-              <div className="relative w-[640px] h-[360px] overflow-hidden rounded-[1px] shadow-2xl">
+              {/* ✅ PHOTO AVEC RATIO 16:9 ET HAUTEUR FIXÉE PAR LE CONTENEUR */}
+              <div className="relative h-full overflow-hidden rounded-sm shadow-2xl"
+                   style={{ aspectRatio: '16 / 9', width: 'auto' }}>
                 <AnimatePresence initial={false} mode="popLayout">
                   <motion.div
                     key={hoveredItem.href}
@@ -116,23 +129,28 @@ export const MenuHoverPreview = ({ hoveredItem, allItems }: MenuHoverPreviewProp
                         ease: "easeInOut"
                       }}
                     />
+                    
+                    {/* Overlay gradient subtle pour meilleure lisibilité du texte */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/20" />
                   </motion.div>
                 </AnimatePresence>
               </div>
 
-              <div className="absolute top-full left-0 right-0 mt-8 w-[640px]">
+              {/* Description sous la photo - largeur adaptée à la photo */}
+              <div className="absolute top-full left-0 right-0 mt-6">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={`text-${hoveredItem.href}`}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
                     transition={{
                       duration: 0.5,
                       ease: [0.16, 1, 0.3, 1]
                     }}
                   >
-                    <p className="text-black/70 text-base leading-tight line-clamp-2 w-full px-0">
+                    {/* Texte proportionnel */}
+                    <p className="text-black/70 text-base leading-relaxed line-clamp-2">
                       <TypewriterText text={hoveredItem.description} />
                     </p>
                   </motion.div>
