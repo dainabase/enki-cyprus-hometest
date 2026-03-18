@@ -3,6 +3,44 @@
 > Mis a jour apres chaque session significative.
 > Source de verite pour le contexte recent.
 
+## Session 2026-03-18 (suite) - Fix agentic-search
+
+### Action realisee
+**Correction critique `agentic-search` Edge Function** (commit `ff1e908`)
+
+Colonnes fantomes corrigees:
+- `price` -> `price_from` / `price_to`
+- `location->city` (JSONB inexistant) -> `city` (TEXT)
+- `type` -> `property_category`
+- `features` -> `unique_selling_points`
+- `prop.location?.city` -> `proj.city`
+
+Autres corrections:
+- JWT verification ajoutee (etait publiquement accessible)
+- Supabase client utilise ANON_KEY + user JWT pour RLS
+- Filtre `show_on_website = true` ajoute
+- Support filtre `bedrooms_range` ajoute
+- Types TypeScript stricts (zero `any`)
+- Tous les mocks prefixes `TODO: MOCK`
+- Rename `PropertyMatch` -> `ProjectMatch`
+- Lexaia fallback n'invente plus de faux chiffres fiscaux
+- URL Supabase via env var (plus hardcodee)
+- Limite resultats augmentee de 4 a 6 projets
+
+### Statut agentic-search apres fix
+- Backend: PARTIAL (fonctionne si XAI_API_KEY configuree, sinon fallback mock)
+- Securite: OK (JWT ajoute)
+- Colonnes: OK (verifiees via schema Supabase)
+- Lexaia integration: MOCK (depend de lexaia-call qui est aussi mock)
+
+### Prochaines actions
+1. Deployer la Edge Function sur Supabase (`supabase functions deploy agentic-search`)
+2. Configurer XAI_API_KEY dans les secrets Supabase
+3. Tester end-to-end avec vraie requete utilisateur
+4. Securiser les 13 autres Edge Functions sans JWT (P1)
+
+---
+
 ## Session 2026-03-18 - Audit Complet + Gouvernance
 
 ### Outils utilises
@@ -33,23 +71,16 @@
 4. `11560702176475663916` - GOUVERNANCE (plan complete, push echoue -> repousse manuellement)
 
 **Findings critiques Edge Functions** :
-- `agentic-search` : colonnes `price`, `location->city`, `type` n'existent pas
+- `agentic-search` : CORRIGE (commit ff1e908)
 - `lexaia-call` : API fictive, tout en mock
 - `parse-document` : faux OCR, contenu hardcode
 - `extract-full-hierarchy` : donnees Jardins de Maria hardcodees
 - `google-maps-agent` : seul vrai bijou fonctionnel
-- 14/18 fonctions sans verification JWT
+- 13/18 fonctions encore sans verification JWT
 
-**Gouvernance creee** :
+**Gouvernance creee** (commit c5a6250) :
 - CLAUDE.md, MEMORY.md, ROADMAP-BUSINESS.md
 - LESSONS-LEARNED.md, EDGE-FUNCTIONS-REGISTRY.md, MATRICE-STATUT.md
-
-### Prochaine action exacte
-Correction Edge Function `agentic-search` :
-- `price` -> `price_from`
-- `location->city` -> `city`
-- `type` -> `property_type`
-- Connecter a la vraie structure Supabase
 
 ---
 
@@ -61,7 +92,7 @@ Correction Edge Function `agentic-search` :
 - Phase 2 : Critical P1 (lazy loading, TODOs documentes)
 - Phase 3 : P2 corrections (logger, types, compression)
 - Phase 4 : i18n traductions admin
-- Dernier commit : `0f3b40f`
+- Dernier commit avant reprise: `0f3b40f`
 
 ---
 
@@ -71,3 +102,4 @@ Correction Edge Function `agentic-search` :
 2. **EXAIA** : Systeme fiscal v1 sur 4-5 pays (FR/DE/BE/UK/NL)
 3. **Lancement** : 3-5 developpeurs partenaires, pas 20
 4. **Priorite absolue** : Premier client qui utilise le chat et signe
+5. **LLM** : xAI Grok pour parsing requetes (a evaluer vs Anthropic)
