@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { verifyAuth } from '../_shared/auth.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,47 +12,27 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // JWT verification
+  const { error: authError } = verifyAuth(req);
+  if (authError) return authError;
+
   try {
-    console.log('🚀 Advanced Document Parser - Starting');
+    console.log('Advanced Document Parser - Starting');
     
     const { fileUrls } = await req.json();
-    console.log('📂 Processing documents:', fileUrls?.length || 0);
+    console.log('Processing documents:', fileUrls?.length || 0);
     
-    // Simple response to avoid complex processing issues
+    // TODO: MOCK - implement real document parsing pipeline
     return new Response(JSON.stringify({
       success: true,
-      message: "Document parser temporarily simplified due to import issues",
-      documentType: "unknown",
-      confidence: 0.5,
-      extractedData: {
-        developer: {
-          name: "Test Developer",
-          email_primary: "test@example.com",
-          phone_numbers: [],
-          addresses: [],
-          website: null,
-          contact_info: {}
-        }
-      },
-      metadata: {
-        documentsProcessed: fileUrls?.length || 0,
-        totalTextLength: 0,
-        processingTime: Date.now()
-      }
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+      message: 'Advanced document parser ready - implement real pipeline',
+      filesCount: fileUrls?.length || 0
+    }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error: any) {
-    console.error('💥 Advanced Document Parser Error:', error);
-    
-    return new Response(JSON.stringify({
-      success: false,
-      error: error?.message || 'Unknown error',
-      details: 'Advanced document parsing temporarily disabled'
-    }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  } catch (error) {
+    console.error('Error in advanced-document-parser:', error);
+    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }), {
+      status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
 });
