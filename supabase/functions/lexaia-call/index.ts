@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { verifyAuth } from '../_shared/auth.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -27,218 +28,50 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // JWT verification
+  const { error: authError } = verifyAuth(req);
+  if (authError) return authError;
+
   try {
-    console.log('🏦 Lexaia API Call Function started');
-    
-    if (req.method !== 'POST') {
-      throw new Error('Method not allowed');
-    }
+    console.log('Lexaia API Call Function started');
+    if (req.method !== 'POST') throw new Error('Method not allowed');
 
     const { country, budget, propertyType = 'apartment', citizenship = 'EU', laws = 'EU' }: LexaiaRequest = await req.json();
-    console.log('📊 Processing Lexaia request:', { country, budget, propertyType, citizenship, laws });
+    console.log('Processing Lexaia request:', { country, budget, propertyType, citizenship, laws });
 
     const LEXAIA_API_KEY = Deno.env.get('LEXAIA_API_KEY');
-    
     let result: LexaiaResponse;
 
     if (LEXAIA_API_KEY && LEXAIA_API_KEY !== 'placeholder') {
-      console.log('🔑 Using real Lexaia API');
-      
       try {
-        // Real Lexaia API call
-        const lexaiaResponse = await fetch('https://api.lexaia.com/v1/tax-scenarios', {
+        const resp = await fetch('https://api.lexaia.com/v1/tax-scenarios', {
           method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${LEXAIA_API_KEY}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            country,
-            budget,
-            property_type: propertyType,
-            citizenship,
-            laws
-          }),
+          headers: { 'Authorization': `Bearer ${LEXAIA_API_KEY}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ country, budget, property_type: propertyType, citizenship, laws }),
         });
-
-        if (!lexaiaResponse.ok) {
-          throw new Error(`Lexaia API error: ${lexaiaResponse.status}`);
-        }
-
-        const lexaiaData = await lexaiaResponse.json();
-        result = {
-          tax_saved: lexaiaData.tax_saved || 0,
-          laws: lexaiaData.laws || [],
-          recommendations: lexaiaData.recommendations || [],
-          effective_rate: lexaiaData.effective_rate || 0,
-          country_benefits: lexaiaData.country_benefits || [],
-          scenarios: lexaiaData.scenarios || []
-        };
-
-        console.log('✅ Real Lexaia response received');
-      } catch (error) {
-        console.error('❌ Lexaia API error, falling back to mock:', error);
-        result = getMockResponse(country, budget);
-      }
+        if (!resp.ok) throw new Error(`Lexaia API error: ${resp.status}`);
+        const d = await resp.json();
+        result = { tax_saved: d.tax_saved||0, laws: d.laws||[], recommendations: d.recommendations||[], effective_rate: d.effective_rate||0, country_benefits: d.country_benefits||[], scenarios: d.scenarios||[] };
+      } catch (e) { console.error('Lexaia API error, fallback mock:', e); result = getMockResponse(country, budget); }
     } else {
-      console.log('🎭 Using mock Lexaia response (no API key)');
+      // TODO: MOCK - remplacer quand LEXAIA_API_KEY configuree
       result = getMockResponse(country, budget);
     }
 
-    // Add variation for realism
-    const variationFactor = 0.9 + Math.random() * 0.2;
-    result.tax_saved = Math.round(result.tax_saved * variationFactor);
-
-    console.log('✅ Lexaia scenario generated:', result);
-
-    return new Response(
-      JSON.stringify({
-        success: true,
-        data: result,
-        country,
-        budget,
-        source: LEXAIA_API_KEY ? 'api' : 'mock',
-        generated_at: new Date().toISOString()
-      }),
-      {
-        headers: { 
-          ...corsHeaders, 
-          'Content-Type': 'application/json' 
-        },
-      }
-    );
-
+    return new Response(JSON.stringify({ success: true, data: result, country, budget, source: LEXAIA_API_KEY ? 'api' : 'mock', generated_at: new Date().toISOString() }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
   } catch (error) {
-    console.error('❌ Error in Lexaia function:', error);
-    
-    return new Response(
-      JSON.stringify({
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-        generated_at: new Date().toISOString()
-      }),
-      {
-        status: 400,
-        headers: { 
-          ...corsHeaders, 
-          'Content-Type': 'application/json' 
-        },
-      }
-    );
+    console.error('Error in Lexaia function:', error);
+    return new Response(JSON.stringify({ success: false, error: error instanceof Error ? error.message : 'Unknown error' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
   }
 });
 
+// TODO: MOCK - donnees fictives
 function getMockResponse(country: string, budget: number): LexaiaResponse {
-  const mockScenarios: Record<string, (budget: number) => LexaiaResponse> = {
-    'Chypre': (budget: number) => ({
-      tax_saved: Math.round(budget * 0.15),
-      laws: [
-        'Directive UE 2003/48/CE sur la fiscalité des revenus',
-        'Loi chypriote sur l\'impôt sur le revenu (Cap. 118)',
-        'Convention fiscale France-Chypre'
-      ],
-      recommendations: [
-        'Résidence fiscale chypriote après 60 jours/an',
-        'Optimisation via holding structure',
-        'Exemption gains en capital immobilier après 3 ans'
-      ],
-      effective_rate: 12.5,
-      country_benefits: [
-        'Taux d\'imposition corporative 12.5%',
-        'Exemption dividendes étrangers',
-        'Réseau de 65+ conventions fiscales'
-      ],
-      scenarios: [
-        'Holding chypriote pour optimisation fiscale',
-        'Résidence non-domiciliée pour expatriés',
-        'Structure d\'investissement immobilier'
-      ]
-    }),
-    
-    'Suisse': (budget: number) => ({
-      tax_saved: Math.round(budget * 0.08),
-      laws: [
-        'Loi fédérale sur l\'impôt fédéral direct (LIFD)',
-        'Convention fiscale France-Suisse',
-        'Accord UE-Suisse sur la fiscalité'
-      ],
-      recommendations: [
-        'Forfait fiscal pour résidents étrangers',
-        'Structure via fondation suisse',
-        'Optimisation cantonale (Zoug, Vaud)'
-      ],
-      effective_rate: 15.0,
-      country_benefits: [
-        'Stabilité juridique et fiscale',
-        'Secret bancaire renforcé',
-        'Taux cantonaux avantageux'
-      ],
-      scenarios: [
-        'Forfait fiscal cantonal',
-        'Holding familiale suisse',
-        'Trust structure pour patrimoine'
-      ]
-    }),
-    
-    'Portugal': (budget: number) => ({
-      tax_saved: Math.round(budget * 0.12),
-      laws: [
-        'Régime fiscal des résidents non habituels (RNH)',
-        'Code de l\'IRC portugais',
-        'Convention fiscale France-Portugal'
-      ],
-      recommendations: [
-        'Statut RNH pour 10 ans (taux 20%)',
-        'Golden Visa via investissement immobilier',
-        'Exemption plus-values résidence principale'
-      ],
-      effective_rate: 20.0,
-      country_benefits: [
-        'Régime RNH très avantageux',
-        'Golden Visa 500k€ minimum',
-        'Accès libre zone Schengen'
-      ],
-      scenarios: [
-        'Programme Golden Visa',
-        'Statut RNH optimisé',
-        'Société holding portugaise'
-      ]
-    }),
-    
-    'Espagne': (budget: number) => ({
-      tax_saved: Math.round(budget * 0.06),
-      laws: [
-        'Loi 35/2006 sur l\'IRPF',
-        'Convention fiscale France-Espagne',
-        'Directive UE sur la libre circulation'
-      ],
-      recommendations: [
-        'Résidence fiscale espagnole',
-        'Optimisation via SL/SA',
-        'Déduction investissement résidence habituelle'
-      ],
-      effective_rate: 24.0,
-      country_benefits: [
-        'Proximité géographique France',
-        'Coût de la vie avantageux',
-        'Marché immobilier dynamique'
-      ],
-      scenarios: [
-        'Résidence principale espagnole',
-        'Société civile immobilière',
-        'Investment fund structure'
-      ]
-    })
+  const m: Record<string, (b:number)=>LexaiaResponse> = {
+    'Chypre': (b)=>({tax_saved:Math.round(b*0.15),laws:['Directive UE 2003/48/CE','Loi chypriote Cap. 118'],recommendations:['Residence fiscale 60j/an','Holding','Exemption CGT 3 ans'],effective_rate:12.5,country_benefits:['Corporate 12.5%','Exemption dividendes','65+ conventions'],scenarios:['Holding','Non-dom','Structure immo']}),
+    'France': (b)=>({tax_saved:Math.round(b*0.10),laws:['CGI Art. 150 U','Convention FR-CY'],recommendations:['Non-dom Chypre','SCI','Optimisation PV'],effective_rate:30.0,country_benefits:['Defiscalisation outre-mer'],scenarios:['Relocalisation','SCI+holding']}),
+    'Allemagne': (b)=>({tax_saved:Math.round(b*0.12),laws:['EStG','DBA DE-CY'],recommendations:['Holding chypriote','Non-dom','Dividendes'],effective_rate:36.6,country_benefits:['Taux effectif reduit via UE'],scenarios:['GmbH+holding','Relocalisation partielle']}),
+    'Belgique': (b)=>({tax_saved:Math.round(b*0.11),laws:['CIR 92','Convention BE-CY'],recommendations:['Holding belgo-chypriote','Residence CY','Regle 60j'],effective_rate:45.0,country_benefits:['Reduction revenus locatifs','0% succession CY'],scenarios:['Relocalisation famille','Holding optimisee']}),
   };
-
-  const defaultScenario = (budget: number): LexaiaResponse => ({
-    tax_saved: Math.round(budget * 0.05),
-    laws: ['Conventions fiscales internationales', 'Directive UE sur les services'],
-    recommendations: ['Consultation fiscaliste spécialisé', 'Analyse structure optimale'],
-    effective_rate: 25.0,
-    country_benefits: ['Analyse personnalisée requise'],
-    scenarios: ['Structure d\'optimisation sur mesure']
-  });
-
-  return mockScenarios[country]?.(budget) || defaultScenario(budget);
+  return m[country]?.(budget) || {tax_saved:Math.round(budget*0.05),laws:['Conventions internationales'],recommendations:['Consultation specialisee requise'],effective_rate:25.0,country_benefits:['Analyse personnalisee requise'],scenarios:['Optimisation sur mesure']};
 }
