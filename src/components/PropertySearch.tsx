@@ -4,7 +4,7 @@ import { Search, MapPin, Filter } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Property } from '@/data/mockData';
+import { DisplayProperty as Property } from '@/types/frontend.types';
 
 interface PropertySearchProps {
   properties: Property[];
@@ -33,8 +33,6 @@ const PropertySearch = ({ properties, onFilteredProperties, onPropertySelect }: 
   };
 
   const filterProperties = (term: string, type: string, price: string) => {
-    console.log(`Filtering properties - Term: "${term}", Type: "${type}", Price: "${price}"`);
-    
     let filtered = properties;
 
     // Filter by search term (location, title, description)
@@ -73,7 +71,6 @@ const PropertySearch = ({ properties, onFilteredProperties, onPropertySelect }: 
       });
     }
 
-    console.log(`Filtered results: ${filtered.length} properties`);
     onFilteredProperties(filtered);
   };
 
@@ -82,7 +79,6 @@ const PropertySearch = ({ properties, onFilteredProperties, onPropertySelect }: 
     setTypeFilter('all');
     setPriceRange('all');
     onFilteredProperties(properties);
-    console.log('Filters cleared, showing all properties');
   };
 
   return (

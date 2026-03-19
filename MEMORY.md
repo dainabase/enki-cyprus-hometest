@@ -3,6 +3,55 @@
 > Mis a jour apres chaque session significative.
 > Source de verite pour le contexte recent.
 
+## Session 2026-03-19 - Post-Cleanup Corrections
+
+### Actions realisees
+
+**ACTION 1 : npm audit fix**
+- `npm audit fix` + `npm install jspdf@latest` executes
+- Vulnerabilites reduites de 24 (1 critique) a 8 (0 critique)
+- Restant : esbuild/vite (moderate, transitive), node-fetch (high, transitive via fbjs), xlsx (high, pas de fix)
+- jspdf mis a jour vers derniere version (critique resolu)
+
+**ACTION 2 : Remplacement z.any() dans projectSchema.ts**
+- Tous les `z.any()` remplaces par des types stricts
+- Arrays de strings : unique_selling_points, smart_home_features, photos, etc.
+- Arrays de numbers : plot_sizes_m2
+- Records : financing_options, payment_plan, schema_markup, etc.
+- Arrays de records : price_list, special_offers, payment_plans
+- Categorized photos : z.record(z.string(), z.array(z.string()))
+- 0 z.any() restant dans le fichier
+
+**ACTION 3 : Suppression imports mockData**
+- Types `Property` et `FeaturedProject` de mockData deplaces vers `src/types/frontend.types.ts`
+- Renomme en `DisplayProperty` pour eviter conflit avec le vrai `Property` Supabase
+- 5 fichiers mis a jour : SearchContext, PropertySearch, EnhancedGoogleMap, FeaturedProjectCard, About
+- About.tsx : partners inlines avec TODO Supabase
+- console.log supprimes de PropertySearch.tsx (regle CLAUDE.md)
+
+### Fichiers modifies
+- `package.json`, `package-lock.json` (npm audit fix + jspdf)
+- `src/schemas/projectSchema.ts` (z.any() -> types stricts)
+- `src/types/frontend.types.ts` (nouveau - types display frontend)
+- `src/contexts/SearchContext.tsx` (import mockData -> frontend.types)
+- `src/components/PropertySearch.tsx` (import + console.log)
+- `src/components/search/EnhancedGoogleMap.tsx` (import)
+- `src/components/FeaturedProjectCard.tsx` (import)
+- `src/pages/About.tsx` (partners inlines)
+
+### Statut
+- Tables Supabase touchees : aucune
+- Edge Functions modifiees : aucune
+- Build : PASS
+- 0 z.any() restant
+- 0 import mockData dans components/contexts/pages
+
+### Prochaine action
+- Deployer les Edge Functions corrigees sur Supabase
+- Preparer site public MVP
+
+---
+
 ## Session 2026-03-18 (suite) - Fix agentic-search
 
 ### Action realisee

@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Home, Euro, Eye } from 'lucide-react';
-import { FeaturedProject } from '@/data/mockData';
+import { FeaturedProject } from '@/types/frontend.types';
 import { getHeroImage } from '@/utils/gallery';
 
 interface FeaturedProjectCardProps {

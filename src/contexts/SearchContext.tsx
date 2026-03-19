@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
 import { debounce } from 'lodash';
-import { Property } from '@/data/mockData';
+import { DisplayProperty as Property } from '@/types/frontend.types';
 import { logger } from '@/lib/logger';
 
 export type PropertyType = 'all' | 'appartement' | 'maison' | 'villa' | 'commercial' | 'penthouse';

@@ -2,7 +2,19 @@ import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { partners } from '@/data/mockData';
+// TODO: Connect to Supabase - fetch developers list
+const partners = [
+  'LEPTOS Group',
+  'PAFILIA Property',
+  'CYBARCO-CITYCHAMP',
+  'ARISTO Developers',
+  'LIMASSOL DEL MAR',
+  'IMPERIO Properties',
+  'DEMETRA Group',
+  'GIOVANI Group',
+  'ALTAMIRA',
+  'KORANTINA Homes'
+];
 import { 
   Building2, 
   Users, 

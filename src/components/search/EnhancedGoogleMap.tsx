@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { MapPin, Home, Building, Building2, Store } from 'lucide-react';
 import { useGoogleMapsContext } from '@/contexts/GoogleMapsContext';
 import { useSearch } from '@/contexts/SearchContext';
-import { Property } from '@/data/mockData';
+import { DisplayProperty as Property } from '@/types/frontend.types';
 
 interface EnhancedGoogleMapProps {
   height?: string;
