@@ -25,7 +25,7 @@ export const projectSchema = z.object({
   statut_commercial: z.enum(['pre_commercialisation', 'commercialisation', 'reduction_prix', 'dernieres_opportunites', 'vendu']).default('pre_commercialisation'),
   launch_month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, "Format YYYY-MM requis").optional(),
   completion_month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, "Format YYYY-MM requis").optional(),
-  unique_selling_points: z.any().optional(),
+  unique_selling_points: z.array(z.string()).optional(),
   exclusive_commercialization: z.boolean().default(false),
   description: z.string().min(10, "Description trop courte"),
   detailed_description: z.string().optional(),
@@ -66,8 +66,8 @@ export const projectSchema = z.object({
   bedrooms_range_max: z.number().min(0).optional(),
   square_meters_min: z.number().min(0).optional(),
   square_meters_max: z.number().min(0).optional(),
-  plot_sizes_m2: z.any().optional(), // Added (PRIORITY 3) - JSONB
-  smart_home_features: z.any().optional(),
+  plot_sizes_m2: z.array(z.number()).optional(),
+  smart_home_features: z.array(z.string()).optional(),
 
   // ========================================
   // PRICING & FEES
@@ -82,27 +82,27 @@ export const projectSchema = z.object({
   roi_estimate_percent: z.number().min(0).max(100).optional(),
   rental_yield_percent: z.number().min(0).max(100).optional(),
   financing_available: z.boolean().default(false),
-  financing_options: z.any().optional(),
-  payment_plan: z.any().optional(),
-  incentives: z.any().optional(),
+  financing_options: z.record(z.string(), z.unknown()).optional(),
+  payment_plan: z.record(z.string(), z.unknown()).optional(),
+  incentives: z.record(z.string(), z.unknown()).optional(),
   
   // New Pricing Fields (PRIORITY 2)
   pricing_strategy_notes: z.string().optional(),
   deposit_terms: z.string().optional(),
   cancellation_policy: z.string().optional(),
-  price_list: z.any().optional(), // JSONB
-  special_offers: z.any().optional(), // JSONB
-  bank_partners: z.any().optional(), // JSONB
-  investment_highlights: z.any().optional(), // JSONB
+  price_list: z.array(z.record(z.string(), z.unknown())).optional(),
+  special_offers: z.array(z.record(z.string(), z.unknown())).optional(),
+  bank_partners: z.array(z.string()).optional(),
+  investment_highlights: z.array(z.string()).optional(),
 
   // ========================================
   // MEDIA
   // ========================================
-  photos: z.any().optional(),
-  photo_gallery_urls: z.any().optional(),
+  photos: z.array(z.string()).optional(),
+  photo_gallery_urls: z.array(z.string()).optional(),
   photo_count: z.number().optional(), // Added (PRIORITY 4)
-  categorized_photos: z.any().optional(), // Added (PRIORITY 3) - JSONB
-  video_tour_urls: z.any().optional(),
+  categorized_photos: z.record(z.string(), z.array(z.string())).optional(),
+  video_tour_urls: z.array(z.string()).optional(),
   video_url: z.string().optional(), // Added (PRIORITY 3)
   virtual_tour_url: z.string().optional(),
   project_presentation_url: z.string().optional(),
@@ -112,9 +112,9 @@ export const projectSchema = z.object({
   ar_experience_url: z.string().optional(),
   interactive_map_url: z.string().optional(),
   map_image: z.string().optional(),
-  drone_footage_urls: z.any().optional(),
+  drone_footage_urls: z.array(z.string()).optional(),
   drone_footage_url: z.string().optional(),
-  model_3d_urls: z.any().optional(),
+  model_3d_urls: z.array(z.string()).optional(),
   bim_model_url: z.string().optional(), // Added (PRIORITY 3)
   master_plan_url: z.string().optional(),
   brochure_url: z.string().optional(),
@@ -126,14 +126,14 @@ export const projectSchema = z.object({
   // ========================================
   // CONSTRUCTION
   // ========================================
-  construction_materials: z.any().optional(),
+  construction_materials: z.array(z.string()).optional(),
   finishing_level: z.string().optional(),
   design_style: z.string().optional(),
   architect_name: z.string().optional(),
   architect_license_number: z.string().optional(),
   builder_name: z.string().optional(),
   construction_warranty_details: z.string().optional(),
-  building_certification: z.any().optional(),
+  building_certification: z.record(z.string(), z.unknown()).optional(),
   construction_year: z.number().min(1900).max(2050).optional(),
   renovation_year: z.number().min(1900).max(2050).optional(),
   maintenance_fees_yearly: z.number().min(0).optional(),
@@ -147,19 +147,19 @@ export const projectSchema = z.object({
   garden_maintenance_fee: z.number().optional(),
   
   seismic_rating: z.string().optional(),
-  accessibility_features: z.any().optional(),
+  accessibility_features: z.array(z.string()).optional(),
   internet_speed_mbps: z.number().min(0).optional(),
   pet_policy: z.string().optional(),
   smoking_policy: z.string().optional(),
-  sustainability_certifications: z.any().optional(),
+  sustainability_certifications: z.array(z.string()).optional(),
   warranty_years: z.number().min(0).optional(),
   after_sales_service: z.string().optional(),
 
   // ========================================
   // LEGAL & COMPLIANCE
   // ========================================
-  permits_obtained: z.any().optional(),
-  compliance_certifications: z.any().optional(),
+  permits_obtained: z.record(z.string(), z.unknown()).optional(),
+  compliance_certifications: z.record(z.string(), z.unknown()).optional(),
   planning_permit_number: z.string().optional(),
   building_permit_number: z.string().optional(),
 
@@ -176,20 +176,20 @@ export const projectSchema = z.object({
   meta_title: z.string().optional(),
   meta_description: z.string().optional(),
   meta_keywords: z.string().optional(),
-  marketing_highlights: z.any().optional(),
+  marketing_highlights: z.array(z.string()).optional(),
   target_audience: z.string().optional(),
   url_slug: z.string().optional(),
   og_image_url: z.string().optional(),
-  schema_markup: z.any().optional(),
+  schema_markup: z.record(z.string(), z.unknown()).optional(),
 
   // ========================================
   // AMENITIES - Common (existing)
   // ========================================
-  amenities: z.any().optional(),
-  lifestyle_amenities: z.any().optional(),
-  community_features: z.any().optional(),
-  wellness_features: z.any().optional(),
-  seasonal_features: z.any().optional(),
+  amenities: z.array(z.string()).optional(),
+  lifestyle_amenities: z.array(z.string()).optional(),
+  community_features: z.array(z.string()).optional(),
+  wellness_features: z.array(z.string()).optional(),
+  seasonal_features: z.array(z.string()).optional(),
   
   // ========================================
   // AMENITIES - Boolean Fields (PRIORITY 1 - 27 fields)
@@ -225,9 +225,9 @@ export const projectSchema = z.object({
   // ========================================
   // AMENITIES - JSONB Fields (PRIORITY 3 - 3 fields)
   // ========================================
-  security_features: z.any().optional(),
-  wellness_facilities: z.any().optional(),
-  outdoor_facilities: z.any().optional(),
+  security_features: z.array(z.string()).optional(),
+  wellness_facilities: z.array(z.string()).optional(),
+  outdoor_facilities: z.array(z.string()).optional(),
   
   // ========================================
   // BUILDINGS
@@ -263,7 +263,7 @@ export const projectSchema = z.object({
   // ========================================
   // NEARBY AMENITIES
   // ========================================
-  surrounding_amenities: z.any().optional(),
+  surrounding_amenities: z.record(z.string(), z.unknown()).optional(),
 
   // ========================================
   // STATUS
@@ -288,11 +288,11 @@ export const projectSchema = z.object({
   favorite_count: z.number().optional(),
   search_ranking_weight: z.number().min(1).max(10).default(5),
   last_price_update: z.string().optional(),
-  social_proof_stats: z.any().optional(),
+  social_proof_stats: z.record(z.string(), z.unknown()).optional(),
   ai_chatbot_enabled: z.boolean().optional(),
   ai_description: z.string().optional(),
   ai_generated_at: z.string().optional(),
-  ai_generated_content: z.any().optional(),
+  ai_generated_content: z.record(z.string(), z.unknown()).optional(),
   ai_content_disclosure: z.string().optional(),
   
   // ========================================
@@ -325,7 +325,7 @@ export const projectSchema = z.object({
   discount_valid_until: z.string().optional(),
   early_bird_discount: z.number().min(0).optional(),
   bulk_purchase_discount: z.number().min(0).max(100).optional(),
-  payment_plans: z.any().optional(),
+  payment_plans: z.array(z.record(z.string(), z.unknown())).optional(),
   
   // ========================================
   // PROPERTY MANAGEMENT & SERVICES
