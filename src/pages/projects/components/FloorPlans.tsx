@@ -4,12 +4,38 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ZoomIn, Download } from 'lucide-react';
 
+interface BuildingRef {
+  id: string;
+  building_name?: string | null;
+  floors_above_ground?: number | null;
+  total_units?: number | null;
+  building_class?: string | null;
+  energy_certificate?: string | null;
+}
+
+interface FloorPlan {
+  title?: string;
+  bedrooms?: number | null;
+  bathrooms?: number | null;
+  area?: number | null;
+  area_m2?: number | null;
+  image?: string;
+  image_url?: string;
+  pdf_url?: string;
+  [key: string]: unknown;
+}
+
+interface FloorPlansProject {
+  floor_plans?: FloorPlan[];
+  buildings?: BuildingRef[];
+}
+
 interface FloorPlansProps {
-  project: any;
+  project: FloorPlansProject;
 }
 
 export default function FloorPlans({ project }: FloorPlansProps) {
-  const [selectedPlan, setSelectedPlan] = useState<any>(null);
+  const [selectedPlan, setSelectedPlan] = useState<FloorPlan | null>(null);
 
   const floorPlans = project.floor_plans || [];
   const buildings = project.buildings || [];
@@ -45,7 +71,7 @@ export default function FloorPlans({ project }: FloorPlansProps) {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16"
           >
-            {buildings.map((building: any, index: number) => (
+            {buildings.map((building, index) => (
               <motion.div
                 key={building.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -97,7 +123,7 @@ export default function FloorPlans({ project }: FloorPlansProps) {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
-            {floorPlans.map((plan: any, index: number) => (
+            {floorPlans.map((plan, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, scale: 0.95 }}

@@ -11,9 +11,30 @@ import { useNavigate } from 'react-router-dom';
 import { checkProjectDependencies } from '@/lib/supabase/integrity';
 import { ProjectStatusActions } from '@/components/admin/ProjectStatusActions';
 
+interface ProjectBuilding {
+  total_units?: number | null;
+  [key: string]: unknown;
+}
+
+interface ProjectRow {
+  id: string;
+  title?: string | null;
+  status?: string | null;
+  cyprus_zone?: string | null;
+  zone?: string | null;
+  price_from?: number | null;
+  total_units?: number | null;
+  total_units_new?: number | null;
+  units_available?: number | null;
+  units_available_new?: number | null;
+  golden_visa_eligible?: boolean | null;
+  buildings?: ProjectBuilding[];
+  [key: string]: unknown;
+}
+
 interface ProjectsTableProps {
-  projects: any[];
-  onEdit: (project: any) => void;
+  projects: ProjectRow[];
+  onEdit: (project: ProjectRow) => void;
   onRefetch: () => void;
   selectedProjects: string[];
   onSelectionChange: (selectedIds: string[]) => void;
@@ -74,7 +95,7 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
         description: 'Le projet a été supprimé avec succès.'
       });
       onRefetch();
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error deleting project:', error);
       toast.error('Erreur', {
         description: 'Impossible de supprimer le projet.'
@@ -119,16 +140,15 @@ const ProjectsTable: React.FC<ProjectsTableProps> = React.memo(({ projects, onEd
     return `€${price.toLocaleString()}`;
   };
 
-  const calculateUnits = (project: any) => {
-    // Prioritize new fields, then buildings data, then legacy fields
+  const calculateUnits = (project: ProjectRow) => {
     const buildings = Array.isArray(project.buildings) ? project.buildings : [];
-    const totalFromBuildings = buildings.reduce((sum: number, building: any) => {
-      return sum + (building.total_units || 0);
+    const totalFromBuildings = buildings.reduce((sum: number, building: ProjectBuilding) => {
+      return sum + (building.total_units ?? 0);
     }, 0);
-    
-    const available = project.units_available_new || project.units_available || Math.floor(totalFromBuildings * 0.3) || 0;
-    const total = project.total_units_new || totalFromBuildings || project.total_units || 0;
-    
+
+    const available = project.units_available_new ?? project.units_available ?? Math.floor(totalFromBuildings * 0.3) ?? 0;
+    const total = project.total_units_new ?? totalFromBuildings ?? project.total_units ?? 0;
+
     return `${available}/${total}`;
   };
 

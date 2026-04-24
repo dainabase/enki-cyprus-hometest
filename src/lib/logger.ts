@@ -24,40 +24,45 @@ const shouldLog = (level: LogLevel): boolean => {
   return logLevels[level] >= logLevels[config.level];
 };
 
+type SentryLike = {
+  captureException?: (err: unknown, options?: unknown) => void;
+  captureMessage?: (message: string, options?: unknown) => void;
+};
+
 export const logger = {
-  debug: (...args: any[]) => {
+  debug: (...args: unknown[]) => {
     if (shouldLog('debug')) {
       console.log('[DEBUG]', ...args);
     }
   },
 
-  info: (...args: any[]) => {
+  info: (...args: unknown[]) => {
     if (shouldLog('info')) {
       console.info('[INFO]', ...args);
     }
   },
 
-  warn: (...args: any[]) => {
+  warn: (...args: unknown[]) => {
     if (shouldLog('warn')) {
       console.warn('[WARN]', ...args);
     }
   },
 
-  error: (message: string, error?: Error | unknown, context?: Record<string, any>) => {
+  error: (message: string, error?: Error | unknown, context?: Record<string, unknown>) => {
     if (shouldLog('error')) {
       console.error('[ERROR]', message, error, context);
     }
 
     if (config.sentryEnabled && typeof window !== 'undefined') {
       try {
-        const Sentry = (window as any).Sentry;
+        const Sentry = (window as unknown as { Sentry?: SentryLike }).Sentry;
         if (Sentry && Sentry.captureException) {
           if (error instanceof Error) {
             Sentry.captureException(error, {
               tags: { component: context?.component },
               extra: context,
             });
-          } else {
+          } else if (Sentry.captureMessage) {
             Sentry.captureMessage(message, {
               level: 'error',
               extra: { error, ...context },
@@ -78,7 +83,7 @@ export const logger = {
     }
   },
 
-  table: (data: any) => {
+  table: (data: unknown) => {
     if (config.enabled && console.table) {
       console.table(data);
     }

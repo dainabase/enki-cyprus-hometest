@@ -71,10 +71,11 @@ export function PropertiesSection({ projectId, buildings }: PropertiesSectionPro
         description: 'La propriété a été créée avec succès.',
       });
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
+      const message = error instanceof Error ? error.message : 'Erreur lors de la creation.';
       toast({
         title: 'Erreur',
-        description: error.message || 'Erreur lors de la création.',
+        description: message,
         variant: 'destructive',
       });
     },
@@ -91,10 +92,11 @@ export function PropertiesSection({ projectId, buildings }: PropertiesSectionPro
         description: 'La propriété a été mise à jour avec succès.',
       });
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
+      const message = error instanceof Error ? error.message : 'Erreur lors de la mise a jour.';
       toast({
         title: 'Erreur',
-        description: error.message || 'Erreur lors de la mise à jour.',
+        description: message,
         variant: 'destructive',
       });
     },
@@ -110,10 +112,11 @@ export function PropertiesSection({ projectId, buildings }: PropertiesSectionPro
         description: 'La propriété a été supprimée avec succès.',
       });
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
+      const message = error instanceof Error ? error.message : 'Erreur lors de la suppression.';
       toast({
         title: 'Erreur',
-        description: error.message || 'Erreur lors de la suppression.',
+        description: message,
         variant: 'destructive',
       });
     },

@@ -8,10 +8,21 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { supabase } from '@/integrations/supabase/client';
 import { PropertyFormData } from '@/schemas/property.schema';
 
+interface ProjectOption {
+  id: string;
+  title?: string | null;
+}
+
+interface BuildingOption {
+  id?: string;
+  building_name?: string | null;
+  name?: string | null;
+}
+
 interface IdentificationStepProps {
   form: UseFormReturn<PropertyFormData>;
-  projects?: any[];
-  buildings?: any[];
+  projects?: ProjectOption[];
+  buildings?: BuildingOption[];
 }
 
 export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form, projects = [], buildings = [] }) => {
@@ -83,7 +94,7 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form, pr
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="none">Aucun (villa individuelle)</SelectItem>
-                  {Array.isArray(buildings) && buildings.map((building: any) => (
+                  {Array.isArray(buildings) && buildings.map((building) => (
                     <SelectItem key={building?.id || 'unknown'} value={building?.id || ''}>
                       {building?.building_name || building?.name || 'Unknown Building'}
                     </SelectItem>

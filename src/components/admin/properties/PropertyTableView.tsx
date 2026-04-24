@@ -5,8 +5,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { CreditCard as Edit, MapPin, Building2, Eye, Trash2 } from 'lucide-react';
 
 interface PropertyTableViewProps {
-  properties: any[];
-  onEdit: (property: any) => void;
+  properties: Array<Record<string, unknown>>;
+  onEdit: (property: Record<string, unknown>) => void;
   onDelete: (id: string) => void;
   selectedProperties: string[];
   onSelectionChange: (ids: string[]) => void;

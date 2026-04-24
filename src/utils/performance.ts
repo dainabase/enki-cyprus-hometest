@@ -30,16 +30,15 @@ export const createLazyComponent = (importFn: () => Promise<any>) => {
   return React.lazy(importFn);
 };
 
-// Memoization utility for expensive calculations
-export const memoize = <T extends (...args: any[]) => any>(fn: T): T => {
-  const cache = new Map();
-  
-  return ((...args: any[]) => {
+export const memoize = <T extends (...args: unknown[]) => unknown>(fn: T): T => {
+  const cache = new Map<string, unknown>();
+
+  return ((...args: unknown[]) => {
     const key = JSON.stringify(args);
     if (cache.has(key)) {
       return cache.get(key);
     }
-    
+
     const result = fn(...args);
     cache.set(key, result);
     return result;

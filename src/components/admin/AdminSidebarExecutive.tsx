@@ -109,7 +109,7 @@ export const AdminSidebarExecutive: React.FC = () => {
     localStorage.setItem('admin-sidebar-categories', JSON.stringify(newStates));
   };
 
-  const renderMenuItem = (item: any, isSubItem = false) => {
+  const renderMenuItem = (item: { url: string; title: string; icon: React.ComponentType<{ className?: string }> }, isSubItem = false) => {
     const Icon = item.icon;
     const active = isActive(item.url);
     
@@ -132,7 +132,7 @@ export const AdminSidebarExecutive: React.FC = () => {
     );
   };
 
-  const renderCategory = (categoryKey: string, category: any) => {
+  const renderCategory = (categoryKey: string, category: { title: string; icon: React.ComponentType<{ className?: string }>; items: Array<{ url: string; title: string; icon: React.ComponentType<{ className?: string }> }> }) => {
     const Icon = category.icon;
     const isExpanded = categoryStates[categoryKey];
     
@@ -155,7 +155,7 @@ export const AdminSidebarExecutive: React.FC = () => {
         
         {isExpanded && (
           <div className="space-y-1 ml-2">
-            {category.items.map((item: any) => renderMenuItem(item, true))}
+            {category.items.map((item) => renderMenuItem(item, true))}
           </div>
         )}
       </div>

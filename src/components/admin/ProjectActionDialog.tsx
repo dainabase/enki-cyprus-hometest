@@ -7,8 +7,8 @@ import { CheckCircle2, AlertCircle, Info, AlertTriangle } from 'lucide-react';
 interface ProjectModification {
   field: string;
   label: string;
-  oldValue: any;
-  newValue: any;
+  oldValue: unknown;
+  newValue: unknown;
   type: 'added' | 'modified' | 'removed';
 }
 
@@ -103,8 +103,8 @@ export const ProjectActionDialog: React.FC<ProjectActionDialogProps> = ({
     }
   };
 
-  const formatValue = (value: any): string => {
-    if (value === null || value === undefined) return 'Non défini';
+  const formatValue = (value: unknown): string => {
+    if (value === null || value === undefined) return 'Non defini';
     if (Array.isArray(value)) return value.length > 0 ? value.join(', ') : 'Aucun';
     if (typeof value === 'boolean') return value ? 'Oui' : 'Non';
     if (typeof value === 'number') return value.toLocaleString();

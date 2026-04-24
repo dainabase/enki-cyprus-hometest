@@ -1,9 +1,10 @@
 import React from 'react';
+import type { LucideIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import { 
+import {
   MapPin, Building2, Heart, Plus, ShoppingCart, Store,
   GraduationCap, Bus, Plane, Landmark, CreditCard, Shield,
   Waves, Trees, Coffee, Building, Navigation
@@ -12,7 +13,14 @@ import {
 interface CommodityItem {
   name: string;
   type: string;
-  Icon: any;
+  Icon: LucideIcon;
+}
+
+interface CommodityValue {
+  nearby_amenity_id?: string;
+  type?: string;
+  distance_km?: number;
+  details?: string;
 }
 
 const COMMODITIES_DATA = {
@@ -53,8 +61,8 @@ const COMMODITIES_DATA = {
 };
 
 interface Props {
-  value: any[];
-  onChange: (value: any[]) => void;
+  value: Array<string | CommodityValue>;
+  onChange: (value: Array<string | CommodityValue>) => void;
   onDetectWithMaps?: () => void;
 }
 

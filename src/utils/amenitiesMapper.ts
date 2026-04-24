@@ -1,4 +1,4 @@
-// Mapping entre l'ancien format français et les codes anglais
+// Mapping entre l'ancien format francais et les codes anglais
 export const amenitiesLegacyToCode: Record<string, string> = {
   // Wellness
   'piscine': 'swimming_pool',
@@ -9,14 +9,14 @@ export const amenitiesLegacyToCode: Record<string, string> = {
   'jacuzzi': 'jacuzzi',
   'massage_room': 'massage_room',
   'yoga_studio': 'yoga_studio',
-  
+
   // Security
   'securite_24_7': 'security_24_7',
   'gated_community': 'gated_community',
   'video_surveillance': 'video_surveillance',
   'access_control': 'access_control',
   'alarm_system': 'alarm_system',
-  
+
   // Lifestyle
   'conciergerie': 'concierge',
   'restaurant': 'restaurant',
@@ -25,12 +25,12 @@ export const amenitiesLegacyToCode: Record<string, string> = {
   'rooftop_terrace': 'rooftop_terrace',
   'library': 'library',
   'wine_cellar': 'wine_cellar',
-  
+
   // Business
   'business_center': 'business_center',
   'meeting_rooms': 'meeting_rooms',
   'coworking': 'coworking_space',
-  
+
   // Recreation
   'tennis_court': 'tennis_court',
   'padel_court': 'padel_court',
@@ -44,7 +44,7 @@ export const amenitiesLegacyToCode: Record<string, string> = {
   'club_house': 'clubhouse',
   'kids_club': 'kids_club',
   'playground': 'playground',
-  
+
   // Essential
   'parking': 'parking',
   'parking_souterrain': 'underground_parking',
@@ -53,272 +53,198 @@ export const amenitiesLegacyToCode: Record<string, string> = {
   'laundry': 'laundry_room',
   'elevator': 'elevator',
   'disabled_access': 'disabled_access',
-  
+
   // Outdoor
   'garden': 'garden',
   'barbecue': 'bbq_area',
   'beach_access': 'beach_access',
   'jogging_track': 'jogging_track',
   'bike_path': 'bike_path',
-  
+
   // Special
   'helipad': 'helipad',
   'marina_berth': 'marina_berth',
   'private_beach': 'private_beach'
 };
 
-// Fonction pour convertir l'ancien format vers le nouveau
 export function convertLegacyAmenities(legacyAmenities: string[]): string[] {
   if (!legacyAmenities || !Array.isArray(legacyAmenities)) {
     return [];
   }
-  
+
   return legacyAmenities
     .map(amenity => {
-      // Si c'est déjà un code anglais, on le garde
       if (amenity.includes('_')) {
         return amenity;
       }
-      // Sinon on cherche le mapping
       return amenitiesLegacyToCode[amenity] || amenity;
     })
     .filter(Boolean);
 }
 
-// Type pour les photos catégorisées (nouveau format)
 export interface CategorizedPhoto {
   url: string;
-  category: 'hero' | 'exterior_1' | 'exterior_2' | 'interior_1' | 'interior_2' | 
-            'panoramic_view' | 'sea_view' | 'mountain_view' | 'amenities' | 
+  category: 'hero' | 'exterior_1' | 'exterior_2' | 'interior_1' | 'interior_2' |
+            'panoramic_view' | 'sea_view' | 'mountain_view' | 'amenities' |
             'plans' | 'kitchen' | 'bedroom' | 'bathroom' | 'balcony' | 'garden';
   isPrimary?: boolean;
   caption?: string;
 }
 
-// Fonction pour convertir les photos vers le nouveau format catégorisé
-export function convertPhotosToCategorized(photos: any): CategorizedPhoto[] {
-  console.log('🔄 Converting photos to categorized format:', photos);
-  
-  // Si photos est déjà au bon format (array avec category)
-  if (Array.isArray(photos)) {
-    // Filtrer et mapper les photos valides
-    return photos
-      .filter(photo => photo && (photo.url || typeof photo === 'string'))
-      .map((photo, index) => {
-        if (typeof photo === 'string') {
-          // Si c'est juste une URL string
-          return {
-            url: photo,
-            category: index === 0 ? 'hero' : 'exterior_1',
-            isPrimary: index === 0,
-            caption: ''
-          } as CategorizedPhoto;
-        } else if (photo.category) {
-          // Si c'est déjà au bon format
-          return {
-            url: photo.url || '',
-            category: photo.category,
-            isPrimary: photo.isPrimary || false,
-            caption: photo.caption || ''
-          } as CategorizedPhoto;
-        } else {
-          // Si c'est un objet avec url mais sans category
-          return {
-            url: photo.url || '',
-            category: index === 0 ? 'hero' : 'exterior_1',
-            isPrimary: photo.isPrimary || index === 0,
-            caption: photo.caption || ''
-          } as CategorizedPhoto;
-        }
-      });
+type RawPhoto = {
+  url?: string;
+  category?: CategorizedPhoto['category'];
+  isPrimary?: boolean;
+  caption?: string;
+};
+
+type CategorizedPhotosInput = {
+  exterior?: Array<string | RawPhoto>;
+  interior?: Array<string | RawPhoto>;
+  kitchen?: Array<string | RawPhoto>;
+  bedroom?: Array<string | RawPhoto>;
+  bathroom?: Array<string | RawPhoto>;
+  amenities?: Array<string | RawPhoto>;
+  views?: Array<string | RawPhoto>;
+  balcony?: Array<string | RawPhoto>;
+  garden?: Array<string | RawPhoto>;
+  plans?: Array<string | RawPhoto>;
+};
+
+type PhotosInput =
+  | Array<string | RawPhoto>
+  | CategorizedPhotosInput
+  | string
+  | null
+  | undefined;
+
+function coerceToUrl(photo: string | RawPhoto): string | null {
+  if (typeof photo === 'string') return photo;
+  if (photo && typeof photo === 'object' && typeof photo.url === 'string') return photo.url;
+  return null;
+}
+
+function coerceToCaption(photo: string | RawPhoto): string {
+  if (typeof photo === 'object' && photo !== null && typeof photo.caption === 'string') {
+    return photo.caption;
   }
-  
-  // Si photos est un objet avec des catégories (ancien format)
+  return '';
+}
+
+export function convertPhotosToCategorized(photos: PhotosInput): CategorizedPhoto[] {
+  if (Array.isArray(photos)) {
+    return photos
+      .map((photo, index): CategorizedPhoto | null => {
+        const url = coerceToUrl(photo);
+        if (!url) return null;
+
+        if (typeof photo === 'object' && photo !== null && photo.category) {
+          return {
+            url,
+            category: photo.category,
+            isPrimary: photo.isPrimary ?? false,
+            caption: coerceToCaption(photo)
+          };
+        }
+
+        return {
+          url,
+          category: index === 0 ? 'hero' : 'exterior_1',
+          isPrimary: index === 0,
+          caption: coerceToCaption(photo)
+        };
+      })
+      .filter((p): p is CategorizedPhoto => p !== null);
+  }
+
   if (photos && typeof photos === 'object' && !Array.isArray(photos)) {
     const result: CategorizedPhoto[] = [];
-    
-    // Convertir exterior
-    if (photos.exterior && Array.isArray(photos.exterior)) {
-      photos.exterior.forEach((photo: any, index: number) => {
-        if (photo && (photo.url || typeof photo === 'string')) {
-          result.push({
-            url: typeof photo === 'string' ? photo : photo.url,
-            category: index === 0 ? 'hero' : index === 1 ? 'exterior_1' : 'exterior_2',
-            isPrimary: index === 0,
-            caption: typeof photo === 'object' ? (photo.caption || '') : ''
-          });
+
+    const pushCategory = (
+      list: Array<string | RawPhoto> | undefined,
+      categoryResolver: (index: number) => CategorizedPhoto['category'] | null,
+      isPrimaryResolver: (index: number) => boolean = () => false
+    ) => {
+      if (!Array.isArray(list)) return;
+      list.forEach((photo, index) => {
+        const url = coerceToUrl(photo);
+        if (!url) return;
+        const category = categoryResolver(index);
+        if (!category) return;
+        result.push({
+          url,
+          category,
+          isPrimary: isPrimaryResolver(index),
+          caption: coerceToCaption(photo)
+        });
+      });
+    };
+
+    pushCategory(
+      photos.exterior,
+      (i) => (i === 0 ? 'hero' : i === 1 ? 'exterior_1' : 'exterior_2'),
+      (i) => i === 0
+    );
+    pushCategory(photos.interior, (i) => (i === 0 ? 'interior_1' : 'interior_2'));
+    pushCategory(photos.kitchen, () => 'kitchen');
+    pushCategory(photos.bedroom, () => 'bedroom');
+    pushCategory(photos.bathroom, () => 'bathroom');
+    pushCategory(photos.amenities, () => 'amenities');
+    pushCategory(photos.views, (_, ) => 'panoramic_view');
+    pushCategory(photos.balcony, () => 'balcony');
+    pushCategory(photos.garden, () => 'garden');
+    pushCategory(photos.plans, () => 'plans');
+
+    if (Array.isArray(photos.views)) {
+      const viewStart = result.length - photos.views.length;
+      photos.views.forEach((photo, i) => {
+        if (typeof photo !== 'object' || photo === null) return;
+        const caption = (photo.caption ?? '').toLowerCase();
+        const entry = result[viewStart + i];
+        if (!entry) return;
+        if (caption.includes('sea') || caption.includes('mer')) {
+          entry.category = 'sea_view';
+        } else if (caption.includes('mountain') || caption.includes('montagne')) {
+          entry.category = 'mountain_view';
         }
       });
     }
-    
-    // Convertir interior
-    if (photos.interior && Array.isArray(photos.interior)) {
-      photos.interior.forEach((photo: any, index: number) => {
-        if (photo && (photo.url || typeof photo === 'string')) {
-          result.push({
-            url: typeof photo === 'string' ? photo : photo.url,
-            category: index === 0 ? 'interior_1' : 'interior_2',
-            isPrimary: false,
-            caption: typeof photo === 'object' ? (photo.caption || '') : ''
-          });
-        }
-      });
-    }
-    
-    // Convertir kitchen
-    if (photos.kitchen && Array.isArray(photos.kitchen)) {
-      photos.kitchen.forEach((photo: any) => {
-        if (photo && (photo.url || typeof photo === 'string')) {
-          result.push({
-            url: typeof photo === 'string' ? photo : photo.url,
-            category: 'kitchen',
-            isPrimary: false,
-            caption: typeof photo === 'object' ? (photo.caption || '') : ''
-          });
-        }
-      });
-    }
-    
-    // Convertir bedroom
-    if (photos.bedroom && Array.isArray(photos.bedroom)) {
-      photos.bedroom.forEach((photo: any) => {
-        if (photo && (photo.url || typeof photo === 'string')) {
-          result.push({
-            url: typeof photo === 'string' ? photo : photo.url,
-            category: 'bedroom',
-            isPrimary: false,
-            caption: typeof photo === 'object' ? (photo.caption || '') : ''
-          });
-        }
-      });
-    }
-    
-    // Convertir bathroom
-    if (photos.bathroom && Array.isArray(photos.bathroom)) {
-      photos.bathroom.forEach((photo: any) => {
-        if (photo && (photo.url || typeof photo === 'string')) {
-          result.push({
-            url: typeof photo === 'string' ? photo : photo.url,
-            category: 'bathroom',
-            isPrimary: false,
-            caption: typeof photo === 'object' ? (photo.caption || '') : ''
-          });
-        }
-      });
-    }
-    
-    // Convertir amenities
-    if (photos.amenities && Array.isArray(photos.amenities)) {
-      photos.amenities.forEach((photo: any) => {
-        if (photo && (photo.url || typeof photo === 'string')) {
-          result.push({
-            url: typeof photo === 'string' ? photo : photo.url,
-            category: 'amenities',
-            isPrimary: false,
-            caption: typeof photo === 'object' ? (photo.caption || '') : ''
-          });
-        }
-      });
-    }
-    
-    // Convertir views
-    if (photos.views && Array.isArray(photos.views)) {
-      photos.views.forEach((photo: any, index: number) => {
-        if (photo && (photo.url || typeof photo === 'string')) {
-          let category: CategorizedPhoto['category'] = 'panoramic_view';
-          
-          // Déterminer le type de vue basé sur la caption
-          if (typeof photo === 'object' && photo.caption) {
-            const caption = photo.caption.toLowerCase();
-            if (caption.includes('sea') || caption.includes('mer')) {
-              category = 'sea_view';
-            } else if (caption.includes('mountain') || caption.includes('montagne')) {
-              category = 'mountain_view';
-            }
-          }
-          
-          result.push({
-            url: typeof photo === 'string' ? photo : photo.url,
-            category: category,
-            isPrimary: false,
-            caption: typeof photo === 'object' ? (photo.caption || '') : ''
-          });
-        }
-      });
-    }
-    
-    // Convertir balcony
-    if (photos.balcony && Array.isArray(photos.balcony)) {
-      photos.balcony.forEach((photo: any) => {
-        if (photo && (photo.url || typeof photo === 'string')) {
-          result.push({
-            url: typeof photo === 'string' ? photo : photo.url,
-            category: 'balcony',
-            isPrimary: false,
-            caption: typeof photo === 'object' ? (photo.caption || '') : ''
-          });
-        }
-      });
-    }
-    
-    // Convertir garden
-    if (photos.garden && Array.isArray(photos.garden)) {
-      photos.garden.forEach((photo: any) => {
-        if (photo && (photo.url || typeof photo === 'string')) {
-          result.push({
-            url: typeof photo === 'string' ? photo : photo.url,
-            category: 'garden',
-            isPrimary: false,
-            caption: typeof photo === 'object' ? (photo.caption || '') : ''
-          });
-        }
-      });
-    }
-    
-    // Convertir plans
-    if (photos.plans && Array.isArray(photos.plans)) {
-      photos.plans.forEach((photo: any) => {
-        if (photo && (photo.url || typeof photo === 'string')) {
-          result.push({
-            url: typeof photo === 'string' ? photo : photo.url,
-            category: 'plans',
-            isPrimary: false,
-            caption: typeof photo === 'object' ? (photo.caption || '') : ''
-          });
-        }
-      });
-    }
-    
-    console.log('✅ Photos converted to categorized format:', result);
+
     return result;
   }
-  
-  // Si photos est une string JSON, essayer de la parser
+
   if (typeof photos === 'string') {
     try {
-      const parsed = JSON.parse(photos);
+      const parsed = JSON.parse(photos) as PhotosInput;
       return convertPhotosToCategorized(parsed);
-    } catch (e) {
-      console.error('❌ Cannot parse photos string:', e);
+    } catch {
       return [];
     }
   }
-  
-  // Par défaut, retourner un tableau vide
-  console.log('⚠️ No valid photos found, returning empty array');
+
   return [];
 }
 
-// Fonction pour préparer les surrounding amenities
-export function prepareSurroundingAmenities(amenities: any[]): any[] {
+export interface SurroundingAmenity {
+  name: string;
+  type: string;
+  distance?: number | string;
+  unit?: string;
+}
+
+export function prepareSurroundingAmenities(amenities: unknown[]): SurroundingAmenity[] {
   if (!amenities || !Array.isArray(amenities)) {
     return [];
   }
-  
-  return amenities.filter(item => 
-    item && 
-    typeof item === 'object' && 
-    item.name && 
-    item.type
-  );
+
+  return amenities.filter((item): item is SurroundingAmenity => {
+    return (
+      typeof item === 'object' &&
+      item !== null &&
+      'name' in item &&
+      'type' in item &&
+      typeof (item as SurroundingAmenity).name === 'string' &&
+      typeof (item as SurroundingAmenity).type === 'string'
+    );
+  });
 }

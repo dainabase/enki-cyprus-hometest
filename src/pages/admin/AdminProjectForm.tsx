@@ -24,11 +24,12 @@ const AdminProjectForm: React.FC = () => {
   const [saveType, setSaveType] = useState<'draft' | 'publish'>('draft');
   const [formKey, setFormKey] = useState(0);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [validationErrors, setValidationErrors] = useState<any[]>([]);
+  const [validationErrors, setValidationErrors] = useState<Array<{ step: number; field: string; message: string }>>([]);
 
   const currentStep = projectFormSteps[currentStepIndex];
-  
-  const form = useForm<any>({
+
+  type ProjectFormValues = Record<string, unknown>;
+  const form = useForm<ProjectFormValues>({
     mode: 'onSubmit',
     defaultValues: {
       // Basics
@@ -442,18 +443,17 @@ const AdminProjectForm: React.FC = () => {
     loadProjectData();
   }, [project, isEdit, form, id]);
 
-  // Enhanced submit handler
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: ProjectFormValues) => {
     try {
-      console.log('📤 Submitting form data:', data);
-      console.log('📸 Photos in form data:', {
-        photosCount: data.photos?.length,
-        photos: data.photos,
-        firstPhoto: data.photos?.[0]
+      console.log('Submitting form data', data);
+      const photosInForm = Array.isArray(data.photos) ? data.photos : [];
+      console.log('Photos in form data', {
+        photosCount: photosInForm.length,
+        photos: photosInForm,
+        firstPhoto: photosInForm[0]
       });
-      
-      // Préparer les données pour la DB
-      const dbData: any = {
+
+      const dbData: Record<string, unknown> = {
         ...data
       };
       
@@ -478,9 +478,9 @@ const AdminProjectForm: React.FC = () => {
       ];
       
       cleanObjectFields.forEach(field => {
-        if (dbData[field] && typeof dbData[field] === 'object' && '_type' in dbData[field]) {
-          // Si c'est un objet avec _type et value, on prend la value
-          const value = dbData[field].value;
+        const fieldValue = dbData[field];
+        if (fieldValue && typeof fieldValue === 'object' && '_type' in fieldValue) {
+          const value = (fieldValue as { value?: unknown }).value;
           dbData[field] = (value === '' || value === 'undefined') ? null : value;
         }
       });
@@ -497,14 +497,15 @@ const AdminProjectForm: React.FC = () => {
         dbData.amenities = dbData.amenities.filter(Boolean);
       }
       
-      // 🔧 FIX CRITIQUE: Validation et logging des photos
-      if (dbData.photos && Array.isArray(dbData.photos)) {
-        dbData.photos = dbData.photos.filter((photo: any) => photo && photo.url);
-        console.log('💾 AdminProjectForm onSubmit: Photos to save', {
-          photosCount: dbData.photos.length,
-          photos: dbData.photos,
-          firstPhotoUrl: dbData.photos[0]?.url,
-          allCategories: dbData.photos.map((p: any) => p.category)
+      if (Array.isArray(dbData.photos)) {
+        const photos = dbData.photos as Array<{ url?: string; category?: string }>;
+        const validPhotos = photos.filter((photo) => photo && typeof photo.url === 'string');
+        dbData.photos = validPhotos;
+        console.log('AdminProjectForm onSubmit: Photos to save', {
+          photosCount: validPhotos.length,
+          photos: validPhotos,
+          firstPhotoUrl: validPhotos[0]?.url,
+          allCategories: validPhotos.map((p) => p.category)
         });
       } else {
         console.warn('⚠️ No photos to save or invalid photos array:', dbData.photos);
@@ -591,9 +592,10 @@ const AdminProjectForm: React.FC = () => {
       toast.success('Projet créé ! Vous pouvez maintenant ajouter des bâtiments depuis la section Bâtiments.');
         }
       }
-    } catch (error: any) {
-      console.error('❌ Save error:', error);
-      toast.error(error.message || 'Erreur lors de la sauvegarde');
+    } catch (error) {
+      console.error('Save error', error);
+      const message = error instanceof Error ? error.message : 'Erreur lors de la sauvegarde';
+      toast.error(message);
     }
   };
 
@@ -651,8 +653,8 @@ const AdminProjectForm: React.FC = () => {
     }
   };
 
-  const validateProjectData = (data: any) => {
-    const errors: any[] = [];
+  const validateProjectData = (data: ProjectFormValues) => {
+    const errors: Array<{ field: string; message: string }> = [];
     if (!data.title) errors.push({ field: 'title', message: 'Le titre est requis' });
     if (!data.description) errors.push({ field: 'description', message: 'La description est requise' });
     return errors;

@@ -33,7 +33,7 @@ export interface ProjectFormData {
   };
   features?: string[];
   photos?: string[];
-  [key: string]: any; // Pour permettre tous les autres champs du formulaire
+  [key: string]: unknown;
 }
 
 // Fetch projects with optional filters
@@ -190,8 +190,17 @@ export const fetchDevelopers = async () => {
   return data;
 };
 
-// Calculate project statistics
-export const calculateProjectStats = (projects: any[]) => {
+type ProjectRecord = {
+  id: string;
+  status?: string | null;
+  golden_visa_eligible?: boolean | null;
+  developer_id?: string | null;
+  developer?: { name?: string | null } | null;
+  buildings?: unknown[] | null;
+  [key: string]: unknown;
+};
+
+export const calculateProjectStats = (projects: ProjectRecord[]) => {
   return {
     total: projects.length,
     available: projects.filter(p => p.status === 'available').length,
@@ -199,18 +208,16 @@ export const calculateProjectStats = (projects: any[]) => {
     delivered: projects.filter(p => p.status === 'delivered').length,
     goldenVisa: projects.filter(p => p.golden_visa_eligible).length,
     totalBuildings: projects.reduce((sum, p) => {
-      // Count buildings associated with this project
       return sum + (Array.isArray(p.buildings) ? p.buildings.length : 0);
     }, 0)
   };
 };
 
-// Group projects by developer
-export const groupProjectsByDeveloper = (projects: any[]) => {
-  return projects.reduce((acc, project) => {
+export const groupProjectsByDeveloper = (projects: ProjectRecord[]) => {
+  return projects.reduce<Record<string, { developerName: string; projects: ProjectRecord[] }>>((acc, project) => {
     const developerId = project.developer_id || 'no-developer';
-    const developerName = project.developer?.name || 'Sans développeur';
-    
+    const developerName = project.developer?.name || 'Sans developpeur';
+
     if (!acc[developerId]) {
       acc[developerId] = {
         developerName,
@@ -219,5 +226,5 @@ export const groupProjectsByDeveloper = (projects: any[]) => {
     }
     acc[developerId].projects.push(project);
     return acc;
-  }, {} as Record<string, { developerName: string; projects: any[] }>);
+  }, {});
 };

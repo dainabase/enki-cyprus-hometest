@@ -10,10 +10,26 @@ export interface GalleryImage {
   isPrimary?: boolean;
 }
 
+export interface RawProjectImage {
+  url: string;
+  display_order?: number | null;
+  is_primary?: boolean | null;
+  caption?: string | null;
+}
+
+export interface RawPhotoObject {
+  url: string;
+  category?: string;
+  caption?: string;
+  isPrimary?: boolean;
+}
+
+export type RawPhotoEntry = string | RawPhotoObject;
+
 export interface ProjectImageData {
-  categorized_photos?: any; // Obsolète - ignoré
-  project_images?: any[];
-  photos?: any[]; // Format: Array<{url, category, caption, isPrimary}>
+  categorized_photos?: unknown;
+  project_images?: RawProjectImage[];
+  photos?: RawPhotoEntry[];
 }
 
 /**
@@ -84,15 +100,12 @@ function mapCategory(category: string): string {
 export function buildGalleryFromProject(project: ProjectImageData): GalleryImage[] {
   const gallery: GalleryImage[] = [];
 
-  // 1. Priorité : photos (format moderne avec objets {url, category, caption})
   if (Array.isArray(project.photos) && project.photos.length > 0) {
     const firstPhoto = project.photos[0];
-    
-    // Vérifier si c'est le nouveau format (objets) ou l'ancien (strings)
-    if (typeof firstPhoto === 'object' && firstPhoto?.url) {
-      // Nouveau format : array d'objets
-      project.photos.forEach((item: any) => {
-        if (item?.url) {
+
+    if (typeof firstPhoto === 'object' && firstPhoto !== null && firstPhoto.url) {
+      project.photos.forEach((item) => {
+        if (typeof item === 'object' && item !== null && item.url) {
           gallery.push({
             url: item.url,
             category: mapCategory(item.category || 'interior_1'),
@@ -102,8 +115,7 @@ export function buildGalleryFromProject(project: ProjectImageData): GalleryImage
         }
       });
     } else if (typeof firstPhoto === 'string') {
-      // Ancien format : array de strings (legacy)
-      project.photos.forEach((url: any, idx: number) => {
+      project.photos.forEach((url, idx) => {
         if (typeof url === 'string') {
           gallery.push({
             url,
@@ -116,11 +128,10 @@ export function buildGalleryFromProject(project: ProjectImageData): GalleryImage
     }
   }
 
-  // 2. Fallback : project_images (table relationnelle)
   if (gallery.length === 0 && Array.isArray(project.project_images)) {
-    project.project_images
-      .sort((a: any, b: any) => (a.display_order ?? 0) - (b.display_order ?? 0))
-      .forEach((img: any, idx: number) => {
+    [...project.project_images]
+      .sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0))
+      .forEach((img, idx) => {
         gallery.push({
           url: img.url,
           category: img.is_primary ? 'hero' : 'interior_1',

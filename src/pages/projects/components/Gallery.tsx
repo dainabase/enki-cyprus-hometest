@@ -4,8 +4,19 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 
+interface GalleryPhoto {
+  url?: string;
+}
+
+interface GalleryProject {
+  title?: string;
+  photos?: Array<GalleryPhoto | string>;
+  photo_gallery_urls?: string[];
+  project_images?: Array<{ url?: string }>;
+}
+
 interface GalleryProps {
-  project: any;
+  project: GalleryProject;
 }
 
 export default function Gallery({ project }: GalleryProps) {
@@ -15,11 +26,9 @@ export default function Gallery({ project }: GalleryProps) {
   // Collect all images from different sources
   const allImages = [
     // Extract URLs from photos array (objects with url property)
-    ...(project.photos?.map((p: any) => p.url || p) || []),
-    // Direct URLs from photo_gallery_urls
+    ...(project.photos?.map((p) => typeof p === 'string' ? p : p.url) || []),
     ...(project.photo_gallery_urls || []),
-    // URLs from project_images table
-    ...(project.project_images?.map((img: any) => img.url) || [])
+    ...(project.project_images?.map((img) => img.url) || [])
   ].filter(Boolean);
 
   const totalImages = allImages.length;

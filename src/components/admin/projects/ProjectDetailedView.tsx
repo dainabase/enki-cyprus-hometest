@@ -22,9 +22,27 @@ import {
   Trash2
 } from 'lucide-react';
 
+type ProjectDetailedRow = {
+  id: string;
+  title?: string | null;
+  status?: string | null;
+  price?: number | null;
+  price_from?: number | null;
+  photos?: string[] | null;
+  city?: string | null;
+  neighborhood?: string | null;
+  completion_date?: string | null;
+  completion_month?: string | null;
+  golden_visa_eligible?: boolean | null;
+  exclusive_commercialization?: boolean | null;
+  developer?: { name?: string | null } | null;
+  developers?: Array<{ name?: string | null }> | null;
+  [key: string]: unknown;
+};
+
 interface ProjectDetailedViewProps {
-  projects: any[];
-  onEdit: (project: any) => void;
+  projects: ProjectDetailedRow[];
+  onEdit: (project: ProjectDetailedRow) => void;
   selectedProjects: string[];
   onSelectionChange: (ids: string[]) => void;
 }
@@ -61,16 +79,14 @@ export const ProjectDetailedView = ({
     }).format(price);
   };
 
-  const getDeveloperName = (project: any) => {
-    // Essayer d'abord project.developer (objet)
+  const getDeveloperName = (project: ProjectDetailedRow) => {
     if (project.developer && typeof project.developer === 'object') {
-      return project.developer.name || 'Non défini';
+      return project.developer.name || 'Non defini';
     }
-    // Sinon essayer developers (array - ancien format)
     if (project.developers && Array.isArray(project.developers) && project.developers[0]) {
-      return project.developers[0].name || 'Non défini';
+      return project.developers[0].name || 'Non defini';
     }
-    return 'Non défini';
+    return 'Non defini';
   };
 
   return (

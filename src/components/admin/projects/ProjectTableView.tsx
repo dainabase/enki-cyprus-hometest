@@ -5,9 +5,27 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
+interface Developer {
+  name?: string | null;
+}
+
+interface ProjectViewRow {
+  id: string;
+  title?: string | null;
+  city?: string | null;
+  cyprus_zone?: string | null;
+  completion_month?: string | null;
+  launch_date?: string | null;
+  price?: number | null;
+  price_from?: number | null;
+  developer?: Developer | null;
+  developers?: Developer[] | null;
+  [key: string]: unknown;
+}
+
 interface ProjectTableViewProps {
-  projects: any[];
-  onEdit: (project: any) => void;
+  projects: ProjectViewRow[];
+  onEdit: (project: ProjectViewRow) => void;
   selectedProjects: string[];
   onSelectionChange: (ids: string[]) => void;
 }
@@ -41,16 +59,14 @@ export const ProjectTableView = ({
     }
   };
 
-  const getDeveloperName = (project: any) => {
-    // Essayer d'abord project.developer (objet)
+  const getDeveloperName = (project: ProjectViewRow) => {
     if (project.developer && typeof project.developer === 'object') {
-      return project.developer.name || 'Non défini';
+      return project.developer.name || 'Non defini';
     }
-    // Sinon essayer developers (array - ancien format)
     if (project.developers && Array.isArray(project.developers) && project.developers[0]) {
-      return project.developers[0].name || 'Non défini';
+      return project.developers[0].name || 'Non defini';
     }
-    return 'Non défini';
+    return 'Non defini';
   };
 
   const formatPrice = (price: number) => {
@@ -95,8 +111,8 @@ export const ProjectTableView = ({
   };
 
   const sortedProjects = [...projects].sort((a, b) => {
-    let aValue: any;
-    let bValue: any;
+    let aValue: string | number;
+    let bValue: string | number;
 
     switch (sortField) {
       case 'developer':
@@ -104,12 +120,15 @@ export const ProjectTableView = ({
         bValue = getDeveloperName(b);
         break;
       case 'price':
-        aValue = a.price || a.price_from || 0;
-        bValue = b.price || b.price_from || 0;
+        aValue = a.price ?? a.price_from ?? 0;
+        bValue = b.price ?? b.price_from ?? 0;
         break;
-      default:
-        aValue = a[sortField] || '';
-        bValue = b[sortField] || '';
+      default: {
+        const aRaw = a[sortField];
+        const bRaw = b[sortField];
+        aValue = typeof aRaw === 'string' || typeof aRaw === 'number' ? aRaw : '';
+        bValue = typeof bRaw === 'string' || typeof bRaw === 'number' ? bRaw : '';
+      }
     }
 
     if (typeof aValue === 'string' && typeof bValue === 'string') {

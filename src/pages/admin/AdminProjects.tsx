@@ -21,10 +21,16 @@ import { ProjectDetailedView } from '@/components/admin/projects/ProjectDetailed
 import { ProjectTableView } from '@/components/admin/projects/ProjectTableView';
 import { PDFExportButton } from '@/components/admin/properties/PDFExportButton';
 
-// Helper function to safely access developer data
-const getDeveloper = (developer: any) => {
+const getDeveloper = (developer: unknown) => {
   if (!developer || typeof developer !== 'object') return null;
-  return developer as { name?: string; [key: string]: any };
+  return developer as { name?: string; [key: string]: unknown };
+};
+
+type AdminProjectRow = Record<string, unknown> & {
+  id: string;
+  title?: string | null;
+  developer?: { name?: string | null } | null;
+  developer_id?: string | null;
 };
 
 interface FilterState {
@@ -39,7 +45,7 @@ const AdminProjects = () => {
   const { toast } = useToast();
   const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingProject, setEditingProject] = useState<any>(null);
+  const [editingProject, setEditingProject] = useState<AdminProjectRow | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
   const [currentView, setCurrentView] = useState<ProjectViewType>('table');
@@ -204,7 +210,7 @@ const AdminProjects = () => {
       }
       acc[developerId].projects.push(project);
       return acc;
-    }, {} as Record<string, { developerName: string; projects: any[] }>);
+    }, {} as Record<string, { developerName: string; projects: AdminProjectRow[] }>);
   }, [sortedProjects, currentView]);
 
   const openCreateModal = useCallback(() => {
@@ -212,7 +218,7 @@ const AdminProjects = () => {
     setIsModalOpen(true);
   }, []);
 
-  const openEditModal = useCallback((project: any) => {
+  const openEditModal = useCallback((project: AdminProjectRow) => {
     setEditingProject(project);
     setIsModalOpen(true);
   }, []);
@@ -248,7 +254,7 @@ const AdminProjects = () => {
 
     const commonProps = {
       projects: sortedProjects || [],
-      onEdit: (project: any) => navigate(`/admin/projects/${project.id}/edit`),
+      onEdit: (project: AdminProjectRow) => navigate(`/admin/projects/${project.id}/edit`),
       selectedProjects,
       onSelectionChange: setSelectedProjects
     };
@@ -299,7 +305,7 @@ const AdminProjects = () => {
       
       setSelectedProjects([]);
       refetch();
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error deleting projects:', error);
       toast({
         variant: 'destructive',

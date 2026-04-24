@@ -3,9 +3,23 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Edit, Star, Crown, Eye, Trash2, Building } from 'lucide-react';
 
+type ProjectCompactRow = {
+  id: string;
+  title?: string | null;
+  status?: string | null;
+  price?: number | null;
+  price_from?: number | null;
+  city?: string | null;
+  golden_visa_eligible?: boolean | null;
+  exclusive_commercialization?: boolean | null;
+  developer?: { name?: string | null } | null;
+  developers?: Array<{ name?: string | null }> | null;
+  [key: string]: unknown;
+};
+
 interface ProjectCompactViewProps {
-  projects: any[];
-  onEdit: (project: any) => void;
+  projects: ProjectCompactRow[];
+  onEdit: (project: ProjectCompactRow) => void;
   selectedProjects: string[];
   onSelectionChange: (ids: string[]) => void;
 }
@@ -43,16 +57,14 @@ export const ProjectCompactView = ({
     }).format(price);
   };
 
-  const getDeveloperName = (project: any) => {
-    // Essayer d'abord project.developer (objet)
+  const getDeveloperName = (project: ProjectCompactRow) => {
     if (project.developer && typeof project.developer === 'object') {
-      return project.developer.name || 'Non défini';
+      return project.developer.name || 'Non defini';
     }
-    // Sinon essayer developers (array - ancien format)
     if (project.developers && Array.isArray(project.developers) && project.developers[0]) {
-      return project.developers[0].name || 'Non défini';
+      return project.developers[0].name || 'Non defini';
     }
-    return 'Non défini';
+    return 'Non defini';
   };
 
   return (

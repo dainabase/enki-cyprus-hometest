@@ -1,5 +1,48 @@
 import { supabase } from '@/integrations/supabase/client';
 
+interface OrphanedProject {
+  id: string;
+  title: string | null;
+  developer_id: string | null;
+}
+
+interface OrphanedBuilding {
+  id: string;
+  name: string | null;
+  project_id: string | null;
+}
+
+interface LeadRow {
+  id: string;
+  email: string;
+  first_name: string | null;
+  last_name: string | null;
+}
+
+interface DuplicateEmailGroup {
+  email: string;
+  leads: LeadRow[];
+}
+
+interface GoldenVisaCandidate {
+  id: string;
+  title: string | null;
+  price_from: number | null;
+  golden_visa_eligible: boolean | null;
+}
+
+interface InvalidPriceRow {
+  id: string;
+  title: string | null;
+  price_from: number | null;
+}
+
+interface MissingFieldIssue {
+  type: 'project' | 'lead';
+  id: string;
+  issue: string;
+}
+
 export interface IntegrityReport {
   orphanedProjects: number;
   orphanedBuildings: number;
@@ -9,12 +52,12 @@ export interface IntegrityReport {
   missingRequiredFields: number;
   totalIssues: number;
   details: {
-    orphanedProjects: any[];
-    orphanedBuildings: any[];
-    duplicateEmails: any[];
-    missingGoldenVisa: any[];
-    invalidPrices: any[];
-    missingRequiredFields: any[];
+    orphanedProjects: OrphanedProject[];
+    orphanedBuildings: OrphanedBuilding[];
+    duplicateEmails: DuplicateEmailGroup[];
+    missingGoldenVisa: GoldenVisaCandidate[];
+    invalidPrices: InvalidPriceRow[];
+    missingRequiredFields: MissingFieldIssue[];
   };
 }
 
@@ -74,16 +117,16 @@ export const checkDataIntegrity = async (): Promise<IntegrityReport> => {
     if (leadsError) throw leadsError;
 
     if (allLeads) {
-      const emailGroups = allLeads.reduce((acc, lead) => {
+      const emailGroups = allLeads.reduce<Record<string, LeadRow[]>>((acc, lead) => {
         if (!acc[lead.email]) {
           acc[lead.email] = [];
         }
-        acc[lead.email].push(lead);
+        acc[lead.email].push(lead as LeadRow);
         return acc;
-      }, {} as Record<string, any[]>);
+      }, {});
 
-      const duplicates = Object.entries(emailGroups)
-        .filter(([email, leads]) => leads.length > 1)
+      const duplicates: DuplicateEmailGroup[] = Object.entries(emailGroups)
+        .filter(([, leads]) => leads.length > 1)
         .map(([email, leads]) => ({ email, leads }));
 
       report.duplicateEmails = duplicates.length;

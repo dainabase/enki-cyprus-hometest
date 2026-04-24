@@ -173,20 +173,21 @@ const AdminTests = () => {
           variant: 'destructive'
         });
       }
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
       setTestResults(prev => ({
         ...prev,
         [testId]: {
           feature: testName,
           status: 'failed',
-          message: error.message,
+          message: errorMessage,
           timestamp: new Date()
         }
       }));
 
       toast({
         title: 'Test Failed',
-        description: error.message,
+        description: errorMessage,
         variant: 'destructive'
       });
     }
@@ -377,10 +378,11 @@ const AdminTests = () => {
         description: 'Test data has been created successfully'
       });
       refreshSystemHealth();
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
       toast({
         title: 'Error',
-        description: error.message,
+        description: errorMessage,
         variant: 'destructive'
       });
     } finally {
@@ -397,10 +399,11 @@ const AdminTests = () => {
         description: 'All test data has been removed'
       });
       refreshSystemHealth();
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
       toast({
         title: 'Error',
-        description: error.message,
+        description: errorMessage,
         variant: 'destructive'
       });
     } finally {

@@ -14,10 +14,9 @@ import { fetchProjectImages, deleteProjectImage, updateProjectImagePrimary } fro
 import { deleteImage, getImagePath } from '@/lib/supabase/storage';
 import { useToast } from '@/hooks/use-toast';
 
-// Helper function to safely access developer data
-const getDeveloper = (developer: any) => {
+const getDeveloper = (developer: unknown) => {
   if (!developer || typeof developer !== 'object') return null;
-  return developer as { name?: string; website?: string; [key: string]: any };
+  return developer as { name?: string; website?: string; [key: string]: unknown };
 };
 
 const AdminProjectDetail = () => {
@@ -491,13 +490,13 @@ const AdminProjectDetail = () => {
           <CardContent>
             {Array.isArray(project.project_amenities) && project.project_amenities.length > 0 ? (
               <div className="space-y-6">
-                {Object.entries((project.project_amenities as any[]).reduce((acc: any, pa: any) => {
+                {Object.entries((project.project_amenities as Array<{ is_available?: boolean; amenity?: { category?: string; name?: string } }>).reduce<Record<string, string[]>>((acc, pa) => {
                   if (!pa?.is_available || !pa?.amenity) return acc;
                   const cat = pa.amenity.category || 'Autres';
                   acc[cat] = acc[cat] || [];
-                  acc[cat].push(pa.amenity.name);
+                  acc[cat].push(pa.amenity.name || '');
                   return acc;
-                }, {} as Record<string, string[]>)).map(([cat, items]) => (
+                }, {})).map(([cat, items]) => (
                   <div key={cat}>
                     <h4 className="text-sm font-medium mb-2 capitalize text-foreground">{cat}</h4>
                     <div className="flex flex-wrap gap-2">
@@ -523,18 +522,23 @@ const AdminProjectDetail = () => {
           <CardContent>
             {Array.isArray(project.project_nearby_amenities) && project.project_nearby_amenities.length > 0 ? (
               <div className="space-y-6">
-                {Object.entries((project.project_nearby_amenities as any[]).reduce((acc: any, pna: any) => {
+                {Object.entries((project.project_nearby_amenities as Array<{
+                  nearby?: { id?: string; name?: string; category?: string };
+                  distance_km?: number;
+                  distance_minutes_walk?: number;
+                  distance_minutes_drive?: number;
+                }>).reduce<Record<string, Array<{ nearby: { id?: string; name?: string }; distance_km?: number; distance_minutes_walk?: number; distance_minutes_drive?: number }>>>((acc, pna) => {
                   if (!pna?.nearby) return acc;
                   const cat = pna.nearby.category || 'Autres';
                   acc[cat] = acc[cat] || [];
-                  acc[cat].push(pna);
+                  acc[cat].push(pna as { nearby: { id?: string; name?: string }; distance_km?: number; distance_minutes_walk?: number; distance_minutes_drive?: number });
                   return acc;
-                }, {} as Record<string, any[]>)).map(([cat, items]) => (
+                }, {})).map(([cat, items]) => (
                   <div key={cat}>
                     <h4 className="text-sm font-medium mb-2 capitalize text-foreground">{cat}</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                      {(items as any[]).map((it) => (
-                        <div key={it.nearby.id} className="rounded border p-3 text-sm">
+                      {items.map((it, idx) => (
+                        <div key={it.nearby.id ?? idx} className="rounded border p-3 text-sm">
                           <div className="font-medium">{it.nearby.name}</div>
                           <div className="text-muted-foreground mt-1">
                             {it.distance_km ?? '—'} km · {it.distance_minutes_walk ?? '—'} min à pied · {it.distance_minutes_drive ?? '—'} min en voiture

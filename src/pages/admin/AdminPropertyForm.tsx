@@ -264,7 +264,7 @@ export default function AdminPropertyForm() {
       if (project) {
         setSelectedProject(project);
 
-        const inherited: any = {
+        const inherited: Record<string, unknown> = {
           vat_rate: project.vat_rate || 5,
           commission_rate: project.developer?.commission_rate || 5
         };
@@ -380,31 +380,30 @@ export default function AdminPropertyForm() {
     }
   });
 
-  // Create property mutation
   const createMutation = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: PropertyFormData) => {
       return await createProperty(data.project_id, data);
     },
     onSuccess: (newProperty) => {
       queryClient.invalidateQueries({ queryKey: ['all-properties'] });
-      toast.success('Propriété créée avec succès');
+      toast.success('Propriete creee avec succes');
       navigate(`/admin/properties/${newProperty.id}/edit`);
     },
-    onError: (error: any) => {
-      if (error.code === '23505') {
-        toast.error('Une propriété avec ce code existe déjà');
-      } else if (error.code === '23503') {
-        toast.error('Projet ou bâtiment invalide');
+    onError: (error: unknown) => {
+      const code = (error as { code?: string }).code;
+      if (code === '23505') {
+        toast.error('Une propriete avec ce code existe deja');
+      } else if (code === '23503') {
+        toast.error('Projet ou batiment invalide');
       } else {
-        toast.error('Erreur lors de la création');
+        toast.error('Erreur lors de la creation');
       }
       console.error('[PropertyForm] Create error:', error);
     }
   });
 
-  // Update property mutation
   const updateMutation = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: PropertyFormData) => {
       console.log('[updateMutation] Starting update for ID:', id);
       console.log('[updateMutation] Data:', data);
       if (!id) throw new Error('ID manquant');

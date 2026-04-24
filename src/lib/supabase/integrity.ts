@@ -1,17 +1,34 @@
 import { supabase } from '@/integrations/supabase/client';
 
-// Types
+interface OrphanedProject {
+  id: string;
+  title: string | null;
+  developer_id: string | null;
+}
+
+interface OrphanedBuilding {
+  id: string;
+  name: string | null;
+  project_id: string | null;
+}
+
 interface OrphanData {
-  orphanedProjects: any[];
-  orphanedBuildings: any[];
-  orphanedProperties: any[];
+  orphanedProjects: OrphanedProject[];
+  orphanedBuildings: OrphanedBuilding[];
+  orphanedProperties: unknown[];
+}
+
+interface DependencyItem {
+  id: string;
+  name?: string | null;
+  title?: string | null;
 }
 
 interface DependencyCheck {
   hasItems: boolean;
   count: number;
   details: string;
-  items: any[];
+  items: DependencyItem[];
 }
 
 // Integrity checks
@@ -33,8 +50,7 @@ export async function checkHierarchyIntegrity(): Promise<OrphanData> {
 
     if (buildingError) throw buildingError;
 
-    // For now, we'll return empty array for properties as we don't have a properties table yet
-    const orphanedProperties: any[] = [];
+    const orphanedProperties: unknown[] = [];
 
     return {
       orphanedProjects: orphanedProjects || [],
@@ -83,11 +99,8 @@ export async function checkProjectDependencies(projectId: string): Promise<Depen
 }
 
 export async function checkBuildingDependencies(buildingId: string): Promise<DependencyCheck> {
-  // For now, we'll simulate checking for properties
-  // In a real implementation, this would check the properties table
   try {
-    // Simulate some properties for testing
-    const simulatedProperties = [];
+    const simulatedProperties: DependencyItem[] = [];
     
     return {
       hasItems: simulatedProperties.length > 0,
@@ -148,8 +161,10 @@ export async function synchronizeBuildingPrices(buildingId: string): Promise<voi
     if (buildingError) throw buildingError;
 
     if (building && building.project) {
-      // Synchronize the project prices
-      await synchronizeProjectPrices((building.project as any).id);
+      const projectRef = building.project as { id?: string } | null;
+      if (projectRef?.id) {
+        await synchronizeProjectPrices(projectRef.id);
+      }
     }
 
   } catch (error) {
@@ -278,19 +293,31 @@ export async function getHierarchyBreadcrumb(
         .single();
 
       if (!buildingError && buildingData && !Array.isArray(buildingData) && typeof buildingData === 'object') {
-        building = { id: (buildingData as any).id, name: (buildingData as any).building_name || (buildingData as any).name || 'Unknown Building' };
-        const typedProjectData = (buildingData as any).project as any;
-        if (typedProjectData && typeof typedProjectData === 'object' && 'id' in typedProjectData) {
-          project = { 
-            id: typedProjectData.id, 
-            title: typedProjectData.title 
+        const bData = buildingData as {
+          id: string;
+          name?: string;
+          building_name?: string;
+          project?: {
+            id?: string;
+            title?: string;
+            developer?: { id?: string; name?: string };
+          };
+        };
+        building = { id: bData.id, name: bData.building_name || bData.name || 'Unknown Building' };
+        const typedProjectData = bData.project;
+        if (typedProjectData && typeof typedProjectData === 'object' && typedProjectData.id) {
+          project = {
+            id: typedProjectData.id,
+            title: typedProjectData.title ?? ''
           };
           if (typedProjectData.developer && typeof typedProjectData.developer === 'object') {
-            const developerData = typedProjectData.developer as any;
-            developer = {
-              id: developerData.id,
-              name: developerData.name
-            };
+            const developerData = typedProjectData.developer;
+            if (developerData.id) {
+              developer = {
+                id: developerData.id,
+                name: developerData.name ?? ''
+              };
+            }
           }
         }
       }
@@ -308,13 +335,15 @@ export async function getHierarchyBreadcrumb(
         .single();
 
       if (!projectError && projectData) {
-        project = { id: projectData.id, title: projectData.title };
+        project = { id: projectData.id, title: projectData.title ?? '' };
         if (projectData.developer && typeof projectData.developer === 'object') {
-          const typedDeveloper = projectData.developer as any;
-          developer = {
-            id: typedDeveloper.id,
-            name: typedDeveloper.name
-          };
+          const typedDeveloper = projectData.developer as { id?: string; name?: string };
+          if (typedDeveloper.id) {
+            developer = {
+              id: typedDeveloper.id,
+              name: typedDeveloper.name ?? ''
+            };
+          }
         }
       }
     }
