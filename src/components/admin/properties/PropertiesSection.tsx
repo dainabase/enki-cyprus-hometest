@@ -26,6 +26,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { logger } from '@/lib/logger';
 
 interface PropertiesSectionProps {
   projectId: string;
@@ -139,8 +140,8 @@ export function PropertiesSection({ projectId, buildings }: PropertiesSectionPro
   };
 
   const handleEdit = (property: Property) => {
-    console.log('[PropertiesSection] Editing property:', property);
-    console.log('[PropertiesSection] Property ID:', property?.id);
+    logger.info('[PropertiesSection] Editing property:', property);
+    logger.info('[PropertiesSection] Property ID:', property?.id);
     if (!property?.id) {
       toast({
         title: 'Erreur',
@@ -150,7 +151,7 @@ export function PropertiesSection({ projectId, buildings }: PropertiesSectionPro
       return;
     }
     const url = `/admin/properties/${property.id}/edit`;
-    console.log('[PropertiesSection] Navigating to:', url);
+    logger.info('[PropertiesSection] Navigating to:', url);
     navigate(url);
   };
 

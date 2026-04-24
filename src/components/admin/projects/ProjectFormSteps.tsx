@@ -15,6 +15,7 @@ import { MediaUploader } from './MediaUploader';
 import { CategorizedMediaUploader } from './CategorizedMediaUploader';
 import { AddressExtraction } from './AddressExtraction';
 import { CYPRUS_DISTRICTS } from '@/utils/cyprusAddressHelper';
+import { logger } from '@/lib/logger';
 
 import { BuildingCards } from './BuildingCards';
 import { AmenitiesSelector } from './AmenitiesSelector';
@@ -524,7 +525,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
               buildings={buildingsValue}
               onEdit={(index) => {
                 // Functionality to be implemented: open building detail editor
-                console.log('Edit building at index:', index);
+                logger.info('Edit building at index:', index);
               }}
               onDelete={removeBuilding}
               onAdd={addBuilding}
@@ -1068,10 +1069,10 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             // Définir la zone géographique si détectée
             if (detectedZone) {
               form.setValue('cyprus_zone', detectedZone);
-              console.log('✅ Zone détectée automatiquement:', detectedZone);
+              logger.info('✅ Zone détectée automatiquement:', detectedZone);
               toast.success(`Zone géographique détectée : ${detectedZone}`);
             } else {
-              console.log('⚠️ Zone non détectée pour la ville:', city);
+              logger.info('⚠️ Zone non détectée pour la ville:', city);
               toast.warning('Zone géographique non détectée, veuillez la sélectionner manuellement');
             }
           }
@@ -1092,9 +1093,9 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
     setIsDetecting(true);
     try {
-      console.log('📡 Appel de googleMapsAgent.findNearbyPlaces...');
+      logger.info('📡 Appel de googleMapsAgent.findNearbyPlaces...');
       const places = await googleMapsAgent.findNearbyPlaces(address, 2);
-      console.log('📦 Résultat:', places);
+      logger.info('📦 Résultat:', places);
 
       if (!places || places.length === 0) {
         toast("Aucune commodité trouvée", {
@@ -1233,9 +1234,9 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     setIsDetecting(true);
 
     try {
-      console.log('🚀 Début de la détection automatique');
-      console.log('📍 Adresse:', address);
-      console.log('🚀 Détection avec rayon:', detectionRadius, 'km');
+      logger.info('🚀 Début de la détection automatique');
+      logger.info('📍 Adresse:', address);
+      logger.info('🚀 Détection avec rayon:', detectionRadius, 'km');
       
       const { data: result, error } = await supabase.functions.invoke('google-maps-agent', {
         body: {
@@ -1250,12 +1251,12 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
       if (error) throw error;
       
       if (result && result.places) {
-        console.log(`✅ ${result.places.length} lieux trouvés par Google Maps`);
+        logger.info(`✅ ${result.places.length} lieux trouvés par Google Maps`);
         
         if (result.location) {
           form.setValue('gps_latitude', result.location.lat);
           form.setValue('gps_longitude', result.location.lng);
-          console.log('🌍 Coordonnées GPS:', result.location);
+          logger.info('🌍 Coordonnées GPS:', result.location);
         }
         
         const commoditiesMap = new Map<string, any>();
@@ -1291,15 +1292,15 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
         // 📊 Afficher les métriques de coût API
         if (result.metrics) {
-          console.log('💰 MÉTRIQUES API:');
-          console.log(`   - Requêtes effectuées: ${result.metrics.apiCallsCount}`);
-          console.log(`   - Coût estimé: CHF ${result.metrics.estimatedCostCHF}`);
-          console.log(`   - Lieux uniques: ${result.metrics.uniquePlacesFound}`);
+          logger.info('💰 MÉTRIQUES API:');
+          logger.info(`   - Requêtes effectuées: ${result.metrics.apiCallsCount}`);
+          logger.info(`   - Coût estimé: CHF ${result.metrics.estimatedCostCHF}`);
+          logger.info(`   - Lieux uniques: ${result.metrics.uniquePlacesFound}`);
         }
 
-        console.log('🎯 Commodités détectées:', nearbyAmenities.length);
-        console.log('✅ Pré-sélectionnées:', preSelected.size);
-        console.log('📋 État selectedAmenities:', Array.from(preSelected));
+        logger.info('🎯 Commodités détectées:', nearbyAmenities.length);
+        logger.info('✅ Pré-sélectionnées:', preSelected.size);
+        logger.info('📋 État selectedAmenities:', Array.from(preSelected));
 
         if (result.strategicDistances) {
           const distances = {
@@ -1317,12 +1318,12 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
           if (distances.city_center_distance) form.setValue('proximity_city_center_km', distances.city_center_distance);
           if (distances.highway_distance) form.setValue('proximity_highway_km', distances.highway_distance);
           
-          console.log('📏 Distances stratégiques:');
-          console.log('- Plage:', distances.nearest_beach, 'km');
-          console.log('- Aéroport Larnaca:', distances.larnaca_airport_distance, 'km');
-          console.log('- Aéroport Paphos:', distances.paphos_airport_distance, 'km');
-          console.log('- Centre-ville:', distances.city_center_distance, 'km');
-          console.log('- Autoroute:', distances.highway_distance, 'km');
+          logger.info('📏 Distances stratégiques:');
+          logger.info('- Plage:', distances.nearest_beach, 'km');
+          logger.info('- Aéroport Larnaca:', distances.larnaca_airport_distance, 'km');
+          logger.info('- Aéroport Paphos:', distances.paphos_airport_distance, 'km');
+          logger.info('- Centre-ville:', distances.city_center_distance, 'km');
+          logger.info('- Autoroute:', distances.highway_distance, 'km');
 
           // 🆕 Toast avec métriques de coût
           const metricsText = result.metrics
@@ -1352,7 +1353,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     } finally {
       setIsDetecting(false);
       isDetectionInProgress.current = false; // 🛡️ Libérer le verrou
-      console.log('🏁 Détection terminée');
+      logger.info('🏁 Détection terminée');
     }
   };
 
@@ -1363,7 +1364,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
 
     // Ne déclencher QUE si la longueur a VRAIMENT changé (évite re-render inutiles)
     if (currentLength !== amenitiesLengthRef.current) {
-      console.log('🔍 USEEFFECT 1 - Détection changement:', amenitiesLengthRef.current, '->', currentLength);
+      logger.info('🔍 USEEFFECT 1 - Détection changement:', amenitiesLengthRef.current, '->', currentLength);
       amenitiesLengthRef.current = currentLength;
 
       // Initialiser SEULEMENT si jamais initialisé ET qu'on a des commodités
@@ -1373,7 +1374,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
             .filter(a => ESSENTIAL_AMENITIES.includes(a.nearby_amenity_id || ''))
             .map(a => a.nearby_amenity_id || '')
         );
-        console.log('✅ Initialisation unique avec:', Array.from(selected));
+        logger.info('✅ Initialisation unique avec:', Array.from(selected));
         setSelectedAmenities(selected);
         isInitializedRef.current = true; // Marquer comme initialisé
       }
@@ -1384,7 +1385,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
   // Ne PAS synchroniser automatiquement pour éviter la boucle infinie
   useEffect(() => {
     if (!isInitializedRef.current) {
-      console.log('⏭️ USEEFFECT 2 - Skip (pas encore initialisé)');
+      logger.info('⏭️ USEEFFECT 2 - Skip (pas encore initialisé)');
       return; // Ne rien faire tant qu'on n'est pas initialisé
     }
 
@@ -1401,7 +1402,7 @@ export const ProjectFormSteps: React.FC<ProjectFormStepsProps> = ({ form, curren
     });
 
     if (hasChanges) {
-      console.log('🔄 USEEFFECT 2 - Synchronisation nécessaire');
+      logger.info('🔄 USEEFFECT 2 - Synchronisation nécessaire');
       const updatedAmenities = currentAmenities.map(a => ({
         ...a,
         selected: selectedAmenities.has(a.nearby_amenity_id || '')

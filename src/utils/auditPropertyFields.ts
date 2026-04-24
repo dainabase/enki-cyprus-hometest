@@ -1,7 +1,8 @@
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 export async function auditPropertyFields() {
-  console.log('=== AUDIT DES CHAMPS PROPERTIES ===\n');
+  logger.info('=== AUDIT DES CHAMPS PROPERTIES ===\n');
 
   // 1. Récupérer une propriété existante pour voir les champs disponibles
   const { data: sampleProperty, error: fetchError } = await supabase
@@ -16,14 +17,14 @@ export async function auditPropertyFields() {
   }
 
   if (!sampleProperty) {
-    console.log('⚠️  Aucune propriété trouvée en base');
+    logger.info('⚠️  Aucune propriété trouvée en base');
     return;
   }
 
   const dbColumns = Object.keys(sampleProperty).sort();
-  console.log('📊 COLONNES EN BASE DE DONNÉES (' + dbColumns.length + ' colonnes):');
-  console.log(dbColumns);
-  console.log('\n');
+  logger.info('📊 COLONNES EN BASE DE DONNÉES (' + dbColumns.length + ' colonnes):');
+  logger.info(dbColumns);
+  logger.info('\n');
 
   // 2. Lister les champs du formulaire (PropertyFormData)
   const formFields = [
@@ -103,32 +104,32 @@ export async function auditPropertyFields() {
     'public_description'
   ].sort();
 
-  console.log('📝 CHAMPS DU FORMULAIRE (' + formFields.length + ' champs):');
-  console.log(formFields);
-  console.log('\n');
+  logger.info('📝 CHAMPS DU FORMULAIRE (' + formFields.length + ' champs):');
+  logger.info(formFields);
+  logger.info('\n');
 
   // 3. Comparer
   const missingInDb = formFields.filter(field => !dbColumns.includes(field));
   const extraInDb = dbColumns.filter(col => !formFields.includes(col));
 
-  console.log('❌ CHAMPS DANS LE FORMULAIRE MAIS PAS EN BASE (' + missingInDb.length + '):');
+  logger.info('❌ CHAMPS DANS LE FORMULAIRE MAIS PAS EN BASE (' + missingInDb.length + '):');
   if (missingInDb.length > 0) {
-    missingInDb.forEach(field => console.log('  - ' + field));
+    missingInDb.forEach(field => logger.info('  - ' + field));
   } else {
-    console.log('  ✅ Aucun');
+    logger.info('  ✅ Aucun');
   }
-  console.log('\n');
+  logger.info('\n');
 
-  console.log('⚠️  CHAMPS EN BASE MAIS PAS DANS LE FORMULAIRE (' + extraInDb.length + '):');
+  logger.info('⚠️  CHAMPS EN BASE MAIS PAS DANS LE FORMULAIRE (' + extraInDb.length + '):');
   if (extraInDb.length > 0) {
-    extraInDb.forEach(col => console.log('  - ' + col));
+    extraInDb.forEach(col => logger.info('  - ' + col));
   } else {
-    console.log('  ✅ Aucun');
+    logger.info('  ✅ Aucun');
   }
-  console.log('\n');
+  logger.info('\n');
 
   // 4. Tester un UPDATE avec les champs problématiques
-  console.log('🧪 TEST UPDATE AVEC DONNÉES SAMPLE...');
+  logger.info('🧪 TEST UPDATE AVEC DONNÉES SAMPLE...');
 
   const testData = {
     unit_number: 'TEST-AUDIT',
@@ -148,13 +149,13 @@ export async function auditPropertyFields() {
   if (updateError) {
     console.error('❌ Erreur UPDATE test:', updateError);
   } else {
-    console.log('✅ UPDATE test réussi');
+    logger.info('✅ UPDATE test réussi');
   }
 
   // 5. Afficher les types de données
-  console.log('\n📋 TYPES DES VALEURS ACTUELLES:');
+  logger.info('\n📋 TYPES DES VALEURS ACTUELLES:');
   Object.entries(sampleProperty).slice(0, 20).forEach(([key, value]) => {
-    console.log(`  ${key}: ${typeof value} = ${value}`);
+    logger.info(`  ${key}: ${typeof value} = ${value}`);
   });
 
   return {

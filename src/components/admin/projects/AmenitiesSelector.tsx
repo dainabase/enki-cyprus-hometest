@@ -9,6 +9,7 @@ import { Search, Star, Info } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { convertLegacyAmenities } from '@/utils/amenitiesMapper';
 import * as LucideIcons from 'lucide-react';
+import { logger } from '@/lib/logger';
 
 interface AmenitiesSelectorProps {
   selectedAmenities: string[];
@@ -26,7 +27,7 @@ export const AmenitiesSelector: React.FC<AmenitiesSelectorProps> = ({
   useEffect(() => {
     const converted = convertLegacyAmenities(selectedAmenities);
     setConvertedAmenities(converted);
-    console.log('🔄 Amenities conversion:', { 
+    logger.info('🔄 Amenities conversion:', { 
       original: selectedAmenities, 
       converted 
     });
@@ -42,7 +43,7 @@ export const AmenitiesSelector: React.FC<AmenitiesSelectorProps> = ({
         .order('sort_order', { ascending: true });
       
       if (error) throw error;
-      console.log('🏊 Amenities loaded from DB:', data);
+      logger.info('🏊 Amenities loaded from DB:', data);
       return data;
     }
   });
@@ -59,7 +60,7 @@ export const AmenitiesSelector: React.FC<AmenitiesSelectorProps> = ({
   }, {} as Record<string, any[]>);
 
   const toggleAmenity = (amenityCode: string) => {
-    console.log('🏊 Toggling amenity:', amenityCode, 'Current selection:', convertedAmenities);
+    logger.info('🏊 Toggling amenity:', amenityCode, 'Current selection:', convertedAmenities);
     
     // Utiliser les amenities converties pour la comparaison
     if (convertedAmenities.includes(amenityCode)) {

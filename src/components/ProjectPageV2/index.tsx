@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { HeroPrestige } from './sections/HeroPrestige';
 import { LocationInteractive } from './sections/LocationInteractive';
+import { logger } from '@/lib/logger';
 // import { Section5TypologiesReal } from './sections/Section5TypologiesReal';
 // import { FinancingInvestmentSection } from './sections/FinancingInvestmentSection';
 // import { SocialProofSection } from './sections/SocialProofSection';
@@ -21,7 +22,7 @@ export function ProjectPageV2() {
 
   async function loadAndEnrichProject() {
     try {
-      console.log('[ProjectPageV2] Loading project with slug:', slug);
+      logger.info('[ProjectPageV2] Loading project with slug:', slug);
 
       const { data: baseProject, error } = await supabase
         .from('projects')
@@ -41,11 +42,11 @@ export function ProjectPageV2() {
         return;
       }
 
-      console.log('[ProjectPageV2] Base project loaded:', baseProject.title);
+      logger.info('[ProjectPageV2] Base project loaded:', baseProject.title);
 
       // Use real data from database instead of mock enrichment
       setEnrichedProject(baseProject);
-      console.log('[ProjectPageV2] Real data loaded successfully');
+      logger.info('[ProjectPageV2] Real data loaded successfully');
     } catch (error) {
       console.error('[ProjectPageV2] Error loading project:', error);
       setEnrichedProject(null);

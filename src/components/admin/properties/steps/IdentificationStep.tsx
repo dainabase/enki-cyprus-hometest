@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { PropertyFormData } from '@/schemas/property.schema';
+import { logger } from '@/lib/logger';
 
 interface ProjectOption {
   id: string;
@@ -29,8 +30,8 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form, pr
   const selectedProjectId = form.watch('project_id');
 
   // Debug: afficher le nombre de projets
-  console.log('IdentificationStep - Projects count:', projects?.length, 'Projects:', projects);
-  console.log('IdentificationStep - Buildings count:', buildings?.length);
+  logger.info('IdentificationStep - Projects count:', projects?.length, 'Projects:', projects);
+  logger.info('IdentificationStep - Buildings count:', buildings?.length);
 
   return (
     <div className="space-y-8">

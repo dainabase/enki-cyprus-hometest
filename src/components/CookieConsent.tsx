@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { X, Cookie } from 'lucide-react';
+import { logger } from '@/lib/logger';
 
 export const CookieConsentBanner: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -28,7 +29,7 @@ export const CookieConsentBanner: React.FC = () => {
     expiryDate.setFullYear(expiryDate.getFullYear() + 1);
     document.cookie = `enki-realty-consent=true; expires=${expiryDate.toUTCString()}; path=/; SameSite=Strict`;
     
-    console.log('✅ Cookies accepted - Analytics enabled');
+    logger.info('✅ Cookies accepted - Analytics enabled');
     
     // Enable analytics tracking
     if (typeof window !== 'undefined' && (window as any).gtag) {
@@ -50,7 +51,7 @@ export const CookieConsentBanner: React.FC = () => {
     expiryDate.setFullYear(expiryDate.getFullYear() + 1);
     document.cookie = `enki-realty-consent=false; expires=${expiryDate.toUTCString()}; path=/; SameSite=Strict`;
     
-    console.log('❌ Cookies declined - Analytics disabled');
+    logger.info('❌ Cookies declined - Analytics disabled');
     
     // Disable analytics tracking
     if (typeof window !== 'undefined' && (window as any).gtag) {

@@ -3,14 +3,15 @@ import { Dispatch, SetStateAction, useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useWindowSize } from "../hooks/useWindowSize";
 import { IconType } from "react-icons";
+import { logger } from '@/lib/logger';
 
 const TabsFeaturesAlt5Accordion = () => {
   const [open, setOpen] = useState(items[0].id);
   console.time('Accordion Render');
   useEffect(() => {
-    console.log('[Accordion] Component mounted/updated');
+    logger.info('[Accordion] Component mounted/updated');
     console.timeEnd('Accordion Render');
-    return () => console.log('[Accordion] Component cleanup');
+    return () => logger.info('[Accordion] Component cleanup');
   });
   // Préchargement des images pour éviter les saccades
   useEffect(() => {
@@ -166,7 +167,7 @@ const Panel = ({
   features,
 }: PanelProps) => {
   const isOpen = open === id;
-  console.log('[Accordion] Panel render', { id, isOpen });
+  logger.info('[Accordion] Panel render', { id, isOpen });
 
   return (
     <>
@@ -228,7 +229,7 @@ const Panel = ({
                       loading="lazy"
                       onLoad={(e) => {
                         const img = e.currentTarget as HTMLImageElement;
-                        console.log('[Accordion] image loaded', { src: img.src, naturalWidth: img.naturalWidth, naturalHeight: img.naturalHeight });
+                        logger.info('[Accordion] image loaded', { src: img.src, naturalWidth: img.naturalWidth, naturalHeight: img.naturalHeight });
                       }}
                       style={{ opacity: 1 }}
                     />

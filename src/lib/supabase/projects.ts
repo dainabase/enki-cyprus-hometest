@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 export interface ProjectFilters {
   developerId?: string;
@@ -69,7 +70,7 @@ export const fetchProjects = async (filters: ProjectFilters = {}) => {
 
 // Fetch single project with full details
 export const fetchProject = async (id: string) => {
-  console.log('🔍 Fetching project with ID:', id);
+  logger.info('🔍 Fetching project with ID:', id);
   
   const { data, error } = await supabase
     .from('projects')
@@ -82,7 +83,7 @@ export const fetchProject = async (id: string) => {
     throw error;
   }
   
-  console.log('✅ Project fetched successfully:', data);
+  logger.info('✅ Project fetched successfully:', data);
   return data;
 };
 
@@ -121,7 +122,7 @@ export const createProject = async (projectData: ProjectFormData) => {
 
 // Update existing project
 export const updateProject = async (id: string, projectData: Partial<ProjectFormData>) => {
-  console.log('🔄 UPDATE PROJECT - Données envoyées à Supabase:', {
+  logger.info('🔄 UPDATE PROJECT - Données envoyées à Supabase:', {
     id,
     status_project: projectData.status_project,
     statut_commercial: projectData.statut_commercial,
@@ -146,7 +147,7 @@ export const updateProject = async (id: string, projectData: Partial<ProjectForm
     throw error;
   }
   
-  console.log('✅ UPDATE PROJECT RÉUSSI - Données retournées:', {
+  logger.info('✅ UPDATE PROJECT RÉUSSI - Données retournées:', {
     id: data.id,
     title: data.title
   });

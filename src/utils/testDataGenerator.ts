@@ -1,7 +1,8 @@
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 export const generateTestData = async () => {
-  console.log('Starting test data generation...');
+  logger.info('Starting test data generation...');
 
   try {
     // 1. Create test developers
@@ -32,7 +33,7 @@ export const generateTestData = async () => {
       .select();
 
     if (devError) throw devError;
-    console.log('Created developers:', createdDevelopers.length);
+    logger.info('Created developers:', createdDevelopers.length);
 
     // 2. Create test projects for each developer
     const projects = [];
@@ -72,7 +73,7 @@ export const generateTestData = async () => {
       .select();
 
     if (projectError) throw projectError;
-    console.log('Created projects:', createdProjects.length);
+    logger.info('Created projects:', createdProjects.length);
 
     // 3. Create test buildings for each project
     const buildings = [];
@@ -97,7 +98,7 @@ export const generateTestData = async () => {
       .select();
 
     if (buildingError) throw buildingError;
-    console.log('Created buildings:', createdBuildings.length);
+    logger.info('Created buildings:', createdBuildings.length);
 
     // 4. Create test leads
     const firstNames = ['John', 'Jane', 'Mike', 'Sarah', 'David', 'Emma', 'Chris', 'Lisa', 'Tom', 'Anna'];
@@ -137,7 +138,7 @@ export const generateTestData = async () => {
       .select();
 
     if (leadError) throw leadError;
-    console.log('Created leads:', createdLeads.length);
+    logger.info('Created leads:', createdLeads.length);
 
     // 5. Create test commissions - Fix promoter_id to use correct developers
     const commissions = [];
@@ -167,10 +168,10 @@ export const generateTestData = async () => {
         .select();
 
       if (commissionError) throw commissionError;
-      console.log('Created commissions:', createdCommissions.length);
+      logger.info('Created commissions:', createdCommissions.length);
     }
 
-    console.log('Test data generation completed successfully');
+    logger.info('Test data generation completed successfully');
     
     return {
       developers: createdDevelopers.length,
@@ -187,7 +188,7 @@ export const generateTestData = async () => {
 };
 
 export const resetTestData = async () => {
-  console.log('Starting test data cleanup...');
+  logger.info('Starting test data cleanup...');
 
   try {
     // Delete in reverse order due to foreign key constraints
@@ -232,7 +233,7 @@ export const resetTestData = async () => {
 
     if (developerError) console.warn('Developer deletion error:', developerError);
 
-    console.log('Test data cleanup completed');
+    logger.info('Test data cleanup completed');
 
   } catch (error) {
     console.error('Error during test data cleanup:', error);

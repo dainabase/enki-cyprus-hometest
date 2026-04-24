@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle2, AlertCircle, Info, AlertTriangle } from 'lucide-react';
+import { logger } from '@/lib/logger';
 
 interface ProjectModification {
   field: string;
@@ -37,7 +38,7 @@ export const ProjectActionDialog: React.FC<ProjectActionDialogProps> = ({
   validationErrors = [],
   isLoading = false
 }) => {
-  console.log('ProjectActionDialog rendered:', {
+  logger.info('ProjectActionDialog rendered:', {
     isOpen,
     action,
     projectTitle,

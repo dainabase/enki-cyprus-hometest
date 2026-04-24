@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 interface OrphanedProject {
   id: string;
@@ -62,7 +63,7 @@ export interface IntegrityReport {
 }
 
 export const checkDataIntegrity = async (): Promise<IntegrityReport> => {
-  console.log('Starting data integrity check...');
+  logger.info('Starting data integrity check...');
 
   const report: IntegrityReport = {
     orphanedProjects: 0,
@@ -207,7 +208,7 @@ export const checkDataIntegrity = async (): Promise<IntegrityReport> => {
       report.invalidPrices +
       report.missingRequiredFields;
 
-    console.log('Data integrity check completed:', report);
+    logger.info('Data integrity check completed:', report);
     return report;
 
   } catch (error) {
@@ -217,7 +218,7 @@ export const checkDataIntegrity = async (): Promise<IntegrityReport> => {
 };
 
 export const fixDataIntegrityIssues = async () => {
-  console.log('Starting automatic data integrity fixes...');
+  logger.info('Starting automatic data integrity fixes...');
 
   try {
     // 1. Fix Golden Visa flags
@@ -237,7 +238,7 @@ export const fixDataIntegrityIssues = async () => {
 
     if (priceFixError) throw priceFixError;
 
-    console.log('Automatic fixes completed');
+    logger.info('Automatic fixes completed');
 
   } catch (error) {
     console.error('Error during automatic fixes:', error);

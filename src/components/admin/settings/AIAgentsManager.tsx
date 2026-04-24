@@ -18,6 +18,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { AgentSEO } from '@/services/ai/AgentSEO';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AI_AGENTS, PROVIDERS } from './aiAgents.config';
+import { logger } from '@/lib/logger';
 
 
 export default function AIAgentsManager() {
@@ -106,7 +107,7 @@ export default function AIAgentsManager() {
         });
       }
       setAgentConfigs(configsMap);
-      console.log('✅ Configurations chargées:', configsMap);
+      logger.info('✅ Configurations chargées:', configsMap);
     } catch (error) {
       console.error('Échec du chargement des configurations:', error);
     }
@@ -142,7 +143,7 @@ export default function AIAgentsManager() {
   const handleSaveConfig = async () => {
     setSaving(true);
     try {
-      console.log('💾 Sauvegarde config pour:', selectedAgent.id, currentConfig);
+      logger.info('💾 Sauvegarde config pour:', selectedAgent.id, currentConfig);
 
       // Vérifier si l'agent existe déjà
       const { data: existingAgent } = await supabase
@@ -197,7 +198,7 @@ export default function AIAgentsManager() {
       toast.success('Configuration sauvegardée avec succès');
       await loadStats();
       
-      console.log('✅ Configuration sauvegardée');
+      logger.info('✅ Configuration sauvegardée');
     } catch (error) {
       console.error('❌ Erreur de sauvegarde:', error);
       toast.error(`Échec de la sauvegarde: ${error.message}`);
@@ -208,7 +209,7 @@ export default function AIAgentsManager() {
 
   const handleToggleAgent = async (agent, checked) => {
     try {
-      console.log(`🔄 Toggle agent ${agent.id} to ${checked}`);
+      logger.info(`🔄 Toggle agent ${agent.id} to ${checked}`);
       
       const agentConfig = agentConfigs[agent.id] || {
         provider: 'openai',
@@ -282,7 +283,7 @@ export default function AIAgentsManager() {
       await loadStats();
       toast.success(`${agent.name} ${checked ? 'activé' : 'désactivé'}`);
       
-      console.log('✅ Agent mis à jour avec succès');
+      logger.info('✅ Agent mis à jour avec succès');
     } catch (error) {
       console.error('❌ Erreur toggle agent:', error);
       toast.error(`Erreur lors de la mise à jour: ${error.message}`);
@@ -311,7 +312,7 @@ export default function AIAgentsManager() {
       toast.success('Test de génération SEO réussi!');
       
       // Log pour debug
-      console.log('✅ Résultat test SEO Chypre:', resultat);
+      logger.info('✅ Résultat test SEO Chypre:', resultat);
       
     } catch (error) {
       console.error('Erreur test SEO:', error);

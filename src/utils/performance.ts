@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { debounce } from 'lodash';
+import { logger } from '@/lib/logger';
 
 // Debounced search function
 export const createDebouncedSearch = (searchFn: Function, delay: number = 300) => {
@@ -50,5 +51,5 @@ export const measurePerformance = (name: string, fn: () => void) => {
   const start = performance.now();
   fn();
   const end = performance.now();
-  console.log(`${name} took ${end - start} milliseconds`);
+  logger.info(`${name} took ${end - start} milliseconds`);
 };

@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 interface OrphanedProject {
   id: string;
@@ -134,7 +135,7 @@ export async function synchronizeProjectPrices(projectId: string): Promise<void>
     // In a real implementation, this would calculate prices based on building data
     // For now, we'll simulate the price calculation
     
-    console.log(`Synchronizing prices for project ${projectId} with ${buildings?.length || 0} buildings`);
+    logger.info(`Synchronizing prices for project ${projectId} with ${buildings?.length || 0} buildings`);
     
     // Update project with calculated price
     // const calculatedPrice = calculatePriceFromBuildings(buildings);
@@ -188,7 +189,7 @@ export async function synchronizeBuildingStatus(buildingId: string): Promise<voi
     // In a real implementation, this would check unit availability
     // and update building status accordingly (e.g., "sold_out" if all units are sold)
     
-    console.log(`Synchronizing status for building ${buildingId}`);
+    logger.info(`Synchronizing status for building ${buildingId}`);
 
   } catch (error) {
     console.error('Error synchronizing building status:', error);

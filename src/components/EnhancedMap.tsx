@@ -9,6 +9,7 @@ import { MapPin, Chrome as Home, Building, Building2, Store } from 'lucide-react
 import { useGoogleMapsContext } from '@/contexts/GoogleMapsContext';
 import { useFilters } from '@/contexts/FilterContext';
 import { Property } from '@/lib/supabase';
+import { logger } from '@/lib/logger';
 
 interface EnhancedMapProps {
   height?: string;
@@ -76,7 +77,7 @@ const EnhancedMap: React.FC<EnhancedMapProps> = ({
   };
 
   const onLoad = useCallback((map: google.maps.Map) => {
-    console.log('Google Map loaded, centering on Cyprus');
+    logger.info('Google Map loaded, centering on Cyprus');
     setMap(map);
   }, []);
 
@@ -84,7 +85,7 @@ const EnhancedMap: React.FC<EnhancedMapProps> = ({
   useEffect(() => {
     if (!isLoaded || !map || !window.google) return;
 
-    console.log(`Updating markers with ${state.filteredProperties.length} filtered properties`);
+    logger.info(`Updating markers with ${state.filteredProperties.length} filtered properties`);
 
     // Cleanup des markers existants
     try {
@@ -105,7 +106,7 @@ const EnhancedMap: React.FC<EnhancedMapProps> = ({
     if (state.filteredProperties.length > 0) {
       try {
         const markers = state.filteredProperties.map((property, index) => {
-          console.log(`📌 Creating marker for: ${property.title} at (${property.coordinates.lat}, ${property.coordinates.lng})`);
+          logger.info(`📌 Creating marker for: ${property.title} at (${property.coordinates.lat}, ${property.coordinates.lng})`);
           
           const marker = new google.maps.Marker({
             position: { lat: property.coordinates.lat, lng: property.coordinates.lng },
@@ -124,7 +125,7 @@ const EnhancedMap: React.FC<EnhancedMapProps> = ({
           }, index * 200);
 
           marker.addListener('click', () => {
-            console.log(`Property selected: ${property.title}`);
+            logger.info(`Property selected: ${property.title}`);
             setSelectedProperty(property);
             onPropertySelect?.(property);
             
@@ -145,7 +146,7 @@ const EnhancedMap: React.FC<EnhancedMapProps> = ({
             markers, 
             map
           });
-          console.log(`Marker clustering initialized with ${markers.length} markers`);
+          logger.info(`Marker clustering initialized with ${markers.length} markers`);
         }
       } catch (error) {
         console.error('❌ Error creating markers:', error);

@@ -1,5 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 import { Property, PropertyFormData } from '@/types/property';
+import { logger } from '@/lib/logger';
 
 export const fetchPropertiesByProject = async (projectId: string): Promise<Property[]> => {
   const { data, error } = await supabase
@@ -150,7 +151,7 @@ export const updateProperty = async (id: string, propertyData: Partial<PropertyF
     }
   }
 
-  console.log('[updateProperty] ✅ Filtered fields:', Object.keys(updateData).sort());
+  logger.info('[updateProperty] ✅ Filtered fields:', Object.keys(updateData).sort());
 
   const { data, error } = await supabase
     .from('properties')
@@ -165,7 +166,7 @@ export const updateProperty = async (id: string, propertyData: Partial<PropertyF
     throw error;
   }
 
-  console.log('[updateProperty] ✅ Update successful');
+  logger.info('[updateProperty] ✅ Update successful');
   return data as Property;
 };
 

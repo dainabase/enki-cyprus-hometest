@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { ArrowLeft, ArrowRight, Save, CircleCheck as CheckCircle, ChevronLeft, Building } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { convertLegacyAmenities, convertPhotosToCategorized, CategorizedPhoto } from '@/utils/amenitiesMapper';
+import { logger } from '@/lib/logger';
 
 const AdminProjectForm: React.FC = () => {
   const navigate = useNavigate();
@@ -139,7 +140,7 @@ const AdminProjectForm: React.FC = () => {
     const loadProjectData = async () => {
       if (!project || !isEdit) return;
       
-      console.log('🔄 Loading project data:', project);
+      logger.info('🔄 Loading project data:', project);
       
       try {
         // Charger les bâtiments
@@ -149,20 +150,20 @@ const AdminProjectForm: React.FC = () => {
           .eq('project_id', id)
           .order('display_order', { ascending: true });
         
-        console.log('🏢 Buildings loaded:', buildingsData);
+        logger.info('🏢 Buildings loaded:', buildingsData);
         
         // Cast en any pour éviter les erreurs TypeScript
         const projectData = project as any;
         
         // Convertir les amenities legacy en codes modernes
         const convertedAmenities = convertLegacyAmenities(projectData.amenities || []);
-        console.log('🔄 Amenities converted:', { 
+        logger.info('🔄 Amenities converted:', { 
           original: projectData.amenities, 
           converted: convertedAmenities 
         });
         
         // Conversion sécurisée des photos vers le nouveau format
-        console.log('📸 Converting photos from:', {
+        logger.info('📸 Converting photos from:', {
           photos: projectData.photos,
           categorized_photos: projectData.categorized_photos,
           type_photos: typeof projectData.photos,
@@ -174,7 +175,7 @@ const AdminProjectForm: React.FC = () => {
           projectData.categorized_photos || projectData.photos || []
         );
         
-        console.log('📸 Photos converted to:', convertedPhotos);
+        logger.info('📸 Photos converted to:', convertedPhotos);
         
         // Préparer TOUTES les données du formulaire
         const formData = {
@@ -424,7 +425,7 @@ const AdminProjectForm: React.FC = () => {
           status: projectData.status || 'active'
         };
         
-        console.log('📝 Form data prepared:', formData);
+        logger.info('📝 Form data prepared:', formData);
         
         // Reset le formulaire avec les données
         form.reset(formData);
@@ -432,7 +433,7 @@ const AdminProjectForm: React.FC = () => {
         // Forcer la mise à jour
         form.trigger();
         
-        console.log('✅ Form updated successfully');
+        logger.info('✅ Form updated successfully');
         
       } catch (error) {
         console.error('❌ Error loading data:', error);
@@ -445,9 +446,9 @@ const AdminProjectForm: React.FC = () => {
 
   const onSubmit = async (data: ProjectFormValues) => {
     try {
-      console.log('Submitting form data', data);
+      logger.info('Submitting form data', data);
       const photosInForm = Array.isArray(data.photos) ? data.photos : [];
-      console.log('Photos in form data', {
+      logger.info('Photos in form data', {
         photosCount: photosInForm.length,
         photos: photosInForm,
         firstPhoto: photosInForm[0]
@@ -501,7 +502,7 @@ const AdminProjectForm: React.FC = () => {
         const photos = dbData.photos as Array<{ url?: string; category?: string }>;
         const validPhotos = photos.filter((photo) => photo && typeof photo.url === 'string');
         dbData.photos = validPhotos;
-        console.log('AdminProjectForm onSubmit: Photos to save', {
+        logger.info('AdminProjectForm onSubmit: Photos to save', {
           photosCount: validPhotos.length,
           photos: validPhotos,
           firstPhotoUrl: validPhotos[0]?.url,
@@ -542,14 +543,14 @@ const AdminProjectForm: React.FC = () => {
         delete dbData.brochure_pdf;
       }
       
-      console.log('💾 Data prepared for DB:', dbData);
-      console.log('💾 Final photos to save:', {
+      logger.info('💾 Data prepared for DB:', dbData);
+      logger.info('💾 Final photos to save:', {
         count: dbData.photos?.length,
         photos: dbData.photos
       });
       
       if (isEdit) {
-        console.log('⏫ Updating project with ID:', id);
+        logger.info('⏫ Updating project with ID:', id);
         const { data: updateResult, error } = await supabase
           .from('projects')
           .update(dbData)
@@ -562,7 +563,7 @@ const AdminProjectForm: React.FC = () => {
           throw error;
         }
         
-        console.log('✅ Update successful:', updateResult);
+        logger.info('✅ Update successful:', updateResult);
         toast.success('Projet mis à jour avec succès');
         
         // Invalider et recharger
@@ -580,7 +581,7 @@ const AdminProjectForm: React.FC = () => {
           throw error;
         }
         
-        console.log('✅ Insert successful:', insertData);
+        logger.info('✅ Insert successful:', insertData);
         toast.success('Projet créé avec succès');
         
         // Rediriger vers le dashboard du projet nouvellement créé
@@ -602,10 +603,10 @@ const AdminProjectForm: React.FC = () => {
   const refreshFormData = async () => {
     if (isEdit && id) {
       try {
-        console.log('🔄 Refreshing project data');
+        logger.info('🔄 Refreshing project data');
         const freshProject = await fetchProject(id);
         if (freshProject) {
-          console.log('📊 Fresh data retrieved:', freshProject);
+          logger.info('📊 Fresh data retrieved:', freshProject);
           
           // Récupérer les valeurs actuelles du formulaire
           const currentFormValues = form.getValues();
@@ -629,7 +630,7 @@ const AdminProjectForm: React.FC = () => {
             photos: convertedPhotos
           });
           
-          console.log('✅ Form refreshed with fresh data');
+          logger.info('✅ Form refreshed with fresh data');
         }
       } catch (error) {
         console.error('❌ Error refreshing data:', error);

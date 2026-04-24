@@ -26,6 +26,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { formatPrice, formatArea } from '@/lib/utils/formatters';
 import { MapPin, Calendar, Chrome as Home, Ruler, Euro } from 'lucide-react';
+import { logger } from '@/lib/logger';
 
 type ProjectImageRef = { url?: string; is_primary?: boolean; isPrimary?: boolean };
 
@@ -338,7 +339,7 @@ export default function HeroSection({ project, imagePreloaded = false }: HeroSec
             }}
             whileTap={{ scale: 0.97 }}
             onClick={() => {
-              console.log('Download brochure');
+              logger.info('Download brochure');
             }}
           >
             <motion.span

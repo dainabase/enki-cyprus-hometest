@@ -20,6 +20,7 @@ import { ProjectCompactView } from '@/components/admin/projects/ProjectCompactVi
 import { ProjectDetailedView } from '@/components/admin/projects/ProjectDetailedView';
 import { ProjectTableView } from '@/components/admin/projects/ProjectTableView';
 import { PDFExportButton } from '@/components/admin/properties/PDFExportButton';
+import { logger } from '@/lib/logger';
 
 const getDeveloper = (developer: unknown) => {
   if (!developer || typeof developer !== 'object') return null;
@@ -114,7 +115,7 @@ const AdminProjects = () => {
 
       const { data, error, count } = await query;
       if (error) throw error;
-      console.info('AdminProjects fetch', { totalCount: count, length: data?.length, first: data?.[0]?.id });
+      logger.info('AdminProjects fetch', { totalCount: count, length: data?.length, first: data?.[0]?.id });
       return { data, count };
     },
     { staleTime: 0, refetchOnMount: 'always', refetchOnReconnect: 'always', refetchOnWindowFocus: true }

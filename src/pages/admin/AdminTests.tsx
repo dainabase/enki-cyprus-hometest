@@ -8,6 +8,7 @@ import { generateTestData, resetTestData } from '@/utils/testDataGenerator';
 import { checkDataIntegrity } from '@/utils/dataIntegrityChecker';
 import { runSystemAudit, generateAuditReport } from '@/utils/systemAudit';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 interface TestResult {
   feature: string;
@@ -90,7 +91,7 @@ const AdminTests = () => {
       const results = await runSystemAudit();
       setAuditResults(results);
       const report = generateAuditReport(results);
-      console.log(report);
+      logger.info(report);
       
       if (results.errors.length === 0) {
         toast({
