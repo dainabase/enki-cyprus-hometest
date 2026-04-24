@@ -93,9 +93,9 @@ const BuildingsTable: React.FC<BuildingsTableProps> = React.memo(({ buildings, o
   };
 
   const calculateAvailableUnits = (building: BuildingRow) => {
-    // Enhanced calculation with more details
     const total = building.total_units || 0;
-    const available = Math.floor(total * 0.3); // Simulate 30% availability
+    // TODO: MOCK - remplacer par count reel properties WHERE building_id AND sale_status='available'
+    const available = Math.floor(total * 0.3);
     const sold = total - available;
     const occupancyRate = total > 0 ? Math.round((sold / total) * 100) : 0;
     
