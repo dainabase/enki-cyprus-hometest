@@ -1,0 +1,51 @@
+# Deploy `extract-full-hierarchy` Edge Function
+
+> Dernière mise à jour : 2026-04-24 (Phase 9 cleanup)
+
+## Description
+
+Extraction complète developer/project/buildings/properties depuis documents
+
+## Commande de déploiement
+
+```bash
+supabase functions deploy extract-full-hierarchy
+```
+
+## Secrets requis
+
+Configurer dans **Supabase Dashboard > Edge Functions > Secrets** :
+
+- `XAI_API_KEY`
+- `OPENAI_API_KEY`
+
+Ou via CLI :
+```bash
+supabase secrets set XAI_API_KEY=<value>
+supabase secrets set OPENAI_API_KEY=<value>
+```
+
+## Test post-déploiement
+
+```bash
+# Remplacer $SUPABASE_URL, $USER_JWT par des valeurs reelles
+curl -X POST "$SUPABASE_URL/functions/v1/extract-full-hierarchy" -H "Authorization: Bearer $USER_JWT" -F "file=@projet.pdf"
+```
+
+## Rollback
+
+En cas de problème après déploiement :
+
+```bash
+# Lister les versions deployees
+supabase functions list
+
+# Redeployer la version precedente depuis git
+git show HEAD~1:supabase/functions/extract-full-hierarchy/index.ts > /tmp/rollback.ts
+cp /tmp/rollback.ts supabase/functions/extract-full-hierarchy/index.ts
+supabase functions deploy extract-full-hierarchy
+```
+
+## Notes
+
+Voir `docs/governance/EDGE-FUNCTIONS-REGISTRY.md` pour le statut global.
