@@ -111,7 +111,7 @@ const Alternative3 = () => {
         <div 
           className="absolute inset-0 w-full h-full object-cover scale-125"
           style={{
-            backgroundImage: `url(/lovable-uploads/7a1f4c1e-ed5d-401e-98a7-e7d380bb9d99.png)`,
+            backgroundImage: `url(/lovable-uploads/7a1f4c1e-ed5d-401e-98a7-e7d380bb9d99.webp)`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat'
@@ -120,7 +120,7 @@ const Alternative3 = () => {
         <div 
           className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-60 scale-125"
           style={{
-            backgroundImage: `url(/lovable-uploads/7a1f4c1e-ed5d-401e-98a7-e7d380bb9d99.png)`,
+            backgroundImage: `url(/lovable-uploads/7a1f4c1e-ed5d-401e-98a7-e7d380bb9d99.webp)`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat'

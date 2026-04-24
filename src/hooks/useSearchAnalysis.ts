@@ -84,7 +84,7 @@ export const useSearchAnalysis = () => {
           {
             id: 1,
             title: "Appartement Vue Mer Limassol",
-            image: "/lovable-uploads/marina-bay-hero.jpg",
+            image: "/lovable-uploads/marina-bay-hero.webp",
             price: "245 000",
             location: "Limassol Marina",
             size: 85,
@@ -95,7 +95,7 @@ export const useSearchAnalysis = () => {
           {
             id: 2,
             title: "Penthouse Moderne Paphos",
-            image: "/lovable-uploads/marina-bay-interior-1.jpg",
+            image: "/lovable-uploads/marina-bay-interior-1.webp",
             price: "255 000",
             location: "Paphos Centre",
             size: 92,
@@ -106,7 +106,7 @@ export const useSearchAnalysis = () => {
           {
             id: 3,
             title: "Studio Investissement Larnaca",
-            image: "/lovable-uploads/marina-bay-bedroom.jpg",
+            image: "/lovable-uploads/marina-bay-bedroom.webp",
             price: "180 000",
             location: "Larnaca Beach",
             size: 45,

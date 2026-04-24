@@ -343,7 +343,7 @@ const Projects = () => {
               initial={{ scale: 1.2, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
-              src="/lovable-uploads/7a1f4c1e-ed5d-401e-98a7-e7d380bb9d99.png"
+              src="/lovable-uploads/7a1f4c1e-ed5d-401e-98a7-e7d380bb9d99.webp"
               alt="Cyprus Lifestyle"
               className="w-full h-full object-cover"
             />
