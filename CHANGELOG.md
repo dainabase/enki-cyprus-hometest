@@ -1,6 +1,55 @@
-# Changelog - NKREALTY Page Template
+# Changelog - ENKI Reality
 
-Toutes les modifications notables du projet sont documentées dans ce fichier.
+Toutes les modifications notables du projet sont documentees dans ce fichier.
+
+## [1.2.0] - 2026-04-24 - Cleanup Socle Stabilisation
+
+Grand nettoyage de la base de code en 10 phases sur la branche `cleanup/socle-stabilisation`.
+
+### Ajoute
+- `knip.json` : config pour detection dead code (exclut Shadcn UI + Edge Functions Deno)
+- `vitest.config.ts` + 42 tests unitaires sur 5 fichiers critiques
+- 16 `supabase/functions/*/DEPLOY.md` : guide deploiement par Edge Function
+- `scripts/deploy-edge-functions.sh` : script deploiement interactif
+- `docs/audits/cleanup-phase-[0-9].md` : rapports par phase (11 fichiers)
+- `docs/audits/i18n-missing-keys.md` : rapport des cles manquantes EL/RU/ES/IT/DE/NL
+- `docs/audits/QUESTION-PHASE-1.md` : decision requise cluster ProjectPageV2
+- `docs/audits/QUESTION-PHASE-3.md` : decision requise refacto gros fichiers
+- `docs/audits/AUDIT_CLEANUP_SOCLE_2026-04.md` : synthese 10 phases
+- `src/components/admin/settings/aiAgents.config.ts` : prompts extraits de AIAgentsManager
+
+### Modifie
+- `fr.json` : 347 -> 374 cles (100% EN coverage)
+- `vite.config.ts` : chunking confirme (vendor/ui/maps/supabase)
+- `src/lib/logger.ts` : types unknown pour args (remplacement any)
+- 35+ fichiers : remplacement `any` par types stricts (Supabase Row, Record<string, unknown>)
+- 38 fichiers : `console.log/info/debug` -> `logger.info/debug`
+- 6 fichiers : references PNG/JPG -> WebP (lovable-uploads)
+
+### Supprime
+- 125 fichiers dead code (Phase 1): src/app/(public)/, ProjectDetail.tsx.old, TabsFeatures-Alt1-6, hero alternatives non utilisees, admin/test/, ai-import/ v1, search cluster orphelin, 4 pages admin orphelines, etc.
+- 16 PNG/JPG originaux remplaces par WebP equivalents
+- `src/data/mockData.ts` et cluster SearchContext dead
+
+### Metriques avant/apres
+| Indicateur | Avant | Apres |
+|---|---|---|
+| Fichiers src/ (env) | ~1070 | ~945 |
+| `: any` (hors types.ts) | 275 (post-session 2026-03-19, 843 baseline) | 96 |
+| knip dead files | 170 | 16 (tous dans ProjectPageV2) |
+| `console.log/info/debug` | 181 | 0 (hors logger.ts) |
+| dist/ bundle | 17 MB | 7.9 MB |
+| public/ | 10 MB | 3 MB |
+| Tests unitaires | 0 | 42 |
+| FR i18n coverage | 92.8% | 100% |
+| Build duration | 8.70s | 8.48s |
+
+### Non modifie / decisions reportees
+- Refacto ProjectFormSteps.tsx (3340 lignes) : voir QUESTION-PHASE-3.md, decision option C (accepter dette)
+- Cluster ProjectPageV2 : 16 fichiers en attente decision, voir QUESTION-PHASE-1.md
+- Edge Functions deploiement : preparation uniquement, Jean-Marie lance manuellement
+
+---
 
 ## [1.0.0] - 2025-01-04
 

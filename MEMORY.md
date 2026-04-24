@@ -3,6 +3,64 @@
 > Mis a jour apres chaque session significative.
 > Source de verite pour le contexte recent.
 
+## Session 2026-04-24 - Cleanup Socle Stabilisation (10 phases)
+
+### Contexte
+Session autonome Claude Code mode loop sur repo ENKI Reality. Architecte du plan: Claude Opus 4.7. Execution: 10 phases de cleanup documentees dans `docs/audits/cleanup-phase-[0-9].md`.
+
+### Actions realisees
+
+**Phase 0 - Setup**: branche `cleanup/socle-stabilisation` creee, `.gitignore` renforce pour `.claude/settings.local.json`.
+
+**Phase 1 - Dead code**: 125 fichiers supprimes (45 Next.js App Router + scripts legacy + Search cluster + admin/test + 4 pages admin orphelines + ai-import v1 + hero alternatives + Property/Project views dead). `knip.json` cree avec exclusions pour Shadcn UI + Edge Functions Deno. Cluster ProjectPageV2 (16 fichiers) laisse intact - decision Jean-Marie requise (QUESTION-PHASE-1.md).
+
+**Phase 2 - TypeScript any**: 275 -> 96 (-65%). 35 fichiers traites. Types stricts, Record<string, unknown>, type guards, Supabase Row types. 23 any restants dans ProjectPageV2 non touche.
+
+**Phase 3 - Refacto gros fichiers**: PARTIELLE (option C). Extraction safe AI_AGENTS config de AIAgentsManager.tsx (1066 -> 884 lignes). 14 autres fichiers > 600 lignes non refactores - decision reportee (QUESTION-PHASE-3.md) car tests E2E insuffisants pour garantir zero regression.
+
+**Phase 4 - Mock data**: 2 mocks implicites flagges avec `// TODO: MOCK` (BuildingsTable.tsx calcul 30% dispo, AdminContent.tsx setTimeout simule API). `grep 'Jardins de Maria' src/` retourne 0.
+
+**Phase 5 - console.log**: 181 -> 0 hors logger.ts (2 restants dans logger.ts = implementation). Script Python auto-import + auto-replace sur 38 fichiers. 3 imports multi-lignes casses puis fixes.
+
+**Phase 6 - Bundle WebP**: dist 15MB -> 7.9MB (-47%), public 10MB -> 3MB (-70%). 16 images converties (PNG gains 76-98%, JPG gains 5-30%). Chunking vite.config.ts confirme (vendor/ui/maps/supabase), 16 pages lazy() dans App.tsx.
+
+**Phase 7 - i18n**: FR 92.8% -> 100% (27 cles traduites manuellement EN->FR: documentation.*, fields.*, messages.*). Rapport detaille `i18n-missing-keys.md` pour EL/RU/ES/IT/DE/NL (pas d'auto-traduction).
+
+**Phase 8 - Tests**: Vitest installe (v4.1.5 + happy-dom). 42 tests ecrits sur 5 fichiers (projectSchema, property.schema, amenitiesMapper, supabase.ts transformer, goldenVisa metier 300k EUR inclusif). Tous PASS en 325ms.
+
+**Phase 9 - Edge Functions**: 16 `DEPLOY.md` crees + `scripts/deploy-edge-functions.sh` interactif (dry-run testable). Aucun deploiement effectue. google-maps-agent exclue (deja en prod). Jean-Marie doit installer CLI supabase puis lancer le script.
+
+**Phase 10 - Documentation**: CHANGELOG, MEMORY, MATRICE-STATUT, EDGE-FUNCTIONS-REGISTRY mis a jour. Synthese AUDIT_CLEANUP_SOCLE_2026-04.md creee.
+
+### Fichiers nouveaux cles
+- `knip.json`, `vitest.config.ts`
+- `scripts/deploy-edge-functions.sh`
+- `src/components/admin/settings/aiAgents.config.ts`
+- `src/{schemas,utils,lib}/*.test.ts` x5
+- `supabase/functions/*/DEPLOY.md` x16
+- `docs/audits/cleanup-phase-[0-9].md` x11
+- `docs/audits/QUESTION-PHASE-{1,3}.md` x2
+- `docs/audits/i18n-missing-keys.md`
+- `docs/audits/AUDIT_CLEANUP_SOCLE_2026-04.md`
+
+### Statut
+- Branche: `cleanup/socle-stabilisation` (11 commits apres main)
+- Build: PASS (8.48s)
+- Tests: 42/42 PASS
+- Tables Supabase touchees: AUCUNE
+- Edge Functions deployees: AUCUNE (preparation uniquement)
+- `git status` clean apres commit final
+
+### Prochaines actions (pour Jean-Marie)
+1. Reviewer QUESTION-PHASE-1.md (decision cluster ProjectPageV2)
+2. Reviewer QUESTION-PHASE-3.md (refacto gros fichiers option A/B/C)
+3. Merger `cleanup/socle-stabilisation` dans `main` apres validation
+4. Installer CLI supabase et lancer `scripts/deploy-edge-functions.sh`
+5. Configurer les secrets Supabase (XAI_API_KEY, OPENAI_API_KEY, SENDGRID_API_KEY)
+6. Planifier Phase 3b (refacto ProjectFormSteps.tsx etape par etape) + Phase i18n autres langues
+
+---
+
 ## Session 2026-03-19 - Post-Cleanup Corrections
 
 ### Actions realisees
