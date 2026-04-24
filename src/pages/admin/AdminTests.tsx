@@ -8,6 +8,7 @@ import { generateTestData, resetTestData } from '@/utils/testDataGenerator';
 import { checkDataIntegrity } from '@/utils/dataIntegrityChecker';
 import { runSystemAudit, generateAuditReport } from '@/utils/systemAudit';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 interface TestResult {
   feature: string;
@@ -90,7 +91,7 @@ const AdminTests = () => {
       const results = await runSystemAudit();
       setAuditResults(results);
       const report = generateAuditReport(results);
-      console.log(report);
+      logger.info(report);
       
       if (results.errors.length === 0) {
         toast({
@@ -173,20 +174,21 @@ const AdminTests = () => {
           variant: 'destructive'
         });
       }
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
       setTestResults(prev => ({
         ...prev,
         [testId]: {
           feature: testName,
           status: 'failed',
-          message: error.message,
+          message: errorMessage,
           timestamp: new Date()
         }
       }));
 
       toast({
         title: 'Test Failed',
-        description: error.message,
+        description: errorMessage,
         variant: 'destructive'
       });
     }
@@ -377,10 +379,11 @@ const AdminTests = () => {
         description: 'Test data has been created successfully'
       });
       refreshSystemHealth();
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
       toast({
         title: 'Error',
-        description: error.message,
+        description: errorMessage,
         variant: 'destructive'
       });
     } finally {
@@ -397,10 +400,11 @@ const AdminTests = () => {
         description: 'All test data has been removed'
       });
       refreshSystemHealth();
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
       toast({
         title: 'Error',
-        description: error.message,
+        description: errorMessage,
         variant: 'destructive'
       });
     } finally {

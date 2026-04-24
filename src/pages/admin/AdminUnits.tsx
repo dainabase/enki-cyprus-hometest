@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { logger } from '@/lib/logger';
 
 type ViewType = 'cards' | 'list' | 'table' | 'compact' | 'detailed';
 
@@ -136,7 +137,7 @@ const AdminUnits = () => {
         throw error;
       }
       
-      console.info('AdminUnits fetch success', { 
+      logger.info('AdminUnits fetch success', { 
         totalCount: count, 
         length: data?.length, 
         firstItem: data?.[0] 
@@ -281,7 +282,7 @@ const AdminUnits = () => {
             variant="ghost"
             size="sm"
             onClick={() => {
-              console.log('Navigating to edit property:', row.id);
+              logger.info('Navigating to edit property:', row.id);
               navigate(`/admin/properties/${row.id}/edit`);
             }}
             className="h-8 w-8 p-0"

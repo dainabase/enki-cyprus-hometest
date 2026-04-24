@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { X, Upload, Image as ImageIcon, Star, Move, Camera } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { logger } from '@/lib/logger';
 
 interface CategorizedPhoto {
   url: string;
@@ -54,7 +55,7 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
 
   // DEBUG: Log what we receive and validate photos
   React.useEffect(() => {
-    console.log('CategorizedMediaUploader received:', {
+    logger.info('CategorizedMediaUploader received:', {
       field_value: field.value,
       field_value_type: typeof field.value,
       field_value_length: field.value?.length || 0,
@@ -67,7 +68,7 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
         if (!photo || !photo.url) {
           console.warn(`Invalid photo at index ${index}:`, photo);
         } else {
-          console.log(`Valid photo ${index}:`, { url: photo.url, category: photo.category });
+          logger.info(`Valid photo ${index}:`, { url: photo.url, category: photo.category });
         }
       });
     }
@@ -131,7 +132,7 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
       const updatedPhotos = [...withoutCategory, newPhoto];
       field.onChange(updatedPhotos);
 
-      console.log('🔄 CategorizedMediaUploader: Photos updated', {
+      logger.info('🔄 CategorizedMediaUploader: Photos updated', {
         newPhoto,
         totalPhotos: updatedPhotos.length,
         allPhotos: updatedPhotos,
@@ -174,7 +175,7 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
 
   const removePhoto = (index: number) => {
     const newPhotos = field.value.filter((_, i) => i !== index);
-    console.log('🗑️ Photo removed:', {
+    logger.info('🗑️ Photo removed:', {
       removedIndex: index,
       oldCount: field.value.length,
       newCount: newPhotos.length,
@@ -314,7 +315,7 @@ export const CategorizedMediaUploader: React.FC<CategorizedMediaUploaderProps> =
                             e.currentTarget.onerror = null; 
                             e.currentTarget.src = '/placeholder.svg'; 
                           }}
-                          onLoad={() => console.log('Image loaded successfully:', photo.url)}
+                          onLoad={() => logger.info('Image loaded successfully:', photo.url)}
                         />
                         
                         {/* Actions overlay */}

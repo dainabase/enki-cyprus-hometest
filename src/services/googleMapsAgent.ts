@@ -1,5 +1,6 @@
 // Service pour l'agent Google Maps
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 interface PlaceResult {
   name: string;
@@ -17,7 +18,7 @@ export class GoogleMapsAgent {
     address: string, 
     radiusKm: number = 2
   ): Promise<PlaceResult[]> {
-    console.log(`🔍 Recherche dans ${radiusKm} km autour de: ${address}`);
+    logger.info(`🔍 Recherche dans ${radiusKm} km autour de: ${address}`);
     
     try {
       // Appel via Edge Function avec les bons paramètres
@@ -39,7 +40,7 @@ export class GoogleMapsAgent {
         return [];
       }
 
-      console.log(`✅ Trouvé ${data?.places?.length || 0} lieux dans ${radiusKm} km`);
+      logger.info(`✅ Trouvé ${data?.places?.length || 0} lieux dans ${radiusKm} km`);
       return data?.places || [];
       
     } catch (error) {

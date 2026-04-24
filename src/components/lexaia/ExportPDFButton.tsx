@@ -1,6 +1,7 @@
 import { Download } from 'lucide-react';
 import type { PropertyData } from '@/types/expansion.types';
 import { useToast } from '@/components/ToastProvider';
+import { logger } from '@/lib/logger';
 
 interface ExportPDFButtonProps {
   property: PropertyData;
@@ -11,7 +12,7 @@ export const ExportPDFButton = ({ property }: ExportPDFButtonProps) => {
 
   const handleExport = () => {
     try {
-      console.log('PDF Export requested for property:', property.id);
+      logger.info('PDF Export requested for property:', property.id);
       addToast({
         type: 'success',
         title: 'PDF exported successfully!',

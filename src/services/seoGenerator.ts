@@ -1,5 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 import { ProjectFormData } from '@/schemas/projectSchema';
+import { logger } from '@/lib/logger';
 
 /**
  * Service de génération de contenu SEO optimisé pour Chypre
@@ -86,7 +87,7 @@ export async function generateSEOContent(projectData: any): Promise<{
   url_slug: string;
 }> {
   try {
-    console.log('Generating SEO content for:', projectData.title);
+    logger.info('Generating SEO content for:', projectData.title);
     
     // Préparer les données pour le service
     const propertyType = getMainPropertyType(projectData.property_sub_type);
@@ -199,10 +200,10 @@ export async function generateSEOContent(projectData: any): Promise<{
         }
       }
     } catch (edgeFunctionError) {
-      console.log('Edge function not available, using local generation');
+      logger.info('Edge function not available, using local generation');
     }
     
-    console.log('SEO content generated successfully');
+    logger.info('SEO content generated successfully');
     
     return {
       meta_title,

@@ -83,7 +83,7 @@ const Blog = () => {
       id: '1',
       title: 'Ce que vous achetez à 500k€ : Paris vs. Limassol',
       excerpt: 'Comparatif détaillé entre l\'immobilier parisien et chypriote pour un budget de 500 000€.',
-      image: '/lovable-uploads/marina-bay-hero.jpg',
+      image: '/lovable-uploads/marina-bay-hero.webp',
       category: 'immobilier',
       author: 'Marie Dubois',
       date: '2024-03-15',
@@ -95,7 +95,7 @@ const Blog = () => {
       id: '2',
       title: 'Golden Visa Chypre : Guide complet 2024',
       excerpt: 'Tout ce que vous devez savoir sur l\'obtention de la résidence permanente à Chypre.',
-      image: '/lovable-uploads/marina-bay-interior-1.jpg',
+      image: '/lovable-uploads/marina-bay-interior-1.webp',
       category: 'conseils',
       author: 'Jean-Pierre Martin',
       date: '2024-03-12',
@@ -118,7 +118,7 @@ const Blog = () => {
       id: '4',
       title: 'Prix de l\'immobilier à Chypre : Analyse 2024',
       excerpt: 'Évolution des prix au m² dans les principales villes chypriotes.',
-      image: '/lovable-uploads/marina-bay-exterior-1.jpg',
+      image: '/lovable-uploads/marina-bay-exterior-1.webp',
       category: 'tendances',
       author: 'Alexandre Rousseau',
       date: '2024-03-08',
@@ -188,7 +188,7 @@ const Blog = () => {
         >
           <div className="absolute inset-0">
             <img
-              src="/lovable-uploads/marina-bay-panoramic.jpg"
+              src="/lovable-uploads/marina-bay-panoramic.webp"
               alt="Blog Hero"
               className="w-full h-full object-cover opacity-40"
             />

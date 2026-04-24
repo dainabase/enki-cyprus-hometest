@@ -5,6 +5,7 @@ import { Upload } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
 import type { ExtractionStep, DocumentUpload, ExtractedDeveloper } from '@/lib/ai-import/types-v2';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 export function UnifiedAIImporter() {
   const [document, setDocument] = useState<DocumentUpload | null>(null);
@@ -47,7 +48,7 @@ export function UnifiedAIImporter() {
     try {
       setDocument(prev => prev ? {...prev, status: 'processing'} : null);
       
-      console.log('ÉTAPE 3: Extraction développeur avec système robuste...');
+      logger.info('ÉTAPE 3: Extraction développeur avec système robuste...');
       
       // Upload du fichier vers Supabase storage
       const fileName = `${Date.now()}-${document.file.name}`;
@@ -65,7 +66,7 @@ export function UnifiedAIImporter() {
         .from('project-documents')
         .getPublicUrl(`ai-imports/${fileName}`);
       
-      console.log('Fichier uploadé:', publicUrl);
+      logger.info('Fichier uploadé:', publicUrl);
       
       // Appel à l'edge function avec timeout et retry
       const { data, error } = await supabase.functions.invoke('simple-pdf-extractor', {
@@ -75,7 +76,7 @@ export function UnifiedAIImporter() {
         }
       });
       
-      console.log('🔄 Réponse edge function:', { data, error });
+      logger.info('🔄 Réponse edge function:', { data, error });
       
       if (error) {
         console.error('❌ Erreur edge function:', error);
@@ -86,7 +87,7 @@ export function UnifiedAIImporter() {
         setExtractedDeveloper(data.developer);
         setDocument(prev => prev ? {...prev, status: 'completed'} : null);
         setCurrentStep(4);
-        console.log('✅ Développeur extrait avec succès:', data.developer);
+        logger.info('✅ Développeur extrait avec succès:', data.developer);
       } else {
         console.error('❌ Réponse invalide:', data);
         // En cas d'échec, montrer quand même un résultat par défaut
@@ -99,7 +100,7 @@ export function UnifiedAIImporter() {
         setExtractedDeveloper(fallbackDeveloper);
         setDocument(prev => prev ? {...prev, status: 'completed'} : null);
         setCurrentStep(4);
-        console.log('Utilisation données fallback');
+        logger.info('Utilisation données fallback');
       }
       
     } catch (error) {

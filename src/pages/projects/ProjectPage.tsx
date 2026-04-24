@@ -20,6 +20,7 @@ import Location from './components/Location';
 import Investment from './components/Investment';
 import Developer from './components/Developer';
 import ContactForm from './components/ContactForm';
+import { logger } from '@/lib/logger';
 
 export default function ProjectPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -43,7 +44,7 @@ export default function ProjectPage() {
       const img = new Image();
 
       img.onload = () => {
-        console.log('✅ Hero image preloaded successfully');
+        logger.info('✅ Hero image preloaded successfully');
         resolve();
       };
 
@@ -56,7 +57,7 @@ export default function ProjectPage() {
 
       // If image is already cached, resolve immediately
       if (img.complete) {
-        console.log('✅ Hero image loaded from cache');
+        logger.info('✅ Hero image loaded from cache');
         resolve();
       }
     });

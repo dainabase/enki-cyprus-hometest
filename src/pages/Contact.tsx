@@ -18,6 +18,7 @@ import {
   Globe,
   Send 
 } from 'lucide-react';
+import { logger } from '@/lib/logger';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -113,7 +114,7 @@ const Contact = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission
-    console.log('Form submitted:', formData);
+    logger.info('Form submitted:', formData);
   };
 
   const handleInputChange = (field: string, value: string) => {

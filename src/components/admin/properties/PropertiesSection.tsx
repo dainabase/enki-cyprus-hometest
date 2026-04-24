@@ -26,6 +26,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { logger } from '@/lib/logger';
 
 interface PropertiesSectionProps {
   projectId: string;
@@ -71,10 +72,11 @@ export function PropertiesSection({ projectId, buildings }: PropertiesSectionPro
         description: 'La propriété a été créée avec succès.',
       });
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
+      const message = error instanceof Error ? error.message : 'Erreur lors de la creation.';
       toast({
         title: 'Erreur',
-        description: error.message || 'Erreur lors de la création.',
+        description: message,
         variant: 'destructive',
       });
     },
@@ -91,10 +93,11 @@ export function PropertiesSection({ projectId, buildings }: PropertiesSectionPro
         description: 'La propriété a été mise à jour avec succès.',
       });
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
+      const message = error instanceof Error ? error.message : 'Erreur lors de la mise a jour.';
       toast({
         title: 'Erreur',
-        description: error.message || 'Erreur lors de la mise à jour.',
+        description: message,
         variant: 'destructive',
       });
     },
@@ -110,10 +113,11 @@ export function PropertiesSection({ projectId, buildings }: PropertiesSectionPro
         description: 'La propriété a été supprimée avec succès.',
       });
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
+      const message = error instanceof Error ? error.message : 'Erreur lors de la suppression.';
       toast({
         title: 'Erreur',
-        description: error.message || 'Erreur lors de la suppression.',
+        description: message,
         variant: 'destructive',
       });
     },
@@ -136,8 +140,8 @@ export function PropertiesSection({ projectId, buildings }: PropertiesSectionPro
   };
 
   const handleEdit = (property: Property) => {
-    console.log('[PropertiesSection] Editing property:', property);
-    console.log('[PropertiesSection] Property ID:', property?.id);
+    logger.info('[PropertiesSection] Editing property:', property);
+    logger.info('[PropertiesSection] Property ID:', property?.id);
     if (!property?.id) {
       toast({
         title: 'Erreur',
@@ -147,7 +151,7 @@ export function PropertiesSection({ projectId, buildings }: PropertiesSectionPro
       return;
     }
     const url = `/admin/properties/${property.id}/edit`;
-    console.log('[PropertiesSection] Navigating to:', url);
+    logger.info('[PropertiesSection] Navigating to:', url);
     navigate(url);
   };
 

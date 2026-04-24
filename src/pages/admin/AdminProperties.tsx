@@ -15,6 +15,7 @@ import { PropertyTableView } from '@/components/admin/properties/PropertyTableVi
 import { PropertyCompactView } from '@/components/admin/properties/PropertyCompactView';
 import { PropertyDetailedView } from '@/components/admin/properties/PropertyDetailedView';
 import { PropertyViewSelector, PropertyViewType } from '@/components/admin/properties/PropertyViewSelector';
+import { logger } from '@/lib/logger';
 
 const AdminProperties = () => {
   const navigate = useNavigate();
@@ -75,14 +76,14 @@ const AdminProperties = () => {
   };
 
   const handleEditProperty = (property) => {
-    console.log('[AdminProperties] Editing property:', property);
-    console.log('[AdminProperties] Property ID:', property?.id);
+    logger.info('[AdminProperties] Editing property:', property);
+    logger.info('[AdminProperties] Property ID:', property?.id);
     if (!property?.id) {
       toast.error('ID de propriété manquant');
       return;
     }
     const url = `/admin/properties/${property.id}/edit`;
-    console.log('[AdminProperties] Navigating to:', url);
+    logger.info('[AdminProperties] Navigating to:', url);
     navigate(url);
   };
 

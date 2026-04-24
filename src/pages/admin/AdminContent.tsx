@@ -110,9 +110,10 @@ export const AdminContent = () => {
   const handleSaveContent = async () => {
     setIsSaving(true);
     try {
-      // In a real app, this would save to a content management table
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-      
+      // TODO: MOCK - connecter a une table content_settings Supabase (delai 1s simule un appel reseau)
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+
       toast({
         title: "Contenu sauvegardé",
         description: "Les modifications ont été appliquées avec succès"

@@ -1,6 +1,40 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
+type ProjectImage = {
+  url: string;
+  is_primary: boolean | null;
+  display_order: number | null;
+  caption: string | null;
+};
+
+type BuildingLight = {
+  id: string;
+  building_name: string | null;
+  building_amenities?: unknown;
+};
+
+type PropertyLight = {
+  id: string;
+  property_type: string | null;
+  property_sub_type: string | null;
+  bedrooms_count: number | null;
+  bathrooms_count: number | null;
+  internal_area: number | null;
+  total_covered_area: number | null;
+  price_excluding_vat: number | null;
+  price_including_vat: number | null;
+  sale_status: string | null;
+  floor_number: number | null;
+  has_sea_view: boolean | null;
+};
+
+type CategorizedPhoto = {
+  url?: string;
+  category?: string;
+  type?: string;
+};
+
 export interface ProjectData {
   id: string;
   title: string;
@@ -13,12 +47,12 @@ export interface ProjectData {
   latitude: number;
   longitude: number;
   hero_image: string;
-  photos: any[];
+  photos: string[];
   photos_categorized: {
-    exterior: any[];
-    interior: any[];
-    aerial: any[];
-    plans: any[];
+    exterior: CategorizedPhoto[];
+    interior: CategorizedPhoto[];
+    aerial: CategorizedPhoto[];
+    plans: CategorizedPhoto[];
   };
   price_from: number;
   price_to: number;
@@ -30,7 +64,7 @@ export interface ProjectData {
   living_area_to: number;
   energy_rating: string;
   virtual_tour_url?: string;
-  payment_plan_details: any;
+  payment_plan_details: Record<string, unknown> | null;
   finance_available: boolean;
   proximity_sea_km: number;
   proximity_airport_km: number;
@@ -50,9 +84,9 @@ export interface ProjectData {
     rating_score: number;
     completed_projects_count?: number;
   };
-  buildings: any[];
-  properties: any[];
-  availableUnits: any[];
+  buildings: BuildingLight[];
+  properties: PropertyLight[];
+  availableUnits: PropertyLight[];
   priceRange: {
     min: number;
     max: number;
@@ -104,50 +138,71 @@ export function useProjectData(slug: string) {
       if (error) throw error;
       if (!project) throw new Error('Project not found');
 
-      // Mapper project_images vers photos[] avec tri intelligent (is_primary first)
-      const photosFromProjectImages = Array.isArray(project.project_images)
-        ? project.project_images.sort((a: any, b: any) => {
-          // Primary images en premier
+      const projectImages = (project.project_images ?? []) as ProjectImage[];
+      const photosFromProjectImages = [...projectImages]
+        .sort((a, b) => {
           if (a.is_primary && !b.is_primary) return -1;
           if (!a.is_primary && b.is_primary) return 1;
-          // Sinon tri par display_order
-          return (a.display_order || 0) - (b.display_order || 0);
-        }).map((img: any) => img.url)
-        : [];
+          return (a.display_order ?? 0) - (b.display_order ?? 0);
+        })
+        .map((img) => img.url);
 
-      // Fallback vers les anciens champs JSONB pour compatibilité
-      const photoGallery = photosFromProjectImages.length > 0
+      const photoGalleryRaw = Array.isArray(project.photo_gallery_urls)
+        ? (project.photo_gallery_urls as unknown[])
+        : Array.isArray(project.photos)
+          ? (project.photos as unknown[])
+          : [];
+
+      const photoGallery: string[] = photosFromProjectImages.length > 0
         ? photosFromProjectImages
-        : (Array.isArray(project.photo_gallery_urls) 
-            ? project.photo_gallery_urls 
-            : (project.photos ? (Array.isArray(project.photos) ? project.photos : []) : []));
+        : photoGalleryRaw.filter((x): x is string => typeof x === 'string');
 
-      const availableUnits = project.properties?.filter(
-        (p: any) => p.sale_status === 'available'
-      ) || [];
+      const photoGalleryObjects = photoGalleryRaw.filter(
+        (x): x is CategorizedPhoto => typeof x === 'object' && x !== null
+      );
 
-      const prices = project.properties?.map((p: any) => p.price_including_vat).filter(Boolean) || [];
+      const projectProperties = (project.properties ?? []) as PropertyLight[];
+      const projectBuildings = (project.buildings ?? []) as BuildingLight[];
+
+      const availableUnits = projectProperties.filter(
+        (p) => p.sale_status === 'available'
+      );
+
+      const prices = projectProperties
+        .map((p) => p.price_including_vat)
+        .filter((v): v is number => typeof v === 'number' && v > 0);
+
       const priceRange = {
-        min: prices.length > 0 ? Math.min(...prices) : project.price_from || 0,
-        max: prices.length > 0 ? Math.max(...prices) : project.price_to || 0
+        min: prices.length > 0 ? Math.min(...prices) : project.price_from ?? 0,
+        max: prices.length > 0 ? Math.max(...prices) : project.price_to ?? 0
       };
 
       const bedroomTypes = [
         ...new Set(
-          project.properties?.map((p: any) => p.bedrooms_count).filter(Boolean) || []
+          projectProperties
+            .map((p) => p.bedrooms_count)
+            .filter((v): v is number => typeof v === 'number')
         )
       ].sort((a, b) => a - b);
 
       const photos_categorized = {
-        exterior: photoGallery.filter((img: any) => img.category === 'exterior' || img.type === 'exterior') || [],
-        interior: photoGallery.filter((img: any) => img.category === 'interior' || img.type === 'interior') || [],
-        aerial: photoGallery.filter((img: any) => img.category === 'aerial' || img.type === 'aerial') || [],
-        plans: photoGallery.filter((img: any) => img.category === 'floor_plan' || img.type === 'floor_plan') || []
+        exterior: photoGalleryObjects.filter((img) => img.category === 'exterior' || img.type === 'exterior'),
+        interior: photoGalleryObjects.filter((img) => img.category === 'interior' || img.type === 'interior'),
+        aerial: photoGalleryObjects.filter((img) => img.category === 'aerial' || img.type === 'aerial'),
+        plans: photoGalleryObjects.filter((img) => img.category === 'floor_plan' || img.type === 'floor_plan')
       };
 
+      const projectAmenities = Array.isArray(project.amenities)
+        ? (project.amenities as unknown[]).filter((x): x is string => typeof x === 'string')
+        : [];
+
+      const buildingAmenities = projectBuildings
+        .flatMap((b) => Array.isArray(b.building_amenities) ? (b.building_amenities as unknown[]) : [])
+        .filter((x): x is string => typeof x === 'string');
+
       const amenitiesHierarchy = {
-        project: project.amenities || [],
-        buildings: project.buildings?.flatMap((b: any) => b.building_amenities || []) || []
+        project: projectAmenities,
+        buildings: buildingAmenities
       };
 
       return {
@@ -166,13 +221,15 @@ export function useProjectData(slug: string) {
         living_area_from: project.square_meters_min,
         living_area_to: project.square_meters_max,
         energy_rating: project.energy_efficiency_class,
-        payment_plan_details: project.payment_plans,
+        payment_plan_details: project.payment_plans as Record<string, unknown> | null,
         finance_available: project.financing_available,
-        project_highlights: project.unique_selling_points || []
-      } as ProjectData;
+        project_highlights: Array.isArray(project.unique_selling_points)
+          ? (project.unique_selling_points as unknown[]).filter((x): x is string => typeof x === 'string')
+          : []
+      } as unknown as ProjectData;
     },
     enabled: !!slug,
-    staleTime: 5 * 60 * 1000,  // 5 minutes - données considérées fraîches
-    gcTime: 30 * 60 * 1000,    // 30 minutes - garde en cache mémoire
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
 }

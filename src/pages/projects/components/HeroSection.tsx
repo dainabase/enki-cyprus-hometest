@@ -26,9 +26,20 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { formatPrice, formatArea } from '@/lib/utils/formatters';
 import { MapPin, Calendar, Chrome as Home, Ruler, Euro } from 'lucide-react';
+import { logger } from '@/lib/logger';
+
+type ProjectImageRef = { url?: string; is_primary?: boolean; isPrimary?: boolean };
+
+interface ProjectHero {
+  project_images?: ProjectImageRef[];
+  photos?: ProjectImageRef[];
+  photo_gallery_urls?: string[];
+  main_image_url?: string;
+  [key: string]: unknown;
+}
 
 interface HeroSectionProps {
-  project: any;
+  project: ProjectHero;
   imagePreloaded?: boolean;
 }
 
@@ -44,8 +55,8 @@ export default function HeroSection({ project, imagePreloaded = false }: HeroSec
   const heroImage = useMemo(() => {
     // Priority order: project_images (primary) > photos (primary) > photos[0] > photo_gallery_urls[0] > main_image_url > fallback
     return (
-      project.project_images?.find((i: any) => i.is_primary)?.url ||
-      project.photos?.find((p: any) => p.isPrimary)?.url ||
+      project.project_images?.find((i) => i.is_primary)?.url ||
+      project.photos?.find((p) => p.isPrimary)?.url ||
       project.photos?.[0]?.url ||
       project.photo_gallery_urls?.[0] ||
       project.main_image_url ||
@@ -328,7 +339,7 @@ export default function HeroSection({ project, imagePreloaded = false }: HeroSec
             }}
             whileTap={{ scale: 0.97 }}
             onClick={() => {
-              console.log('Download brochure');
+              logger.info('Download brochure');
             }}
           >
             <motion.span

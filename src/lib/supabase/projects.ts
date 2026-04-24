@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 export interface ProjectFilters {
   developerId?: string;
@@ -33,7 +34,7 @@ export interface ProjectFormData {
   };
   features?: string[];
   photos?: string[];
-  [key: string]: any; // Pour permettre tous les autres champs du formulaire
+  [key: string]: unknown;
 }
 
 // Fetch projects with optional filters
@@ -69,7 +70,7 @@ export const fetchProjects = async (filters: ProjectFilters = {}) => {
 
 // Fetch single project with full details
 export const fetchProject = async (id: string) => {
-  console.log('🔍 Fetching project with ID:', id);
+  logger.info('🔍 Fetching project with ID:', id);
   
   const { data, error } = await supabase
     .from('projects')
@@ -82,7 +83,7 @@ export const fetchProject = async (id: string) => {
     throw error;
   }
   
-  console.log('✅ Project fetched successfully:', data);
+  logger.info('✅ Project fetched successfully:', data);
   return data;
 };
 
@@ -121,7 +122,7 @@ export const createProject = async (projectData: ProjectFormData) => {
 
 // Update existing project
 export const updateProject = async (id: string, projectData: Partial<ProjectFormData>) => {
-  console.log('🔄 UPDATE PROJECT - Données envoyées à Supabase:', {
+  logger.info('🔄 UPDATE PROJECT - Données envoyées à Supabase:', {
     id,
     status_project: projectData.status_project,
     statut_commercial: projectData.statut_commercial,
@@ -146,7 +147,7 @@ export const updateProject = async (id: string, projectData: Partial<ProjectForm
     throw error;
   }
   
-  console.log('✅ UPDATE PROJECT RÉUSSI - Données retournées:', {
+  logger.info('✅ UPDATE PROJECT RÉUSSI - Données retournées:', {
     id: data.id,
     title: data.title
   });
@@ -190,8 +191,17 @@ export const fetchDevelopers = async () => {
   return data;
 };
 
-// Calculate project statistics
-export const calculateProjectStats = (projects: any[]) => {
+type ProjectRecord = {
+  id: string;
+  status?: string | null;
+  golden_visa_eligible?: boolean | null;
+  developer_id?: string | null;
+  developer?: { name?: string | null } | null;
+  buildings?: unknown[] | null;
+  [key: string]: unknown;
+};
+
+export const calculateProjectStats = (projects: ProjectRecord[]) => {
   return {
     total: projects.length,
     available: projects.filter(p => p.status === 'available').length,
@@ -199,18 +209,16 @@ export const calculateProjectStats = (projects: any[]) => {
     delivered: projects.filter(p => p.status === 'delivered').length,
     goldenVisa: projects.filter(p => p.golden_visa_eligible).length,
     totalBuildings: projects.reduce((sum, p) => {
-      // Count buildings associated with this project
       return sum + (Array.isArray(p.buildings) ? p.buildings.length : 0);
     }, 0)
   };
 };
 
-// Group projects by developer
-export const groupProjectsByDeveloper = (projects: any[]) => {
-  return projects.reduce((acc, project) => {
+export const groupProjectsByDeveloper = (projects: ProjectRecord[]) => {
+  return projects.reduce<Record<string, { developerName: string; projects: ProjectRecord[] }>>((acc, project) => {
     const developerId = project.developer_id || 'no-developer';
-    const developerName = project.developer?.name || 'Sans développeur';
-    
+    const developerName = project.developer?.name || 'Sans developpeur';
+
     if (!acc[developerId]) {
       acc[developerId] = {
         developerName,
@@ -219,5 +227,5 @@ export const groupProjectsByDeveloper = (projects: any[]) => {
     }
     acc[developerId].projects.push(project);
     return acc;
-  }, {} as Record<string, { developerName: string; projects: any[] }>);
+  }, {});
 };

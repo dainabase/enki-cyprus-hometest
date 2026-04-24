@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MapPin, Chrome as Home, Building, Building2, Store } from 'lucide-react';
 import { useGoogleMapsContext } from '@/contexts/GoogleMapsContext';
+import { logger } from '@/lib/logger';
 interface GoogleMapComponentProps {
   properties: Property[];
   onPropertySelect?: (property: Property) => void;
@@ -78,7 +79,7 @@ const GoogleMapComponent = ({
   };
 
 const onLoad = useCallback((map: google.maps.Map) => {
-  console.log('Google Map loaded, centering on Cyprus...');
+  logger.info('Google Map loaded, centering on Cyprus...');
   if (!window.google) {
     console.error('❌ Google Maps API not loaded properly');
     return;
@@ -86,7 +87,7 @@ const onLoad = useCallback((map: google.maps.Map) => {
   setMap(map);
   map.setCenter({ lat: 35.1264, lng: 33.4299 });
   map.setZoom(9);
-  console.log('Map centered on Cyprus (35.1264, 33.4299) with zoom 9');
+  logger.info('Map centered on Cyprus (35.1264, 33.4299) with zoom 9');
 }, []);
 
 // Create Advanced Markers and cluster when map and API are ready
@@ -115,7 +116,7 @@ useEffect(() => {
 
   try {
     const markers = properties.map((property) => {
-      console.log(`📌 Creating marker for: ${property.title} at (${property.coordinates.lat}, ${property.coordinates.lng})`);
+      logger.info(`📌 Creating marker for: ${property.title} at (${property.coordinates.lat}, ${property.coordinates.lng})`);
       // Use AdvancedMarkerElement instead of deprecated Marker
       const marker = new google.maps.marker.AdvancedMarkerElement({
         position: { lat: property.coordinates.lat, lng: property.coordinates.lng },
@@ -123,7 +124,7 @@ useEffect(() => {
         title: property.title,
       });
       marker.addListener('click', () => {
-        console.log(`Property clicked: ${property.title}`);
+        logger.info(`Property clicked: ${property.title}`);
         setSelectedProperty(property);
         onPropertySelect?.(property);
       });
@@ -134,7 +135,7 @@ useEffect(() => {
 
     if (markers.length > 0) {
       clustererRef.current = new MarkerClusterer({ markers, map });
-      console.log('Marker clustering initialized successfully');
+      logger.info('Marker clustering initialized successfully');
     } else {
       console.warn('No markers to cluster');
     }

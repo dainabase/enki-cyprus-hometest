@@ -4,8 +4,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { CreditCard as Edit, Chrome as Home, Eye, Trash2 } from 'lucide-react';
 
 interface PropertyCompactViewProps {
-  properties: any[];
-  onEdit: (property: any) => void;
+  properties: Array<Record<string, unknown>>;
+  onEdit: (property: Record<string, unknown>) => void;
   onDelete: (id: string) => void;
   selectedProperties: string[];
   onSelectionChange: (ids: string[]) => void;

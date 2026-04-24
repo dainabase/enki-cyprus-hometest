@@ -4,9 +4,29 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { CreditCard as Edit, MapPin, Building, Calendar, Euro, Star, Crown, Eye, Trash2 } from 'lucide-react';
 
+interface ProjectViewRow {
+  id: string;
+  title?: string | null;
+  status?: string | null;
+  statut_commercial?: string | null;
+  price?: number | null;
+  price_from?: number | null;
+  photos?: string[] | null;
+  city?: string | null;
+  neighborhood?: string | null;
+  completion_month?: string | null;
+  completion_date?: string | null;
+  golden_visa_eligible?: boolean | null;
+  golden_visa_eligible_new?: boolean | null;
+  exclusive_commercialization?: boolean | null;
+  developer?: { name?: string | null } | null;
+  developers?: Array<{ name?: string | null }> | null;
+  [key: string]: unknown;
+}
+
 interface ProjectListViewProps {
-  projects: any[];
-  onEdit: (project: any) => void;
+  projects: ProjectViewRow[];
+  onEdit: (project: ProjectViewRow) => void;
   selectedProjects: string[];
   onSelectionChange: (ids: string[]) => void;
 }
@@ -43,16 +63,14 @@ export const ProjectListView = ({
     }).format(price);
   };
 
-  const getDeveloperName = (project: any) => {
-    // Essayer d'abord project.developer (objet)
+  const getDeveloperName = (project: ProjectViewRow) => {
     if (project.developer && typeof project.developer === 'object') {
-      return project.developer.name || 'Non défini';
+      return project.developer.name || 'Non defini';
     }
-    // Sinon essayer developers (array - ancien format)
     if (project.developers && Array.isArray(project.developers) && project.developers[0]) {
-      return project.developers[0].name || 'Non défini';
+      return project.developers[0].name || 'Non defini';
     }
-    return 'Non défini';
+    return 'Non defini';
   };
 
   return (

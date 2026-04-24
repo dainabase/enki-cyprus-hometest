@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils';
 import { propertySchema, propertyFormSteps, PropertyFormData } from '@/schemas/property.schema';
 import { createProperty, updateProperty } from '@/lib/api/properties';
 import { PropertyFormSteps } from '@/components/admin/properties/PropertyFormSteps';
+import { logger } from '@/lib/logger';
 
 const GOLDEN_VISA_THRESHOLD = 300000;
 const AUTO_SAVE_INTERVAL = 30000;
@@ -117,10 +118,10 @@ export default function AdminPropertyForm() {
 
   useEffect(() => {
     if (projectsData) {
-      console.log('AdminPropertyForm - Projects loaded:', projectsData.length, projectsData);
+      logger.info('AdminPropertyForm - Projects loaded:', projectsData.length, projectsData);
       setProjects(projectsData);
     } else {
-      console.log('AdminPropertyForm - No projects data yet');
+      logger.info('AdminPropertyForm - No projects data yet');
     }
   }, [projectsData]);
 
@@ -264,7 +265,7 @@ export default function AdminPropertyForm() {
       if (project) {
         setSelectedProject(project);
 
-        const inherited: any = {
+        const inherited: Record<string, unknown> = {
           vat_rate: project.vat_rate || 5,
           commission_rate: project.developer?.commission_rate || 5
         };
@@ -380,40 +381,39 @@ export default function AdminPropertyForm() {
     }
   });
 
-  // Create property mutation
   const createMutation = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: PropertyFormData) => {
       return await createProperty(data.project_id, data);
     },
     onSuccess: (newProperty) => {
       queryClient.invalidateQueries({ queryKey: ['all-properties'] });
-      toast.success('Propriété créée avec succès');
+      toast.success('Propriete creee avec succes');
       navigate(`/admin/properties/${newProperty.id}/edit`);
     },
-    onError: (error: any) => {
-      if (error.code === '23505') {
-        toast.error('Une propriété avec ce code existe déjà');
-      } else if (error.code === '23503') {
-        toast.error('Projet ou bâtiment invalide');
+    onError: (error: unknown) => {
+      const code = (error as { code?: string }).code;
+      if (code === '23505') {
+        toast.error('Une propriete avec ce code existe deja');
+      } else if (code === '23503') {
+        toast.error('Projet ou batiment invalide');
       } else {
-        toast.error('Erreur lors de la création');
+        toast.error('Erreur lors de la creation');
       }
       console.error('[PropertyForm] Create error:', error);
     }
   });
 
-  // Update property mutation
   const updateMutation = useMutation({
-    mutationFn: async (data: any) => {
-      console.log('[updateMutation] Starting update for ID:', id);
-      console.log('[updateMutation] Data:', data);
+    mutationFn: async (data: PropertyFormData) => {
+      logger.info('[updateMutation] Starting update for ID:', id);
+      logger.info('[updateMutation] Data:', data);
       if (!id) throw new Error('ID manquant');
       const result = await updateProperty(id, data);
-      console.log('[updateMutation] Result:', result);
+      logger.info('[updateMutation] Result:', result);
       return result;
     },
     onSuccess: () => {
-      console.log('[updateMutation] ✅ onSuccess called');
+      logger.info('[updateMutation] ✅ onSuccess called');
       queryClient.invalidateQueries({ queryKey: ['property', id] });
       queryClient.invalidateQueries({ queryKey: ['all-properties'] });
       toast.success('Propriété mise à jour avec succès');
@@ -458,19 +458,19 @@ export default function AdminPropertyForm() {
 
   const handleSubmit = form.handleSubmit(
     async (data) => {
-      console.log('[PropertyForm] ✅ Form validation passed');
-      console.log('[PropertyForm] 📝 Data to submit:', data);
-      console.log('[PropertyForm] Mode:', isEdit ? 'UPDATE' : 'CREATE');
+      logger.info('[PropertyForm] ✅ Form validation passed');
+      logger.info('[PropertyForm] 📝 Data to submit:', data);
+      logger.info('[PropertyForm] Mode:', isEdit ? 'UPDATE' : 'CREATE');
 
       try {
         if (isEdit) {
-          console.log('[PropertyForm] Calling updateMutation...');
+          logger.info('[PropertyForm] Calling updateMutation...');
           await updateMutation.mutateAsync(data);
-          console.log('[PropertyForm] ✅ Update successful');
+          logger.info('[PropertyForm] ✅ Update successful');
         } else {
-          console.log('[PropertyForm] Calling createMutation...');
+          logger.info('[PropertyForm] Calling createMutation...');
           await createMutation.mutateAsync(data);
-          console.log('[PropertyForm] ✅ Create successful');
+          logger.info('[PropertyForm] ✅ Create successful');
         }
       } catch (error) {
         console.error('[PropertyForm] ❌ Submit error:', error);

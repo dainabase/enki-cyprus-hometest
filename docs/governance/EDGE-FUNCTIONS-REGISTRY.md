@@ -1,7 +1,7 @@
 # EDGE FUNCTIONS REGISTRY - ENKI Reality
 
-> Registre complet des 18 Edge Functions Supabase.
-> Mis a jour le 2026-03-18.
+> Registre complet des 17 Edge Functions Supabase.
+> Mis a jour le 2026-04-24 (post-Phase 9 cleanup, DEPLOY.md disponibles).
 
 ## Legende statuts
 - PRODUCTION : Fonctionnelle, testee, securisee
@@ -43,3 +43,32 @@
 - SENDGRID_API_KEY : pour send-notification
 - LEXAIA_API_KEY : pour lexaia-call (quand API reelle disponible)
 - SITE_URL : pour liens dans emails
+
+## Deploiement (post Phase 9, 2026-04-24)
+
+Chaque fonction dispose desormais de son `DEPLOY.md` dans `supabase/functions/<name>/DEPLOY.md`.
+
+Procedure globale:
+```bash
+# 1. Installer CLI
+brew install supabase/tap/supabase  # OU npm install -g supabase
+
+# 2. Lier au projet
+supabase link --project-ref ccsakftsslurjgnjwdci
+
+# 3. Configurer secrets
+supabase secrets set XAI_API_KEY=<value>
+supabase secrets set OPENAI_API_KEY=<value>
+supabase secrets set SENDGRID_API_KEY=<value>
+supabase secrets set SITE_URL=https://enki-reality.example
+
+# 4. Lancer le script interactif
+./scripts/deploy-edge-functions.sh
+
+# 5. (optionnel) Dry-run
+./scripts/deploy-edge-functions.sh --dry-run
+```
+
+Le script demande confirmation individuelle par fonction (y/n/q).
+
+**google-maps-agent EXCLUE du script** — deja en production stable.

@@ -4,8 +4,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { CreditCard as Edit, MapPin, Building2, Euro, Chrome as Home, Bed, Bath, Maximize, Eye, Trash2 } from 'lucide-react';
 
 interface PropertyListViewProps {
-  properties: any[];
-  onEdit: (property: any) => void;
+  properties: Array<Record<string, unknown>>;
+  onEdit: (property: Record<string, unknown>) => void;
   onDelete: (id: string) => void;
   selectedProperties: string[];
   onSelectionChange: (ids: string[]) => void;

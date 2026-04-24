@@ -1,4 +1,48 @@
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
+
+interface OrphanedProject {
+  id: string;
+  title: string | null;
+  developer_id: string | null;
+}
+
+interface OrphanedBuilding {
+  id: string;
+  name: string | null;
+  project_id: string | null;
+}
+
+interface LeadRow {
+  id: string;
+  email: string;
+  first_name: string | null;
+  last_name: string | null;
+}
+
+interface DuplicateEmailGroup {
+  email: string;
+  leads: LeadRow[];
+}
+
+interface GoldenVisaCandidate {
+  id: string;
+  title: string | null;
+  price_from: number | null;
+  golden_visa_eligible: boolean | null;
+}
+
+interface InvalidPriceRow {
+  id: string;
+  title: string | null;
+  price_from: number | null;
+}
+
+interface MissingFieldIssue {
+  type: 'project' | 'lead';
+  id: string;
+  issue: string;
+}
 
 export interface IntegrityReport {
   orphanedProjects: number;
@@ -9,17 +53,17 @@ export interface IntegrityReport {
   missingRequiredFields: number;
   totalIssues: number;
   details: {
-    orphanedProjects: any[];
-    orphanedBuildings: any[];
-    duplicateEmails: any[];
-    missingGoldenVisa: any[];
-    invalidPrices: any[];
-    missingRequiredFields: any[];
+    orphanedProjects: OrphanedProject[];
+    orphanedBuildings: OrphanedBuilding[];
+    duplicateEmails: DuplicateEmailGroup[];
+    missingGoldenVisa: GoldenVisaCandidate[];
+    invalidPrices: InvalidPriceRow[];
+    missingRequiredFields: MissingFieldIssue[];
   };
 }
 
 export const checkDataIntegrity = async (): Promise<IntegrityReport> => {
-  console.log('Starting data integrity check...');
+  logger.info('Starting data integrity check...');
 
   const report: IntegrityReport = {
     orphanedProjects: 0,
@@ -74,16 +118,16 @@ export const checkDataIntegrity = async (): Promise<IntegrityReport> => {
     if (leadsError) throw leadsError;
 
     if (allLeads) {
-      const emailGroups = allLeads.reduce((acc, lead) => {
+      const emailGroups = allLeads.reduce<Record<string, LeadRow[]>>((acc, lead) => {
         if (!acc[lead.email]) {
           acc[lead.email] = [];
         }
-        acc[lead.email].push(lead);
+        acc[lead.email].push(lead as LeadRow);
         return acc;
-      }, {} as Record<string, any[]>);
+      }, {});
 
-      const duplicates = Object.entries(emailGroups)
-        .filter(([email, leads]) => leads.length > 1)
+      const duplicates: DuplicateEmailGroup[] = Object.entries(emailGroups)
+        .filter(([, leads]) => leads.length > 1)
         .map(([email, leads]) => ({ email, leads }));
 
       report.duplicateEmails = duplicates.length;
@@ -164,7 +208,7 @@ export const checkDataIntegrity = async (): Promise<IntegrityReport> => {
       report.invalidPrices +
       report.missingRequiredFields;
 
-    console.log('Data integrity check completed:', report);
+    logger.info('Data integrity check completed:', report);
     return report;
 
   } catch (error) {
@@ -174,7 +218,7 @@ export const checkDataIntegrity = async (): Promise<IntegrityReport> => {
 };
 
 export const fixDataIntegrityIssues = async () => {
-  console.log('Starting automatic data integrity fixes...');
+  logger.info('Starting automatic data integrity fixes...');
 
   try {
     // 1. Fix Golden Visa flags
@@ -194,7 +238,7 @@ export const fixDataIntegrityIssues = async () => {
 
     if (priceFixError) throw priceFixError;
 
-    console.log('Automatic fixes completed');
+    logger.info('Automatic fixes completed');
 
   } catch (error) {
     console.error('Error during automatic fixes:', error);

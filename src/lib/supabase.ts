@@ -1,7 +1,5 @@
-// Import the official Supabase client
 export { supabase } from '@/integrations/supabase/client';
 
-// Types pour TypeScript
 export interface DatabaseProperty {
   id: string;
   title: string;
@@ -24,7 +22,6 @@ export interface DatabaseProperty {
   updated_at?: string;
 }
 
-// Types pour compatibilité avec l'interface existante
 export interface Property {
   id: string;
   title: string;
@@ -45,49 +42,72 @@ export interface Property {
   virtualTour?: string;
 }
 
-// Fonction de transformation des données Supabase vers l'interface Property
-export const transformDatabaseProperty = (dbProperty: any): Property => {
-  console.log('🔧 Transform property:', { 
-    id: dbProperty.id, 
-    features_type: typeof dbProperty.features,
-    features_isArray: Array.isArray(dbProperty.features),
-    photos_type: typeof dbProperty.photos,
-    photos_isArray: Array.isArray(dbProperty.photos),
-    property_sub_type: dbProperty.property_sub_type
-  });
-  
+interface DatabasePropertyRow {
+  id: string;
+  title?: string | null;
+  description?: string | null;
+  detailed_description?: string | null;
+  type?: string | null;
+  property_sub_type?: string[] | null;
+  price_from?: number | null;
+  price_to?: number | null;
+  city?: string | null;
+  gps_latitude?: number | null;
+  gps_longitude?: number | null;
+  bedrooms_count?: number | null;
+  bathrooms_count?: number | null;
+  internal_area?: number | null;
+  built_area_m2?: number | null;
+  features?: unknown;
+  amenities?: unknown;
+  detailed_features?: unknown;
+  photos?: unknown;
+  photo_gallery_urls?: unknown;
+  plans?: unknown;
+  virtual_tour?: string | null;
+  virtual_tour_url?: string | null;
+}
+
+function coerceStringArray(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => {
+      if (typeof item === 'string') return item;
+      if (item && typeof item === 'object') {
+        const obj = item as { name?: unknown; url?: unknown };
+        if (typeof obj.name === 'string') return obj.name;
+        if (typeof obj.url === 'string') return obj.url;
+      }
+      return String(item);
+    })
+    .filter((s) => s.length > 0);
+}
+
+export const transformDatabaseProperty = (dbProperty: DatabasePropertyRow): Property => {
   return {
     id: dbProperty.id,
     title: dbProperty.title || 'Titre non disponible',
     description: dbProperty.description || dbProperty.detailed_description || 'Description non disponible',
-    detailedDescription: dbProperty.detailed_description || dbProperty.description,
+    detailedDescription: dbProperty.detailed_description || dbProperty.description || undefined,
     type: (dbProperty.property_sub_type?.[0] || dbProperty.type || 'apartment') as Property['type'],
-    price: dbProperty.price_from ? `€${dbProperty.price_from.toLocaleString()}` : 'Prix sur demande',
-    priceValue: dbProperty.price_from || dbProperty.price_to || 0,
+    price: dbProperty.price_from ? `EUR ${dbProperty.price_from.toLocaleString()}` : 'Prix sur demande',
+    priceValue: dbProperty.price_from ?? dbProperty.price_to ?? 0,
     location: dbProperty.city || 'Localisation non disponible',
-    coordinates: { 
-      lat: dbProperty.gps_latitude || 35.1264, 
-      lng: dbProperty.gps_longitude || 33.4299 
+    coordinates: {
+      lat: dbProperty.gps_latitude ?? 35.1264,
+      lng: dbProperty.gps_longitude ?? 33.4299
     },
-    bedrooms: dbProperty.bedrooms_count || 2,
-    bathrooms: dbProperty.bathrooms_count || 1,
-    area: dbProperty.internal_area || dbProperty.built_area_m2 || 80,
-    features: Array.isArray(dbProperty.features) 
-      ? dbProperty.features.map((f: any) => typeof f === 'string' ? f : f?.name || String(f))
-      : Array.isArray(dbProperty.amenities) 
-      ? dbProperty.amenities.map((a: any) => typeof a === 'string' ? a : a?.name || String(a))
-      : [],
-    detailedFeatures: Array.isArray(dbProperty.detailed_features) 
-      ? dbProperty.detailed_features.map((f: any) => typeof f === 'string' ? f : f?.name || String(f))
-      : [],
-    photos: Array.isArray(dbProperty.photos) 
-      ? dbProperty.photos.map((p: any) => typeof p === 'string' ? p : p?.url || p)
-      : Array.isArray(dbProperty.photo_gallery_urls) 
-      ? dbProperty.photo_gallery_urls.map((p: any) => typeof p === 'string' ? p : p?.url || p)
-      : [],
-    plans: Array.isArray(dbProperty.plans) 
-      ? dbProperty.plans.map((p: any) => typeof p === 'string' ? p : p?.url || p)
-      : [],
-    virtualTour: dbProperty.virtual_tour || dbProperty.virtual_tour_url,
+    bedrooms: dbProperty.bedrooms_count ?? 2,
+    bathrooms: dbProperty.bathrooms_count ?? 1,
+    area: dbProperty.internal_area ?? dbProperty.built_area_m2 ?? 80,
+    features: coerceStringArray(dbProperty.features).length > 0
+      ? coerceStringArray(dbProperty.features)
+      : coerceStringArray(dbProperty.amenities),
+    detailedFeatures: coerceStringArray(dbProperty.detailed_features),
+    photos: coerceStringArray(dbProperty.photos).length > 0
+      ? coerceStringArray(dbProperty.photos)
+      : coerceStringArray(dbProperty.photo_gallery_urls),
+    plans: coerceStringArray(dbProperty.plans),
+    virtualTour: dbProperty.virtual_tour ?? dbProperty.virtual_tour_url ?? undefined,
   };
 };

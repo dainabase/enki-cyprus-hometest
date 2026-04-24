@@ -1,0 +1,30 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": [
+    "src/main.tsx",
+    "index.html",
+    "scripts/generate-sitemap.js",
+    "cypress/e2e/**/*.cy.{ts,tsx}",
+    "cypress/support/**/*.{ts,tsx}"
+  ],
+  "project": [
+    "src/**/*.{ts,tsx}",
+    "scripts/**/*.{js,ts}"
+  ],
+  "ignore": [
+    "src/components/ui/**",
+    "src/integrations/supabase/types.ts",
+    "supabase/functions/**",
+    "dist/**",
+    "node_modules/**"
+  ],
+  "ignoreBinaries": [
+    "supabase"
+  ],
+  "ignoreDependencies": [
+    "@types/*",
+    "cypress",
+    "eslint-*",
+    "knip"
+  ]
+}

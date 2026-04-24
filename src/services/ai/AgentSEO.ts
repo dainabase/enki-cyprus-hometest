@@ -1,5 +1,6 @@
 import { TrendingUp, Home, Users, MessageSquare } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 export interface ContenuSEO {
   titre_meta: string;
@@ -8,7 +9,7 @@ export interface ContenuSEO {
   points_marketing: string[];
   audience_cible: string;
   slug_url: string;
-  schema_json_ld?: any;
+  schema_json_ld?: Record<string, unknown>;
 }
 
 export interface DonneesProjet {
@@ -239,11 +240,11 @@ export class AgentSEO {
       }
 
       if (!data?.system_prompt) {
-        console.log('⚠️ Prompt vide en base, utilisation du fallback');
+        logger.info('⚠️ Prompt vide en base, utilisation du fallback');
         return 'Tu es un expert SEO immobilier spécialisé sur le marché de Chypre.';
       }
 
-      console.log('✅ Prompt chargé depuis la configuration');
+      logger.info('✅ Prompt chargé depuis la configuration');
       return data.system_prompt;
     } catch (error) {
       console.error('❌ Erreur critique chargement prompt:', error);
@@ -258,7 +259,7 @@ export class AgentSEO {
     return 'tech_nomads';
   }
 
-  private parserReponse(reponse: any): ContenuSEO {
+  private parserReponse(reponse: Partial<ContenuSEO>): ContenuSEO {
     return {
       titre_meta: reponse.titre_meta || '',
       description_meta: reponse.description_meta || '',
@@ -269,7 +270,11 @@ export class AgentSEO {
     };
   }
 
-  private genererContenuSecours(donnees: DonneesProjet, estGoldenVisa: boolean, zone: any): ContenuSEO {
+  private genererContenuSecours(
+    donnees: DonneesProjet,
+    estGoldenVisa: boolean,
+    zone: { mots_cles: string[]; points_forts: string; croissance_annuelle: string }
+  ): ContenuSEO {
     const annee = new Date().getFullYear();
     return {
       titre_meta: `${donnees.nom_projet} - ${donnees.zone} ${estGoldenVisa ? 'Golden Visa ' : ''}Cyprus ${annee}`,
@@ -287,7 +292,7 @@ export class AgentSEO {
     };
   }
 
-  private genererSchemaJsonLD(donnees: DonneesProjet, contenu: ContenuSEO): any {
+  private genererSchemaJsonLD(donnees: DonneesProjet, contenu: ContenuSEO): Record<string, unknown> {
     return {
       "@context": "https://schema.org",
       "@type": "RealEstateAgent",
@@ -322,11 +327,11 @@ export class AgentSEO {
       caracteristiques: ["Marina location", "Luxury finishes", "Concierge service"]
     };
     
-    console.log('🚀 Test Agent SEO Chypre avec:', donneesDemoChypre);
+    logger.info('🚀 Test Agent SEO Chypre avec:', donneesDemoChypre);
     
     const resultat = await this.genererContenuSEO(donneesDemoChypre, 'fr');
     
-    console.log('✅ Test Agent SEO réussi:', {
+    logger.info('✅ Test Agent SEO réussi:', {
       ...resultat,
       validation: {
         titre_longueur: resultat.titre_meta.length,

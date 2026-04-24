@@ -7,19 +7,31 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { PropertyFormData } from '@/schemas/property.schema';
+import { logger } from '@/lib/logger';
+
+interface ProjectOption {
+  id: string;
+  title?: string | null;
+}
+
+interface BuildingOption {
+  id?: string;
+  building_name?: string | null;
+  name?: string | null;
+}
 
 interface IdentificationStepProps {
   form: UseFormReturn<PropertyFormData>;
-  projects?: any[];
-  buildings?: any[];
+  projects?: ProjectOption[];
+  buildings?: BuildingOption[];
 }
 
 export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form, projects = [], buildings = [] }) => {
   const selectedProjectId = form.watch('project_id');
 
   // Debug: afficher le nombre de projets
-  console.log('IdentificationStep - Projects count:', projects?.length, 'Projects:', projects);
-  console.log('IdentificationStep - Buildings count:', buildings?.length);
+  logger.info('IdentificationStep - Projects count:', projects?.length, 'Projects:', projects);
+  logger.info('IdentificationStep - Buildings count:', buildings?.length);
 
   return (
     <div className="space-y-8">
@@ -83,7 +95,7 @@ export const IdentificationStep: React.FC<IdentificationStepProps> = ({ form, pr
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="none">Aucun (villa individuelle)</SelectItem>
-                  {Array.isArray(buildings) && buildings.map((building: any) => (
+                  {Array.isArray(buildings) && buildings.map((building) => (
                     <SelectItem key={building?.id || 'unknown'} value={building?.id || ''}>
                       {building?.building_name || building?.name || 'Unknown Building'}
                     </SelectItem>

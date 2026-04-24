@@ -7,7 +7,7 @@ import { logger } from '@/lib/logger';
 
 interface AutosaveConfig {
   table: 'project_drafts' | 'developer_drafts' | 'building_drafts' | 'contact_drafts' | 'registration_drafts' | 'lexaia_drafts' | 'search_drafts';
-  formData: any;
+  formData: Record<string, unknown>;
   entityId?: string | null; // For editing existing entities
   enabled?: boolean;
   debounceMs?: number;
@@ -33,11 +33,11 @@ export const useFormAutosave = ({
 
   // Auto-save mutation
   const saveDraftMutation = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: Record<string, unknown>) => {
       const user = await supabase.auth.getUser();
       const userId = user.data.user?.id || null;
 
-      const draftData: any = {
+      const draftData: Record<string, unknown> = {
         form_data: data,
         session_id: sessionId,
         current_step: 'basics',
@@ -57,7 +57,7 @@ export const useFormAutosave = ({
         draftData.developer_id = entityId;
       } else if (table === 'building_drafts' && entityId) {
         draftData.building_id = entityId;
-      } else if (table === 'registration_drafts' && data.email) {
+      } else if (table === 'registration_drafts' && typeof data.email === 'string') {
         draftData.email_attempted = data.email;
       }
 
@@ -100,9 +100,8 @@ export const useFormAutosave = ({
     }
   });
 
-  // Debounced auto-save
   const debouncedSaveDraft = useDebounceCallback(
-    (data: any) => {
+    (data: Record<string, unknown>) => {
       if (enabled && hasFormContent(data)) {
         saveDraftMutation.mutate(data);
       }
@@ -110,8 +109,7 @@ export const useFormAutosave = ({
     debounceMs
   );
 
-  // Check if form has meaningful content to save
-  const hasFormContent = (data: any): boolean => {
+  const hasFormContent = (data: Record<string, unknown>): boolean => {
     if (!data || typeof data !== 'object') return false;
     
     const values = Object.values(data);

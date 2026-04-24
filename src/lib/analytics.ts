@@ -1,5 +1,6 @@
 import ReactGA from 'react-ga4';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 // Initialize Google Analytics
 export const initGA = () => {
@@ -7,7 +8,7 @@ export const initGA = () => {
   if (GA4_ID) {
     ReactGA.initialize(GA4_ID);
     if (import.meta.env.DEV) {
-      console.log('📊 Google Analytics initialized');
+      logger.info('📊 Google Analytics initialized');
     }
   }
 };

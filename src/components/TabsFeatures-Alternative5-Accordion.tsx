@@ -3,14 +3,15 @@ import { Dispatch, SetStateAction, useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useWindowSize } from "../hooks/useWindowSize";
 import { IconType } from "react-icons";
+import { logger } from '@/lib/logger';
 
 const TabsFeaturesAlt5Accordion = () => {
   const [open, setOpen] = useState(items[0].id);
   console.time('Accordion Render');
   useEffect(() => {
-    console.log('[Accordion] Component mounted/updated');
+    logger.info('[Accordion] Component mounted/updated');
     console.timeEnd('Accordion Render');
-    return () => console.log('[Accordion] Component cleanup');
+    return () => logger.info('[Accordion] Component cleanup');
   });
   // Préchargement des images pour éviter les saccades
   useEffect(() => {
@@ -166,7 +167,7 @@ const Panel = ({
   features,
 }: PanelProps) => {
   const isOpen = open === id;
-  console.log('[Accordion] Panel render', { id, isOpen });
+  logger.info('[Accordion] Panel render', { id, isOpen });
 
   return (
     <>
@@ -228,7 +229,7 @@ const Panel = ({
                       loading="lazy"
                       onLoad={(e) => {
                         const img = e.currentTarget as HTMLImageElement;
-                        console.log('[Accordion] image loaded', { src: img.src, naturalWidth: img.naturalWidth, naturalHeight: img.naturalHeight });
+                        logger.info('[Accordion] image loaded', { src: img.src, naturalWidth: img.naturalWidth, naturalHeight: img.naturalHeight });
                       }}
                       style={{ opacity: 1 }}
                     />
@@ -297,7 +298,7 @@ const items = [
     fullTitle: "Sélection rigoureuse",
     Icon: ShieldCheck,
     description: "Nous sélectionnons exclusivement les meilleurs promoteurs, développeurs et constructeurs de Chypre pour vous offrir un accès privilégié aux projets immobiliers d'exception. NK Realty centralise l'excellence immobilière chypriote en un seul endroit.",
-    imageUrl: "/lovable-uploads/908acac7-30e3-4ec8-a596-fceda857b322.png",
+    imageUrl: "/lovable-uploads/908acac7-30e3-4ec8-a596-fceda857b322.webp",
     features: ["Promoteurs certifiés et vérifiés", "Projets premium exclusifs", "Garantie qualité NK Realty"],
   },
   {
@@ -306,7 +307,7 @@ const items = [
     fullTitle: "Recherche intelligente",
     Icon: Search,
     description: "Notre intelligence artificielle analyse vos critères de recherche pour vous proposer des biens qui matchent à 100% avec vos besoins. Recherche ultra-personnalisée, sans perte de temps, avec des recommandations précises et adaptées à votre profil d'investisseur.",
-    imageUrl: "/lovable-uploads/9a75d696-69ab-4957-93c2-70b44f9fc985.png",
+    imageUrl: "/lovable-uploads/9a75d696-69ab-4957-93c2-70b44f9fc985.webp",
     features: ["IA de recommandation avancée", "Matching à 100% avec vos critères", "Recommandations personnalisées"],
   },
   {
@@ -315,7 +316,7 @@ const items = [
     fullTitle: "Optimisation fiscale",
     Icon: Calculator,
     description: "Notre IA experte en fiscalité européenne et suisse génère des scénarios d'optimisation fiscale personnalisés. Montages société, acquisition en nom propre, processus d'acquisition à Chypre : obtenez le meilleur conseil fiscal pour maximiser votre investissement.",
-    imageUrl: "/lovable-uploads/fd97a015-cee3-4fa9-850b-433d2e7ba761.png",
+    imageUrl: "/lovable-uploads/fd97a015-cee3-4fa9-850b-433d2e7ba761.webp",
     features: ["IA fiscaliste européenne", "Scénarios de montage personnalisés", "Optimisation patrimoine garantie"],
   },
 ];

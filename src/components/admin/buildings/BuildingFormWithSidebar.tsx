@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { BuildingFormData, Building as BuildingType } from '@/types/building';
 import { BuildingFormSteps } from './BuildingFormSteps';
+import { logger } from '@/lib/logger';
 
 // 🎯 DÉFINITION DES ÉTAPES OPTIMISÉES (8 étapes au lieu de 12)
 export const buildingFormSteps = [
@@ -309,7 +310,7 @@ export default function BuildingFormWithSidebar() {
 
   const handleSave = async (data: BuildingFormData) => {
     try {
-      console.log('Saving data:', data);
+      logger.info('Saving data:', data);
       
       if (!data.project_id) {
         toast.error("Veuillez sélectionner un projet");
@@ -432,7 +433,7 @@ export default function BuildingFormWithSidebar() {
         floor_plans: data.floor_plans && typeof data.floor_plans === 'object' ? data.floor_plans : {}
       };
 
-      console.log('Cleaned data to save:', cleanedData);
+      logger.info('Cleaned data to save:', cleanedData);
 
       if (isEdit) {
         const { error } = await supabase
@@ -463,7 +464,7 @@ export default function BuildingFormWithSidebar() {
           return;
         }
         
-        console.log('Building created successfully:', newBuilding);
+        logger.info('Building created successfully:', newBuilding);
         toast.success("Bâtiment créé avec succès");
       }
       

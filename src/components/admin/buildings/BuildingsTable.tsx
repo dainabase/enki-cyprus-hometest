@@ -10,9 +10,20 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { checkBuildingDependencies } from '@/lib/supabase/integrity';
 import { useTranslation } from 'react-i18next';
 
+interface BuildingRow {
+  id: string;
+  building_name?: string | null;
+  total_units?: number | null;
+  status?: string | null;
+  project?: unknown;
+  created_at?: string | null;
+  updated_at?: string | null;
+  [key: string]: unknown;
+}
+
 interface BuildingsTableProps {
-  buildings: any[];
-  onEdit: (building: any) => void;
+  buildings: BuildingRow[];
+  onEdit: (building: BuildingRow) => void;
   onRefetch: () => void;
   isLoading: boolean;
 }
@@ -49,7 +60,7 @@ const BuildingsTable: React.FC<BuildingsTableProps> = React.memo(({ buildings, o
         description: t('messages.buildingDeleted', { defaultValue: 'The building has been deleted successfully' })
       });
       onRefetch();
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error deleting building:', error);
       toast({
         variant: 'destructive',
@@ -76,15 +87,15 @@ const BuildingsTable: React.FC<BuildingsTableProps> = React.memo(({ buildings, o
     );
   };
 
-  const getProject = (project: any) => {
+  const getProject = (project: unknown) => {
     if (!project || typeof project !== 'object') return { title: t('admin.common.unassigned', { defaultValue: 'Unassigned' }), zone: '' };
-    return project as { title?: string; cyprus_zone?: string; [key: string]: any };
+    return project as { title?: string; cyprus_zone?: string; [key: string]: unknown };
   };
 
-  const calculateAvailableUnits = (building: any) => {
-    // Enhanced calculation with more details
+  const calculateAvailableUnits = (building: BuildingRow) => {
     const total = building.total_units || 0;
-    const available = Math.floor(total * 0.3); // Simulate 30% availability
+    // TODO: MOCK - remplacer par count reel properties WHERE building_id AND sale_status='available'
+    const available = Math.floor(total * 0.3);
     const sold = total - available;
     const occupancyRate = total > 0 ? Math.round((sold / total) * 100) : 0;
     

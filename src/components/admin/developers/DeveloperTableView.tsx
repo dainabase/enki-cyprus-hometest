@@ -5,6 +5,13 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useTranslation } from 'react-i18next';
 
+interface DeveloperContactInfo {
+  email?: string;
+  phone?: string;
+  website?: string;
+  [key: string]: unknown;
+}
+
 interface Developer {
   id: string;
   name: string;
@@ -12,7 +19,7 @@ interface Developer {
   main_city?: string;
   status?: string;
   commission_rate?: number;
-  contact_info?: any;
+  contact_info?: DeveloperContactInfo | null;
   total_projects?: number;
   rating_score?: number;
   website?: string;
@@ -50,8 +57,8 @@ export const DeveloperTableView = ({
   };
 
   const sortedDevelopers = [...developers].sort((a, b) => {
-    let aValue: any = a[sortField];
-    let bValue: any = b[sortField];
+    let aValue: string | number | undefined | null = a[sortField];
+    let bValue: string | number | undefined | null = b[sortField];
 
     // Handle nested contact_info for email
     if (sortField === 'name') {
