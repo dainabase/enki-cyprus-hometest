@@ -1,0 +1,912 @@
+# i18n Missing Keys Report
+
+> Generated: 2026-04-24
+> EN reference: 374 keys
+
+## Coverage summary
+
+| Lang | Coverage | Keys present | Keys missing |
+|---|---|---|---|
+| DE | 47.6% | 178 | 196 |
+| EL | 92.2% | 516 | 29 |
+| EN | 100.0% | 374 | 0 |
+| ES | 88.5% | 331 | 43 |
+| FR | 100.0% | 374 | 0 |
+| IT | 47.6% | 178 | 196 |
+| NL | 47.6% | 178 | 196 |
+| RU | 53.5% | 217 | 174 |
+
+## Detailed missing keys per language
+
+
+### EL (29 missing keys)
+
+- `admin.buildings.availableUnits` — EN: `Available Units`
+- `admin.buildings.create` — EN: `New Building`
+- `admin.buildings.edit` — EN: `Edit Building`
+- `admin.buildings.outOf` — EN: `of {{total}} ({{rate}}% occupied)`
+- `admin.buildings.soldOut` — EN: `SOLD OUT`
+- `admin.buildings.title` — EN: `Buildings`
+- `admin.buildings.totalUnits` — EN: `Total Units`
+- `admin.buildings.units` — EN: `Units`
+- `admin.common.noBuildingsFound` — EN: `No buildings found`
+- `admin.common.noProjectsFound` — EN: `No projects found`
+- `admin.common.unassigned` — EN: `Unassigned`
+- `admin.projects.flags.exclusive` — EN: `Exclusive Commercialization`
+- `admin.projects.flags.goldenVisa` — EN: `Golden Visa Eligible`
+- `admin.projects.headers.gv` — EN: `GV`
+- `admin.properties.status.available` — EN: `Available`
+- `admin.properties.status.reserved` — EN: `Reserved`
+- `admin.properties.status.sold` — EN: `Sold`
+- `admin.properties.title` — EN: `Properties`
+- `filters.bathrooms` — EN: `Bathrooms`
+- `filters.bedrooms` — EN: `Bedrooms`
+- `filters.clearAll` — EN: `Clear All`
+- `filters.location` — EN: `Location`
+- `filters.priceRange` — EN: `Price Range`
+- `filters.propertyType.all` — EN: `All Types`
+- `filters.propertyType.apartment` — EN: `Apartment`
+- `filters.propertyType.commercial` — EN: `Commercial`
+- `filters.propertyType.penthouse` — EN: `Penthouse`
+- `filters.propertyType.villa` — EN: `Villa`
+- `filters.title` — EN: `Filters`
+
+### RU (174 missing keys)
+
+- `admin.buildings.availableUnits` — EN: `Available Units`
+- `admin.buildings.create` — EN: `New Building`
+- `admin.buildings.edit` — EN: `Edit Building`
+- `admin.buildings.title` — EN: `Buildings`
+- `admin.buildings.totalUnits` — EN: `Total Units`
+- `admin.buildings.units` — EN: `Units`
+- `admin.properties.status.available` — EN: `Available`
+- `admin.properties.status.reserved` — EN: `Reserved`
+- `admin.properties.status.sold` — EN: `Sold`
+- `admin.properties.title` — EN: `Properties`
+- `analytics.avgDealSize` — EN: `Average Deal Size`
+- `analytics.commissionsOverTime` — EN: `Commissions Over Time`
+- `analytics.conversionRate` — EN: `Conversion Rate`
+- `analytics.leadsByStatus` — EN: `Leads by Status`
+- `analytics.months` — EN: `months`
+- `analytics.newLeads` — EN: `New Leads`
+- `analytics.salesByMonth` — EN: `Sales by Month`
+- `analytics.salesValue` — EN: `Sales Value`
+- `analytics.title` — EN: `Analytics`
+- `analytics.topZones` — EN: `Top 5 Zones`
+- `commissions.actions` — EN: `Actions`
+- `commissions.amount` — EN: `Amount`
+- `commissions.developer` — EN: `Developer`
+- `commissions.lastMonth` — EN: `Last Month`
+- `commissions.lastQuarter` — EN: `Last Quarter`
+- `commissions.lastYear` — EN: `Last Year`
+- `commissions.markPaid` — EN: `Mark Paid`
+- `commissions.property` — EN: `Property`
+- `commissions.rate` — EN: `Rate`
+- `commissions.salePrice` — EN: `Sale Price`
+- `commissions.status.cancelled` — EN: `Cancelled`
+- `commissions.status.paid` — EN: `Paid`
+- `commissions.status.pending` — EN: `Pending`
+- `commissions.title` — EN: `Commissions`
+- `commissions.totalDue` — EN: `Total Due`
+- `commissions.totalPaid` — EN: `Total Paid`
+- `dashboard.available` — EN: `available`
+- `dashboard.avgConversion` — EN: `Average Time`
+- `dashboard.commissions` — EN: `Commissions`
+- `dashboard.completed` — EN: `completed`
+- `dashboard.conversionRate` — EN: `Conversion Rate`
+- `dashboard.converted` — EN: `converted`
+- `dashboard.days` — EN: `days`
+- `dashboard.goldenVisaEligible` — EN: `Golden Visa Eligible`
+- `dashboard.goldenVisaLeads` — EN: `Golden Visa Leads`
+- `dashboard.interested` — EN: `interested`
+- `dashboard.leadToClient` — EN: `Lead to client`
+- `dashboard.leads` — EN: `Leads`
+- `dashboard.noRecentActivity` — EN: `No recent activity`
+- `dashboard.paid` — EN: `Paid`
+- `dashboard.pending` — EN: `Pending`
+- `dashboard.period` — EN: `Period {{days}}d`
+- `dashboard.portfolioValue` — EN: `Portfolio value`
+- `dashboard.properties` — EN: `Properties`
+- `dashboard.recentActivity` — EN: `Recent Activity`
+- `dashboard.title` — EN: `Dashboard`
+- `dashboard.toConvert` — EN: `to convert`
+- `dashboard.toPay` — EN: `to pay`
+- `dashboard.totalCommissions` — EN: `Total Commissions`
+- `dashboard.totalLeads` — EN: `Total Leads`
+- `dashboard.totalProperties` — EN: `Total Properties`
+- `dashboard.totalValue` — EN: `Total Value`
+- `dashboard.viewAllLeads` — EN: `View all leads`
+- `filters.bathrooms` — EN: `Bathrooms`
+- `filters.bedrooms` — EN: `Bedrooms`
+- `filters.clearAll` — EN: `Clear All`
+- `filters.location` — EN: `Location`
+- `filters.priceRange` — EN: `Price Range`
+- `filters.propertyType.all` — EN: `All Types`
+- `filters.propertyType.apartment` — EN: `Apartment`
+- `filters.propertyType.commercial` — EN: `Commercial`
+- `filters.propertyType.penthouse` — EN: `Penthouse`
+- `filters.propertyType.villa` — EN: `Villa`
+- `filters.title` — EN: `Filters`
+- `leads.actions` — EN: `Actions`
+- `leads.addLead` — EN: `Add Lead`
+- `leads.assigned` — EN: `Assigned to`
+- `leads.budget` — EN: `Budget`
+- `leads.budgetMax` — EN: `Max Budget`
+- `leads.budgetMin` — EN: `Min Budget`
+- `leads.contact` — EN: `Contact`
+- `leads.email` — EN: `Email`
+- `leads.firstName` — EN: `First Name`
+- `leads.goldenVisaInterest` — EN: `Golden Visa Interest`
+- `leads.lastName` — EN: `Last Name`
+- `leads.leadAssigned` — EN: `Lead assigned successfully`
+- `leads.leadCreated` — EN: `Lead created successfully`
+- `leads.name` — EN: `Name`
+- `leads.newLead` — EN: `New Lead`
+- `leads.notes` — EN: `Notes`
+- `leads.phone` — EN: `Phone`
+- `leads.score` — EN: `Score`
+- `leads.source.agent` — EN: `Agent`
+- `leads.source.other` — EN: `Other`
+- `leads.source.referral` — EN: `Referral`
+- `leads.source.social` — EN: `Social Media`
+- `leads.source.website` — EN: `Website`
+- `leads.status.contacted` — EN: `Contacted`
+- `leads.status.converted` — EN: `Converted`
+- `leads.status.lost` — EN: `Lost`
+- `leads.status.new` — EN: `New`
+- `leads.status.opportunity` — EN: `Opportunity`
+- `leads.status.qualified` — EN: `Qualified`
+- `leads.statusUpdated` — EN: `Status updated successfully`
+- `leads.title` — EN: `Leads / Prospects`
+- `leads.unassigned` — EN: `Unassigned`
+- `leads.urgency.1year` — EN: `1 year`
+- `leads.urgency.3months` — EN: `3 months`
+- `leads.urgency.6months` — EN: `6 months`
+- `leads.urgency.exploring` — EN: `Exploring`
+- `leads.urgency.immediate` — EN: `Immediate`
+- `nav.pipeline` — EN: `Pipeline`
+- `pipeline.averageTime` — EN: `Average Time`
+- `pipeline.conversionRate` — EN: `Conversion Rate`
+- `pipeline.days` — EN: `days`
+- `pipeline.leadMoved` — EN: `Lead moved successfully`
+- `pipeline.leadsCount` — EN: `Leads Count`
+- `pipeline.source` — EN: `Source`
+- `pipeline.timeInStage` — EN: `Time in stage`
+- `pipeline.title` — EN: `Sales Pipeline`
+- `pipeline.totalValue` — EN: `Total Value`
+- `pipeline.urgency` — EN: `Urgency`
+- `predictions.accuracy` — EN: `Accuracy`
+- `predictions.actual` — EN: `Actual`
+- `predictions.commissions` — EN: `Commissions`
+- `predictions.confidence.high` — EN: `High (6+ months of data)`
+- `predictions.confidence.low` — EN: `Low (<3 months of data)`
+- `predictions.confidence.medium` — EN: `Medium (3-5 months of data)`
+- `predictions.confidenceLevels` — EN: `Confidence Levels`
+- `predictions.confidenceNote` — EN: `Reliability depends on the amount of historical data available`
+- `predictions.disclaimer` — EN: `Important Information`
+- `predictions.disclaimerText` — EN: `These predictions are based on simple historical trends and do not constitute guarantees. Use them a...`
+- `predictions.expectedCommissions` — EN: `Estimated Commissions`
+- `predictions.expectedConversion` — EN: `Expected Conversion Rate`
+- `predictions.expectedLeads` — EN: `Expected Leads`
+- `predictions.expectedSales` — EN: `Expected Sales`
+- `predictions.lastMonthComparison` — EN: `Last Month Comparison`
+- `predictions.leads` — EN: `Leads`
+- `predictions.metric` — EN: `Metric`
+- `predictions.nextMonth` — EN: `Predictions for next month`
+- `predictions.predicted` — EN: `Predicted`
+- `predictions.sales` — EN: `Sales`
+- `predictions.subtitle` — EN: `Estimates based on historical data`
+- `predictions.title` — EN: `Predictions and Trends`
+- `reports.budget` — EN: `Budget`
+- `reports.commission` — EN: `Commission`
+- `reports.commissions` — EN: `commissions`
+- `reports.commissionsReport` — EN: `Commissions Report`
+- `reports.conversion` — EN: `conversion`
+- `reports.converted` — EN: `converted`
+- `reports.date` — EN: `Date`
+- `reports.developer` — EN: `Developer`
+- `reports.downloadCSV` — EN: `Download CSV`
+- `reports.email` — EN: `Email`
+- `reports.endDate` — EN: `End Date`
+- `reports.generate` — EN: `Generate`
+- `reports.generating` — EN: `Generating...`
+- `reports.leads` — EN: `leads`
+- `reports.leadsReport` — EN: `Leads Report`
+- `reports.name` — EN: `Name`
+- `reports.noData` — EN: `No data for this period`
+- `reports.pending` — EN: `pending`
+- `reports.price` — EN: `Price`
+- `reports.project` — EN: `Project`
+- `reports.projects` — EN: `projects`
+- `reports.projectsReport` — EN: `Projects Report`
+- `reports.promoter` — EN: `Promoter`
+- `reports.score` — EN: `Score`
+- `reports.startDate` — EN: `Start Date`
+- `reports.status` — EN: `Status`
+- `reports.title` — EN: `Reports`
+- `reports.total` — EN: `total`
+- `reports.totals` — EN: `Totals`
+- `reports.zone` — EN: `Zone`
+
+### ES (43 missing keys)
+
+- `admin.buildings.availableUnits` — EN: `Available Units`
+- `admin.buildings.create` — EN: `New Building`
+- `admin.buildings.edit` — EN: `Edit Building`
+- `admin.buildings.title` — EN: `Buildings`
+- `admin.buildings.totalUnits` — EN: `Total Units`
+- `admin.buildings.units` — EN: `Units`
+- `admin.properties.status.available` — EN: `Available`
+- `admin.properties.status.reserved` — EN: `Reserved`
+- `admin.properties.status.sold` — EN: `Sold`
+- `admin.properties.title` — EN: `Properties`
+- `documentation.api` — EN: `API Reference`
+- `documentation.external` — EN: `External Links`
+- `documentation.features` — EN: `Key Features`
+- `documentation.quickStart` — EN: `Quick Start`
+- `documentation.shortcuts` — EN: `Keyboard Shortcuts`
+- `documentation.subtitle` — EN: `Complete guide for the admin panel`
+- `documentation.title` — EN: `Documentation`
+- `filters.bathrooms` — EN: `Bathrooms`
+- `filters.bedrooms` — EN: `Bedrooms`
+- `filters.clearAll` — EN: `Clear All`
+- `filters.location` — EN: `Location`
+- `filters.priceRange` — EN: `Price Range`
+- `filters.propertyType.all` — EN: `All Types`
+- `filters.propertyType.apartment` — EN: `Apartment`
+- `filters.propertyType.commercial` — EN: `Commercial`
+- `filters.propertyType.penthouse` — EN: `Penthouse`
+- `filters.propertyType.villa` — EN: `Villa`
+- `filters.title` — EN: `Filters`
+- `messages.buildingDeleted` — EN: `The building has been deleted successfully`
+- `messages.buildingDeletedTitle` — EN: `Building deleted`
+- `messages.deleteBuildingConfirm` — EN: `Are you sure you want to delete the building "{{name}}"?`
+- `messages.deleteBuildingConfirmWithDeps` — EN: `⚠️ WARNING ⚠️
+
+The building "{{name}}" has dependencies:
+{{details}}
+
+Deleting it will also remove t...`
+- `messages.deleteBuildingError` — EN: `Unable to delete the building`
+- `messages.deleteProjectConfirm` — EN: `Are you sure you want to delete the project "{{title}}"?`
+- `messages.deleteProjectConfirmWithDeps` — EN: `⚠️ WARNING ⚠️
+
+The project "{{title}}" has dependencies:
+{{details}}
+
+Deleting it will also remove t...`
+- `messages.deleteProjectError` — EN: `Unable to delete the project`
+- `messages.projectDeleted` — EN: `The project has been deleted successfully`
+- `messages.projectDeletedTitle` — EN: `Project deleted`
+- `tests.description` — EN: `Manual testing and data integrity verification`
+- `tests.generateData` — EN: `Generate Test Data`
+- `tests.resetData` — EN: `Reset Test Data`
+- `tests.systemHealth` — EN: `System Health`
+- `tests.title` — EN: `Tests & Validation`
+
+### IT (196 missing keys)
+
+- `admin.buildings.availableUnits` — EN: `Available Units`
+- `admin.buildings.create` — EN: `New Building`
+- `admin.buildings.edit` — EN: `Edit Building`
+- `admin.buildings.title` — EN: `Buildings`
+- `admin.buildings.totalUnits` — EN: `Total Units`
+- `admin.buildings.units` — EN: `Units`
+- `admin.properties.status.available` — EN: `Available`
+- `admin.properties.status.reserved` — EN: `Reserved`
+- `admin.properties.status.sold` — EN: `Sold`
+- `admin.properties.title` — EN: `Properties`
+- `analytics.avgDealSize` — EN: `Average Deal Size`
+- `analytics.commissionsOverTime` — EN: `Commissions Over Time`
+- `analytics.conversionRate` — EN: `Conversion Rate`
+- `analytics.leadsByStatus` — EN: `Leads by Status`
+- `analytics.months` — EN: `months`
+- `analytics.newLeads` — EN: `New Leads`
+- `analytics.salesByMonth` — EN: `Sales by Month`
+- `analytics.salesValue` — EN: `Sales Value`
+- `analytics.title` — EN: `Analytics`
+- `analytics.topZones` — EN: `Top 5 Zones`
+- `commissions.actions` — EN: `Actions`
+- `commissions.amount` — EN: `Amount`
+- `commissions.developer` — EN: `Developer`
+- `commissions.lastMonth` — EN: `Last Month`
+- `commissions.lastQuarter` — EN: `Last Quarter`
+- `commissions.lastYear` — EN: `Last Year`
+- `commissions.markPaid` — EN: `Mark Paid`
+- `commissions.property` — EN: `Property`
+- `commissions.rate` — EN: `Rate`
+- `commissions.salePrice` — EN: `Sale Price`
+- `commissions.status.cancelled` — EN: `Cancelled`
+- `commissions.status.paid` — EN: `Paid`
+- `commissions.status.pending` — EN: `Pending`
+- `commissions.title` — EN: `Commissions`
+- `commissions.totalDue` — EN: `Total Due`
+- `commissions.totalPaid` — EN: `Total Paid`
+- `dashboard.available` — EN: `available`
+- `dashboard.avgConversion` — EN: `Average Time`
+- `dashboard.commissions` — EN: `Commissions`
+- `dashboard.completed` — EN: `completed`
+- `dashboard.conversionRate` — EN: `Conversion Rate`
+- `dashboard.converted` — EN: `converted`
+- `dashboard.days` — EN: `days`
+- `dashboard.goldenVisaEligible` — EN: `Golden Visa Eligible`
+- `dashboard.goldenVisaLeads` — EN: `Golden Visa Leads`
+- `dashboard.interested` — EN: `interested`
+- `dashboard.leadToClient` — EN: `Lead to client`
+- `dashboard.leads` — EN: `Leads`
+- `dashboard.noRecentActivity` — EN: `No recent activity`
+- `dashboard.paid` — EN: `Paid`
+- `dashboard.pending` — EN: `Pending`
+- `dashboard.period` — EN: `Period {{days}}d`
+- `dashboard.portfolioValue` — EN: `Portfolio value`
+- `dashboard.properties` — EN: `Properties`
+- `dashboard.recentActivity` — EN: `Recent Activity`
+- `dashboard.title` — EN: `Dashboard`
+- `dashboard.toConvert` — EN: `to convert`
+- `dashboard.toPay` — EN: `to pay`
+- `dashboard.totalCommissions` — EN: `Total Commissions`
+- `dashboard.totalLeads` — EN: `Total Leads`
+- `dashboard.totalProperties` — EN: `Total Properties`
+- `dashboard.totalValue` — EN: `Total Value`
+- `dashboard.viewAllLeads` — EN: `View all leads`
+- `documentation.api` — EN: `API Reference`
+- `documentation.external` — EN: `External Links`
+- `documentation.features` — EN: `Key Features`
+- `documentation.quickStart` — EN: `Quick Start`
+- `documentation.shortcuts` — EN: `Keyboard Shortcuts`
+- `documentation.subtitle` — EN: `Complete guide for the admin panel`
+- `documentation.title` — EN: `Documentation`
+- `filters.bathrooms` — EN: `Bathrooms`
+- `filters.bedrooms` — EN: `Bedrooms`
+- `filters.clearAll` — EN: `Clear All`
+- `filters.location` — EN: `Location`
+- `filters.priceRange` — EN: `Price Range`
+- `filters.propertyType.all` — EN: `All Types`
+- `filters.propertyType.apartment` — EN: `Apartment`
+- `filters.propertyType.commercial` — EN: `Commercial`
+- `filters.propertyType.penthouse` — EN: `Penthouse`
+- `filters.propertyType.villa` — EN: `Villa`
+- `filters.title` — EN: `Filters`
+- `leads.actions` — EN: `Actions`
+- `leads.addLead` — EN: `Add Lead`
+- `leads.assigned` — EN: `Assigned to`
+- `leads.budget` — EN: `Budget`
+- `leads.budgetMax` — EN: `Max Budget`
+- `leads.budgetMin` — EN: `Min Budget`
+- `leads.contact` — EN: `Contact`
+- `leads.email` — EN: `Email`
+- `leads.firstName` — EN: `First Name`
+- `leads.goldenVisaInterest` — EN: `Golden Visa Interest`
+- `leads.lastName` — EN: `Last Name`
+- `leads.leadAssigned` — EN: `Lead assigned successfully`
+- `leads.leadCreated` — EN: `Lead created successfully`
+- `leads.name` — EN: `Name`
+- `leads.newLead` — EN: `New Lead`
+- `leads.notes` — EN: `Notes`
+- `leads.phone` — EN: `Phone`
+- `leads.score` — EN: `Score`
+- `leads.source.agent` — EN: `Agent`
+- `leads.source.other` — EN: `Other`
+- `leads.source.referral` — EN: `Referral`
+- `leads.source.social` — EN: `Social Media`
+- `leads.source.website` — EN: `Website`
+- `leads.status.contacted` — EN: `Contacted`
+- `leads.status.converted` — EN: `Converted`
+- `leads.status.lost` — EN: `Lost`
+- `leads.status.new` — EN: `New`
+- `leads.status.opportunity` — EN: `Opportunity`
+- `leads.status.qualified` — EN: `Qualified`
+- `leads.statusUpdated` — EN: `Status updated successfully`
+- `leads.title` — EN: `Leads / Prospects`
+- `leads.unassigned` — EN: `Unassigned`
+- `leads.urgency.1year` — EN: `1 year`
+- `leads.urgency.3months` — EN: `3 months`
+- `leads.urgency.6months` — EN: `6 months`
+- `leads.urgency.exploring` — EN: `Exploring`
+- `leads.urgency.immediate` — EN: `Immediate`
+- `messages.buildingDeleted` — EN: `The building has been deleted successfully`
+- `messages.buildingDeletedTitle` — EN: `Building deleted`
+- `messages.deleteBuildingConfirm` — EN: `Are you sure you want to delete the building "{{name}}"?`
+- `messages.deleteBuildingConfirmWithDeps` — EN: `⚠️ WARNING ⚠️
+
+The building "{{name}}" has dependencies:
+{{details}}
+
+Deleting it will also remove t...`
+- `messages.deleteBuildingError` — EN: `Unable to delete the building`
+- `messages.deleteProjectConfirm` — EN: `Are you sure you want to delete the project "{{title}}"?`
+- `messages.deleteProjectConfirmWithDeps` — EN: `⚠️ WARNING ⚠️
+
+The project "{{title}}" has dependencies:
+{{details}}
+
+Deleting it will also remove t...`
+- `messages.deleteProjectError` — EN: `Unable to delete the project`
+- `messages.projectDeleted` — EN: `The project has been deleted successfully`
+- `messages.projectDeletedTitle` — EN: `Project deleted`
+- `nav.pipeline` — EN: `Pipeline`
+- `pipeline.averageTime` — EN: `Average Time`
+- `pipeline.conversionRate` — EN: `Conversion Rate`
+- `pipeline.days` — EN: `days`
+- `pipeline.leadMoved` — EN: `Lead moved successfully`
+- `pipeline.leadsCount` — EN: `Leads Count`
+- `pipeline.source` — EN: `Source`
+- `pipeline.timeInStage` — EN: `Time in stage`
+- `pipeline.title` — EN: `Sales Pipeline`
+- `pipeline.totalValue` — EN: `Total Value`
+- `pipeline.urgency` — EN: `Urgency`
+- `predictions.accuracy` — EN: `Accuracy`
+- `predictions.actual` — EN: `Actual`
+- `predictions.commissions` — EN: `Commissions`
+- `predictions.confidence.high` — EN: `High (6+ months of data)`
+- `predictions.confidence.low` — EN: `Low (<3 months of data)`
+- `predictions.confidence.medium` — EN: `Medium (3-5 months of data)`
+- `predictions.confidenceLevels` — EN: `Confidence Levels`
+- `predictions.confidenceNote` — EN: `Reliability depends on the amount of historical data available`
+- `predictions.disclaimer` — EN: `Important Information`
+- `predictions.disclaimerText` — EN: `These predictions are based on simple historical trends and do not constitute guarantees. Use them a...`
+- `predictions.expectedCommissions` — EN: `Estimated Commissions`
+- `predictions.expectedConversion` — EN: `Expected Conversion Rate`
+- `predictions.expectedLeads` — EN: `Expected Leads`
+- `predictions.expectedSales` — EN: `Expected Sales`
+- `predictions.lastMonthComparison` — EN: `Last Month Comparison`
+- `predictions.leads` — EN: `Leads`
+- `predictions.metric` — EN: `Metric`
+- `predictions.nextMonth` — EN: `Predictions for next month`
+- `predictions.predicted` — EN: `Predicted`
+- `predictions.sales` — EN: `Sales`
+- `predictions.subtitle` — EN: `Estimates based on historical data`
+- `predictions.title` — EN: `Predictions and Trends`
+- `reports.budget` — EN: `Budget`
+- `reports.commission` — EN: `Commission`
+- `reports.commissions` — EN: `commissions`
+- `reports.commissionsReport` — EN: `Commissions Report`
+- `reports.conversion` — EN: `conversion`
+- `reports.converted` — EN: `converted`
+- `reports.date` — EN: `Date`
+- `reports.developer` — EN: `Developer`
+- `reports.downloadCSV` — EN: `Download CSV`
+- `reports.email` — EN: `Email`
+- `reports.endDate` — EN: `End Date`
+- `reports.generate` — EN: `Generate`
+- `reports.generating` — EN: `Generating...`
+- `reports.leads` — EN: `leads`
+- `reports.leadsReport` — EN: `Leads Report`
+- `reports.name` — EN: `Name`
+- `reports.noData` — EN: `No data for this period`
+- `reports.pending` — EN: `pending`
+- `reports.price` — EN: `Price`
+- `reports.project` — EN: `Project`
+- `reports.projects` — EN: `projects`
+- `reports.projectsReport` — EN: `Projects Report`
+- `reports.promoter` — EN: `Promoter`
+- `reports.score` — EN: `Score`
+- `reports.startDate` — EN: `Start Date`
+- `reports.status` — EN: `Status`
+- `reports.title` — EN: `Reports`
+- `reports.total` — EN: `total`
+- `reports.totals` — EN: `Totals`
+- `reports.zone` — EN: `Zone`
+- `tests.description` — EN: `Manual testing and data integrity verification`
+- `tests.generateData` — EN: `Generate Test Data`
+- `tests.resetData` — EN: `Reset Test Data`
+- `tests.systemHealth` — EN: `System Health`
+- `tests.title` — EN: `Tests & Validation`
+
+### DE (196 missing keys)
+
+- `admin.buildings.availableUnits` — EN: `Available Units`
+- `admin.buildings.create` — EN: `New Building`
+- `admin.buildings.edit` — EN: `Edit Building`
+- `admin.buildings.title` — EN: `Buildings`
+- `admin.buildings.totalUnits` — EN: `Total Units`
+- `admin.buildings.units` — EN: `Units`
+- `admin.properties.status.available` — EN: `Available`
+- `admin.properties.status.reserved` — EN: `Reserved`
+- `admin.properties.status.sold` — EN: `Sold`
+- `admin.properties.title` — EN: `Properties`
+- `analytics.avgDealSize` — EN: `Average Deal Size`
+- `analytics.commissionsOverTime` — EN: `Commissions Over Time`
+- `analytics.conversionRate` — EN: `Conversion Rate`
+- `analytics.leadsByStatus` — EN: `Leads by Status`
+- `analytics.months` — EN: `months`
+- `analytics.newLeads` — EN: `New Leads`
+- `analytics.salesByMonth` — EN: `Sales by Month`
+- `analytics.salesValue` — EN: `Sales Value`
+- `analytics.title` — EN: `Analytics`
+- `analytics.topZones` — EN: `Top 5 Zones`
+- `commissions.actions` — EN: `Actions`
+- `commissions.amount` — EN: `Amount`
+- `commissions.developer` — EN: `Developer`
+- `commissions.lastMonth` — EN: `Last Month`
+- `commissions.lastQuarter` — EN: `Last Quarter`
+- `commissions.lastYear` — EN: `Last Year`
+- `commissions.markPaid` — EN: `Mark Paid`
+- `commissions.property` — EN: `Property`
+- `commissions.rate` — EN: `Rate`
+- `commissions.salePrice` — EN: `Sale Price`
+- `commissions.status.cancelled` — EN: `Cancelled`
+- `commissions.status.paid` — EN: `Paid`
+- `commissions.status.pending` — EN: `Pending`
+- `commissions.title` — EN: `Commissions`
+- `commissions.totalDue` — EN: `Total Due`
+- `commissions.totalPaid` — EN: `Total Paid`
+- `dashboard.available` — EN: `available`
+- `dashboard.avgConversion` — EN: `Average Time`
+- `dashboard.commissions` — EN: `Commissions`
+- `dashboard.completed` — EN: `completed`
+- `dashboard.conversionRate` — EN: `Conversion Rate`
+- `dashboard.converted` — EN: `converted`
+- `dashboard.days` — EN: `days`
+- `dashboard.goldenVisaEligible` — EN: `Golden Visa Eligible`
+- `dashboard.goldenVisaLeads` — EN: `Golden Visa Leads`
+- `dashboard.interested` — EN: `interested`
+- `dashboard.leadToClient` — EN: `Lead to client`
+- `dashboard.leads` — EN: `Leads`
+- `dashboard.noRecentActivity` — EN: `No recent activity`
+- `dashboard.paid` — EN: `Paid`
+- `dashboard.pending` — EN: `Pending`
+- `dashboard.period` — EN: `Period {{days}}d`
+- `dashboard.portfolioValue` — EN: `Portfolio value`
+- `dashboard.properties` — EN: `Properties`
+- `dashboard.recentActivity` — EN: `Recent Activity`
+- `dashboard.title` — EN: `Dashboard`
+- `dashboard.toConvert` — EN: `to convert`
+- `dashboard.toPay` — EN: `to pay`
+- `dashboard.totalCommissions` — EN: `Total Commissions`
+- `dashboard.totalLeads` — EN: `Total Leads`
+- `dashboard.totalProperties` — EN: `Total Properties`
+- `dashboard.totalValue` — EN: `Total Value`
+- `dashboard.viewAllLeads` — EN: `View all leads`
+- `documentation.api` — EN: `API Reference`
+- `documentation.external` — EN: `External Links`
+- `documentation.features` — EN: `Key Features`
+- `documentation.quickStart` — EN: `Quick Start`
+- `documentation.shortcuts` — EN: `Keyboard Shortcuts`
+- `documentation.subtitle` — EN: `Complete guide for the admin panel`
+- `documentation.title` — EN: `Documentation`
+- `filters.bathrooms` — EN: `Bathrooms`
+- `filters.bedrooms` — EN: `Bedrooms`
+- `filters.clearAll` — EN: `Clear All`
+- `filters.location` — EN: `Location`
+- `filters.priceRange` — EN: `Price Range`
+- `filters.propertyType.all` — EN: `All Types`
+- `filters.propertyType.apartment` — EN: `Apartment`
+- `filters.propertyType.commercial` — EN: `Commercial`
+- `filters.propertyType.penthouse` — EN: `Penthouse`
+- `filters.propertyType.villa` — EN: `Villa`
+- `filters.title` — EN: `Filters`
+- `leads.actions` — EN: `Actions`
+- `leads.addLead` — EN: `Add Lead`
+- `leads.assigned` — EN: `Assigned to`
+- `leads.budget` — EN: `Budget`
+- `leads.budgetMax` — EN: `Max Budget`
+- `leads.budgetMin` — EN: `Min Budget`
+- `leads.contact` — EN: `Contact`
+- `leads.email` — EN: `Email`
+- `leads.firstName` — EN: `First Name`
+- `leads.goldenVisaInterest` — EN: `Golden Visa Interest`
+- `leads.lastName` — EN: `Last Name`
+- `leads.leadAssigned` — EN: `Lead assigned successfully`
+- `leads.leadCreated` — EN: `Lead created successfully`
+- `leads.name` — EN: `Name`
+- `leads.newLead` — EN: `New Lead`
+- `leads.notes` — EN: `Notes`
+- `leads.phone` — EN: `Phone`
+- `leads.score` — EN: `Score`
+- `leads.source.agent` — EN: `Agent`
+- `leads.source.other` — EN: `Other`
+- `leads.source.referral` — EN: `Referral`
+- `leads.source.social` — EN: `Social Media`
+- `leads.source.website` — EN: `Website`
+- `leads.status.contacted` — EN: `Contacted`
+- `leads.status.converted` — EN: `Converted`
+- `leads.status.lost` — EN: `Lost`
+- `leads.status.new` — EN: `New`
+- `leads.status.opportunity` — EN: `Opportunity`
+- `leads.status.qualified` — EN: `Qualified`
+- `leads.statusUpdated` — EN: `Status updated successfully`
+- `leads.title` — EN: `Leads / Prospects`
+- `leads.unassigned` — EN: `Unassigned`
+- `leads.urgency.1year` — EN: `1 year`
+- `leads.urgency.3months` — EN: `3 months`
+- `leads.urgency.6months` — EN: `6 months`
+- `leads.urgency.exploring` — EN: `Exploring`
+- `leads.urgency.immediate` — EN: `Immediate`
+- `messages.buildingDeleted` — EN: `The building has been deleted successfully`
+- `messages.buildingDeletedTitle` — EN: `Building deleted`
+- `messages.deleteBuildingConfirm` — EN: `Are you sure you want to delete the building "{{name}}"?`
+- `messages.deleteBuildingConfirmWithDeps` — EN: `⚠️ WARNING ⚠️
+
+The building "{{name}}" has dependencies:
+{{details}}
+
+Deleting it will also remove t...`
+- `messages.deleteBuildingError` — EN: `Unable to delete the building`
+- `messages.deleteProjectConfirm` — EN: `Are you sure you want to delete the project "{{title}}"?`
+- `messages.deleteProjectConfirmWithDeps` — EN: `⚠️ WARNING ⚠️
+
+The project "{{title}}" has dependencies:
+{{details}}
+
+Deleting it will also remove t...`
+- `messages.deleteProjectError` — EN: `Unable to delete the project`
+- `messages.projectDeleted` — EN: `The project has been deleted successfully`
+- `messages.projectDeletedTitle` — EN: `Project deleted`
+- `nav.pipeline` — EN: `Pipeline`
+- `pipeline.averageTime` — EN: `Average Time`
+- `pipeline.conversionRate` — EN: `Conversion Rate`
+- `pipeline.days` — EN: `days`
+- `pipeline.leadMoved` — EN: `Lead moved successfully`
+- `pipeline.leadsCount` — EN: `Leads Count`
+- `pipeline.source` — EN: `Source`
+- `pipeline.timeInStage` — EN: `Time in stage`
+- `pipeline.title` — EN: `Sales Pipeline`
+- `pipeline.totalValue` — EN: `Total Value`
+- `pipeline.urgency` — EN: `Urgency`
+- `predictions.accuracy` — EN: `Accuracy`
+- `predictions.actual` — EN: `Actual`
+- `predictions.commissions` — EN: `Commissions`
+- `predictions.confidence.high` — EN: `High (6+ months of data)`
+- `predictions.confidence.low` — EN: `Low (<3 months of data)`
+- `predictions.confidence.medium` — EN: `Medium (3-5 months of data)`
+- `predictions.confidenceLevels` — EN: `Confidence Levels`
+- `predictions.confidenceNote` — EN: `Reliability depends on the amount of historical data available`
+- `predictions.disclaimer` — EN: `Important Information`
+- `predictions.disclaimerText` — EN: `These predictions are based on simple historical trends and do not constitute guarantees. Use them a...`
+- `predictions.expectedCommissions` — EN: `Estimated Commissions`
+- `predictions.expectedConversion` — EN: `Expected Conversion Rate`
+- `predictions.expectedLeads` — EN: `Expected Leads`
+- `predictions.expectedSales` — EN: `Expected Sales`
+- `predictions.lastMonthComparison` — EN: `Last Month Comparison`
+- `predictions.leads` — EN: `Leads`
+- `predictions.metric` — EN: `Metric`
+- `predictions.nextMonth` — EN: `Predictions for next month`
+- `predictions.predicted` — EN: `Predicted`
+- `predictions.sales` — EN: `Sales`
+- `predictions.subtitle` — EN: `Estimates based on historical data`
+- `predictions.title` — EN: `Predictions and Trends`
+- `reports.budget` — EN: `Budget`
+- `reports.commission` — EN: `Commission`
+- `reports.commissions` — EN: `commissions`
+- `reports.commissionsReport` — EN: `Commissions Report`
+- `reports.conversion` — EN: `conversion`
+- `reports.converted` — EN: `converted`
+- `reports.date` — EN: `Date`
+- `reports.developer` — EN: `Developer`
+- `reports.downloadCSV` — EN: `Download CSV`
+- `reports.email` — EN: `Email`
+- `reports.endDate` — EN: `End Date`
+- `reports.generate` — EN: `Generate`
+- `reports.generating` — EN: `Generating...`
+- `reports.leads` — EN: `leads`
+- `reports.leadsReport` — EN: `Leads Report`
+- `reports.name` — EN: `Name`
+- `reports.noData` — EN: `No data for this period`
+- `reports.pending` — EN: `pending`
+- `reports.price` — EN: `Price`
+- `reports.project` — EN: `Project`
+- `reports.projects` — EN: `projects`
+- `reports.projectsReport` — EN: `Projects Report`
+- `reports.promoter` — EN: `Promoter`
+- `reports.score` — EN: `Score`
+- `reports.startDate` — EN: `Start Date`
+- `reports.status` — EN: `Status`
+- `reports.title` — EN: `Reports`
+- `reports.total` — EN: `total`
+- `reports.totals` — EN: `Totals`
+- `reports.zone` — EN: `Zone`
+- `tests.description` — EN: `Manual testing and data integrity verification`
+- `tests.generateData` — EN: `Generate Test Data`
+- `tests.resetData` — EN: `Reset Test Data`
+- `tests.systemHealth` — EN: `System Health`
+- `tests.title` — EN: `Tests & Validation`
+
+### NL (196 missing keys)
+
+- `admin.buildings.availableUnits` — EN: `Available Units`
+- `admin.buildings.create` — EN: `New Building`
+- `admin.buildings.edit` — EN: `Edit Building`
+- `admin.buildings.title` — EN: `Buildings`
+- `admin.buildings.totalUnits` — EN: `Total Units`
+- `admin.buildings.units` — EN: `Units`
+- `admin.properties.status.available` — EN: `Available`
+- `admin.properties.status.reserved` — EN: `Reserved`
+- `admin.properties.status.sold` — EN: `Sold`
+- `admin.properties.title` — EN: `Properties`
+- `analytics.avgDealSize` — EN: `Average Deal Size`
+- `analytics.commissionsOverTime` — EN: `Commissions Over Time`
+- `analytics.conversionRate` — EN: `Conversion Rate`
+- `analytics.leadsByStatus` — EN: `Leads by Status`
+- `analytics.months` — EN: `months`
+- `analytics.newLeads` — EN: `New Leads`
+- `analytics.salesByMonth` — EN: `Sales by Month`
+- `analytics.salesValue` — EN: `Sales Value`
+- `analytics.title` — EN: `Analytics`
+- `analytics.topZones` — EN: `Top 5 Zones`
+- `commissions.actions` — EN: `Actions`
+- `commissions.amount` — EN: `Amount`
+- `commissions.developer` — EN: `Developer`
+- `commissions.lastMonth` — EN: `Last Month`
+- `commissions.lastQuarter` — EN: `Last Quarter`
+- `commissions.lastYear` — EN: `Last Year`
+- `commissions.markPaid` — EN: `Mark Paid`
+- `commissions.property` — EN: `Property`
+- `commissions.rate` — EN: `Rate`
+- `commissions.salePrice` — EN: `Sale Price`
+- `commissions.status.cancelled` — EN: `Cancelled`
+- `commissions.status.paid` — EN: `Paid`
+- `commissions.status.pending` — EN: `Pending`
+- `commissions.title` — EN: `Commissions`
+- `commissions.totalDue` — EN: `Total Due`
+- `commissions.totalPaid` — EN: `Total Paid`
+- `dashboard.available` — EN: `available`
+- `dashboard.avgConversion` — EN: `Average Time`
+- `dashboard.commissions` — EN: `Commissions`
+- `dashboard.completed` — EN: `completed`
+- `dashboard.conversionRate` — EN: `Conversion Rate`
+- `dashboard.converted` — EN: `converted`
+- `dashboard.days` — EN: `days`
+- `dashboard.goldenVisaEligible` — EN: `Golden Visa Eligible`
+- `dashboard.goldenVisaLeads` — EN: `Golden Visa Leads`
+- `dashboard.interested` — EN: `interested`
+- `dashboard.leadToClient` — EN: `Lead to client`
+- `dashboard.leads` — EN: `Leads`
+- `dashboard.noRecentActivity` — EN: `No recent activity`
+- `dashboard.paid` — EN: `Paid`
+- `dashboard.pending` — EN: `Pending`
+- `dashboard.period` — EN: `Period {{days}}d`
+- `dashboard.portfolioValue` — EN: `Portfolio value`
+- `dashboard.properties` — EN: `Properties`
+- `dashboard.recentActivity` — EN: `Recent Activity`
+- `dashboard.title` — EN: `Dashboard`
+- `dashboard.toConvert` — EN: `to convert`
+- `dashboard.toPay` — EN: `to pay`
+- `dashboard.totalCommissions` — EN: `Total Commissions`
+- `dashboard.totalLeads` — EN: `Total Leads`
+- `dashboard.totalProperties` — EN: `Total Properties`
+- `dashboard.totalValue` — EN: `Total Value`
+- `dashboard.viewAllLeads` — EN: `View all leads`
+- `documentation.api` — EN: `API Reference`
+- `documentation.external` — EN: `External Links`
+- `documentation.features` — EN: `Key Features`
+- `documentation.quickStart` — EN: `Quick Start`
+- `documentation.shortcuts` — EN: `Keyboard Shortcuts`
+- `documentation.subtitle` — EN: `Complete guide for the admin panel`
+- `documentation.title` — EN: `Documentation`
+- `filters.bathrooms` — EN: `Bathrooms`
+- `filters.bedrooms` — EN: `Bedrooms`
+- `filters.clearAll` — EN: `Clear All`
+- `filters.location` — EN: `Location`
+- `filters.priceRange` — EN: `Price Range`
+- `filters.propertyType.all` — EN: `All Types`
+- `filters.propertyType.apartment` — EN: `Apartment`
+- `filters.propertyType.commercial` — EN: `Commercial`
+- `filters.propertyType.penthouse` — EN: `Penthouse`
+- `filters.propertyType.villa` — EN: `Villa`
+- `filters.title` — EN: `Filters`
+- `leads.actions` — EN: `Actions`
+- `leads.addLead` — EN: `Add Lead`
+- `leads.assigned` — EN: `Assigned to`
+- `leads.budget` — EN: `Budget`
+- `leads.budgetMax` — EN: `Max Budget`
+- `leads.budgetMin` — EN: `Min Budget`
+- `leads.contact` — EN: `Contact`
+- `leads.email` — EN: `Email`
+- `leads.firstName` — EN: `First Name`
+- `leads.goldenVisaInterest` — EN: `Golden Visa Interest`
+- `leads.lastName` — EN: `Last Name`
+- `leads.leadAssigned` — EN: `Lead assigned successfully`
+- `leads.leadCreated` — EN: `Lead created successfully`
+- `leads.name` — EN: `Name`
+- `leads.newLead` — EN: `New Lead`
+- `leads.notes` — EN: `Notes`
+- `leads.phone` — EN: `Phone`
+- `leads.score` — EN: `Score`
+- `leads.source.agent` — EN: `Agent`
+- `leads.source.other` — EN: `Other`
+- `leads.source.referral` — EN: `Referral`
+- `leads.source.social` — EN: `Social Media`
+- `leads.source.website` — EN: `Website`
+- `leads.status.contacted` — EN: `Contacted`
+- `leads.status.converted` — EN: `Converted`
+- `leads.status.lost` — EN: `Lost`
+- `leads.status.new` — EN: `New`
+- `leads.status.opportunity` — EN: `Opportunity`
+- `leads.status.qualified` — EN: `Qualified`
+- `leads.statusUpdated` — EN: `Status updated successfully`
+- `leads.title` — EN: `Leads / Prospects`
+- `leads.unassigned` — EN: `Unassigned`
+- `leads.urgency.1year` — EN: `1 year`
+- `leads.urgency.3months` — EN: `3 months`
+- `leads.urgency.6months` — EN: `6 months`
+- `leads.urgency.exploring` — EN: `Exploring`
+- `leads.urgency.immediate` — EN: `Immediate`
+- `messages.buildingDeleted` — EN: `The building has been deleted successfully`
+- `messages.buildingDeletedTitle` — EN: `Building deleted`
+- `messages.deleteBuildingConfirm` — EN: `Are you sure you want to delete the building "{{name}}"?`
+- `messages.deleteBuildingConfirmWithDeps` — EN: `⚠️ WARNING ⚠️
+
+The building "{{name}}" has dependencies:
+{{details}}
+
+Deleting it will also remove t...`
+- `messages.deleteBuildingError` — EN: `Unable to delete the building`
+- `messages.deleteProjectConfirm` — EN: `Are you sure you want to delete the project "{{title}}"?`
+- `messages.deleteProjectConfirmWithDeps` — EN: `⚠️ WARNING ⚠️
+
+The project "{{title}}" has dependencies:
+{{details}}
+
+Deleting it will also remove t...`
+- `messages.deleteProjectError` — EN: `Unable to delete the project`
+- `messages.projectDeleted` — EN: `The project has been deleted successfully`
+- `messages.projectDeletedTitle` — EN: `Project deleted`
+- `nav.pipeline` — EN: `Pipeline`
+- `pipeline.averageTime` — EN: `Average Time`
+- `pipeline.conversionRate` — EN: `Conversion Rate`
+- `pipeline.days` — EN: `days`
+- `pipeline.leadMoved` — EN: `Lead moved successfully`
+- `pipeline.leadsCount` — EN: `Leads Count`
+- `pipeline.source` — EN: `Source`
+- `pipeline.timeInStage` — EN: `Time in stage`
+- `pipeline.title` — EN: `Sales Pipeline`
+- `pipeline.totalValue` — EN: `Total Value`
+- `pipeline.urgency` — EN: `Urgency`
+- `predictions.accuracy` — EN: `Accuracy`
+- `predictions.actual` — EN: `Actual`
+- `predictions.commissions` — EN: `Commissions`
+- `predictions.confidence.high` — EN: `High (6+ months of data)`
+- `predictions.confidence.low` — EN: `Low (<3 months of data)`
+- `predictions.confidence.medium` — EN: `Medium (3-5 months of data)`
+- `predictions.confidenceLevels` — EN: `Confidence Levels`
+- `predictions.confidenceNote` — EN: `Reliability depends on the amount of historical data available`
+- `predictions.disclaimer` — EN: `Important Information`
+- `predictions.disclaimerText` — EN: `These predictions are based on simple historical trends and do not constitute guarantees. Use them a...`
+- `predictions.expectedCommissions` — EN: `Estimated Commissions`
+- `predictions.expectedConversion` — EN: `Expected Conversion Rate`
+- `predictions.expectedLeads` — EN: `Expected Leads`
+- `predictions.expectedSales` — EN: `Expected Sales`
+- `predictions.lastMonthComparison` — EN: `Last Month Comparison`
+- `predictions.leads` — EN: `Leads`
+- `predictions.metric` — EN: `Metric`
+- `predictions.nextMonth` — EN: `Predictions for next month`
+- `predictions.predicted` — EN: `Predicted`
+- `predictions.sales` — EN: `Sales`
+- `predictions.subtitle` — EN: `Estimates based on historical data`
+- `predictions.title` — EN: `Predictions and Trends`
+- `reports.budget` — EN: `Budget`
+- `reports.commission` — EN: `Commission`
+- `reports.commissions` — EN: `commissions`
+- `reports.commissionsReport` — EN: `Commissions Report`
+- `reports.conversion` — EN: `conversion`
+- `reports.converted` — EN: `converted`
+- `reports.date` — EN: `Date`
+- `reports.developer` — EN: `Developer`
+- `reports.downloadCSV` — EN: `Download CSV`
+- `reports.email` — EN: `Email`
+- `reports.endDate` — EN: `End Date`
+- `reports.generate` — EN: `Generate`
+- `reports.generating` — EN: `Generating...`
+- `reports.leads` — EN: `leads`
+- `reports.leadsReport` — EN: `Leads Report`
+- `reports.name` — EN: `Name`
+- `reports.noData` — EN: `No data for this period`
+- `reports.pending` — EN: `pending`
+- `reports.price` — EN: `Price`
+- `reports.project` — EN: `Project`
+- `reports.projects` — EN: `projects`
+- `reports.projectsReport` — EN: `Projects Report`
+- `reports.promoter` — EN: `Promoter`
+- `reports.score` — EN: `Score`
+- `reports.startDate` — EN: `Start Date`
+- `reports.status` — EN: `Status`
+- `reports.title` — EN: `Reports`
+- `reports.total` — EN: `total`
+- `reports.totals` — EN: `Totals`
+- `reports.zone` — EN: `Zone`
+- `tests.description` — EN: `Manual testing and data integrity verification`
+- `tests.generateData` — EN: `Generate Test Data`
+- `tests.resetData` — EN: `Reset Test Data`
+- `tests.systemHealth` — EN: `System Health`
+- `tests.title` — EN: `Tests & Validation`

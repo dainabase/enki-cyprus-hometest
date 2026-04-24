@@ -91,7 +91,17 @@
     "totalUnits": "Unités totales",
     "availableUnits": "Unités disponibles",
     "energyRating": "Classe énergétique",
-    "goldenVisa": "Éligible Golden Visa"
+    "goldenVisa": "Éligible Golden Visa",
+    "available": "Disponible",
+    "buildingName": "Nom du batiment",
+    "constructionStatus": "Statut de construction",
+    "contact": "Contact",
+    "priceFrom": "Prix de",
+    "priceMax": "Prix maximum",
+    "priceTo": "Prix jusqu a",
+    "rating": "Note",
+    "status": "Statut",
+    "website": "Site web"
   },
   "messages": {
     "saveSuccess": "Sauvegardé avec succès",
@@ -107,7 +117,17 @@
     "info": "Information",
     "noData": "Aucune donnée disponible",
     "notFound": "Non trouvé",
-    "accessDenied": "Accès refusé"
+    "accessDenied": "Accès refusé",
+    "buildingDeleted": "Le batiment a ete supprime avec succes",
+    "buildingDeletedTitle": "Batiment supprime",
+    "deleteBuildingConfirm": "Etes-vous sur de vouloir supprimer le batiment \"{{name}}\" ?",
+    "deleteBuildingConfirmWithDeps": "ATTENTION\n\nLe batiment \"{{name}}\" a des dependances:\n{{details}}\n\nLa suppression les retirera aussi.\n\nContinuer ?",
+    "deleteBuildingError": "Impossible de supprimer le batiment",
+    "deleteProjectConfirm": "Etes-vous sur de vouloir supprimer le projet \"{{title}}\" ?",
+    "deleteProjectConfirmWithDeps": "ATTENTION\n\nLe projet \"{{title}}\" a des dependances:\n{{details}}\n\nLa suppression les retirera aussi.\n\nContinuer ?",
+    "deleteProjectError": "Impossible de supprimer le projet",
+    "projectDeleted": "Le projet a ete supprime avec succes",
+    "projectDeletedTitle": "Projet supprime"
   },
   "pages": {
     "projectDetail": "Détail du projet",
@@ -120,7 +140,7 @@
   "commissions": {
     "title": "Commissions",
     "lastMonth": "Dernier mois",
-    "lastQuarter": "Dernier trimestre", 
+    "lastQuarter": "Dernier trimestre",
     "lastYear": "Dernière année",
     "totalDue": "Total dû",
     "totalPaid": "Total payé",
@@ -328,7 +348,7 @@
     "period": {
       "7days": "7 Jours",
       "30days": "30 Jours",
-      "90days": "90 Jours", 
+      "90days": "90 Jours",
       "all": "Tout le temps"
     },
     "table": {
@@ -365,153 +385,6 @@
     "generateData": "Générer Données Test",
     "resetData": "Reset Données Test",
     "systemHealth": "Santé du Système"
-  },
-  "admin": {
-    "sidebar": {
-      "dashboard": "Tableau de bord",
-      "gestionImmobiliere": "Gestion Immobilière", 
-      "developers": "Développeurs",
-      "projects": "Projets",
-      "units": "Unités",
-      "ventesCRM": "Ventes & CRM",
-      "prospects": "Prospects",
-      "commissions": "Commissions",
-      "analytics": "Analytics",
-      "analyses": "Analyses",
-      "segmentation": "Segmentation",
-      "performance": "Performance",
-      "reports": "Rapports",
-      "administration": "Administration",
-      "documentation": "Documentation",
-      "settings": "Paramètres",
-      "tests": "Tests"
-    },
-    "titles": {
-      "projectManagement": "Gestion des Projets",
-      "projectManagementSubtitle": "Gérer les projets immobiliers",
-      "developerManagement": "Gestion des Développeurs",
-      "developerManagementSubtitle": "Gérer les développeurs immobiliers",
-      "createProject": "Nouveau Projet",
-      "editProject": "Modifier le Projet",
-      "createDeveloper": "Nouveau Développeur",
-      "editDeveloper": "Modifier le Développeur"
-    },
-    "buttons": {
-      "newProject": "Nouveau Projet",
-      "newDeveloper": "Nouveau Développeur",
-      "filters": "Filtres",
-      "backToProjects": "Retour aux projets",
-      "backToDevelopers": "Retour aux développeurs",
-      "selectAll": "Tout sélectionner",
-      "unselectAll": "Désélectionner tout",
-      "deleteSelected": "Supprimer la sélection",
-      "save": "Sauvegarder",
-      "cancel": "Annuler",
-      "create": "Créer",
-      "modify": "Modifier",
-      "sortBy": "Trier par"
-    },
-    "fields": {
-      "exclusiveCommercialization": "Exclusivité Enki Reality",
-      "projectCode": "Code projet",
-      "projectName": "Nom du projet",
-      "category": "Catégorie",
-      "subTypes": "Sous-types",
-      "projectPhase": "Phase du projet",
-      "developer": "Développeur",
-      "launchDate": "Date de lancement",
-      "deliveryDate": "Date de livraison",
-      "shortDescription": "Description courte",
-      "detailedDescription": "Description détaillée",
-      "fullAddress": "Adresse complète",
-      "city": "Ville",
-      "region": "Région",
-      "neighborhood": "Quartier",
-      "cyprusZone": "Zone de Chypre",
-      "latitude": "Latitude",
-      "longitude": "Longitude",
-      "proximityToSea": "Mer",
-      "proximityToAirport": "Aéroport",
-      "proximityToCityCenter": "Centre-ville",
-      "proximityToHighway": "Autoroute"
-    },
-    "status": {
-      "available": "Disponible",
-      "underConstruction": "En Construction",
-      "delivered": "Livré",
-      "sold": "Vendu",
-      "total": "Total",
-      "totalProjects": "Total Projets"
-    },
-    "sorting": {
-      "title": "Nom du projet",
-      "developer": "Développeur", 
-      "city": "Ville",
-      "neighborhood": "Quartier",
-      "price": "Prix",
-      "status": "Statut",
-      "zone": "Zone de Chypre",
-      "completionDate": "Date de livraison",
-      "createdDate": "Date de création"
-    },
-    "views": {
-      "cards": "Cartes",
-      "list": "Liste",
-      "table": "Tableau",
-      "compact": "Compact",
-      "detailed": "Détaillé"
-    },
-    "messages": {
-      "projectsDeleted": "Projets supprimés",
-      "projectsDeletedDesc": "{{count}} projet(s) ont été supprimés avec succès.",
-      "allProjectsSelected": "Tous les projets sélectionnés",
-      "allProjectsSelectedDesc": "{{count}} projet(s) sélectionné(s).",
-      "projectsSelected": "{{count}} projet(s) sélectionné(s)",
-      "noSelection": "Aucune sélection",
-      "noSelectionDesc": "Veuillez sélectionner au moins un projet à supprimer.",
-      "error": "Erreur",
-      "errorDeletingProjects": "Impossible de supprimer les projets"
-    },
-    "steps": {
-      "step": "Étape",
-      "of": "sur",
-      "basicInfo": "Informations de base",
-      "location": "Localisation", 
-      "specifications": "Spécifications",
-      "pricing": "Prix & Investissement",
-      "media": "Médias",
-      "amenities": "Prestations",
-      "marketing": "Marketing & SEO"
-    },
-    "categories": {
-      "residential": "Résidentiel",
-      "commercial": "Commercial",
-      "mixed": "Mixte",
-      "industrial": "Industriel"
-    },
-    "phases": {
-      "offPlan": "Sur plan",
-      "underConstruction": "En construction", 
-      "completed": "Terminé",
-      "readyToMove": "Terminé"
-    },
-    "zones": {
-      "limassol": "Limassol",
-      "paphos": "Paphos",
-      "larnaca": "Larnaca",
-      "nicosia": "Nicosie",
-      "famagusta": "Famagouste"
-    }
-  },
-  "pagination": {
-    "displaying": "Affichage de {{start}} à {{end}} sur {{total}} résultats",
-    "rowsPerPage": "Lignes par page",
-    "pageOf": "Page {{current}} sur {{count}}"
-  },
-  "actions": {
-    "selectAll": "Tout sélectionner",
-    "selectItem": "Sélectionner",
-    "actions": "Actions"
   },
   "admin": {
     "common": {
@@ -552,6 +425,16 @@
       }
     }
   },
+  "pagination": {
+    "displaying": "Affichage de {{start}} à {{end}} sur {{total}} résultats",
+    "rowsPerPage": "Lignes par page",
+    "pageOf": "Page {{current}} sur {{count}}"
+  },
+  "actions": {
+    "selectAll": "Tout sélectionner",
+    "selectItem": "Sélectionner",
+    "actions": "Actions"
+  },
   "filters": {
     "title": "Filtres",
     "propertyType": {
@@ -566,5 +449,14 @@
     "bedrooms": "Chambres",
     "bathrooms": "Salles de bain",
     "clearAll": "Tout effacer"
+  },
+  "documentation": {
+    "api": "API",
+    "external": "Externe",
+    "features": "Fonctionnalites",
+    "quickStart": "Demarrage rapide",
+    "shortcuts": "Raccourcis",
+    "subtitle": "Guide technique et fonctionnel",
+    "title": "Documentation"
   }
 }
