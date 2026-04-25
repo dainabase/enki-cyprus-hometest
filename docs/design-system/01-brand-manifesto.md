@@ -57,49 +57,51 @@ Le nom n'est pas marketing. **Le mythe est notre philosophie opérationnelle.**
 
 ## 3. La mission
 
-ENKI Realty existe pour **dissoudre l'anxiété de la bascule**.
+ENKI Realty existe pour **rendre une vie meilleure accessible et sûre**.
 
-Quand un entrepreneur français de 38 ans, mère de deux enfants, sent qu'il pourrait vivre mieux à Chypre mais ne sait ni par où commencer, ni quelles lois s'appliquent, ni s'il sera contrôlé par le fisc allemand, ni si la villa qu'il imagine existe vraiment — il vit dans une **anxiété diffuse qui le paralyse**. Il rêve, mais il n'avance pas. Il sait qu'il manque quelque chose, mais il ne sait pas quoi.
+Il y a, pour beaucoup de personnes en Europe, un moment où l'on sait — sans pouvoir encore le formuler clairement — qu'une autre vie est possible ailleurs. Ailleurs, c'est souvent le Sud. La mer. Le soleil. Une fiscalité plus douce. Une qualité de vie qui rend du temps. Une éducation différente pour les enfants. Une retraite qui ressemble enfin à du repos.
 
-Ce qui lui manque, c'est la **connaissance structurée et la compréhension humaine**.
+Mais entre cette intuition et la réalité d'un projet abouti, il existe un fossé — fait de questions juridiques, fiscales, administratives, immobilières, humaines. Ce fossé arrête la plupart des gens. Pas par manque d'envie. Par manque de **clarté**.
 
-ENKI Realty offre les deux simultanément.
+ENKI Realty est le pont au-dessus de ce fossé.
 
-### 3.1 La connaissance structurée — Lexaia
+Nous offrons deux choses simultanément que personne d'autre ne combine sur un même site : la **connaissance fiscale et juridique structurée** (Lexaia), et la **compréhension humaine de qui vous êtes vraiment** (l'agent conversationnel). Ensemble, ces deux outils transforment un projet flou et intimidant en un projet clair, calme, sûr.
 
-Lexaia est notre système d'optimisation fiscale et juridique pan-européen. Il répond, pour chaque pays d'origine et chaque scénario d'achat, aux questions concrètes :
+C'est ce que nous appelons le **double cheat code** : la main rationnelle qui sécurise, et la main émotionnelle qui guide.
 
-- Si je suis allemand et que j'achète un appartement à Chypre, dois-je créer une société ?
-- Vais-je déclencher un contrôle fiscal en Allemagne ?
-- Quelles sont les étapes légales d'acquisition pour un non-résident ?
-- Dois-je établir ma résidence fiscale à Chypre, et si oui, comment ?
-- Qu'en est-il de mes dividendes, de mes plus-values, de ma succession ?
+### 3.1 Lexaia — la connaissance qui sécurise
 
-Lexaia ne donne pas des conseils théoriques. Lexaia donne des **scénarios opérationnels**, calculés, pédagogiques, faciles à comprendre par quelqu'un qui n'y connaît rien et veut apprendre vite.
+Lexaia est notre système d'optimisation fiscale et juridique pan-européen. Pour chaque pays d'origine et chaque scénario d'achat, Lexaia répond aux questions concrètes que se pose une personne qui prépare son installation à Chypre :
 
-C'est la **partie rationnelle** du cheat code.
+- *Si je suis allemand et que j'achète un appartement à Chypre, dois-je créer une société, et laquelle ?*
+- *Quelle structure choisir pour ne pas déclencher de contrôle dans mon pays d'origine ?*
+- *Quelles sont les étapes légales d'acquisition pour un non-résident ?*
+- *Dois-je établir ma résidence fiscale à Chypre, et si oui, comment ?*
+- *Comment seront traités mes dividendes, mes plus-values, ma succession ?*
 
-### 3.2 La compréhension humaine — l'agent conversationnel
+Lexaia ne donne pas des conseils théoriques. Lexaia produit des **scénarios opérationnels** : calculés, sourcés, pédagogiques, lisibles par quelqu'un qui n'y connaît rien et qui veut apprendre vite et bien.
 
-L'agent conversationnel d'ENKI Realty est plus qu'un chatbot. C'est un **interlocuteur attentif** qui pose les bonnes questions, qui interprète, qui propose, qui s'ajuste.
+C'est la **partie rationnelle** du cheat code : elle remplace la complexité par la lisibilité.
 
-Il ne demande pas "combien de chambres ?". Il demande "qu'est-ce qui vous ferait vous sentir chez vous ?". Il ne propose pas des biens par filtres. Il propose des biens par résonance : qui est cette personne, ce qu'elle fuit, ce qu'elle cherche, ce qu'elle ne sait pas encore qu'elle aime.
+### 3.2 L'agent conversationnel — la compréhension qui guide
 
-Il récupère de l'information factuelle (budget, localisation, type de bien) **et** de l'information émotionnelle (rythme de vie, présence d'enfants, niveau d'activité physique, besoin de communauté ou de retraite, rapport au climat, à la lumière, à la mer, à la solitude).
+L'agent conversationnel d'ENKI Realty est plus qu'un moteur de recherche, et plus qu'un chatbot. C'est un **interlocuteur attentif** qui comprend qui vous êtes, ce que vous cherchez, et — souvent — ce que vous ne savez pas encore vouloir.
 
-Il propose ensuite des biens qui correspondent à la personne, pas à sa checklist.
+Il ne demande pas *"combien de chambres ?"*. Il demande *"qu'est-ce qui vous ferait vous sentir chez vous ?"*. Il ne propose pas des biens par filtres. Il propose des biens par **résonance** : qui est cette personne, ce qu'elle quitte, ce qu'elle cherche, ce qu'elle aimera quand elle l'aura trouvé.
 
-C'est la **partie émotionnelle** du cheat code.
+Il croise des données factuelles (budget, type de bien, localisation) avec des données de mode de vie (rythme, présence d'enfants, besoin de communauté ou de retraite, rapport au climat, à la lumière, à la mer, à la solitude). Et il propose ensuite des biens qui **correspondent à la personne, pas à sa checklist**.
+
+C'est la **partie émotionnelle** du cheat code : elle remplace l'errance par la justesse.
 
 ### 3.3 Le pont entre les deux
 
-Ce qui rend ENKI Realty unique, c'est que **les deux cheat codes ne sont pas séparés**. La connaissance fiscale n'est pas un service annexe. La compréhension humaine n'est pas un gadget.
+Ce qui rend ENKI Realty unique, c'est que ces deux cheat codes ne sont **pas séparés**. La connaissance fiscale n'est pas un service annexe vendu après. La compréhension humaine n'est pas un gadget conversationnel.
 
-Les deux sont les deux mains du même geste : la main rationnelle qui calme la peur du danger juridique, et la main émotionnelle qui fait sentir que l'on est compris.
+Les deux sont **les deux mains du même geste** : la main rationnelle qui sécurise techniquement, et la main émotionnelle qui guide humainement. Elles travaillent en permanence ensemble.
 
-Ensemble, elles produisent **la sensation que tout devient possible et sûr en même temps**.
+Le résultat est une sensation que peu de plateformes au monde produisent : **la maîtrise et la bienveillance, en même temps**. La rigueur d'un cabinet de family office, et la chaleur d'un ami qui sait exactement ce dont vous avez besoin avant que vous l'ayez formulé.
 
-C'est ce que le client cherche, sans pouvoir le formuler : la combinaison rare de la **maîtrise** et de la **bienveillance**.
+C'est ce que nos clients viennent chercher. C'est ce qu'ils trouvent.
 
 ---
 
