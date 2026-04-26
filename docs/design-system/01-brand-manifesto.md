@@ -1,21 +1,18 @@
-# 🌊 ENKI Realty — Brand Manifesto v1.0
+# 🌊 ENKI Realty — Brand Manifesto v1.1
 
 > *Document fondateur. Toute décision visuelle, éditoriale, fonctionnelle, ou stratégique d'ENKI Realty doit pouvoir être justifiée par ce manifesto. Ce qui ne s'y rattache pas n'a pas sa place dans la marque.*
 
-> **Version 1.0 · 25 avril 2026**
-> Auteurs : Jean-Marie Delaunay (fondateur, vision) + Claude Opus 4.7 (rédaction et structure)
-> Statut : v1.0 — en attente de validation
-> Notion source : <https://www.notion.so/34d8c7bb251581498d58cbc26bb35e2a>
+> **Version 1.1 · 25 avril 2026**Auteurs : Jean-Marie Delaunay (fondateur, vision) + Claude Opus 4.7 (rédaction et structure) Statut : v1.1 — mergée sur main (commit `34ca850`) Notion source : <https://www.notion.so/34d8c7bb251581498d58cbc26bb35e2a> (v1.2 en review) \*\***Note** : la version v1.2 sur Notion (en review) précisera la promesse 8 (Crona — confidentialité de la structure capitalistique) et la promesse 9 (9 langues européennes). Cette version locale reflète la v1.1 mergée sur main. \*\***Changelog v1.1** : section 3 "La mission" reformulée (suppression du registre anxiogène, ouverture sur "rendre une vie meilleure accessible et sûre")
 
 ---
 
 ## Sommaire
 
-1. [Préambule](#1-préambule)
+1. [Préambule](#1-pr%C3%A9ambule)
 2. [Le mythe](#2-le-mythe)
 3. [La mission](#3-la-mission)
-4. [L'âme](#4-lâme)
-5. [Le client réel](#5-le-client-réel)
+4. [L'âme](#4-l%C3%A2me)
+5. [Le client réel](#5-le-client-r%C3%A9el)
 6. [La promesse](#6-la-promesse)
 7. [Le territoire visuel](#7-le-territoire-visuel)
 8. [Le ton et la voix](#8-le-ton-et-la-voix)
@@ -375,4 +372,4 @@ C'est ainsi qu'on construit un design system qui dure dix ans et qui ne ressembl
 
 *Date : 25 avril 2026*
 
-*Statut : v1.0 — en attente de validation*
+*Statut : v1.1 — mergée sur main*
