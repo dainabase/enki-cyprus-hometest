@@ -3,7 +3,7 @@
 > Rules permanentes pour tous les agents IA travaillant sur ce repo.
 > Lu automatiquement par Claude Code. Inclure dans les prompts Jules/Lovable/Cowork.
 >
-> **Version** : v1.2 (26 avril 2026)
+> **Version** : v1.3 (26 avril 2026)
 > **Source de verite strategique et editoriale** : Notion (hub Design System)
 > **Source de verite technique** : ce fichier + repo GitHub
 >
@@ -16,7 +16,7 @@
 - **Marche** : Chypre (expansion future Grece/Portugal/Malte/Dubai)
 - **Supabase Project ID** : `ccsakftsslurjgnjwdci`
 - **Repo** : `dainabase/enki-cyprus-hometest`
-- **Stack** : React 19 + TypeScript + Vite + Supabase + Tailwind + Framer Motion
+- **Stack technique actuelle** : React 19 + TypeScript + Vite + Supabase + Tailwind + Framer Motion (heritage du codebase initial - sera valide explicitement en Couche 8)
 
 ## REGLES ABSOLUES
 
@@ -26,10 +26,15 @@
 3. **JAMAIS laisser de console.log** en production - utiliser le logger unifie
 4. **JAMAIS creer de mock data** sans prefixe `// TODO: MOCK - remplacer par vraie donnee`
 5. **JAMAIS modifier** les Edge Functions `google-maps-agent` et triggers RLS sans validation
-6. **ZERO emoji** dans le code et l'UI (design system strict)
-7. **Font** : Inter uniquement (typographie display sera definie en Couche 4)
-8. **Palette** : a definir en Couche 5 (Color System). Toute palette utilisee actuellement dans le code est provisoire et NON VALIDEE. Aucun token de couleur ne doit etre fige tant que la Couche 5 n'est pas validee.
-9. **Crona Group** : structure capitalistique invisible. Crona apparait publiquement comme developpeur liste parmi les autres. Aucune communication, aucun signal visuel, aucun positionnement ne doit reveler ou suggerer la relation actionnariale entre Crona et la societe de vente affiliee.
+6. **ZERO emoji** dans le code et l'UI (regle issue du Brand Manifesto v1.2)
+7. **Crona Group** : structure capitalistique invisible. Crona apparait publiquement comme developpeur liste parmi les autres. Aucune communication, aucun signal visuel, aucun positionnement ne doit reveler ou suggerer la relation actionnariale entre Crona et la societe de vente affiliee.
+8. **JAMAIS figer une decision visuelle, typographique, chromatique ou interactionnelle** sans qu'elle soit valide dans la couche correspondante du design system (cf. section DESIGN SYSTEM ci-dessous).
+
+### A definir dans les couches du design system - aucune decision actuellement validee
+- **Typographie** : a definir en Couche 4 (Typography System). Aucune police n'est validee a ce jour. La police actuellement presente dans le code (Inter) est un heritage du codebase initial, elle n'a fait l'objet d'aucune decision editoriale et sera reinterrogee en Couche 4.
+- **Couleurs** : a definir en Couche 5 (Color System). Aucune palette n'est validee a ce jour. Toute palette utilisee actuellement dans le code est provisoire et NON VALIDEE. Aucun token de couleur ne doit etre fige tant que la Couche 5 n'est pas validee.
+- **Motion / Animations** : principes generaux fixes par la Couche 3 v1.0 (animations restraint qui autorise le sublime, filtre 3 questions). Valeurs precises (durees, easings) a definir en Couche 6.
+- **Composants UI** : a definir en Couche 8 (Component Tokens), incluant validation explicite du framework Tailwind + Shadcn/ui.
 
 ### Obligations
 1. **Toujours verifier** la coherence schema TypeScript <-> colonnes Supabase avant tout formulaire
@@ -48,14 +53,15 @@ Le design system ENKI Realty se construit en 8 couches sequentielles plus des do
 | 1 - Brand Manifesto | `docs/design-system/01-brand-manifesto.md` | v1.2 en review | v1.1 mergee (commit `34ca850`) |
 | 2 - Conversational Tier | `docs/design-system/02-conversational-tier.md` | v2.1 en review | Pas encore sync |
 | Doc complementaire - Architecture Commerciale & CRM | `docs/design-system/03-architecture-commerciale-crm.md` | v1.0 en review | Pas encore sync |
-| 3 - Visual Principles | a venir | Pas encore cree | n/a |
+| 3 - Visual Principles | `docs/design-system/04-visual-principles.md` | v1.0 en review | Pas encore sync |
+| Doc complementaire - Experience Architecture | `docs/design-system/04bis-experience-architecture.md` | v1.0 en review | Pas encore sync |
 | 4 - Typography System | a venir | Pas encore cree | n/a |
 | 5 - Color System | a venir | Pas encore cree | n/a |
 | 6 - Motion & Interaction Principles | a venir | Pas encore cree | n/a |
 | 7 - Photography & Imagery Direction | a venir | Pas encore cree | n/a |
 | 8 - Component Tokens | a venir | Pas encore cree | n/a |
 
-**Source de verite strategique** : pages Notion sous le hub "Design System & Cinematic Experience" (voir Mapping Notion <-> GitHub sur Notion).
+**Source de verite strategique** : pages Notion sous le hub "Design System & Cinematic Experience", organise en 6 sous-hubs thematiques depuis le 26 avril 2026 (Piece-mere, Couches du Design System, Documents complementaires, Gouvernance documentaire, Memos & reflexions en cours, References permanentes). Voir Mapping Notion <-> GitHub sur Notion pour le detail.
 
 **Source de verite technique** : fichiers .md sous `docs/design-system/` une fois synchronises depuis Notion.
 
@@ -124,7 +130,7 @@ ENKI Realty repose sur une architecture B2B2C avec trois entites distinctes :
 
 ## VOCABULAIRE INTERNE
 
-Voir le **Glossaire ENKI Realty** sur Notion pour la definition complete et autorisante de tous les termes (ENKI, Lexaia, espace personnel, gradation N1/N2, passage de main, triple ancrage, etc.).
+Voir le **Glossaire ENKI Realty** sur Notion (sous-hub Gouvernance documentaire) pour la definition complete et autorisante de tous les termes (ENKI, Lexaia, espace personnel, gradation N1/N2, passage de main, triple ancrage, etc.).
 
 ## WORKFLOW DEVELOPPEMENT
 
@@ -138,6 +144,14 @@ Voir le **Glossaire ENKI Realty** sur Notion pour la definition complete et auto
 8. Commit avec message conventionnel (feat/fix/docs/refactor)
 
 ## CHANGELOG
+
+### v1.3 - 26 avril 2026
+- **Correction majeure** : suppression de la regle "Font: Inter uniquement" qui n'avait jamais ete validee par Jean-Marie. Inter etait un heritage du codebase initial presente a tort comme verrou constitutionnel. La typographie sera definie en Couche 4 apres formulaire structurant.
+- Reorganisation des regles : section "A definir dans les couches" cree, distincte des "Interdictions" definitives, pour clarifier le statut de chaque regle (validee vs en attente de Couche)
+- Ajout de la Couche 3 - Visual Principles v1.0 (en review) et du document complementaire Experience Architecture v1.0 (en review) au tableau des couches
+- Mention explicite que la stack actuelle (React/TS/Vite/Tailwind/Shadcn) est un heritage du codebase initial a valider explicitement en Couche 8
+- Reference au hub Notion reorganise en 6 sous-hubs thematiques depuis le 26 avril
+- Mention du sous-hub "Gouvernance documentaire" pour le Glossaire
 
 ### v1.2 - 26 avril 2026
 - Suppression references a fichiers fantomes (DESIGN-SYSTEM.md, ROADMAP-BUSINESS.md inexistants)
