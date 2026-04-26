@@ -3,9 +3,11 @@
 > Rules permanentes pour tous les agents IA travaillant sur ce repo.
 > Lu automatiquement par Claude Code. Inclure dans les prompts Jules/Lovable/Cowork.
 >
-> **Version** : v1.1 (26 avril 2026)
+> **Version** : v1.2 (26 avril 2026)
 > **Source de verite strategique et editoriale** : Notion (hub Design System)
 > **Source de verite technique** : ce fichier + repo GitHub
+>
+> **REGLE DE PRIORITE** : en cas d'incoherence entre un document Notion et un fichier .md du repo, **Notion fait foi**. Les fichiers .md du repo peuvent etre en retard sur Notion (cycle de sync explicite). Tout agent IA doit verifier la version Notion correspondante avant de prendre une decision basee sur un .md du repo.
 
 ## IDENTITE PROJET
 
@@ -32,30 +34,32 @@
 ### Obligations
 1. **Toujours verifier** la coherence schema TypeScript <-> colonnes Supabase avant tout formulaire
 2. **Toujours prefixer** les colonnes JSONB avec le nom du domaine (ex: `golden_visa_details`, `tax_benefits`)
-3. **Toujours utiliser** les vrais noms de colonnes Supabase (voir EDGE-FUNCTIONS-REGISTRY.md)
+3. **Toujours utiliser** les vrais noms de colonnes Supabase (voir `docs/governance/EDGE-FUNCTIONS-REGISTRY.md`)
 4. **Toujours tester** le build (`npm run build`) avant commit
 5. **Toujours documenter** dans MEMORY.md apres chaque session significative
-6. **Toujours respecter** le design system par couches : aucune decision visuelle, typographique, chromatique ou interactionnelle ne peut etre prise sans retour explicite au document de la couche correspondante (voir DESIGN-SYSTEM.md)
+6. **Toujours respecter** le design system par couches : aucune decision visuelle, typographique, chromatique ou interactionnelle ne peut etre prise sans retour explicite au document de la couche correspondante (Notion source de verite, `docs/design-system/` source technique une fois sync)
 
 ## DESIGN SYSTEM - APPROCHE PAR COUCHES
 
-Le design system ENKI Realty se construit en 8 couches sequentielles. Chaque couche s'appuie sur la precedente. Aucun saut autorise.
+Le design system ENKI Realty se construit en 8 couches sequentielles plus des documents complementaires. Chaque couche s'appuie sur la precedente. Aucun saut autorise.
 
-| Couche | Document | Statut |
-|--------|----------|--------|
-| 1 - Brand Manifesto | `docs/design-system/01-brand-manifesto.md` | v1.1 mergee, v1.2 en review (Notion) |
-| 2 - Conversational Tier | `docs/design-system/02-conversational-tier.md` | v2.1 en review (Notion, pas encore sync) |
-| Doc complementaire - Architecture Commerciale & CRM | `docs/design-system/03-architecture-commerciale-crm.md` | v1.0 en review (Notion, pas encore sync) |
-| 3 - Visual Principles | a venir | Pas encore cree |
-| 4 - Typography System | a venir | Pas encore cree |
-| 5 - Color System | a venir | Pas encore cree |
-| 6 - Motion & Interaction Principles | a venir | Pas encore cree |
-| 7 - Photography & Imagery Direction | a venir | Pas encore cree |
-| 8 - Component Tokens | a venir | Pas encore cree |
+| Couche | Fichier .md (futur) | Statut Notion | Sync GitHub |
+|--------|---------------------|----------------|-------------|
+| 1 - Brand Manifesto | `docs/design-system/01-brand-manifesto.md` | v1.2 en review | v1.1 mergee (commit `34ca850`) |
+| 2 - Conversational Tier | `docs/design-system/02-conversational-tier.md` | v2.1 en review | Pas encore sync |
+| Doc complementaire - Architecture Commerciale & CRM | `docs/design-system/03-architecture-commerciale-crm.md` | v1.0 en review | Pas encore sync |
+| 3 - Visual Principles | a venir | Pas encore cree | n/a |
+| 4 - Typography System | a venir | Pas encore cree | n/a |
+| 5 - Color System | a venir | Pas encore cree | n/a |
+| 6 - Motion & Interaction Principles | a venir | Pas encore cree | n/a |
+| 7 - Photography & Imagery Direction | a venir | Pas encore cree | n/a |
+| 8 - Component Tokens | a venir | Pas encore cree | n/a |
 
 **Source de verite strategique** : pages Notion sous le hub "Design System & Cinematic Experience" (voir Mapping Notion <-> GitHub sur Notion).
 
 **Source de verite technique** : fichiers .md sous `docs/design-system/` une fois synchronises depuis Notion.
+
+**Memos de reflexion en cours** : voir page Notion "Decisions en suspens" pour sujets a retravailler (structure capitalistique, architecture memoire ENKI). Aucun de ces sujets n'est decide a ce jour.
 
 Tant qu'une couche n'a pas son fichier .md sync sur GitHub avec statut "Validee", aucune decision technique correspondante ne doit etre figee dans le code.
 
@@ -116,7 +120,7 @@ ENKI Realty repose sur une architecture B2B2C avec trois entites distinctes :
 - **Societe de vente** (societe Y) : entite chypriote titulaire de la licence d'agent immobilier. Realise les transactions.
 - **Crona Group** : developpeur immobilier chypriote partenaire. Apparait publiquement comme developpeur liste. Actionnaire partiel (non public) de la societe de vente.
 
-**Tracking anti-fraude** : triple ancrage immuable + double-signature + detection automatique. Voir document Architecture Commerciale & CRM Commission Tracking.
+**Tracking anti-fraude** : triple ancrage immuable + double-signature + detection automatique. Voir document Architecture Commerciale & CRM Commission Tracking sur Notion.
 
 ## VOCABULAIRE INTERNE
 
@@ -126,14 +130,21 @@ Voir le **Glossaire ENKI Realty** sur Notion pour la definition complete et auto
 
 1. Lire CLAUDE.md (ce fichier)
 2. Consulter MEMORY.md pour contexte recent
-3. Verifier ROADMAP-BUSINESS.md pour priorites
-4. Pour toute decision design : verifier la couche correspondante du design system (Notion ou `docs/design-system/`)
+3. Pour toute decision business / strategique : verifier les pages Notion correspondantes (war room ENKI Realty)
+4. Pour toute decision design : verifier la couche correspondante du design system (Notion d'abord, `docs/design-system/` ensuite)
 5. Executer la tache
 6. Tester (`npm run build`)
 7. Mettre a jour MEMORY.md
 8. Commit avec message conventionnel (feat/fix/docs/refactor)
 
 ## CHANGELOG
+
+### v1.2 - 26 avril 2026
+- Suppression references a fichiers fantomes (DESIGN-SYSTEM.md, ROADMAP-BUSINESS.md inexistants)
+- Ajout regle de priorite explicite : en cas d'incoherence Notion / .md, Notion fait foi
+- Tableau des couches enrichi : statut Notion separe du statut sync GitHub
+- Reference explicite au memo "Decisions en suspens" (sujets a retravailler)
+- Workflow simplifie (suppression etape Roadmap-business inexistante)
 
 ### v1.1 - 26 avril 2026
 - Nom corrige : ENKI Realty (avec "y") au lieu de "ENKI Reality"
