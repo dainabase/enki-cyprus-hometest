@@ -1,21 +1,16 @@
-# 🌊 ENKI Realty — Brand Manifesto v1.0
+# 🌊 ENKI Realty — Brand Manifesto v1.2
 
-> *Document fondateur. Toute décision visuelle, éditoriale, fonctionnelle, ou stratégique d'ENKI Realty doit pouvoir être justifiée par ce manifesto. Ce qui ne s'y rattache pas n'a pas sa place dans la marque.*
-
-> **Version 1.0 · 25 avril 2026**
-> Auteurs : Jean-Marie Delaunay (fondateur, vision) + Claude Opus 4.7 (rédaction et structure)
-> Statut : v1.0 — en attente de validation
-> Notion source : <https://www.notion.so/34d8c7bb251581498d58cbc26bb35e2a>
+> *Document fondateur. Toute décision visuelle, éditoriale, fonctionnelle, ou stratégique d'ENKI Realty doit pouvoir être justifiée par ce manifesto. Ce qui ne s'y rattache pas n'a pas sa place dans la marque*.**Version 1.2 · 25 avril 2026** (corrections promesses 8 et 9 appliquées au texte le 27 avril 2026) Auteurs : Jean-Marie Delaunay (fondateur, vision) + Claude Opus 4.7 (rédaction et structure) Statut : v1.2 — synchronisée depuis Notion (source de vérité de validation) Notion source : <https://www.notion.so/34d8c7bb251581498d58cbc26bb35e2a>\*\***Changelog v1.2** : promesse 8 du serment (Crona) précisée — la confidentialité porte sur la **structure capitalistique**, pas sur l'invisibilité totale (Crona apparaît publiquement comme développeur listé). Promesse 9 du serment (multilingue) mise à jour avec les 9 langues européennes définitives : EN, FR, DE, PL, RU, EL, NL, ES, IT (retrait arabe et hébreu, ajout néerlandais, espagnol, italien). \*\***Changelog v1.1** : section 3 "La mission" reformulée (suppression du registre anxiogène, ouverture lumineuse sur "rendre une vie meilleure accessible et sûre")
 
 ---
 
 ## Sommaire
 
-1. [Préambule](#1-préambule)
+1. [Préambule](#1-pr%C3%A9ambule)
 2. [Le mythe](#2-le-mythe)
 3. [La mission](#3-la-mission)
-4. [L'âme](#4-lâme)
-5. [Le client réel](#5-le-client-réel)
+4. [L'âme](#4-l%C3%A2me)
+5. [Le client réel](#5-le-client-r%C3%A9el)
 6. [La promesse](#6-la-promesse)
 7. [Le territoire visuel](#7-le-territoire-visuel)
 8. [Le ton et la voix](#8-le-ton-et-la-voix)
@@ -87,7 +82,7 @@ C'est la **partie rationnelle** du cheat code : elle remplace la complexité par
 
 L'agent conversationnel d'ENKI Realty est plus qu'un moteur de recherche, et plus qu'un chatbot. C'est un **interlocuteur attentif** qui comprend qui vous êtes, ce que vous cherchez, et — souvent — ce que vous ne savez pas encore vouloir.
 
-Il ne demande pas *"combien de chambres ?"*. Il demande *"qu'est-ce qui vous ferait vous sentir chez vous ?"*. Il ne propose pas des biens par filtres. Il propose des biens par **résonance** : qui est cette personne, ce qu'elle quitte, ce qu'elle cherche, ce qu'elle aimera quand elle l'aura trouvé.
+Il ne demande pas "combien de chambres ?". Il demande "qu'est-ce qui vous ferait vous sentir chez vous ?". Il ne propose pas des biens par filtres. Il propose des biens par **résonance** : qui est cette personne, ce qu'elle quitte, ce qu'elle cherche, ce qu'elle aimera quand elle l'aura trouvé.
 
 Il croise des données factuelles (budget, type de bien, localisation) avec des données de mode de vie (rythme, présence d'enfants, besoin de communauté ou de retraite, rapport au climat, à la lumière, à la mer, à la solitude). Et il propose ensuite des biens qui **correspondent à la personne, pas à sa checklist**.
 
@@ -343,9 +338,9 @@ Voici les dix promesses non-négociables que doit tenir chaque décision de desi
 
 7. **Refuser tout vocabulaire commercial**. Verbes d'action commerciaux, urgence artificielle, superlatifs sont bannis.
 
-8. **Maintenir l'invisibilité totale de Crona Group**. Aucune trace, aucune signature, aucun signal qui révélerait le partenariat.
+8. **Maintenir la confidentialité de la structure capitalistique de Crona Group**. Crona figure publiquement comme développeur listé parmi les autres. Aucune communication, aucun signal visuel, aucun positionnement ne doit révéler ou suggérer la relation actionnariale entre Crona et la société de vente affiliée.
 
-9. **Être bilingue natif dès le jour 1, multilingue dès la phase publique**. La marque parle 8 langues avec la même autorité dans chacune.
+9. **Être nativement multilingue dès le jour 1**. La marque parle neuf langues européennes avec la même autorité dans chacune : anglais, français, allemand, polonais, russe, grec, néerlandais, espagnol, italien.
 
 10. **Servir la transformation, pas la transaction**. Le site n'optimise pas le panier moyen. Il optimise la confiance.
 
@@ -359,10 +354,6 @@ Les couches suivantes du design system (Personality & Voice, Visual Principles, 
 
 Il est appelé à évoluer — mais lentement, et seulement par approfondissement, pas par rupture. Toute modification doit être proposée, débattue, validée, et journalisée.
 
-La prochaine étape est la **Couche 2 — Brand Personality & Voice** : opérationnalisation du ton défini en section 8 en règles éditoriales concrètes (tone of voice matrix, exemples de bonne et mauvaise copie, principes pour l'agent conversationnel et pour Lexaia).
-
-Une fois la Couche 2 validée, on passera aux principes visuels (Couche 3), puis à la typographie (Couche 4), puis aux couleurs (Couche 5).
-
 **Aucun saut. Chaque couche appuie sur la précédente.**
 
 C'est ainsi qu'on construit un design system qui dure dix ans et qui ne ressemble à aucun autre.
@@ -373,6 +364,6 @@ C'est ainsi qu'on construit un design system qui dure dix ans et qui ne ressembl
 
 *Co-rédigé avec : Claude Opus 4.7*
 
-*Date : 25 avril 2026*
+*Date : 25 avril 2026 (corrections promesses 8 et 9 appliquées au texte le 27 avril 2026)*
 
-*Statut : v1.0 — en attente de validation*
+*Statut : v1.2 — synchronisée depuis Notion*
