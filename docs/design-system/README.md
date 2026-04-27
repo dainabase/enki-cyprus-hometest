@@ -40,19 +40,30 @@ Le design system ENKI Realty se construit en **8 couches séquentielles**, chacu
 
 | Couche | Statut | Fichier ici | Page Notion |
 |---|---|---|---|
-| 1 — Brand Manifesto | ✅ v1.2 synchronisée | [`01-brand-manifesto.md`](./01-brand-manifesto.md) | [Notion](https://www.notion.so/34d8c7bb251581498d58cbc26bb35e2a) |
-| 2 — Conversational Tier | 📝 v2.1 en review | — | [Notion](https://www.notion.so/34d8c7bb25158127ae7cf816a051b9e8) |
+| 1 — Brand Manifesto | ✅ v1.2 VALIDÉE | [`01-brand-manifesto.md`](./01-brand-manifesto.md) | [Notion](https://www.notion.so/34d8c7bb251581498d58cbc26bb35e2a) |
+| 2 — Conversational Tier | ✅ v2.1 VALIDÉE | [`02-conversational-tier.md`](./02-conversational-tier.md) | [Notion](https://www.notion.so/34d8c7bb25158127ae7cf816a051b9e8) |
+| Doc complémentaire — Architecture Commerciale & CRM | ✅ v1.0 VALIDÉE | [`03-architecture-commerciale-crm.md`](./03-architecture-commerciale-crm.md) | [Notion](https://www.notion.so/34d8c7bb251581928e34c067bd299df9) |
 | 3 — Visual Principles | 📝 v1.0 en review | — | [Notion](https://www.notion.so/34e8c7bb25158110a08cdb8efa55209e) |
+| Doc complémentaire — Experience Architecture | 📝 v1.0 en review | — | [Notion](https://www.notion.so/34e8c7bb25158159977dcc22c569f5e1) |
 | 4 — Typography System | ✅ v1.0 VALIDÉE | [`04-typography-system.md`](./04-typography-system.md) | [Notion](https://www.notion.so/34f8c7bb251581ba9b75e54f5bb437fc) |
-| 5 — Color System | ⏳ à venir | — | — |
+| 5 — Color System | ⏳ prochaine couche à attaquer | — | — |
 | 6 — Motion & Interaction Principles | ⏳ à venir | — | — |
 | 7 — Photography & Imagery Direction | ⏳ à venir | — | — |
 | 8 — Component Tokens | ⏳ à venir | — | — |
 
-### Documents complémentaires en review (non synchronisés)
+### Note sur la Couche 3 et Experience Architecture
 
-- **Architecture Commerciale & CRM Commission Tracking v1.0** — s'attache à la Couche 2. Architecture B2B2C, passage de main, CRM world-class, tracking anti-fraude. Sur Notion uniquement tant que pas validé.
-- **Experience Architecture v1.0** — s'attache à la Couche 3. Agent omniprésent en 3 états, hero conversationnel central, modèle "conversation continue avec calques", mémorabilité comme objectif stratégique. Sur Notion uniquement tant que pas validé.
+Ces deux documents sont en review sur Notion mais n'ont pas été explicitement validés par Jean-Marie. Ils sont laissés sur Notion uniquement, et seront synchronisés ici lors d'une validation explicite future ou par cohérence avec une couche ultérieure.
+
+### Sujets à retravailler à froid (sur Notion uniquement)
+
+Page de gouvernance dédiée : [Sujets à retravailler à froid](https://www.notion.so/34f8c7bb251581fb99b1f31d1a1629e5) (sous-hub Mémos & réflexions).
+
+Recense :
+- **Sujet A** — Articulation avec avocat chypriote + fiscaliste (partenariat formel ou réseau d'orientation, contraintes Cyprus Bar Association, RGPD, statut juridique de l'orientation)
+- **Sujet B** — Architecture mémoire 5 dimensions de l'agent ENKI (factuel, comportemental, émotionnel, projectif, relationnel)
+
+Ces sujets méritent des sessions dédiées sans pression d'avancement, et ne sont pas urgents opérationnellement.
 
 ---
 
@@ -60,12 +71,14 @@ Le design system ENKI Realty se construit en **8 couches séquentielles**, chacu
 
 ```
 docs/design-system/
-├── README.md                        # Ce document (règle de gouvernance)
-├── 01-brand-manifesto.md            # Couche 1 — pièce-mère, source de tout
-├── 04-typography-system.md          # Couche 4 — stack typographique validée
-└── 04-typography/                   # Artefacts complémentaires Couche 4
-    ├── README.md                    # Guide d'intégration technique
-    └── brand-book.html              # Brand book vivant (HTML autonome)
+├── README.md                              # Ce document (règle de gouvernance)
+├── 01-brand-manifesto.md                  # Couche 1 — pièce-mère, source de tout
+├── 02-conversational-tier.md              # Couche 2 — architecture conversationnelle + voix éditoriale
+├── 03-architecture-commerciale-crm.md     # Doc complémentaire — passage de main, CRM, anti-fraude
+├── 04-typography-system.md                # Couche 4 — stack typographique validée
+└── 04-typography/                         # Artefacts complémentaires Couche 4
+    ├── README.md                          # Guide d'intégration technique
+    └── brand-book.html                    # Brand book vivant (HTML autonome)
 ```
 
 ---

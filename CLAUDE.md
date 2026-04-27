@@ -1,8 +1,6 @@
 # [CLAUDE.md](http://CLAUDE.md) - ENKI Realty Project Governance
 
-> Rules permanentes pour tous les agents IA travaillant sur ce repo. Lu automatiquement par Claude Code. Inclure dans les prompts Jules/Lovable/Cowork.
-> ****Version** : v1.4 (27 avril 2026) **Source de verite strategique et editoriale** : Notion (hub Design System) **Source de verite technique** : ce fichier + repo GitHub
-> ****REGLE DE PRIORITE** : en cas d'incoherence entre un document Notion et un fichier .md du repo :
+> Rules permanentes pour tous les agents IA travaillant sur ce repo. Lu automatiquement par Claude Code. Inclure dans les prompts Jules/Lovable/Cowork. \*\***Version** : v1.5 (27 avril 2026) **Source de verite strategique et editoriale** : Notion (hub Design System) **Source de verite technique** : ce fichier + repo GitHub \*\***REGLE DE PRIORITE** : en cas d'incoherence entre un document Notion et un fichier .md du repo :
 >
 > - Pour les documents marques **EN REVIEW** ou **EN ATTENTE DE VALIDATION** : Notion fait foi.
 > - Pour les documents marques **VALIDES** dans `docs/design-system/` : le repo est la source de verite technique opposable.
@@ -22,24 +20,28 @@
 
 ### Interdictions
 
-1. **JAMAIS inventer** de chiffres, ROI, fonctionnalites, apps. Si inconnu -&gt; demander a Jean-Marie
-2. **JAMAIS utiliser** `any` en TypeScript - toujours typer strictement
-3. **JAMAIS laisser de console.log** en production - utiliser le logger unifie
-4. **JAMAIS creer de mock data** sans prefixe `// TODO: MOCK - remplacer par vraie donnee`
-5. **JAMAIS modifier** les Edge Functions `google-maps-agent` et triggers RLS sans validation
-6. **ZERO emoji** dans le code et l'UI (regle issue du Brand Manifesto v1.2)
-7. **Crona Group** : structure capitalistique invisible. Crona apparait publiquement comme developpeur liste parmi les autres. Aucune communication, aucun signal visuel, aucun positionnement ne doit reveler ou suggerer la relation actionnariale entre Crona et la societe de vente affiliee.
-8. **JAMAIS figer une decision visuelle, typographique, chromatique ou interactionnelle** sans qu'elle soit validee dans la couche correspondante du design system (cf. section DESIGN SYSTEM ci-dessous).
-9. **JAMAIS utiliser Inter** comme police par defaut. Inter est saturee a 414 milliards de requetes Google Fonts en 12 mois et signale "default SaaS americain" - exactement ce que le brief evite. La typographie est definie par la Couche 4 v1.0 validee : Hanken Grotesk + Schibsted Grotesk + JetBrains Mono.
+ 1. **JAMAIS inventer** de chiffres, ROI, fonctionnalites, apps. Si inconnu -&gt; demander a Jean-Marie
+ 2. **JAMAIS utiliser** `any` en TypeScript - toujours typer strictement
+ 3. **JAMAIS laisser de console.log** en production - utiliser le logger unifie
+ 4. **JAMAIS creer de mock data** sans prefixe `// TODO: MOCK - remplacer par vraie donnee`
+ 5. **JAMAIS modifier** les Edge Functions `google-maps-agent` et triggers RLS sans validation
+ 6. **ZERO emoji** dans le code et l'UI (regle issue du Brand Manifesto v1.2)
+ 7. **Crona Group** : structure capitalistique invisible. Crona apparait publiquement comme developpeur liste parmi les autres. Aucune communication, aucun signal visuel, aucun positionnement ne doit reveler ou suggerer la relation actionnariale entre Crona et la societe de vente affiliee.
+ 8. **JAMAIS figer une decision visuelle, typographique, chromatique ou interactionnelle** sans qu'elle soit validee dans la couche correspondante du design system (cf. section DESIGN SYSTEM ci-dessous).
+ 9. **JAMAIS utiliser Inter** comme police par defaut. Inter est saturee a 414 milliards de requetes Google Fonts en 12 mois et signale "default SaaS americain" - exactement ce que le brief evite. La typographie est definie par la Couche 4 v1.0 validee : Hanken Grotesk + Schibsted Grotesk + JetBrains Mono.
+10. **JAMAIS communiquer hors CRM ENKI Realty** apres passage de main d'un lead a la societe de vente affiliee. Toute communication avec un client transmis (appels, emails, SMS, WhatsApp, visioconference) doit etre tracee dans le CRM. Cette discipline est non negociable et conditionne le mecanisme de tracking anti-fraude commission. Voir `docs/design-system/03-architecture-commerciale-crm.md`.
 
 ### Validees dans les couches du design system
 
-- **Typographie** : VALIDEE en Couche 4 v1.0 le 27 avril 2026. Stack a trois polices libres (OFL 1.1) : **Hanken Grotesk** (voix principale, UI/corps), **Schibsted Grotesk** (voix editoriale, titres/signature, italiques semantiques), **JetBrains Mono** (voix technique, eyebrows/data). Voir `docs/design-system/04-typography-system.md` et `docs/design-system/04-typography/` pour le detail. Plan d'evolution accepte vers Sohne (Klim Type Foundry) quand le budget le permet, sans rupture du systeme.
+- **Voix de marque & ton editorial** : VALIDES en Couche 2 v2.1 (Conversational Tier) le 27 avril 2026. Voix unique en six attributs invariants (calme, precis, pedagogique, chaleureux, discret, mythique sans theatral), declinee en trois registres operationnels (voix editoriale du site, voix de l'agent ENKI, voix de Lexaia). Tone of voice matrix sur 15 contextes. Serment editorial en huit promesses. Voir `docs/design-system/02-conversational-tier.md`.
+- **Architecture conversationnelle** : VALIDEE en Couche 2 v2.1 le 27 avril 2026. Un seul agent conversationnel (ENKI), Lexaia comme systeme de production de livrables (pas de seconde voix conversationnelle), gradation a deux niveaux (apercu en chat / rapport synthetique contre creation d'espace), espace personnel comme actif strategique differenciateur. Voir `docs/design-system/02-conversational-tier.md`.
+- **Architecture commerciale B2B2C** : VALIDEE le 27 avril 2026 (document complementaire a la Couche 2). Trois entites distinctes (ENKI Realty Tech, societe de vente, developpeurs incluant Crona). Passage de main avec evenement technique signe et opposable. CRM unique heberge par ENKI Realty avec deux interfaces. Tracking anti-fraude par triple ancrage immuable + double-signature + detection automatique. Voir `docs/design-system/03-architecture-commerciale-crm.md`.
+- **Typographie** : VALIDEE en Couche 4 v1.0 le 27 avril 2026. Stack a trois polices libres (OFL 1.1) : **Hanken Grotesk** (voix principale, UI/corps), **Schibsted Grotesk** (voix editoriale, titres/signature, italiques semantiques), **JetBrains Mono** (voix technique, eyebrows/data). Voir `docs/design-system/04-typography-system.md` et `docs/design-system/04-typography/`. Plan d'evolution accepte vers Sohne (Klim Type Foundry) quand le budget le permet, sans rupture du systeme.
 
 ### A definir dans les couches du design system - aucune decision actuellement validee
 
-- **Couleurs** : a definir en Couche 5 (Color System). Aucune palette n'est validee a ce jour. Toute palette utilisee actuellement dans le code est provisoire et NON VALIDEE. Aucun token de couleur ne doit etre fige tant que la Couche 5 n'est pas validee. Le format colorimetrique (HSL, OKLCH, ou autre) sera arbitre dans cette couche.
-- **Motion / Animations** : principes generaux fixes par la Couche 3 v1.0 (animations restraint qui autorise le sublime, filtre 3 questions). Valeurs precises (durees, easings) a definir en Couche 6.
+- **Couleurs** : a definir en Couche 5 (Color System), prochaine couche a attaquer. Aucune palette n'est validee a ce jour. Toute palette utilisee actuellement dans le code est provisoire et NON VALIDEE. Aucun token de couleur ne doit etre fige tant que la Couche 5 n'est pas validee. Le format colorimetrique (HSL, OKLCH, ou autre) sera arbitre dans cette couche.
+- **Motion / Animations** : principes generaux fixes par la Couche 3 v1.0 (en review sur Notion : animations restraint qui autorise le sublime, filtre 3 questions). Valeurs precises (durees, easings) a definir en Couche 6.
 - **Composants UI** : a definir en Couche 8 (Component Tokens), incluant validation explicite du framework Tailwind + Shadcn/ui.
 
 ### Obligations
@@ -55,13 +57,13 @@
 
 Le design system ENKI Realty se construit en 8 couches sequentielles plus des documents complementaires. Chaque couche s'appuie sur la precedente. Aucun saut autorise.
 
-CoucheFichier .mdStatut NotionSync GitHub1 - Brand Manifesto`docs/design-system/01-brand-manifesto.md`v1.2v1.2 sync 27 avril 20262 - Conversational Tier(en review sur Notion)v2.1 en reviewPas encore syncDoc complementaire - Architecture Commerciale & CRM(en review sur Notion)v1.0 en reviewPas encore sync3 - Visual Principles(en review sur Notion)v1.0 en reviewPas encore syncDoc complementaire - Experience Architecture(en review sur Notion)v1.0 en reviewPas encore sync4 - Typography System`docs/design-system/04-typography-system.md`v1.0 VALIDEEv1.0 sync 27 avril 20265 - Color Systema venirPas encore creen/a6 - Motion & Interaction Principlesa venirPas encore creen/a7 - Photography & Imagery Directiona venirPas encore creen/a8 - Component Tokensa venirPas encore creen/a
+CoucheFichier .mdStatut NotionSync GitHub1 - Brand Manifesto`docs/design-system/01-brand-manifesto.md`v1.2 VALIDEEv1.2 sync 27 avril 20262 - Conversational Tier`docs/design-system/02-conversational-tier.md`v2.1 VALIDEEv2.1 sync 27 avril 2026Doc complementaire - Architecture Commerciale & CRM`docs/design-system/03-architecture-commerciale-crm.md`v1.0 VALIDEEv1.0 sync 27 avril 20263 - Visual Principles(en review sur Notion)v1.0 en reviewPas encore syncDoc complementaire - Experience Architecture(en review sur Notion)v1.0 en reviewPas encore sync4 - Typography System`docs/design-system/04-typography-system.md`v1.0 VALIDEEv1.0 sync 27 avril 20265 - Color Systema venir (prochaine couche)Pas encore creen/a6 - Motion & Interaction Principlesa venirPas encore creen/a7 - Photography & Imagery Directiona venirPas encore creen/a8 - Component Tokensa venirPas encore creen/a
 
 **Source de verite strategique** : pages Notion sous le hub "Design System & Cinematic Experience", organise en 6 sous-hubs thematiques depuis le 26 avril 2026 (Piece-mere, Couches du Design System, Documents complementaires, Gouvernance documentaire, Memos & reflexions en cours, References permanentes). Voir Mapping Notion &lt;-&gt; GitHub sur Notion pour le detail.
 
 **Source de verite technique** : fichiers .md sous `docs/design-system/` pour les couches validees. Voir `docs/design-system/README.md` pour la regle de gouvernance complete.
 
-**Memos de reflexion en cours** : voir page Notion "Decisions en suspens" pour sujets a retravailler (structure capitalistique, architecture memoire ENKI). Aucun de ces sujets n'est decide a ce jour.
+**Memos de reflexion en cours** : voir page Notion "Decisions en suspens" pour sujets a retravailler (structure capitalistique, ethique de la memoire). Voir egalement page Notion "Sujets a retravailler a froid" (URL : <https://www.notion.so/34f8c7bb251581fb99b1f31d1a1629e5>) qui recense le Sujet A (avocat chypriote + fiscaliste) et le Sujet B (architecture memoire 5 dimensions). Aucun de ces sujets n'est decide a ce jour.
 
 **Verrous constitutionnels** : un document de gouvernance dedie sur Notion recense les regles non-negociables qui ont emerge au fil des couches (URL : <https://www.notion.so/34e8c7bb251581acad91d6b411954ff5>). A consulter en cas de doute sur un arbitrage.
 
@@ -120,7 +122,7 @@ ENKI Realty repose sur une architecture B2B2C avec trois entites distinctes :
 - **Societe de vente** (societe Y) : entite chypriote titulaire de la licence d'agent immobilier. Realise les transactions.
 - **Crona Group** : developpeur immobilier chypriote partenaire. Apparait publiquement comme developpeur liste. Actionnaire partiel (non public) de la societe de vente.
 
-**Tracking anti-fraude** : triple ancrage immuable + double-signature + detection automatique. Voir document Architecture Commerciale & CRM Commission Tracking sur Notion (en review, pas encore sync sur le repo).
+**Tracking anti-fraude** : triple ancrage immuable + double-signature + detection automatique. Voir document Architecture Commerciale & CRM Commission Tracking v1.0 sync sur le repo (`docs/design-system/03-architecture-commerciale-crm.md`).
 
 ## VOCABULAIRE INTERNE
 
@@ -138,6 +140,15 @@ Voir le **Glossaire ENKI Realty** sur Notion (sous-hub Gouvernance documentaire)
 8. Commit avec message conventionnel (feat/fix/docs/refactor)
 
 ## CHANGELOG
+
+### v1.5 - 27 avril 2026
+
+- **Couche 2 v2.1 VALIDEE** par delegation explicite de Jean-Marie : *"si tu l'as fait correctement, je ne pense pas qu'il y ait besoin de la reverifier"*. Architecture conversationnelle + voix editoriale entrent dans la section "Validees dans les couches".
+- **Architecture Commerciale & CRM v1.0 VALIDEE** par coherence (rattachee a la Couche 2). Triple ancrage anti-fraude entre dans la section "Validees dans les couches".
+- **Nouvelle interdiction n.10** : JAMAIS communiquer hors CRM ENKI Realty apres passage de main d'un lead. Toute communication doit etre tracee. Discipline non negociable.
+- Tableau des couches mis a jour : Couche 2 v2.1 sync, Architecture Commerciale v1.0 sync.
+- Reference au document "Sujets a retravailler a froid" (Sujet A avocat/fiscaliste + Sujet B architecture memoire 5D).
+- Couche 3 et Experience Architecture restent en review sur Notion - non validees explicitement par Jean-Marie a ce jour.
 
 ### v1.4 - 27 avril 2026
 
