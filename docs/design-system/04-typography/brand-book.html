@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENKI Realty — Typography Stack v1.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  :root {
+    --ink: #0a0a0a;
+    --ink-soft: #2a2a2a;
+    --ink-muted: #6a6a6a;
+    --ink-faint: #a8a8a8;
+    --paper: #fafaf7;
+    --paper-warm: #f3f1ec;
+    --line: rgba(10,10,10,0.08);
+    --line-strong: rgba(10,10,10,0.16);
+    --accent: #1a1a1a;
+  }
+  
+  /* Print rules - A3 portrait, one section per page */
+  @page { size: A3 portrait; margin: 0; }
+  
+  @media print {
+    html, body { background: var(--paper); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .container { max-width: 100%; padding: 0; }
+    .cover { page-break-after: always; break-after: page; min-height: 0; height: 420mm; padding: 30mm 30mm; box-sizing: border-box; }
+    section { page-break-before: always; break-before: page; page-break-after: always; break-after: page; page-break-inside: avoid; break-inside: avoid; padding: 25mm 30mm; border-bottom: none; min-height: 0; height: 420mm; max-height: 420mm; box-sizing: border-box; overflow: hidden; display: flex; flex-direction: column; }
+    footer { page-break-before: always; break-before: page; page-break-inside: avoid; break-inside: avoid; padding: 30mm; min-height: 0; height: 420mm; box-sizing: border-box; display: flex; align-items: center; }
+    .font-card, .hierarchy-demo, .mockup, .italic-showcase, .decision-table, .pairings, .weight-scale, .property-stats, .h-data, .agent-bubble { page-break-inside: avoid; break-inside: avoid; }
+    .section-header, h1, h2, h3, h4 { page-break-after: avoid; break-after: avoid; }
+    .section-header { margin-bottom: 16mm; }
+    .font-card-body { padding: 28px; }
+    .hierarchy-demo { padding: 32px; }
+    .mockup-content { padding: 36px 44px; }
+    .italic-showcase { padding: 40px; }
+    .specimen-display { font-size: 80px; margin-bottom: 12px; }
+    .mono-display { font-size: 60px; }
+    .specimen-pangram { font-size: 18px; margin-bottom: 18px; line-height: 1.3; }
+    .specimen-charset { margin-bottom: 10px; padding-bottom: 10px; }
+    .specimen-alphabet { font-size: 16px; line-height: 1.4; margin-bottom: 4px; }
+    .specimen-numbers { font-size: 16px; line-height: 1.4; }
+    .h-display { font-size: 44px; margin-bottom: 16px; }
+    .h-lead { font-size: 17px; margin-bottom: 24px; }
+    .h-section { font-size: 24px; margin-top: 24px; margin-bottom: 12px; }
+    .h-subsection { font-size: 16px; margin-top: 18px; margin-bottom: 8px; }
+    .h-body { font-size: 14px; line-height: 1.55; margin-bottom: 10px; }
+    .property-title { font-size: 36px; }
+    .property-location { font-size: 16px; margin-bottom: 24px; }
+    .property-stats { padding: 16px 0; margin-bottom: 24px; gap: 16px; }
+    .stat-value { font-size: 22px; }
+    .property-description { font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
+    .agent-bubble { padding: 18px 24px; margin-top: 20px; }
+    .agent-message { font-size: 15px; }
+    .italic-quote { font-size: 32px; }
+    .cover-title h1 { font-size: 84px; margin-bottom: 24px; }
+    .cover-subtitle { font-size: 17px; }
+    .section-title h2 { font-size: 32px; margin-bottom: 12px; }
+    .section-title p { font-size: 15px; line-height: 1.5; }
+    .pairings { grid-template-columns: repeat(3, 1fr); }
+    .pairing-cell { padding: 24px; }
+    .pairing-sample { font-size: 28px; }
+    .pairing-sample-small { font-size: 12px; }
+    .weight-scale { margin-top: 20px; padding-top: 16px; }
+    .weight-row { padding: 7px 0; gap: 16px; }
+    .weight-sample { font-size: 18px; }
+    .weight-name { font-size: 10px; }
+    .weight-value { font-size: 10px; }
+    .decision-cell { padding: 14px 18px; font-size: 13px; line-height: 1.45; }
+    footer .container { gap: 32px; }
+    .footer-title { font-size: 26px; margin-bottom: 16px; }
+    .footer-text { font-size: 14px; }
+    .footer-block p { font-size: 13px; }
+    .font-card, .hierarchy-demo, .mockup, .italic-showcase, .decision-table, .pairing-cell, .agent-bubble, .h-data, .mockup-frame, .decision-row.header, footer { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .hierarchy-demo p.h-body:last-child, .h-caption { font-size: 12px; }
+  }
+  
+  body { font-family: 'Hanken Grotesk', -apple-system, sans-serif; background: var(--paper); color: var(--ink); line-height: 1.5; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  .container { max-width: 1280px; margin: 0 auto; padding: 0 48px; }
+  .cover { min-height: 80vh; display: flex; flex-direction: column; justify-content: space-between; padding: 64px 0; border-bottom: 1px solid var(--line); }
+  .cover-meta { display: flex; justify-content: space-between; align-items: flex-start; font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-muted); }
+  .cover-meta div { line-height: 1.6; }
+  .cover-title { margin-top: auto; }
+  .cover-title .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-muted); margin-bottom: 32px; }
+  .cover-title h1 { font-family: 'Schibsted Grotesk', serif; font-weight: 500; font-size: clamp(48px, 8vw, 112px); line-height: 0.95; letter-spacing: -0.035em; margin-bottom: 32px; }
+  .cover-title h1 em { font-style: italic; font-weight: 400; color: var(--ink-soft); }
+  .cover-subtitle { font-size: 20px; line-height: 1.4; color: var(--ink-soft); max-width: 640px; font-weight: 400; }
+  section { padding: 96px 0; border-bottom: 1px solid var(--line); }
+  .section-header { display: grid; grid-template-columns: 1fr 3fr; gap: 48px; margin-bottom: 64px; align-items: baseline; }
+  .section-number { font-family: 'JetBrains Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-muted); }
+  .section-title h2 { font-family: 'Schibsted Grotesk', serif; font-weight: 400; font-size: 40px; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 16px; }
+  .section-title p { font-size: 17px; line-height: 1.55; color: var(--ink-soft); max-width: 720px; }
+  .font-card { border: 1px solid var(--line); background: white; margin-bottom: 32px; overflow: hidden; }
+  .font-card-header { padding: 32px 40px; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 2fr 1fr; gap: 32px; align-items: end; }
+  .font-card-title { font-family: 'Schibsted Grotesk', serif; font-weight: 400; font-size: 32px; letter-spacing: -0.02em; line-height: 1; }
+  .font-card-meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; line-height: 1.7; color: var(--ink-muted); text-align: right; }
+  .font-card-meta span { color: var(--ink); }
+  .font-card-body { padding: 40px; }
+  .specimen-display { font-size: 144px; line-height: 1; letter-spacing: -0.04em; margin-bottom: 24px; overflow: hidden; }
+  .specimen-pangram { font-size: 28px; line-height: 1.3; letter-spacing: -0.015em; margin-bottom: 32px; color: var(--ink-soft); }
+  .specimen-charset { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+  .specimen-alphabet { font-size: 22px; line-height: 1.6; word-spacing: 0.1em; margin-bottom: 8px; }
+  .specimen-numbers { font-size: 22px; line-height: 1.6; color: var(--ink-soft); }
+  .hanken-display { font-family: 'Hanken Grotesk'; font-weight: 700; }
+  .hanken-text { font-family: 'Hanken Grotesk'; }
+  .schibsted-display { font-family: 'Schibsted Grotesk'; font-weight: 500; }
+  .schibsted-text { font-family: 'Schibsted Grotesk'; }
+  .mono-display { font-family: 'JetBrains Mono'; font-weight: 600; font-size: 96px; letter-spacing: -0.02em; }
+  .mono-text { font-family: 'JetBrains Mono'; }
+  .weight-scale { margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--line); }
+  .weight-row { display: grid; grid-template-columns: 100px 1fr 80px; gap: 24px; align-items: baseline; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .weight-row:last-child { border: none; }
+  .weight-name { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-muted); }
+  .weight-sample { font-size: 28px; line-height: 1.2; letter-spacing: -0.015em; }
+  .weight-value { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-faint); text-align: right; }
+  .hierarchy-demo { background: white; border: 1px solid var(--line); padding: 64px; margin-bottom: 32px; }
+  .h-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-muted); margin-bottom: 32px; }
+  .h-display { font-family: 'Schibsted Grotesk', serif; font-weight: 500; font-size: 72px; line-height: 0.95; letter-spacing: -0.035em; margin-bottom: 24px; }
+  .h-display em { font-style: italic; font-weight: 400; color: var(--ink-muted); }
+  .h-lead { font-family: 'Hanken Grotesk', sans-serif; font-weight: 400; font-size: 22px; line-height: 1.4; color: var(--ink-soft); margin-bottom: 48px; max-width: 680px; }
+  .h-section { font-family: 'Schibsted Grotesk', serif; font-weight: 500; font-size: 32px; line-height: 1.15; letter-spacing: -0.02em; margin-top: 48px; margin-bottom: 16px; }
+  .h-subsection { font-family: 'Hanken Grotesk', sans-serif; font-weight: 600; font-size: 18px; line-height: 1.3; letter-spacing: -0.005em; margin-top: 32px; margin-bottom: 12px; }
+  .h-body { font-family: 'Hanken Grotesk', sans-serif; font-weight: 400; font-size: 17px; line-height: 1.65; color: var(--ink); margin-bottom: 16px; max-width: 720px; }
+  .h-body em { font-style: italic; }
+  .h-caption { font-family: 'Hanken Grotesk', sans-serif; font-weight: 400; font-style: italic; font-size: 14px; line-height: 1.5; color: var(--ink-muted); margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .h-data { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--ink-soft); background: var(--paper-warm); padding: 16px 20px; margin: 24px 0; border-left: 2px solid var(--accent); }
+  .mockup { background: white; border: 1px solid var(--line); overflow: hidden; }
+  .mockup-frame { background: var(--paper-warm); padding: 32px; border-bottom: 1px solid var(--line); font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.1em; display: flex; justify-content: space-between; align-items: center; }
+  .mockup-content { padding: 80px 64px; }
+  .property-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-muted); margin-bottom: 24px; display: flex; gap: 24px; }
+  .property-eyebrow span { color: var(--ink); }
+  .property-title { font-family: 'Schibsted Grotesk', serif; font-weight: 500; font-size: 56px; line-height: 1; letter-spacing: -0.035em; margin-bottom: 12px; }
+  .property-title em { font-style: italic; font-weight: 400; color: var(--ink-muted); }
+  .property-location { font-family: 'Hanken Grotesk', sans-serif; font-weight: 400; font-size: 20px; color: var(--ink-soft); margin-bottom: 48px; }
+  .property-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; padding: 32px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: 48px; }
+  .stat-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-muted); margin-bottom: 8px; }
+  .stat-value { font-family: 'Hanken Grotesk', sans-serif; font-weight: 500; font-size: 28px; letter-spacing: -0.02em; line-height: 1; }
+  .stat-value .unit { font-size: 14px; color: var(--ink-muted); font-weight: 400; margin-left: 4px; }
+  .property-description { font-family: 'Hanken Grotesk', sans-serif; font-weight: 400; font-size: 17px; line-height: 1.65; color: var(--ink-soft); max-width: 640px; margin-bottom: 32px; }
+  .property-description em { font-style: italic; }
+  .agent-bubble { background: var(--paper-warm); border: 1px solid var(--line); padding: 24px 32px; max-width: 480px; margin-top: 48px; }
+  .agent-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-muted); margin-bottom: 12px; }
+  .agent-message { font-family: 'Hanken Grotesk', sans-serif; font-weight: 400; font-style: italic; font-size: 18px; line-height: 1.5; color: var(--ink); }
+  .pairings { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .pairing-cell { background: white; padding: 40px; }
+  .pairing-role { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-muted); margin-bottom: 24px; }
+  .pairing-font { font-family: 'Schibsted Grotesk', serif; font-weight: 500; font-size: 20px; letter-spacing: -0.015em; margin-bottom: 8px; }
+  .pairing-spec { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-faint); margin-bottom: 32px; line-height: 1.6; }
+  .pairing-sample { font-size: 32px; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 12px; }
+  .pairing-sample-small { font-size: 14px; color: var(--ink-soft); line-height: 1.5; }
+  .italic-showcase { background: white; border: 1px solid var(--line); padding: 80px 64px; text-align: center; }
+  .italic-quote { font-family: 'Schibsted Grotesk', serif; font-style: italic; font-weight: 400; font-size: 48px; line-height: 1.2; letter-spacing: -0.025em; color: var(--ink); max-width: 900px; margin: 0 auto 24px; }
+  .italic-attribution { font-family: 'Hanken Grotesk', sans-serif; font-size: 14px; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .decision-table { border: 1px solid var(--line); background: white; }
+  .decision-row { display: grid; grid-template-columns: 200px 1fr 1fr; border-bottom: 1px solid var(--line); }
+  .decision-row:last-child { border: none; }
+  .decision-row.header { background: var(--paper-warm); font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-muted); }
+  .decision-cell { padding: 20px 24px; border-right: 1px solid var(--line); font-size: 14px; line-height: 1.5; }
+  .decision-cell:last-child { border-right: none; }
+  .decision-cell strong { font-weight: 500; color: var(--ink); }
+  footer { padding: 96px 0 64px; background: var(--ink); color: var(--paper); }
+  footer .container { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 64px; }
+  .footer-title { font-family: 'Schibsted Grotesk', serif; font-weight: 400; font-size: 32px; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 24px; }
+  .footer-text { font-size: 15px; line-height: 1.6; color: rgba(255,255,255,0.7); max-width: 480px; }
+  .footer-block h4 { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 400; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); margin-bottom: 16px; }
+  .footer-block p { font-size: 14px; line-height: 1.7; color: rgba(255,255,255,0.85); margin-bottom: 8px; }
+  .footer-block a { color: rgba(255,255,255,0.85); text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.3); transition: border-color 0.2s; }
+  .footer-block a:hover { border-color: rgba(255,255,255,1); }
+  @media (max-width: 900px) {
+    .container { padding: 0 24px; }
+    .section-header { grid-template-columns: 1fr; gap: 16px; }
+    .property-stats { grid-template-columns: repeat(2, 1fr); }
+    .pairings { grid-template-columns: 1fr; }
+    .specimen-display { font-size: 80px; }
+    .property-title { font-size: 36px; }
+    .h-display { font-size: 48px; }
+    .italic-quote { font-size: 28px; }
+    footer .container { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="cover">
+    <div class="cover-meta">
+      <div>ENKI Realty<br>Design System — Couche 4<br>Typography Stack v1.0</div>
+      <div style="text-align: right;">Validé 27 avril 2026<br>Document interne</div>
+    </div>
+    <div class="cover-title">
+      <div class="eyebrow">Couche 04 / 08 — Typographie</div>
+      <h1>Trois voix,<br>une <em>autorité</em><br>tranquille.</h1>
+      <p class="cover-subtitle">Le système typographique d'ENKI Realty repose sur trois polices libres choisies pour porter le registre Sage + Magician — institution patrimoniale moderne, jamais bavarde, toujours juste.</p>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-number">§ 01</div>
+      <div class="section-title">
+        <h2>La stack proposée</h2>
+        <p>Un trio cohérent : une grotesque néo-suisse pour le corps de texte, une grotesque éditoriale pour les moments de signature, et une mono technique pour les contextes data. Trois voix qui ne se marchent jamais sur les pieds.</p>
+      </div>
+    </div>
+    <div class="pairings">
+      <div class="pairing-cell">
+        <div class="pairing-role">Voix principale — UI &amp; corps</div>
+        <div class="pairing-font">Hanken Grotesk</div>
+        <div class="pairing-spec">Alfredo Marco Pradil<br>OFL 1.1 — Variable<br>9 graisses + italiques</div>
+        <div class="pairing-sample hanken-text" style="font-weight: 600;">Aa</div>
+        <div class="pairing-sample-small hanken-text">L'autorité tranquille du quotidien. Lisibilité prioritaire à toutes les tailles. Aucun signal techy.</div>
+      </div>
+      <div class="pairing-cell">
+        <div class="pairing-role">Voix éditoriale — titres &amp; signature</div>
+        <div class="pairing-font" style="font-family: 'Schibsted Grotesk';">Schibsted Grotesk</div>
+        <div class="pairing-spec">Henrik Kongsvoll · Bakken &amp; Bæck<br>OFL 1.1 — Variable<br>6 graisses + italiques</div>
+        <div class="pairing-sample schibsted-text" style="font-weight: 500;">Aa</div>
+        <div class="pairing-sample-small hanken-text">Les moments où la marque parle. Conçue pour la presse premium scandinave. Italiques travaillées.</div>
+      </div>
+      <div class="pairing-cell">
+        <div class="pairing-role">Voix technique — data &amp; code</div>
+        <div class="pairing-font" style="font-family: 'JetBrains Mono';">JetBrains Mono</div>
+        <div class="pairing-spec">JetBrains s.r.o.<br>OFL 1.1 — Variable<br>8 graisses + italiques</div>
+        <div class="pairing-sample mono-text" style="font-weight: 600;">Aa</div>
+        <div class="pairing-sample-small hanken-text">Le contexte data, les références cadastrales, les eyebrows. Caractère neutre, ligatures désactivables.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-number">§ 02</div>
+      <div class="section-title">
+        <h2>Hanken Grotesk — la voix principale</h2>
+        <p>La grotesque qui porte 80 % du texte affiché. Choisie pour sa parenté structurelle avec Akzidenz-Grotesk, sa lisibilité écran, et son absence totale de signal SaaS.</p>
+      </div>
+    </div>
+    <div class="font-card">
+      <div class="font-card-header">
+        <div class="font-card-title">Hanken Grotesk</div>
+        <div class="font-card-meta"><span>OFL 1.1</span><br>Hanken Design Co. — Manille<br>fonts.google.com/specimen<br>/Hanken+Grotesk</div>
+      </div>
+      <div class="font-card-body">
+        <div class="specimen-display hanken-display">Hanken</div>
+        <div class="specimen-pangram hanken-text">L'institution patrimoniale du Levant méditerranéen accompagne quarante familles européennes en quête d'une nouvelle géographie de leur capital.</div>
+        <div class="specimen-charset">Charset — Latin Extended</div>
+        <div class="specimen-alphabet hanken-text">ABCDEFGHIJKLMNOPQRSTUVWXYZ</div>
+        <div class="specimen-alphabet hanken-text">abcdefghijklmnopqrstuvwxyz</div>
+        <div class="specimen-numbers hanken-text">0123456789 — €£$ « » †‡§ &amp; @</div>
+        <div class="weight-scale">
+          <div class="weight-row"><div class="weight-name">Thin · 100</div><div class="weight-sample hanken-text" style="font-weight: 100;">Limassol Heritage Building</div><div class="weight-value">font-weight: 100</div></div>
+          <div class="weight-row"><div class="weight-name">Light · 300</div><div class="weight-sample hanken-text" style="font-weight: 300;">Limassol Heritage Building</div><div class="weight-value">font-weight: 300</div></div>
+          <div class="weight-row"><div class="weight-name">Regular · 400</div><div class="weight-sample hanken-text" style="font-weight: 400;">Limassol Heritage Building</div><div class="weight-value">font-weight: 400</div></div>
+          <div class="weight-row"><div class="weight-name">Medium · 500</div><div class="weight-sample hanken-text" style="font-weight: 500;">Limassol Heritage Building</div><div class="weight-value">font-weight: 500</div></div>
+          <div class="weight-row"><div class="weight-name">Semibold · 600</div><div class="weight-sample hanken-text" style="font-weight: 600;">Limassol Heritage Building</div><div class="weight-value">font-weight: 600</div></div>
+          <div class="weight-row"><div class="weight-name">Bold · 700</div><div class="weight-sample hanken-text" style="font-weight: 700;">Limassol Heritage Building</div><div class="weight-value">font-weight: 700</div></div>
+          <div class="weight-row"><div class="weight-name">Italic · 400i</div><div class="weight-sample hanken-text" style="font-weight: 400; font-style: italic;">Limassol Heritage Building</div><div class="weight-value">font-style: italic</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-number">§ 03</div>
+      <div class="section-title">
+        <h2>Schibsted Grotesk — la voix éditoriale</h2>
+        <p>La police qu'on utilise quand la marque doit parler. Conçue par Bakken &amp; Bæck pour le groupe média scandinave Schibsted (Aftenposten, VG, Svenska Dagbladet) — donc nativement éditoriale, précisément le registre Monocle / Phaidon visé par le Manifesto.</p>
+      </div>
+    </div>
+    <div class="font-card">
+      <div class="font-card-header">
+        <div class="font-card-title" style="font-family: 'Schibsted Grotesk';">Schibsted Grotesk</div>
+        <div class="font-card-meta"><span>OFL 1.1</span><br>Bakken &amp; Bæck — Oslo<br>fonts.google.com/specimen<br>/Schibsted+Grotesk</div>
+      </div>
+      <div class="font-card-body">
+        <div class="specimen-display schibsted-display">Schibsted</div>
+        <div class="specimen-pangram schibsted-text" style="font-weight: 400;">L'institution patrimoniale du Levant méditerranéen accompagne quarante familles européennes en quête d'une nouvelle <em style="font-style: italic;">géographie</em> de leur capital.</div>
+        <div class="specimen-charset">Charset — Latin Extended</div>
+        <div class="specimen-alphabet schibsted-text">ABCDEFGHIJKLMNOPQRSTUVWXYZ</div>
+        <div class="specimen-alphabet schibsted-text">abcdefghijklmnopqrstuvwxyz</div>
+        <div class="specimen-numbers schibsted-text">0123456789 — €£$ « » †‡§ &amp; @</div>
+        <div class="weight-scale">
+          <div class="weight-row"><div class="weight-name">Regular · 400</div><div class="weight-sample schibsted-text" style="font-weight: 400;">Pierre brute, ciel franc</div><div class="weight-value">font-weight: 400</div></div>
+          <div class="weight-row"><div class="weight-name">Medium · 500</div><div class="weight-sample schibsted-text" style="font-weight: 500;">Pierre brute, ciel franc</div><div class="weight-value">font-weight: 500</div></div>
+          <div class="weight-row"><div class="weight-name">Semibold · 600</div><div class="weight-sample schibsted-text" style="font-weight: 600;">Pierre brute, ciel franc</div><div class="weight-value">font-weight: 600</div></div>
+          <div class="weight-row"><div class="weight-name">Bold · 700</div><div class="weight-sample schibsted-text" style="font-weight: 700;">Pierre brute, ciel franc</div><div class="weight-value">font-weight: 700</div></div>
+          <div class="weight-row"><div class="weight-name">Italic · 400i</div><div class="weight-sample schibsted-text" style="font-weight: 400; font-style: italic;">Pierre brute, ciel franc</div><div class="weight-value">font-style: italic</div></div>
+          <div class="weight-row"><div class="weight-name">Medium Italic · 500i</div><div class="weight-sample schibsted-text" style="font-weight: 500; font-style: italic;">Pierre brute, ciel franc</div><div class="weight-value">500 italic</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-number">§ 04</div>
+      <div class="section-title">
+        <h2>JetBrains Mono — la voix technique</h2>
+        <p>La mono qu'on lit. Conçue par JetBrains pour le code, mais excellente pour les eyebrows, les références cadastrales, les coordonnées GPS, les codes postaux, et tout ce qui demande l'autorité d'une donnée vérifiable.</p>
+      </div>
+    </div>
+    <div class="font-card">
+      <div class="font-card-header">
+        <div class="font-card-title" style="font-family: 'JetBrains Mono';">JetBrains Mono</div>
+        <div class="font-card-meta"><span>OFL 1.1</span><br>JetBrains s.r.o. — Prague<br>jetbrains.com/lp/mono<br>ou Google Fonts</div>
+      </div>
+      <div class="font-card-body">
+        <div class="specimen-display mono-display">JetBrains</div>
+        <div class="specimen-pangram mono-text" style="font-size: 18px; line-height: 1.5;">REF / 34.7071° N · 33.0226° E<br>LIMASSOL — DISTRICT D'AMATHUS<br>PROGRAMME LIVRABLE 2027 / Q3</div>
+        <div class="specimen-charset">Charset — Monospace</div>
+        <div class="specimen-alphabet mono-text" style="font-size: 18px;">ABCDEFGHIJKLMNOPQRSTUVWXYZ</div>
+        <div class="specimen-alphabet mono-text" style="font-size: 18px;">abcdefghijklmnopqrstuvwxyz</div>
+        <div class="specimen-numbers mono-text" style="font-size: 18px;">0123456789 — €£$ « » †‡§ &amp; @ ↗ ↘</div>
+        <div class="weight-scale">
+          <div class="weight-row"><div class="weight-name">Regular · 400</div><div class="weight-sample mono-text" style="font-weight: 400; font-size: 18px;">REF/2026·LIM·001</div><div class="weight-value">font-weight: 400</div></div>
+          <div class="weight-row"><div class="weight-name">Medium · 500</div><div class="weight-sample mono-text" style="font-weight: 500; font-size: 18px;">REF/2026·LIM·001</div><div class="weight-value">font-weight: 500</div></div>
+          <div class="weight-row"><div class="weight-name">Semibold · 600</div><div class="weight-sample mono-text" style="font-weight: 600; font-size: 18px;">REF/2026·LIM·001</div><div class="weight-value">font-weight: 600</div></div>
+          <div class="weight-row"><div class="weight-name">Italic · 400i</div><div class="weight-sample mono-text" style="font-weight: 400; font-style: italic; font-size: 18px;">REF/2026·LIM·001</div><div class="weight-value">italic</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-number">§ 05</div>
+      <div class="section-title">
+        <h2>La hiérarchie en action</h2>
+        <p>Comment les trois polices s'orchestrent dans une page éditoriale ENKI typique. Schibsted porte la signature, Hanken porte le sens, JetBrains Mono porte la donnée.</p>
+      </div>
+    </div>
+    <div class="hierarchy-demo">
+      <div class="h-eyebrow">Programme — Limassol · District d'Amathus</div>
+      <h2 class="h-display">Une terrasse, un olivier, un <em>silence</em>.</h2>
+      <p class="h-lead">Un programme de douze unités sur la côte est de Limassol, à mille mètres du port romain d'Amathus. Livraison prévue troisième trimestre 2027.</p>
+      <h3 class="h-section">L'esprit du lieu</h3>
+      <p class="h-body">Construit en pierre locale et béton brut, le programme s'intègre dans une oliveraie centenaire que le développeur a refusé de raser. Les douze unités se distribuent autour d'un patio commun ombragé, chacune disposant d'une terrasse privée orientée sud-ouest. <em>L'architecture n'invente rien</em> — elle reprend les proportions vernaculaires des fermes chypriotes du XIXᵉ siècle, en les augmentant des standards thermiques contemporains.</p>
+      <h4 class="h-subsection">Standards techniques</h4>
+      <p class="h-body">Triple vitrage acoustique, isolation thermique conforme aux standards Passive House Mediterranean, panneaux photovoltaïques en toiture, récupération d'eau de pluie pour l'irrigation des espaces communs. Chaque unité dispose d'une borne de recharge véhicule électrique en parking privatif.</p>
+      <div class="h-data">REF /2026·LIM·047 — Coord. 34.7142° N · 33.1389° E — Surface bâtie 2 480 m² — Livraison Q3 2027</div>
+      <p class="h-body">La proximité du port romain d'Amathus — site archéologique majeur — confère au quartier un statut protégé qui empêche toute densification ultérieure dans un rayon de huit cents mètres. <em>La vue restera la vue.</em></p>
+      <p class="h-caption">— Photographie d'archive, oliveraie d'Amathus, mai 2024. Le développeur s'est engagé à conserver l'ensemble des arbres centenaires.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-number">§ 06</div>
+      <div class="section-title">
+        <h2>Une fiche de bien — vue produit</h2>
+        <p>La typographie dans son contexte d'usage réel. Un drawer de fiche bien tel qu'il apparaîtra dans l'agent ENKI — éditorial, pas catalogue.</p>
+      </div>
+    </div>
+    <div class="mockup">
+      <div class="mockup-frame"><span>ENKI · Fiche bien — Niveau 3</span><span>34.7142° N · 33.1389° E</span></div>
+      <div class="mockup-content">
+        <div class="property-eyebrow"><span>Programme</span><span>·</span><span>Limassol — District d'Amathus</span><span>·</span><span>Livraison 2027 / Q3</span></div>
+        <h2 class="property-title">Maison de l'<em>Olivier</em></h2>
+        <p class="property-location">Unité B-04 — terrasse sud-ouest, vue mer dégagée</p>
+        <div class="property-stats">
+          <div><div class="stat-label">Surface</div><div class="stat-value">142<span class="unit">m²</span></div></div>
+          <div><div class="stat-label">Terrasse</div><div class="stat-value">38<span class="unit">m²</span></div></div>
+          <div><div class="stat-label">Chambres</div><div class="stat-value">3<span class="unit">+ 1</span></div></div>
+          <div><div class="stat-label">Prix</div><div class="stat-value">685<span class="unit">k €</span></div></div>
+        </div>
+        <p class="property-description">L'unité B-04 occupe l'angle sud-ouest du bâtiment, avec deux façades vitrées donnant sur l'oliveraie et la mer. Sa terrasse de trente-huit mètres carrés s'inscrit en prolongement direct du séjour, séparée par une baie coulissante <em>cadre acier</em> qui efface complètement l'intérieur de l'extérieur en saison chaude. <em>C'est probablement la plus belle des douze.</em></p>
+        <div class="agent-bubble">
+          <div class="agent-label">ENKI</div>
+          <div class="agent-message">Vous m'avez parlé d'un endroit où vous pourriez écrire le matin. Cette terrasse, à six heures du matin en juin, est exactement ça.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-number">§ 07</div>
+      <div class="section-title">
+        <h2>L'italique comme outil de sens</h2>
+        <p>Schibsted Grotesk dispose de vraies italiques dessinées (pas obliques mécaniques). On les utilise pour les emphases sémantiques, les citations, les noms propres de programmes — jamais pour la décoration.</p>
+      </div>
+    </div>
+    <div class="italic-showcase">
+      <p class="italic-quote">« Une maison n'est pas un investissement. C'est un endroit où l'on revient. »</p>
+      <div class="italic-attribution">— Manifesto ENKI Realty, Promesse 3</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-number">§ 08</div>
+      <div class="section-title">
+        <h2>Quelle police pour quoi</h2>
+        <p>La règle d'usage. À garder en réflexe pour ne jamais hésiter.</p>
+      </div>
+    </div>
+    <div class="decision-table">
+      <div class="decision-row header"><div class="decision-cell">Contexte</div><div class="decision-cell">Police</div><div class="decision-cell">Pourquoi</div></div>
+      <div class="decision-row"><div class="decision-cell"><strong>Hero / Display</strong></div><div class="decision-cell">Schibsted Grotesk Medium 500 + italic 400i</div><div class="decision-cell">Les moments où la marque parle. L'italique signe.</div></div>
+      <div class="decision-row"><div class="decision-cell"><strong>Titres de section H2</strong></div><div class="decision-cell">Schibsted Grotesk 400-500</div><div class="decision-cell">Continuité éditoriale avec le hero.</div></div>
+      <div class="decision-row"><div class="decision-cell"><strong>Sous-titres H3-H4</strong></div><div class="decision-cell">Hanken Grotesk 600 Semibold</div><div class="decision-cell">Plus discret, structurel, ne fait plus signature.</div></div>
+      <div class="decision-row"><div class="decision-cell"><strong>Corps de texte</strong></div><div class="decision-cell">Hanken Grotesk 400 Regular</div><div class="decision-cell">17 px / line-height 1.65 — lecture longue.</div></div>
+      <div class="decision-row"><div class="decision-cell"><strong>Boutons / CTA</strong></div><div class="decision-cell">Hanken Grotesk 500 Medium</div><div class="decision-cell">Présence sans agressivité. Pas de Bold.</div></div>
+      <div class="decision-row"><div class="decision-cell"><strong>Eyebrows / Labels</strong></div><div class="decision-cell">JetBrains Mono 400, uppercase, tracking 0.10em</div><div class="decision-cell">Le tag éditorial qui structure les pages denses.</div></div>
+      <div class="decision-row"><div class="decision-cell"><strong>Données techniques</strong></div><div class="decision-cell">JetBrains Mono 400-500</div><div class="decision-cell">Coord. GPS, références cadastrales, surfaces.</div></div>
+      <div class="decision-row"><div class="decision-cell"><strong>Citations / Emphasis</strong></div><div class="decision-cell">Schibsted Grotesk 400 Italic</div><div class="decision-cell">L'italique sémantique, jamais décoratif.</div></div>
+      <div class="decision-row"><div class="decision-cell"><strong>Légendes / Captions</strong></div><div class="decision-cell">Hanken Grotesk 400 Italic, 14 px</div><div class="decision-cell">Discrètement éditorial.</div></div>
+      <div class="decision-row"><div class="decision-cell"><strong>Agent ENKI (chat)</strong></div><div class="decision-cell">Hanken Grotesk 400, italic pour les phrases signées</div><div class="decision-cell">Voix humaine, pas robotique.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div>
+      <div class="footer-title">Trois polices libres,<br>un capital de marque<br>qui se construit.</div>
+      <p class="footer-text">Cette stack typographique a été validée à 100% par Jean-Marie le 27 avril 2026. Si après prototypage la signature doit être renforcée, l'évolution naturelle est l'achat de Söhne (Klim Type Foundry, ~700€) sans rupture du système — Söhne est précisément la référence dont Hanken Grotesk et Schibsted Grotesk reproduisent la lignée Akzidenz-Grotesk.</p>
+    </div>
+    <div class="footer-block">
+      <h4>Licences</h4>
+      <p>Hanken Grotesk — OFL 1.1</p>
+      <p>Schibsted Grotesk — OFL 1.1</p>
+      <p>JetBrains Mono — OFL 1.1</p>
+      <p style="margin-top: 16px; opacity: 0.6;">Toutes gratuites,<br>usage commercial illimité,<br>modifiables.</p>
+    </div>
+    <div class="footer-block">
+      <h4>Sources officielles</h4>
+      <p><a href="https://fonts.google.com/specimen/Hanken+Grotesk">fonts.google.com / Hanken Grotesk</a></p>
+      <p><a href="https://fonts.google.com/specimen/Schibsted+Grotesk">fonts.google.com / Schibsted Grotesk</a></p>
+      <p><a href="https://www.jetbrains.com/lp/mono/">jetbrains.com / Mono</a></p>
+      <p style="margin-top: 24px; font-family: 'JetBrains Mono'; font-size: 11px; opacity: 0.5;">DOC INTERNE · 27.04.2026<br>VERSION VALIDÉE V1.0</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
