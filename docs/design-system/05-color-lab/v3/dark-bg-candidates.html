@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENKI · Couche 5 Dark Mode · 3 candidats background</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900&family=Schibsted+Grotesk:ital,wght@0,400..700&family=JetBrains+Mono:wght@300..600&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Hanken Grotesk', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  color: #FCFAF5;
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---------------------------------------------------------------- */
+/* 3 BACKGROUND DARK CANDIDATES                                     */
+/* ---------------------------------------------------------------- */
+:root {
+  --bg-d1: #1A2940; /* Encre profonde — symétrique du foreground light */
+  --bg-d2: #0F1A2A; /* Encre profonde sombre — compromis */
+  --bg-d3: #0A1220; /* Quasi-noir bleuté — dramatique */
+
+  --bg: var(--bg-d2); /* Default = D2 */
+}
+body[data-bg="d1"] { --bg: var(--bg-d1); }
+body[data-bg="d2"] { --bg: var(--bg-d2); }
+body[data-bg="d3"] { --bg: var(--bg-d3); }
+
+/* ---------------------------------------------------------------- */
+/* TOOLBAR FIXE                                                     */
+/* ---------------------------------------------------------------- */
+.toolbar {
+  position: fixed;
+  top: 24px; left: 50%; transform: translateX(-50%);
+  z-index: 100;
+  display: flex; gap: 6px;
+  padding: 8px;
+  background: rgba(252, 250, 245, 0.10);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(252, 250, 245, 0.12);
+  border-radius: 100px;
+  box-shadow: 0 16px 36px -8px rgba(0,0,0,0.5);
+}
+.toolbar .btn {
+  padding: 10px 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(252, 250, 245, 0.55);
+  border-radius: 100px;
+  cursor: pointer; border: none; background: transparent;
+  font-weight: 500;
+  transition: all 220ms;
+  display: flex; align-items: center; gap: 8px;
+}
+.toolbar .btn:hover { color: #FCFAF5; }
+.toolbar .btn.active {
+  color: #1A2940;
+  background: #57B9D6;
+}
+.toolbar .btn .swatch-mini {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+/* ---------------------------------------------------------------- */
+/* WRAP                                                             */
+/* ---------------------------------------------------------------- */
+.wrap {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 100px 64px 120px;
+}
+
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #C9966A;
+  display: block;
+  margin-bottom: 20px;
+}
+h1 {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 1.05; letter-spacing: -0.025em;
+  margin-bottom: 24px;
+  max-width: 880px;
+  color: #FCFAF5;
+}
+h1 em { color: #57B9D6; }
+.intro {
+  font-size: 17px; line-height: 1.65; max-width: 720px;
+  color: rgba(252, 250, 245, 0.75);
+  margin-bottom: 16px;
+}
+.intro strong { color: #FCFAF5; font-weight: 500; }
+.intro code {
+  font-family: 'JetBrains Mono', monospace;
+  background: rgba(252, 250, 245, 0.08);
+  padding: 2px 7px; border-radius: 3px;
+  font-size: 13px;
+  color: #FCFAF5;
+}
+
+.current-id {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 10px 20px;
+  background: rgba(252, 250, 245, 0.06);
+  border: 1px solid rgba(252, 250, 245, 0.15);
+  border-radius: 100px;
+  margin-top: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: #FCFAF5;
+}
+.current-id .dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1px solid rgba(252, 250, 245, 0.25);
+  transition: background 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.current-id .label {
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(252, 250, 245, 0.65);
+}
+
+/* ---------------------------------------------------------------- */
+/* SECTION                                                          */
+/* ---------------------------------------------------------------- */
+section { margin-top: 80px; }
+section.first { margin-top: 56px; }
+.s-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #C9966A;
+  margin-bottom: 16px; display: block;
+}
+.s-title {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: clamp(28px, 3.2vw, 40px);
+  line-height: 1.1; letter-spacing: -0.02em;
+  margin-bottom: 14px;
+  max-width: 760px;
+  color: #FCFAF5;
+}
+.s-title em { color: #57B9D6; }
+.s-lead {
+  font-size: 16px; line-height: 1.65;
+  color: rgba(252, 250, 245, 0.65);
+  margin-bottom: 32px;
+  max-width: 680px;
+}
+
+/* ---------------------------------------------------------------- */
+/* TEST 1 — 3 SWATCHES CÔTE À CÔTE                                  */
+/* ---------------------------------------------------------------- */
+.swatches-trio {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 40px;
+}
+.swatch-cell {
+  background: rgba(252, 250, 245, 0.04);
+  border: 1px solid rgba(252, 250, 245, 0.12);
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 280ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.swatch-cell.is-active {
+  border-color: #57B9D6;
+  box-shadow: 0 0 0 2px rgba(87, 185, 214, 0.20);
+}
+.swatch-color {
+  height: 200px;
+  border-bottom: 1px solid rgba(252, 250, 245, 0.10);
+  display: flex; align-items: flex-end;
+  padding: 16px 18px;
+}
+.swatch-color.c1 { background: #1A2940; }
+.swatch-color.c2 { background: #0F1A2A; }
+.swatch-color.c3 { background: #0A1220; }
+
+.swatch-meta {
+  padding: 22px 24px 24px;
+}
+.swatch-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.20em; text-transform: uppercase;
+  color: #C9966A;
+  margin-bottom: 6px;
+}
+.swatch-name {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: 20px; line-height: 1.18;
+  letter-spacing: -0.015em;
+  margin-bottom: 8px;
+  color: #FCFAF5;
+}
+.swatch-hex {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px; font-weight: 500;
+  color: #FCFAF5;
+  margin-bottom: 4px;
+}
+.swatch-oklch {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(252, 250, 245, 0.55);
+  margin-bottom: 12px;
+}
+.swatch-temper {
+  font-size: 12px; line-height: 1.55;
+  color: rgba(252, 250, 245, 0.65);
+  padding-top: 12px;
+  border-top: 1px solid rgba(252, 250, 245, 0.08);
+}
+
+/* ---------------------------------------------------------------- */
+/* TEST 2 — TEXTE LONG (lecture longue)                             */
+/* ---------------------------------------------------------------- */
+.text-test {
+  background: var(--bg);
+  padding: 48px 56px;
+  border-radius: 8px;
+  border: 1px solid rgba(252, 250, 245, 0.10);
+  transition: background 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.text-test .te-eye {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #C9966A;
+  margin-bottom: 14px;
+  display: block;
+}
+.text-test h3 {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: 32px; line-height: 1.1; letter-spacing: -0.02em;
+  color: #FCFAF5;
+  margin-bottom: 24px;
+  max-width: 600px;
+}
+.text-test h3 em { color: #57B9D6; }
+.text-test p {
+  font-size: 15px; line-height: 1.7;
+  color: rgba(252, 250, 245, 0.85);
+  max-width: 600px;
+  margin-bottom: 14px;
+}
+.text-test p em {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic;
+  color: #57B9D6;
+}
+.text-test .meta-line {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(252, 250, 245, 0.45);
+  margin-top: 24px;
+}
+
+/* ---------------------------------------------------------------- */
+/* TEST 3 — UI MOCKUP (header + card sur photo)                     */
+/* ---------------------------------------------------------------- */
+.ui-test {
+  background: var(--bg);
+  border-radius: 8px;
+  border: 1px solid rgba(252, 250, 245, 0.10);
+  overflow: hidden;
+  transition: background 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ui-header {
+  padding: 22px 36px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid rgba(252, 250, 245, 0.08);
+}
+.ui-header .logo {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: 22px; color: #FCFAF5;
+  letter-spacing: -0.01em;
+}
+.ui-header .nav-links {
+  display: flex; gap: 28px;
+}
+.ui-header .nav-links a {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 13px; font-weight: 500;
+  color: rgba(252, 250, 245, 0.85);
+  text-decoration: none;
+}
+.ui-header .nav-cta {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 12px; font-weight: 500;
+  padding: 9px 18px;
+  border-radius: 100px;
+  background: #57B9D6;
+  color: #1A2940;
+  text-decoration: none;
+}
+.ui-content {
+  padding: 56px 48px;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 40px;
+}
+.ui-main h4 {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: 28px; line-height: 1.1; letter-spacing: -0.02em;
+  color: #FCFAF5;
+  margin-bottom: 16px;
+}
+.ui-main h4 em { color: #57B9D6; }
+.ui-main p {
+  font-size: 14px; line-height: 1.65;
+  color: rgba(252, 250, 245, 0.70);
+  margin-bottom: 14px;
+}
+.ui-card {
+  background: rgba(252, 250, 245, 0.04);
+  border: 1px solid rgba(252, 250, 245, 0.10);
+  border-radius: 6px;
+  padding: 24px;
+}
+.ui-card .ce {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: #C9966A;
+  margin-bottom: 8px;
+  display: block;
+}
+.ui-card .ct {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-size: 18px;
+  color: #FCFAF5;
+  margin-bottom: 12px;
+}
+.ui-card .ct em { color: #57B9D6; }
+.ui-card .cd {
+  font-size: 12px; line-height: 1.55;
+  color: rgba(252, 250, 245, 0.65);
+  margin-bottom: 14px;
+}
+.ui-card .cp {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500; font-size: 18px;
+  color: #FCFAF5;
+}
+
+/* ---------------------------------------------------------------- */
+/* VERDICT                                                          */
+/* ---------------------------------------------------------------- */
+.verdict {
+  background: rgba(252, 250, 245, 0.04);
+  border: 1px solid rgba(252, 250, 245, 0.10);
+  border-radius: 8px;
+  padding: 48px;
+}
+.verdict h2 {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: 32px; line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 18px;
+  color: #FCFAF5;
+  max-width: 720px;
+}
+.verdict h2 em { color: #57B9D6; }
+.verdict p {
+  font-size: 15px; line-height: 1.7;
+  color: rgba(252, 250, 245, 0.75);
+  max-width: 640px;
+  margin-bottom: 14px;
+}
+.verdict strong { color: #FCFAF5; font-weight: 500; }
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .wrap { padding: 80px 24px 80px; }
+  .swatches-trio { grid-template-columns: 1fr; }
+  .ui-content { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body data-bg="d2">
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <button class="btn" data-bg="d1">
+    <span class="swatch-mini" style="background: #1A2940;"></span>
+    D1 · Encre profonde
+  </button>
+  <button class="btn active" data-bg="d2">
+    <span class="swatch-mini" style="background: #0F1A2A;"></span>
+    D2 · Encre sombre
+  </button>
+  <button class="btn" data-bg="d3">
+    <span class="swatch-mini" style="background: #0A1220;"></span>
+    D3 · Quasi-noir
+  </button>
+</div>
+
+<div class="wrap">
+
+  <header style="margin-bottom: 32px;">
+    <span class="eyebrow">Couche 5 Dark Mode · Étape 1 · Choix du background</span>
+    <h1>Trois fonds dark, du <em>plus bleu</em> au plus noir.</h1>
+    <p class="intro">
+      Comme pour le light, on commence par le fond — tout le reste dérive de là. Trois philosophies différentes :
+    </p>
+    <p class="intro">
+      <strong>D1 Encre profonde <code>#1A2940</code></strong> — la même couleur que notre foreground light. Système d'inversion symétrique parfaite. Cohérence absolue, mais fond très bleu.
+    </p>
+    <p class="intro">
+      <strong>D2 Encre profonde sombre <code>#0F1A2A</code></strong> — un cran plus sombre que D1, plus neutre. Le compromis entre identité bleue et profondeur dark mode.
+    </p>
+    <p class="intro">
+      <strong>D3 Quasi-noir bleuté <code>#0A1220</code></strong> — proche du noir, juste tinté pour cohérence avec le système. Plus dramatique, plus contemporain. Aucun n'est <code>#000000</code> pur (verrou Couche 5).
+    </p>
+    <div class="current-id">
+      <span class="dot"></span>
+      <span class="label" id="current-label">Background actif · D2 · #0F1A2A · Encre sombre</span>
+    </div>
+  </header>
+
+  <!-- TEST 1 — SWATCHES TRIO -->
+  <section class="first">
+    <span class="s-eyebrow">01 · Trois fonds côte à côte</span>
+    <h2 class="s-title">Comparaison directe avant le contexte.</h2>
+    <p class="s-lead">Les trois candidats côte à côte. Clique sur une carte pour basculer le fond global de la page entière sur ce candidat. Tu juges la différence brute.</p>
+
+    <div class="swatches-trio">
+      <div class="swatch-cell" data-cell="d1">
+        <div class="swatch-color c1"></div>
+        <div class="swatch-meta">
+          <div class="swatch-id">D1 · Symétrique</div>
+          <div class="swatch-name">Encre profonde</div>
+          <div class="swatch-hex">#1A2940</div>
+          <div class="swatch-oklch">oklch(0.21 0.04 250)</div>
+          <p class="swatch-temper">Identique au foreground du light mode. Système d'inversion parfaite. Très bleu, identité chromatique forte.</p>
+        </div>
+      </div>
+      <div class="swatch-cell is-active" data-cell="d2">
+        <div class="swatch-color c2"></div>
+        <div class="swatch-meta">
+          <div class="swatch-id">D2 · Compromis</div>
+          <div class="swatch-name">Encre sombre</div>
+          <div class="swatch-hex">#0F1A2A</div>
+          <div class="swatch-oklch">oklch(0.15 0.035 250)</div>
+          <p class="swatch-temper">Encre profonde poussée plus sombre. Garde l'identité bleue mais respire mieux la profondeur dark.</p>
+        </div>
+      </div>
+      <div class="swatch-cell" data-cell="d3">
+        <div class="swatch-color c3"></div>
+        <div class="swatch-meta">
+          <div class="swatch-id">D3 · Dramatique</div>
+          <div class="swatch-name">Quasi-noir bleuté</div>
+          <div class="swatch-hex">#0A1220</div>
+          <div class="swatch-oklch">oklch(0.10 0.025 250)</div>
+          <p class="swatch-temper">Proche du noir, juste tinté bleu. Profondeur cinématique. Risque : trop sombre pour la lecture longue.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEST 2 — TEXTE LONG -->
+  <section>
+    <span class="s-eyebrow">02 · Test lecture longue</span>
+    <h2 class="s-title">Le fond doit reposer l'œil, pas <em>fatiguer</em>.</h2>
+    <p class="s-lead">Le test critique du dark mode : un paragraphe de lecture longue. Trop sombre fatigue (manque de contraste sur les nuances), trop clair lave l'identité. Toggle pour comparer.</p>
+
+    <div class="text-test">
+      <span class="te-eye">Vivre à Chypre</span>
+      <h3>Une île qui dialogue avec <em>la Méditerranée</em> depuis 9 000 ans.</h3>
+      <p>Chypre est moins connue que la Grèce ou Malte, et c'est sa chance : le calcaire chaud des matins, l'eau qui ne ment pas, les oliviers qui ont vu passer Phéniciens, Romains, Byzantins, Ottomans, Britanniques. Le pays est aujourd'hui membre de l'Union européenne, paisible, fiscalement clair, et accessible depuis Paris en 4 heures.</p>
+      <p>Pour un investisseur français, allemand ou belge, c'est une <em>fenêtre</em> ouverte sur un mode de vie qui combine lumière, sécurité juridique et fiscalité avantageuse — le tout dans un cadre culturel à la fois grec, britannique et méditerranéen.</p>
+      <div class="meta-line">Émis le 27 avril 2026 · ENKI Realty · 9 min de lecture</div>
+    </div>
+  </section>
+
+  <!-- TEST 3 — UI MOCKUP -->
+  <section>
+    <span class="s-eyebrow">03 · Test interface produit</span>
+    <h2 class="s-title">Header, contenu, card sur fond <em>actif</em>.</h2>
+    <p class="s-lead">Le second test critique : interface produit. Le header doit se distinguer subtilement du fond, la card doit flotter sans être agressive, le CTA Aero doit pulser sans être violent.</p>
+
+    <div class="ui-test">
+      <div class="ui-header">
+        <div class="logo">ΣNKI Realty</div>
+        <div class="nav-links">
+          <a href="#">Propriétés</a>
+          <a href="#">Lexaia</a>
+          <a href="#">À propos</a>
+        </div>
+        <a class="nav-cta" href="#">Espace personnel</a>
+      </div>
+      <div class="ui-content">
+        <div class="ui-main">
+          <h4>Quatre biens <em>résonnent</em> avec ce que vous cherchez.</h4>
+          <p>L'agent ENKI a analysé votre profil et sélectionné quatre programmes alignés avec votre projet. Vous pouvez ouvrir chaque fiche, comparer en parallèle, ou demander une analyse Lexaia personnalisée pour calibrer votre stratégie patrimoniale.</p>
+          <p>Triés par justesse · 04 résultats · Mis à jour il y a 4 minutes.</p>
+        </div>
+        <div class="ui-card">
+          <span class="ce">Coral Bay · Paphos</span>
+          <div class="ct">Coral Bay <em>B-04</em></div>
+          <p class="cd">3 chambres · 112 m² · Vue mer franche · Livraison Q4 2027</p>
+          <div class="cp">347 000 €</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VERDICT -->
+  <section>
+    <div class="verdict">
+      <span class="eyebrow" style="margin-bottom: 14px;">Verdict · à choisir par Jean-Marie</span>
+      <h2>Mon avis tranché.</h2>
+      <p><strong>D1 Encre profonde <code>#1A2940</code></strong> — système d'inversion symétrique parfaite, mais le fond reste très bleu. Sur certains contenus, on a une impression de "page bleue" plus que de "page sombre". Risque : pas assez profond pour être perçu comme un vrai dark mode.</p>
+      <p><strong>D2 Encre sombre <code>#0F1A2A</code></strong> — mon vote. Garde l'identité chromatique du light (hue 250°), mais pousse la luminosité à 0.15 au lieu de 0.21. Résultat : on sent la profondeur dark sans tuer l'identité ENKI. Le contraste avec le foreground papier bible et l'accent Aero reste excellent.</p>
+      <p><strong>D3 Quasi-noir bleuté <code>#0A1220</code></strong> — très contemporain, dramatique, mais on perd l'identité bleue ENKI au profit d'un noir générique. Si tu veux un dark mode "Vercel / Linear / Anthropic", c'est lui. Si tu veux un dark mode qui dit ENKI, c'est D2.</p>
+      <p style="margin-top: 24px;"><strong>Mon vote : D2 Encre sombre.</strong></p>
+      <p>Toggle, juge, sens. Quand tu as choisi, je décline les 6 autres tokens dark à partir de ton choix.</p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const body = document.body;
+const buttons = document.querySelectorAll('.toolbar .btn');
+const cells = document.querySelectorAll('.swatch-cell');
+const labelMap = {
+  d1: 'Background actif · D1 · #1A2940 · Encre profonde',
+  d2: 'Background actif · D2 · #0F1A2A · Encre sombre',
+  d3: 'Background actif · D3 · #0A1220 · Quasi-noir bleuté'
+};
+
+function applyBg(bg) {
+  body.dataset.bg = bg;
+  buttons.forEach(b => b.classList.toggle('active', b.dataset.bg === bg));
+  cells.forEach(c => c.classList.toggle('is-active', c.dataset.cell === bg));
+  document.getElementById('current-label').textContent = labelMap[bg];
+  localStorage.setItem('enki-dark-bg', bg);
+}
+
+buttons.forEach(btn => btn.addEventListener('click', () => applyBg(btn.dataset.bg)));
+cells.forEach(cell => cell.addEventListener('click', () => applyBg(cell.dataset.cell)));
+
+const saved = localStorage.getItem('enki-dark-bg');
+if (saved) applyBg(saved);
+</script>
+</body>
+</html>

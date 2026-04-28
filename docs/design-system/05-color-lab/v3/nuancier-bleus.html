@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENKI · Nuancier bleus · choix accent</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900&family=Schibsted+Grotesk:ital,wght@0,400..700&family=JetBrains+Mono:wght@300..600&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Hanken Grotesk', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  color: #0F1E2E;
+  background: #F8F4EC;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding: 80px 64px 120px;
+}
+
+.serif { font-family: 'Schibsted Grotesk', Georgia, serif; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+.italic { font-style: italic; }
+
+/* HEADER */
+header {
+  max-width: 1280px; margin: 0 auto 80px;
+  display: flex; flex-direction: column; gap: 24px;
+}
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #B88555;
+}
+h1 {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: clamp(40px, 5vw, 72px);
+  line-height: 1.05; letter-spacing: -0.025em;
+  max-width: 880px;
+}
+h1 em { font-style: italic; color: #0F1E2E; }
+.intro {
+  font-size: 18px; line-height: 1.65; max-width: 720px;
+  color: #525A6B;
+}
+.intro strong { color: #0F1E2E; font-weight: 500; }
+
+/* GRID */
+.swatches-grid {
+  max-width: 1280px; margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+}
+
+/* CARD SWATCH */
+.swatch {
+  display: flex; flex-direction: column;
+  background: #FCFAF5;
+  border: 1px solid #DBD5C8;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: all 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.swatch:hover { transform: translateY(-2px); box-shadow: 0 24px 48px -20px rgba(0,0,0,0.12); }
+
+.swatch-preview {
+  position: relative;
+  height: 320px;
+  background-size: cover;
+  background-position: center;
+  background-image: url('assets/photos/hero-d2-horizon.jpg');
+}
+.swatch-preview::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.35) 100%);
+}
+.swatch-pill {
+  position: absolute; bottom: 24px; left: 24px;
+  display: flex; align-items: center; gap: 14px;
+  padding: 10px 18px;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 100px;
+  z-index: 2;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 500; font-size: 13px;
+  color: #0F1E2E;
+}
+.swatch-pill .dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+.swatch-cta {
+  position: absolute; bottom: 24px; right: 24px;
+  z-index: 2;
+  padding: 12px 22px;
+  border-radius: 100px;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 500; font-size: 13px;
+  color: white;
+  display: flex; align-items: center; gap: 8px;
+  box-shadow: 0 8px 24px -8px rgba(0,0,0,0.25);
+  transition: transform 220ms;
+}
+.swatch-cta:hover { transform: translateY(-1px); }
+
+.swatch-meta {
+  padding: 24px 28px 28px;
+  display: flex; flex-direction: column; gap: 12px;
+  border-top: 1px solid #DBD5C8;
+}
+.swatch-id-row {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+}
+.swatch-name {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: 22px; line-height: 1.15;
+  letter-spacing: -0.015em;
+}
+.swatch-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: #B88555;
+}
+.swatch-hex-row {
+  display: flex; gap: 18px; align-items: center;
+  padding: 10px 0;
+  border-top: 1px solid #EDE8DC;
+  border-bottom: 1px solid #EDE8DC;
+}
+.swatch-hex {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500; font-size: 14px;
+  letter-spacing: 0.02em;
+}
+.swatch-hex .lbl {
+  display: block; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: #7A6F5C; font-weight: 400; margin-bottom: 3px;
+}
+.swatch-temper {
+  font-size: 13px; line-height: 1.55;
+  color: #525A6B;
+  margin-top: 4px;
+}
+.swatch-temper strong {
+  color: #0F1E2E; font-weight: 500;
+}
+
+/* SECTION DARK PREVIEW */
+.dark-section {
+  margin: 80px auto 0;
+  max-width: 1280px;
+  padding: 56px 48px;
+  background: #0F1E2E;
+  color: #F2EDDF;
+  border-radius: 6px;
+}
+.dark-section .section-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: rgba(242, 237, 223, 0.55);
+  margin-bottom: 20px;
+}
+.dark-section h2 {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: 42px; line-height: 1.08; letter-spacing: -0.02em;
+  margin-bottom: 32px;
+  max-width: 720px;
+}
+.dark-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+}
+.dark-cell {
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 20px 18px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(242, 237, 223, 0.12);
+  border-radius: 4px;
+}
+.dark-cta {
+  padding: 14px 18px;
+  border-radius: 100px;
+  text-align: center;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 500; font-size: 13px;
+  color: white;
+  margin-bottom: 4px;
+}
+.dark-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: rgba(242, 237, 223, 0.55);
+}
+.dark-name {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 13px; font-weight: 500;
+  color: #F2EDDF;
+}
+
+/* CHOICE FORM */
+.choice-form {
+  margin: 80px auto 0;
+  max-width: 1280px;
+  padding: 48px;
+  background: #FCFAF5;
+  border: 1px solid #DBD5C8;
+  border-radius: 6px;
+}
+.choice-form h2 {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: 36px; line-height: 1.1; letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+.choice-form p {
+  font-size: 15px; color: #525A6B;
+  margin-bottom: 32px; max-width: 640px;
+}
+.choice-form code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #F0E8D6;
+  padding: 2px 8px; border-radius: 3px;
+  font-size: 13px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  body { padding: 56px 32px 80px; }
+  .swatches-grid { grid-template-columns: 1fr; gap: 24px; }
+  .dark-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="eyebrow">Nuancier bleus · à valider par Jean-Marie</span>
+  <h1>Huit bleus, <em>aucun ne tire vers le vert</em>.</h1>
+  <p class="intro">
+    Chaque bleu est posé <strong>sur ta photo signature</strong> (chaise cognac, ciel bleu, horizon turquoise) en condition réelle de produit : pastille de présence en haut à gauche, bouton CTA en bas à droite. Voilà la seule façon honnête de juger un bleu — pas un swatch isolé sur fond blanc. Les <strong>quatre premiers</strong> sont des bleus-mer froids tonalité Méditerranée. Les <strong>quatre suivants</strong> sont des bleus profonds, du marine au minuit. Tu choisis celui qui parle juste, et je rebatis le hero avec.
+  </p>
+</header>
+
+<!-- GRID DES SWATCHES -->
+<div class="swatches-grid">
+
+  <!-- B1 — Lagune cristalline -->
+  <article class="swatch">
+    <div class="swatch-preview">
+      <div class="swatch-pill"><span class="dot" style="background: #1FA8C7;"></span>ENKI · en ligne</div>
+      <a class="swatch-cta" style="background: #1FA8C7;">Démarrer →</a>
+    </div>
+    <div class="swatch-meta">
+      <div class="swatch-id-row">
+        <h3 class="swatch-name">Lagune cristalline</h3>
+        <span class="swatch-id">B1 · hue 195</span>
+      </div>
+      <div class="swatch-hex-row">
+        <div class="swatch-hex"><span class="lbl">HEX</span>#1FA8C7</div>
+        <div class="swatch-hex"><span class="lbl">OKLCH</span>0.65 0.13 220</div>
+      </div>
+      <p class="swatch-temper">Bleu-cyan <strong>franc et lumineux</strong>, comme l'eau cristalline d'une crique chypriote au midi. Aucune note verte. Plus saturé que le précédent <code style="font-family:monospace; font-size:12px;">#27C7D4</code> sur l'axe bleu pur.</p>
+    </div>
+  </article>
+
+  <!-- B2 — Méditerranée profonde -->
+  <article class="swatch">
+    <div class="swatch-preview">
+      <div class="swatch-pill"><span class="dot" style="background: #1B7FB8;"></span>ENKI · en ligne</div>
+      <a class="swatch-cta" style="background: #1B7FB8;">Démarrer →</a>
+    </div>
+    <div class="swatch-meta">
+      <div class="swatch-id-row">
+        <h3 class="swatch-name">Méditerranée profonde</h3>
+        <span class="swatch-id">B2 · hue 210</span>
+      </div>
+      <div class="swatch-hex-row">
+        <div class="swatch-hex"><span class="lbl">HEX</span>#1B7FB8</div>
+        <div class="swatch-hex"><span class="lbl">OKLCH</span>0.55 0.14 240</div>
+      </div>
+      <p class="swatch-temper">Le bleu de la Méditerranée vue du large. <strong>Plus profond, plus posé</strong>, garde une vibration sans être criard. Évoque le sérieux maritime, jamais le SaaS.</p>
+    </div>
+  </article>
+
+  <!-- B3 — Bleu Aman -->
+  <article class="swatch">
+    <div class="swatch-preview">
+      <div class="swatch-pill"><span class="dot" style="background: #2D6A93;"></span>ENKI · en ligne</div>
+      <a class="swatch-cta" style="background: #2D6A93;">Démarrer →</a>
+    </div>
+    <div class="swatch-meta">
+      <div class="swatch-id-row">
+        <h3 class="swatch-name">Bleu Aman</h3>
+        <span class="swatch-id">B3 · hue 215</span>
+      </div>
+      <div class="swatch-hex-row">
+        <div class="swatch-hex"><span class="lbl">HEX</span>#2D6A93</div>
+        <div class="swatch-hex"><span class="lbl">OKLCH</span>0.49 0.10 245</div>
+      </div>
+      <p class="swatch-temper">Le bleu des resorts Aman et des marques patrimoniales. <strong>Désaturé maîtrisé</strong>, sage sans être terne. Pour une marque qui veut tenir 15 ans.</p>
+    </div>
+  </article>
+
+  <!-- B4 — Azurite vibrant -->
+  <article class="swatch">
+    <div class="swatch-preview">
+      <div class="swatch-pill"><span class="dot" style="background: #2563EB;"></span>ENKI · en ligne</div>
+      <a class="swatch-cta" style="background: #2563EB;">Démarrer →</a>
+    </div>
+    <div class="swatch-meta">
+      <div class="swatch-id-row">
+        <h3 class="swatch-name">Azurite vibrant</h3>
+        <span class="swatch-id">B4 · hue 230</span>
+      </div>
+      <div class="swatch-hex-row">
+        <div class="swatch-hex"><span class="lbl">HEX</span>#2563EB</div>
+        <div class="swatch-hex"><span class="lbl">OKLCH</span>0.55 0.20 260</div>
+      </div>
+      <p class="swatch-temper">Bleu pur saturé, <strong>énergique et contemporain</strong>. Risque : peut basculer vers SaaS-Stripe si mal accompagné. Tient si on le réserve aux CTAs majeurs uniquement.</p>
+    </div>
+  </article>
+
+  <!-- B5 — Encre Abzu (le plus profond) -->
+  <article class="swatch">
+    <div class="swatch-preview">
+      <div class="swatch-pill"><span class="dot" style="background: #0F1E2E;"></span>ENKI · en ligne</div>
+      <a class="swatch-cta" style="background: #0F1E2E;">Démarrer →</a>
+    </div>
+    <div class="swatch-meta">
+      <div class="swatch-id-row">
+        <h3 class="swatch-name">Encre Abzu</h3>
+        <span class="swatch-id">B5 · hue 220 · profond</span>
+      </div>
+      <div class="swatch-hex-row">
+        <div class="swatch-hex"><span class="lbl">HEX</span>#0F1E2E</div>
+        <div class="swatch-hex"><span class="lbl">OKLCH</span>0.21 0.04 250</div>
+      </div>
+      <p class="swatch-temper">Le bleu mythique d'Abzu, l'eau souterraine du dieu Enki. <strong>Quasi-noir bleuté</strong>. Pose et autorité. Pas un accent vibrant : un fondement. Pour foreground et CTA "Espace personnel".</p>
+    </div>
+  </article>
+
+  <!-- B6 — Marine Lombard -->
+  <article class="swatch">
+    <div class="swatch-preview">
+      <div class="swatch-pill"><span class="dot" style="background: #1A3A5C;"></span>ENKI · en ligne</div>
+      <a class="swatch-cta" style="background: #1A3A5C;">Démarrer →</a>
+    </div>
+    <div class="swatch-meta">
+      <div class="swatch-id-row">
+        <h3 class="swatch-name">Marine Lombard</h3>
+        <span class="swatch-id">B6 · hue 220</span>
+      </div>
+      <div class="swatch-hex-row">
+        <div class="swatch-hex"><span class="lbl">HEX</span>#1A3A5C</div>
+        <div class="swatch-hex"><span class="lbl">OKLCH</span>0.32 0.08 250</div>
+      </div>
+      <p class="swatch-temper">Bleu marine de banque privée. <strong>Sérieux absolu</strong>, pas un atome de fantaisie. Tient le rapport patrimonial et la signature sans crier. Photo respire dessus.</p>
+    </div>
+  </article>
+
+  <!-- B7 — Outremer pictural -->
+  <article class="swatch">
+    <div class="swatch-preview">
+      <div class="swatch-pill"><span class="dot" style="background: #2C4A7A;"></span>ENKI · en ligne</div>
+      <a class="swatch-cta" style="background: #2C4A7A;">Démarrer →</a>
+    </div>
+    <div class="swatch-meta">
+      <div class="swatch-id-row">
+        <h3 class="swatch-name">Outremer pictural</h3>
+        <span class="swatch-id">B7 · hue 225</span>
+      </div>
+      <div class="swatch-hex-row">
+        <div class="swatch-hex"><span class="lbl">HEX</span>#2C4A7A</div>
+        <div class="swatch-hex"><span class="lbl">OKLCH</span>0.40 0.11 260</div>
+      </div>
+      <p class="swatch-temper">Le bleu des fresques anciennes et des céramiques chypriotes. <strong>Profond mais lumineux</strong>, légèrement vibrant. Plus de personnalité que le marine, plus de sérénité que l'azurite.</p>
+    </div>
+  </article>
+
+  <!-- B8 — Acier Méditerranée -->
+  <article class="swatch">
+    <div class="swatch-preview">
+      <div class="swatch-pill"><span class="dot" style="background: #4A6B8A;"></span>ENKI · en ligne</div>
+      <a class="swatch-cta" style="background: #4A6B8A;">Démarrer →</a>
+    </div>
+    <div class="swatch-meta">
+      <div class="swatch-id-row">
+        <h3 class="swatch-name">Acier Méditerranée</h3>
+        <span class="swatch-id">B8 · hue 215 · acier</span>
+      </div>
+      <div class="swatch-hex-row">
+        <div class="swatch-hex"><span class="lbl">HEX</span>#4A6B8A</div>
+        <div class="swatch-hex"><span class="lbl">OKLCH</span>0.50 0.06 250</div>
+      </div>
+      <p class="swatch-temper">Bleu-acier patiné, presque gris-bleu. <strong>Sobriété absolue</strong>, jamais voyant. Pour une marque qui veut chuchoter, pas crier. Tient le luxe-discret.</p>
+    </div>
+  </article>
+
+</div>
+
+<!-- DARK PREVIEW -->
+<section class="dark-section">
+  <div class="section-eyebrow">Aperçu dark mode · CTA sur fond Abzu</div>
+  <h2>Comment chaque bleu se comporte sur <em class="italic">fond marine sombre</em>.</h2>
+  <div class="dark-grid">
+    <div class="dark-cell">
+      <div class="dark-cta" style="background: #1FA8C7;">Démarrer</div>
+      <span class="dark-id">B1</span>
+      <span class="dark-name">Lagune cristalline</span>
+    </div>
+    <div class="dark-cell">
+      <div class="dark-cta" style="background: #1B7FB8;">Démarrer</div>
+      <span class="dark-id">B2</span>
+      <span class="dark-name">Méditerranée profonde</span>
+    </div>
+    <div class="dark-cell">
+      <div class="dark-cta" style="background: #2D6A93;">Démarrer</div>
+      <span class="dark-id">B3</span>
+      <span class="dark-name">Bleu Aman</span>
+    </div>
+    <div class="dark-cell">
+      <div class="dark-cta" style="background: #2563EB;">Démarrer</div>
+      <span class="dark-id">B4</span>
+      <span class="dark-name">Azurite vibrant</span>
+    </div>
+    <div class="dark-cell">
+      <div class="dark-cta" style="background: #4F8DD0;">Démarrer</div>
+      <span class="dark-id">B5↑</span>
+      <span class="dark-name">Abzu (lumineux dark)</span>
+    </div>
+    <div class="dark-cell">
+      <div class="dark-cta" style="background: #5B7FAA;">Démarrer</div>
+      <span class="dark-id">B6↑</span>
+      <span class="dark-name">Marine (lumineux dark)</span>
+    </div>
+    <div class="dark-cell">
+      <div class="dark-cta" style="background: #5478A8;">Démarrer</div>
+      <span class="dark-id">B7↑</span>
+      <span class="dark-name">Outremer (lumineux dark)</span>
+    </div>
+    <div class="dark-cell">
+      <div class="dark-cta" style="background: #7A9AB8;">Démarrer</div>
+      <span class="dark-id">B8↑</span>
+      <span class="dark-name">Acier (lumineux dark)</span>
+    </div>
+  </div>
+</section>
+
+<!-- CHOICE -->
+<section class="choice-form">
+  <h2>Comment <em class="italic">choisir</em>.</h2>
+  <p>
+    Regarde les 8 cartes ci-dessus. Pour chaque bleu, juge <strong>en condition réelle</strong> : la pastille de présence parle-t-elle juste ? Le CTA Démarrer pulse-t-il sans crier ? Le bleu se pose-t-il sur la photo sans la trahir ? Le bleu retenu remplacera <code>#27C7D4</code> dans toute la Couche 5. Dis-moi simplement <strong>"je prends le B3"</strong>, ou bien <strong>"je veux entre B3 et B5"</strong>, ou même <strong>"aucun ne va, propose autre chose"</strong>. Ensuite je rebatis le hero avec ce bleu, sans overlay teinté, en respectant le standard cinématique de ton repo public.
+  </p>
+</section>
+
+</body>
+</html>

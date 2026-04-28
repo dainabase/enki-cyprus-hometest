@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENKI · Couche 5 · Round critique · Aero profond + Encre présence</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900&family=Schibsted+Grotesk:ital,wght@0,400..700&family=JetBrains+Mono:wght@300..600&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Hanken Grotesk', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  color: #1A2940;
+  background: #FCFAF5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ---------------------------------------------------------------- */
+/* TOOLBAR FIXE — choix Aero candidate                              */
+/* ---------------------------------------------------------------- */
+.toolbar {
+  position: fixed;
+  top: 24px; left: 50%; transform: translateX(-50%);
+  z-index: 100;
+  display: flex; gap: 6px;
+  padding: 8px;
+  background: rgba(26, 41, 64, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 100px;
+  box-shadow: 0 16px 36px -8px rgba(0,0,0,0.3);
+}
+.toolbar .btn {
+  padding: 10px 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(253, 240, 228, 0.55);
+  border-radius: 100px;
+  cursor: pointer; border: none; background: transparent;
+  font-weight: 500;
+  transition: all 220ms;
+  display: flex; align-items: center; gap: 8px;
+}
+.toolbar .btn:hover { color: #FCFAF5; }
+.toolbar .btn.active {
+  color: #1A2940;
+  background: var(--toolbar-active-bg, #57B9D6);
+}
+.toolbar .btn .swatch-mini {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+/* ---------------------------------------------------------------- */
+/* AERO COULEUR ACTIVE (variable globale)                           */
+/* ---------------------------------------------------------------- */
+:root {
+  --aero: #57B9D6;
+  --aero-soft: rgba(87, 185, 214, 0.12);
+  --aero-medium: rgba(87, 185, 214, 0.30);
+  --toolbar-active-bg: #57B9D6;
+}
+body[data-aero="a1"] { --aero: #57B9D6; --aero-soft: rgba(87,185,214,0.12); --aero-medium: rgba(87,185,214,0.30); --toolbar-active-bg: #57B9D6; }
+body[data-aero="a2"] { --aero: #3D8FB0; --aero-soft: rgba(61,143,176,0.13); --aero-medium: rgba(61,143,176,0.32); --toolbar-active-bg: #3D8FB0; }
+body[data-aero="a3"] { --aero: #2D7B9C; --aero-soft: rgba(45,123,156,0.14); --aero-medium: rgba(45,123,156,0.34); --toolbar-active-bg: #2D7B9C; }
+body[data-aero="a4"] { --aero: #1F6B8F; --aero-soft: rgba(31,107,143,0.15); --aero-medium: rgba(31,107,143,0.36); --toolbar-active-bg: #1F6B8F; }
+
+/* ---------------------------------------------------------------- */
+/* WRAP                                                             */
+/* ---------------------------------------------------------------- */
+.wrap {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 100px 64px 120px;
+}
+
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #A17964;
+  display: block;
+  margin-bottom: 20px;
+}
+h1 {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 1.05; letter-spacing: -0.025em;
+  margin-bottom: 24px;
+  max-width: 880px;
+}
+h1 em { font-style: italic; color: var(--aero); transition: color 320ms cubic-bezier(0.16, 1, 0.3, 1); }
+.intro {
+  font-size: 17px; line-height: 1.65; max-width: 720px;
+  color: #4A5A78;
+  margin-bottom: 16px;
+}
+.intro strong { color: #1A2940; font-weight: 500; }
+.intro code {
+  font-family: 'JetBrains Mono', monospace;
+  background: rgba(26, 41, 64, 0.05);
+  padding: 2px 7px; border-radius: 3px;
+  font-size: 13px;
+  color: #1A2940;
+}
+
+.current-id {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 10px 20px;
+  background: white;
+  border: 1px solid rgba(26, 41, 64, 0.10);
+  border-radius: 100px;
+  margin-top: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: #1A2940;
+}
+.current-id .dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--aero);
+  border: 1px solid rgba(0,0,0,0.08);
+  transition: background 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.current-id .label {
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: #4A5A78;
+}
+
+/* ---------------------------------------------------------------- */
+/* SECTION HEAD                                                     */
+/* ---------------------------------------------------------------- */
+section { margin-top: 96px; }
+section.first { margin-top: 56px; }
+.s-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #A17964;
+  margin-bottom: 16px;
+  display: block;
+}
+.s-title {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: clamp(32px, 3.6vw, 44px);
+  line-height: 1.08; letter-spacing: -0.02em;
+  margin-bottom: 14px;
+  max-width: 760px;
+}
+.s-title em { color: var(--aero); transition: color 320ms cubic-bezier(0.16, 1, 0.3, 1); }
+.s-lead {
+  font-size: 16px; line-height: 1.65;
+  color: #4A5A78;
+  margin-bottom: 36px;
+  max-width: 680px;
+}
+
+/* ---------------------------------------------------------------- */
+/* TEST 1 — 4 AERO CÔTE À CÔTE                                      */
+/* ---------------------------------------------------------------- */
+.aero-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 56px;
+}
+.aero-cell {
+  display: flex; flex-direction: column;
+  background: white;
+  border: 1px solid rgba(26, 41, 64, 0.08);
+  border-radius: 6px;
+  overflow: hidden;
+  transition: all 280ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.aero-cell.is-active {
+  border-color: var(--aero);
+  box-shadow: 0 0 0 2px var(--aero-soft);
+  transform: translateY(-2px);
+}
+.aero-cell-color {
+  height: 200px;
+  position: relative;
+}
+.aero-cell-cta {
+  position: absolute;
+  bottom: 16px; left: 16px;
+  padding: 8px 16px;
+  background: white;
+  color: #1A2940;
+  border-radius: 100px;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 500; font-size: 12px;
+  display: flex; align-items: center; gap: 6px;
+}
+.aero-cell-meta {
+  padding: 18px 22px 22px;
+  border-top: 1px solid rgba(26, 41, 64, 0.06);
+}
+.aero-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: #A17964;
+  margin-bottom: 4px;
+}
+.aero-name {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: 18px;
+  line-height: 1.18;
+  margin-bottom: 8px;
+  color: #1A2940;
+}
+.aero-hex {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; font-weight: 500;
+  color: #1A2940;
+}
+.aero-temper {
+  font-size: 12px; line-height: 1.5;
+  color: #4A5A78;
+  margin-top: 8px;
+}
+
+/* ---------------------------------------------------------------- */
+/* TEST 2 — ENCRE COMME PRÉSENCE                                    */
+/* ---------------------------------------------------------------- */
+.encre-test {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(26, 41, 64, 0.08);
+}
+
+/* Header sticky en encre */
+.encre-header {
+  background: #1A2940;
+  padding: 22px 36px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.encre-header .logo {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: 22px; color: #FCFAF5;
+  letter-spacing: -0.01em;
+}
+.encre-header .nav-links {
+  display: flex; gap: 28px;
+}
+.encre-header .nav-links a {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 13px; font-weight: 500;
+  color: rgba(252, 250, 245, 0.85);
+  text-decoration: none;
+}
+.encre-header .nav-links a.active { color: #FCFAF5; }
+.encre-header .nav-cta {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 12px; font-weight: 500;
+  padding: 9px 18px;
+  border-radius: 100px;
+  background: var(--aero);
+  color: #1A2940;
+  text-decoration: none;
+  transition: all 220ms;
+}
+
+/* Section claire B4 sous le header */
+.encre-body {
+  background: #FCFAF5;
+  padding: 56px 48px;
+}
+.encre-body h3 {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: 32px; line-height: 1.1; letter-spacing: -0.02em;
+  margin-bottom: 16px;
+  color: #1A2940;
+  max-width: 600px;
+}
+.encre-body h3 em { color: var(--aero); }
+.encre-body p {
+  font-size: 15px; line-height: 1.65;
+  color: #4A5A78;
+  max-width: 600px;
+}
+
+/* Section sombre Encre comme présence */
+.encre-dark-section {
+  background: #1A2940;
+  color: #FCFAF5;
+  padding: 64px 48px;
+}
+.encre-dark-section .eyebrow-dark {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #A17964;
+  margin-bottom: 14px;
+  display: block;
+}
+.encre-dark-section h4 {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: 28px; line-height: 1.12; letter-spacing: -0.02em;
+  color: #FCFAF5;
+  max-width: 560px;
+  margin-bottom: 20px;
+}
+.encre-dark-section h4 em {
+  color: var(--aero);
+}
+.encre-dark-section p {
+  font-size: 14px; line-height: 1.65;
+  color: rgba(252, 250, 245, 0.7);
+  max-width: 540px;
+  margin-bottom: 24px;
+}
+.encre-dark-section .seal {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 10px 18px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 100px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: #FCFAF5;
+}
+.encre-dark-section .seal::before {
+  content: '';
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--aero);
+}
+
+/* ---------------------------------------------------------------- */
+/* TEST 3 — SCEAU LEXAIA                                            */
+/* ---------------------------------------------------------------- */
+.lexaia-seal {
+  display: grid;
+  grid-template-columns: 60% 40%;
+  background: #FCFAF5;
+  border: 1px solid rgba(26, 41, 64, 0.08);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.ls-content {
+  padding: 40px 36px;
+  border-right: 1px solid rgba(26, 41, 64, 0.06);
+}
+.ls-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #A17964;
+  display: block;
+  margin-bottom: 12px;
+}
+.ls-doc-info {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-size: 13px;
+  color: #4A5A78;
+  margin-bottom: 20px;
+}
+.ls-title {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: 28px; line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 14px;
+  color: #1A2940;
+}
+.ls-title em { color: var(--aero); }
+.ls-recipient {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: #4A5A78;
+  margin-bottom: 24px;
+}
+.ls-figures {
+  display: flex; gap: 32px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(26, 41, 64, 0.08);
+}
+.ls-figure {
+  display: flex; flex-direction: column; gap: 4px;
+}
+.ls-figure .lbl {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: #4A5A78;
+}
+.ls-figure .val {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500; font-size: 18px;
+  color: #1A2940;
+}
+.ls-figure.recommended .val { color: var(--aero); }
+
+.ls-side {
+  background: #1A2940;
+  padding: 40px 36px;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.ls-side-eye {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #A17964;
+  margin-bottom: 12px;
+}
+.ls-side-quote {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: 22px; line-height: 1.3;
+  color: #FCFAF5;
+  margin-bottom: 18px;
+}
+.ls-side-quote em { color: var(--aero); }
+.ls-side-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: rgba(252, 250, 245, 0.55);
+}
+
+/* ---------------------------------------------------------------- */
+/* TEST 4 — SPÉCIFICITÉ CHYPRIOTE                                   */
+/* ---------------------------------------------------------------- */
+.cyprus-test {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(26, 41, 64, 0.08);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.cyprus-photo {
+  aspect-ratio: 1 / 1;
+  background-image: url('assets/photos/hero-d2-horizon.jpg');
+  background-size: cover;
+  background-position: center;
+}
+.cyprus-content {
+  background: #FCFAF5;
+  padding: 48px 40px;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.cyprus-content .eye-c {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #A17964;
+  display: block;
+  margin-bottom: 12px;
+}
+.cyprus-content h4 {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: 28px; line-height: 1.1; letter-spacing: -0.02em;
+  margin-bottom: 16px;
+  color: #1A2940;
+}
+.cyprus-content h4 em { color: var(--aero); }
+.cyprus-content p {
+  font-size: 14px; line-height: 1.65;
+  color: #4A5A78;
+  margin-bottom: 24px;
+}
+.cyprus-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 22px;
+  background: var(--aero);
+  color: white;
+  border-radius: 100px;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 500; font-size: 13px;
+  text-decoration: none;
+  width: fit-content;
+  transition: transform 220ms;
+}
+.cyprus-cta:hover { transform: translateY(-1px); }
+
+/* ---------------------------------------------------------------- */
+/* VERDICT                                                          */
+/* ---------------------------------------------------------------- */
+.verdict {
+  background: #FCFAF5;
+  border: 1px solid rgba(26, 41, 64, 0.08);
+  border-radius: 8px;
+  padding: 48px;
+}
+.verdict-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #A17964;
+  margin-bottom: 16px; display: block;
+}
+.verdict h2 {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: 36px; line-height: 1.08; letter-spacing: -0.02em;
+  margin-bottom: 20px;
+  max-width: 720px;
+}
+.verdict h2 em { color: var(--aero); }
+.verdict p {
+  font-size: 15px; line-height: 1.7;
+  color: #4A5A78;
+  max-width: 640px;
+  margin-bottom: 14px;
+}
+.verdict strong { color: #1A2940; font-weight: 500; }
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .wrap { padding: 80px 24px 80px; }
+  .toolbar { flex-wrap: wrap; max-width: calc(100% - 32px); }
+  .toolbar .btn { padding: 8px 12px; font-size: 10px; }
+  .aero-grid { grid-template-columns: 1fr 1fr; }
+  .lexaia-seal { grid-template-columns: 1fr; }
+  .cyprus-test { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body data-aero="a1">
+
+<!-- TOOLBAR : 4 BOUTONS POUR TOGGLER L'AERO -->
+<div class="toolbar">
+  <button class="btn active" data-aero="a1">
+    <span class="swatch-mini" style="background: #57B9D6;"></span>
+    A1 · Actuel
+  </button>
+  <button class="btn" data-aero="a2">
+    <span class="swatch-mini" style="background: #3D8FB0;"></span>
+    A2
+  </button>
+  <button class="btn" data-aero="a3">
+    <span class="swatch-mini" style="background: #2D7B9C;"></span>
+    A3
+  </button>
+  <button class="btn" data-aero="a4">
+    <span class="swatch-mini" style="background: #1F6B8F;"></span>
+    A4 · Profond
+  </button>
+</div>
+
+<div class="wrap">
+
+  <header style="margin-bottom: 32px;">
+    <span class="eyebrow">Round critique · Couche 5 · 28 avril 2026</span>
+    <h1>Quatre Aero, <em>Encre comme présence</em>.</h1>
+    <p class="intro">
+      Mon objection sur la palette précédente : <strong>Aero <code>#57B9D6</code> est trop léger pour porter la moitié "sérieux + puissance + rectitude" du brief en 20 mots</strong>. Ce round teste 3 alternatives plus profondes au même hue, et promeut <strong>Encre profonde <code>#1A2940</code></strong> comme couleur de présence visible (sections sombres, header sticky, sceau Lexaia) plutôt que comme simple texte.
+    </p>
+    <p class="intro">
+      Toggle entre les 4 candidats Aero en haut de page. Tu juges sur 4 contextes : le système nu, l'encre comme présence, le sceau Lexaia, et un test de spécificité chypriote. La couleur active est synchronisée partout sur la page.
+    </p>
+    <div class="current-id">
+      <span class="dot"></span>
+      <span class="label" id="current-label">Aero actif · A1 · #57B9D6 · Lumineux léger</span>
+    </div>
+  </header>
+
+  <!-- TEST 1 — 4 AERO CÔTE À CÔTE -->
+  <section class="first">
+    <span class="s-eyebrow">01 · Quatre Aero · du léger au profond</span>
+    <h2 class="s-title">Le bleu actuel <em>vs</em> trois alternatives plus posées.</h2>
+    <p class="s-lead">À gauche, l'Aero actuel <code>#57B9D6</code> en hue 220° lumineux. À droite, trois candidats progressivement plus profonds, qui apportent davantage d'autorité maritime sans glisser vers le marine corporate. Le candidat actif est encadré et synchronisé sur tous les autres tests de la page.</p>
+
+    <div class="aero-grid">
+      <div class="aero-cell is-active" data-cell-aero="a1">
+        <div class="aero-cell-color" style="background: #57B9D6;">
+          <div class="aero-cell-cta">Démarrer →</div>
+        </div>
+        <div class="aero-cell-meta">
+          <div class="aero-id">A1 · Actuel</div>
+          <div class="aero-name">Aero clair</div>
+          <div class="aero-hex">#57B9D6</div>
+          <p class="aero-temper">Lumineux léger. Joie de vivre. Risque : dilue le sérieux.</p>
+        </div>
+      </div>
+
+      <div class="aero-cell" data-cell-aero="a2">
+        <div class="aero-cell-color" style="background: #3D8FB0;">
+          <div class="aero-cell-cta">Démarrer →</div>
+        </div>
+        <div class="aero-cell-meta">
+          <div class="aero-id">A2</div>
+          <div class="aero-name">Aero méditerranéen</div>
+          <div class="aero-hex">#3D8FB0</div>
+          <p class="aero-temper">Bleu vrai, posé sans être grave. Ancre la marque sans la lester.</p>
+        </div>
+      </div>
+
+      <div class="aero-cell" data-cell-aero="a3">
+        <div class="aero-cell-color" style="background: #2D7B9C;">
+          <div class="aero-cell-cta">Démarrer →</div>
+        </div>
+        <div class="aero-cell-meta">
+          <div class="aero-id">A3</div>
+          <div class="aero-name">Aero profond</div>
+          <div class="aero-hex">#2D7B9C</div>
+          <p class="aero-temper">Bleu autorité. Ressemble au bleu des azulejos, des fresques. Plus de gravité.</p>
+        </div>
+      </div>
+
+      <div class="aero-cell" data-cell-aero="a4">
+        <div class="aero-cell-color" style="background: #1F6B8F;">
+          <div class="aero-cell-cta">Démarrer →</div>
+        </div>
+        <div class="aero-cell-meta">
+          <div class="aero-id">A4 · Profond</div>
+          <div class="aero-name">Aero pétrole</div>
+          <div class="aero-hex">#1F6B8F</div>
+          <p class="aero-temper">Bleu marine vrai. Sérieux maximum. Risque : trop banque privée.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEST 2 — ENCRE COMME PRÉSENCE -->
+  <section>
+    <span class="s-eyebrow">02 · Encre profonde comme présence visuelle</span>
+    <h2 class="s-title">Header sticky encre, section sombre, contraste avec <em>papier bible</em>.</h2>
+    <p class="s-lead">Dans la palette précédente, Encre profonde <code>#1A2940</code> n'existait que comme texte. Ici, elle devient surface visible : header sticky, section sombre dédiée (« Pourquoi ENKI »), sceau Lexaia. C'est ce qui apporte la verticalité, la rectitude, l'autorité. Le contraste papier bible / encre profonde structure la page en deux registres.</p>
+
+    <div class="encre-test">
+      <!-- Header en encre -->
+      <div class="encre-header">
+        <div class="logo" aria-label="ENKI Realty">ΣNKI Realty</div>
+        <div class="nav-links">
+          <a href="#" class="active">Propriétés</a>
+          <a href="#">Lexaia</a>
+          <a href="#">À propos</a>
+        </div>
+        <a class="nav-cta" href="#">Espace personnel</a>
+      </div>
+
+      <!-- Body en B4 -->
+      <div class="encre-body">
+        <h3>Trouvez votre place <em>à Chypre</em>.</h3>
+        <p>Sur fond papier bible, le texte respire. Le header reste en présence permanente au-dessus, signalant l'autorité de la marque sans la crier.</p>
+      </div>
+
+      <!-- Section sombre encre comme présence -->
+      <div class="encre-dark-section">
+        <span class="eyebrow-dark">Pourquoi choisir ENKI</span>
+        <h4>Une plateforme conversationnelle, pas un moteur de recherche, <em>portée par des humains</em>.</h4>
+        <p>L'encre profonde tient ici le rôle de signature institutionnelle : la marque s'arrête sur ce qu'elle est, pose son cadre, parle de fond. Le scroll continue ensuite vers le papier bible. Deux registres distincts, parfaitement articulés.</p>
+        <div class="seal">Lexaia v1 · documents patrimoniaux signés</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEST 3 — SCEAU LEXAIA -->
+  <section>
+    <span class="s-eyebrow">03 · Le sceau Lexaia</span>
+    <h2 class="s-title">L'encre comme contrepoint <em>du papier bible</em>.</h2>
+    <p class="s-lead">Sur Lexaia, le ratio 60/40 oppose le contenu factuel sur fond papier (les chiffres, les scénarios) à un contrepoint encre à droite (la voix de l'agent, la signature institutionnelle). C'est la partition qui dit "votre argent est protégé" sans avoir à l'écrire.</p>
+
+    <div class="lexaia-seal">
+      <div class="ls-content">
+        <span class="ls-meta">Lexaia · document patrimonial</span>
+        <div class="ls-doc-info">Émis le 27 avril 2026 · Valable 6 mois</div>
+        <h3 class="ls-title">Trois scénarios pour votre acquisition à <em>Coral Bay</em>.</h3>
+        <div class="ls-recipient">Pour Marie L. · résidente fiscale française · Lyon</div>
+
+        <div class="ls-figures">
+          <div class="ls-figure">
+            <span class="lbl">Scénario A</span>
+            <span class="val">14 315 €</span>
+          </div>
+          <div class="ls-figure recommended">
+            <span class="lbl">Scénario B · Recommandé</span>
+            <span class="val">21 680 €</span>
+          </div>
+          <div class="ls-figure">
+            <span class="lbl">Scénario C</span>
+            <span class="val">21 420 €</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ls-side">
+        <span class="ls-side-eye">ENKI · vous lit Lexaia</span>
+        <p class="ls-side-quote">Le scénario B est <em>légèrement plus favorable</em> que C, et plus simple administrativement.</p>
+        <div class="ls-side-meta">— ENKI Agent · 12h47</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEST 4 — SPÉCIFICITÉ CHYPRIOTE -->
+  <section>
+    <span class="s-eyebrow">04 · Test de spécificité chypriote</span>
+    <h2 class="s-title">Est-ce qu'on dit <em>"Chypre"</em> en 2 secondes ?</h2>
+    <p class="s-lead">La photo signature ENKI à gauche (chaise cognac, mer, horizon turquoise). La palette à droite. Quand un acheteur français arrive sur ENKI, en 2 secondes son cerveau dit "Chypre" ou "encore une plateforme SaaS bien designée" ? La photo ancre la géographie. La palette doit dialoguer avec elle, pas la contredire.</p>
+
+    <div class="cyprus-test">
+      <div class="cyprus-photo"></div>
+      <div class="cyprus-content">
+        <span class="eye-c">Coral Bay · Paphos</span>
+        <h4>Trois chambres, <em>vue mer franche</em>, livré Q4 2027.</h4>
+        <p>L'Aero du CTA dialogue-t-il avec le turquoise de la mer ? Ou se bat-il avec ? Si le bleu du CTA tire vers le pétrole, l'opposition photo / système chromatique devient compétition. Si l'Aero reste lumineux, il harmonise. C'est le test de cohérence le plus important du round.</p>
+        <a href="#" class="cyprus-cta">Visiter le programme →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- VERDICT -->
+  <section>
+    <div class="verdict">
+      <span class="verdict-eyebrow">Verdict · à choisir par Jean-Marie</span>
+      <h2>Mon avis tranché après ce round critique.</h2>
+      <p><strong>A1 actuel <code>#57B9D6</code></strong> — joli, lumineux, mais reste léger. Bonne harmonie avec la photo signature, dilue le sérieux.</p>
+      <p><strong>A2 méditerranéen <code>#3D8FB0</code></strong> — mon préféré objectivement. Bleu vrai, posé sans être grave, dialogue toujours bien avec la mer chypriote. Apporte l'autorité qui manquait sans tuer la modernité.</p>
+      <p><strong>A3 profond <code>#2D7B9C</code></strong> — bleu des azulejos, des fresques. Très chypriote/méditerranéen historique. Plus de gravité, risque léger de basculer vers patrimonial-conservateur.</p>
+      <p><strong>A4 pétrole <code>#1F6B8F</code></strong> — bleu marine vrai. Sérieux maximum, mais on tombe dans Lombard Odier / banque privée, on perd la modernité.</p>
+      <p style="margin-top: 24px;"><strong>Si je devais voter, je dirais A2.</strong> Mais ton œil prime. Toggle, regarde, sens. Tu me dis quel candidat tu retiens et je verrouille la Couche 5.</p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const body = document.body;
+const buttons = document.querySelectorAll('.toolbar .btn');
+const cells = document.querySelectorAll('.aero-cell');
+const labelMap = {
+  a1: 'Aero actif · A1 · #57B9D6 · Lumineux léger',
+  a2: 'Aero actif · A2 · #3D8FB0 · Méditerranéen posé',
+  a3: 'Aero actif · A3 · #2D7B9C · Profond azulejos',
+  a4: 'Aero actif · A4 · #1F6B8F · Pétrole marine'
+};
+
+function applyAero(aero) {
+  body.dataset.aero = aero;
+  buttons.forEach(b => b.classList.toggle('active', b.dataset.aero === aero));
+  cells.forEach(c => c.classList.toggle('is-active', c.dataset.cellAero === aero));
+  document.getElementById('current-label').textContent = labelMap[aero];
+  localStorage.setItem('enki-aero-round', aero);
+}
+
+buttons.forEach(btn => btn.addEventListener('click', () => applyAero(btn.dataset.aero)));
+cells.forEach(cell => cell.addEventListener('click', () => applyAero(cell.dataset.cellAero)));
+
+const saved = localStorage.getItem('enki-aero-round');
+if (saved) applyAero(saved);
+</script>
+</body>
+</html>

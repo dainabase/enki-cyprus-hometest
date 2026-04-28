@@ -1,0 +1,3050 @@
+<!DOCTYPE html>
+<html lang="fr" data-direction="d2" data-mode="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brand Book v3 — ENKI Realty · Couche 5 Color & Layout</title>
+<meta name="description" content="Brand book Couche 5 — trois directions chromatiques creusées en mockups réels, light + dark, densité éditoriale Monocle, architecture conversation continue avec calques.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+<style>
+/* ---------------------------------------------------------------- */
+/* RESET                                                            */
+/* ---------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { font-family: var(--font-sans); font-size: 17px; line-height: 1.6; color: var(--fg); background: var(--bg); transition: background 380ms var(--ease-out-expo), color 380ms var(--ease-out-expo); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; font-feature-settings: 'kern' 1, 'ss01' 1; }
+img { max-width: 100%; display: block; }
+button { font: inherit; color: inherit; cursor: pointer; background: none; border: none; }
+a { color: inherit; text-decoration: none; }
+
+/* ---------------------------------------------------------------- */
+/* ROOT TOKENS — 3 DIRECTIONS × LIGHT/DARK                          */
+/* ---------------------------------------------------------------- */
+:root {
+  /* DIRECTION 1 — CALCAIRE & LAGUNE */
+  --d1-light-bg: #F0E8D6;
+  --d1-light-card: #FAF5E8;
+  --d1-light-fg: #1A2520;
+  --d1-light-muted-fg: #7A6F5C;
+  --d1-light-border: #D6C9AC;
+  --d1-light-accent: #5FC2BA;
+  --d1-light-accent-deep: #27C7D4;
+  --d1-light-accent-warm: #B88555;
+
+  --d1-dark-bg: #0E1612;
+  --d1-dark-card: #1A2520;
+  --d1-dark-fg: #EDE5D0;
+  --d1-dark-muted-fg: #9C8F76;
+  --d1-dark-border: #2A3A33;
+  --d1-dark-accent: #6FD8CC;
+  --d1-dark-accent-deep: #3DD9E5;
+  --d1-dark-accent-warm: #C9966A;
+
+  /* DIRECTION 2 — CALCAIRE & ABZU */
+  --d2-light-bg: #F8F4EC;
+  --d2-light-card: #FCFAF5;
+  --d2-light-fg: #0F1E2E;
+  --d2-light-muted-fg: #525A6B;
+  --d2-light-border: #DBD5C8;
+  --d2-light-accent: #27C7D4;
+  --d2-light-accent-soft: #5FC2BA;
+  --d2-light-accent-warm: #B88555;
+
+  --d2-dark-bg: #060D17;
+  --d2-dark-card: #0F1E2E;
+  --d2-dark-fg: #F2EDDF;
+  --d2-dark-muted-fg: #A89E89;
+  --d2-dark-border: #1F2D44;
+  --d2-dark-accent: #3DD9E5;
+  --d2-dark-accent-soft: #5FC2BA;
+  --d2-dark-accent-warm: #C9966A;
+
+  /* DIRECTION 3 — LAGUNE SOLAIRE */
+  --d3-light-bg: #FAF6ED;
+  --d3-light-card: #FEFCF6;
+  --d3-light-fg: #1A1612;
+  --d3-light-muted-fg: #7A6E5C;
+  --d3-light-border: #DFD6C2;
+  --d3-light-accent: #27C7D4;
+  --d3-light-accent-soft: #76CDCD;
+  --d3-light-accent-warm: #B88547;
+
+  --d3-dark-bg: #100D08;
+  --d3-dark-card: #1A1612;
+  --d3-dark-fg: #F5F0E2;
+  --d3-dark-muted-fg: #A89E89;
+  --d3-dark-border: #2D2620;
+  --d3-dark-accent: #3DD9E5;
+  --d3-dark-accent-soft: #76CDCD;
+  --d3-dark-accent-warm: #C9966A;
+
+  /* TYPOGRAPHY */
+  --font-sans: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-serif: 'Schibsted Grotesk', Georgia, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+
+  /* SPACING — 8px MULTIPLES */
+  --s1: 4px;   --s2: 8px;   --s3: 16px;  --s4: 24px;
+  --s5: 32px;  --s6: 48px;  --s7: 64px;  --s8: 96px;
+  --s9: 128px; --s10: 192px; --s11: 256px;
+
+  /* EASINGS — VOCABULAIRE COUCHE 3 */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+
+  /* DEFAULTS = D2 LIGHT */
+  --bg: var(--d2-light-bg);
+  --card: var(--d2-light-card);
+  --fg: var(--d2-light-fg);
+  --muted-fg: var(--d2-light-muted-fg);
+  --border: var(--d2-light-border);
+  --accent: var(--d2-light-accent);
+  --accent-soft: var(--d2-light-accent-soft);
+  --accent-warm: var(--d2-light-accent-warm);
+}
+
+/* ---------------------------------------------------------------- */
+/* GLOBAL DIRECTION + MODE                                          */
+/* ---------------------------------------------------------------- */
+body[data-direction="d1"][data-mode="light"], .scope-d1[data-mode="light"] {
+  --bg: var(--d1-light-bg); --card: var(--d1-light-card); --fg: var(--d1-light-fg);
+  --muted-fg: var(--d1-light-muted-fg); --border: var(--d1-light-border);
+  --accent: var(--d1-light-accent); --accent-soft: var(--d1-light-accent-deep); --accent-warm: var(--d1-light-accent-warm);
+}
+body[data-direction="d1"][data-mode="dark"], .scope-d1[data-mode="dark"] {
+  --bg: var(--d1-dark-bg); --card: var(--d1-dark-card); --fg: var(--d1-dark-fg);
+  --muted-fg: var(--d1-dark-muted-fg); --border: var(--d1-dark-border);
+  --accent: var(--d1-dark-accent); --accent-soft: var(--d1-dark-accent-deep); --accent-warm: var(--d1-dark-accent-warm);
+}
+body[data-direction="d2"][data-mode="light"], .scope-d2[data-mode="light"] {
+  --bg: var(--d2-light-bg); --card: var(--d2-light-card); --fg: var(--d2-light-fg);
+  --muted-fg: var(--d2-light-muted-fg); --border: var(--d2-light-border);
+  --accent: var(--d2-light-accent); --accent-soft: var(--d2-light-accent-soft); --accent-warm: var(--d2-light-accent-warm);
+}
+body[data-direction="d2"][data-mode="dark"], .scope-d2[data-mode="dark"] {
+  --bg: var(--d2-dark-bg); --card: var(--d2-dark-card); --fg: var(--d2-dark-fg);
+  --muted-fg: var(--d2-dark-muted-fg); --border: var(--d2-dark-border);
+  --accent: var(--d2-dark-accent); --accent-soft: var(--d2-dark-accent-soft); --accent-warm: var(--d2-dark-accent-warm);
+}
+body[data-direction="d3"][data-mode="light"], .scope-d3[data-mode="light"] {
+  --bg: var(--d3-light-bg); --card: var(--d3-light-card); --fg: var(--d3-light-fg);
+  --muted-fg: var(--d3-light-muted-fg); --border: var(--d3-light-border);
+  --accent: var(--d3-light-accent); --accent-soft: var(--d3-light-accent-soft); --accent-warm: var(--d3-light-accent-warm);
+}
+body[data-direction="d3"][data-mode="dark"], .scope-d3[data-mode="dark"] {
+  --bg: var(--d3-dark-bg); --card: var(--d3-dark-card); --fg: var(--d3-dark-fg);
+  --muted-fg: var(--d3-dark-muted-fg); --border: var(--d3-dark-border);
+  --accent: var(--d3-dark-accent); --accent-soft: var(--d3-dark-accent-soft); --accent-warm: var(--d3-dark-accent-warm);
+}
+
+.scope { background: var(--bg); color: var(--fg); transition: background 380ms var(--ease-out-expo), color 380ms var(--ease-out-expo); }
+
+/* ---------------------------------------------------------------- */
+/* TYPOGRAPHY UTILITIES                                             */
+/* ---------------------------------------------------------------- */
+.eyebrow { font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted-fg); }
+.eyebrow.lg { font-size: 13px; }
+.serif { font-family: var(--font-serif); }
+.mono { font-family: var(--font-mono); font-feature-settings: 'tnum' 1; font-variant-numeric: tabular-nums; }
+.italic { font-style: italic; }
+
+.display { font-family: var(--font-serif); font-weight: 500; line-height: 1.02; letter-spacing: -0.025em; font-style: italic; }
+.display.l1 { font-size: clamp(64px, 9vw, 132px); }
+.display.l2 { font-size: clamp(48px, 6.5vw, 96px); }
+.display.l3 { font-size: clamp(40px, 5vw, 72px); }
+
+.title-1 { font-family: var(--font-serif); font-size: clamp(48px, 5vw, 72px); line-height: 1.08; letter-spacing: -0.02em; font-weight: 500; }
+.title-2 { font-family: var(--font-serif); font-size: clamp(36px, 3.5vw, 48px); line-height: 1.14; letter-spacing: -0.015em; font-weight: 500; }
+.title-3 { font-family: var(--font-sans); font-size: 32px; line-height: 1.22; letter-spacing: -0.01em; font-weight: 500; }
+.title-4 { font-family: var(--font-sans); font-size: 24px; line-height: 1.3; letter-spacing: -0.005em; font-weight: 500; }
+.title-5 { font-family: var(--font-sans); font-size: 20px; line-height: 1.35; font-weight: 600; }
+
+.lead { font-family: var(--font-sans); font-size: 22px; line-height: 1.55; letter-spacing: -0.005em; font-weight: 400; color: var(--fg); }
+.body { font-size: 17px; line-height: 1.65; color: var(--fg); }
+.body-sm { font-size: 14px; line-height: 1.55; color: var(--muted-fg); }
+.body-xs { font-size: 12px; line-height: 1.5; color: var(--muted-fg); }
+.data { font-family: var(--font-mono); font-feature-settings: 'tnum' 1; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+
+p + p { margin-top: 1.1em; }
+.muted { color: var(--muted-fg); }
+
+/* ---------------------------------------------------------------- */
+/* LAYOUT UTILITIES                                                 */
+/* ---------------------------------------------------------------- */
+.container { max-width: 1440px; margin: 0 auto; padding-left: clamp(24px, 6vw, 96px); padding-right: clamp(24px, 6vw, 96px); width: 100%; }
+.container.narrow { max-width: 1200px; }
+.container.wide { max-width: 1600px; }
+.section { padding-top: clamp(96px, 12vw, 160px); padding-bottom: clamp(96px, 12vw, 160px); }
+.section.compact { padding-top: clamp(64px, 8vw, 96px); padding-bottom: clamp(64px, 8vw, 96px); }
+.section.full-bleed { padding-left: 0; padding-right: 0; }
+
+.grid-12 { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: clamp(16px, 2vw, 32px); }
+.flex-row { display: flex; align-items: center; }
+.flex-col { display: flex; flex-direction: column; }
+.gap-1 { gap: var(--s1); } .gap-2 { gap: var(--s2); } .gap-3 { gap: var(--s3); }
+.gap-4 { gap: var(--s4); } .gap-5 { gap: var(--s5); } .gap-6 { gap: var(--s6); }
+.gap-7 { gap: var(--s7); } .gap-8 { gap: var(--s8); }
+
+.divider { border: 0; border-top: 1px solid var(--border); opacity: 0.5; }
+
+/* Spans for 12-col grid */
+.col-3 { grid-column: span 3; } .col-4 { grid-column: span 4; }
+.col-5 { grid-column: span 5; } .col-6 { grid-column: span 6; }
+.col-7 { grid-column: span 7; } .col-8 { grid-column: span 8; }
+.col-9 { grid-column: span 9; } .col-12 { grid-column: span 12; }
+
+@media (max-width: 1024px) {
+  .col-md-12 { grid-column: span 12; }
+  .col-md-6 { grid-column: span 6; }
+}
+@media (max-width: 720px) {
+  .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9 { grid-column: span 12; }
+}
+
+/* ---------------------------------------------------------------- */
+/* TOOLBAR                                                          */
+/* ---------------------------------------------------------------- */
+.toolbar { position: fixed; top: 24px; right: 24px; z-index: 100; display: flex; gap: 4px; padding: 6px; background: var(--card); border: 1px solid var(--border); border-radius: 100px; box-shadow: 0 12px 40px -12px rgba(0,0,0,0.18), 0 2px 8px -2px rgba(0,0,0,0.06); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); transition: all 300ms var(--ease-out-expo); }
+.toolbar .group { display: flex; gap: 2px; align-items: center; }
+.toolbar .sep { width: 1px; height: 20px; background: var(--border); margin: 0 4px; }
+.toolbar button { padding: 7px 14px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; color: var(--muted-fg); border-radius: 100px; transition: all 220ms var(--ease-out-expo); }
+.toolbar button:hover { color: var(--fg); }
+.toolbar button.active { background: var(--fg); color: var(--bg); }
+.toolbar a.anchor-link { padding: 7px 14px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; color: var(--muted-fg); border-radius: 100px; transition: color 220ms var(--ease-out-expo); }
+.toolbar a.anchor-link:hover { color: var(--accent); }
+
+/* ---------------------------------------------------------------- */
+/* COVER (S1)                                                       */
+/* ---------------------------------------------------------------- */
+.cover { min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; padding-top: 80px; padding-bottom: 64px; position: relative; overflow: hidden; }
+.cover::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(ellipse at 80% 20%, color-mix(in oklab, var(--accent) 12%, transparent) 0%, transparent 60%); pointer-events: none; }
+.cover .crest { display: flex; align-items: baseline; justify-content: space-between; gap: 64px; }
+.cover .crest-left { display: flex; align-items: baseline; gap: 24px; }
+.cover .logo { font-family: var(--font-serif); font-style: italic; font-weight: 500; font-size: 28px; letter-spacing: -0.02em; }
+.cover .meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted-fg); }
+.cover h1 { font-family: var(--font-serif); font-style: italic; font-weight: 500; line-height: 0.96; letter-spacing: -0.035em; font-size: clamp(72px, 12.5vw, 196px); margin-top: -0.05em; }
+.cover h1 .accent-word { font-style: italic; color: var(--accent); }
+.cover .lead-text { max-width: 640px; font-size: 19px; line-height: 1.55; color: var(--fg); margin-top: 32px; }
+.cover .footer-strip { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 32px; padding-top: 48px; border-top: 1px solid var(--border); }
+.cover .footer-strip > div { display: flex; flex-direction: column; gap: 8px; }
+.cover .footer-strip strong { font-family: var(--font-sans); font-weight: 500; font-size: 14px; }
+
+/* ---------------------------------------------------------------- */
+/* SECTION HEADERS (eyebrow + title 1 + lead)                       */
+/* ---------------------------------------------------------------- */
+.s-head { margin-bottom: 64px; }
+.s-head .eyebrow { display: block; margin-bottom: 16px; }
+.s-head .lead { margin-top: 24px; max-width: 720px; }
+.s-num { font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted-fg); padding-bottom: 32px; border-bottom: 1px solid var(--border); display: block; margin-bottom: 64px; }
+
+/* ---------------------------------------------------------------- */
+/* BRIEF RESET (S2)                                                 */
+/* ---------------------------------------------------------------- */
+.brief-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 64px; }
+.brief-block .pp { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-warm); margin-bottom: 16px; }
+.brief-block h3 { font-family: var(--font-serif); font-style: italic; font-size: 32px; line-height: 1.1; margin-bottom: 20px; }
+.brief-block p { font-size: 16px; line-height: 1.65; color: var(--fg); }
+.brief-block + .brief-block { padding-left: 32px; border-left: 1px solid var(--border); }
+
+@media (max-width: 1024px) {
+  .brief-grid { grid-template-columns: 1fr; gap: 32px; }
+  .brief-block + .brief-block { padding-left: 0; padding-top: 32px; border-left: 0; border-top: 1px solid var(--border); }
+}
+
+/* ---------------------------------------------------------------- */
+/* VERROUS (S3)                                                     */
+/* ---------------------------------------------------------------- */
+.verrou-list { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-top: 1px solid var(--border); }
+.verrou { display: grid; grid-template-columns: auto 1fr; gap: 32px; padding: 40px 32px 40px 0; border-bottom: 1px solid var(--border); }
+.verrou:nth-child(odd) { padding-right: 48px; }
+.verrou:nth-child(even) { padding-left: 48px; border-left: 1px solid var(--border); }
+.verrou .num { font-family: var(--font-mono); font-size: 56px; font-weight: 200; letter-spacing: -0.04em; color: var(--accent); line-height: 0.85; font-feature-settings: 'tnum' 1; }
+.verrou h4 { font-family: var(--font-sans); font-size: 18px; font-weight: 600; line-height: 1.3; margin-bottom: 8px; }
+.verrou p { font-size: 14px; line-height: 1.55; color: var(--muted-fg); }
+
+@media (max-width: 1024px) {
+  .verrou-list { grid-template-columns: 1fr; }
+  .verrou:nth-child(odd), .verrou:nth-child(even) { padding-right: 0; padding-left: 0; border-left: 0; }
+}
+
+/* ---------------------------------------------------------------- */
+/* DIRECTION HEADER                                                 */
+/* ---------------------------------------------------------------- */
+.dir-header { min-height: 50vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 96px 0 64px; position: relative; }
+.dir-header .top-bar { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 56px; gap: 48px; }
+.dir-header .top-bar .label { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted-fg); }
+.dir-header h2 { font-family: var(--font-serif); font-style: italic; font-weight: 500; font-size: clamp(72px, 11vw, 168px); line-height: 0.92; letter-spacing: -0.035em; }
+.dir-header h2 em { font-style: italic; color: var(--accent); }
+.dir-header .lead-text { font-size: 21px; line-height: 1.55; max-width: 720px; margin-top: 32px; color: var(--fg); }
+.dir-header .meta-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--border); }
+.dir-header .meta-bar div { display: flex; flex-direction: column; gap: 6px; }
+
+/* MODE toggle local */
+.mode-toggle { display: inline-flex; padding: 4px; background: color-mix(in oklab, var(--card) 80%, transparent); border: 1px solid var(--border); border-radius: 100px; gap: 2px; }
+.mode-toggle button { padding: 6px 14px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500; color: var(--muted-fg); border-radius: 100px; transition: all 220ms var(--ease-out-expo); }
+.mode-toggle button.active { background: var(--fg); color: var(--bg); }
+
+/* ---------------------------------------------------------------- */
+/* TOKENS (4.B etc)                                                 */
+/* ---------------------------------------------------------------- */
+.tokens-block { padding-top: 96px; padding-bottom: 96px; border-top: 1px solid var(--border); }
+.tokens-block h3 { margin-bottom: 48px; font-family: var(--font-serif); font-style: italic; font-size: 40px; line-height: 1.1; }
+.tokens-block .modes-row { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; }
+.tokens-block .mode-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted-fg); margin-bottom: 24px; }
+.tokens-block .swatch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.swatch { display: flex; flex-direction: column; gap: 10px; }
+.swatch .chip { width: 100%; aspect-ratio: 4/2.7; border-radius: 4px; border: 1px solid var(--border); box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.04); }
+.swatch .name { font-family: var(--font-sans); font-weight: 500; font-size: 13px; line-height: 1.3; }
+.swatch .role { font-family: var(--font-serif); font-style: italic; font-size: 12px; color: var(--muted-fg); line-height: 1.35; }
+.swatch .codes { display: flex; flex-direction: column; gap: 2px; }
+.swatch .hex { font-family: var(--font-mono); font-size: 13px; font-weight: 500; }
+.swatch .oklch { font-family: var(--font-mono); font-size: 11px; color: var(--muted-fg); }
+
+@media (max-width: 1024px) {
+  .tokens-block .modes-row { grid-template-columns: 1fr; }
+}
+
+/* ---------------------------------------------------------------- */
+/* MOCKUP CHROME — frame + label                                    */
+/* ---------------------------------------------------------------- */
+.mockup-block { padding-top: 96px; padding-bottom: 96px; border-top: 1px solid var(--border); }
+.mockup-block .mh { margin-bottom: 32px; display: flex; justify-content: space-between; align-items: baseline; gap: 32px; }
+.mockup-block .mh .left { max-width: 720px; }
+.mockup-block .mh h3 { font-family: var(--font-serif); font-style: italic; font-size: 40px; line-height: 1.08; margin-bottom: 16px; }
+.mockup-block .mh p { font-size: 15px; color: var(--muted-fg); line-height: 1.5; }
+.mockup-block .mh .badge { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted-fg); padding: 6px 12px; border: 1px solid var(--border); border-radius: 100px; }
+
+.mockup-frame { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--card); position: relative; box-shadow: 0 24px 64px -28px rgba(0,0,0,0.2), 0 4px 16px -8px rgba(0,0,0,0.05); }
+.mockup-frame.no-frame { border: 0; box-shadow: none; }
+.mockup-titlebar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; background: color-mix(in oklab, var(--bg) 70%, var(--card)); border-bottom: 1px solid var(--border); }
+.mockup-titlebar .dots { display: flex; gap: 6px; }
+.mockup-titlebar .dot { width: 11px; height: 11px; border-radius: 50%; background: var(--border); }
+.mockup-titlebar .url { font-family: var(--font-mono); font-size: 11px; color: var(--muted-fg); margin-left: 16px; padding: 2px 10px; background: color-mix(in oklab, var(--bg) 70%, var(--card)); border-radius: 100px; flex: 1; max-width: 480px; }
+
+/* ---------------------------------------------------------------- */
+/* HERO MOCKUP (état A)                                             */
+/* ---------------------------------------------------------------- */
+.hero-mock { position: relative; min-height: 720px; background: var(--card); }
+.hero-mock .hero-photo { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.hero-mock .hero-photo::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, color-mix(in oklab, var(--bg) 30%, transparent) 0%, color-mix(in oklab, var(--bg) 80%, transparent) 75%, color-mix(in oklab, var(--bg) 92%, transparent) 100%); }
+.hero-mock .hero-nav { position: absolute; top: 0; left: 0; right: 0; padding: 24px 48px; display: flex; align-items: center; justify-content: space-between; z-index: 2; }
+.hero-mock .hero-nav .logo-mark { font-family: var(--font-serif); font-style: italic; font-weight: 500; font-size: 22px; color: var(--fg); letter-spacing: -0.01em; }
+.hero-mock .hero-nav .nav-links { display: flex; gap: 32px; }
+.hero-mock .hero-nav .nav-links a { font-family: var(--font-sans); font-size: 14px; font-weight: 500; color: var(--fg); }
+.hero-mock .hero-nav .nav-cta { font-family: var(--font-sans); font-size: 13px; font-weight: 500; color: var(--fg); padding: 8px 16px; border: 1px solid var(--border); border-radius: 100px; }
+.hero-mock .hero-content { position: relative; z-index: 1; padding: 160px 48px 64px; display: flex; flex-direction: column; align-items: center; gap: 24px; text-align: center; }
+.hero-mock .hero-greet { font-family: var(--font-serif); font-style: italic; font-weight: 500; font-size: clamp(28px, 3.5vw, 44px); line-height: 1.1; max-width: 720px; }
+.hero-mock .hero-greet em { color: var(--accent); }
+.hero-mock .hero-input { display: flex; align-items: stretch; width: clamp(420px, 60%, 800px); background: var(--card); border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 12px 40px -12px rgba(0,0,0,0.15), 0 2px 8px -2px rgba(0,0,0,0.04); transition: all 280ms var(--ease-out-expo); }
+.hero-mock .hero-input:hover { box-shadow: 0 16px 48px -16px rgba(0,0,0,0.18), 0 4px 12px -4px rgba(0,0,0,0.06); }
+.hero-mock .hero-input .placeholder { flex: 1; padding: 22px 28px; font-family: var(--font-sans); font-style: italic; font-size: 16px; color: var(--muted-fg); display: flex; align-items: center; }
+.hero-mock .hero-input .submit { font-family: var(--font-sans); font-weight: 500; font-size: 14px; padding: 0 32px; background: var(--accent); color: var(--bg); display: flex; align-items: center; gap: 10px; border-radius: 0 4px 4px 0; min-height: 64px; transition: background 220ms; }
+.hero-mock .hero-input .submit:hover { background: var(--accent-soft); }
+.hero-mock .hero-input .submit svg { width: 14px; height: 14px; }
+.hero-mock .hero-explore { font-family: var(--font-sans); font-size: 13px; color: var(--muted-fg); border-bottom: 1px solid var(--border); padding-bottom: 2px; transition: color 200ms; }
+.hero-mock .hero-explore:hover { color: var(--accent); border-color: var(--accent); }
+
+/* ---------------------------------------------------------------- */
+/* SIDEBAR ENGAGED (état B) — 60/40                                 */
+/* ---------------------------------------------------------------- */
+.engaged-mock { display: grid; grid-template-columns: 60% 40%; min-height: 760px; background: var(--bg); }
+.engaged-left { padding: 48px 48px 48px 56px; border-right: 1px solid var(--border); }
+.engaged-left .eb-eyebrow { margin-bottom: 16px; }
+.engaged-left .eb-title { font-family: var(--font-serif); font-style: italic; font-size: 36px; line-height: 1.12; margin-bottom: 32px; }
+.engaged-left .eb-title em { color: var(--accent); }
+.engaged-left .eb-meta { display: flex; gap: 24px; align-items: center; padding-top: 16px; padding-bottom: 24px; }
+.engaged-left .eb-meta span { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted-fg); }
+.engaged-left .scroll-row { display: flex; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 8px 0 32px; margin: 0 -56px 0 -56px; padding-left: 56px; padding-right: 56px; scrollbar-width: thin; }
+.engaged-left .scroll-row::-webkit-scrollbar { height: 4px; }
+.engaged-left .scroll-row::-webkit-scrollbar-track { background: transparent; }
+.engaged-left .scroll-row::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.bien-card { flex: 0 0 320px; scroll-snap-align: start; background: var(--card); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; transition: all 280ms var(--ease-out-expo); cursor: pointer; }
+.bien-card:hover { transform: translateY(-2px); box-shadow: 0 24px 48px -20px rgba(0,0,0,0.16); border-color: color-mix(in oklab, var(--accent) 40%, var(--border)); }
+.bien-card .bc-photo { aspect-ratio: 4/3; background-size: cover; background-position: center; position: relative; }
+.bien-card .bc-photo .bc-tag { position: absolute; top: 12px; left: 12px; padding: 5px 10px; background: var(--card); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 100px; color: var(--fg); }
+.bien-card .bc-body { padding: 18px 20px 22px; }
+.bien-card .bc-loc { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted-fg); margin-bottom: 8px; }
+.bien-card .bc-name { font-family: var(--font-serif); font-style: italic; font-size: 20px; line-height: 1.18; margin-bottom: 14px; }
+.bien-card .bc-price { font-family: var(--font-mono); font-weight: 500; font-size: 22px; letter-spacing: -0.015em; }
+.bien-card .bc-price .from { font-size: 11px; color: var(--muted-fg); margin-right: 4px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 400; }
+.bien-card .bc-specs { display: flex; gap: 14px; margin-top: 10px; padding-top: 12px; border-top: 1px solid var(--border); }
+.bien-card .bc-specs span { font-family: var(--font-sans); font-size: 12px; color: var(--muted-fg); }
+
+/* SIDEBAR CHAT */
+.engaged-sidebar { background: var(--bg); display: flex; flex-direction: column; height: 760px; position: relative; }
+.engaged-sidebar .sb-head { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+.engaged-sidebar .sb-avatar { width: 32px; height: 32px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, color-mix(in oklab, var(--accent) 80%, white), var(--accent) 60%, color-mix(in oklab, var(--accent) 70%, var(--fg))); display: grid; place-items: center; font-family: var(--font-serif); font-style: italic; color: white; font-size: 16px; font-weight: 500; }
+.engaged-sidebar .sb-name { font-family: var(--font-sans); font-weight: 500; font-size: 14px; }
+.engaged-sidebar .sb-status { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-left: auto; display: flex; align-items: center; gap: 6px; }
+.engaged-sidebar .sb-status::before { content: ''; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+.engaged-sidebar .sb-thread { flex: 1; padding: 24px; display: flex; flex-direction: column; gap: 18px; overflow-y: auto; }
+.msg { max-width: 88%; line-height: 1.55; font-size: 14px; }
+.msg.user { align-self: flex-end; background: color-mix(in oklab, var(--accent) 18%, var(--card)); padding: 12px 16px; border-radius: 14px 14px 4px 14px; color: var(--fg); }
+.msg.assistant { align-self: flex-start; color: var(--fg); padding: 4px 0; }
+.msg.assistant .signed { font-style: italic; font-family: var(--font-serif); }
+.engaged-sidebar .sb-input { padding: 12px 16px 16px; border-top: 1px solid var(--border); display: flex; gap: 8px; align-items: stretch; }
+.engaged-sidebar .sb-input .field { flex: 1; padding: 10px 14px; font-family: var(--font-sans); font-style: italic; font-size: 13px; color: var(--muted-fg); background: var(--card); border: 1px solid var(--border); border-radius: 4px; }
+.engaged-sidebar .sb-input .send { padding: 10px 14px; background: var(--accent); color: var(--bg); border-radius: 4px; display: grid; place-items: center; }
+.engaged-sidebar .sb-input .send svg { width: 14px; height: 14px; }
+
+@media (max-width: 1100px) {
+  .engaged-mock { grid-template-columns: 1fr; }
+  .engaged-sidebar { height: auto; min-height: 480px; border-top: 1px solid var(--border); }
+}
+
+/* ---------------------------------------------------------------- */
+/* DRAWER NIVEAU 2                                                  */
+/* ---------------------------------------------------------------- */
+.drawer-mock { display: grid; grid-template-columns: 25% 75%; min-height: 760px; background: var(--bg); }
+.drawer-blurred { background: var(--bg); padding: 24px 16px; opacity: 0.55; filter: blur(2px); pointer-events: none; }
+.drawer-blurred .sb-head { padding: 12px 12px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.drawer-blurred .sb-avatar-mini { width: 24px; height: 24px; border-radius: 50%; background: var(--accent); }
+.drawer-blurred .ghost-msg { padding: 8px 12px; font-size: 12px; line-height: 1.4; color: var(--muted-fg); margin-top: 16px; }
+.drawer-blurred .ghost-msg.u { background: color-mix(in oklab, var(--accent) 14%, var(--card)); border-radius: 10px 10px 2px 10px; max-width: 80%; margin-left: auto; }
+
+.drawer-card { background: var(--card); border-left: 1px solid var(--border); padding: 32px 40px 40px; overflow-y: auto; box-shadow: -32px 0 64px -32px rgba(0,0,0,0.15); }
+.drawer-card .dc-gallery { display: grid; grid-template-columns: 2fr 1fr; gap: 8px; margin-bottom: 32px; height: 320px; }
+.drawer-card .dc-gallery .ph { background-size: cover; background-position: center; border-radius: 4px; }
+.drawer-card .dc-gallery .ph-stack { display: grid; grid-template-rows: 1fr 1fr; gap: 8px; }
+.drawer-card .dc-eyebrow { display: flex; gap: 14px; align-items: center; margin-bottom: 16px; }
+.drawer-card .dc-eyebrow .pill { padding: 4px 10px; background: color-mix(in oklab, var(--accent) 14%, var(--card)); color: var(--fg); border-radius: 100px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 500; }
+.drawer-card .dc-title { font-family: var(--font-serif); font-style: italic; font-size: 44px; line-height: 1.08; margin-bottom: 28px; }
+.drawer-card .dc-title em { color: var(--accent); }
+.drawer-card .dc-meta { display: grid; grid-template-columns: repeat(5, 1fr); gap: 24px; padding: 24px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+.drawer-card .dc-meta div { display: flex; flex-direction: column; gap: 4px; }
+.drawer-card .dc-meta .lbl { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted-fg); }
+.drawer-card .dc-meta .val { font-family: var(--font-mono); font-weight: 500; font-size: 18px; letter-spacing: -0.01em; }
+.drawer-card .dc-meta .val.serif { font-family: var(--font-serif); font-weight: 500; font-style: normal; font-size: 19px; letter-spacing: -0.01em; }
+.drawer-card .dc-desc { font-family: var(--font-sans); font-size: 16px; line-height: 1.7; max-width: 640px; color: var(--fg); margin-bottom: 28px; }
+.drawer-card .dc-plan { display: grid; grid-template-columns: 1fr 320px; gap: 24px; padding: 24px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; margin-bottom: 24px; align-items: center; }
+.drawer-card .plan-svg { width: 100%; height: 200px; opacity: 0.85; }
+.drawer-card .dc-plan .plan-info { padding: 16px; }
+.drawer-card .dc-plan .plan-info h5 { font-family: var(--font-sans); font-size: 13px; font-weight: 500; margin-bottom: 8px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted-fg); }
+.drawer-card .dc-plan .plan-info p { font-family: var(--font-serif); font-style: italic; font-size: 18px; line-height: 1.3; }
+.drawer-card .dc-fiscal { display: flex; align-items: center; gap: 16px; padding: 16px 20px; background: color-mix(in oklab, var(--accent) 12%, var(--card)); border-radius: 4px; margin-bottom: 28px; }
+.drawer-card .dc-fiscal .icon { width: 22px; height: 22px; flex: 0 0 22px; border-radius: 50%; background: var(--accent); display: grid; place-items: center; color: var(--bg); font-size: 11px; font-weight: 700; }
+.drawer-card .dc-fiscal p { font-size: 14px; line-height: 1.5; }
+.drawer-card .dc-fiscal strong { font-weight: 600; }
+.drawer-card .dc-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn-primary { padding: 14px 22px; background: var(--fg); color: var(--bg); font-family: var(--font-sans); font-weight: 500; font-size: 14px; border-radius: 6px; transition: all 220ms var(--ease-out-expo); display: inline-flex; align-items: center; gap: 10px; }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 20px -8px rgba(0,0,0,0.25); }
+.btn-secondary { padding: 14px 22px; background: transparent; color: var(--fg); font-family: var(--font-sans); font-weight: 500; font-size: 14px; border-radius: 6px; border: 1px solid var(--border); transition: all 220ms var(--ease-out-expo); display: inline-flex; align-items: center; gap: 10px; }
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+@media (max-width: 1100px) {
+  .drawer-mock { grid-template-columns: 1fr; }
+  .drawer-blurred { display: none; }
+}
+
+/* ---------------------------------------------------------------- */
+/* LEXAIA 30/70                                                     */
+/* ---------------------------------------------------------------- */
+.lexaia-mock { display: grid; grid-template-columns: 60% 40%; min-height: 980px; background: var(--bg); }
+.lexaia-main { padding: 56px 64px; border-right: 1px solid var(--border); }
+.lexaia-head { padding-bottom: 32px; margin-bottom: 40px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; gap: 32px; align-items: flex-end; }
+.lexaia-head .lh-left { display: flex; flex-direction: column; gap: 8px; }
+.lexaia-head .lh-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-warm); }
+.lexaia-head .lh-doc { font-family: var(--font-serif); font-style: italic; font-size: 18px; }
+.lexaia-head .lh-meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted-fg); text-align: right; line-height: 1.7; }
+.lexaia-main h2 { font-family: var(--font-serif); font-style: italic; font-size: 56px; line-height: 1.05; margin-bottom: 20px; letter-spacing: -0.025em; }
+.lexaia-main h2 em { color: var(--accent); }
+.lexaia-main .lex-recipient { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted-fg); margin-bottom: 32px; }
+.lexaia-main .lex-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; padding: 32px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.lexaia-main .lex-summary .ls-head { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted-fg); margin-bottom: 12px; }
+.lexaia-main .lex-summary p { font-size: 14px; line-height: 1.65; color: var(--fg); }
+.lexaia-main .scenarios { margin-top: 48px; }
+.lexaia-main .scenarios-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24px; gap: 24px; }
+.lexaia-main .scenarios-head h3 { font-family: var(--font-serif); font-style: italic; font-size: 28px; }
+.lexaia-main .scenarios-head .meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted-fg); }
+.lexaia-main .scenario-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.scenario-card { padding: 24px; background: var(--card); border: 1px solid var(--border); border-radius: 4px; display: flex; flex-direction: column; gap: 18px; }
+.scenario-card.preferred { border-color: var(--accent); position: relative; }
+.scenario-card.preferred::before { content: 'Recommandé'; position: absolute; top: -10px; left: 16px; padding: 3px 10px; background: var(--accent); color: var(--bg); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500; border-radius: 100px; }
+.scenario-card .sc-letter { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted-fg); }
+.scenario-card .sc-name { font-family: var(--font-serif); font-style: italic; font-size: 22px; line-height: 1.18; }
+.scenario-card .sc-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.scenario-card .sc-row:last-child { border-bottom: 0; }
+.scenario-card .sc-row.highlight { padding: 12px 16px; margin: 0 -16px; background: color-mix(in oklab, var(--accent) 12%, transparent); border-radius: 4px; border-bottom: 0; }
+.scenario-card .sc-row .sc-lbl { font-family: var(--font-sans); font-size: 12px; color: var(--muted-fg); }
+.scenario-card .sc-row .sc-val { font-family: var(--font-mono); font-weight: 500; font-size: 15px; letter-spacing: -0.01em; }
+.scenario-card .sc-row.highlight .sc-val { font-size: 18px; color: var(--accent); }
+.lexaia-main .lex-bars { margin-top: 48px; padding: 32px; background: var(--card); border: 1px solid var(--border); border-radius: 4px; }
+.lex-bars h4 { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted-fg); margin-bottom: 24px; }
+.lex-bars .bar-row { display: grid; grid-template-columns: 100px 1fr 100px; gap: 16px; align-items: center; padding: 10px 0; }
+.lex-bars .bar-name { font-family: var(--font-sans); font-size: 13px; }
+.lex-bars .bar-track { height: 14px; background: var(--bg); border-radius: 2px; overflow: hidden; position: relative; }
+.lex-bars .bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), color-mix(in oklab, var(--accent) 70%, var(--accent-warm))); border-radius: 2px; transition: width 800ms var(--ease-out-expo); }
+.lex-bars .bar-val { font-family: var(--font-mono); font-weight: 500; font-size: 14px; text-align: right; letter-spacing: -0.01em; }
+.lex-foot { margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--border); font-family: var(--font-sans); font-size: 11px; line-height: 1.65; color: var(--muted-fg); font-style: italic; max-width: 640px; }
+.lexaia-side { padding: 0; }
+.lexaia-side .ls-photo { width: 100%; height: 280px; background-size: cover; background-position: center; }
+.lexaia-side .ls-conv { padding: 32px 28px; height: calc(100% - 280px); display: flex; flex-direction: column; }
+.lexaia-side .ls-conv .sb-head { padding: 0 0 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.lexaia-side .ls-conv .sb-avatar { width: 30px; height: 30px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, color-mix(in oklab, var(--accent) 80%, white), var(--accent) 60%, color-mix(in oklab, var(--accent) 70%, var(--fg))); display: grid; place-items: center; font-family: var(--font-serif); font-style: italic; color: white; font-size: 14px; }
+.lexaia-side .ls-conv .sb-name { font-family: var(--font-sans); font-weight: 500; font-size: 13px; }
+.lexaia-side .ls-conv .ls-msg-thread { flex: 1; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; padding-bottom: 16px; }
+
+@media (max-width: 1100px) {
+  .lexaia-mock { grid-template-columns: 1fr; }
+  .lexaia-main { padding: 32px; }
+  .lexaia-side { border-top: 1px solid var(--border); }
+}
+
+/* ---------------------------------------------------------------- */
+/* MINI-BULLE ABZU (état C)                                         */
+/* ---------------------------------------------------------------- */
+.editorial-mock { padding: 56px 64px; min-height: 580px; position: relative; }
+.editorial-mock .ed-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-warm); margin-bottom: 16px; }
+.editorial-mock .ed-title { font-family: var(--font-serif); font-style: italic; font-size: 56px; line-height: 1.05; max-width: 720px; margin-bottom: 32px; letter-spacing: -0.025em; }
+.editorial-mock .ed-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; max-width: 980px; }
+.editorial-mock .ed-col p { font-size: 15px; line-height: 1.7; color: var(--fg); }
+.editorial-mock .ed-col p::first-letter { font-family: var(--font-serif); font-style: italic; font-size: 1.4em; }
+.editorial-mock .ed-col + .ed-col { padding-left: 40px; border-left: 1px solid var(--border); }
+
+.abzu-bubble { position: absolute; bottom: 32px; right: 32px; width: 80px; height: 80px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, color-mix(in oklab, var(--accent) 70%, white), var(--accent) 50%, color-mix(in oklab, var(--accent) 80%, var(--fg))); cursor: pointer; box-shadow: 0 16px 40px -12px color-mix(in oklab, var(--accent) 50%, transparent); transition: all 380ms var(--ease-out-expo); display: grid; place-items: center; }
+.abzu-bubble::before { content: ''; position: absolute; inset: -8px; border-radius: 50%; border: 2px solid color-mix(in oklab, var(--accent) 50%, transparent); animation: ripple-out 3.5s ease-in-out infinite; }
+.abzu-bubble::after { content: ''; position: absolute; inset: -16px; border-radius: 50%; border: 1px solid color-mix(in oklab, var(--accent) 30%, transparent); animation: ripple-out 3.5s ease-in-out 0.7s infinite; }
+.abzu-bubble .sigma { color: white; font-family: var(--font-serif); font-style: italic; font-size: 28px; font-weight: 500; }
+.abzu-bubble:hover { transform: scale(1.06); }
+@keyframes ripple-out {
+  0% { transform: scale(0.95); opacity: 0.85; }
+  100% { transform: scale(1.15); opacity: 0; }
+}
+.abzu-tooltip { position: absolute; bottom: 132px; right: 32px; max-width: 320px; padding: 16px 20px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; font-family: var(--font-sans); font-style: italic; font-size: 14px; line-height: 1.5; color: var(--fg); box-shadow: 0 24px 48px -16px rgba(0,0,0,0.18), 0 4px 12px -4px rgba(0,0,0,0.06); }
+.abzu-tooltip::before { content: ''; position: absolute; bottom: -7px; right: 38px; width: 12px; height: 12px; background: var(--card); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); transform: rotate(45deg); }
+
+/* ---------------------------------------------------------------- */
+/* WCAG TABLE                                                       */
+/* ---------------------------------------------------------------- */
+.wcag-block { padding-top: 64px; padding-bottom: 96px; }
+.wcag-block h3 { font-family: var(--font-serif); font-style: italic; font-size: 32px; margin-bottom: 24px; }
+.wcag-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 12px; }
+.wcag-table th { text-align: left; padding: 12px 16px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted-fg); border-bottom: 1px solid var(--border); }
+.wcag-table td { padding: 14px 16px; border-bottom: 1px solid var(--border); font-family: var(--font-mono); }
+.wcag-table .pair { display: inline-flex; align-items: center; gap: 8px; }
+.wcag-table .swatch-mini { display: inline-flex; gap: 0; }
+.wcag-table .swatch-mini span { width: 14px; height: 14px; border-radius: 2px; border: 1px solid var(--border); }
+.wcag-table .verdict { font-weight: 500; }
+.wcag-table .verdict.pass { color: var(--accent); }
+.wcag-table .verdict.aa { color: var(--accent); }
+.wcag-table .verdict.aaa { color: var(--accent); font-weight: 600; }
+.wcag-table .verdict.fail { color: #C0392B; }
+
+/* ---------------------------------------------------------------- */
+/* AMBIANCE (S7)                                                    */
+/* ---------------------------------------------------------------- */
+.ambiance-block { padding: 0; }
+.ambiance-tile { position: relative; height: 80vh; min-height: 640px; background-size: cover; background-position: center; display: flex; align-items: flex-end; padding: 64px clamp(48px, 8vw, 128px); overflow: hidden; }
+.ambiance-tile::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 0%, transparent 45%, rgba(0,0,0,0.45) 100%); }
+.ambiance-tile .at-content { position: relative; z-index: 1; max-width: 720px; color: white; }
+.ambiance-tile .at-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; opacity: 0.85; margin-bottom: 16px; display: block; }
+.ambiance-tile .at-title { font-family: var(--font-serif); font-style: italic; font-weight: 500; font-size: clamp(40px, 5vw, 72px); line-height: 1.05; letter-spacing: -0.025em; margin-bottom: 16px; }
+.ambiance-tile .at-quote { font-family: var(--font-sans); font-size: 18px; line-height: 1.55; opacity: 0.9; max-width: 560px; }
+.ambiance-tile .at-credit { position: absolute; bottom: 24px; right: 32px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.6; color: white; z-index: 1; }
+
+/* ---------------------------------------------------------------- */
+/* COMPARISON TABLE (S8)                                            */
+/* ---------------------------------------------------------------- */
+.cmp-table { width: 100%; border-collapse: collapse; }
+.cmp-table th, .cmp-table td { padding: 24px 16px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--border); }
+.cmp-table th { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted-fg); font-weight: 500; }
+.cmp-table .cmp-name { font-family: var(--font-serif); font-style: italic; font-size: 24px; line-height: 1.15; min-width: 200px; }
+.cmp-table .cmp-manifest { font-family: var(--font-sans); font-size: 14px; line-height: 1.55; max-width: 320px; }
+.cmp-table ul { list-style: none; padding: 0; }
+.cmp-table ul li { font-family: var(--font-sans); font-size: 13px; line-height: 1.55; padding-left: 14px; position: relative; margin-bottom: 4px; color: var(--fg); }
+.cmp-table ul li::before { content: '·'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+.cmp-table .cmp-score { display: inline-flex; gap: 3px; align-items: center; }
+.cmp-table .cmp-score .star { width: 12px; height: 12px; border-radius: 2px; background: var(--border); }
+.cmp-table .cmp-score .star.fill { background: var(--accent); }
+
+/* ---------------------------------------------------------------- */
+/* FOOTER                                                           */
+/* ---------------------------------------------------------------- */
+.footer-block { padding-top: 96px; padding-bottom: 96px; border-top: 1px solid var(--border); }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 64px; }
+.footer-grid h4 { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted-fg); margin-bottom: 16px; }
+.footer-grid ul { list-style: none; }
+.footer-grid li { padding: 4px 0; font-size: 14px; }
+.footer-grid a { border-bottom: 1px solid transparent; transition: all 200ms var(--ease-out-expo); }
+.footer-grid a:hover { color: var(--accent); border-color: var(--accent); }
+.footer-grid .credit { font-family: var(--font-serif); font-style: italic; font-size: 24px; line-height: 1.25; }
+.footer-grid .meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted-fg); margin-top: 16px; }
+.footer-base { padding-top: 48px; margin-top: 64px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.footer-base p { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted-fg); }
+.footer-base .logo-mark { font-family: var(--font-serif); font-style: italic; font-size: 22px; }
+
+/* ---------------------------------------------------------------- */
+/* TECHNICAL                                                        */
+/* ---------------------------------------------------------------- */
+.code-block { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 24px; font-family: var(--font-mono); font-size: 13px; line-height: 1.7; overflow-x: auto; }
+.code-block .com { color: var(--muted-fg); font-style: italic; }
+.code-block .var { color: var(--accent); }
+.code-block .val { color: var(--accent-warm); }
+
+/* ---------------------------------------------------------------- */
+/* RECOMMENDATION                                                   */
+/* ---------------------------------------------------------------- */
+.reco-block { padding: 80px clamp(48px, 8vw, 128px); background: var(--card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.reco-block .reco-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent-warm); margin-bottom: 32px; display: block; }
+.reco-block h2 { font-family: var(--font-serif); font-style: italic; font-size: 56px; line-height: 1.05; margin-bottom: 32px; max-width: 920px; letter-spacing: -0.025em; }
+.reco-block .reco-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; }
+.reco-block .reco-cols p { font-size: 17px; line-height: 1.7; }
+.reco-block .reco-final { padding: 24px 32px; background: var(--bg); border-left: 3px solid var(--accent); margin-top: 40px; }
+.reco-block .reco-final p { font-family: var(--font-serif); font-style: italic; font-size: 22px; line-height: 1.45; }
+
+/* ---------------------------------------------------------------- */
+/* MISC                                                             */
+/* ---------------------------------------------------------------- */
+.tag-pill { display: inline-flex; padding: 4px 10px; background: color-mix(in oklab, var(--accent) 14%, var(--card)); color: var(--fg); border-radius: 100px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500; }
+@media print { .toolbar { display: none; } }
+</style>
+</head>
+<body>
+
+<!-- ============================================================== -->
+<!-- TOOLBAR                                                        -->
+<!-- ============================================================== -->
+<nav class="toolbar" aria-label="Brand book controls">
+  <div class="group" role="radiogroup" aria-label="Direction">
+    <button data-set-direction="d1" aria-label="Direction 1 Calcaire & Lagune">D1</button>
+    <button data-set-direction="d2" class="active" aria-label="Direction 2 Calcaire & Abzu">D2</button>
+    <button data-set-direction="d3" aria-label="Direction 3 Lagune Solaire">D3</button>
+  </div>
+  <div class="sep"></div>
+  <div class="group" role="radiogroup" aria-label="Mode">
+    <button data-set-mode="light" class="active" aria-label="Light mode">Light</button>
+    <button data-set-mode="dark" aria-label="Dark mode">Dark</button>
+  </div>
+  <div class="sep"></div>
+  <a href="#ambiance" class="anchor-link" aria-label="Aller à la section ambiance">Ambiance ↓</a>
+</nav>
+
+<!-- ============================================================== -->
+<!-- SECTION 1 — COVER                                              -->
+<!-- ============================================================== -->
+<section class="cover container">
+  <div class="crest">
+    <div class="crest-left">
+      <div class="logo" aria-label="ENKI Realty">ΣNKI Realty</div>
+      <div class="meta">Brand Book Couche 5 · v3.0</div>
+    </div>
+    <div class="meta">28 avril 2026</div>
+  </div>
+
+  <div>
+    <span class="eyebrow lg" style="display:block; margin-bottom:32px;">Color &amp; Layout · Direction Chromatique &amp; Architecture Visuelle</span>
+    <h1>Couleur dans <span class="accent-word">l'expérience</span>.</h1>
+    <p class="lead-text">Trois directions chromatiques creusées en mockups réels — pas en swatches plats. Light + Dark. Architecture <em class="serif italic">conversation continue avec calques</em>. Densité éditoriale Monocle. Grille 12 colonnes, multiples de 8, italiques sémantiques. Validation des verrous Notion : intégrale.</p>
+  </div>
+
+  <div class="footer-strip">
+    <div>
+      <span class="eyebrow">Méthode</span>
+      <strong>Lecture des Verrous → 3 directions calibrées → mockups États A/B/C → audit WCAG</strong>
+    </div>
+    <div>
+      <span class="eyebrow">Densité</span>
+      <strong>Monocle, Phaidon, The Gentlewoman</strong>
+    </div>
+    <div>
+      <span class="eyebrow">Stack typo</span>
+      <strong>Hanken Grotesk · Schibsted Grotesk · JetBrains Mono</strong>
+    </div>
+    <div>
+      <span class="eyebrow">Statut</span>
+      <strong>Couche 5 · proposition pour validation</strong>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- SECTION 2 — BRIEF RESET                                        -->
+<!-- ============================================================== -->
+<section class="section container">
+  <div class="s-num">02 · Reset après v1</div>
+  <div class="s-head">
+    <span class="eyebrow">Pourquoi cette v3 part d'une page blanche</span>
+    <h2 class="title-1 serif italic" style="margin-top:16px; max-width:1080px;">Trois rejets précédents. Une décision : <em>refonder</em>.</h2>
+  </div>
+
+  <div class="brief-grid">
+    <div class="brief-block">
+      <div class="pp">01 · Le positionnement</div>
+      <h3>Une marque qui dit le sérieux <em>et</em> la lumière.</h3>
+      <p>ENKI Realty est positionnée Sage + Magician. Cabinet patrimonial moderne croisé avec maison d'édition. La couleur ne doit pas choisir entre la rectitude (encre, calcaire, ordre) et la promesse de transformation (lagune, lumière, joie). Elle doit porter les deux dans une seule signature, sans compromis ni tiédeur.</p>
+    </div>
+
+    <div class="brief-block">
+      <div class="pp">02 · L'échec à éviter</div>
+      <h3>Ni cabinet d'avocats <em>terne</em>, ni Pinterest tendance.</h3>
+      <p>La v1 a échoué parce qu'elle a confondu sobriété et déprime. La v2 a échoué parce qu'elle ignorait les verrous Notion (densité éditoriale, sidebar 40 % à droite, conversation continue avec calques). Cette v3 part d'une page blanche, intègre les 26 verrous constitutionnels et se mesure non pas à la beauté d'une swatch isolée mais à la beauté d'un mockup réel.</p>
+    </div>
+
+    <div class="brief-block">
+      <div class="pp">03 · Ce qui change radicalement</div>
+      <h3>La couleur est <em>creusée</em> dans cinq mockups par direction.</h3>
+      <p>Chaque direction est testée dans cinq états : hero conversationnel (A), sidebar engagée 60/40 (B), drawer Niveau 2 sur calque flouté, page Lexaia ratio 30/70, mini-bulle Abzu (C). On ne valide plus une couleur sur fond blanc. On la valide sur la mécanique réelle du produit, en light et en dark, avec les vraies typographies et les vraies photos.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- SECTION 3 — 8 VERROUS CRITIQUES                                -->
+<!-- ============================================================== -->
+<section class="section container">
+  <div class="s-num">03 · Verrous critiques rappelés</div>
+  <div class="s-head">
+    <span class="eyebrow">Les huit règles non négociables qui ont guidé toutes les décisions</span>
+    <h2 class="title-1 serif italic" style="margin-top:16px;">Ce que la couleur <em>n'a pas le droit</em> de violer.</h2>
+    <p class="lead">Chaque verrou est un test. Si une décision contrevient à l'un d'eux, elle est rejetée — sans débat, sans atténuation, sans compromis cosmétique.</p>
+  </div>
+
+  <div class="verrou-list">
+    <div class="verrou">
+      <div class="num">01</div>
+      <div>
+        <h4>Densité éditoriale dense.</h4>
+        <p>Références Monocle, Phaidon, The Gentlewoman. Pas du <em>spacious zen</em>. Les sections respirent par la grille 12 colonnes, pas par les blancs vides. La page d'accueil et les fiches produit assument la richesse informationnelle d'une revue patrimoniale, pas la légèreté d'une landing SaaS.</p>
+      </div>
+    </div>
+
+    <div class="verrou">
+      <div class="num">02</div>
+      <div>
+        <h4>Sidebar conversationnelle 40 % à droite.</h4>
+        <p>Jamais 25 % (trop étroite, on perd la lecture confortable). Jamais à gauche (le regard occidental scanne de gauche à droite, l'agent ne vient pas en premier). 40 % à droite, sticky, présente dès l'engagement et jusqu'à la fiche complète.</p>
+      </div>
+    </div>
+
+    <div class="verrou">
+      <div class="num">03</div>
+      <div>
+        <h4>Conversation continue avec calques.</h4>
+        <p>Modèle quatre niveaux : Chat → Drawer Niveau 2 (65-75 % largeur, conversation reste visible floutée 5-10 % blur) → Fiche complète Niveau 3 (sidebar conversation à droite) → Programme parent Niveau 4. La conversation ne se ferme jamais.</p>
+      </div>
+    </div>
+
+    <div class="verrou">
+      <div class="num">04</div>
+      <div>
+        <h4>Ratio image/texte contextuel.</h4>
+        <p>70/30 sur les biens (la photo est l'argument, le texte précise). 30/70 sur Lexaia (le chiffre prime, l'image dose la respiration). 60/40 sur les programmes (équilibre architectural). Aucune page n'utilise le même ratio par défaut.</p>
+      </div>
+    </div>
+
+    <div class="verrou">
+      <div class="num">05</div>
+      <div>
+        <h4>Format desktop éditorial 1280-1440 px.</h4>
+        <p>Avec « moments en C » : compositions resserrées au centre lors des moments d'émotion (citation, hero conversationnel, signature). Le reste de la page reste large. Le rythme alterne ouverture éditoriale et concentration émotionnelle.</p>
+      </div>
+    </div>
+
+    <div class="verrou">
+      <div class="num">06</div>
+      <div>
+        <h4>Chromatique 95 / 5.</h4>
+        <p>95 % de neutres calibrés (calcaire, encre, papier crème). 5 à 10 % d'accent précieux (turquoise lagune ou Abzu). Jamais de palette éclatée à 7 couleurs vives. L'accent est un sceau, pas un décor.</p>
+      </div>
+    </div>
+
+    <div class="verrou">
+      <div class="num">07</div>
+      <div>
+        <h4>Jamais #FFFFFF, jamais #000000.</h4>
+        <p>Le blanc absolu est froid, brutal, hôpital. Le noir absolu est mort. ENKI utilise des crèmes calcaire chauds (#F8F4EC, #FAF6ED) et des encres profondes tintées (#0F1E2E, #1A2520, #1A1612). Tous les neutres ont une température.</p>
+      </div>
+    </div>
+
+    <div class="verrou">
+      <div class="num">08</div>
+      <div>
+        <h4>Italiques Schibsted = un mot signature.</h4>
+        <p>Jamais sur un titre entier (déclamatoire, théâtral, daté). Toujours sur un mot. <em>« Trois chambres, vue mer franche »</em>. <em>« Couleur dans l'expérience »</em>. L'italique est un accent de sens, pas une décoration éditoriale.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- SECTION 4 — DIRECTION 1 · CALCAIRE & LAGUNE                    -->
+<!-- ============================================================== -->
+<section id="d1" class="scope scope-d1" data-mode="light">
+
+  <!-- 4.A · HEADER -->
+  <div class="container dir-header">
+    <div class="top-bar">
+      <span class="label">Direction 01 · 04</span>
+      <div class="mode-toggle" data-scope-mode="d1" role="radiogroup" aria-label="Direction 1 mode">
+        <button data-scope-set="light" class="active">Light</button>
+        <button data-scope-set="dark">Dark</button>
+      </div>
+    </div>
+    <h2>Calcaire &amp; <em>Lagune</em>.</h2>
+    <p class="lead-text">La pierre méditerranéenne au matin. La fraîcheur d'une lagune transparente. L'objet humain — la chaise cognac — qui invite. C'est la direction la plus <em class="serif italic">chaleureuse-chypriote</em> des trois. Encre olive très profonde, fond calcaire chaud, turquoise lagune comme sceau précieux, cognac comme accent humain rare.</p>
+    <div class="meta-bar">
+      <div>
+        <span class="eyebrow">Manifesto</span>
+        <span style="font-family:var(--font-serif); font-style:italic; font-size:18px; line-height:1.3;">La pierre qui réchauffe, la lagune qui s'ouvre.</span>
+      </div>
+      <div>
+        <span class="eyebrow">Registre</span>
+        <span style="font-size:14px;">Pierre chaude — pas froide, pas grise. Calcaire de Paphos au matin.</span>
+      </div>
+      <div>
+        <span class="eyebrow">Accent</span>
+        <span style="font-size:14px;">Turquoise lagune méditerranéenne (5-10 % seulement).</span>
+      </div>
+      <div>
+        <span class="eyebrow">Force</span>
+        <span style="font-size:14px;">Chaleur immédiate. Photos méditerranéennes parfaitement portées.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.B · TOKENS -->
+  <div class="container tokens-block">
+    <div style="display:flex; align-items:baseline; justify-content:space-between; gap:32px; margin-bottom:48px;">
+      <div>
+        <span class="eyebrow" style="display:block; margin-bottom:12px;">04 · A · Tokens chromatiques</span>
+        <h3>Une encre olive, une calcaire chaude, une lagune <em>précieuse</em>.</h3>
+      </div>
+      <div style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted-fg);">Format OKLCH · Fallback HEX</div>
+    </div>
+
+    <div class="modes-row">
+      <!-- LIGHT TOKENS -->
+      <div>
+        <div class="mode-label">Light mode</div>
+        <div class="swatch-grid">
+          <div class="swatch">
+            <div class="chip" style="background:#1A2520;"></div>
+            <div class="name">Foreground</div>
+            <div class="role">Encre olive très profonde · titres, corps, structure</div>
+            <div class="codes"><span class="hex">#1A2520</span><span class="oklch">oklch(0.18 0.018 145)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#F0E8D6;"></div>
+            <div class="name">Background</div>
+            <div class="role">Calcaire matin · papier dominant chaleureux</div>
+            <div class="codes"><span class="hex">#F0E8D6</span><span class="oklch">oklch(0.95 0.020 85)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#FAF5E8;"></div>
+            <div class="name">Card</div>
+            <div class="role">Papier crème · surface plus claire que le BG</div>
+            <div class="codes"><span class="hex">#FAF5E8</span><span class="oklch">oklch(0.98 0.012 85)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#5FC2BA;"></div>
+            <div class="name">Accent · Lagune</div>
+            <div class="role">Turquoise lagune · sceau précieux 5-10 %</div>
+            <div class="codes"><span class="hex">#5FC2BA</span><span class="oklch">oklch(0.74 0.11 175)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#27C7D4;"></div>
+            <div class="name">Accent · Saturé</div>
+            <div class="role">Turquoise CTA · réservé aux moments majeurs</div>
+            <div class="codes"><span class="hex">#27C7D4</span><span class="oklch">oklch(0.65 0.12 195)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#B88555;"></div>
+            <div class="name">Accent · Cognac</div>
+            <div class="role">Chaleur humaine · la chaise des photos</div>
+            <div class="codes"><span class="hex">#B88555</span><span class="oklch">oklch(0.68 0.09 65)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#7A6F5C;"></div>
+            <div class="name">Muted Foreground</div>
+            <div class="role">Calcaire patiné · texte secondaire, captions</div>
+            <div class="codes"><span class="hex">#7A6F5C</span><span class="oklch">oklch(0.48 0.020 90)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#D6C9AC;"></div>
+            <div class="name">Border</div>
+            <div class="role">Bordures fines 1 px · 5-10 % opacité réelle</div>
+            <div class="codes"><span class="hex">#D6C9AC</span><span class="oklch">oklch(0.84 0.025 85)</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DARK TOKENS -->
+      <div>
+        <div class="mode-label">Dark mode</div>
+        <div class="swatch-grid">
+          <div class="swatch">
+            <div class="chip" style="background:#EDE5D0;"></div>
+            <div class="name">Foreground</div>
+            <div class="role">Calcaire dark · titres et corps</div>
+            <div class="codes"><span class="hex">#EDE5D0</span><span class="oklch">oklch(0.93 0.020 85)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#0E1612;"></div>
+            <div class="name">Background</div>
+            <div class="role">Olivier nuit profonde · cabinet feutré</div>
+            <div class="codes"><span class="hex">#0E1612</span><span class="oklch">oklch(0.14 0.018 145)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#1A2520;"></div>
+            <div class="name">Card</div>
+            <div class="role">Encre olive · surface des cards et drawers</div>
+            <div class="codes"><span class="hex">#1A2520</span><span class="oklch">oklch(0.18 0.018 145)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#6FD8CC;"></div>
+            <div class="name">Accent · Lagune</div>
+            <div class="role">Turquoise lumineux dark · accent visible</div>
+            <div class="codes"><span class="hex">#6FD8CC</span><span class="oklch">oklch(0.78 0.13 175)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#3DD9E5;"></div>
+            <div class="name">Accent · Saturé</div>
+            <div class="role">Turquoise CTA dark · présence claire</div>
+            <div class="codes"><span class="hex">#3DD9E5</span><span class="oklch">oklch(0.78 0.14 195)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#C9966A;"></div>
+            <div class="name">Accent · Cognac</div>
+            <div class="role">Cognac dark · chaleur dans la nuit</div>
+            <div class="codes"><span class="hex">#C9966A</span><span class="oklch">oklch(0.74 0.10 65)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#9C8F76;"></div>
+            <div class="name">Muted Foreground</div>
+            <div class="role">Calcaire patiné dark · texte secondaire</div>
+            <div class="codes"><span class="hex">#9C8F76</span><span class="oklch">oklch(0.62 0.020 90)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#2A3A33;"></div>
+            <div class="name">Border</div>
+            <div class="role">Frontière sobre dans la nuit calcaire</div>
+            <div class="codes"><span class="hex">#2A3A33</span><span class="oklch">oklch(0.28 0.018 145)</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.C · MOCKUP 1 — HERO ÉTAT A -->
+  <div class="container mockup-block">
+    <div class="mh">
+      <div class="left">
+        <span class="eyebrow" style="display:block; margin-bottom:12px;">04 · B · Mockup 01 · État A</span>
+        <h3>Hero conversationnel — l'agent <em>immédiatement</em> disponible.</h3>
+        <p>Pas de scroll requis. L'utilisateur arrive, lit la phrase d'accueil, et a déjà sous la main le champ de conversation. Le bouton <em class="serif italic">Démarrer</em> en accent turquoise mobilise le sceau précieux — 5 % du pixel, 100 % du regard.</p>
+      </div>
+      <div class="badge">État A</div>
+    </div>
+
+    <div class="mockup-frame">
+      <div class="mockup-titlebar">
+        <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="url">enki-realty.com</div>
+      </div>
+      <div class="hero-mock">
+        <div class="hero-photo" style="background-image:url('assets/photos/hero-d1-limestone.jpg');"></div>
+        <div class="hero-nav">
+          <div class="logo-mark" aria-label="ENKI Realty">ΣNKI Realty</div>
+          <div class="nav-links">
+            <a href="#">Propriétés</a>
+            <a href="#">Lexaia</a>
+            <a href="#">À propos</a>
+          </div>
+          <a href="#" class="nav-cta">Espace personnel</a>
+        </div>
+        <div class="hero-content">
+          <p class="hero-greet">Bienvenue chez ENKI. Parlez-moi de ce que vous <em>cherchez</em>.</p>
+          <div class="hero-input">
+            <div class="placeholder">Ex : Je suis retraitée à Bruxelles, je cherche un appartement calme à Paphos autour de 350 k€…</div>
+            <button class="submit">
+              Démarrer
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
+          <a href="#" class="hero-explore">Ou explorez librement</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.D · MOCKUP 2 — SIDEBAR ENGAGED ÉTAT B -->
+  <div class="container mockup-block">
+    <div class="mh">
+      <div class="left">
+        <span class="eyebrow" style="display:block; margin-bottom:12px;">04 · C · Mockup 02 · État B</span>
+        <h3>Sidebar engagée — la conversation <em>persiste</em>, les biens scrollent.</h3>
+        <p>L'utilisateur a parlé. ENKI propose. La sidebar 40 % à droite reste sticky. Les cards horizontales scroll-snap, photos en haut, prix en JetBrains Mono tabular-nums, italique sur le nom du programme.</p>
+      </div>
+      <div class="badge">État B</div>
+    </div>
+
+    <div class="mockup-frame">
+      <div class="mockup-titlebar">
+        <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="url">enki-realty.com / agent · session active</div>
+      </div>
+      <div class="engaged-mock">
+        <!-- LEFT 60% -->
+        <div class="engaged-left">
+          <span class="eyebrow eb-eyebrow">Propriétés proposées par ENKI</span>
+          <h3 class="eb-title">Quatre biens <em>résonnent</em> avec ce que vous cherchez.</h3>
+          <div class="eb-meta">
+            <span>Triés par justesse</span>
+            <span>·</span>
+            <span>04 résultats</span>
+            <span>·</span>
+            <span>Mis à jour 11 h 24</span>
+          </div>
+
+          <div class="scroll-row">
+            <article class="bien-card">
+              <div class="bc-photo" style="background-image:url('assets/photos/programme-coral.jpg');">
+                <span class="bc-tag">Golden Visa</span>
+              </div>
+              <div class="bc-body">
+                <div class="bc-loc">Paphos · Coral Bay</div>
+                <div class="bc-name">Coral Bay Residences <em>B-04</em></div>
+                <div class="bc-price"><span class="from">À partir de</span>347 000 €</div>
+                <div class="bc-specs">
+                  <span>3 chambres</span><span>·</span><span>112 m²</span><span>·</span><span>Vue mer</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="bien-card">
+              <div class="bc-photo" style="background-image:url('assets/photos/programme-olivier.jpg');">
+                <span class="bc-tag">TVA 5 %</span>
+              </div>
+              <div class="bc-body">
+                <div class="bc-loc">Pissouri · Hauteurs</div>
+                <div class="bc-name">Maison de l'<em>Olivier</em></div>
+                <div class="bc-price"><span class="from">À partir de</span>389 500 €</div>
+                <div class="bc-specs">
+                  <span>3 chambres</span><span>·</span><span>148 m²</span><span>·</span><span>Oliveraie</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="bien-card">
+              <div class="bc-photo" style="background-image:url('assets/photos/programme-marina.jpg');">
+                <span class="bc-tag">Livraison Q4 2027</span>
+              </div>
+              <div class="bc-body">
+                <div class="bc-loc">Larnaca · Marina</div>
+                <div class="bc-name">Larnaca Marina <em>House</em></div>
+                <div class="bc-price"><span class="from">À partir de</span>365 000 €</div>
+                <div class="bc-specs">
+                  <span>2 chambres</span><span>·</span><span>96 m²</span><span>·</span><span>Marina</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="bien-card">
+              <div class="bc-photo" style="background-image:url('assets/photos/interior-bright.jpg');">
+                <span class="bc-tag">Disponible</span>
+              </div>
+              <div class="bc-body">
+                <div class="bc-loc">Limassol · Old Town</div>
+                <div class="bc-name">Stone <em>Vault</em> Apartments</div>
+                <div class="bc-price"><span class="from">À partir de</span>342 000 €</div>
+                <div class="bc-specs">
+                  <span>2 chambres</span><span>·</span><span>104 m²</span><span>·</span><span>Pierre</span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div style="display:flex; gap:12px; margin-top:24px;">
+            <a href="#" class="btn-secondary" style="font-size:13px; padding:10px 16px;">Voir les 14 résultats complets</a>
+            <a href="#" class="btn-secondary" style="font-size:13px; padding:10px 16px;">Affiner les critères</a>
+          </div>
+        </div>
+
+        <!-- RIGHT 40% — SIDEBAR -->
+        <aside class="engaged-sidebar">
+          <header class="sb-head">
+            <div class="sb-avatar" aria-label="Avatar ENKI">Σ</div>
+            <div>
+              <div class="sb-name">ENKI</div>
+              <div class="body-xs muted">Agent conversationnel</div>
+            </div>
+            <div class="sb-status">En ligne</div>
+          </header>
+
+          <div class="sb-thread">
+            <div class="msg user">Je suis retraitée à Bruxelles, je cherche un appartement calme à Paphos autour de 350 k€.</div>
+            <div class="msg assistant">
+              <p>Bonjour. <span class="signed">Avant de regarder les biens, partageons un peu plus.</span></p>
+              <p style="margin-top:10px;">Vous avez parlé de calme — préférez-vous l'isolement complet d'une villa, ou la tranquillité d'un quartier résidentiel avec voisins discrets ? Je peux préparer une sélection en parallèle pendant qu'on en discute.</p>
+            </div>
+            <div class="msg user">Plutôt un quartier résidentiel calme. Je ne veux pas être seule.</div>
+            <div class="msg assistant">
+              <p>Compris. J'ai présélectionné quatre biens à droite. Trois sont à Paphos comme demandé, le quatrième est à Larnaca — moins calme la journée mais le quartier marina est très <em>habité d'une bonne manière</em>, je le mets pour comparaison.</p>
+              <p style="margin-top:10px;">Souhaitez-vous que je commence par celui qui correspond le mieux ?</p>
+            </div>
+          </div>
+
+          <div class="sb-input">
+            <div class="field">Écrivez votre message…</div>
+            <button class="send" aria-label="Envoyer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.E · MOCKUP 3 — DRAWER NIVEAU 2 -->
+  <div class="container mockup-block">
+    <div class="mh">
+      <div class="left">
+        <span class="eyebrow" style="display:block; margin-bottom:12px;">04 · D · Mockup 03 · Niveau 2</span>
+        <h3>Drawer Niveau 2 — la conversation <em>floutée</em>, le bien au premier plan.</h3>
+        <p>Clic sur une card. Le drawer ouvre depuis la droite à 75 %. La sidebar conversation se réduit à 25 % et passe en blur 5-10 % : présente, pas perdue, prête à reprendre la main.</p>
+      </div>
+      <div class="badge">Niveau 02</div>
+    </div>
+
+    <div class="mockup-frame">
+      <div class="mockup-titlebar">
+        <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="url">enki-realty.com / drawer · Coral Bay B-04</div>
+      </div>
+      <div class="drawer-mock">
+        <!-- LEFT BLURRED CONVERSATION 25% -->
+        <aside class="drawer-blurred">
+          <header class="sb-head">
+            <div class="sb-avatar-mini"></div>
+            <span style="font-family:var(--font-sans); font-weight:500; font-size:13px;">ENKI</span>
+          </header>
+          <div class="ghost-msg u">Plutôt un quartier résidentiel calme.</div>
+          <div class="ghost-msg">J'ai présélectionné quatre biens. Trois à Paphos…</div>
+          <div class="ghost-msg u">Coral Bay m'intéresse, dis-m'en plus</div>
+          <div class="ghost-msg">Je vous ouvre la fiche détaillée. La conversation reste là quand vous voulez revenir.</div>
+        </aside>
+
+        <!-- DRAWER CARD 75% -->
+        <div class="drawer-card">
+          <div class="dc-gallery">
+            <div class="ph" style="background-image:url('assets/photos/programme-coral.jpg');"></div>
+            <div class="ph-stack">
+              <div class="ph" style="background-image:url('assets/photos/interior-salon.jpg');"></div>
+              <div class="ph" style="background-image:url('assets/photos/interior-bedroom.jpg');"></div>
+            </div>
+          </div>
+
+          <div class="dc-eyebrow">
+            <span class="pill">Appartement B-04</span>
+            <span class="eyebrow">Coral Bay Residences · Paphos</span>
+          </div>
+          <h3 class="dc-title">Trois chambres, vue mer <em>franche</em>.</h3>
+
+          <div class="dc-meta">
+            <div>
+              <span class="lbl">Prix</span>
+              <span class="val">347 000 €</span>
+            </div>
+            <div>
+              <span class="lbl">Surface</span>
+              <span class="val">112 m²</span>
+            </div>
+            <div>
+              <span class="lbl">Chambres</span>
+              <span class="val serif">Trois</span>
+            </div>
+            <div>
+              <span class="lbl">Livraison</span>
+              <span class="val">Q2 2027</span>
+            </div>
+            <div>
+              <span class="lbl">Parking</span>
+              <span class="val serif">Couvert</span>
+            </div>
+          </div>
+
+          <p class="dc-desc">Le B-04 occupe un angle Sud-Ouest, premier étage. La pièce de vie ouvre par trois fenêtres sur la baie de Coral Bay — la mer est franche, sans construction qui s'interpose. La chambre principale donne sur l'oliveraie de la résidence. Le programme est livré pré-meublé en ligne sobre, neutre, prêt à recevoir vos meubles d'origine ou à habiter sans rien ajouter.</p>
+
+          <div class="dc-plan">
+            <svg class="plan-svg" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" aria-label="Plan schématique B-04">
+              <rect x="10" y="10" width="380" height="180" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.7"/>
+              <line x1="10" y1="100" x2="200" y2="100" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+              <line x1="200" y1="10" x2="200" y2="190" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+              <line x1="200" y1="60" x2="390" y2="60" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+              <line x1="200" y1="140" x2="390" y2="140" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+              <text x="100" y="55" font-family="JetBrains Mono" font-size="9" fill="currentColor" opacity="0.7">SALON · 38m²</text>
+              <text x="100" y="148" font-family="JetBrains Mono" font-size="9" fill="currentColor" opacity="0.7">CUISINE · 14m²</text>
+              <text x="290" y="40" font-family="JetBrains Mono" font-size="9" fill="currentColor" opacity="0.7">CH 1 · 16m²</text>
+              <text x="290" y="105" font-family="JetBrains Mono" font-size="9" fill="currentColor" opacity="0.7">CH 2 · 12m²</text>
+              <text x="290" y="170" font-family="JetBrains Mono" font-size="9" fill="currentColor" opacity="0.7">CH 3 · 11m²</text>
+              <line x1="10" y1="50" x2="35" y2="50" stroke="currentColor" stroke-width="2.5"/>
+              <line x1="35" y1="50" x2="50" y2="50" stroke-dasharray="2 2" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+              <circle cx="35" cy="50" r="3" fill="currentColor"/>
+            </svg>
+            <div class="plan-info">
+              <h5>Plan d'unité</h5>
+              <p>Pièce de vie traversante <em>Est-Ouest</em>, trois chambres ouvrant sur l'oliveraie privée de la résidence.</p>
+            </div>
+          </div>
+
+          <div class="dc-fiscal">
+            <span class="icon">i</span>
+            <p><strong>Éligible Cyprus Permanent Residency</strong> · TVA résidentielle 5 % applicable · 1 % de droits de mutation. Lexaia peut produire le scénario fiscal complet pour votre profil de résidente belge.</p>
+          </div>
+
+          <div class="dc-actions">
+            <a href="#" class="btn-primary">
+              Voir la fiche complète
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+            <a href="#" class="btn-secondary">Voir le programme parent</a>
+            <a href="#" class="btn-secondary">Demander Lexaia personnalisé</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.F · MOCKUP 4 — LEXAIA 30/70 -->
+  <div class="container mockup-block">
+    <div class="mh">
+      <div class="left">
+        <span class="eyebrow" style="display:block; margin-bottom:12px;">04 · E · Mockup 04 · Lexaia</span>
+        <h3>Lexaia — votre argent <em>protégé</em>, en trois scénarios calculés.</h3>
+        <p>Ratio 30/70. La photo respire à droite (registre paisible-sérieux, pas hero rêveur). Les chiffres dominent à gauche en JetBrains Mono tabulaires. Trois scénarios côte à côte, l'économie 10 ans en surlignement. Aucun superlatif. Tout est sourcé, signé, daté.</p>
+      </div>
+      <div class="badge">Niveau 03 · Lexaia</div>
+    </div>
+
+    <div class="mockup-frame">
+      <div class="mockup-titlebar">
+        <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="url">enki-realty.com / lexaia · MarieL · scenarios-coral-bay-2026</div>
+      </div>
+      <div class="lexaia-mock">
+        <!-- MAIN 60% -->
+        <div class="lexaia-main">
+          <header class="lexaia-head">
+            <div class="lh-left">
+              <span class="lh-eyebrow">Lexaia · document patrimonial</span>
+              <span class="lh-doc">Référence MRL-2026-04-227</span>
+            </div>
+            <div class="lh-meta">
+              Émis le 27 avril 2026<br>
+              Valable jusqu'au 27 octobre 2026<br>
+              Auteur · cabinet Lexaia ENKI
+            </div>
+          </header>
+
+          <h2>Trois scénarios pour votre acquisition à <em>Coral Bay</em>.</h2>
+          <div class="lex-recipient">Pour Marie L. · résidente fiscale française · Lyon</div>
+
+          <div class="lex-summary">
+            <div>
+              <div class="ls-head">Le contexte</div>
+              <p>Acquisition d'un appartement de 347 000 € à Coral Bay (Paphos), destiné à 60 % à un usage personnel résidentiel et 40 % à de la location longue durée. Le scénario doit articuler trois variables : structure d'achat, résidence fiscale et stratégie successorale.</p>
+            </div>
+            <div>
+              <div class="ls-head">L'arbitrage</div>
+              <p>Le scénario A conserve la résidence fiscale française. Le B opte pour le régime non-dom chypriote sur 17 ans. Le C structure l'acquisition via une société chypriote (Cyprus IBC). Tous les chiffres sont calculés sur 10 ans, sans valorisation immobilière hypothétique.</p>
+            </div>
+          </div>
+
+          <div class="scenarios">
+            <div class="scenarios-head">
+              <h3>Comparatif financier · 10 ans</h3>
+              <span class="meta">Valeurs nettes après fiscalité</span>
+            </div>
+
+            <div class="scenario-grid">
+              <div class="scenario-card">
+                <span class="sc-letter">Scénario A</span>
+                <div class="sc-name">Nom propre · résidence française maintenue</div>
+                <div class="sc-row">
+                  <span class="sc-lbl">Investissement initial</span>
+                  <span class="sc-val">712 400 €</span>
+                </div>
+                <div class="sc-row">
+                  <span class="sc-lbl">Revenu net annuel</span>
+                  <span class="sc-val">14 315 €</span>
+                </div>
+                <div class="sc-row highlight">
+                  <span class="sc-lbl">Économie 10 ans</span>
+                  <span class="sc-val">référence</span>
+                </div>
+              </div>
+
+              <div class="scenario-card preferred">
+                <span class="sc-letter">Scénario B</span>
+                <div class="sc-name">Non-dom Chypre · résidence fiscale chypriote</div>
+                <div class="sc-row">
+                  <span class="sc-lbl">Investissement initial</span>
+                  <span class="sc-val">712 400 €</span>
+                </div>
+                <div class="sc-row">
+                  <span class="sc-lbl">Revenu net annuel</span>
+                  <span class="sc-val">21 680 €</span>
+                </div>
+                <div class="sc-row highlight">
+                  <span class="sc-lbl">Économie 10 ans</span>
+                  <span class="sc-val">+73 650 €</span>
+                </div>
+              </div>
+
+              <div class="scenario-card">
+                <span class="sc-letter">Scénario C</span>
+                <div class="sc-name">Société chypriote · holding patrimoniale</div>
+                <div class="sc-row">
+                  <span class="sc-lbl">Investissement initial</span>
+                  <span class="sc-val">717 250 €</span>
+                </div>
+                <div class="sc-row">
+                  <span class="sc-lbl">Revenu net annuel</span>
+                  <span class="sc-val">21 420 €</span>
+                </div>
+                <div class="sc-row highlight">
+                  <span class="sc-lbl">Économie 10 ans</span>
+                  <span class="sc-val">+71 050 €</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lex-bars">
+            <h4>Économie cumulée sur 10 ans · vs scénario A</h4>
+            <div class="bar-row">
+              <span class="bar-name">Scénario A</span>
+              <div class="bar-track"><div class="bar-fill" style="width:8%; background:var(--muted-fg); opacity:0.4;"></div></div>
+              <span class="bar-val">référence</span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-name">Scénario B</span>
+              <div class="bar-track"><div class="bar-fill" style="width:96%;"></div></div>
+              <span class="bar-val">+73 650 €</span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-name">Scénario C</span>
+              <div class="bar-track"><div class="bar-fill" style="width:92%;"></div></div>
+              <span class="bar-val">+71 050 €</span>
+            </div>
+          </div>
+
+          <p class="lex-foot">Lexaia est un document patrimonial pédagogique. Il n'est pas opposable comme avis juridique ou fiscal individuel et ne se substitue pas à la consultation d'un avocat ou d'un fiscaliste habilité dans les juridictions concernées. Les calculs sont basés sur les régimes en vigueur au 27 avril 2026, sources : Cyprus Tax Department (CY), DGFiP (FR), conventions bilatérales. Toute évolution réglementaire postérieure modifie les conclusions.</p>
+        </div>
+
+        <!-- SIDE 40% -->
+        <aside class="lexaia-side">
+          <div class="ls-photo" style="background-image:url('assets/photos/interior-light.jpg');"></div>
+          <div class="ls-conv">
+            <header class="sb-head">
+              <div class="sb-avatar">Σ</div>
+              <div>
+                <div class="sb-name">ENKI</div>
+                <div class="body-xs muted">Vous lit Lexaia avec vous</div>
+              </div>
+            </header>
+            <div class="ls-msg-thread">
+              <div class="msg assistant">
+                <p>Marie, le scénario B est légèrement plus favorable que le C (≈ 2 600 €/10 ans). Il est aussi <em>plus simple administrativement</em>.</p>
+              </div>
+              <div class="msg user">Et pour la succession ?</div>
+              <div class="msg assistant">
+                <p>Question importante. Le scénario C protège mieux vos enfants si vous donnez de votre vivant — j'ouvre un calque dédié dès que vous le souhaitez.</p>
+              </div>
+              <div class="msg user">Plus tard. Pour l'instant je voudrais visiter le B-04.</div>
+              <div class="msg assistant">
+                <p>Je vous prépare trois créneaux dans les deux semaines. La visite reste libre, sans engagement.</p>
+              </div>
+            </div>
+            <div class="sb-input" style="border-top:1px solid var(--border);">
+              <div class="field">Continuez avec ENKI…</div>
+              <button class="send" aria-label="Envoyer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.G · MOCKUP 5 — MINI-BULLE ABZU ÉTAT C -->
+  <div class="container mockup-block">
+    <div class="mh">
+      <div class="left">
+        <span class="eyebrow" style="display:block; margin-bottom:12px;">04 · F · Mockup 05 · État C</span>
+        <h3>Mini-bulle Abzu — la présence <em>discrète</em> qui ondule.</h3>
+        <p>L'utilisateur explore librement, sans avoir engagé conversation. La bulle pulse en bas-droite, cercle d'eau qui ondule (ripple animé), Σ blanc en signature. Au survol, elle propose son aide sans s'imposer.</p>
+      </div>
+      <div class="badge">État C · Abzu</div>
+    </div>
+
+    <div class="mockup-frame">
+      <div class="mockup-titlebar">
+        <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="url">enki-realty.com / vivre-a-chypre · exploration libre</div>
+      </div>
+      <div class="editorial-mock">
+        <span class="ed-eyebrow">Vivre à Chypre · 04 / 12</span>
+        <h2 class="ed-title">L'île n'est pas une carte postale, <em>c'est un rythme</em>.</h2>
+
+        <div class="ed-cols">
+          <div class="ed-col">
+            <p>Chypre n'est pas la Côte d'Azur, et n'a pas vocation à le devenir. Les villes y sont posées sur une terre calcaire qui a vu Phéniciens, Romains, Byzantins, Vénitiens, Ottomans et Britanniques. Cette stratification donne à l'île une densité culturelle que peu de territoires méditerranéens conservent intacte.</p>
+          </div>
+          <div class="ed-col">
+            <p>La lumière y descend différemment. Plus posée, plus dorée, plus longue le soir. Les architectes qui travaillent ici depuis vingt ans le savent : les volumes doivent capter l'ombre autant que la lumière. C'est cette discipline qui distingue les bonnes adresses des constructions standardisées qu'on voit partout.</p>
+          </div>
+          <div class="ed-col">
+            <p>Le rythme de l'île reste paisible, même au cœur de Limassol. Les villes de Paphos et Larnaca conservent une vie d'<em>agora</em>, de quartier, de café qu'on prend lentement. C'est cela que les acheteurs ENKI viennent chercher en priorité — pas la fête, pas l'investissement spéculatif, mais la qualité du temps.</p>
+          </div>
+        </div>
+
+        <button class="abzu-bubble" aria-label="Demander de l'aide à ENKI">
+          <span class="sigma">Σ</span>
+        </button>
+        <div class="abzu-tooltip" role="status">
+          Vous semblez explorer librement — y a-t-il quelque chose de précis que je peux vous aider à éclaircir ?
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.H · WCAG AUDIT -->
+  <div class="container wcag-block">
+    <span class="eyebrow" style="display:block; margin-bottom:12px;">04 · G · Audit accessibilité</span>
+    <h3>Contrastes WCAG · cinq paires <em>critiques</em>.</h3>
+    <table class="wcag-table">
+      <thead>
+        <tr>
+          <th>Combinaison</th>
+          <th>Mode</th>
+          <th>Ratio</th>
+          <th>WCAG AA</th>
+          <th>WCAG AAA</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="pair"><span class="swatch-mini"><span style="background:#1A2520;"></span><span style="background:#F0E8D6;"></span></span> FG / BG · texte courant</span></td>
+          <td>Light</td>
+          <td>14.6 : 1</td>
+          <td><span class="verdict aaa">PASS · AAA</span></td>
+          <td><span class="verdict aaa">PASS · AAA</span></td>
+        </tr>
+        <tr>
+          <td><span class="pair"><span class="swatch-mini"><span style="background:#5FC2BA;"></span><span style="background:#F0E8D6;"></span></span> Accent lagune / BG</span></td>
+          <td>Light</td>
+          <td>2.0 : 1</td>
+          <td><span class="verdict fail">FAIL pour texte · OK pour décoration / sceau</span></td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><span class="pair"><span class="swatch-mini"><span style="background:#27C7D4;"></span><span style="background:#1A2520;"></span></span> Accent saturé / encre</span></td>
+          <td>Light · CTA</td>
+          <td>5.7 : 1</td>
+          <td><span class="verdict pass">PASS · AA</span></td>
+          <td><span class="verdict aa">PASS pour grands titres</span></td>
+        </tr>
+        <tr>
+          <td><span class="pair"><span class="swatch-mini"><span style="background:#B88555;"></span><span style="background:#F0E8D6;"></span></span> Cognac / calcaire</span></td>
+          <td>Light</td>
+          <td>2.6 : 1</td>
+          <td><span class="verdict fail">À réserver à l'illustration / accent rare</span></td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><span class="pair"><span class="swatch-mini"><span style="background:#EDE5D0;"></span><span style="background:#0E1612;"></span></span> Calcaire / olivier nuit</span></td>
+          <td>Dark</td>
+          <td>15.2 : 1</td>
+          <td><span class="verdict aaa">PASS · AAA</span></td>
+          <td><span class="verdict aaa">PASS · AAA</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="body-sm" style="margin-top:24px; max-width:720px; font-style:italic;">Lecture : la lagune et le cognac doivent rester des sceaux décoratifs ou des couleurs de remplissage de surfaces — jamais portés sur du texte sur fond calcaire. Le turquoise saturé sur encre olive est en revanche un excellent CTA. La direction reste forte côté lecture corps de texte (AAA en light comme en dark).</p>
+  </div>
+
+</section>
+
+<!-- ============================================================== -->
+<!-- SECTION 5 — DIRECTION 2 · CALCAIRE & ABZU                      -->
+<!-- ============================================================== -->
+<section id="d2" class="scope scope-d2" data-mode="light">
+
+  <!-- 5.A · HEADER -->
+  <div class="container dir-header">
+    <div class="top-bar">
+      <span class="label">Direction 02 · 04</span>
+      <div class="mode-toggle" data-scope-mode="d2" role="radiogroup" aria-label="Direction 2 mode">
+        <button data-scope-set="light" class="active">Light</button>
+        <button data-scope-set="dark">Dark</button>
+      </div>
+    </div>
+    <h2>Calcaire &amp; <em>Abzu</em>.</h2>
+    <p class="lead-text">Le calcaire chaud qui réchauffe le neutre. L'encre Abzu — l'eau profonde du mythe sumérien — qui sait. La lagune lumineuse qui s'ouvre. La chaise cognac qui invite. C'est la direction la plus <em class="serif italic">profonde émotionnellement</em> des trois : elle garde la dignité institutionnelle (Pictet, Lombard Odier) tout en chauffant la matière par la pierre méditerranéenne.</p>
+    <div class="meta-bar">
+      <div>
+        <span class="eyebrow">Manifesto</span>
+        <span style="font-family:var(--font-serif); font-style:italic; font-size:18px; line-height:1.3;">L'eau profonde, la pierre chaude, le sceau précieux.</span>
+      </div>
+      <div>
+        <span class="eyebrow">Registre</span>
+        <span style="font-size:14px;">Encre Abzu marine — profondeur sumérienne, autorité tranquille.</span>
+      </div>
+      <div>
+        <span class="eyebrow">Accent</span>
+        <span style="font-size:14px;">Turquoise lagune saturé · 5-10 % · cognac humain rare.</span>
+      </div>
+      <div>
+        <span class="eyebrow">Force</span>
+        <span style="font-size:14px;">Hérite des photos JM-validées : ciel + horizon + chaise cognac.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5.B · TOKENS -->
+  <div class="container tokens-block">
+    <div style="display:flex; align-items:baseline; justify-content:space-between; gap:32px; margin-bottom:48px;">
+      <div>
+        <span class="eyebrow" style="display:block; margin-bottom:12px;">05 · A · Tokens chromatiques</span>
+        <h3>Encre Abzu marine, calcaire chaud, lagune comme <em>sceau</em>.</h3>
+      </div>
+      <div style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted-fg);">Format OKLCH · Fallback HEX</div>
+    </div>
+
+    <div class="modes-row">
+      <div>
+        <div class="mode-label">Light mode</div>
+        <div class="swatch-grid">
+          <div class="swatch">
+            <div class="chip" style="background:#0F1E2E;"></div>
+            <div class="name">Foreground</div>
+            <div class="role">Encre Abzu marine · titres et corps</div>
+            <div class="codes"><span class="hex">#0F1E2E</span><span class="oklch">oklch(0.21 0.04 250)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#F8F4EC;"></div>
+            <div class="name">Background</div>
+            <div class="role">Papier crème calcaire · plus clair que D1</div>
+            <div class="codes"><span class="hex">#F8F4EC</span><span class="oklch">oklch(0.97 0.018 85)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#FCFAF5;"></div>
+            <div class="name">Card</div>
+            <div class="role">Card légèrement plus claire · papier de qualité</div>
+            <div class="codes"><span class="hex">#FCFAF5</span><span class="oklch">oklch(0.99 0.010 85)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#27C7D4;"></div>
+            <div class="name">Accent · Lagune saturée</div>
+            <div class="role">Turquoise sceau · CTA, indicateurs précieux</div>
+            <div class="codes"><span class="hex">#27C7D4</span><span class="oklch">oklch(0.65 0.12 195)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#5FC2BA;"></div>
+            <div class="name">Accent · Lagune doux</div>
+            <div class="role">Turquoise apaisé · pour les surfaces, les fonds</div>
+            <div class="codes"><span class="hex">#5FC2BA</span><span class="oklch">oklch(0.74 0.11 175)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#B88555;"></div>
+            <div class="name">Accent · Cognac</div>
+            <div class="role">Chaleur humaine · la chaise · accent rare</div>
+            <div class="codes"><span class="hex">#B88555</span><span class="oklch">oklch(0.68 0.09 65)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#525A6B;"></div>
+            <div class="name">Muted Foreground</div>
+            <div class="role">Encre claire · captions, eyebrows secondaires</div>
+            <div class="codes"><span class="hex">#525A6B</span><span class="oklch">oklch(0.42 0.025 240)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#DBD5C8;"></div>
+            <div class="name">Border</div>
+            <div class="role">Calcaire en bordure · 1 px · 5-10 % opacité</div>
+            <div class="codes"><span class="hex">#DBD5C8</span><span class="oklch">oklch(0.85 0.015 85)</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="mode-label">Dark mode</div>
+        <div class="swatch-grid">
+          <div class="swatch">
+            <div class="chip" style="background:#F2EDDF;"></div>
+            <div class="name">Foreground</div>
+            <div class="role">Lumière calcaire dark</div>
+            <div class="codes"><span class="hex">#F2EDDF</span><span class="oklch">oklch(0.94 0.012 85)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#060D17;"></div>
+            <div class="name">Background</div>
+            <div class="role">Nuit Abzu très profonde · cabinet feutré nocturne</div>
+            <div class="codes"><span class="hex">#060D17</span><span class="oklch">oklch(0.13 0.035 245)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#0F1E2E;"></div>
+            <div class="name">Card</div>
+            <div class="role">Encre marine · surface des cards et drawers</div>
+            <div class="codes"><span class="hex">#0F1E2E</span><span class="oklch">oklch(0.18 0.04 250)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#3DD9E5;"></div>
+            <div class="name">Accent · Lagune lumineuse</div>
+            <div class="role">Turquoise dark · présence claire dans la nuit</div>
+            <div class="codes"><span class="hex">#3DD9E5</span><span class="oklch">oklch(0.78 0.14 195)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#5FC2BA;"></div>
+            <div class="name">Accent · Lagune doux</div>
+            <div class="role">Turquoise apaisé · même en dark</div>
+            <div class="codes"><span class="hex">#5FC2BA</span><span class="oklch">oklch(0.74 0.11 175)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#C9966A;"></div>
+            <div class="name">Accent · Cognac dark</div>
+            <div class="role">Cognac réchauffé · chaleur dans la nuit</div>
+            <div class="codes"><span class="hex">#C9966A</span><span class="oklch">oklch(0.74 0.10 65)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#A89E89;"></div>
+            <div class="name">Muted Foreground</div>
+            <div class="role">Calcaire patiné dark</div>
+            <div class="codes"><span class="hex">#A89E89</span><span class="oklch">oklch(0.65 0.025 85)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#1F2D44;"></div>
+            <div class="name">Border</div>
+            <div class="role">Frontière dans la nuit Abzu</div>
+            <div class="codes"><span class="hex">#1F2D44</span><span class="oklch">oklch(0.30 0.04 250)</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5.C · MOCKUP 1 — HERO ÉTAT A -->
+  <div class="container mockup-block">
+    <div class="mh">
+      <div class="left">
+        <span class="eyebrow" style="display:block; margin-bottom:12px;">05 · B · Mockup 01 · État A</span>
+        <h3>Hero conversationnel — ciel bleu, horizon turquoise, <em>chaise cognac</em>.</h3>
+        <p>Cette direction porte la photo signature ENKI : la chaise face mer, dans le registre exact des deux images JM-validées du 27 avril. Le sceau turquoise saturé du bouton <em class="serif italic">Démarrer</em> dialogue avec la lagune réelle.</p>
+      </div>
+      <div class="badge">État A</div>
+    </div>
+
+    <div class="mockup-frame">
+      <div class="mockup-titlebar">
+        <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="url">enki-realty.com</div>
+      </div>
+      <div class="hero-mock">
+        <div class="hero-photo" style="background-image:url('assets/photos/hero-d2-horizon.jpg');"></div>
+        <div class="hero-nav">
+          <div class="logo-mark" aria-label="ENKI Realty">ΣNKI Realty</div>
+          <div class="nav-links">
+            <a href="#">Propriétés</a>
+            <a href="#">Lexaia</a>
+            <a href="#">À propos</a>
+          </div>
+          <a href="#" class="nav-cta">Espace personnel</a>
+        </div>
+        <div class="hero-content">
+          <p class="hero-greet">Bienvenue chez ENKI. Parlez-moi de ce que vous <em>cherchez</em>.</p>
+          <div class="hero-input">
+            <div class="placeholder">Ex : Je suis retraitée à Bruxelles, je cherche un appartement calme à Paphos autour de 350 k€…</div>
+            <button class="submit">
+              Démarrer
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
+          <a href="#" class="hero-explore">Ou explorez librement</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5.D · MOCKUP 2 — SIDEBAR ENGAGED ÉTAT B -->
+  <div class="container mockup-block">
+    <div class="mh">
+      <div class="left">
+        <span class="eyebrow" style="display:block; margin-bottom:12px;">05 · C · Mockup 02 · État B</span>
+        <h3>Sidebar engagée — l'encre Abzu <em>tient</em> la lecture longue.</h3>
+        <p>L'encre marine porte 100 % du corps de texte sur fond calcaire. La sidebar conversationnelle se distingue par un fond très légèrement teinté Abzu. Les cards révèlent une carrosserie crème qui chauffe l'ensemble.</p>
+      </div>
+      <div class="badge">État B</div>
+    </div>
+
+    <div class="mockup-frame">
+      <div class="mockup-titlebar">
+        <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="url">enki-realty.com / agent · session active</div>
+      </div>
+      <div class="engaged-mock">
+        <div class="engaged-left">
+          <span class="eyebrow eb-eyebrow">Propriétés proposées par ENKI</span>
+          <h3 class="eb-title">Quatre biens <em>résonnent</em> avec ce que vous cherchez.</h3>
+          <div class="eb-meta">
+            <span>Triés par justesse</span>
+            <span>·</span>
+            <span>04 résultats</span>
+            <span>·</span>
+            <span>Mis à jour 11 h 24</span>
+          </div>
+
+          <div class="scroll-row">
+            <article class="bien-card">
+              <div class="bc-photo" style="background-image:url('assets/photos/programme-coral.jpg');">
+                <span class="bc-tag">Golden Visa</span>
+              </div>
+              <div class="bc-body">
+                <div class="bc-loc">Paphos · Coral Bay</div>
+                <div class="bc-name">Coral Bay Residences <em>B-04</em></div>
+                <div class="bc-price"><span class="from">À partir de</span>347 000 €</div>
+                <div class="bc-specs"><span>3 chambres</span><span>·</span><span>112 m²</span><span>·</span><span>Vue mer</span></div>
+              </div>
+            </article>
+            <article class="bien-card">
+              <div class="bc-photo" style="background-image:url('assets/photos/programme-olivier.jpg');">
+                <span class="bc-tag">TVA 5 %</span>
+              </div>
+              <div class="bc-body">
+                <div class="bc-loc">Pissouri · Hauteurs</div>
+                <div class="bc-name">Maison de l'<em>Olivier</em></div>
+                <div class="bc-price"><span class="from">À partir de</span>389 500 €</div>
+                <div class="bc-specs"><span>3 chambres</span><span>·</span><span>148 m²</span><span>·</span><span>Oliveraie</span></div>
+              </div>
+            </article>
+            <article class="bien-card">
+              <div class="bc-photo" style="background-image:url('assets/photos/programme-marina.jpg');">
+                <span class="bc-tag">Livraison Q4 2027</span>
+              </div>
+              <div class="bc-body">
+                <div class="bc-loc">Larnaca · Marina</div>
+                <div class="bc-name">Larnaca Marina <em>House</em></div>
+                <div class="bc-price"><span class="from">À partir de</span>365 000 €</div>
+                <div class="bc-specs"><span>2 chambres</span><span>·</span><span>96 m²</span><span>·</span><span>Marina</span></div>
+              </div>
+            </article>
+            <article class="bien-card">
+              <div class="bc-photo" style="background-image:url('assets/photos/interior-bright.jpg');">
+                <span class="bc-tag">Disponible</span>
+              </div>
+              <div class="bc-body">
+                <div class="bc-loc">Limassol · Old Town</div>
+                <div class="bc-name">Stone <em>Vault</em> Apartments</div>
+                <div class="bc-price"><span class="from">À partir de</span>342 000 €</div>
+                <div class="bc-specs"><span>2 chambres</span><span>·</span><span>104 m²</span><span>·</span><span>Pierre</span></div>
+              </div>
+            </article>
+          </div>
+
+          <div style="display:flex; gap:12px; margin-top:24px;">
+            <a href="#" class="btn-secondary" style="font-size:13px; padding:10px 16px;">Voir les 14 résultats complets</a>
+            <a href="#" class="btn-secondary" style="font-size:13px; padding:10px 16px;">Affiner les critères</a>
+          </div>
+        </div>
+
+        <aside class="engaged-sidebar">
+          <header class="sb-head">
+            <div class="sb-avatar" aria-label="Avatar ENKI">Σ</div>
+            <div>
+              <div class="sb-name">ENKI</div>
+              <div class="body-xs muted">Agent conversationnel</div>
+            </div>
+            <div class="sb-status">En ligne</div>
+          </header>
+          <div class="sb-thread">
+            <div class="msg user">Je suis retraitée à Bruxelles, je cherche un appartement calme à Paphos autour de 350 k€.</div>
+            <div class="msg assistant">
+              <p>Bonjour. <span class="signed">Avant de regarder les biens, partageons un peu plus.</span></p>
+              <p style="margin-top:10px;">Vous avez parlé de calme — préférez-vous l'isolement complet d'une villa, ou la tranquillité d'un quartier résidentiel avec voisins discrets ? Je peux préparer une sélection en parallèle pendant qu'on en discute.</p>
+            </div>
+            <div class="msg user">Plutôt un quartier résidentiel calme. Je ne veux pas être seule.</div>
+            <div class="msg assistant">
+              <p>Compris. J'ai présélectionné quatre biens à droite. Trois sont à Paphos comme demandé, le quatrième est à Larnaca — moins calme la journée mais le quartier marina est très <em>habité d'une bonne manière</em>, je le mets pour comparaison.</p>
+              <p style="margin-top:10px;">Souhaitez-vous que je commence par celui qui correspond le mieux ?</p>
+            </div>
+          </div>
+          <div class="sb-input">
+            <div class="field">Écrivez votre message…</div>
+            <button class="send" aria-label="Envoyer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5.E · MOCKUP 3 — DRAWER NIVEAU 2 -->
+  <div class="container mockup-block">
+    <div class="mh">
+      <div class="left">
+        <span class="eyebrow" style="display:block; margin-bottom:12px;">05 · D · Mockup 03 · Niveau 2</span>
+        <h3>Drawer Niveau 2 — la profondeur Abzu <em>donne du poids</em> à l'argument.</h3>
+        <p>Sur encre marine, le bandeau d'éligibilité « Cyprus PR · TVA 5 % » prend toute son autorité institutionnelle. Le sceau turquoise saturé en CTA principal pulse sur la nuit calcaire dark.</p>
+      </div>
+      <div class="badge">Niveau 02</div>
+    </div>
+
+    <div class="mockup-frame">
+      <div class="mockup-titlebar">
+        <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="url">enki-realty.com / drawer · Coral Bay B-04</div>
+      </div>
+      <div class="drawer-mock">
+        <aside class="drawer-blurred">
+          <header class="sb-head">
+            <div class="sb-avatar-mini"></div>
+            <span style="font-family:var(--font-sans); font-weight:500; font-size:13px;">ENKI</span>
+          </header>
+          <div class="ghost-msg u">Plutôt un quartier résidentiel calme.</div>
+          <div class="ghost-msg">J'ai présélectionné quatre biens. Trois à Paphos…</div>
+          <div class="ghost-msg u">Coral Bay m'intéresse, dis-m'en plus</div>
+          <div class="ghost-msg">Je vous ouvre la fiche détaillée. La conversation reste là quand vous voulez revenir.</div>
+        </aside>
+
+        <div class="drawer-card">
+          <div class="dc-gallery">
+            <div class="ph" style="background-image:url('assets/photos/programme-coral.jpg');"></div>
+            <div class="ph-stack">
+              <div class="ph" style="background-image:url('assets/photos/interior-salon.jpg');"></div>
+              <div class="ph" style="background-image:url('assets/photos/interior-bedroom.jpg');"></div>
+            </div>
+          </div>
+
+          <div class="dc-eyebrow">
+            <span class="pill">Appartement B-04</span>
+            <span class="eyebrow">Coral Bay Residences · Paphos</span>
+          </div>
+          <h3 class="dc-title">Trois chambres, vue mer <em>franche</em>.</h3>
+
+          <div class="dc-meta">
+            <div><span class="lbl">Prix</span><span class="val">347 000 €</span></div>
+            <div><span class="lbl">Surface</span><span class="val">112 m²</span></div>
+            <div><span class="lbl">Chambres</span><span class="val serif">Trois</span></div>
+            <div><span class="lbl">Livraison</span><span class="val">Q2 2027</span></div>
+            <div><span class="lbl">Parking</span><span class="val serif">Couvert</span></div>
+          </div>
+
+          <p class="dc-desc">Le B-04 occupe un angle Sud-Ouest, premier étage. La pièce de vie ouvre par trois fenêtres sur la baie de Coral Bay — la mer est franche, sans construction qui s'interpose. La chambre principale donne sur l'oliveraie de la résidence. Le programme est livré pré-meublé en ligne sobre, neutre, prêt à recevoir vos meubles d'origine ou à habiter sans rien ajouter.</p>
+
+          <div class="dc-plan">
+            <svg class="plan-svg" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" aria-label="Plan schématique B-04">
+              <rect x="10" y="10" width="380" height="180" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.7"/>
+              <line x1="10" y1="100" x2="200" y2="100" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+              <line x1="200" y1="10" x2="200" y2="190" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+              <line x1="200" y1="60" x2="390" y2="60" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+              <line x1="200" y1="140" x2="390" y2="140" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+              <text x="100" y="55" font-family="JetBrains Mono" font-size="9" fill="currentColor" opacity="0.7">SALON · 38m²</text>
+              <text x="100" y="148" font-family="JetBrains Mono" font-size="9" fill="currentColor" opacity="0.7">CUISINE · 14m²</text>
+              <text x="290" y="40" font-family="JetBrains Mono" font-size="9" fill="currentColor" opacity="0.7">CH 1 · 16m²</text>
+              <text x="290" y="105" font-family="JetBrains Mono" font-size="9" fill="currentColor" opacity="0.7">CH 2 · 12m²</text>
+              <text x="290" y="170" font-family="JetBrains Mono" font-size="9" fill="currentColor" opacity="0.7">CH 3 · 11m²</text>
+              <line x1="10" y1="50" x2="35" y2="50" stroke="currentColor" stroke-width="2.5"/>
+              <line x1="35" y1="50" x2="50" y2="50" stroke-dasharray="2 2" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+              <circle cx="35" cy="50" r="3" fill="currentColor"/>
+            </svg>
+            <div class="plan-info">
+              <h5>Plan d'unité</h5>
+              <p>Pièce de vie traversante <em>Est-Ouest</em>, trois chambres ouvrant sur l'oliveraie privée de la résidence.</p>
+            </div>
+          </div>
+
+          <div class="dc-fiscal">
+            <span class="icon">i</span>
+            <p><strong>Éligible Cyprus Permanent Residency</strong> · TVA résidentielle 5 % applicable · 1 % de droits de mutation. Lexaia peut produire le scénario fiscal complet pour votre profil de résidente belge.</p>
+          </div>
+
+          <div class="dc-actions">
+            <a href="#" class="btn-primary">
+              Voir la fiche complète
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+            <a href="#" class="btn-secondary">Voir le programme parent</a>
+            <a href="#" class="btn-secondary">Demander Lexaia personnalisé</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5.F · MOCKUP 4 — LEXAIA 30/70 -->
+  <div class="container mockup-block">
+    <div class="mh">
+      <div class="left">
+        <span class="eyebrow" style="display:block; margin-bottom:12px;">05 · E · Mockup 04 · Lexaia</span>
+        <h3>Lexaia — la <em>rectitude</em> du chiffre dans l'encre Abzu.</h3>
+        <p>L'encre marine donne au tableau financier le poids d'un rapport de family office. Le sceau turquoise sur le scénario recommandé pulse sans crier. La photo respire à droite — calcaire et lumière, registre paisible-sérieux.</p>
+      </div>
+      <div class="badge">Niveau 03 · Lexaia</div>
+    </div>
+
+    <div class="mockup-frame">
+      <div class="mockup-titlebar">
+        <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="url">enki-realty.com / lexaia · MarieL · scenarios-coral-bay-2026</div>
+      </div>
+      <div class="lexaia-mock">
+        <div class="lexaia-main">
+          <header class="lexaia-head">
+            <div class="lh-left">
+              <span class="lh-eyebrow">Lexaia · document patrimonial</span>
+              <span class="lh-doc">Référence MRL-2026-04-227</span>
+            </div>
+            <div class="lh-meta">
+              Émis le 27 avril 2026<br>
+              Valable jusqu'au 27 octobre 2026<br>
+              Auteur · cabinet Lexaia ENKI
+            </div>
+          </header>
+
+          <h2>Trois scénarios pour votre acquisition à <em>Coral Bay</em>.</h2>
+          <div class="lex-recipient">Pour Marie L. · résidente fiscale française · Lyon</div>
+
+          <div class="lex-summary">
+            <div>
+              <div class="ls-head">Le contexte</div>
+              <p>Acquisition d'un appartement de 347 000 € à Coral Bay (Paphos), destiné à 60 % à un usage personnel résidentiel et 40 % à de la location longue durée. Le scénario doit articuler trois variables : structure d'achat, résidence fiscale et stratégie successorale.</p>
+            </div>
+            <div>
+              <div class="ls-head">L'arbitrage</div>
+              <p>Le scénario A conserve la résidence fiscale française. Le B opte pour le régime non-dom chypriote sur 17 ans. Le C structure l'acquisition via une société chypriote (Cyprus IBC). Tous les chiffres sont calculés sur 10 ans, sans valorisation immobilière hypothétique.</p>
+            </div>
+          </div>
+
+          <div class="scenarios">
+            <div class="scenarios-head">
+              <h3>Comparatif financier · 10 ans</h3>
+              <span class="meta">Valeurs nettes après fiscalité</span>
+            </div>
+            <div class="scenario-grid">
+              <div class="scenario-card">
+                <span class="sc-letter">Scénario A</span>
+                <div class="sc-name">Nom propre · résidence française maintenue</div>
+                <div class="sc-row"><span class="sc-lbl">Investissement initial</span><span class="sc-val">712 400 €</span></div>
+                <div class="sc-row"><span class="sc-lbl">Revenu net annuel</span><span class="sc-val">14 315 €</span></div>
+                <div class="sc-row highlight"><span class="sc-lbl">Économie 10 ans</span><span class="sc-val">référence</span></div>
+              </div>
+              <div class="scenario-card preferred">
+                <span class="sc-letter">Scénario B</span>
+                <div class="sc-name">Non-dom Chypre · résidence fiscale chypriote</div>
+                <div class="sc-row"><span class="sc-lbl">Investissement initial</span><span class="sc-val">712 400 €</span></div>
+                <div class="sc-row"><span class="sc-lbl">Revenu net annuel</span><span class="sc-val">21 680 €</span></div>
+                <div class="sc-row highlight"><span class="sc-lbl">Économie 10 ans</span><span class="sc-val">+73 650 €</span></div>
+              </div>
+              <div class="scenario-card">
+                <span class="sc-letter">Scénario C</span>
+                <div class="sc-name">Société chypriote · holding patrimoniale</div>
+                <div class="sc-row"><span class="sc-lbl">Investissement initial</span><span class="sc-val">717 250 €</span></div>
+                <div class="sc-row"><span class="sc-lbl">Revenu net annuel</span><span class="sc-val">21 420 €</span></div>
+                <div class="sc-row highlight"><span class="sc-lbl">Économie 10 ans</span><span class="sc-val">+71 050 €</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lex-bars">
+            <h4>Économie cumulée sur 10 ans · vs scénario A</h4>
+            <div class="bar-row">
+              <span class="bar-name">Scénario A</span>
+              <div class="bar-track"><div class="bar-fill" style="width:8%; background:var(--muted-fg); opacity:0.4;"></div></div>
+              <span class="bar-val">référence</span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-name">Scénario B</span>
+              <div class="bar-track"><div class="bar-fill" style="width:96%;"></div></div>
+              <span class="bar-val">+73 650 €</span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-name">Scénario C</span>
+              <div class="bar-track"><div class="bar-fill" style="width:92%;"></div></div>
+              <span class="bar-val">+71 050 €</span>
+            </div>
+          </div>
+
+          <p class="lex-foot">Lexaia est un document patrimonial pédagogique. Il n'est pas opposable comme avis juridique ou fiscal individuel et ne se substitue pas à la consultation d'un avocat ou d'un fiscaliste habilité dans les juridictions concernées. Les calculs sont basés sur les régimes en vigueur au 27 avril 2026, sources : Cyprus Tax Department (CY), DGFiP (FR), conventions bilatérales. Toute évolution réglementaire postérieure modifie les conclusions.</p>
+        </div>
+
+        <aside class="lexaia-side">
+          <div class="ls-photo" style="background-image:url('assets/photos/hero-d2-chair.jpg');"></div>
+          <div class="ls-conv">
+            <header class="sb-head">
+              <div class="sb-avatar">Σ</div>
+              <div>
+                <div class="sb-name">ENKI</div>
+                <div class="body-xs muted">Vous lit Lexaia avec vous</div>
+              </div>
+            </header>
+            <div class="ls-msg-thread">
+              <div class="msg assistant"><p>Marie, le scénario B est légèrement plus favorable que le C (≈ 2 600 €/10 ans). Il est aussi <em>plus simple administrativement</em>.</p></div>
+              <div class="msg user">Et pour la succession ?</div>
+              <div class="msg assistant"><p>Question importante. Le scénario C protège mieux vos enfants si vous donnez de votre vivant — j'ouvre un calque dédié dès que vous le souhaitez.</p></div>
+              <div class="msg user">Plus tard. Pour l'instant je voudrais visiter le B-04.</div>
+              <div class="msg assistant"><p>Je vous prépare trois créneaux dans les deux semaines. La visite reste libre, sans engagement.</p></div>
+            </div>
+            <div class="sb-input" style="border-top:1px solid var(--border);">
+              <div class="field">Continuez avec ENKI…</div>
+              <button class="send" aria-label="Envoyer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5.G · MOCKUP 5 — MINI-BULLE ABZU ÉTAT C -->
+  <div class="container mockup-block">
+    <div class="mh">
+      <div class="left">
+        <span class="eyebrow" style="display:block; margin-bottom:12px;">05 · F · Mockup 05 · État C</span>
+        <h3>Mini-bulle Abzu — la signature <em>chez elle</em>.</h3>
+        <p>Sur cette direction, la bulle ENKI <em class="serif italic">est</em> littéralement Abzu : l'eau profonde du mythe sumérien, le cercle d'eau qui ondule. La direction et le mythe se rejoignent en une seule signature — c'est ici que la marque parle le plus juste.</p>
+      </div>
+      <div class="badge">État C · Abzu</div>
+    </div>
+
+    <div class="mockup-frame">
+      <div class="mockup-titlebar">
+        <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="url">enki-realty.com / vivre-a-chypre · exploration libre</div>
+      </div>
+      <div class="editorial-mock">
+        <span class="ed-eyebrow">Vivre à Chypre · 04 / 12</span>
+        <h2 class="ed-title">L'île n'est pas une carte postale, <em>c'est un rythme</em>.</h2>
+        <div class="ed-cols">
+          <div class="ed-col">
+            <p>Chypre n'est pas la Côte d'Azur, et n'a pas vocation à le devenir. Les villes y sont posées sur une terre calcaire qui a vu Phéniciens, Romains, Byzantins, Vénitiens, Ottomans et Britanniques. Cette stratification donne à l'île une densité culturelle que peu de territoires méditerranéens conservent intacte.</p>
+          </div>
+          <div class="ed-col">
+            <p>La lumière y descend différemment. Plus posée, plus dorée, plus longue le soir. Les architectes qui travaillent ici depuis vingt ans le savent : les volumes doivent capter l'ombre autant que la lumière. C'est cette discipline qui distingue les bonnes adresses des constructions standardisées qu'on voit partout.</p>
+          </div>
+          <div class="ed-col">
+            <p>Le rythme de l'île reste paisible, même au cœur de Limassol. Les villes de Paphos et Larnaca conservent une vie d'<em>agora</em>, de quartier, de café qu'on prend lentement. C'est cela que les acheteurs ENKI viennent chercher en priorité — pas la fête, pas l'investissement spéculatif, mais la qualité du temps.</p>
+          </div>
+        </div>
+        <button class="abzu-bubble" aria-label="Demander de l'aide à ENKI"><span class="sigma">Σ</span></button>
+        <div class="abzu-tooltip" role="status">Vous semblez explorer librement — y a-t-il quelque chose de précis que je peux vous aider à éclaircir ?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5.H · WCAG -->
+  <div class="container wcag-block">
+    <span class="eyebrow" style="display:block; margin-bottom:12px;">05 · G · Audit accessibilité</span>
+    <h3>Contrastes WCAG · cinq paires <em>critiques</em>.</h3>
+    <table class="wcag-table">
+      <thead>
+        <tr><th>Combinaison</th><th>Mode</th><th>Ratio</th><th>WCAG AA</th><th>WCAG AAA</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="pair"><span class="swatch-mini"><span style="background:#0F1E2E;"></span><span style="background:#F8F4EC;"></span></span> FG / BG · texte courant</span></td>
+          <td>Light</td><td>14.1 : 1</td>
+          <td><span class="verdict aaa">PASS · AAA</span></td>
+          <td><span class="verdict aaa">PASS · AAA</span></td>
+        </tr>
+        <tr>
+          <td><span class="pair"><span class="swatch-mini"><span style="background:#27C7D4;"></span><span style="background:#F8F4EC;"></span></span> Accent saturé / BG</span></td>
+          <td>Light</td><td>1.85 : 1</td>
+          <td><span class="verdict fail">FAIL pour texte · OK pour sceau / surface</span></td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><span class="pair"><span class="swatch-mini"><span style="background:#27C7D4;"></span><span style="background:#0F1E2E;"></span></span> Accent saturé / encre Abzu</span></td>
+          <td>Light · CTA</td><td>7.6 : 1</td>
+          <td><span class="verdict aaa">PASS · AAA</span></td>
+          <td><span class="verdict aaa">PASS · AAA</span></td>
+        </tr>
+        <tr>
+          <td><span class="pair"><span class="swatch-mini"><span style="background:#525A6B;"></span><span style="background:#F8F4EC;"></span></span> Muted / BG · captions</span></td>
+          <td>Light</td><td>5.5 : 1</td>
+          <td><span class="verdict pass">PASS · AA</span></td>
+          <td><span class="verdict aa">PASS pour grands titres</span></td>
+        </tr>
+        <tr>
+          <td><span class="pair"><span class="swatch-mini"><span style="background:#F2EDDF;"></span><span style="background:#060D17;"></span></span> Calcaire / nuit Abzu</span></td>
+          <td>Dark</td><td>17.2 : 1</td>
+          <td><span class="verdict aaa">PASS · AAA</span></td>
+          <td><span class="verdict aaa">PASS · AAA</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="body-sm" style="margin-top:24px; max-width:720px; font-style:italic;">Lecture : la combinaison turquoise saturé sur encre Abzu est la <em>meilleure</em> CTA des trois directions (7.6 : 1). Le muted-fg passe AA en captions sans problème. La direction est solide pour la lecture longue (AAA en light comme en dark) et son sceau précieux porte clairement l'autorité institutionnelle.</p>
+  </div>
+
+</section>
+
+<!-- ============================================================== -->
+<!-- SECTION 6 — DIRECTION 3 · LAGUNE SOLAIRE                       -->
+<!-- ============================================================== -->
+<section id="d3" class="scope scope-d3" data-mode="light">
+
+  <!-- 6.A · HEADER -->
+  <div class="container dir-header">
+    <div class="top-bar">
+      <span class="label">Direction 03 · 04</span>
+      <div class="mode-toggle" data-scope-mode="d3" role="radiogroup" aria-label="Direction 3 mode">
+        <button data-scope-set="light" class="active">Light</button>
+        <button data-scope-set="dark">Dark</button>
+      </div>
+    </div>
+    <h2>Lagune <em>Solaire</em>.</h2>
+    <p class="lead-text">Le crème lumineux qui s'ouvre. Le noir-encre tinté qui pose la rectitude. Le turquoise vibrant qui pulse comme signature. L'ocre miel — la lumière du sud, pas le cognac de la chaise — qui chauffe la matière. C'est la direction la plus <em class="serif italic">solaire-méditerranéenne</em> des trois, la plus immédiatement énergisante, mais aussi la plus risquée côté <em>blanding</em> si le sceau précieux est mal dosé.</p>
+    <div class="meta-bar">
+      <div>
+        <span class="eyebrow">Manifesto</span>
+        <span style="font-family:var(--font-serif); font-style:italic; font-size:18px; line-height:1.3;">La lumière chaude, le noir tinté, la lagune qui pulse.</span>
+      </div>
+      <div>
+        <span class="eyebrow">Registre</span>
+        <span style="font-size:14px;">Plus blanc-solaire, plus contemporain, plus « vie qui s'ouvre ».</span>
+      </div>
+      <div>
+        <span class="eyebrow">Accent</span>
+        <span style="font-size:14px;">Turquoise vibrant signature · ocre miel comme chaleur du sud.</span>
+      </div>
+      <div>
+        <span class="eyebrow">Risque</span>
+        <span style="font-size:14px;">Plus proche d'un design contemporain « générique » si l'accent est mal dosé.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6.B · TOKENS -->
+  <div class="container tokens-block">
+    <div style="display:flex; align-items:baseline; justify-content:space-between; gap:32px; margin-bottom:48px;">
+      <div>
+        <span class="eyebrow" style="display:block; margin-bottom:12px;">06 · A · Tokens chromatiques</span>
+        <h3>Noir-encre tinté chaud, crème solaire, turquoise <em>signature</em>.</h3>
+      </div>
+      <div style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted-fg);">Format OKLCH · Fallback HEX</div>
+    </div>
+
+    <div class="modes-row">
+      <div>
+        <div class="mode-label">Light mode</div>
+        <div class="swatch-grid">
+          <div class="swatch">
+            <div class="chip" style="background:#1A1612;"></div>
+            <div class="name">Foreground</div>
+            <div class="role">Noir-encre tinté chaud · pas pur noir</div>
+            <div class="codes"><span class="hex">#1A1612</span><span class="oklch">oklch(0.18 0.020 80)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#FAF6ED;"></div>
+            <div class="name">Background</div>
+            <div class="role">Papier crème lumineux · plus blanc, plus solaire</div>
+            <div class="codes"><span class="hex">#FAF6ED</span><span class="oklch">oklch(0.97 0.012 85)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#FEFCF6;"></div>
+            <div class="name">Card</div>
+            <div class="role">Card surface · proche-blanc tiède</div>
+            <div class="codes"><span class="hex">#FEFCF6</span><span class="oklch">oklch(0.99 0.005 85)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#27C7D4;"></div>
+            <div class="name">Accent · Lagune signature</div>
+            <div class="role">Turquoise vibrant · sceau central de la marque</div>
+            <div class="codes"><span class="hex">#27C7D4</span><span class="oklch">oklch(0.65 0.12 195)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#76CDCD;"></div>
+            <div class="name">Accent · Lagune clair</div>
+            <div class="role">Turquoise apaisé · highlights, hover states</div>
+            <div class="codes"><span class="hex">#76CDCD</span><span class="oklch">oklch(0.78 0.10 195)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#B88547;"></div>
+            <div class="name">Accent · Ocre miel</div>
+            <div class="role">Lumière du sud · chaleur posée chypriote</div>
+            <div class="codes"><span class="hex">#B88547</span><span class="oklch">oklch(0.63 0.10 65)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#7A6E5C;"></div>
+            <div class="name">Muted Foreground</div>
+            <div class="role">Calcaire patiné chaud · captions, eyebrows</div>
+            <div class="codes"><span class="hex">#7A6E5C</span><span class="oklch">oklch(0.48 0.020 75)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#DFD6C2;"></div>
+            <div class="name">Border</div>
+            <div class="role">Bordures fines · 1 px à 5-10 % opacité</div>
+            <div class="codes"><span class="hex">#DFD6C2</span><span class="oklch">oklch(0.88 0.018 85)</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="mode-label">Dark mode</div>
+        <div class="swatch-grid">
+          <div class="swatch">
+            <div class="chip" style="background:#F5F0E2;"></div>
+            <div class="name">Foreground</div>
+            <div class="role">Lumière chaude dark</div>
+            <div class="codes"><span class="hex">#F5F0E2</span><span class="oklch">oklch(0.95 0.012 85)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#100D08;"></div>
+            <div class="name">Background</div>
+            <div class="role">Nuit chaude profonde · noir tinté ocre</div>
+            <div class="codes"><span class="hex">#100D08</span><span class="oklch">oklch(0.13 0.018 80)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#1A1612;"></div>
+            <div class="name">Card</div>
+            <div class="role">Encre tinté · surface des cards</div>
+            <div class="codes"><span class="hex">#1A1612</span><span class="oklch">oklch(0.18 0.020 80)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#3DD9E5;"></div>
+            <div class="name">Accent · Lagune lumineuse</div>
+            <div class="role">Turquoise dark · présence claire la nuit</div>
+            <div class="codes"><span class="hex">#3DD9E5</span><span class="oklch">oklch(0.78 0.14 195)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#76CDCD;"></div>
+            <div class="name">Accent · Lagune clair</div>
+            <div class="role">Turquoise apaisé · même en dark</div>
+            <div class="codes"><span class="hex">#76CDCD</span><span class="oklch">oklch(0.78 0.10 195)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#C9966A;"></div>
+            <div class="name">Accent · Ocre dark</div>
+            <div class="role">Ocre miel réchauffé pour la nuit</div>
+            <div class="codes"><span class="hex">#C9966A</span><span class="oklch">oklch(0.72 0.10 65)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#A89E89;"></div>
+            <div class="name">Muted Foreground</div>
+            <div class="role">Calcaire patiné dark · texte secondaire</div>
+            <div class="codes"><span class="hex">#A89E89</span><span class="oklch">oklch(0.65 0.020 80)</span></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#2D2620;"></div>
+            <div class="name">Border</div>
+            <div class="role">Frontière dans la nuit chaude</div>
+            <div class="codes"><span class="hex">#2D2620</span><span class="oklch">oklch(0.28 0.020 80)</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6.C · MOCKUP 1 — HERO ÉTAT A -->
+  <div class="container mockup-block">
+    <div class="mh">
+      <div class="left">
+        <span class="eyebrow" style="display:block; margin-bottom:12px;">06 · B · Mockup 01 · État A</span>
+        <h3>Hero conversationnel — l'eau turquoise <em>traverse</em> la lumière.</h3>
+        <p>Cette direction porte la photo de l'eau cristalline vue de dessus, ou de la plage chypriote en plein soleil. La promesse de transformation est immédiate. Le risque, à doser : ne pas glisser vers un imaginaire « carte postale méditerranéenne » contre lequel le manifesto a posé un verrou clair.</p>
+      </div>
+      <div class="badge">État A</div>
+    </div>
+
+    <div class="mockup-frame">
+      <div class="mockup-titlebar">
+        <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="url">enki-realty.com</div>
+      </div>
+      <div class="hero-mock">
+        <div class="hero-photo" style="background-image:url('assets/photos/hero-d3-water.jpg');"></div>
+        <div class="hero-nav">
+          <div class="logo-mark" aria-label="ENKI Realty">ΣNKI Realty</div>
+          <div class="nav-links">
+            <a href="#">Propriétés</a>
+            <a href="#">Lexaia</a>
+            <a href="#">À propos</a>
+          </div>
+          <a href="#" class="nav-cta">Espace personnel</a>
+        </div>
+        <div class="hero-content">
+          <p class="hero-greet">Bienvenue chez ENKI. Parlez-moi de ce que vous <em>cherchez</em>.</p>
+          <div class="hero-input">
+            <div class="placeholder">Ex : Je suis retraitée à Bruxelles, je cherche un appartement calme à Paphos autour de 350 k€…</div>
+            <button class="submit">
+              Démarrer
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
+          <a href="#" class="hero-explore">Ou explorez librement</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6.D · MOCKUP 2 — SIDEBAR ENGAGED -->
+  <div class="container mockup-block">
+    <div class="mh">
+      <div class="left">
+        <span class="eyebrow" style="display:block; margin-bottom:12px;">06 · C · Mockup 02 · État B</span>
+        <h3>Sidebar engagée — la lumière solaire <em>énergise</em> les cards.</h3>
+        <p>Sur le crème lumineux, les cards sont presque blanches : la photo est l'argument, le texte est minimal, le sceau turquoise distingue l'éligibilité fiscale. La sidebar conversationnelle a une présence plus contemporaine, moins institutionnelle que D2.</p>
+      </div>
+      <div class="badge">État B</div>
+    </div>
+
+    <div class="mockup-frame">
+      <div class="mockup-titlebar">
+        <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="url">enki-realty.com / agent · session active</div>
+      </div>
+      <div class="engaged-mock">
+        <div class="engaged-left">
+          <span class="eyebrow eb-eyebrow">Propriétés proposées par ENKI</span>
+          <h3 class="eb-title">Quatre biens <em>résonnent</em> avec ce que vous cherchez.</h3>
+          <div class="eb-meta">
+            <span>Triés par justesse</span><span>·</span><span>04 résultats</span><span>·</span><span>Mis à jour 11 h 24</span>
+          </div>
+          <div class="scroll-row">
+            <article class="bien-card">
+              <div class="bc-photo" style="background-image:url('assets/photos/programme-coral.jpg');"><span class="bc-tag">Golden Visa</span></div>
+              <div class="bc-body">
+                <div class="bc-loc">Paphos · Coral Bay</div>
+                <div class="bc-name">Coral Bay Residences <em>B-04</em></div>
+                <div class="bc-price"><span class="from">À partir de</span>347 000 €</div>
+                <div class="bc-specs"><span>3 chambres</span><span>·</span><span>112 m²</span><span>·</span><span>Vue mer</span></div>
+              </div>
+            </article>
+            <article class="bien-card">
+              <div class="bc-photo" style="background-image:url('assets/photos/programme-olivier.jpg');"><span class="bc-tag">TVA 5 %</span></div>
+              <div class="bc-body">
+                <div class="bc-loc">Pissouri · Hauteurs</div>
+                <div class="bc-name">Maison de l'<em>Olivier</em></div>
+                <div class="bc-price"><span class="from">À partir de</span>389 500 €</div>
+                <div class="bc-specs"><span>3 chambres</span><span>·</span><span>148 m²</span><span>·</span><span>Oliveraie</span></div>
+              </div>
+            </article>
+            <article class="bien-card">
+              <div class="bc-photo" style="background-image:url('assets/photos/programme-marina.jpg');"><span class="bc-tag">Livraison Q4 2027</span></div>
+              <div class="bc-body">
+                <div class="bc-loc">Larnaca · Marina</div>
+                <div class="bc-name">Larnaca Marina <em>House</em></div>
+                <div class="bc-price"><span class="from">À partir de</span>365 000 €</div>
+                <div class="bc-specs"><span>2 chambres</span><span>·</span><span>96 m²</span><span>·</span><span>Marina</span></div>
+              </div>
+            </article>
+            <article class="bien-card">
+              <div class="bc-photo" style="background-image:url('assets/photos/interior-bright.jpg');"><span class="bc-tag">Disponible</span></div>
+              <div class="bc-body">
+                <div class="bc-loc">Limassol · Old Town</div>
+                <div class="bc-name">Stone <em>Vault</em> Apartments</div>
+                <div class="bc-price"><span class="from">À partir de</span>342 000 €</div>
+                <div class="bc-specs"><span>2 chambres</span><span>·</span><span>104 m²</span><span>·</span><span>Pierre</span></div>
+              </div>
+            </article>
+          </div>
+          <div style="display:flex; gap:12px; margin-top:24px;">
+            <a href="#" class="btn-secondary" style="font-size:13px; padding:10px 16px;">Voir les 14 résultats complets</a>
+            <a href="#" class="btn-secondary" style="font-size:13px; padding:10px 16px;">Affiner les critères</a>
+          </div>
+        </div>
+
+        <aside class="engaged-sidebar">
+          <header class="sb-head">
+            <div class="sb-avatar" aria-label="Avatar ENKI">Σ</div>
+            <div>
+              <div class="sb-name">ENKI</div>
+              <div class="body-xs muted">Agent conversationnel</div>
+            </div>
+            <div class="sb-status">En ligne</div>
+          </header>
+          <div class="sb-thread">
+            <div class="msg user">Je suis retraitée à Bruxelles, je cherche un appartement calme à Paphos autour de 350 k€.</div>
+            <div class="msg assistant">
+              <p>Bonjour. <span class="signed">Avant de regarder les biens, partageons un peu plus.</span></p>
+              <p style="margin-top:10px;">Vous avez parlé de calme — préférez-vous l'isolement complet d'une villa, ou la tranquillité d'un quartier résidentiel avec voisins discrets ? Je peux préparer une sélection en parallèle pendant qu'on en discute.</p>
+            </div>
+            <div class="msg user">Plutôt un quartier résidentiel calme. Je ne veux pas être seule.</div>
+            <div class="msg assistant">
+              <p>Compris. J'ai présélectionné quatre biens à droite. Trois sont à Paphos comme demandé, le quatrième est à Larnaca — moins calme la journée mais le quartier marina est très <em>habité d'une bonne manière</em>, je le mets pour comparaison.</p>
+              <p style="margin-top:10px;">Souhaitez-vous que je commence par celui qui correspond le mieux ?</p>
+            </div>
+          </div>
+          <div class="sb-input">
+            <div class="field">Écrivez votre message…</div>
+            <button class="send" aria-label="Envoyer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6.E · MOCKUP 3 — DRAWER NIVEAU 2 -->
+  <div class="container mockup-block">
+    <div class="mh">
+      <div class="left">
+        <span class="eyebrow" style="display:block; margin-bottom:12px;">06 · D · Mockup 03 · Niveau 2</span>
+        <h3>Drawer Niveau 2 — la lumière chaude <em>met en valeur</em> les volumes.</h3>
+        <p>Le contraste fort entre noir-encre tinté et papier crème solaire est ici proche du <em class="serif italic">Stripe + Cereal Magazine</em>. Risque : ressembler à un design générique 2025 si la photo et l'italique ne portent pas la signature.</p>
+      </div>
+      <div class="badge">Niveau 02</div>
+    </div>
+
+    <div class="mockup-frame">
+      <div class="mockup-titlebar">
+        <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="url">enki-realty.com / drawer · Coral Bay B-04</div>
+      </div>
+      <div class="drawer-mock">
+        <aside class="drawer-blurred">
+          <header class="sb-head">
+            <div class="sb-avatar-mini"></div>
+            <span style="font-family:var(--font-sans); font-weight:500; font-size:13px;">ENKI</span>
+          </header>
+          <div class="ghost-msg u">Plutôt un quartier résidentiel calme.</div>
+          <div class="ghost-msg">J'ai présélectionné quatre biens. Trois à Paphos…</div>
+          <div class="ghost-msg u">Coral Bay m'intéresse, dis-m'en plus</div>
+          <div class="ghost-msg">Je vous ouvre la fiche détaillée. La conversation reste là quand vous voulez revenir.</div>
+        </aside>
+        <div class="drawer-card">
+          <div class="dc-gallery">
+            <div class="ph" style="background-image:url('assets/photos/programme-coral.jpg');"></div>
+            <div class="ph-stack">
+              <div class="ph" style="background-image:url('assets/photos/interior-salon.jpg');"></div>
+              <div class="ph" style="background-image:url('assets/photos/interior-bedroom.jpg');"></div>
+            </div>
+          </div>
+          <div class="dc-eyebrow">
+            <span class="pill">Appartement B-04</span>
+            <span class="eyebrow">Coral Bay Residences · Paphos</span>
+          </div>
+          <h3 class="dc-title">Trois chambres, vue mer <em>franche</em>.</h3>
+          <div class="dc-meta">
+            <div><span class="lbl">Prix</span><span class="val">347 000 €</span></div>
+            <div><span class="lbl">Surface</span><span class="val">112 m²</span></div>
+            <div><span class="lbl">Chambres</span><span class="val serif">Trois</span></div>
+            <div><span class="lbl">Livraison</span><span class="val">Q2 2027</span></div>
+            <div><span class="lbl">Parking</span><span class="val serif">Couvert</span></div>
+          </div>
+          <p class="dc-desc">Le B-04 occupe un angle Sud-Ouest, premier étage. La pièce de vie ouvre par trois fenêtres sur la baie de Coral Bay — la mer est franche, sans construction qui s'interpose. La chambre principale donne sur l'oliveraie de la résidence. Le programme est livré pré-meublé en ligne sobre, neutre, prêt à recevoir vos meubles d'origine ou à habiter sans rien ajouter.</p>
+          <div class="dc-plan">
+            <svg class="plan-svg" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" aria-label="Plan schématique B-04">
+              <rect x="10" y="10" width="380" height="180" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.7"/>
+              <line x1="10" y1="100" x2="200" y2="100" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+              <line x1="200" y1="10" x2="200" y2="190" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+              <line x1="200" y1="60" x2="390" y2="60" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+              <line x1="200" y1="140" x2="390" y2="140" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+              <text x="100" y="55" font-family="JetBrains Mono" font-size="9" fill="currentColor" opacity="0.7">SALON · 38m²</text>
+              <text x="100" y="148" font-family="JetBrains Mono" font-size="9" fill="currentColor" opacity="0.7">CUISINE · 14m²</text>
+              <text x="290" y="40" font-family="JetBrains Mono" font-size="9" fill="currentColor" opacity="0.7">CH 1 · 16m²</text>
+              <text x="290" y="105" font-family="JetBrains Mono" font-size="9" fill="currentColor" opacity="0.7">CH 2 · 12m²</text>
+              <text x="290" y="170" font-family="JetBrains Mono" font-size="9" fill="currentColor" opacity="0.7">CH 3 · 11m²</text>
+              <line x1="10" y1="50" x2="35" y2="50" stroke="currentColor" stroke-width="2.5"/>
+              <line x1="35" y1="50" x2="50" y2="50" stroke-dasharray="2 2" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+              <circle cx="35" cy="50" r="3" fill="currentColor"/>
+            </svg>
+            <div class="plan-info">
+              <h5>Plan d'unité</h5>
+              <p>Pièce de vie traversante <em>Est-Ouest</em>, trois chambres ouvrant sur l'oliveraie privée de la résidence.</p>
+            </div>
+          </div>
+          <div class="dc-fiscal">
+            <span class="icon">i</span>
+            <p><strong>Éligible Cyprus Permanent Residency</strong> · TVA résidentielle 5 % applicable · 1 % de droits de mutation. Lexaia peut produire le scénario fiscal complet pour votre profil de résidente belge.</p>
+          </div>
+          <div class="dc-actions">
+            <a href="#" class="btn-primary">
+              Voir la fiche complète
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+            <a href="#" class="btn-secondary">Voir le programme parent</a>
+            <a href="#" class="btn-secondary">Demander Lexaia personnalisé</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6.F · MOCKUP 4 — LEXAIA -->
+  <div class="container mockup-block">
+    <div class="mh">
+      <div class="left">
+        <span class="eyebrow" style="display:block; margin-bottom:12px;">06 · E · Mockup 04 · Lexaia</span>
+        <h3>Lexaia — le chiffre <em>brille</em> dans la lumière chaude.</h3>
+        <p>L'encre tinté chaud sur crème solaire est ce qui se rapproche le plus d'un rapport patrimonial classique tiré sur papier épais. Le sceau turquoise reste dans son rôle de signal — il ne devient pas décoratif.</p>
+      </div>
+      <div class="badge">Niveau 03 · Lexaia</div>
+    </div>
+
+    <div class="mockup-frame">
+      <div class="mockup-titlebar">
+        <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="url">enki-realty.com / lexaia · MarieL · scenarios-coral-bay-2026</div>
+      </div>
+      <div class="lexaia-mock">
+        <div class="lexaia-main">
+          <header class="lexaia-head">
+            <div class="lh-left">
+              <span class="lh-eyebrow">Lexaia · document patrimonial</span>
+              <span class="lh-doc">Référence MRL-2026-04-227</span>
+            </div>
+            <div class="lh-meta">
+              Émis le 27 avril 2026<br>Valable jusqu'au 27 octobre 2026<br>Auteur · cabinet Lexaia ENKI
+            </div>
+          </header>
+          <h2>Trois scénarios pour votre acquisition à <em>Coral Bay</em>.</h2>
+          <div class="lex-recipient">Pour Marie L. · résidente fiscale française · Lyon</div>
+          <div class="lex-summary">
+            <div>
+              <div class="ls-head">Le contexte</div>
+              <p>Acquisition d'un appartement de 347 000 € à Coral Bay (Paphos), destiné à 60 % à un usage personnel résidentiel et 40 % à de la location longue durée. Le scénario doit articuler trois variables : structure d'achat, résidence fiscale et stratégie successorale.</p>
+            </div>
+            <div>
+              <div class="ls-head">L'arbitrage</div>
+              <p>Le scénario A conserve la résidence fiscale française. Le B opte pour le régime non-dom chypriote sur 17 ans. Le C structure l'acquisition via une société chypriote (Cyprus IBC). Tous les chiffres sont calculés sur 10 ans, sans valorisation immobilière hypothétique.</p>
+            </div>
+          </div>
+          <div class="scenarios">
+            <div class="scenarios-head">
+              <h3>Comparatif financier · 10 ans</h3>
+              <span class="meta">Valeurs nettes après fiscalité</span>
+            </div>
+            <div class="scenario-grid">
+              <div class="scenario-card">
+                <span class="sc-letter">Scénario A</span>
+                <div class="sc-name">Nom propre · résidence française maintenue</div>
+                <div class="sc-row"><span class="sc-lbl">Investissement initial</span><span class="sc-val">712 400 €</span></div>
+                <div class="sc-row"><span class="sc-lbl">Revenu net annuel</span><span class="sc-val">14 315 €</span></div>
+                <div class="sc-row highlight"><span class="sc-lbl">Économie 10 ans</span><span class="sc-val">référence</span></div>
+              </div>
+              <div class="scenario-card preferred">
+                <span class="sc-letter">Scénario B</span>
+                <div class="sc-name">Non-dom Chypre · résidence fiscale chypriote</div>
+                <div class="sc-row"><span class="sc-lbl">Investissement initial</span><span class="sc-val">712 400 €</span></div>
+                <div class="sc-row"><span class="sc-lbl">Revenu net annuel</span><span class="sc-val">21 680 €</span></div>
+                <div class="sc-row highlight"><span class="sc-lbl">Économie 10 ans</span><span class="sc-val">+73 650 €</span></div>
+              </div>
+              <div class="scenario-card">
+                <span class="sc-letter">Scénario C</span>
+                <div class="sc-name">Société chypriote · holding patrimoniale</div>
+                <div class="sc-row"><span class="sc-lbl">Investissement initial</span><span class="sc-val">717 250 €</span></div>
+                <div class="sc-row"><span class="sc-lbl">Revenu net annuel</span><span class="sc-val">21 420 €</span></div>
+                <div class="sc-row highlight"><span class="sc-lbl">Économie 10 ans</span><span class="sc-val">+71 050 €</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="lex-bars">
+            <h4>Économie cumulée sur 10 ans · vs scénario A</h4>
+            <div class="bar-row">
+              <span class="bar-name">Scénario A</span>
+              <div class="bar-track"><div class="bar-fill" style="width:8%; background:var(--muted-fg); opacity:0.4;"></div></div>
+              <span class="bar-val">référence</span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-name">Scénario B</span>
+              <div class="bar-track"><div class="bar-fill" style="width:96%;"></div></div>
+              <span class="bar-val">+73 650 €</span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-name">Scénario C</span>
+              <div class="bar-track"><div class="bar-fill" style="width:92%;"></div></div>
+              <span class="bar-val">+71 050 €</span>
+            </div>
+          </div>
+          <p class="lex-foot">Lexaia est un document patrimonial pédagogique. Il n'est pas opposable comme avis juridique ou fiscal individuel et ne se substitue pas à la consultation d'un avocat ou d'un fiscaliste habilité dans les juridictions concernées. Les calculs sont basés sur les régimes en vigueur au 27 avril 2026, sources : Cyprus Tax Department (CY), DGFiP (FR), conventions bilatérales. Toute évolution réglementaire postérieure modifie les conclusions.</p>
+        </div>
+        <aside class="lexaia-side">
+          <div class="ls-photo" style="background-image:url('assets/photos/hero-d3-beach.jpg');"></div>
+          <div class="ls-conv">
+            <header class="sb-head">
+              <div class="sb-avatar">Σ</div>
+              <div>
+                <div class="sb-name">ENKI</div>
+                <div class="body-xs muted">Vous lit Lexaia avec vous</div>
+              </div>
+            </header>
+            <div class="ls-msg-thread">
+              <div class="msg assistant"><p>Marie, le scénario B est légèrement plus favorable que le C (≈ 2 600 €/10 ans). Il est aussi <em>plus simple administrativement</em>.</p></div>
+              <div class="msg user">Et pour la succession ?</div>
+              <div class="msg assistant"><p>Question importante. Le scénario C protège mieux vos enfants si vous donnez de votre vivant — j'ouvre un calque dédié dès que vous le souhaitez.</p></div>
+              <div class="msg user">Plus tard. Pour l'instant je voudrais visiter le B-04.</div>
+              <div class="msg assistant"><p>Je vous prépare trois créneaux dans les deux semaines. La visite reste libre, sans engagement.</p></div>
+            </div>
+            <div class="sb-input" style="border-top:1px solid var(--border);">
+              <div class="field">Continuez avec ENKI…</div>
+              <button class="send" aria-label="Envoyer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6.G · MOCKUP 5 — MINI-BULLE ABZU ÉTAT C -->
+  <div class="container mockup-block">
+    <div class="mh">
+      <div class="left">
+        <span class="eyebrow" style="display:block; margin-bottom:12px;">06 · F · Mockup 05 · État C</span>
+        <h3>Mini-bulle Abzu — la signature pulse plus <em>fort</em>.</h3>
+        <p>Sur cette direction, la bulle est plus visible que sur D2 (le contraste turquoise/crème solaire est plus franc). Risque : devenir trop voyante, virer au gadget « chatbot ». Solution : maintenir un timing d'ondulation lent (3.5 s par cycle) qui appartient à l'eau, pas au bouton.</p>
+      </div>
+      <div class="badge">État C · Abzu</div>
+    </div>
+
+    <div class="mockup-frame">
+      <div class="mockup-titlebar">
+        <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="url">enki-realty.com / vivre-a-chypre · exploration libre</div>
+      </div>
+      <div class="editorial-mock">
+        <span class="ed-eyebrow">Vivre à Chypre · 04 / 12</span>
+        <h2 class="ed-title">L'île n'est pas une carte postale, <em>c'est un rythme</em>.</h2>
+        <div class="ed-cols">
+          <div class="ed-col"><p>Chypre n'est pas la Côte d'Azur, et n'a pas vocation à le devenir. Les villes y sont posées sur une terre calcaire qui a vu Phéniciens, Romains, Byzantins, Vénitiens, Ottomans et Britanniques. Cette stratification donne à l'île une densité culturelle que peu de territoires méditerranéens conservent intacte.</p></div>
+          <div class="ed-col"><p>La lumière y descend différemment. Plus posée, plus dorée, plus longue le soir. Les architectes qui travaillent ici depuis vingt ans le savent : les volumes doivent capter l'ombre autant que la lumière. C'est cette discipline qui distingue les bonnes adresses des constructions standardisées qu'on voit partout.</p></div>
+          <div class="ed-col"><p>Le rythme de l'île reste paisible, même au cœur de Limassol. Les villes de Paphos et Larnaca conservent une vie d'<em>agora</em>, de quartier, de café qu'on prend lentement. C'est cela que les acheteurs ENKI viennent chercher en priorité — pas la fête, pas l'investissement spéculatif, mais la qualité du temps.</p></div>
+        </div>
+        <button class="abzu-bubble" aria-label="Demander de l'aide à ENKI"><span class="sigma">Σ</span></button>
+        <div class="abzu-tooltip" role="status">Vous semblez explorer librement — y a-t-il quelque chose de précis que je peux vous aider à éclaircir ?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6.H · WCAG -->
+  <div class="container wcag-block">
+    <span class="eyebrow" style="display:block; margin-bottom:12px;">06 · G · Audit accessibilité</span>
+    <h3>Contrastes WCAG · cinq paires <em>critiques</em>.</h3>
+    <table class="wcag-table">
+      <thead><tr><th>Combinaison</th><th>Mode</th><th>Ratio</th><th>WCAG AA</th><th>WCAG AAA</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="pair"><span class="swatch-mini"><span style="background:#1A1612;"></span><span style="background:#FAF6ED;"></span></span> FG / BG · texte courant</span></td>
+          <td>Light</td><td>16.4 : 1</td>
+          <td><span class="verdict aaa">PASS · AAA</span></td>
+          <td><span class="verdict aaa">PASS · AAA</span></td>
+        </tr>
+        <tr>
+          <td><span class="pair"><span class="swatch-mini"><span style="background:#27C7D4;"></span><span style="background:#FAF6ED;"></span></span> Accent signature / BG</span></td>
+          <td>Light</td><td>2.1 : 1</td>
+          <td><span class="verdict fail">FAIL pour texte · OK pour sceau / surface large</span></td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><span class="pair"><span class="swatch-mini"><span style="background:#27C7D4;"></span><span style="background:#1A1612;"></span></span> Accent signature / encre tinté</span></td>
+          <td>Light · CTA</td><td>7.8 : 1</td>
+          <td><span class="verdict aaa">PASS · AAA</span></td>
+          <td><span class="verdict aaa">PASS · AAA</span></td>
+        </tr>
+        <tr>
+          <td><span class="pair"><span class="swatch-mini"><span style="background:#B88547;"></span><span style="background:#FAF6ED;"></span></span> Ocre miel / crème</span></td>
+          <td>Light</td><td>3.4 : 1</td>
+          <td><span class="verdict pass">PASS pour grands titres uniquement</span></td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><span class="pair"><span class="swatch-mini"><span style="background:#F5F0E2;"></span><span style="background:#100D08;"></span></span> Lumière chaude / nuit</span></td>
+          <td>Dark</td><td>16.8 : 1</td>
+          <td><span class="verdict aaa">PASS · AAA</span></td>
+          <td><span class="verdict aaa">PASS · AAA</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="body-sm" style="margin-top:24px; max-width:720px; font-style:italic;">Lecture : meilleur ratio FG / BG des trois directions en light (16.4 : 1) — la lecture longue est confortable au plus haut niveau. L'ocre miel passe AA pour les grands titres uniquement, à n'utiliser jamais sous 18px. La direction est solide en CTA et en lecture mais demande une vigilance constante sur les sceaux pour ne pas glisser vers le générique.</p>
+  </div>
+
+</section>
+
+<!-- ============================================================== -->
+<!-- SECTION 7 — AMBIANCE ÉMOTIONNELLE · OBJET + VIDE               -->
+<!-- ============================================================== -->
+<section id="ambiance" class="scope">
+  <div class="container section compact">
+    <div class="s-num">07 · Ambiance émotionnelle</div>
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:48px; margin-bottom:64px;">
+      <div class="s-head" style="margin-bottom:0;">
+        <span class="eyebrow">Le concept photographique signature</span>
+        <h2 class="title-1 serif italic" style="margin-top:16px;">Un objet humain dans un <em>vide lumineux</em>.</h2>
+        <p class="lead">La signature ENKI n'est ni la villa, ni la mer, ni le couple souriant. C'est l'objet humain — la chaise, la table, le livre, la porte — qui invite sans présence, qui révèle un intérieur sans figurer un personnage.</p>
+      </div>
+      <div class="mode-toggle" data-amb-direction="d2" role="radiogroup" aria-label="Direction visualisée sur l'ambiance">
+        <button data-amb-set="d1">D1</button>
+        <button data-amb-set="d2" class="active">D2</button>
+        <button data-amb-set="d3">D3</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ambiance-block" id="ambiance-tiles">
+    <!-- TILE A — CHAISE FACE MER -->
+    <div class="ambiance-tile" style="background-image:url('assets/photos/hero-d2-chair.jpg');" data-amb-tile>
+      <div class="at-content">
+        <span class="at-eyebrow">Mockup A · Chaise face mer</span>
+        <h3 class="at-title">Le siège <em>vide</em> qui invite à s'asseoir.</h3>
+        <p class="at-quote">Pas de personnage. Pas de récit imposé. La chaise cognac face à l'horizon turquoise — vous écrivez la suite. C'est exactement ce que la marque promet : ne pas vendre, accueillir.</p>
+      </div>
+      <span class="at-credit">Photo · Méditerranée orientale · automne 2025</span>
+    </div>
+
+    <!-- TILE B — OLIVIER / TABLE -->
+    <div class="ambiance-tile" style="background-image:url('assets/photos/olive-tree-1.jpg');" data-amb-tile>
+      <div class="at-content">
+        <span class="at-eyebrow">Mockup B · L'arbre qui demeure</span>
+        <h3 class="at-title">L'olivier <em>ancien</em> dans la lumière dorée.</h3>
+        <p class="at-quote">Cinq cents ans, parfois mille. L'olivier est le voisin qui ne bouge pas pendant que vous bougez. Acheter à Chypre, c'est acheter le droit de respirer aux côtés de cet arbre — la promesse d'une stabilité qui n'est pas la vôtre.</p>
+      </div>
+      <span class="at-credit">Photo · Pissouri · oliveraie privée · golden hour</span>
+    </div>
+
+    <!-- TILE C — PORTE ENTROUVERTE -->
+    <div class="ambiance-tile" style="background-image:url('assets/photos/interior-bright.jpg');" data-amb-tile>
+      <div class="at-content">
+        <span class="at-eyebrow">Mockup C · Le seuil franchissable</span>
+        <h3 class="at-title">La porte entrouverte sur la lumière <em>du sud</em>.</h3>
+        <p class="at-quote">Ce qui invite n'est pas l'image complète — c'est l'embrasure. Ce qu'on voit en partie suggère plus que ce qu'on voit en entier. ENKI dit ainsi qu'il y a, derrière, un bien à explorer. La page suivante est à vous.</p>
+      </div>
+      <span class="at-credit">Photo · architecture méditerranéenne contemporaine · light study</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- SECTION 8 — TABLEAU COMPARATIF                                 -->
+<!-- ============================================================== -->
+<section class="scope">
+  <div class="container section">
+    <div class="s-num">08 · Synthèse comparative</div>
+    <div class="s-head">
+      <span class="eyebrow">Trois directions, un arbitrage</span>
+      <h2 class="title-1 serif italic" style="margin-top:16px;">La même mécanique, trois <em>signatures</em>.</h2>
+      <p class="lead">Les mockups sont identiques en architecture (états A / B / C, drawer, Lexaia, ratios image-texte). Ce qui change est le timbre chromatique, la chaleur du papier, la profondeur de l'encre. Voici ce que chaque direction porte, et ce qu'elle laisse de côté.</p>
+    </div>
+
+    <table class="cmp-table">
+      <thead>
+        <tr>
+          <th style="width:18%;">Direction</th>
+          <th style="width:25%;">Manifesto en une phrase</th>
+          <th style="width:14%;">Registre dominant</th>
+          <th style="width:18%;">Forces</th>
+          <th style="width:18%;">Risques</th>
+          <th style="width:7%;">Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="cmp-name">Calcaire &amp; <em>Lagune</em></td>
+          <td class="cmp-manifest">La pierre méditerranéenne au matin, la fraîcheur d'une lagune transparente, l'objet humain qui invite.</td>
+          <td>Pierre chaude<br>Encre olive</td>
+          <td>
+            <ul>
+              <li>Direction la plus chaleureuse-chypriote</li>
+              <li>Photos méditerranéennes parfaitement portées</li>
+              <li>Cognac et lagune dialoguent visuellement</li>
+            </ul>
+          </td>
+          <td>
+            <ul>
+              <li>Encre olive moins institutionnelle que l'Abzu</li>
+              <li>BG calcaire chaud peut sembler « rustique » mal compris</li>
+              <li>Distance plus grande des références banques privées</li>
+            </ul>
+          </td>
+          <td><span class="cmp-score"><span class="star fill"></span><span class="star fill"></span><span class="star fill"></span><span class="star fill"></span><span class="star"></span></span></td>
+        </tr>
+        <tr>
+          <td class="cmp-name">Calcaire &amp; <em>Abzu</em></td>
+          <td class="cmp-manifest">L'eau profonde du mythe sumérien, la pierre chaude qui réchauffe le neutre, le sceau précieux discret.</td>
+          <td>Encre Abzu marine<br>Crème calcaire</td>
+          <td>
+            <ul>
+              <li>Profondeur émotionnelle maximale des trois</li>
+              <li>Lien direct avec le mythe (Abzu = l'eau d'Enki)</li>
+              <li>Meilleur ratio CTA contre BG sombre (7.6 : 1)</li>
+              <li>Hérite des photos JM-validées du 27 avril</li>
+            </ul>
+          </td>
+          <td>
+            <ul>
+              <li>Plus complexe à exécuter sans glisser vers le générique « bleu marine immobilier premium »</li>
+              <li>Demande une discipline d'usage de l'accent saturé pour ne pas saturer</li>
+            </ul>
+          </td>
+          <td><span class="cmp-score"><span class="star fill"></span><span class="star fill"></span><span class="star fill"></span><span class="star fill"></span><span class="star fill"></span></span></td>
+        </tr>
+        <tr>
+          <td class="cmp-name">Lagune <em>Solaire</em></td>
+          <td class="cmp-manifest">Lumière chaude posée chypriote, noir-encre tinté, turquoise vibrant qui pulse comme signature.</td>
+          <td>Crème solaire<br>Encre tinté chaud</td>
+          <td>
+            <ul>
+              <li>Plus immédiatement énergisante</li>
+              <li>Meilleur contraste FG / BG en light (16.4 : 1)</li>
+              <li>Plus contemporaine, plus « 2026-ready »</li>
+            </ul>
+          </td>
+          <td>
+            <ul>
+              <li>Risque <em>blanding</em> élevé — proche du générique 2025</li>
+              <li>Distance plus grande des références patrimoniales</li>
+              <li>L'ocre miel manque de la signature humaine du cognac</li>
+            </ul>
+          </td>
+          <td><span class="cmp-score"><span class="star fill"></span><span class="star fill"></span><span class="star fill"></span><span class="star"></span><span class="star"></span></span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- SECTION 9 — RECOMMANDATION                                     -->
+<!-- ============================================================== -->
+<section class="scope">
+  <div class="container section compact">
+    <div class="s-num">09 · Note de DA</div>
+  </div>
+  <div class="reco-block">
+    <span class="reco-eyebrow">Recommandation honnête · à valider par Jean-Marie</span>
+    <h2>La <em>Direction 02 — Calcaire &amp; Abzu</em> est la plus défendable des trois.</h2>
+
+    <div class="reco-cols">
+      <div>
+        <p>Trois raisons l'emportent. Premièrement, le mythe : l'Abzu n'est pas un effet de manche, c'est l'eau souterraine du dieu Enki. Choisir l'encre Abzu comme foreground, c'est <em class="serif italic">honorer le mythe sans le folkloriser</em> — exactement ce que demande la promesse 2 du serment du Manifesto v1.2. La marque parle alors depuis sa source, pas depuis un déguisement.</p>
+
+        <p>Deuxièmement, la profondeur émotionnelle. Le ratio FG/BG (14.1 : 1) est suffisamment fort pour porter la lecture longue de Lexaia, et le ratio CTA sur encre marine (7.6 : 1) est le meilleur des trois directions. La marque peut donc tenir simultanément la rigueur d'un rapport de family office et la pulsation d'une signature contemporaine — sans compromis.</p>
+      </div>
+
+      <div>
+        <p>Troisièmement, l'héritage des photos JM-validées du 27 avril. Les deux images de référence (ciel bleu lumineux + horizon turquoise + chaise cognac + sobriété méditerranéenne) appartiennent <em>nativement</em> au registre de Calcaire &amp; Abzu. Choisir D1 ou D3 demanderait de retravailler l'orientation photographique. Choisir D2 capitalise sur un travail déjà fait.</p>
+
+        <p>Risques à neutraliser : la discipline d'usage du turquoise saturé (verrou 95 / 5 strict), la calibration des italiques Schibsted (un mot par titre maximum, jamais plus), et la résistance à la tentation de basculer vers Sohne avant la maturité du produit (la stack Hanken / Schibsted / JetBrains tient parfaitement à ce stade).</p>
+      </div>
+    </div>
+
+    <div class="reco-final">
+      <p>Recommandation : <em>retenir Calcaire &amp; Abzu en direction principale</em>, et ouvrir un travail complémentaire (Couche 5 v1.1) sur la calibration finale du sceau turquoise saturé entre <code style="font-family:var(--font-mono); font-size:18px; padding:0 4px; background:color-mix(in oklab, var(--accent) 10%, transparent); border-radius:2px;">#27C7D4</code> et un voisinage légèrement plus profond, pour vérifier que le CTA garde sa pulsation sans devenir criard.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- SECTION 10 — TECHNIQUE                                         -->
+<!-- ============================================================== -->
+<section class="scope">
+  <div class="container section">
+    <div class="s-num">10 · Technique</div>
+    <div class="s-head">
+      <span class="eyebrow">Pour Jean-Marie et le futur dev</span>
+      <h2 class="title-1 serif italic" style="margin-top:16px;">Format colorimétrique, architecture des tokens, snippet <em>prêt à coder</em>.</h2>
+      <p class="lead">Toutes les valeurs ci-dessous sont extraites de la Direction 02 recommandée. Format <em class="serif italic">OKLCH</em> (gamut perceptuel uniforme, prévisibilité linéaire des dérivées) avec fallbacks <em class="serif italic">HEX</em> pour navigateurs anciens.</p>
+    </div>
+
+    <div class="grid-12" style="row-gap:48px;">
+      <div class="col-7">
+        <span class="eyebrow" style="display:block; margin-bottom:16px;">Variables CSS · light + dark</span>
+        <pre class="code-block">:root {
+  <span class="com">/* light mode */</span>
+  <span class="var">--bg</span>: <span class="val">oklch(0.97 0.018 85)</span>;       <span class="com">/* #F8F4EC */</span>
+  <span class="var">--card</span>: <span class="val">oklch(0.99 0.010 85)</span>;     <span class="com">/* #FCFAF5 */</span>
+  <span class="var">--fg</span>: <span class="val">oklch(0.21 0.04 250)</span>;       <span class="com">/* #0F1E2E */</span>
+  <span class="var">--muted-fg</span>: <span class="val">oklch(0.42 0.025 240)</span>; <span class="com">/* #525A6B */</span>
+  <span class="var">--border</span>: <span class="val">oklch(0.85 0.015 85)</span>;   <span class="com">/* #DBD5C8 */</span>
+  <span class="var">--accent</span>: <span class="val">oklch(0.65 0.12 195)</span>;   <span class="com">/* #27C7D4 */</span>
+  <span class="var">--accent-soft</span>: <span class="val">oklch(0.74 0.11 175)</span>; <span class="com">/* #5FC2BA */</span>
+  <span class="var">--accent-warm</span>: <span class="val">oklch(0.68 0.09 65)</span>; <span class="com">/* #B88555 */</span>
+}
+
+<span class="com">/* dark mode */</span>
+[data-mode=<span class="val">"dark"</span>] {
+  <span class="var">--bg</span>: <span class="val">oklch(0.13 0.035 245)</span>;     <span class="com">/* #060D17 */</span>
+  <span class="var">--card</span>: <span class="val">oklch(0.18 0.04 250)</span>;     <span class="com">/* #0F1E2E */</span>
+  <span class="var">--fg</span>: <span class="val">oklch(0.94 0.012 85)</span>;      <span class="com">/* #F2EDDF */</span>
+  <span class="var">--muted-fg</span>: <span class="val">oklch(0.65 0.025 85)</span>; <span class="com">/* #A89E89 */</span>
+  <span class="var">--border</span>: <span class="val">oklch(0.30 0.04 250)</span>;   <span class="com">/* #1F2D44 */</span>
+  <span class="var">--accent</span>: <span class="val">oklch(0.78 0.14 195)</span>;   <span class="com">/* #3DD9E5 */</span>
+  <span class="var">--accent-warm</span>: <span class="val">oklch(0.74 0.10 65)</span>; <span class="com">/* #C9966A */</span>
+}</pre>
+      </div>
+
+      <div class="col-5">
+        <span class="eyebrow" style="display:block; margin-bottom:16px;">Architecture en trois tiers</span>
+        <div style="background:var(--card); border:1px solid var(--border); border-radius:6px; padding:24px; line-height:1.7;">
+          <p style="font-size:14px; margin-bottom:16px;"><strong>Tier 01 · Primitives</strong><br>Les valeurs OKLCH brutes (les <em>oklch(0.21 0.04 250)</em> ci-contre). Ne sont jamais utilisées directement par les composants. Elles ne portent aucune sémantique.</p>
+          <p style="font-size:14px; margin-bottom:16px;"><strong>Tier 02 · Tokens sémantiques</strong><br>Les <code style="font-family:var(--font-mono);">--bg</code>, <code style="font-family:var(--font-mono);">--fg</code>, <code style="font-family:var(--font-mono);">--accent</code> ci-contre. Ils traversent toute l'application et se retrouvent dans Tailwind, Shadcn et Figma.</p>
+          <p style="font-size:14px;"><strong>Tier 03 · Component tokens</strong><br>Couche 8 (à venir). Ex : <code style="font-family:var(--font-mono);">--btn-primary-bg</code>, <code style="font-family:var(--font-mono);">--card-shadow-sm</code>. C'est l'interface entre les couches 5-7 et le code des composants.</p>
+        </div>
+
+        <span class="eyebrow" style="display:block; margin:32px 0 16px;">Outils recommandés</span>
+        <ul style="list-style:none; padding:0;">
+          <li style="padding:6px 0; font-size:14px;"><strong>uicolors.app</strong> — générateur d'échelles 50-950 calibré sur OKLCH</li>
+          <li style="padding:6px 0; font-size:14px;"><strong>Polychrom</strong> (plugin Figma) — vérification WCAG en temps réel</li>
+          <li style="padding:6px 0; font-size:14px;"><strong>realtimecolors.com</strong> — preview de palette sur landing page type</li>
+          <li style="padding:6px 0; font-size:14px;"><strong>oklch.com</strong> — picker direct OKLCH avec fallbacks HEX</li>
+        </ul>
+      </div>
+
+      <div class="col-12">
+        <span class="eyebrow" style="display:block; margin-bottom:16px;">Logo Σ — note technique sur le caractère sigma</span>
+        <div style="display:grid; grid-template-columns:auto 1fr; gap:48px; align-items:center; padding:32px; background:var(--card); border:1px solid var(--border); border-radius:6px;">
+          <div style="font-family:var(--font-serif); font-style:italic; font-weight:500; font-size:96px; line-height:1; letter-spacing:-0.04em;">ΣNKI</div>
+          <p class="body-sm" style="max-width:640px; line-height:1.7;">Le caractère est <strong>U+03A3</strong> (« GREEK CAPITAL LETTER SIGMA »), pas un PNG. Hanken Grotesk supporte le sous-ensemble grec étendu — la lettre rend correctement à toutes les graisses et tailles. Schibsted Grotesk supporte également le grec en italique (utilisé dans le logo, taille 28px et au-delà). Toujours associer un <code style="font-family:var(--font-mono);">aria-label="ENKI Realty"</code> pour les lecteurs d'écran qui pourraient prononcer le sigma comme « S » ou « E ».</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- SECTION 11 — FOOTER                                            -->
+<!-- ============================================================== -->
+<footer class="scope">
+  <div class="container footer-block">
+    <div class="footer-grid">
+      <div>
+        <div style="font-family:var(--font-serif); font-style:italic; font-size:32px; letter-spacing:-0.02em; margin-bottom:8px;">ΣNKI Realty</div>
+        <p class="credit" style="font-size:18px; max-width:420px;">Brand Book Couche 5 — Color &amp; Layout · v3.0 · proposition pour validation.</p>
+        <p class="meta">28 avril 2026 · Reset complet après v1 (rejetée) et v2 (avortée)</p>
+      </div>
+      <div>
+        <h4>Notion</h4>
+        <ul>
+          <li><a href="https://www.notion.so/34d8c7bb251581498d58cbc26bb35e2a">Brand Manifesto v1.2</a></li>
+          <li><a href="https://www.notion.so/34d8c7bb25158127ae7cf816a051b9e8">Conversational Tier v2.1</a></li>
+          <li><a href="https://www.notion.so/34e8c7bb25158110a08cdb8efa55209e">Visual Principles v1.0</a></li>
+          <li><a href="https://www.notion.so/34e8c7bb25158159977dcc22c569f5e1">Experience Architecture v1.0</a></li>
+          <li><a href="https://www.notion.so/34f8c7bb251581ba9b75e54f5bb437fc">Typography System v1.0</a></li>
+          <li><a href="https://www.notion.so/34e8c7bb251581acad91d6b411954ff5">Verrous constitutionnels</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Repo GitHub</h4>
+        <ul>
+          <li><a href="../../../../CLAUDE.md">CLAUDE.md v1.5</a></li>
+          <li><a href="../../01-brand-manifesto.md">Brand Manifesto</a></li>
+          <li><a href="../../02-conversational-tier.md">Conversational Tier</a></li>
+          <li><a href="../../03-architecture-commerciale-crm.md">Architecture commerciale</a></li>
+          <li><a href="../../04-typography-system.md">Typography System</a></li>
+          <li><a href="../../README.md">Design System README</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Outils</h4>
+        <ul>
+          <li><a href="https://uicolors.app">uicolors.app</a></li>
+          <li><a href="https://oklch.com">oklch.com</a></li>
+          <li><a href="https://realtimecolors.com">realtimecolors.com</a></li>
+          <li><a href="https://fonts.google.com/specimen/Hanken+Grotesk">Hanken Grotesk</a></li>
+          <li><a href="https://fonts.google.com/specimen/Schibsted+Grotesk">Schibsted Grotesk</a></li>
+          <li><a href="https://fonts.google.com/specimen/JetBrains+Mono">JetBrains Mono</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-base">
+      <div class="logo-mark">ΣNKI Realty</div>
+      <p>Claude Code · Claude Opus 4.7 · sur brief de Claude Opus 4.7 (web) · validation Jean-Marie Delaunay</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  const STORAGE_KEY = 'enki-bb-v3';
+
+  // ---------- TOOLBAR : DIRECTION + MODE ----------
+  const toolbar = document.querySelector('.toolbar');
+  const body = document.body;
+
+  function applyGlobal(direction, mode) {
+    if (direction) body.setAttribute('data-direction', direction);
+    if (mode) body.setAttribute('data-mode', mode);
+
+    toolbar.querySelectorAll('[data-set-direction]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.setDirection === body.dataset.direction);
+    });
+    toolbar.querySelectorAll('[data-set-mode]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.setMode === body.dataset.mode);
+    });
+  }
+
+  function persist() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        direction: body.dataset.direction,
+        mode: body.dataset.mode
+      }));
+    } catch (e) { /* ignore */ }
+  }
+
+  function restore() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const saved = JSON.parse(raw);
+      applyGlobal(saved.direction, saved.mode);
+    } catch (e) { /* ignore */ }
+  }
+
+  toolbar.addEventListener('click', e => {
+    const dirBtn = e.target.closest('[data-set-direction]');
+    const modeBtn = e.target.closest('[data-set-mode]');
+    if (dirBtn) {
+      applyGlobal(dirBtn.dataset.setDirection, null);
+      persist();
+    } else if (modeBtn) {
+      applyGlobal(null, modeBtn.dataset.setMode);
+      persist();
+    }
+  });
+
+  // ---------- LOCAL TOGGLES PAR DIRECTION ----------
+  document.querySelectorAll('[data-scope-mode]').forEach(toggle => {
+    const sectionMode = toggle.dataset.scopeMode;
+    const section = toggle.closest('.scope');
+    toggle.addEventListener('click', e => {
+      const btn = e.target.closest('[data-scope-set]');
+      if (!btn) return;
+      const newMode = btn.dataset.scopeSet;
+      section.setAttribute('data-mode', newMode);
+      toggle.querySelectorAll('[data-scope-set]').forEach(b => {
+        b.classList.toggle('active', b.dataset.scopeSet === newMode);
+      });
+    });
+  });
+
+  // ---------- AMBIANCE TOGGLE (S7) — basculer la teinte de l'overlay ----------
+  const ambSection = document.getElementById('ambiance');
+  const ambToggle = ambSection.querySelector('[data-amb-direction]');
+  const ambTiles = ambSection.querySelectorAll('[data-amb-tile]');
+
+  function applyAmb(direction) {
+    ambSection.classList.remove('scope-d1', 'scope-d2', 'scope-d3');
+    ambSection.classList.add('scope', 'scope-' + direction);
+    ambSection.setAttribute('data-mode', body.dataset.mode || 'light');
+    ambToggle.dataset.ambDirection = direction;
+    ambToggle.querySelectorAll('[data-amb-set]').forEach(b => {
+      b.classList.toggle('active', b.dataset.ambSet === direction);
+    });
+    ambTiles.forEach(tile => tile.style.setProperty('--amb-tint', `var(--${direction === 'd1' ? 'd1-light-accent-deep' : direction === 'd2' ? 'd2-light-accent' : 'd3-light-accent'})`));
+  }
+
+  ambToggle.addEventListener('click', e => {
+    const btn = e.target.closest('[data-amb-set]');
+    if (!btn) return;
+    applyAmb(btn.dataset.ambSet);
+  });
+
+  // ---------- INIT ----------
+  restore();
+  applyAmb('d2');
+})();
+</script>
+
+<!--
+Brand Book Color & Layout v3 — ENKI Realty Couche 5
+Reset après rejet v1 (27 avril) et v2 (avortée)
+Produit par Claude Code (Claude Opus 4.7) sur brief de Claude Opus 4.7 (web)
+Sources : Brand Manifesto v1.2 + Couche 4 Typography v1.0 + Verrous constitutionnels + Experience Architecture v1.0
+Validé par Jean-Marie Delaunay
+Date : 28 avril 2026
+-->
+
+</body>
+</html>

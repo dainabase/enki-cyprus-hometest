@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="fr" data-direction="d2" data-mode="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENKI Realty — Preview pleine page · v3</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: var(--font-sans); font-size: 17px; line-height: 1.6; color: var(--fg); background: var(--bg); transition: background 380ms var(--ease-out-expo), color 380ms var(--ease-out-expo); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; overflow-x: hidden; }
+img { max-width: 100%; display: block; }
+button { font: inherit; color: inherit; cursor: pointer; background: none; border: none; }
+a { color: inherit; text-decoration: none; }
+
+:root {
+  /* DIRECTION 1 — CALCAIRE & LAGUNE */
+  --d1-light-bg: #F0E8D6;       --d1-light-card: #FAF5E8; --d1-light-fg: #1A2520;
+  --d1-light-muted-fg: #7A6F5C; --d1-light-border: #D6C9AC;
+  --d1-light-accent: #5FC2BA;   --d1-light-accent-deep: #27C7D4; --d1-light-accent-warm: #B88555;
+  --d1-dark-bg: #0E1612;        --d1-dark-card: #1A2520;  --d1-dark-fg: #EDE5D0;
+  --d1-dark-muted-fg: #9C8F76;  --d1-dark-border: #2A3A33;
+  --d1-dark-accent: #6FD8CC;    --d1-dark-accent-deep: #3DD9E5;  --d1-dark-accent-warm: #C9966A;
+
+  /* DIRECTION 2 — CALCAIRE & ABZU */
+  --d2-light-bg: #F8F4EC;       --d2-light-card: #FCFAF5; --d2-light-fg: #0F1E2E;
+  --d2-light-muted-fg: #525A6B; --d2-light-border: #DBD5C8;
+  --d2-light-accent: #27C7D4;   --d2-light-accent-soft: #5FC2BA; --d2-light-accent-warm: #B88555;
+  --d2-dark-bg: #060D17;        --d2-dark-card: #0F1E2E;  --d2-dark-fg: #F2EDDF;
+  --d2-dark-muted-fg: #A89E89;  --d2-dark-border: #1F2D44;
+  --d2-dark-accent: #3DD9E5;    --d2-dark-accent-soft: #5FC2BA;  --d2-dark-accent-warm: #C9966A;
+
+  /* DIRECTION 3 — LAGUNE SOLAIRE */
+  --d3-light-bg: #FAF6ED;       --d3-light-card: #FEFCF6; --d3-light-fg: #1A1612;
+  --d3-light-muted-fg: #7A6E5C; --d3-light-border: #DFD6C2;
+  --d3-light-accent: #27C7D4;   --d3-light-accent-soft: #76CDCD; --d3-light-accent-warm: #B88547;
+  --d3-dark-bg: #100D08;        --d3-dark-card: #1A1612;  --d3-dark-fg: #F5F0E2;
+  --d3-dark-muted-fg: #A89E89;  --d3-dark-border: #2D2620;
+  --d3-dark-accent: #3DD9E5;    --d3-dark-accent-soft: #76CDCD;  --d3-dark-accent-warm: #C9966A;
+
+  --font-sans: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-serif: 'Schibsted Grotesk', Georgia, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* DEFAULTS = D2 LIGHT */
+  --bg: var(--d2-light-bg); --card: var(--d2-light-card); --fg: var(--d2-light-fg);
+  --muted-fg: var(--d2-light-muted-fg); --border: var(--d2-light-border);
+  --accent: var(--d2-light-accent); --accent-soft: var(--d2-light-accent-soft); --accent-warm: var(--d2-light-accent-warm);
+}
+
+body[data-direction="d1"][data-mode="light"] {
+  --bg: var(--d1-light-bg); --card: var(--d1-light-card); --fg: var(--d1-light-fg);
+  --muted-fg: var(--d1-light-muted-fg); --border: var(--d1-light-border);
+  --accent: var(--d1-light-accent); --accent-soft: var(--d1-light-accent-deep); --accent-warm: var(--d1-light-accent-warm);
+}
+body[data-direction="d1"][data-mode="dark"] {
+  --bg: var(--d1-dark-bg); --card: var(--d1-dark-card); --fg: var(--d1-dark-fg);
+  --muted-fg: var(--d1-dark-muted-fg); --border: var(--d1-dark-border);
+  --accent: var(--d1-dark-accent); --accent-soft: var(--d1-dark-accent-deep); --accent-warm: var(--d1-dark-accent-warm);
+}
+body[data-direction="d2"][data-mode="light"] {
+  --bg: var(--d2-light-bg); --card: var(--d2-light-card); --fg: var(--d2-light-fg);
+  --muted-fg: var(--d2-light-muted-fg); --border: var(--d2-light-border);
+  --accent: var(--d2-light-accent); --accent-soft: var(--d2-light-accent-soft); --accent-warm: var(--d2-light-accent-warm);
+}
+body[data-direction="d2"][data-mode="dark"] {
+  --bg: var(--d2-dark-bg); --card: var(--d2-dark-card); --fg: var(--d2-dark-fg);
+  --muted-fg: var(--d2-dark-muted-fg); --border: var(--d2-dark-border);
+  --accent: var(--d2-dark-accent); --accent-soft: var(--d2-dark-accent-soft); --accent-warm: var(--d2-dark-accent-warm);
+}
+body[data-direction="d3"][data-mode="light"] {
+  --bg: var(--d3-light-bg); --card: var(--d3-light-card); --fg: var(--d3-light-fg);
+  --muted-fg: var(--d3-light-muted-fg); --border: var(--d3-light-border);
+  --accent: var(--d3-light-accent); --accent-soft: var(--d3-light-accent-soft); --accent-warm: var(--d3-light-accent-warm);
+}
+body[data-direction="d3"][data-mode="dark"] {
+  --bg: var(--d3-dark-bg); --card: var(--d3-dark-card); --fg: var(--d3-dark-fg);
+  --muted-fg: var(--d3-dark-muted-fg); --border: var(--d3-dark-border);
+  --accent: var(--d3-dark-accent); --accent-soft: var(--d3-dark-accent-soft); --accent-warm: var(--d3-dark-accent-warm);
+}
+
+/* ---------------------------------------------------------------- */
+/* TOOLBAR PERSISTANTE                                              */
+/* ---------------------------------------------------------------- */
+.toolbar { position: fixed; top: 24px; right: 24px; z-index: 100; display: flex; gap: 8px; padding: 8px; background: var(--card); border: 1px solid var(--border); border-radius: 100px; box-shadow: 0 8px 32px -8px rgba(0,0,0,0.15); }
+.toolbar button { padding: 8px 16px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted-fg); border-radius: 100px; transition: all 220ms; }
+.toolbar button:hover { color: var(--fg); }
+.toolbar button.active { background: var(--fg); color: var(--bg); }
+.toolbar .sep { width: 1px; background: var(--border); }
+.toolbar .scene-btn { padding: 8px 12px; }
+
+/* ---------------------------------------------------------------- */
+/* HERO PLEIN ÉCRAN — 100VH                                         */
+/* ---------------------------------------------------------------- */
+.hero-full { position: relative; height: 100vh; width: 100vw; background: var(--card); overflow: hidden; }
+.hero-full .hero-photo { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.hero-full .hero-photo::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, color-mix(in oklab, var(--bg) 30%, transparent) 0%, color-mix(in oklab, var(--bg) 80%, transparent) 75%, color-mix(in oklab, var(--bg) 92%, transparent) 100%); }
+
+.hero-full .hero-nav { position: absolute; top: 0; left: 0; right: 0; padding: 28px 64px; display: flex; align-items: center; justify-content: space-between; z-index: 2; }
+.hero-full .hero-nav .logo-mark { font-family: var(--font-serif); font-style: italic; font-weight: 500; font-size: 26px; color: var(--fg); letter-spacing: -0.01em; }
+.hero-full .hero-nav .nav-links { display: flex; gap: 40px; }
+.hero-full .hero-nav .nav-links a { font-family: var(--font-sans); font-size: 14px; font-weight: 500; color: var(--fg); }
+.hero-full .hero-nav .nav-links a:hover { color: var(--accent); }
+.hero-full .hero-nav .nav-cta { font-family: var(--font-sans); font-size: 13px; font-weight: 500; color: var(--fg); padding: 10px 18px; border: 1px solid var(--border); border-radius: 100px; transition: all 220ms; }
+.hero-full .hero-nav .nav-cta:hover { background: var(--fg); color: var(--bg); }
+
+.hero-full .hero-content {
+  position: relative; z-index: 1;
+  height: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 32px; text-align: center;
+  padding: 0 48px;
+}
+.hero-full .hero-greet { font-family: var(--font-serif); font-style: italic; font-weight: 500; font-size: clamp(36px, 4.2vw, 56px); line-height: 1.08; max-width: 920px; letter-spacing: -0.02em; }
+.hero-full .hero-greet em { color: var(--accent); }
+.hero-full .hero-input { display: flex; align-items: stretch; width: clamp(520px, 64%, 880px); background: var(--card); border: 1px solid var(--border); border-radius: 6px; box-shadow: 0 16px 56px -16px rgba(0,0,0,0.18), 0 4px 12px -4px rgba(0,0,0,0.06); transition: all 280ms var(--ease-out-expo); }
+.hero-full .hero-input:hover { box-shadow: 0 24px 64px -20px rgba(0,0,0,0.22), 0 6px 16px -6px rgba(0,0,0,0.08); transform: translateY(-1px); }
+.hero-full .hero-input .placeholder { flex: 1; padding: 26px 32px; font-family: var(--font-sans); font-style: italic; font-size: 17px; color: var(--muted-fg); display: flex; align-items: center; }
+.hero-full .hero-input .submit { font-family: var(--font-sans); font-weight: 500; font-size: 15px; padding: 0 36px; background: var(--accent); color: var(--bg); display: flex; align-items: center; gap: 12px; border-radius: 0 6px 6px 0; min-height: 76px; transition: background 220ms; }
+.hero-full .hero-input .submit:hover { background: var(--accent-soft); }
+.hero-full .hero-input .submit svg { width: 16px; height: 16px; }
+.hero-full .hero-explore { font-family: var(--font-sans); font-size: 14px; color: var(--muted-fg); border-bottom: 1px solid var(--border); padding-bottom: 3px; transition: color 200ms; }
+.hero-full .hero-explore:hover { color: var(--accent); border-color: var(--accent); }
+
+/* ---------------------------------------------------------------- */
+/* SCENE: ENGAGED 60/40 (full viewport)                             */
+/* ---------------------------------------------------------------- */
+.engaged-full { display: grid; grid-template-columns: 60% 40%; height: 100vh; width: 100vw; background: var(--bg); }
+.engaged-left-full { padding: 80px 64px 64px; border-right: 1px solid var(--border); overflow-y: auto; }
+.engaged-left-full .eb-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-warm); display: block; margin-bottom: 20px; }
+.engaged-left-full .eb-title { font-family: var(--font-serif); font-style: italic; font-size: 48px; line-height: 1.08; margin-bottom: 28px; letter-spacing: -0.02em; }
+.engaged-left-full .eb-title em { color: var(--accent); }
+.engaged-left-full .eb-meta { display: flex; gap: 20px; align-items: center; padding: 16px 0 32px; }
+.engaged-left-full .eb-meta span { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted-fg); }
+.engaged-left-full .scroll-row { display: flex; gap: 24px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 8px 0 32px; margin: 0 -64px 0 -64px; padding-left: 64px; padding-right: 64px; scrollbar-width: thin; }
+.engaged-left-full .scroll-row::-webkit-scrollbar { height: 4px; }
+.engaged-left-full .scroll-row::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.bien-card { flex: 0 0 360px; scroll-snap-align: start; background: var(--card); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; transition: all 280ms var(--ease-out-expo); cursor: pointer; }
+.bien-card:hover { transform: translateY(-3px); box-shadow: 0 28px 56px -22px rgba(0,0,0,0.18); border-color: color-mix(in oklab, var(--accent) 40%, var(--border)); }
+.bien-card .bc-photo { aspect-ratio: 4/3; background-size: cover; background-position: center; position: relative; }
+.bien-card .bc-photo .bc-tag { position: absolute; top: 14px; left: 14px; padding: 6px 11px; background: var(--card); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 100px; color: var(--fg); }
+.bien-card .bc-body { padding: 22px 24px 26px; }
+.bien-card .bc-loc { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted-fg); margin-bottom: 10px; }
+.bien-card .bc-name { font-family: var(--font-serif); font-style: italic; font-size: 22px; line-height: 1.18; margin-bottom: 14px; }
+.bien-card .bc-name em { color: var(--accent); }
+.bien-card .bc-price { font-family: var(--font-mono); font-weight: 500; font-size: 24px; letter-spacing: -0.015em; }
+.bien-card .bc-price .from { font-size: 11px; color: var(--muted-fg); margin-right: 6px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 400; }
+.bien-card .bc-specs { display: flex; gap: 14px; margin-top: 12px; padding-top: 14px; border-top: 1px solid var(--border); }
+.bien-card .bc-specs span { font-family: var(--font-sans); font-size: 12px; color: var(--muted-fg); }
+
+.engaged-side-full { background: var(--bg); display: flex; flex-direction: column; height: 100vh; position: relative; }
+.engaged-side-full .sb-head { padding: 22px 28px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 14px; }
+.engaged-side-full .sb-avatar { width: 36px; height: 36px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, color-mix(in oklab, var(--accent) 80%, white), var(--accent) 60%, color-mix(in oklab, var(--accent) 70%, var(--fg))); display: grid; place-items: center; font-family: var(--font-serif); font-style: italic; color: white; font-size: 17px; font-weight: 500; }
+.engaged-side-full .sb-name { font-family: var(--font-sans); font-weight: 500; font-size: 15px; }
+.engaged-side-full .sb-status { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-left: auto; display: flex; align-items: center; gap: 6px; }
+.engaged-side-full .sb-status::before { content: ''; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+.engaged-side-full .sb-thread { flex: 1; padding: 28px; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; }
+.msg { max-width: 88%; line-height: 1.55; font-size: 14px; }
+.msg.user { align-self: flex-end; background: color-mix(in oklab, var(--accent) 18%, var(--card)); padding: 13px 17px; border-radius: 14px 14px 4px 14px; color: var(--fg); }
+.msg.assistant { align-self: flex-start; color: var(--fg); padding: 4px 0; }
+.msg.assistant em.serif { font-style: italic; font-family: var(--font-serif); color: var(--accent); }
+.engaged-side-full .sb-input { padding: 14px 18px 18px; border-top: 1px solid var(--border); display: flex; gap: 10px; align-items: stretch; }
+.engaged-side-full .sb-input .field { flex: 1; padding: 12px 16px; font-family: var(--font-sans); font-style: italic; font-size: 13px; color: var(--muted-fg); background: var(--card); border: 1px solid var(--border); border-radius: 4px; }
+.engaged-side-full .sb-input .send { padding: 12px 16px; background: var(--accent); color: var(--bg); border-radius: 4px; display: grid; place-items: center; }
+.engaged-side-full .sb-input .send svg { width: 14px; height: 14px; }
+
+@media (max-width: 1100px) {
+  .engaged-full { grid-template-columns: 1fr; height: auto; }
+  .engaged-side-full { height: auto; min-height: 500px; border-top: 1px solid var(--border); }
+}
+
+/* Scene visibility */
+.scene { display: none; }
+.scene.active { display: block; }
+
+/* Animations */
+.abzu-bubble { position: fixed; bottom: 32px; right: 32px; width: 80px; height: 80px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, color-mix(in oklab, var(--accent) 70%, white), var(--accent) 50%, color-mix(in oklab, var(--accent) 80%, var(--fg))); cursor: pointer; box-shadow: 0 16px 40px -12px color-mix(in oklab, var(--accent) 50%, transparent); transition: all 380ms var(--ease-out-expo); display: grid; place-items: center; z-index: 50; }
+.abzu-bubble::before { content: ''; position: absolute; inset: -8px; border-radius: 50%; border: 2px solid color-mix(in oklab, var(--accent) 50%, transparent); animation: ripple-out 3.5s ease-in-out infinite; }
+.abzu-bubble::after { content: ''; position: absolute; inset: -16px; border-radius: 50%; border: 1px solid color-mix(in oklab, var(--accent) 30%, transparent); animation: ripple-out 3.5s ease-in-out 0.7s infinite; }
+.abzu-bubble .sigma { color: white; font-family: var(--font-serif); font-style: italic; font-size: 30px; font-weight: 500; }
+.abzu-bubble:hover { transform: scale(1.06); }
+@keyframes ripple-out {
+  0% { transform: scale(0.95); opacity: 0.85; }
+  100% { transform: scale(1.15); opacity: 0; }
+}
+
+/* Direction-specific photo override for State A */
+body[data-direction="d1"] .hero-photo { background-image: url('assets/photos/hero-d1-chair.jpg'); }
+body[data-direction="d2"] .hero-photo { background-image: url('assets/photos/hero-d2-horizon.jpg'); }
+body[data-direction="d3"] .hero-photo { background-image: url('assets/photos/hero-d3-water.jpg'); }
+</style>
+</head>
+<body>
+
+<!-- TOOLBAR PERSISTANTE -->
+<div class="toolbar">
+  <button data-set-direction="d1" aria-label="Direction 1 Calcaire & Lagune">D1</button>
+  <button data-set-direction="d2" class="active" aria-label="Direction 2 Calcaire & Abzu">D2</button>
+  <button data-set-direction="d3" aria-label="Direction 3 Lagune Solaire">D3</button>
+  <span class="sep"></span>
+  <button data-set-mode="light" class="active" aria-label="Light mode">Light</button>
+  <button data-set-mode="dark" aria-label="Dark mode">Dark</button>
+  <span class="sep"></span>
+  <button data-set-scene="a" class="active scene-btn" aria-label="Hero conversationnel">Hero</button>
+  <button data-set-scene="b" class="scene-btn" aria-label="Sidebar engaged">Engaged</button>
+</div>
+
+<!-- SCENE A — HERO PLEIN ÉCRAN -->
+<section class="scene active" data-scene="a">
+  <div class="hero-full">
+    <div class="hero-photo"></div>
+    <nav class="hero-nav">
+      <div class="logo-mark" aria-label="ENKI Realty">ΣNKI Realty</div>
+      <div class="nav-links">
+        <a href="#">Propriétés</a>
+        <a href="#">Lexaia</a>
+        <a href="#">À propos</a>
+      </div>
+      <a href="#" class="nav-cta">Espace personnel</a>
+    </nav>
+    <div class="hero-content">
+      <p class="hero-greet">Bienvenue chez ENKI. Parlez-moi de ce que vous <em>cherchez</em>.</p>
+      <div class="hero-input">
+        <div class="placeholder">Ex : Je suis retraitée à Bruxelles, je cherche un appartement calme à Paphos autour de 350 k€…</div>
+        <button class="submit">
+          Démarrer
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+      <a href="#" class="hero-explore">Ou explorez librement</a>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE B — ENGAGED 60/40 -->
+<section class="scene" data-scene="b">
+  <div class="engaged-full">
+    <div class="engaged-left-full">
+      <span class="eb-eyebrow">Propriétés proposées par ENKI</span>
+      <h2 class="eb-title">Quatre biens <em>résonnent</em> avec ce que vous cherchez.</h2>
+      <div class="eb-meta">
+        <span>Triés par justesse</span><span>·</span>
+        <span>04 résultats</span><span>·</span>
+        <span>Mis à jour 11 h 24</span>
+      </div>
+      <div class="scroll-row">
+        <article class="bien-card">
+          <div class="bc-photo" style="background-image:url('assets/photos/programme-coral.jpg');">
+            <span class="bc-tag">Golden Visa</span>
+          </div>
+          <div class="bc-body">
+            <div class="bc-loc">Paphos · Coral Bay</div>
+            <div class="bc-name">Coral Bay Residences <em>B-04</em></div>
+            <div class="bc-price"><span class="from">À partir de</span>347 000 €</div>
+            <div class="bc-specs"><span>3 chambres</span><span>·</span><span>112 m²</span><span>·</span><span>Vue mer</span></div>
+          </div>
+        </article>
+        <article class="bien-card">
+          <div class="bc-photo" style="background-image:url('assets/photos/programme-olivier.jpg');">
+            <span class="bc-tag">TVA 5 %</span>
+          </div>
+          <div class="bc-body">
+            <div class="bc-loc">Pissouri · Hauteurs</div>
+            <div class="bc-name">Maison de l'<em>Olivier</em></div>
+            <div class="bc-price"><span class="from">À partir de</span>389 500 €</div>
+            <div class="bc-specs"><span>3 chambres</span><span>·</span><span>148 m²</span><span>·</span><span>Oliveraie</span></div>
+          </div>
+        </article>
+        <article class="bien-card">
+          <div class="bc-photo" style="background-image:url('assets/photos/programme-marina.jpg');">
+            <span class="bc-tag">Livraison Q4 2027</span>
+          </div>
+          <div class="bc-body">
+            <div class="bc-loc">Larnaca · Marina</div>
+            <div class="bc-name">Larnaca Marina <em>House</em></div>
+            <div class="bc-price"><span class="from">À partir de</span>365 000 €</div>
+            <div class="bc-specs"><span>2 chambres</span><span>·</span><span>96 m²</span><span>·</span><span>Front marina</span></div>
+          </div>
+        </article>
+        <article class="bien-card">
+          <div class="bc-photo" style="background-image:url('assets/photos/interior-light.jpg');">
+            <span class="bc-tag">Permanent Residency</span>
+          </div>
+          <div class="bc-body">
+            <div class="bc-loc">Paphos · Vieille ville</div>
+            <div class="bc-name">Kato Paphos <em>Townhouse</em></div>
+            <div class="bc-price"><span class="from">À partir de</span>312 000 €</div>
+            <div class="bc-specs"><span>2 chambres</span><span>·</span><span>104 m²</span><span>·</span><span>Patio</span></div>
+          </div>
+        </article>
+      </div>
+    </div>
+    <aside class="engaged-side-full">
+      <div class="sb-head">
+        <div class="sb-avatar">Σ</div>
+        <div class="sb-name">ENKI</div>
+        <span class="sb-status">En ligne</span>
+      </div>
+      <div class="sb-thread">
+        <div class="msg user">Je suis retraitée à Bruxelles, je cherche un appartement calme à Paphos autour de 350 k€.</div>
+        <div class="msg assistant">Bonjour. Avant de regarder les biens, partageons un peu plus. Vous avez parlé de calme — préférez-vous l'isolement complet d'une villa, ou la tranquillité d'un quartier résidentiel avec voisins ? Je peux préparer une <em class="serif">sélection en parallèle</em> pendant que vous me répondez.</div>
+        <div class="msg user">Plutôt un quartier résidentiel, j'ai besoin d'un peu de vie autour.</div>
+        <div class="msg assistant">Parfait. J'ai sélectionné quatre biens qui correspondent à ce critère, avec une attention particulière à la <em class="serif">qualité du voisinage</em> et à la proximité des commerces. À votre gauche.</div>
+      </div>
+      <div class="sb-input">
+        <div class="field">Écrivez à ENKI…</div>
+        <button class="send">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<script>
+const body = document.body;
+
+// Direction switcher
+document.querySelectorAll('[data-set-direction]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const dir = btn.dataset.setDirection;
+    body.dataset.direction = dir;
+    document.querySelectorAll('[data-set-direction]').forEach(b => b.classList.toggle('active', b === btn));
+    localStorage.setItem('preview-direction', dir);
+  });
+});
+
+// Mode switcher
+document.querySelectorAll('[data-set-mode]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const mode = btn.dataset.setMode;
+    body.dataset.mode = mode;
+    document.querySelectorAll('[data-set-mode]').forEach(b => b.classList.toggle('active', b === btn));
+    localStorage.setItem('preview-mode', mode);
+  });
+});
+
+// Scene switcher
+document.querySelectorAll('[data-set-scene]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const sc = btn.dataset.setScene;
+    document.querySelectorAll('.scene').forEach(s => s.classList.toggle('active', s.dataset.scene === sc));
+    document.querySelectorAll('[data-set-scene]').forEach(b => b.classList.toggle('active', b === btn));
+    localStorage.setItem('preview-scene', sc);
+  });
+});
+
+// Restore from localStorage
+const savedDir = localStorage.getItem('preview-direction');
+if (savedDir) document.querySelector(`[data-set-direction="${savedDir}"]`)?.click();
+const savedMode = localStorage.getItem('preview-mode');
+if (savedMode) document.querySelector(`[data-set-mode="${savedMode}"]`)?.click();
+const savedScene = localStorage.getItem('preview-scene');
+if (savedScene) document.querySelector(`[data-set-scene="${savedScene}"]`)?.click();
+</script>
+</body>
+</html>

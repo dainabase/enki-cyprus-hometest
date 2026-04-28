@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENKI · Palette Linen + Aero + Columbia Blue + Chamoisée</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900&family=Schibsted+Grotesk:ital,wght@0,400..700&family=JetBrains+Mono:wght@300..600&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Hanken Grotesk', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  color: #1A2940;
+  background: #FDF0E4;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.serif { font-family: 'Schibsted Grotesk', Georgia, serif; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+.italic { font-style: italic; }
+
+/* ---------------------------------------------------------------- */
+/* 1. PALETTE BANNER — RÉFÉRENCE SOURCE                             */
+/* ---------------------------------------------------------------- */
+.palette-banner {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  height: 380px;
+  width: 100%;
+}
+.palette-banner .swatch {
+  display: flex; flex-direction: column;
+  align-items: flex-start; justify-content: flex-end;
+  padding: 40px;
+}
+.palette-banner .swatch .hex {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 600; font-size: clamp(28px, 2.6vw, 44px);
+  letter-spacing: 0.02em;
+}
+.palette-banner .swatch .name {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 400; font-size: 13px;
+  margin-top: 6px;
+  letter-spacing: 0.02em;
+}
+.bg-linen { background: #FDF0E4; color: #1A2940; }
+.bg-aero { background: #57B9D6; color: #FDF0E4; }
+.bg-columbia { background: #D3E3F0; color: #1A2940; }
+.bg-chamoisee { background: #A17964; color: #FDF0E4; }
+
+/* ---------------------------------------------------------------- */
+/* 2. CONTENT WRAPPER                                               */
+/* ---------------------------------------------------------------- */
+.wrap {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 80px 64px 120px;
+}
+
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #A17964;
+  display: block;
+  margin-bottom: 20px;
+}
+h1 {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: clamp(40px, 5vw, 72px);
+  line-height: 1.05; letter-spacing: -0.025em;
+  margin-bottom: 28px;
+  max-width: 880px;
+}
+h1 em { font-style: italic; color: #57B9D6; }
+.intro {
+  font-size: 18px; line-height: 1.65; max-width: 720px;
+  color: #4A5A78;
+  margin-bottom: 24px;
+}
+.intro strong { color: #1A2940; font-weight: 500; }
+.intro code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #D3E3F0;
+  padding: 2px 7px; border-radius: 3px;
+  font-size: 13px;
+  color: #1A2940;
+}
+
+/* ---------------------------------------------------------------- */
+/* 3. SECTION HEAD                                                  */
+/* ---------------------------------------------------------------- */
+section { margin-top: 96px; }
+section.first { margin-top: 64px; }
+.s-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #A17964;
+  margin-bottom: 16px;
+  display: block;
+}
+.s-title {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: clamp(32px, 3.8vw, 48px);
+  line-height: 1.08; letter-spacing: -0.02em;
+  margin-bottom: 16px;
+  max-width: 760px;
+}
+.s-title em { color: #57B9D6; }
+.s-lead {
+  font-size: 16px; line-height: 1.65;
+  color: #4A5A78;
+  margin-bottom: 40px;
+  max-width: 680px;
+}
+
+/* ---------------------------------------------------------------- */
+/* 4. MOCKUP HERO PREVIEW (palette en condition réelle)             */
+/* ---------------------------------------------------------------- */
+.hero-preview {
+  position: relative;
+  height: 560px;
+  border-radius: 8px;
+  overflow: hidden;
+  background-image: url('assets/photos/hero-d2-horizon.jpg');
+  background-size: cover;
+  background-position: center;
+  border: 1px solid rgba(26, 41, 64, 0.08);
+}
+.hero-preview::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.55) 100%);
+}
+.hero-preview .hero-nav {
+  position: absolute; top: 0; left: 0; right: 0;
+  padding: 28px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  z-index: 2;
+}
+.hero-preview .logo {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500; font-size: 22px;
+  color: #FDF0E4;
+  letter-spacing: -0.01em;
+}
+.hero-preview .nav-links {
+  display: flex; gap: 32px;
+}
+.hero-preview .nav-links a {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 13px; font-weight: 500;
+  color: #FDF0E4;
+  text-decoration: none;
+  opacity: 0.92;
+}
+.hero-preview .nav-cta {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 12px; font-weight: 500;
+  padding: 9px 18px;
+  border-radius: 100px;
+  background: rgba(253, 240, 228, 0.16);
+  border: 1px solid rgba(253, 240, 228, 0.4);
+  color: #FDF0E4;
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.hero-preview .chat-card {
+  position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+  width: min(640px, calc(100% - 80px));
+  background: rgba(253, 240, 228, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 12px;
+  border: 1px solid rgba(253, 240, 228, 0.6);
+  box-shadow: 0 32px 64px -24px rgba(0,0,0,0.4), 0 8px 20px -4px rgba(0,0,0,0.12);
+  overflow: hidden;
+  z-index: 2;
+}
+.hero-preview .chat-head {
+  padding: 12px 18px;
+  background: linear-gradient(90deg, rgba(87, 185, 214, 0.12) 0%, rgba(87, 185, 214, 0.04) 100%);
+  border-bottom: 1px solid rgba(87, 185, 214, 0.18);
+  display: flex; align-items: center; gap: 10px;
+}
+.hero-preview .chat-head .pulse {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #57B9D6;
+  box-shadow: 0 0 0 0 rgba(87, 185, 214, 0.6);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(87, 185, 214, 0.5); }
+  50% { box-shadow: 0 0 0 8px rgba(87, 185, 214, 0); }
+}
+.hero-preview .chat-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: #1A2940;
+  font-weight: 500;
+}
+.hero-preview .chat-body {
+  padding: 18px 20px 20px;
+}
+.hero-preview .chat-msg {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-style: italic; font-size: 13px; line-height: 1.55;
+  color: #4A5A78;
+  margin-bottom: 14px;
+  min-height: 40px;
+}
+.hero-preview .chat-input {
+  display: flex; align-items: stretch;
+  gap: 0;
+  background: #FFFEFB;
+  border: 1px solid #D3E3F0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.hero-preview .chat-input .field {
+  flex: 1;
+  padding: 12px 14px;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 13px;
+  color: #4A5A78;
+  font-style: italic;
+  display: flex; align-items: center;
+}
+.hero-preview .chat-input .submit {
+  padding: 0 20px;
+  background: #57B9D6;
+  color: #FDF0E4;
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 13px; font-weight: 500;
+  border: none; cursor: pointer;
+  transition: background 220ms;
+}
+.hero-preview .chat-input .submit:hover { background: #3FA3C2; }
+
+.hero-preview .hero-title {
+  position: absolute;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 1;
+  width: 100%;
+  padding: 0 40px;
+}
+.hero-preview .hero-title h2 {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: #FDF0E4;
+  text-shadow: 0 2px 24px rgba(0,0,0,0.3);
+}
+.hero-preview .hero-title h2 em {
+  color: #FDF0E4;
+}
+
+/* ---------------------------------------------------------------- */
+/* 5. ENGAGED PREVIEW                                               */
+/* ---------------------------------------------------------------- */
+.engaged-preview {
+  display: grid;
+  grid-template-columns: 60% 40%;
+  height: 560px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #FDF0E4;
+  border: 1px solid rgba(26, 41, 64, 0.08);
+}
+.eng-left {
+  padding: 36px 32px;
+  border-right: 1px solid #D3E3F0;
+  background: #FDF0E4;
+  overflow-y: auto;
+}
+.eng-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: #A17964;
+  display: block;
+  margin-bottom: 14px;
+}
+.eng-title {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: 28px; line-height: 1.12;
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
+}
+.eng-title em { color: #57B9D6; }
+.eng-meta {
+  display: flex; gap: 14px; align-items: center;
+  margin-bottom: 24px;
+}
+.eng-meta span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: #4A5A78;
+}
+.eng-cards {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+}
+.bien {
+  background: #FFFEFB;
+  border: 1px solid #D3E3F0;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 280ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.bien:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 24px 48px -20px rgba(26, 41, 64, 0.18);
+  border-color: #57B9D6;
+}
+.bien-photo {
+  aspect-ratio: 4/3;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+.bien-photo .tag {
+  position: absolute; top: 10px; left: 10px;
+  padding: 4px 9px;
+  background: #FDF0E4;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+  border-radius: 100px;
+  color: #1A2940;
+}
+.bien-body { padding: 14px 16px 18px; }
+.bien-loc {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: #4A5A78;
+  margin-bottom: 6px;
+}
+.bien-name {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-size: 17px; line-height: 1.18;
+  margin-bottom: 10px;
+}
+.bien-name em { color: #57B9D6; }
+.bien-price {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500; font-size: 17px;
+  letter-spacing: -0.015em;
+  color: #1A2940;
+}
+.bien-price .from {
+  font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: #4A5A78;
+  margin-right: 4px;
+  font-weight: 400;
+}
+
+.eng-side {
+  background: #FDF0E4;
+  display: flex; flex-direction: column;
+}
+.sb-head {
+  padding: 16px 20px;
+  border-bottom: 1px solid #D3E3F0;
+  display: flex; align-items: center; gap: 10px;
+}
+.sb-avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #8FD4E8, #57B9D6 60%, #3FA3C2);
+  display: grid; place-items: center;
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic;
+  color: #FDF0E4;
+  font-size: 13px; font-weight: 500;
+}
+.sb-name {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 500; font-size: 13px;
+  color: #1A2940;
+}
+.sb-status {
+  margin-left: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: #57B9D6;
+  display: flex; align-items: center; gap: 6px;
+}
+.sb-status::before {
+  content: '';
+  width: 5px; height: 5px;
+  background: #57B9D6;
+  border-radius: 50%;
+}
+.sb-thread {
+  flex: 1;
+  padding: 20px;
+  display: flex; flex-direction: column; gap: 14px;
+  overflow-y: auto;
+}
+.msg {
+  max-width: 88%;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 13px; line-height: 1.55;
+}
+.msg.user {
+  align-self: flex-end;
+  background: #D3E3F0;
+  padding: 10px 14px;
+  border-radius: 12px 12px 4px 12px;
+  color: #1A2940;
+}
+.msg.assistant {
+  align-self: flex-start;
+  color: #1A2940;
+}
+.msg.assistant em {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic;
+  color: #57B9D6;
+}
+.sb-input {
+  padding: 12px 14px 14px;
+  border-top: 1px solid #D3E3F0;
+  display: flex; gap: 8px;
+}
+.sb-input .field {
+  flex: 1;
+  padding: 10px 13px;
+  background: #FFFEFB;
+  border: 1px solid #D3E3F0;
+  border-radius: 4px;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-style: italic; font-size: 12px;
+  color: #4A5A78;
+}
+.sb-input .send {
+  padding: 10px 14px;
+  background: #57B9D6;
+  color: #FDF0E4;
+  border-radius: 4px;
+  display: grid; place-items: center;
+  cursor: pointer;
+}
+.sb-input .send svg { width: 12px; height: 12px; }
+
+/* ---------------------------------------------------------------- */
+/* 6. LEXAIA PREVIEW (ratio 30/70 sérieux)                          */
+/* ---------------------------------------------------------------- */
+.lexaia-preview {
+  background: #FDF0E4;
+  border: 1px solid rgba(26, 41, 64, 0.08);
+  border-radius: 8px;
+  padding: 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+.lex-left { padding-right: 24px; }
+.lex-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #A17964;
+  display: block; margin-bottom: 12px;
+}
+.lex-doc {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-size: 13px;
+  color: #4A5A78;
+  margin-bottom: 24px;
+}
+.lex-title {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: 32px; line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 14px;
+}
+.lex-title em { color: #57B9D6; }
+.lex-recipient {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: #4A5A78;
+  margin-bottom: 24px;
+}
+.scenarios {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+.sc {
+  padding: 14px;
+  background: #FFFEFB;
+  border: 1px solid #D3E3F0;
+  border-radius: 4px;
+}
+.sc.pref {
+  border-color: #57B9D6;
+  position: relative;
+}
+.sc.pref::before {
+  content: 'Recommandé';
+  position: absolute;
+  top: -8px; left: 12px;
+  padding: 2px 8px;
+  background: #57B9D6;
+  color: #FDF0E4;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase;
+  border-radius: 100px;
+}
+.sc-letter {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: #4A5A78;
+  margin-bottom: 6px;
+}
+.sc-name {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-size: 14px; line-height: 1.18;
+  margin-bottom: 12px;
+}
+.sc-row {
+  display: flex; justify-content: space-between;
+  padding: 5px 0;
+  border-bottom: 1px solid #EEF4F8;
+  font-size: 11px;
+}
+.sc-row:last-child { border-bottom: 0; }
+.sc-row.hl {
+  padding: 6px 8px;
+  margin: 4px -8px 0;
+  background: rgba(87, 185, 214, 0.12);
+  border-radius: 3px;
+  border-bottom: 0;
+}
+.sc-lbl { color: #4A5A78; font-size: 10px; }
+.sc-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500; color: #1A2940;
+  font-size: 11px;
+}
+.sc-row.hl .sc-val { color: #57B9D6; font-size: 13px; }
+
+.lex-right {
+  display: flex; flex-direction: column; gap: 16px;
+}
+.lex-photo {
+  aspect-ratio: 4/3;
+  background-image: url('assets/photos/olive-tree-1.jpg');
+  background-size: cover;
+  background-position: center;
+  border-radius: 4px;
+  filter: saturate(0.95);
+}
+.lex-side-conv {
+  flex: 1;
+  padding: 18px;
+  background: #FFFEFB;
+  border: 1px solid #D3E3F0;
+  border-radius: 4px;
+}
+.lex-side-conv .who {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 12px;
+}
+.lex-side-conv .who .av {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #8FD4E8, #57B9D6 60%, #3FA3C2);
+  display: grid; place-items: center;
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic;
+  color: #FDF0E4;
+  font-size: 11px;
+}
+.lex-side-conv .who .nm {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 500; font-size: 12px;
+}
+.lex-side-conv p {
+  font-size: 12px; line-height: 1.55;
+  color: #1A2940;
+  margin-bottom: 10px;
+}
+.lex-side-conv p em {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic;
+  color: #57B9D6;
+}
+
+/* ---------------------------------------------------------------- */
+/* 7. DARK MODE SAMPLE                                              */
+/* ---------------------------------------------------------------- */
+.dark-sample {
+  background: #1A2940;
+  color: #FDF0E4;
+  padding: 48px;
+  border-radius: 8px;
+}
+.dark-sample .s-eyebrow { color: rgba(253, 240, 228, 0.5); }
+.dark-sample .s-title { color: #FDF0E4; }
+.dark-sample .s-title em { color: #7FCDE5; }
+.dark-sample .s-lead { color: rgba(253, 240, 228, 0.7); }
+.dark-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+  margin-top: 24px;
+}
+.dk-cell {
+  padding: 20px 18px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(253, 240, 228, 0.12);
+  border-radius: 4px;
+}
+.dk-swatch {
+  height: 56px;
+  border-radius: 3px;
+  margin-bottom: 12px;
+}
+.dk-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(253, 240, 228, 0.5);
+  margin-bottom: 4px;
+}
+.dk-name {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 500; font-size: 13px;
+  color: #FDF0E4;
+}
+.dk-hex {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(253, 240, 228, 0.6);
+  margin-top: 2px;
+}
+.dk-cta {
+  margin-top: 20px;
+  padding: 12px 18px;
+  background: #57B9D6;
+  color: #1A2940;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 500; font-size: 13px;
+  border-radius: 100px;
+  text-align: center;
+}
+
+/* ---------------------------------------------------------------- */
+/* 8. TOKENS LIST                                                   */
+/* ---------------------------------------------------------------- */
+.tokens-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.token {
+  display: flex; gap: 16px;
+  padding: 16px 20px;
+  background: #FFFEFB;
+  border: 1px solid #D3E3F0;
+  border-radius: 4px;
+  align-items: center;
+}
+.token .preview {
+  width: 48px; height: 48px;
+  border-radius: 4px;
+  flex: 0 0 48px;
+}
+.token-info {
+  display: flex; flex-direction: column; gap: 2px;
+}
+.token-role {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 500; font-size: 14px;
+}
+.token-hex {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: #4A5A78;
+}
+.token-purpose {
+  font-size: 11px;
+  color: #4A5A78;
+  margin-top: 2px;
+  font-style: italic;
+}
+
+/* ---------------------------------------------------------------- */
+/* RESPONSIVE                                                       */
+/* ---------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .wrap { padding: 56px 32px 80px; }
+  .palette-banner { grid-template-columns: 1fr 1fr; height: auto; }
+  .palette-banner .swatch { padding: 28px; min-height: 200px; }
+  .engaged-preview { grid-template-columns: 1fr; height: auto; }
+  .lexaia-preview { grid-template-columns: 1fr; }
+  .dark-grid { grid-template-columns: repeat(2, 1fr); }
+  .scenarios { grid-template-columns: 1fr; }
+  .tokens-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- 1. PALETTE BANNER -->
+<div class="palette-banner">
+  <div class="swatch bg-linen">
+    <div class="hex">#FDF0E4</div>
+    <div class="name">Linen</div>
+  </div>
+  <div class="swatch bg-aero">
+    <div class="hex">#57B9D6</div>
+    <div class="name">Aero</div>
+  </div>
+  <div class="swatch bg-columbia">
+    <div class="hex">#D3E3F0</div>
+    <div class="name">Columbia Blue</div>
+  </div>
+  <div class="swatch bg-chamoisee">
+    <div class="hex">#A17964</div>
+    <div class="name">Chamoisée</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header style="margin-bottom: 24px;">
+    <span class="eyebrow">Palette validée par Jean-Marie · 28 avril 2026</span>
+    <h1>Linen, Aero, Columbia Blue, <em>Chamoisée</em>.</h1>
+    <p class="intro">
+      Quatre couleurs. Un système. <strong>Aero</strong> <code>#57B9D6</code> remplace le précédent <code>#27C7D4</code> — c'est un bleu pur en hue 196°, sans glissement vers le vert. <strong>Linen</strong> <code>#FDF0E4</code> remplace le crème calcaire trop saturé. <strong>Columbia Blue</strong> <code>#D3E3F0</code> apporte un ton secondaire doux pour les surfaces et les hovers. <strong>Chamoisée</strong> <code>#A17964</code> est l'accent humain — la chaise cognac de tes photos signature, à la teinte près.
+    </p>
+    <p class="intro">
+      Voici la palette posée en condition de produit réel : hero conversationnel sur photo, sidebar engagée, page Lexaia ratio 30/70, dark mode. Tu juges si le système tient.
+    </p>
+  </header>
+
+  <!-- SECTION 1 — TOKENS DÉRIVÉS -->
+  <section class="first">
+    <span class="s-eyebrow">01 · Tokens dérivés du système</span>
+    <h2 class="s-title">Quatre couleurs sources <em>plus huit dérivés</em>.</h2>
+    <p class="s-lead">Les quatre couleurs nommées ne suffisent pas pour faire un produit complet. Il faut un foreground texte (un quasi-noir pour la lecture longue), un foreground muted (les métadonnées, dates, sous-titres), une bordure douce, un Aero plus profond pour les hovers et les états dark, un Chamoisée chaleur pour les eyebrows et les accents secondaires, et un blanc-papier pour les cards. Ces dérivés ne sont pas inventés : ils sont calculés en partant des sources et en respectant le contraste WCAG AA minimum.</p>
+
+    <div class="tokens-grid">
+      <div class="token">
+        <div class="preview" style="background: #FDF0E4; border: 1px solid #D3E3F0;"></div>
+        <div class="token-info">
+          <div class="token-role">Background — Linen</div>
+          <div class="token-hex">#FDF0E4</div>
+          <div class="token-purpose">page principale, surfaces dominantes</div>
+        </div>
+      </div>
+      <div class="token">
+        <div class="preview" style="background: #FFFEFB; border: 1px solid #D3E3F0;"></div>
+        <div class="token-info">
+          <div class="token-role">Card — Linen Light</div>
+          <div class="token-hex">#FFFEFB</div>
+          <div class="token-purpose">cards de biens, panneaux flottants</div>
+        </div>
+      </div>
+      <div class="token">
+        <div class="preview" style="background: #1A2940;"></div>
+        <div class="token-info">
+          <div class="token-role">Foreground — Encre profonde</div>
+          <div class="token-hex">#1A2940</div>
+          <div class="token-purpose">titres, corps de texte, lecture longue</div>
+        </div>
+      </div>
+      <div class="token">
+        <div class="preview" style="background: #4A5A78;"></div>
+        <div class="token-info">
+          <div class="token-role">Foreground muted</div>
+          <div class="token-hex">#4A5A78</div>
+          <div class="token-purpose">métadonnées, dates, captions</div>
+        </div>
+      </div>
+      <div class="token">
+        <div class="preview" style="background: #57B9D6;"></div>
+        <div class="token-info">
+          <div class="token-role">Accent — Aero</div>
+          <div class="token-hex">#57B9D6</div>
+          <div class="token-purpose">CTA principal, sceau, italiques signature</div>
+        </div>
+      </div>
+      <div class="token">
+        <div class="preview" style="background: #3FA3C2;"></div>
+        <div class="token-info">
+          <div class="token-role">Accent deep — Aero hover</div>
+          <div class="token-hex">#3FA3C2</div>
+          <div class="token-purpose">hover, focus, pressed states</div>
+        </div>
+      </div>
+      <div class="token">
+        <div class="preview" style="background: #D3E3F0;"></div>
+        <div class="token-info">
+          <div class="token-role">Soft — Columbia Blue</div>
+          <div class="token-hex">#D3E3F0</div>
+          <div class="token-purpose">bordures, séparateurs, cards user message</div>
+        </div>
+      </div>
+      <div class="token">
+        <div class="preview" style="background: #A17964;"></div>
+        <div class="token-info">
+          <div class="token-role">Warm — Chamoisée</div>
+          <div class="token-hex">#A17964</div>
+          <div class="token-purpose">eyebrows, accents humains, badge spécial</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2 — HERO IN CONTEXT -->
+  <section>
+    <span class="s-eyebrow">02 · Hero conversationnel · État A</span>
+    <h2 class="s-title">Photo intacte, carte chat <em>flottante</em>, Aero en signature.</h2>
+    <p class="s-lead">Pas d'overlay teinté qui pollue la photo. Juste un gradient noir transparent en haut et en bas pour le contraste de lisibilité. La carte chat flotte sur Linen translucide avec backdrop-blur. Aero apparaît en pulsation discrète dans le header, et en bouton Démarrer qui pulse sans crier.</p>
+
+    <div class="hero-preview">
+      <nav class="hero-nav">
+        <div class="logo" aria-label="ENKI Realty">ΣNKI Realty</div>
+        <div class="nav-links">
+          <a href="#">Propriétés</a>
+          <a href="#">Lexaia</a>
+          <a href="#">À propos</a>
+        </div>
+        <a class="nav-cta" href="#">Espace personnel</a>
+      </nav>
+
+      <div class="hero-title">
+        <h2>Trouvez votre place <em>à Chypre</em>.</h2>
+      </div>
+
+      <div class="chat-card">
+        <div class="chat-head">
+          <span class="pulse"></span>
+          <span class="chat-tag">ENKI · Plateforme conversationnelle</span>
+        </div>
+        <div class="chat-body">
+          <p class="chat-msg">Ex : Je suis retraitée à Bruxelles, je cherche un appartement calme à Paphos autour de 350 k€…</p>
+          <div class="chat-input">
+            <div class="field">Décrivez ce que vous cherchez…</div>
+            <button class="submit">
+              Démarrer
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3 — ENGAGED 60/40 -->
+  <section>
+    <span class="s-eyebrow">03 · Sidebar engagée · État B · ratio 60/40</span>
+    <h2 class="s-title">Cards <em>résonnent</em> à gauche, conversation reste à droite.</h2>
+    <p class="s-lead">Une fois l'utilisateur engagé, la sidebar conversation reste visible à droite (40 %), les biens proposés s'affichent à gauche (60 %). Aero porte les italiques signature et les accents de hover. Columbia Blue porte les bulles de message utilisateur et les bordures douces. Chamoisée éveille les eyebrows.</p>
+
+    <div class="engaged-preview">
+      <div class="eng-left">
+        <span class="eng-eyebrow">Propriétés proposées par ENKI</span>
+        <h3 class="eng-title">Quatre biens <em>résonnent</em> avec ce que vous cherchez.</h3>
+        <div class="eng-meta">
+          <span>Triés par justesse</span><span>·</span>
+          <span>04 résultats</span><span>·</span>
+          <span>Mis à jour 11 h 24</span>
+        </div>
+        <div class="eng-cards">
+          <div class="bien">
+            <div class="bien-photo" style="background-image:url('assets/photos/programme-coral.jpg');">
+              <span class="tag">Golden Visa</span>
+            </div>
+            <div class="bien-body">
+              <div class="bien-loc">Paphos · Coral Bay</div>
+              <div class="bien-name">Coral Bay <em>B-04</em></div>
+              <div class="bien-price"><span class="from">À partir de</span>347 000 €</div>
+            </div>
+          </div>
+          <div class="bien">
+            <div class="bien-photo" style="background-image:url('assets/photos/programme-olivier.jpg');">
+              <span class="tag">TVA 5 %</span>
+            </div>
+            <div class="bien-body">
+              <div class="bien-loc">Pissouri · Hauteurs</div>
+              <div class="bien-name">Maison de l'<em>Olivier</em></div>
+              <div class="bien-price"><span class="from">À partir de</span>389 500 €</div>
+            </div>
+          </div>
+          <div class="bien">
+            <div class="bien-photo" style="background-image:url('assets/photos/programme-marina.jpg');">
+              <span class="tag">Q4 2027</span>
+            </div>
+            <div class="bien-body">
+              <div class="bien-loc">Larnaca · Marina</div>
+              <div class="bien-name">Marina <em>House</em></div>
+              <div class="bien-price"><span class="from">À partir de</span>365 000 €</div>
+            </div>
+          </div>
+          <div class="bien">
+            <div class="bien-photo" style="background-image:url('assets/photos/interior-light.jpg');">
+              <span class="tag">Permanent Residency</span>
+            </div>
+            <div class="bien-body">
+              <div class="bien-loc">Kato Paphos</div>
+              <div class="bien-name">Kato <em>Townhouse</em></div>
+              <div class="bien-price"><span class="from">À partir de</span>312 000 €</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="eng-side">
+        <div class="sb-head">
+          <div class="sb-avatar">Σ</div>
+          <div class="sb-name">ENKI</div>
+          <span class="sb-status">En ligne</span>
+        </div>
+        <div class="sb-thread">
+          <div class="msg user">Je suis retraitée à Bruxelles, je cherche un appartement calme à Paphos autour de 350 k€.</div>
+          <div class="msg assistant">Bonjour. Avant de regarder les biens, partageons un peu plus. Préférez-vous l'isolement complet d'une villa, ou la tranquillité d'un quartier résidentiel avec voisins ? Je peux préparer une <em>sélection en parallèle</em>.</div>
+          <div class="msg user">Plutôt un quartier résidentiel.</div>
+          <div class="msg assistant">Parfait. J'ai sélectionné quatre biens avec une attention particulière à la <em>qualité du voisinage</em>. À votre gauche.</div>
+        </div>
+        <div class="sb-input">
+          <div class="field">Écrivez à ENKI…</div>
+          <button class="send">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- SECTION 4 — LEXAIA 30/70 -->
+  <section>
+    <span class="s-eyebrow">04 · Lexaia · ratio 30/70</span>
+    <h2 class="s-title">Le sérieux <em>travaillé</em>, jamais théâtral.</h2>
+    <p class="s-lead">Sur Lexaia, le ratio s'inverse : les chiffres dominent (70 %), la photo respire à droite (30 %). Aero marque le scénario recommandé en sceau discret, jamais en aplat. Chamoisée éveille l'eyebrow et signe le cabinet patrimonial. Columbia Blue porte les bordures et l'arrière-plan du surlignement.</p>
+
+    <div class="lexaia-preview">
+      <div class="lex-left">
+        <span class="lex-eyebrow">Lexaia · document patrimonial</span>
+        <div class="lex-doc">Émis le 27 avril 2026 · Valable 6 mois</div>
+        <h3 class="lex-title">Trois scénarios pour votre acquisition à <em>Coral Bay</em>.</h3>
+        <div class="lex-recipient">Pour Marie L. · résidente fiscale française · Lyon</div>
+
+        <div class="scenarios">
+          <div class="sc">
+            <div class="sc-letter">A</div>
+            <div class="sc-name">Nom propre <em>France</em></div>
+            <div class="sc-row"><span class="sc-lbl">Investissement</span><span class="sc-val">712 400 €</span></div>
+            <div class="sc-row"><span class="sc-lbl">Net annuel</span><span class="sc-val">14 315 €</span></div>
+            <div class="sc-row hl"><span class="sc-lbl">10 ans</span><span class="sc-val">référence</span></div>
+          </div>
+          <div class="sc pref">
+            <div class="sc-letter">B</div>
+            <div class="sc-name">Non-dom <em>Chypre</em></div>
+            <div class="sc-row"><span class="sc-lbl">Investissement</span><span class="sc-val">712 400 €</span></div>
+            <div class="sc-row"><span class="sc-lbl">Net annuel</span><span class="sc-val">21 680 €</span></div>
+            <div class="sc-row hl"><span class="sc-lbl">10 ans</span><span class="sc-val">+73 650 €</span></div>
+          </div>
+          <div class="sc">
+            <div class="sc-letter">C</div>
+            <div class="sc-name">Société <em>IBC</em></div>
+            <div class="sc-row"><span class="sc-lbl">Investissement</span><span class="sc-val">717 250 €</span></div>
+            <div class="sc-row"><span class="sc-lbl">Net annuel</span><span class="sc-val">21 420 €</span></div>
+            <div class="sc-row hl"><span class="sc-lbl">10 ans</span><span class="sc-val">+71 050 €</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="lex-right">
+        <div class="lex-photo"></div>
+        <div class="lex-side-conv">
+          <div class="who">
+            <div class="av">Σ</div>
+            <div class="nm">ENKI · vous lit Lexaia</div>
+          </div>
+          <p>Marie, le scénario B est légèrement plus favorable que C (≈ 2 600 € sur 10 ans). Il est aussi <em>plus simple administrativement</em>.</p>
+          <p>Question importante : le scénario C protège mieux vos enfants si vous donnez de votre vivant — j'ouvre un calque dédié si vous le souhaitez.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5 — DARK MODE -->
+  <section>
+    <div class="dark-sample">
+      <span class="s-eyebrow">05 · Dark mode · sur fond Encre profonde</span>
+      <h2 class="s-title">Aero éclairci, Linen amorti, <em>contraste tenu</em>.</h2>
+      <p class="s-lead">En dark mode, le foreground devient Linen `#FDF0E4` (le crème devient lumière) et l'accent Aero s'éclaircit légèrement vers `#7FCDE5` pour rester accessible WCAG AA sur fond Encre profonde `#1A2940`. Columbia Blue devient un voile très discret. Chamoisée tient quasi-identique.</p>
+      <div class="dark-grid">
+        <div class="dk-cell">
+          <div class="dk-swatch" style="background: #1A2940;"></div>
+          <div class="dk-id">Background</div>
+          <div class="dk-name">Encre profonde</div>
+          <div class="dk-hex">#1A2940</div>
+        </div>
+        <div class="dk-cell">
+          <div class="dk-swatch" style="background: #7FCDE5;"></div>
+          <div class="dk-id">Accent</div>
+          <div class="dk-name">Aero light</div>
+          <div class="dk-hex">#7FCDE5</div>
+        </div>
+        <div class="dk-cell">
+          <div class="dk-swatch" style="background: #FDF0E4;"></div>
+          <div class="dk-id">Foreground</div>
+          <div class="dk-name">Linen lumière</div>
+          <div class="dk-hex">#FDF0E4</div>
+        </div>
+        <div class="dk-cell">
+          <div class="dk-swatch" style="background: #B8896F;"></div>
+          <div class="dk-id">Warm</div>
+          <div class="dk-name">Chamoisée light</div>
+          <div class="dk-hex">#B8896F</div>
+        </div>
+      </div>
+      <div class="dk-cta">Démarrer →</div>
+    </div>
+  </section>
+
+  <!-- VERDICT -->
+  <section>
+    <span class="s-eyebrow">Verdict · à valider par Jean-Marie</span>
+    <h2 class="s-title">Si tu valides cette palette, on l'écrit dans la <em>Couche 5 v1</em> et on rebatit la v3 propre.</h2>
+    <p class="s-lead">Aero `#57B9D6` est un vrai bleu, hue 196°, sans glissement vert. Linen `#FDF0E4` réchauffe sans saturer. Columbia Blue `#D3E3F0` est l'allié discret pour les bordures et les soft surfaces. Chamoisée `#A17964` honore la chaise cognac de tes photos signature. Quatre couleurs, trois dérivés, un système qui tient en light et en dark. Une fois validé, tu me dis « OK on prend » et je rebatis le hero plein écran avec ton standard cinématique du repo public.</p>
+  </section>
+
+</div>
+
+</body>
+</html>

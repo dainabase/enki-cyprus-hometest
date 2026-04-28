@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENKI · Couche 5 · 6 couleurs sources sur fond B4</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900&family=Schibsted+Grotesk:ital,wght@0,400..700&family=JetBrains+Mono:wght@300..600&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Hanken Grotesk', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  color: #1A2940;
+  background: #FCFAF5; /* B4 Papier bible — validé */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ---------------------------------------------------------------- */
+/* WRAP                                                             */
+/* ---------------------------------------------------------------- */
+.wrap {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 80px 64px 120px;
+}
+
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #A17964;
+  display: block;
+  margin-bottom: 20px;
+}
+h1 {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 1.05; letter-spacing: -0.025em;
+  margin-bottom: 24px;
+  max-width: 880px;
+}
+h1 em { font-style: italic; color: #57B9D6; }
+.intro {
+  font-size: 17px; line-height: 1.65; max-width: 720px;
+  color: #4A5A78;
+}
+.intro strong { color: #1A2940; font-weight: 500; }
+.intro code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: #1A2940;
+}
+
+/* ---------------------------------------------------------------- */
+/* GRILLE 6 COULEURS                                                */
+/* ---------------------------------------------------------------- */
+.colors-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-top: 64px;
+}
+
+.color-block {
+  display: flex; flex-direction: column;
+  background: transparent;
+}
+
+/* Bloc couleur — carré 320x320 */
+.color-square {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 4px;
+  position: relative;
+}
+.color-square.has-border {
+  border: 1px solid rgba(26, 41, 64, 0.08);
+}
+
+/* Meta sous la couleur */
+.color-meta {
+  padding: 24px 0 0;
+}
+.color-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #A17964;
+  margin-bottom: 6px;
+}
+.color-name {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: 24px; line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: #1A2940;
+  margin-bottom: 14px;
+}
+.color-hex {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500; font-size: 18px;
+  letter-spacing: 0.02em;
+  color: #1A2940;
+  margin-bottom: 4px;
+}
+.color-oklch {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: #4A5A78;
+  margin-bottom: 12px;
+}
+.color-role {
+  font-size: 13px; line-height: 1.5;
+  color: #4A5A78;
+  padding-top: 12px;
+  border-top: 1px solid rgba(26, 41, 64, 0.08);
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .wrap { padding: 56px 32px 80px; }
+  .colors-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+}
+@media (max-width: 640px) {
+  .colors-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header style="margin-bottom: 16px;">
+    <span class="eyebrow">Couche 5 · 6 couleurs sources · sur fond B4 papier bible</span>
+    <h1>Le système chromatique <em>nu</em>.</h1>
+    <p class="intro">
+      Six couleurs. Pas de dérivés, pas de hover states, pas de mockups, pas de UI. Juste les six couleurs sources posées sur le fond <code>#FCFAF5</code> validé. Tu juges l'équilibre, les rapports de saturation, la cohérence de l'ensemble. Si une couleur ne tient pas dans ce système, on la voit ici tout de suite.
+    </p>
+  </header>
+
+  <div class="colors-grid">
+
+    <!-- 1. BACKGROUND B4 -->
+    <div class="color-block">
+      <div class="color-square has-border" style="background: #FCFAF5;"></div>
+      <div class="color-meta">
+        <div class="color-id">01 · Background</div>
+        <div class="color-name">Papier bible</div>
+        <div class="color-hex">#FCFAF5</div>
+        <div class="color-oklch">oklch(0.98 0.008 85)</div>
+        <div class="color-role">Le fond de toutes les surfaces dominantes. Validé en B4 ce matin.</div>
+      </div>
+    </div>
+
+    <!-- 2. CHAMOISÉE -->
+    <div class="color-block">
+      <div class="color-square" style="background: #A17964;"></div>
+      <div class="color-meta">
+        <div class="color-id">02 · Accent humain</div>
+        <div class="color-name">Chamoisée</div>
+        <div class="color-hex">#A17964</div>
+        <div class="color-oklch">oklch(0.58 0.06 50)</div>
+        <div class="color-role">Le cognac de la chaise face mer. Eyebrows, accents secondaires, signatures patrimoniales.</div>
+      </div>
+    </div>
+
+    <!-- 3. AERO -->
+    <div class="color-block">
+      <div class="color-square" style="background: #57B9D6;"></div>
+      <div class="color-meta">
+        <div class="color-id">03 · Accent principal</div>
+        <div class="color-name">Aero</div>
+        <div class="color-hex">#57B9D6</div>
+        <div class="color-oklch">oklch(0.74 0.10 220)</div>
+        <div class="color-role">CTA majeurs, sceau, italiques signature. Hue 220° — bleu pur, aucun glissement vert.</div>
+      </div>
+    </div>
+
+    <!-- 4. COLUMBIA BLUE -->
+    <div class="color-block">
+      <div class="color-square" style="background: #D3E3F0;"></div>
+      <div class="color-meta">
+        <div class="color-id">04 · Soft</div>
+        <div class="color-name">Columbia Blue</div>
+        <div class="color-hex">#D3E3F0</div>
+        <div class="color-oklch">oklch(0.90 0.02 230)</div>
+        <div class="color-role">Bordures, séparateurs, surfaces légères, bulles utilisateur dans la sidebar conversation.</div>
+      </div>
+    </div>
+
+    <!-- 5. FOREGROUND ENCRE -->
+    <div class="color-block">
+      <div class="color-square" style="background: #1A2940;"></div>
+      <div class="color-meta">
+        <div class="color-id">05 · Foreground</div>
+        <div class="color-name">Encre profonde</div>
+        <div class="color-hex">#1A2940</div>
+        <div class="color-oklch">oklch(0.21 0.04 250)</div>
+        <div class="color-role">Titres, corps de texte, lecture longue. Quasi-noir bleuté, jamais pur noir.</div>
+      </div>
+    </div>
+
+    <!-- 6. FOREGROUND MUTED -->
+    <div class="color-block">
+      <div class="color-square" style="background: #4A5A78;"></div>
+      <div class="color-meta">
+        <div class="color-id">06 · Muted</div>
+        <div class="color-name">Encre claire</div>
+        <div class="color-hex">#4A5A78</div>
+        <div class="color-oklch">oklch(0.43 0.04 250)</div>
+        <div class="color-role">Métadonnées, captions, dates, sous-titres, texte secondaire.</div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

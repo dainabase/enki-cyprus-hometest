@@ -26,6 +26,7 @@ dist-ssr
 
 # Claude Code local settings
 .claude/settings.local.json
+.claude/worktrees/
 
 # Temporary cleanup artefacts
 /tmp-cleanup/

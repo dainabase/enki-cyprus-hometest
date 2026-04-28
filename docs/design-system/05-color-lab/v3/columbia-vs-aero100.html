@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENKI · Couche 5 · Columbia Blue source vs Aero-100 dérivé</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900&family=Schibsted+Grotesk:ital,wght@0,400..700&family=JetBrains+Mono:wght@300..600&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Hanken Grotesk', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  color: #1A2940;
+  background: #FCFAF5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ---------------------------------------------------------------- */
+/* TOOLBAR FIXE                                                     */
+/* ---------------------------------------------------------------- */
+.toolbar {
+  position: fixed;
+  top: 24px; left: 50%; transform: translateX(-50%);
+  z-index: 100;
+  display: flex; gap: 6px;
+  padding: 8px;
+  background: rgba(26, 41, 64, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 100px;
+  box-shadow: 0 16px 36px -8px rgba(0,0,0,0.3);
+}
+.toolbar .btn {
+  padding: 10px 18px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(252, 250, 245, 0.55);
+  border-radius: 100px;
+  cursor: pointer; border: none; background: transparent;
+  font-weight: 500;
+  transition: all 220ms;
+  display: flex; align-items: center; gap: 8px;
+}
+.toolbar .btn:hover { color: #FCFAF5; }
+.toolbar .btn.active {
+  color: #1A2940;
+  background: #3D8FB0;
+}
+.toolbar .btn .swatch-mini {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+/* ---------------------------------------------------------------- */
+/* VARIABLE GLOBALE — soft color                                    */
+/* ---------------------------------------------------------------- */
+:root {
+  --soft: #D3E3F0; /* Columbia Blue (option A) */
+  --soft-name: 'Columbia Blue';
+}
+body[data-soft="columbia"] {
+  --soft: #D3E3F0;
+}
+body[data-soft="aero100"] {
+  --soft: #E5EEF3;
+}
+
+/* ---------------------------------------------------------------- */
+/* WRAP                                                             */
+/* ---------------------------------------------------------------- */
+.wrap {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 100px 64px 120px;
+}
+
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #A17964;
+  display: block;
+  margin-bottom: 20px;
+}
+h1 {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 1.05; letter-spacing: -0.025em;
+  margin-bottom: 24px;
+  max-width: 880px;
+}
+h1 em { color: #3D8FB0; }
+.intro {
+  font-size: 17px; line-height: 1.65; max-width: 720px;
+  color: #4A5A78;
+  margin-bottom: 16px;
+}
+.intro strong { color: #1A2940; font-weight: 500; }
+.intro code {
+  font-family: 'JetBrains Mono', monospace;
+  background: rgba(26, 41, 64, 0.05);
+  padding: 2px 7px; border-radius: 3px;
+  font-size: 13px;
+  color: #1A2940;
+}
+
+.current-id {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 10px 20px;
+  background: white;
+  border: 1px solid rgba(26, 41, 64, 0.10);
+  border-radius: 100px;
+  margin-top: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: #1A2940;
+}
+.current-id .dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--soft);
+  border: 1px solid rgba(0,0,0,0.10);
+  transition: background 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.current-id .label {
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: #4A5A78;
+}
+
+/* ---------------------------------------------------------------- */
+/* SECTION                                                          */
+/* ---------------------------------------------------------------- */
+section { margin-top: 96px; }
+section.first { margin-top: 56px; }
+.s-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #A17964;
+  margin-bottom: 16px; display: block;
+}
+.s-title {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: clamp(32px, 3.6vw, 44px);
+  line-height: 1.08; letter-spacing: -0.02em;
+  margin-bottom: 14px;
+  max-width: 760px;
+}
+.s-title em { color: #3D8FB0; }
+.s-lead {
+  font-size: 16px; line-height: 1.65;
+  color: #4A5A78;
+  margin-bottom: 36px;
+  max-width: 680px;
+}
+
+/* ---------------------------------------------------------------- */
+/* TEST 1 — SWATCHES CÔTE À CÔTE                                    */
+/* ---------------------------------------------------------------- */
+.swatches-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.swatch-card {
+  background: white;
+  border: 1px solid rgba(26, 41, 64, 0.08);
+  border-radius: 6px;
+  overflow: hidden;
+  transition: all 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.swatch-card.is-active {
+  border-color: #3D8FB0;
+  box-shadow: 0 0 0 2px rgba(61, 143, 176, 0.15);
+}
+.swatch-block {
+  height: 200px;
+}
+.swatch-block.col1 { background: #D3E3F0; }
+.swatch-block.col2 { background: #E5EEF3; }
+.swatch-meta {
+  padding: 22px 26px 24px;
+  border-top: 1px solid rgba(26, 41, 64, 0.06);
+}
+.swatch-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.20em; text-transform: uppercase;
+  color: #A17964;
+  margin-bottom: 6px;
+}
+.swatch-name {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: 22px; line-height: 1.15;
+  letter-spacing: -0.015em;
+  margin-bottom: 10px;
+}
+.swatch-hex {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px; font-weight: 500;
+  color: #1A2940;
+  margin-bottom: 4px;
+}
+.swatch-oklch {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #4A5A78;
+  margin-bottom: 14px;
+}
+.swatch-temper {
+  font-size: 13px; line-height: 1.55;
+  color: #4A5A78;
+  padding-top: 12px;
+  border-top: 1px solid rgba(26, 41, 64, 0.06);
+}
+
+/* ---------------------------------------------------------------- */
+/* TEST 2 — BULLES MESSAGE UTILISATEUR (sidebar conv)               */
+/* ---------------------------------------------------------------- */
+.conv-test {
+  background: white;
+  border: 1px solid rgba(26, 41, 64, 0.08);
+  border-radius: 6px;
+  padding: 28px 32px;
+}
+.conv-head {
+  display: flex; align-items: center; gap: 12px;
+  padding-bottom: 16px; margin-bottom: 20px;
+  border-bottom: 1px solid rgba(26, 41, 64, 0.06);
+}
+.conv-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #6FA8C5, #3D8FB0 60%, #2D7B9C);
+  display: grid; place-items: center;
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic;
+  color: #FCFAF5;
+  font-size: 14px; font-weight: 500;
+}
+.conv-name {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 500; font-size: 14px;
+}
+.conv-thread {
+  display: flex; flex-direction: column; gap: 14px;
+}
+.conv-msg {
+  max-width: 80%;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 14px; line-height: 1.55;
+}
+.conv-msg.user {
+  align-self: flex-end;
+  background: var(--soft);
+  padding: 11px 15px;
+  border-radius: 14px 14px 4px 14px;
+  color: #1A2940;
+  transition: background 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.conv-msg.assistant {
+  align-self: flex-start;
+  color: #1A2940;
+}
+.conv-msg.assistant em {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic;
+  color: #3D8FB0;
+}
+
+/* ---------------------------------------------------------------- */
+/* TEST 3 — BORDURES, SÉPARATEURS, SURFACES                         */
+/* ---------------------------------------------------------------- */
+.borders-test {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+.border-card {
+  background: white;
+  border: 1px solid var(--soft);
+  border-radius: 6px;
+  padding: 24px;
+  transition: border-color 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.border-card .b-eye {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: #A17964;
+  margin-bottom: 8px;
+  display: block;
+}
+.border-card .b-title {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-size: 18px;
+  margin-bottom: 8px;
+  color: #1A2940;
+}
+.border-card .b-text {
+  font-size: 13px; line-height: 1.55;
+  color: #4A5A78;
+}
+.border-card .b-divider {
+  height: 1px;
+  background: var(--soft);
+  margin: 14px 0;
+  transition: background 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---------------------------------------------------------------- */
+/* TEST 4 — SURFACE LARGE (background section)                      */
+/* ---------------------------------------------------------------- */
+.surface-test {
+  background: var(--soft);
+  border-radius: 6px;
+  padding: 56px 48px;
+  transition: background 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.surface-test .se-eye {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #A17964;
+  display: block; margin-bottom: 14px;
+}
+.surface-test h3 {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: 32px; line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #1A2940;
+  margin-bottom: 16px;
+  max-width: 560px;
+}
+.surface-test h3 em { color: #3D8FB0; }
+.surface-test p {
+  font-size: 15px; line-height: 1.65;
+  color: #4A5A78;
+  max-width: 600px;
+}
+
+/* ---------------------------------------------------------------- */
+/* VERDICT                                                          */
+/* ---------------------------------------------------------------- */
+.verdict {
+  background: white;
+  border: 1px solid rgba(26, 41, 64, 0.08);
+  border-radius: 6px;
+  padding: 48px;
+}
+.verdict h2 {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: 32px; line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 18px;
+  max-width: 720px;
+}
+.verdict h2 em { color: #3D8FB0; }
+.verdict p {
+  font-size: 15px; line-height: 1.7;
+  color: #4A5A78;
+  max-width: 640px;
+  margin-bottom: 14px;
+}
+.verdict strong { color: #1A2940; font-weight: 500; }
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .wrap { padding: 80px 24px 80px; }
+  .swatches-pair { grid-template-columns: 1fr; }
+  .borders-test { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body data-soft="columbia">
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <button class="btn active" data-soft="columbia">
+    <span class="swatch-mini" style="background: #D3E3F0;"></span>
+    Columbia · source
+  </button>
+  <button class="btn" data-soft="aero100">
+    <span class="swatch-mini" style="background: #E5EEF3;"></span>
+    Aero-100 · dérivé
+  </button>
+</div>
+
+<div class="wrap">
+
+  <header style="margin-bottom: 32px;">
+    <span class="eyebrow">Couche 5 · Soft color · à trancher</span>
+    <h1>Columbia Blue source <em>ou</em> Aero-100 dérivé.</h1>
+    <p class="intro">
+      Avec <strong>Aero source = <code>#3D8FB0</code></strong> validé, deux options s'offrent pour la couleur soft (bordures, bulles user, séparateurs).
+    </p>
+    <p class="intro">
+      <strong>Option A · Columbia Blue source</strong> <code>#D3E3F0</code>. Hue 230°, légèrement plus froid que l'Aero (qui est en hue 220°). Apporte une 4e couleur autonome au système.
+    </p>
+    <p class="intro">
+      <strong>Option B · Aero-100 dérivé</strong> <code>#E5EEF3</code>. Calculé depuis l'Aero source en oklch (luminosité poussée à 0.94, chroma divisé par 12). Hérite du hue 220° de l'Aero. Reste dans la famille du système, n'ajoute pas une couleur autonome.
+    </p>
+    <div class="current-id">
+      <span class="dot"></span>
+      <span class="label" id="current-label">Soft actuel · Columbia Blue source · #D3E3F0</span>
+    </div>
+  </header>
+
+  <!-- TEST 1 — SWATCHES CÔTE À CÔTE (toujours les 2, peu importe la sélection) -->
+  <section class="first">
+    <span class="s-eyebrow">01 · Comparaison directe · les deux côte à côte</span>
+    <h2 class="s-title">À l'œil nu, sur fond <em>papier bible</em>.</h2>
+    <p class="s-lead">Les deux candidats côte à côte, indépendamment du toggle. La carte active est celle que tu as choisie en haut. Tu juges la différence brute avant de regarder en contexte.</p>
+
+    <div class="swatches-pair">
+      <div class="swatch-card is-active" data-card="columbia">
+        <div class="swatch-block col1"></div>
+        <div class="swatch-meta">
+          <div class="swatch-id">A · couleur source</div>
+          <div class="swatch-name">Columbia Blue</div>
+          <div class="swatch-hex">#D3E3F0</div>
+          <div class="swatch-oklch">oklch(0.90 0.025 230)</div>
+          <p class="swatch-temper">Hue 230° — bleu autonome légèrement plus froid que l'Aero source. Crée une seconde tonalité distincte dans le système.</p>
+        </div>
+      </div>
+      <div class="swatch-card" data-card="aero100">
+        <div class="swatch-block col2"></div>
+        <div class="swatch-meta">
+          <div class="swatch-id">B · dérivé</div>
+          <div class="swatch-name">Aero-100</div>
+          <div class="swatch-hex">#E5EEF3</div>
+          <div class="swatch-oklch">oklch(0.94 0.012 220)</div>
+          <p class="swatch-temper">Hue 220° — descend de l'Aero source à 12% de saturation. Famille unifiée, pas de seconde tonalité, plus clair que Columbia.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEST 2 — BULLES UTILISATEUR -->
+  <section>
+    <span class="s-eyebrow">02 · Usage sidebar conversation · bulles message utilisateur</span>
+    <h2 class="s-title">Toggle pour comparer la bulle <em>"Je suis retraitée…"</em>.</h2>
+    <p class="s-lead">C'est probablement l'usage le plus visible de cette couleur. Les messages utilisateur dans la sidebar conversation portent ce fond. Tu juges si le bleu reste lisible, distinctif, et harmonisé avec l'Aero qui colore les italiques signature de l'agent.</p>
+
+    <div class="conv-test">
+      <div class="conv-head">
+        <div class="conv-avatar">Σ</div>
+        <div class="conv-name">ENKI · sidebar conversation</div>
+      </div>
+      <div class="conv-thread">
+        <div class="conv-msg user">Je suis retraitée à Bruxelles, je cherche un appartement calme à Paphos autour de 350 k€.</div>
+        <div class="conv-msg assistant">Bonjour. Avant de regarder les biens, partageons un peu plus. Préférez-vous l'isolement complet d'une villa, ou la tranquillité d'un quartier résidentiel avec voisins ? Je peux préparer une <em>sélection en parallèle</em>.</div>
+        <div class="conv-msg user">Plutôt un quartier résidentiel, j'ai besoin d'un peu de vie autour.</div>
+        <div class="conv-msg assistant">Parfait. J'ai sélectionné quatre biens avec une attention particulière à la <em>qualité du voisinage</em>.</div>
+        <div class="conv-msg user">Et le budget pour les frais de notaire, c'est inclus ou en plus ?</div>
+        <div class="conv-msg assistant">En plus. Comptez environ <em>3 à 5 %</em> du prix d'achat selon le programme. Je peux ouvrir un calque Lexaia si vous le souhaitez.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEST 3 — BORDURES, SÉPARATEURS -->
+  <section>
+    <span class="s-eyebrow">03 · Usage bordures et séparateurs</span>
+    <h2 class="s-title">Cards de biens, bordures fines, lignes <em>de séparation</em>.</h2>
+    <p class="s-lead">Le second usage important : la couleur soft borde toutes les cards (biens, programmes, scénarios Lexaia). Si elle est trop visible, elle alourdit. Si elle est trop discrète, on perd la structure. Toggle pour comparer.</p>
+
+    <div class="borders-test">
+      <div class="border-card">
+        <span class="b-eye">Programme · Coral Bay</span>
+        <h4 class="b-title">Coral Bay <em style="font-style: italic; color: #3D8FB0;">B-04</em></h4>
+        <p class="b-text">3 chambres · 112 m² · Vue mer franche · Livraison Q4 2027</p>
+        <div class="b-divider"></div>
+        <p class="b-text">À partir de <strong>347 000 €</strong></p>
+      </div>
+      <div class="border-card">
+        <span class="b-eye">Programme · Pissouri</span>
+        <h4 class="b-title">Maison de l'<em style="font-style: italic; color: #3D8FB0;">Olivier</em></h4>
+        <p class="b-text">3 chambres · 148 m² · Oliveraie · Livraison Q2 2027</p>
+        <div class="b-divider"></div>
+        <p class="b-text">À partir de <strong>389 500 €</strong></p>
+      </div>
+      <div class="border-card">
+        <span class="b-eye">Programme · Larnaca</span>
+        <h4 class="b-title">Larnaca Marina <em style="font-style: italic; color: #3D8FB0;">House</em></h4>
+        <p class="b-text">2 chambres · 96 m² · Front marina · Livraison Q4 2027</p>
+        <div class="b-divider"></div>
+        <p class="b-text">À partir de <strong>365 000 €</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEST 4 — SURFACE LARGE -->
+  <section>
+    <span class="s-eyebrow">04 · Usage surface large · section dédiée</span>
+    <h2 class="s-title">Quand la couleur soft devient un <em>fond entier</em>.</h2>
+    <p class="s-lead">Cas plus rare mais critique : section éditoriale dédiée (témoignage, page lifestyle, encart explicatif) qui utilise la couleur soft comme fond entier. C'est ici qu'on voit si la couleur tient en surface dominante ou si elle devient lourde.</p>
+
+    <div class="surface-test">
+      <span class="se-eye">Vivre à Chypre</span>
+      <h3>Une île qui dialogue avec <em>la Méditerranée</em> depuis 9 000 ans.</h3>
+      <p>Chypre est moins connue que la Grèce ou Malte, et c'est sa chance : le calcaire chaud des matins, l'eau qui ne ment pas, les oliviers qui ont vu passer Phéniciens, Romains, Byzantins, Ottomans, Britanniques. Le pays est aujourd'hui membre de l'Union européenne, paisible, fiscalement clair, et accessible depuis Paris en 4 heures.</p>
+    </div>
+  </section>
+
+  <!-- VERDICT -->
+  <section>
+    <div class="verdict">
+      <span class="eyebrow">Verdict · à choisir par Jean-Marie</span>
+      <h2>Mon avis tranché.</h2>
+      <p><strong>Option A — Columbia Blue source.</strong> Donne au système 4 couleurs autonomes (Aero, Columbia, Chamoisée, Encre). Avantage : Columbia a une vraie tonalité distincte (hue 230° vs 220°), elle <em style="font-style: italic;">existe</em> en tant que couleur, pas comme une nuance. Inconvénient : 4 couleurs c'est plus complexe à maintenir, et Columbia tire légèrement vers le froid alors que tout le système est chaud (papier bible + Chamoisée).</p>
+      <p><strong>Option B — Aero-100 dérivé.</strong> Le système se réduit à 3 couleurs sources colorées (Aero, Chamoisée, Encre) plus leurs nuances. Avantage : famille parfaitement unifiée, le bleu qui borde une card est <em>littéralement</em> le bleu dilué de l'Aero du CTA dans la même card — cohérence chromatique totale. Inconvénient : on perd un peu de richesse, le système devient plus minimaliste.</p>
+      <p style="margin-top: 24px;"><strong>Mon vote : Aero-100 dérivé.</strong></p>
+      <p>Trois raisons. (1) Cohérence du système : une couleur de moins à gouverner, et l'harmonie chromatique est mathématiquement garantie. (2) Le test de la conversation : sur la bulle utilisateur, Aero-100 se sent comme appartenant à la même famille que les italiques signature de l'agent — Columbia crée un léger décrochage. (3) Le test de la surface : Aero-100 en grand fond éditorial reste calme et chaud, Columbia tire un peu froid, ce qui contredit la dominante chaude papier bible + Chamoisée du système.</p>
+      <p>Mais comme toujours, ton œil prime. Toggle, juge, décide.</p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const body = document.body;
+const buttons = document.querySelectorAll('.toolbar .btn');
+const cards = document.querySelectorAll('.swatch-card');
+const labelMap = {
+  columbia: 'Soft actuel · Columbia Blue source · #D3E3F0',
+  aero100: 'Soft actuel · Aero-100 dérivé · #E5EEF3'
+};
+
+function applySoft(soft) {
+  body.dataset.soft = soft;
+  buttons.forEach(b => b.classList.toggle('active', b.dataset.soft === soft));
+  cards.forEach(c => c.classList.toggle('is-active', c.dataset.card === soft));
+  document.getElementById('current-label').textContent = labelMap[soft];
+  localStorage.setItem('enki-soft-choice', soft);
+}
+
+buttons.forEach(btn => btn.addEventListener('click', () => applySoft(btn.dataset.soft)));
+cards.forEach(card => card.addEventListener('click', () => applySoft(card.dataset.card)));
+
+const saved = localStorage.getItem('enki-soft-choice');
+if (saved) applySoft(saved);
+</script>
+</body>
+</html>

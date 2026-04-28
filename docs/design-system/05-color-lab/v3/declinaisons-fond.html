@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENKI · Déclinaisons fond crème · choix background</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900&family=Schibsted+Grotesk:ital,wght@0,400..700&family=JetBrains+Mono:wght@300..600&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Hanken Grotesk', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  color: #1A2940;
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---------------------------------------------------------------- */
+/* 6 BACKGROUND CANDIDATES                                          */
+/* ---------------------------------------------------------------- */
+:root {
+  /* B1 — référence D3 (le crème que JM aime) */
+  --bg-b1: #FAF6ED;
+  --card-b1: #FEFCF6;
+
+  /* B2 — un cran plus clair, moins jaune */
+  --bg-b2: #FBF8F1;
+  --card-b2: #FEFDF9;
+
+  /* B3 — crème très clair, plus blanc-cassé */
+  --bg-b3: #FAF7F2;
+  --card-b3: #FFFEFB;
+
+  /* B4 — papier bible, presque blanc tiède */
+  --bg-b4: #FCFAF5;
+  --card-b4: #FFFFFE;
+
+  /* B5 — lait d'amande, blanc tirant légèrement vers chaud */
+  --bg-b5: #FAF7F0;
+  --card-b5: #FFFEFA;
+
+  /* B6 — blanc d'orchidée, le plus blanc, juste tiède */
+  --bg-b6: #FBF8F3;
+  --card-b6: #FFFFFC;
+
+  /* DEFAULTS = B1 (D3 référence) */
+  --bg: var(--bg-b1);
+  --card: var(--card-b1);
+}
+
+body[data-bg="b1"] { --bg: var(--bg-b1); --card: var(--card-b1); }
+body[data-bg="b2"] { --bg: var(--bg-b2); --card: var(--card-b2); }
+body[data-bg="b3"] { --bg: var(--bg-b3); --card: var(--card-b3); }
+body[data-bg="b4"] { --bg: var(--bg-b4); --card: var(--card-b4); }
+body[data-bg="b5"] { --bg: var(--bg-b5); --card: var(--card-b5); }
+body[data-bg="b6"] { --bg: var(--bg-b6); --card: var(--card-b6); }
+
+/* ---------------------------------------------------------------- */
+/* TOOLBAR PERSISTANTE (boutons de toggle des 6 fonds)              */
+/* ---------------------------------------------------------------- */
+.toolbar {
+  position: fixed;
+  top: 24px; left: 50%; transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  gap: 6px;
+  padding: 8px;
+  background: rgba(26, 41, 64, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 100px;
+  box-shadow: 0 12px 36px -8px rgba(0,0,0,0.3);
+}
+.toolbar .btn {
+  padding: 10px 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(253, 240, 228, 0.6);
+  border-radius: 100px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  font-weight: 500;
+  transition: all 220ms;
+  display: flex; align-items: center; gap: 8px;
+}
+.toolbar .btn:hover { color: #FDF0E4; }
+.toolbar .btn.active {
+  background: #57B9D6;
+  color: #1A2940;
+}
+.toolbar .btn .swatch-mini {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+/* ---------------------------------------------------------------- */
+/* CONTENT WRAPPER                                                  */
+/* ---------------------------------------------------------------- */
+.wrap {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 96px 64px 120px;
+}
+
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #A17964;
+  display: block;
+  margin-bottom: 20px;
+}
+h1 {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 1.05; letter-spacing: -0.025em;
+  margin-bottom: 24px;
+  max-width: 880px;
+}
+h1 em { font-style: italic; color: #57B9D6; }
+.intro {
+  font-size: 17px; line-height: 1.65; max-width: 720px;
+  color: #4A5A78;
+  margin-bottom: 16px;
+}
+.intro strong { color: #1A2940; font-weight: 500; }
+.intro code {
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--card);
+  padding: 2px 7px; border-radius: 3px;
+  font-size: 13px;
+  color: #1A2940;
+  border: 1px solid rgba(26, 41, 64, 0.08);
+}
+
+.current-id {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 10px 18px;
+  background: var(--card);
+  border: 1px solid rgba(26, 41, 64, 0.08);
+  border-radius: 100px;
+  margin-top: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: #1A2940;
+}
+.current-id .dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1px solid rgba(26, 41, 64, 0.15);
+}
+.current-id .label {
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: #4A5A78;
+}
+
+/* ---------------------------------------------------------------- */
+/* SECTION HEAD                                                     */
+/* ---------------------------------------------------------------- */
+section { margin-top: 96px; }
+section.first { margin-top: 56px; }
+.s-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #A17964;
+  margin-bottom: 16px;
+  display: block;
+}
+.s-title {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: clamp(32px, 3.6vw, 44px);
+  line-height: 1.08; letter-spacing: -0.02em;
+  margin-bottom: 14px;
+  max-width: 760px;
+}
+.s-title em { color: #57B9D6; }
+.s-lead {
+  font-size: 16px; line-height: 1.65;
+  color: #4A5A78;
+  margin-bottom: 36px;
+  max-width: 680px;
+}
+
+/* ---------------------------------------------------------------- */
+/* HERO PREVIEW                                                     */
+/* ---------------------------------------------------------------- */
+.hero-preview {
+  position: relative;
+  height: 540px;
+  border-radius: 8px;
+  overflow: hidden;
+  background-image: url('assets/photos/hero-d2-horizon.jpg');
+  background-size: cover;
+  background-position: center;
+  border: 1px solid rgba(26, 41, 64, 0.08);
+}
+.hero-preview::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.55) 100%);
+}
+.hero-preview .hero-nav {
+  position: absolute; top: 0; left: 0; right: 0;
+  padding: 28px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  z-index: 2;
+}
+.hero-preview .logo {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500; font-size: 22px;
+  color: var(--bg);
+  letter-spacing: -0.01em;
+}
+.hero-preview .nav-links {
+  display: flex; gap: 32px;
+}
+.hero-preview .nav-links a {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 13px; font-weight: 500;
+  color: var(--bg);
+  text-decoration: none;
+  opacity: 0.92;
+}
+.hero-preview .nav-cta {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 12px; font-weight: 500;
+  padding: 9px 18px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: var(--bg);
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.hero-preview .chat-card {
+  position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+  width: min(640px, calc(100% - 80px));
+  background: color-mix(in oklab, var(--bg) 96%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 12px;
+  border: 1px solid color-mix(in oklab, var(--bg) 60%, transparent);
+  box-shadow: 0 32px 64px -24px rgba(0,0,0,0.4), 0 8px 20px -4px rgba(0,0,0,0.12);
+  overflow: hidden;
+  z-index: 2;
+}
+.hero-preview .chat-head {
+  padding: 12px 18px;
+  background: linear-gradient(90deg, rgba(87, 185, 214, 0.10) 0%, rgba(87, 185, 214, 0.03) 100%);
+  border-bottom: 1px solid rgba(87, 185, 214, 0.18);
+  display: flex; align-items: center; gap: 10px;
+}
+.hero-preview .chat-head .pulse {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #57B9D6;
+  box-shadow: 0 0 0 0 rgba(87, 185, 214, 0.6);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(87, 185, 214, 0.5); }
+  50% { box-shadow: 0 0 0 8px rgba(87, 185, 214, 0); }
+}
+.hero-preview .chat-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: #1A2940;
+  font-weight: 500;
+}
+.hero-preview .chat-body {
+  padding: 18px 20px 20px;
+}
+.hero-preview .chat-msg {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-style: italic; font-size: 13px; line-height: 1.55;
+  color: #4A5A78;
+  margin-bottom: 14px;
+  min-height: 40px;
+}
+.hero-preview .chat-input {
+  display: flex; align-items: stretch;
+  gap: 0;
+  background: var(--card);
+  border: 1px solid #D3E3F0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.hero-preview .chat-input .field {
+  flex: 1;
+  padding: 12px 14px;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 13px;
+  color: #4A5A78;
+  font-style: italic;
+  display: flex; align-items: center;
+}
+.hero-preview .chat-input .submit {
+  padding: 0 20px;
+  background: #57B9D6;
+  color: #FDF0E4;
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 13px; font-weight: 500;
+  border: none; cursor: pointer;
+  transition: background 220ms;
+}
+.hero-preview .chat-input .submit:hover { background: #3FA3C2; }
+
+.hero-preview .hero-title {
+  position: absolute;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 1;
+  width: 100%;
+  padding: 0 40px;
+}
+.hero-preview .hero-title h2 {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: clamp(40px, 5vw, 60px);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: var(--bg);
+  text-shadow: 0 2px 24px rgba(0,0,0,0.3);
+}
+
+/* ---------------------------------------------------------------- */
+/* ENGAGED PREVIEW                                                  */
+/* ---------------------------------------------------------------- */
+.engaged-preview {
+  display: grid;
+  grid-template-columns: 60% 40%;
+  height: 540px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg);
+  border: 1px solid rgba(26, 41, 64, 0.08);
+}
+.eng-left {
+  padding: 36px 32px;
+  border-right: 1px solid #D3E3F0;
+  background: var(--bg);
+  overflow-y: auto;
+}
+.eng-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: #A17964;
+  display: block;
+  margin-bottom: 14px;
+}
+.eng-title {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-weight: 500;
+  font-size: 28px; line-height: 1.12;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+.eng-title em { color: #57B9D6; }
+.eng-meta {
+  display: flex; gap: 14px; align-items: center;
+  margin-bottom: 24px;
+}
+.eng-meta span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: #4A5A78;
+}
+.eng-cards {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+}
+.bien {
+  background: var(--card);
+  border: 1px solid #D3E3F0;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 280ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.bien:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 24px 48px -20px rgba(26, 41, 64, 0.18);
+  border-color: #57B9D6;
+}
+.bien-photo {
+  aspect-ratio: 4/3;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+.bien-photo .tag {
+  position: absolute; top: 10px; left: 10px;
+  padding: 4px 9px;
+  background: var(--bg);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+  border-radius: 100px;
+  color: #1A2940;
+}
+.bien-body { padding: 14px 16px 18px; }
+.bien-loc {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: #4A5A78;
+  margin-bottom: 6px;
+}
+.bien-name {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-size: 17px; line-height: 1.18;
+  margin-bottom: 10px;
+}
+.bien-name em { color: #57B9D6; }
+.bien-price {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500; font-size: 17px;
+  letter-spacing: -0.015em;
+  color: #1A2940;
+}
+.bien-price .from {
+  font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: #4A5A78;
+  margin-right: 4px;
+  font-weight: 400;
+}
+
+.eng-side {
+  background: var(--bg);
+  display: flex; flex-direction: column;
+}
+.sb-head {
+  padding: 16px 20px;
+  border-bottom: 1px solid #D3E3F0;
+  display: flex; align-items: center; gap: 10px;
+}
+.sb-avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #8FD4E8, #57B9D6 60%, #3FA3C2);
+  display: grid; place-items: center;
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic;
+  color: #FDF0E4;
+  font-size: 13px; font-weight: 500;
+}
+.sb-name {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 500; font-size: 13px;
+  color: #1A2940;
+}
+.sb-status {
+  margin-left: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: #57B9D6;
+  display: flex; align-items: center; gap: 6px;
+}
+.sb-status::before {
+  content: '';
+  width: 5px; height: 5px;
+  background: #57B9D6;
+  border-radius: 50%;
+}
+.sb-thread {
+  flex: 1;
+  padding: 20px;
+  display: flex; flex-direction: column; gap: 14px;
+  overflow-y: auto;
+}
+.msg {
+  max-width: 88%;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 13px; line-height: 1.55;
+}
+.msg.user {
+  align-self: flex-end;
+  background: #D3E3F0;
+  padding: 10px 14px;
+  border-radius: 12px 12px 4px 12px;
+  color: #1A2940;
+}
+.msg.assistant {
+  align-self: flex-start;
+  color: #1A2940;
+}
+.msg.assistant em {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic;
+  color: #57B9D6;
+}
+.sb-input {
+  padding: 12px 14px 14px;
+  border-top: 1px solid #D3E3F0;
+  display: flex; gap: 8px;
+}
+.sb-input .field {
+  flex: 1;
+  padding: 10px 13px;
+  background: var(--card);
+  border: 1px solid #D3E3F0;
+  border-radius: 4px;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-style: italic; font-size: 12px;
+  color: #4A5A78;
+}
+.sb-input .send {
+  padding: 10px 14px;
+  background: #57B9D6;
+  color: #FDF0E4;
+  border-radius: 4px;
+  display: grid; place-items: center;
+  cursor: pointer;
+}
+.sb-input .send svg { width: 12px; height: 12px; }
+
+/* ---------------------------------------------------------------- */
+/* ALL 6 BACKGROUNDS SIDE-BY-SIDE                                   */
+/* ---------------------------------------------------------------- */
+.compare-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.compare-cell {
+  border-radius: 6px;
+  border: 1px solid rgba(26, 41, 64, 0.08);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.compare-cell:hover { transform: translateY(-2px); box-shadow: 0 16px 32px -12px rgba(0,0,0,0.12); }
+.compare-cell.active {
+  outline: 2px solid #57B9D6;
+  outline-offset: 2px;
+}
+.compare-swatch {
+  height: 140px;
+  display: flex; align-items: flex-end;
+  padding: 16px 18px;
+}
+.compare-meta {
+  padding: 14px 18px 16px;
+  background: white;
+  border-top: 1px solid #D3E3F0;
+}
+.compare-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: #A17964;
+  margin-bottom: 4px;
+}
+.compare-name {
+  font-family: 'Schibsted Grotesk', serif;
+  font-style: italic; font-size: 18px;
+  margin-bottom: 6px;
+}
+.compare-hex {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #4A5A78;
+  margin-bottom: 6px;
+}
+.compare-temper {
+  font-size: 12px; line-height: 1.5;
+  color: #4A5A78;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .wrap { padding: 80px 24px 80px; }
+  .toolbar { flex-wrap: wrap; max-width: calc(100% - 32px); }
+  .toolbar .btn { padding: 8px 12px; font-size: 10px; }
+  .compare-grid { grid-template-columns: 1fr 1fr; }
+  .engaged-preview { grid-template-columns: 1fr; height: auto; }
+}
+</style>
+</head>
+<body data-bg="b1">
+
+<!-- TOOLBAR : 6 BOUTONS POUR TOGGLER LES FONDS -->
+<div class="toolbar">
+  <button class="btn active" data-bg="b1">
+    <span class="swatch-mini" style="background: #FAF6ED;"></span>
+    B1 · D3 réf
+  </button>
+  <button class="btn" data-bg="b2">
+    <span class="swatch-mini" style="background: #FBF8F1;"></span>
+    B2
+  </button>
+  <button class="btn" data-bg="b3">
+    <span class="swatch-mini" style="background: #FAF7F2;"></span>
+    B3
+  </button>
+  <button class="btn" data-bg="b4">
+    <span class="swatch-mini" style="background: #FCFAF5;"></span>
+    B4
+  </button>
+  <button class="btn" data-bg="b5">
+    <span class="swatch-mini" style="background: #FAF7F0;"></span>
+    B5
+  </button>
+  <button class="btn" data-bg="b6">
+    <span class="swatch-mini" style="background: #FBF8F3;"></span>
+    B6
+  </button>
+</div>
+
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header style="margin-bottom: 32px;">
+    <span class="eyebrow">Six déclinaisons de fond crème · à choisir</span>
+    <h1>Six fonds crème, <em>du plus chaud au plus blanc</em>.</h1>
+    <p class="intro">
+      Tu m'as dit que <strong>D3 `#FAF6ED`</strong> te plaît comme point de départ, mais que la palette précédente avec <code>#FDF0E4</code> était trop lourde. Voici <strong>six déclinaisons</strong> qui partent de D3 et glissent progressivement vers plus clair, plus blanc, moins saturé. <strong>Aero, Columbia Blue et Chamoisée restent identiques</strong> — on ne touche qu'au fond.
+    </p>
+    <p class="intro">
+      Clique sur les boutons en haut pour basculer instantanément entre les 6 fonds et compare. Tu juges en condition réelle sur le hero, sur la sidebar engagée, et sur la grille comparative en bas.
+    </p>
+    <div class="current-id">
+      <span class="dot"></span>
+      <span class="label" id="current-label">Actuellement · B1 · #FAF6ED · D3 référence</span>
+    </div>
+  </header>
+
+  <!-- 1. HERO PREVIEW EN CONDITION RÉELLE -->
+  <section class="first">
+    <span class="s-eyebrow">01 · Hero en condition réelle · État A</span>
+    <h2 class="s-title">La carte chat <em>flotte</em> sur le fond choisi.</h2>
+    <p class="s-lead">La carte chat utilise une couleur dérivée du fond actuel (translucide à 96 %, avec backdrop-blur). Donc plus le fond est clair, plus la carte se fond légèrement dans la photo. Bouton Démarrer Aero, pulsation Aero. Logo et nav en couleur du fond pour le contraste sur photo.</p>
+
+    <div class="hero-preview">
+      <nav class="hero-nav">
+        <div class="logo" aria-label="ENKI Realty">ΣNKI Realty</div>
+        <div class="nav-links">
+          <a href="#">Propriétés</a>
+          <a href="#">Lexaia</a>
+          <a href="#">À propos</a>
+        </div>
+        <a class="nav-cta" href="#">Espace personnel</a>
+      </nav>
+
+      <div class="hero-title">
+        <h2>Trouvez votre place à Chypre.</h2>
+      </div>
+
+      <div class="chat-card">
+        <div class="chat-head">
+          <span class="pulse"></span>
+          <span class="chat-tag">ENKI · Plateforme conversationnelle</span>
+        </div>
+        <div class="chat-body">
+          <p class="chat-msg">Ex : Je suis retraitée à Bruxelles, je cherche un appartement calme à Paphos autour de 350 k€…</p>
+          <div class="chat-input">
+            <div class="field">Décrivez ce que vous cherchez…</div>
+            <button class="submit">
+              Démarrer
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. ENGAGED 60/40 -->
+  <section>
+    <span class="s-eyebrow">02 · Sidebar engagée · État B · ratio 60/40</span>
+    <h2 class="s-title">Cards et conversation sur fond <em>choisi</em>.</h2>
+    <p class="s-lead">L'engaged est l'écran où tu passes le plus de temps — c'est ici que tu juges si le fond fatigue ou si il est confortable. Cards en card-color (légèrement plus claire que le fond). Aero pour les hovers et les italiques signature.</p>
+
+    <div class="engaged-preview">
+      <div class="eng-left">
+        <span class="eng-eyebrow">Propriétés proposées par ENKI</span>
+        <h3 class="eng-title">Quatre biens <em>résonnent</em> avec ce que vous cherchez.</h3>
+        <div class="eng-meta">
+          <span>Triés par justesse</span><span>·</span>
+          <span>04 résultats</span><span>·</span>
+          <span>Mis à jour 11 h 24</span>
+        </div>
+        <div class="eng-cards">
+          <div class="bien">
+            <div class="bien-photo" style="background-image:url('assets/photos/programme-coral.jpg');">
+              <span class="tag">Golden Visa</span>
+            </div>
+            <div class="bien-body">
+              <div class="bien-loc">Paphos · Coral Bay</div>
+              <div class="bien-name">Coral Bay <em>B-04</em></div>
+              <div class="bien-price"><span class="from">À partir de</span>347 000 €</div>
+            </div>
+          </div>
+          <div class="bien">
+            <div class="bien-photo" style="background-image:url('assets/photos/programme-olivier.jpg');">
+              <span class="tag">TVA 5 %</span>
+            </div>
+            <div class="bien-body">
+              <div class="bien-loc">Pissouri · Hauteurs</div>
+              <div class="bien-name">Maison de l'<em>Olivier</em></div>
+              <div class="bien-price"><span class="from">À partir de</span>389 500 €</div>
+            </div>
+          </div>
+          <div class="bien">
+            <div class="bien-photo" style="background-image:url('assets/photos/programme-marina.jpg');">
+              <span class="tag">Q4 2027</span>
+            </div>
+            <div class="bien-body">
+              <div class="bien-loc">Larnaca · Marina</div>
+              <div class="bien-name">Marina <em>House</em></div>
+              <div class="bien-price"><span class="from">À partir de</span>365 000 €</div>
+            </div>
+          </div>
+          <div class="bien">
+            <div class="bien-photo" style="background-image:url('assets/photos/interior-light.jpg');">
+              <span class="tag">Permanent Residency</span>
+            </div>
+            <div class="bien-body">
+              <div class="bien-loc">Kato Paphos</div>
+              <div class="bien-name">Kato <em>Townhouse</em></div>
+              <div class="bien-price"><span class="from">À partir de</span>312 000 €</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="eng-side">
+        <div class="sb-head">
+          <div class="sb-avatar">Σ</div>
+          <div class="sb-name">ENKI</div>
+          <span class="sb-status">En ligne</span>
+        </div>
+        <div class="sb-thread">
+          <div class="msg user">Je suis retraitée à Bruxelles, je cherche un appartement calme à Paphos autour de 350 k€.</div>
+          <div class="msg assistant">Bonjour. Avant de regarder les biens, partageons un peu plus. Préférez-vous l'isolement complet d'une villa, ou la tranquillité d'un quartier résidentiel avec voisins ? Je peux préparer une <em>sélection en parallèle</em>.</div>
+          <div class="msg user">Plutôt un quartier résidentiel.</div>
+          <div class="msg assistant">Parfait. J'ai sélectionné quatre biens avec une attention particulière à la <em>qualité du voisinage</em>. À votre gauche.</div>
+        </div>
+        <div class="sb-input">
+          <div class="field">Écrivez à ENKI…</div>
+          <button class="send">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 3. GRILLE COMPARATIVE -->
+  <section>
+    <span class="s-eyebrow">03 · Comparatif simultané</span>
+    <h2 class="s-title">Voir les six fonds <em>côte à côte</em>.</h2>
+    <p class="s-lead">Pour calibrer ton œil sans toggler, voici les 6 fonds présentés simultanément. Clique sur une carte pour basculer immédiatement le fond global de la page sur ce candidat.</p>
+
+    <div class="compare-grid">
+      <div class="compare-cell active" data-bg="b1">
+        <div class="compare-swatch" style="background: #FAF6ED;"></div>
+        <div class="compare-meta">
+          <div class="compare-id">B1 · D3 référence</div>
+          <div class="compare-name">Le crème que tu aimes</div>
+          <div class="compare-hex">#FAF6ED · hue 50° · 96% L</div>
+          <p class="compare-temper">Le crème de référence. Chaleureux, posé, légèrement jauni. Présence forte mais maîtrisée.</p>
+        </div>
+      </div>
+
+      <div class="compare-cell" data-bg="b2">
+        <div class="compare-swatch" style="background: #FBF8F1;"></div>
+        <div class="compare-meta">
+          <div class="compare-id">B2 · Crème allégé</div>
+          <div class="compare-name">Un cran plus clair</div>
+          <div class="compare-hex">#FBF8F1 · hue 50° · 97% L</div>
+          <p class="compare-temper">Même tonalité que B1 mais 1 % plus clair, moins saturé. Garde la chaleur, perd le poids.</p>
+        </div>
+      </div>
+
+      <div class="compare-cell" data-bg="b3">
+        <div class="compare-swatch" style="background: #FAF7F2;"></div>
+        <div class="compare-meta">
+          <div class="compare-id">B3 · Blanc crème</div>
+          <div class="compare-name">Crème presque blanc</div>
+          <div class="compare-hex">#FAF7F2 · hue 35° · 97% L</div>
+          <p class="compare-temper">Glisse vers le blanc-cassé. Hue plus neutre (moins jaune). Très lumineux sans devenir froid.</p>
+        </div>
+      </div>
+
+      <div class="compare-cell" data-bg="b4">
+        <div class="compare-swatch" style="background: #FCFAF5;"></div>
+        <div class="compare-meta">
+          <div class="compare-id">B4 · Papier bible</div>
+          <div class="compare-name">Lumineux et tiède</div>
+          <div class="compare-hex">#FCFAF5 · hue 45° · 98% L</div>
+          <p class="compare-temper">Le papier bible des éditions de luxe. Quasi-blanc avec température chaude subtile. Maximum de lumière.</p>
+        </div>
+      </div>
+
+      <div class="compare-cell" data-bg="b5">
+        <div class="compare-swatch" style="background: #FAF7F0;"></div>
+        <div class="compare-meta">
+          <div class="compare-id">B5 · Lait d'amande</div>
+          <div class="compare-name">Blanc tiède chaud</div>
+          <div class="compare-hex">#FAF7F0 · hue 40° · 97% L</div>
+          <p class="compare-temper">Position intermédiaire entre B2 et B3. Tient la chaleur sans s'imposer. Le candidat de l'équilibre.</p>
+        </div>
+      </div>
+
+      <div class="compare-cell" data-bg="b6">
+        <div class="compare-swatch" style="background: #FBF8F3;"></div>
+        <div class="compare-meta">
+          <div class="compare-id">B6 · Orchidée blanche</div>
+          <div class="compare-name">Le plus blanc, juste tiède</div>
+          <div class="compare-hex">#FBF8F3 · hue 35° · 97.5% L</div>
+          <p class="compare-temper">Le plus blanc des six. Garde une température chaude minime mais imperceptible. Pose éditoriale maximale.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VERDICT -->
+  <section>
+    <span class="s-eyebrow">Verdict · à choisir par Jean-Marie</span>
+    <h2 class="s-title">Dis-moi simplement <em>« je prends le B4 »</em>.</h2>
+    <p class="s-lead">Quand tu as choisi, je rebatis le hero plein écran avec ce fond et le standard cinématique de ton repo public (typewriter, wipe, expand letter-spacing) avec Aero + Columbia Blue + Chamoisée comme accents validés. Si aucun ne convient, dis "plus blanc encore" ou "moins jaune" et je fais un nouveau jeu.</p>
+  </section>
+
+</div>
+
+<script>
+const body = document.body;
+const buttons = document.querySelectorAll('.toolbar .btn');
+const cells = document.querySelectorAll('.compare-cell');
+const labelMap = {
+  b1: 'Actuellement · B1 · #FAF6ED · D3 référence',
+  b2: 'Actuellement · B2 · #FBF8F1 · Crème allégé',
+  b3: 'Actuellement · B3 · #FAF7F2 · Blanc crème',
+  b4: 'Actuellement · B4 · #FCFAF5 · Papier bible',
+  b5: 'Actuellement · B5 · #FAF7F0 · Lait d\'amande',
+  b6: 'Actuellement · B6 · #FBF8F3 · Orchidée blanche'
+};
+
+function applyBg(bg) {
+  body.dataset.bg = bg;
+  buttons.forEach(b => b.classList.toggle('active', b.dataset.bg === bg));
+  cells.forEach(c => c.classList.toggle('active', c.dataset.bg === bg));
+  document.getElementById('current-label').textContent = labelMap[bg];
+  localStorage.setItem('enki-bg-preview', bg);
+}
+
+buttons.forEach(btn => btn.addEventListener('click', () => applyBg(btn.dataset.bg)));
+cells.forEach(cell => cell.addEventListener('click', () => applyBg(cell.dataset.bg)));
+
+// Restore from localStorage
+const saved = localStorage.getItem('enki-bg-preview');
+if (saved) applyBg(saved);
+</script>
+</body>
+</html>
