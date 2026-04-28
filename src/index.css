@@ -1,6 +1,12 @@
 @import "slick-carousel/slick/slick.css";
 @import "slick-carousel/slick/slick-theme.css";
 
+/* ENKI Realty — Design System Couche 5 (verrouillée 28 avril 2026)
+   14 tokens sémantiques + 33 nuances échelles.
+   Coexistent avec les tokens Shadcn existants pendant la phase de migration.
+   Voir docs/design-system/05-color-system.md */
+@import "./styles/tokens.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

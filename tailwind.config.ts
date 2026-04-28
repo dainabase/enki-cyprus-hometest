@@ -71,6 +71,63 @@ export default {
 				warning: {
 					DEFAULT: 'hsl(var(--warning))',
 					foreground: 'hsl(var(--warning-foreground))'
+				},
+				/* ============================================================
+				 * ENKI Realty — Design System Couche 5 (verrouillée 28/04/2026)
+				 *
+				 * Namespace 'enki' pour éviter toute collision avec les tokens
+				 * Shadcn existants pendant la phase de migration.
+				 *
+				 * Usage : bg-enki-bg, text-enki-fg, border-enki-accent-soft,
+				 *         bg-enki-aero-500, text-enki-chamoisee-700, etc.
+				 *
+				 * Voir docs/design-system/05-color-system.md
+				 * ============================================================ */
+				enki: {
+					/* Sémantiques (basculent automatiquement light/dark) */
+					bg: 'var(--bg)',
+					card: 'var(--card)',
+					fg: 'var(--fg)',
+					'fg-muted': 'var(--fg-muted)',
+					accent: 'var(--accent)',
+					'accent-soft': 'var(--accent-soft)',
+					warm: 'var(--warm)',
+					/* Échelle Aero · 11 paliers · hue 220° */
+					'aero-50':  'var(--aero-50)',
+					'aero-100': 'var(--aero-100)',
+					'aero-200': 'var(--aero-200)',
+					'aero-300': 'var(--aero-300)',
+					'aero-400': 'var(--aero-400)',
+					'aero-500': 'var(--aero-500)',
+					'aero-600': 'var(--aero-600)',
+					'aero-700': 'var(--aero-700)',
+					'aero-800': 'var(--aero-800)',
+					'aero-900': 'var(--aero-900)',
+					'aero-950': 'var(--aero-950)',
+					/* Échelle Chamoisée · 11 paliers · hue 50° */
+					'chamoisee-50':  'var(--chamoisee-50)',
+					'chamoisee-100': 'var(--chamoisee-100)',
+					'chamoisee-200': 'var(--chamoisee-200)',
+					'chamoisee-300': 'var(--chamoisee-300)',
+					'chamoisee-400': 'var(--chamoisee-400)',
+					'chamoisee-500': 'var(--chamoisee-500)',
+					'chamoisee-600': 'var(--chamoisee-600)',
+					'chamoisee-700': 'var(--chamoisee-700)',
+					'chamoisee-800': 'var(--chamoisee-800)',
+					'chamoisee-900': 'var(--chamoisee-900)',
+					'chamoisee-950': 'var(--chamoisee-950)',
+					/* Échelle Encre · 11 paliers · hue 250° (anchor 700) */
+					'encre-50':  'var(--encre-50)',
+					'encre-100': 'var(--encre-100)',
+					'encre-200': 'var(--encre-200)',
+					'encre-300': 'var(--encre-300)',
+					'encre-400': 'var(--encre-400)',
+					'encre-500': 'var(--encre-500)',
+					'encre-600': 'var(--encre-600)',
+					'encre-700': 'var(--encre-700)',
+					'encre-800': 'var(--encre-800)',
+					'encre-900': 'var(--encre-900)',
+					'encre-950': 'var(--encre-950)',
 				}
 			},
 			boxShadow: {

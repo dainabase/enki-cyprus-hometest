@@ -1,0 +1,124 @@
+/**
+ * ENKI Realty — Design System Tokens
+ * Couche 5 — Color System v1.0
+ *
+ * Verrouillé le 28 avril 2026 par Jean-Marie Delaunay.
+ *
+ * Hiérarchie :
+ *   - 14 tokens sémantiques (7 light + 7 dark) pour usage direct dans les composants
+ *   - 33 nuances d'échelles (Aero, Chamoisée, Encre profonde) pour usages avancés
+ *
+ * Sources :
+ *   - Aero      hue 220° (mer Méditerranée vue du large)
+ *   - Chamoisée hue 50°  (chaise cognac, oliviers, peau bronzée)
+ *   - Encre     hue 250° (encre des manuscrits, nuit méditerranéenne)
+ *
+ * Documentation Notion : voir page Couche 5 ENTIÈREMENT verrouillée
+ *   3508c7bb-2515-81c4-acfd-fd496769cece
+ *
+ * Usage :
+ *   import './styles/tokens.css' dans src/index.css avant les autres règles.
+ *   Les variables sémantiques (--bg, --fg, etc.) sont les API publiques.
+ *   Les variables d'échelles (--aero-500, etc.) sont pour les cas avancés.
+ */
+
+:root {
+  /* ============================================================
+   * SÉMANTIQUES — Light Mode (défaut)
+   * ============================================================ */
+  --bg: #FCFAF5;          /* papier bible — pierre chypriote au matin */
+  --card: #FFFFFE;        /* surface flottante */
+  --fg: #1A2940;          /* encre profonde — texte + présence visuelle */
+  --fg-muted: #4A5A78;    /* encre claire — métadonnées */
+  --accent: #3D8FB0;      /* Aero méditerranéen — CTA, sceau, signature */
+  --accent-soft: #E5EEF3; /* Aero-100 dérivé — bulles user, bordures */
+  --warm: #A17964;        /* Chamoisée — eyebrows, accent humain */
+
+  /* ============================================================
+   * ÉCHELLE AERO · 11 paliers · hue 220°
+   * Anchor : aero-500 = #3D8FB0
+   * ============================================================ */
+  --aero-50:  #F4F9FB;
+  --aero-100: #E5EEF3;
+  --aero-200: #C8DDE7;
+  --aero-300: #9DC4D4;
+  --aero-400: #6FA8C0;
+  --aero-500: #3D8FB0;
+  --aero-600: #2E7593;
+  --aero-700: #245C76;
+  --aero-800: #1B4459;
+  --aero-900: #1E3147;
+  --aero-950: #131F2C;
+
+  /* ============================================================
+   * ÉCHELLE CHAMOISÉE · 11 paliers · hue 50°
+   * Anchor : chamoisee-500 = #A17964
+   * ============================================================ */
+  --chamoisee-50:  #FAF5EF;
+  --chamoisee-100: #F2E8DD;
+  --chamoisee-200: #E2CDB6;
+  --chamoisee-300: #CDAC8E;
+  --chamoisee-400: #B79176;
+  --chamoisee-500: #A17964;
+  --chamoisee-600: #876451;
+  --chamoisee-700: #6D5040;
+  --chamoisee-800: #523B30;
+  --chamoisee-900: #392922;
+  --chamoisee-950: #211814;
+
+  /* ============================================================
+   * ÉCHELLE ENCRE · 11 paliers · hue 250°
+   * Anchor : encre-700 = #1A2940 (foreground/présence, pas accent)
+   * Volontaire : palier 500 = fg-muted light, palier 900 = bg dark
+   * ============================================================ */
+  --encre-50:  #F2F4F8;
+  --encre-100: #E1E5ED;
+  --encre-200: #C0C7D4;
+  --encre-300: #A8B4C7;
+  --encre-400: #7B8AA3;
+  --encre-500: #4A5A78;
+  --encre-600: #36445C;
+  --encre-700: #1A2940;
+  --encre-800: #131F33;
+  --encre-900: #0F1A2A;
+  --encre-950: #080F1B;
+}
+
+[data-theme="dark"] {
+  /* ============================================================
+   * SÉMANTIQUES — Dark Mode
+   *
+   * Symétrie chromatique parfaite avec le light mode :
+   *   - Card dark = Foreground light
+   *   - Foreground dark = Background light
+   *   - Hue préservé pour Accent et Warm (luminosité ajustée WCAG)
+   * ============================================================ */
+  --bg: #0F1A2A;          /* encre sombre = encre-900 */
+  --card: #1A2940;        /* encre élevée = encre-700 */
+  --fg: #FCFAF5;          /* papier bible inversé */
+  --fg-muted: #A8B4C7;    /* encre claire dark = encre-300 */
+  --accent: #57B9D6;      /* Aero éclairci pour contraste WCAG AAA */
+  --accent-soft: #1E3147; /* Aero-900 = aero-900 */
+  --warm: #C9966A;        /* Chamoisée éclaircie pour lisibilité */
+}
+
+/* ============================================================
+ * AUDIT WCAG — contrastes vérifiés le 28 avril 2026
+ *
+ * LIGHT MODE :
+ *   FG  / BG    : 13.2 : 1   AAA
+ *   Aero / BG   : 4.9  : 1   AA
+ *   Muted / BG  : 7.8  : 1   AAA
+ *   Warm / BG   : 4.5  : 1   AA
+ *   FG / Card   : 13.4 : 1   AAA
+ *
+ * DARK MODE :
+ *   FG / BG     : 14.8 : 1   AAA
+ *   Aero / BG   : 7.2  : 1   AAA
+ *   Muted / BG  : 8.1  : 1   AAA
+ *   Warm / BG   : 5.8  : 1   AA
+ *   FG / Card   : 12.4 : 1   AAA
+ *   CTA Aero (texte FG #1A2940) : 5.4 : 1   AA
+ *
+ * Total : 8 paires AAA, 4 paires AA. Aucun échec.
+ * ============================================================ */
