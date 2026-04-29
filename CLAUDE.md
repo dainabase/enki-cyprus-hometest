@@ -1,6 +1,6 @@
 # [CLAUDE.md](http://CLAUDE.md) - ENKI Realty Project Governance
 
-> Rules permanentes pour tous les agents IA travaillant sur ce repo. Lu automatiquement par Claude Code. Inclure dans les prompts Jules/Lovable/Cowork. \*\***Version** : v1.6 (28 avril 2026) **Source de verite strategique et editoriale** : Notion (hub Design System) **Source de verite technique** : ce fichier + repo GitHub \*\***REGLE DE PRIORITE** : en cas d'incoherence entre un document Notion et un fichier .md du repo :
+> Rules permanentes pour tous les agents IA travaillant sur ce repo. Lu automatiquement par Claude Code. Inclure dans les prompts Jules/Lovable/Cowork. \*\***Version** : v1.7 (30 avril 2026) **Source de verite strategique et editoriale** : Notion (hub Design System) **Source de verite technique** : ce fichier + repo GitHub \*\***REGLE DE PRIORITE** : en cas d'incoherence entre un document Notion et un fichier .md du repo :
 >
 > - Pour les documents marques **EN REVIEW** ou **EN ATTENTE DE VALIDATION** : Notion fait foi.
 > - Pour les documents marques **VALIDES** dans `docs/design-system/` : le repo est la source de verite technique opposable.
@@ -38,10 +38,14 @@
 - **Architecture commerciale B2B2C** : VALIDEE le 27 avril 2026 (document complementaire a la Couche 2). Trois entites distinctes (ENKI Realty Tech, societe de vente, developpeurs incluant Crona). Passage de main avec evenement technique signe et opposable. CRM unique heberge par ENKI Realty avec deux interfaces. Tracking anti-fraude par triple ancrage immuable + double-signature + detection automatique. Voir `docs/design-system/03-architecture-commerciale-crm.md`.
 - **Typographie** : VALIDEE en Couche 4 v1.0 le 27 avril 2026. Stack a trois polices libres (OFL 1.1) : **Hanken Grotesk** (voix principale, UI/corps), **Schibsted Grotesk** (voix editoriale, titres/signature, italiques semantiques), **JetBrains Mono** (voix technique, eyebrows/data). Voir `docs/design-system/04-typography-system.md` et `docs/design-system/04-typography/`. Plan d'evolution accepte vers Sohne (Klim Type Foundry) quand le budget le permet, sans rupture du systeme.
 - **Couleurs** : VALIDEE en Couche 5 v1.0 le 28 avril 2026. 14 tokens semantiques (7 light + 7 dark) avec symetrie d'inversion parfaite light/dark, et 33 nuances d'echelles 50→950 pour les 3 couleurs sources colorees (Aero hue 220°, Chamoisee hue 50°, Encre hue 250°). Format colorimetrique retenu : HEX en valeur, OKLCH en reference. Implementation : `src/styles/tokens.css` + namespace `enki.*` dans `tailwind.config.ts`. Coexiste avec les tokens Shadcn legacy pendant la phase de migration. Verrous : aucun #FFFFFF/#000000 pur, discipline 95/5, hue 220°/50°/250° figes. Voir `docs/design-system/05-color-system.md`.
+- **Principes visuels (Couche 3)** : VALIDEE en Couche 3 v1.0 le 26 avril 2026 (cf. Verrous Constitutionnels Categorie 5 - les 11 points visuels). Sync GitHub le 30 avril 2026. Grille 12 colonnes + sous-grille interne, spacing en multiples de 8 strict, densite editoriale type Monocle/Phaidon, rapport image/texte 50/50 contextuel (70/30 sur biens, 30/70 sur Lexaia), blanc rythmique a 4 niveaux, hierarchie verticale 4 niveaux maximum, coins durs sur structures (0-2px) et legerement arrondis sur actions (6-8px), aucune ombre portee hors modaux, filtre 3 questions pour les animations, desktop-first assume. Voir `docs/design-system/03-visual-principles.md`.
+
+- **Experience Architecture (document complementaire a Couche 3)** : VALIDEE en v1.0 le 30 avril 2026 par Jean-Marie. Co-redigee le 26 avril, deja appliquee dans les Verrous Constitutionnels et dans les Couches 4 + 5 ulterieures. Sync GitHub le 30 avril 2026. Pose la philosophie de continuite et de persistance de l'experience ENKI : agent omnipresent en trois etats (A hero / B sidebar / C mini-bulle), modele "conversation continue avec calques" sur 4 niveaux de profondeur, transitions cinematiques signature avec easing par defaut out-expo, memorabilite comme objectif strategique. Voir `docs/design-system/03bis-experience-architecture.md`.
 
 ### A definir dans les couches du design system - aucune decision actuellement validee
 
-- **Motion / Animations** : principes generaux fixes par la Couche 3 v1.0 (en review sur Notion : animations restraint qui autorise le sublime, filtre 3 questions). Valeurs precises (durees, easings) a definir en Couche 6.
+- **Motion / Animations** : principes generaux fixes par la Couche 3 v1.0 (animations restraint qui autorise le sublime, filtre 3 questions, easing par defaut out-expo). Valeurs precises (durees exactes, easings nommes, chorographies) a definir en Couche 6.
+- **Photographie & imagery** : principes fixes par la Couche 3 (l'image est incarnation jamais decoration, exclusion stock generique, photographie d'auteur commissionnee). Direction artistique precise et briefs photographes a definir en Couche 7.
 - **Composants UI** : a definir en Couche 8 (Component Tokens), incluant validation explicite du framework Tailwind + Shadcn/ui.
 
 ### Obligations
@@ -57,7 +61,7 @@
 
 Le design system ENKI Realty se construit en 8 couches sequentielles plus des documents complementaires. Chaque couche s'appuie sur la precedente. Aucun saut autorise.
 
-CoucheFichier .mdStatut NotionSync GitHub1 - Brand Manifesto`docs/design-system/01-brand-manifesto.md`v1.2 VALIDEEv1.2 sync 27 avril 20262 - Conversational Tier`docs/design-system/02-conversational-tier.md`v2.1 VALIDEEv2.1 sync 27 avril 2026Doc complementaire - Architecture Commerciale & CRM`docs/design-system/03-architecture-commerciale-crm.md`v1.0 VALIDEEv1.0 sync 27 avril 20263 - Visual Principles(en review sur Notion)v1.0 en reviewPas encore syncDoc complementaire - Experience Architecture(en review sur Notion)v1.0 en reviewPas encore sync4 - Typography System`docs/design-system/04-typography-system.md`v1.0 VALIDEEv1.0 sync 27 avril 20265 - Color System`docs/design-system/05-color-system.md`v1.0 VALIDEEv1.0 sync 28 avril 20266 - Motion & Interaction Principlesa venirPas encore creen/a7 - Photography & Imagery Directiona venirPas encore creen/a8 - Component Tokensa venirPas encore creen/a
+CoucheFichier .mdStatut NotionSync GitHub1 - Brand Manifesto`docs/design-system/01-brand-manifesto.md`v1.2 VALIDEEv1.2 sync 27 avril 20262 - Conversational Tier`docs/design-system/02-conversational-tier.md`v2.1 VALIDEEv2.1 sync 27 avril 2026Doc complementaire - Architecture Commerciale & CRM`docs/design-system/03-architecture-commerciale-crm.md`v1.0 VALIDEEv1.0 sync 27 avril 20263 - Visual Principles`docs/design-system/03-visual-principles.md`v1.0 VALIDEE (cf. Verrous Constitutionnels)v1.0 sync 30 avril 2026Doc complementaire - Experience Architecture`docs/design-system/03bis-experience-architecture.md`v1.0 VALIDEE (30 avril 2026)v1.0 sync 30 avril 20264 - Typography System`docs/design-system/04-typography-system.md`v1.0 VALIDEEv1.0 sync 27 avril 20265 - Color System`docs/design-system/05-color-system.md`v1.0 VALIDEEv1.0 sync 28 avril 20266 - Motion & Interaction Principlesa venirPas encore creen/a7 - Photography & Imagery Directiona venirPas encore creen/a8 - Component Tokensa venirPas encore creen/a
 
 **Source de verite strategique** : pages Notion sous le hub "Design System & Cinematic Experience", organise en 6 sous-hubs thematiques depuis le 26 avril 2026 (Piece-mere, Couches du Design System, Documents complementaires, Gouvernance documentaire, Memos & reflexions en cours, References permanentes). Voir Mapping Notion &lt;-&gt; GitHub sur Notion pour le detail.
 
@@ -140,6 +144,20 @@ Voir le **Glossaire ENKI Realty** sur Notion (sous-hub Gouvernance documentaire)
 8. Commit avec message conventionnel (feat/fix/docs/refactor)
 
 ## CHANGELOG
+
+### v1.7 - 30 avril 2026
+
+- **Couche 3 - Visual Principles v1.0 sync GitHub** : reclassee comme VALIDEE (cf. Verrous Constitutionnels Categorie 5 - les 11 points visuels actes le 26 avril 2026). Le document est desormais source de verite technique opposable. Ajout dans la section "Validees dans les couches".
+- **Experience Architecture v1.0 VALIDEE et sync GitHub** : validation formelle actee par Jean-Marie le 30 avril 2026. Le document, co-redige le 26 avril, etait deja applique dans les Verrous Constitutionnels et dans les Couches 4 + 5 ulterieures - sa validation formelle est donc une mise en coherence avec les decisions deja prises. Entre dans la section "Validees dans les couches".
+- **Section "A definir dans les couches" affinee** : la Couche 3 ayant pose les principes visuels (animations, photographie), seuls les valeurs precises restent a definir en Couche 6 (Motion) et Couche 7 (Photography). Couche 8 (Component Tokens) inchangee.
+- **Tableau des couches mis a jour** : Couche 3 v1.0 VALIDEE et sync, Experience Architecture v1.0 VALIDEE et sync.
+- 3 worktrees obsoletes a supprimer en local (`gifted-elbakyan-3ee9b8`, `modest-margulis-b69223`, `vigilant-clarke-f2eb7d`).
+
+### v1.6 - 28 avril 2026
+
+- **Couche 5 - Color System v1.0 VALIDEE** par Jean-Marie : 14 tokens semantiques (7 light + 7 dark) avec symetrie d'inversion parfaite, 33 nuances d'echelles 50→950 pour Aero / Chamoisee / Encre. Format HEX en valeur, OKLCH en reference. Implementation dans `src/styles/tokens.css` + namespace `enki.*` dans Tailwind.
+- Tableau des couches mis a jour : Couche 5 v1.0 sync 28 avril 2026.
+- Verrous chromatiques inscrits : aucun #FFFFFF/#000000 pur, discipline 95/5 (95% neutres + 5% accent), hue 220°/50°/250° figes pour 10 ans.
 
 ### v1.5 - 27 avril 2026
 
